@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.openconext</groupId>
+    <artifactId>metadata-repository</artifactId>
+    <version>1.0.0</version>
+    <packaging>pom</packaging>
+
+    <name>mr</name>
+    <description>Metadata Repository</description>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>1.5.4.RELEASE</version>
+        <relativePath/>
+    </parent>
+
+    <modules>
+        <module>mr-server</module>
+        <module>mr-gui</module>
+    </modules>
+
+    <scm>
+        <connection>scm:git:git@github.com:OpenConext/OpenConext-metadata-registry.git</connection>
+    </scm>
+
+    <build>
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-webdav-jackrabbit</artifactId>
+                <version>2.10</version>
+            </extension>
+        </extensions>
+    </build>
+
+    <distributionManagement>
+        <repository>
+            <id>openconext-releases</id>
+            <name>OpenConext public releases repository</name>
+            <url>dav:https://build.openconext.org/repository/public/releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>openconext-snapshots</id>
+            <name>OpenConext public snapshot repository</name>
+            <url>dav:https://build.openconext.org/repository/public/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+</project>

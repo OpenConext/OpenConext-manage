@@ -1,0 +1,35 @@
+server:
+  contextPath: /mr/api
+  server-header:
+  session:
+    timeout: 28800
+
+metadata_configuration_path: classpath:/metadata_configuration
+
+security:
+  internal_user_name: eb
+  internal_password: secret
+
+spring:
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: metadata
+  main:
+    banner-mode: "off"
+
+# We disable all endpoints except health for the load-balancer and info for git information.
+endpoints:
+  enabled: false
+  health:
+    enabled: true
+    sensitive: false
+  info:
+    enabled: true
+
+# used by the git plugin
+info:
+  build:
+    artifact: "@project.artifactId@"
+    version: "@project.version@"

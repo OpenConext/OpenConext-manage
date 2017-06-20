@@ -1,0 +1,10 @@
+node_modules
+build
+*.log*
+.DS_Store
+.idea
+*.iml
+TODO.txt
+target
+mr-gui/dist
+mr-gui/coverage
