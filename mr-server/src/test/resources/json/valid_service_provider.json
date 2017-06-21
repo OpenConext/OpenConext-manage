@@ -1,0 +1,8 @@
+{
+  "entityid": "Duis ad do",
+  "state": "testaccepted",
+  "allowedall": "yes",
+  "AssertionConsumerService:0:Binding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
+  "AssertionConsumerService:0:Location": "https://acs",
+  "AssertionConsumerService:1:Binding": "urn:oasis:names:tc:SAML:2.0:bindings:URI"
+}

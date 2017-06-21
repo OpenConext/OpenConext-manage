@@ -7,7 +7,7 @@ server:
 metadata_configuration_path: classpath:/metadata_configuration
 
 security:
-  internal_user_name: eb
+  internal_user_name: openconext
   internal_password: secret
 
 spring:
