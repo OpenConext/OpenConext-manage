@@ -19,7 +19,7 @@ install:
 - cd mr-gui && yarn install && cd ..
 - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 before_script:
-- mysql -e "create database IF NOT EXISTS sr; grant all on sr.* to 'root';SET
+- mysql -e "create database IF NOT EXISTS metadata_registry; grant all on metadata_registry.* to 'root';SET
   GLOBAL TRANSACTION ISOLATION LEVEL SERIALIZABLE;" -uroot
 script:
 - mvn test

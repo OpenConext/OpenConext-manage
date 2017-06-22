@@ -37,11 +37,11 @@
     }
   },
   "patternProperties" : {
-    "^AssertionConsumerService:[0-9]+:Binding$": {
+    "^AssertionConsumerService:([0-9]{1}):Binding$": {
       "$ref": "#/definitions/AssertionConsumerServiceBinding",
       "multiplicity": 10
     },
-    "^AssertionConsumerService:[0-9]{1}:Location$": {
+    "^AssertionConsumerService:([0-9]{1}):Location$": {
       "type": "string",
       "format": "uri",
       "multiplicity": 10
