@@ -13,9 +13,7 @@ security:
 spring:
   data:
     mongodb:
-      host: localhost
-      port: 27017
-      database: metadata
+      uri: mongodb://localhost:27017/metadata
   main:
     banner-mode: "off"
 

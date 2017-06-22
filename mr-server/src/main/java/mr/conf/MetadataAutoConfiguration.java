@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
@@ -21,6 +22,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static java.util.stream.Collectors.toMap;
 
@@ -40,7 +42,18 @@ public class MetadataAutoConfiguration {
         LOG.info("Finished loading {} metadata configurations", schemas.size());
     }
 
-    public Schema schema(String type) {
+
+    public void validate(String json, String type) {
+        JSONObject jsonObject = new JSONObject(new JSONTokener(json));
+        Schema schema = schema(type);
+        schema.validate(jsonObject);
+    }
+
+    public Set<String> schemaNames() {
+        return schemas.keySet();
+    }
+
+    private Schema schema(String type) {
         return schemas.computeIfAbsent(type, key -> {
             throw new IllegalArgumentException(String.format("No schema defined for {}", key));
         });

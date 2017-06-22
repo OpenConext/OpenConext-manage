@@ -2,14 +2,11 @@ package mr.repository;
 
 import mr.model.MetaData;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.repository.Meta;
-import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class MetaDataRepository {//extends MongoRepository<MetaData, String> {
+public class MetaDataRepository {
 
     @Autowired
     private MongoTemplate mongoTemplate;
@@ -19,9 +16,12 @@ public class MetaDataRepository {//extends MongoRepository<MetaData, String> {
     }
 
     public MetaData save(MetaData metaData) {
-        //TODO save history
         mongoTemplate.insert(metaData, metaData.getType());
         return metaData;
+    }
+
+    public void update(MetaData metaDate) {
+        mongoTemplate.save(metaDate, metaDate.getType());
     }
 
     public MongoTemplate getMongoTemplate() {
