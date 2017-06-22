@@ -38,7 +38,7 @@ public class MetaData implements Serializable {
         this.revision = new Revision(0, Instant.now(), null, createdBy);
     }
 
-    public void revision(String newId) {
+    public void     revision(String newId) {
         this.type = this.type.concat(MongobeeConfiguration.REVISION_POSTFIX);
         this.revision.setParentId(this.id);
         this.id = newId;
