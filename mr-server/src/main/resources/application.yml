@@ -5,6 +5,7 @@ server:
     timeout: 28800
 
 metadata_configuration_path: classpath:/metadata_configuration
+migrate_data_from_janus: true
 
 security:
   internal_user_name: openconext
@@ -14,6 +15,15 @@ spring:
   data:
     mongodb:
       uri: mongodb://localhost:27017/metadata
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mysql://localhost/metadata_registry?autoReconnect=true&useSSL=false
+    username: root
+    password:
+    dbcp2:
+      test-while-idle: true
+      validation-query: SELECT 1
+
   main:
     banner-mode: "off"
 

@@ -1,7 +1,7 @@
 [
   {
     "id": "1",
-    "type": "service_provider",
+    "type": "saml20-sp",
     "revision": {
       "number": 0,
       "updatedBy": "saml2_user.com"
@@ -17,7 +17,7 @@
   },
   {
     "id": "2",
-    "type": "service_provider",
+    "type": "saml20-sp",
     "data": {
       "entityid": "https://profile.test2.surfconext.nl/authentication/metadata",
       "state": "prodaccepted",
@@ -61,7 +61,7 @@
   },
   {
     "id": "3",
-    "type": "service_provider",
+    "type": "saml20-sp",
     "data": {
       "entityid": "http://mock-sp",
       "state": "prodaccepted",
@@ -102,7 +102,7 @@
   },
   {
     "id": "4",
-    "type": "service_provider",
+    "type": "saml20-sp",
     "data": {
       "entityid": "https://serviceregistry.test2.surfconext.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp",
       "state": "prodaccepted",
@@ -141,7 +141,7 @@
   },
   {
     "id": "5",
-    "type": "service_provider",
+    "type": "saml20-sp",
     "data": {
       "entityid": "https://serviceregistry.test2.surfconext.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp",
       "state": "prodaccepted",

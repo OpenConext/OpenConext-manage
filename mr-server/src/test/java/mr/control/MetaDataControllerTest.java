@@ -11,8 +11,6 @@ import java.util.Map;
 import static io.restassured.RestAssured.given;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItems;
-import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -35,7 +33,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     public void post() throws Exception {
         String json = fileContent("/json/valid_service_provider.json");
         Map data = objectMapper.readValue(json, Map.class);
-        MetaData metaData = new MetaData("service_provider", data);
+        MetaData metaData = new MetaData("saml20-sp", data);
         String id = given()
             .when()
             .body(metaData)
@@ -45,7 +43,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
             .statusCode(SC_OK)
             .extract().path("id");
 
-        MetaData savedMetaData = metaDataRepository.findById(id, "service_provider");
+        MetaData savedMetaData = metaDataRepository.findById(id, "saml20-sp");
         Revision revision = savedMetaData.getRevision();
         assertEquals("saml2_user.com", revision.getUpdatedBy());
         assertEquals(0, revision.getNumber());
@@ -53,8 +51,9 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void put() throws Exception {
-        MetaData metaData = metaDataRepository.findById("1", "service_provider");
+        MetaData metaData = metaDataRepository.findById("1", "saml20-sp");
         Map.class.cast(metaData.getData()).put("entityid", "changed");
         given()
             .when()
@@ -68,7 +67,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
             .body("revision.updatedBy", equalTo("saml2_user.com"))
             .body("data.entityid", equalTo("changed"));
 
-        List<MetaData> revisions = metaDataRepository.getMongoTemplate().findAll(MetaData.class, "service_provider_revision");
+        List<MetaData> revisions = metaDataRepository.getMongoTemplate().findAll(MetaData.class, "saml20-sp_revision");
         assertEquals(1, revisions.size());
 
         Revision revision = revisions.get(0).getRevision();

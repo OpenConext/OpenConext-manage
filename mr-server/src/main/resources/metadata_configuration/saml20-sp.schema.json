@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "service_provider",
+  "title": "saml20-sp",
   "definitions": {
     "AssertionConsumerServiceBinding": {
       "type": "string",
@@ -34,20 +34,17 @@
         "no"
       ],
       "format": "boolean"
+    }
+  },
+  "patternProperties" : {
+    "^AssertionConsumerService:[0-9]+:Binding$": {
+      "$ref": "#/definitions/AssertionConsumerServiceBinding",
+      "multiplicity": 10
     },
-    "AssertionConsumerService:0:Binding": {
-      "$ref": "#/definitions/AssertionConsumerServiceBinding"
-    },
-    "AssertionConsumerService:1:Binding": {
-      "$ref": "#/definitions/AssertionConsumerServiceBinding"
-    },
-    "AssertionConsumerService:0:Location": {
+    "^AssertionConsumerService:[0-9]{1}:Location$": {
       "type": "string",
-      "format": "uri"
-    },
-    "AssertionConsumerService:1:Location": {
-      "type": "string",
-      "format": "uri"
+      "format": "uri",
+      "multiplicity": 10
     }
   },
   "required": [
