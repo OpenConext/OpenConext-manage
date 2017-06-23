@@ -10,6 +10,8 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.Instant;
 
+import static mr.mongo.MongobeeConfiguration.REVISION_POSTFIX;
+
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -37,7 +39,7 @@ public class MetaData implements Serializable {
     }
 
     public void revision(String newId) {
-        this.type = this.type.concat(MongobeeConfiguration.REVISION_POSTFIX);
+        this.type = this.type.concat(REVISION_POSTFIX);
         this.revision.setParentId(this.id);
         this.id = newId;
     }

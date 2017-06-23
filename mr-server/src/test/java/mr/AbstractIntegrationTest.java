@@ -30,6 +30,8 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.List;
 
+import static mr.mongo.MongobeeConfiguration.REVISION_POSTFIX;
+
 /**
  * Override the @WebIntegrationTest annotation if you don't want to have mock shibboleth headers (e.g. you want to
  * impersonate EB or other identity).
@@ -66,7 +68,7 @@ public abstract class AbstractIntegrationTest {
             MongoTemplate mongoTemplate = metaDataRepository.getMongoTemplate();
             metadataAutoConfiguration.schemaNames().forEach(schema -> {
                 int removed = mongoTemplate.remove(new Query(Criteria.where("type").is(schema)), schema).getN();
-                String revisionsSchema = schema.concat(MongobeeConfiguration.REVISION_POSTFIX);
+                String revisionsSchema = schema.concat(REVISION_POSTFIX);
                 int removedRevisions = mongoTemplate.remove(new Query(Criteria.where("type").is(revisionsSchema)), revisionsSchema).getN();
                 LOG.info("Removed {} records from {} and removed {} records from {}",removed, schema, removedRevisions, revisionsSchema);
             });

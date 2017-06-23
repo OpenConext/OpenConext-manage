@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static mr.mongo.MongobeeConfiguration.REVISION_POSTFIX;
+
 @RestController
 public class MetaDataController {
 
@@ -65,12 +67,17 @@ public class MetaDataController {
 
     @GetMapping("/client/revisions/{type}/{parentId}")
     public List<MetaData> revisions(@PathVariable("type") String type, @PathVariable("parentId") String parentId) {
-        return metaDataRepository.revisions(type.concat(MongobeeConfiguration.REVISION_POSTFIX), parentId);
+        return metaDataRepository.revisions(type.concat(REVISION_POSTFIX), parentId);
     }
 
     @GetMapping("/client/autocomplete/{type}")
     public List<Map> autoCompleteEntities(@PathVariable("type") String type, @RequestParam("query") String query) {
         return metaDataRepository.autoComplete(type, query);
+    }
+
+    @PostMapping("/client/search/{type}")
+    public List<Map> searchEntities(@PathVariable("type") String type, @RequestBody Map<String, Object> properties) {
+        return null;//metaDataRepository.search(type, properties);
     }
 
     private void validate(MetaData metaData) throws JsonProcessingException {

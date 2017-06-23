@@ -11,6 +11,10 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * We can't use the Spring JPA repositories as we at runtime need to decide which collection to use. We only have one
+ * Document type - e.g. MetaData - and more then one MetaData collections.
+ */
 @Repository
 public class MetaDataRepository {
 
@@ -27,8 +31,7 @@ public class MetaDataRepository {
     }
 
     public List<MetaData> revisions(String type, String parentId) {
-        Query query = new Query();
-        query.addCriteria(Criteria.where("revision.parentId").is(parentId));
+        Query query = new Query(Criteria.where("revision.parentId").is(parentId));
         return mongoTemplate.find(query, MetaData.class, type );
     }
 

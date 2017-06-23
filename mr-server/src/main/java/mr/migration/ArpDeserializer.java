@@ -34,6 +34,7 @@ public class ArpDeserializer {
 
     private Map<String, List<ArpValue>> parseEntry(Map.Entry<String, Map<Long, String>> entry) {
         Map<String, List<ArpValue>> result = new HashMap<>();
+        //TODO once we have the new SR database we can also extract the correct source
         result.put(entry.getKey(), entry.getValue().values().stream().map(value -> new ArpValue(value, "idp")).collect(toList()));
         return result;
     }
