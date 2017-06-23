@@ -5,7 +5,14 @@ node_js:
 - '7'
 services:
 - mysql
-- mongodb
+addons:
+  apt:
+    sources:
+      - mongodb-upstart
+      - mongodb-3.0-precise
+    packages:
+      - mongodb-org-server
+      - mongodb-org-shell
 cache:
   yarn: true
   directories:
