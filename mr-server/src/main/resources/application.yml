@@ -1,3 +1,7 @@
+logging:
+  level:
+    org.springframework.data.mongodb: DEBUG
+
 server:
   contextPath: /mr/api
   server-header:
@@ -5,7 +9,7 @@ server:
     timeout: 28800
 
 metadata_configuration_path: classpath:/metadata_configuration
-migrate_data_from_janus: true
+migrate_data_from_janus: false
 
 security:
   internal_user_name: openconext

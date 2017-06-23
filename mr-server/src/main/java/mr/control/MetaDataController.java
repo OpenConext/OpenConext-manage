@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import mr.conf.MetadataAutoConfiguration;
 import mr.model.MetaData;
-import mr.model.Revision;
+import mr.mongo.MongobeeConfiguration;
 import mr.repository.MetaDataRepository;
 import mr.shibboleth.FederatedUser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +15,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.Instant;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -61,8 +63,19 @@ public class MetaDataController {
         return metaData;
     }
 
+    @GetMapping("/client/revisions/{type}/{parentId}")
+    public List<MetaData> revisions(@PathVariable("type") String type, @PathVariable("parentId") String parentId) {
+        return metaDataRepository.revisions(type.concat(MongobeeConfiguration.REVISION_POSTFIX), parentId);
+    }
+
+    @GetMapping("/client/autocomplete/{type}")
+    public List<Map> autoCompleteEntities(@PathVariable("type") String type, @RequestParam("query") String query) {
+        return metaDataRepository.autoComplete(type, query);
+    }
+
     private void validate(MetaData metaData) throws JsonProcessingException {
         String json = objectMapper.writeValueAsString(metaData.getData());
         metadataAutoConfiguration.validate(json, metaData.getType());
     }
+
 }

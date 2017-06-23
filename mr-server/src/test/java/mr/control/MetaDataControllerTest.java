@@ -1,6 +1,7 @@
 package mr.control;
 
 import mr.AbstractIntegrationTest;
+import mr.migration.EntityType;
 import mr.model.MetaData;
 import mr.model.Revision;
 import org.junit.Test;
@@ -10,8 +11,7 @@ import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 import static org.apache.http.HttpStatus.SC_OK;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -21,7 +21,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     public void get() throws Exception {
         given()
             .when()
-            .get("mr/api/client/metadata/service_provider/1")
+            .get("mr/api/client/metadata/saml20-sp/1")
             .then()
             .statusCode(SC_OK)
             .body("id", equalTo("1"))
@@ -33,7 +33,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     public void post() throws Exception {
         String json = fileContent("/json/valid_service_provider.json");
         Map data = objectMapper.readValue(json, Map.class);
-        MetaData metaData = new MetaData("saml20-sp", data);
+        MetaData metaData = new MetaData(EntityType.SP.getType(), data);
         String id = given()
             .when()
             .body(metaData)
@@ -43,7 +43,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
             .statusCode(SC_OK)
             .extract().path("id");
 
-        MetaData savedMetaData = metaDataRepository.findById(id, "saml20-sp");
+        MetaData savedMetaData = metaDataRepository.findById(id, EntityType.SP.getType());
         Revision revision = savedMetaData.getRevision();
         assertEquals("saml2_user.com", revision.getUpdatedBy());
         assertEquals(0, revision.getNumber());
@@ -53,7 +53,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     @Test
     @SuppressWarnings("unchecked")
     public void put() throws Exception {
-        MetaData metaData = metaDataRepository.findById("1", "saml20-sp");
+        MetaData metaData = metaDataRepository.findById("1", EntityType.SP.getType());
         Map.class.cast(metaData.getData()).put("entityid", "changed");
         given()
             .when()
@@ -74,5 +74,31 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         assertEquals("saml2_user.com", revision.getUpdatedBy());
         assertEquals(0, revision.getNumber());
         assertEquals("1", revision.getParentId());
+
+        given()
+            .when()
+            .get("mr/api/client/revisions/saml20-sp/1")
+            .then()
+            .statusCode(SC_OK)
+            .body("size()", is(1))
+            .body("[0].id", notNullValue())
+            .body("[0].revision.number", equalTo(0))
+            .body("[0].data.entityid", equalTo("Duis ad do"));
+    }
+
+    @Test
+    public void autoComplete() throws Exception {
+        given()
+            .when()
+            .queryParam("query", "mock")
+            .get("mr/api/client/autocomplete/saml20-sp")
+            .then()
+            .statusCode(SC_OK)
+            .body("size()", is(3))
+            .body("'.id'", hasItems("2", "3", "5"))
+            .body("data.entityid", hasItems(
+                "https://profile.test2.surfconext.nl/authentication/metadata",
+                "http://mock-sp",
+                "https://serviceregistry.test2.surfconext.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp"));
     }
 }

@@ -1,13 +1,10 @@
 package mr.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import mr.mongo.MongobeeConfiguration;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.CompoundIndex;
-import org.springframework.data.mongodb.core.index.CompoundIndexes;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -15,6 +12,7 @@ import java.time.Instant;
 
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class MetaData implements Serializable {
 
     @Id
@@ -38,7 +36,7 @@ public class MetaData implements Serializable {
         this.revision = new Revision(0, Instant.now(), null, createdBy);
     }
 
-    public void     revision(String newId) {
+    public void revision(String newId) {
         this.type = this.type.concat(MongobeeConfiguration.REVISION_POSTFIX);
         this.revision.setParentId(this.id);
         this.id = newId;

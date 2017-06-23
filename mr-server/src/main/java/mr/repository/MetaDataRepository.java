@@ -3,7 +3,13 @@ package mr.repository;
 import mr.model.MetaData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.TextCriteria;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Map;
 
 @Repository
 public class MetaDataRepository {
@@ -20,11 +26,29 @@ public class MetaDataRepository {
         return metaData;
     }
 
+    public List<MetaData> revisions(String type, String parentId) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("revision.parentId").is(parentId));
+        return mongoTemplate.find(query, MetaData.class, type );
+    }
+
     public void update(MetaData metaDate) {
         mongoTemplate.save(metaDate, metaDate.getType());
     }
 
     public MongoTemplate getMongoTemplate() {
         return mongoTemplate;
+    }
+
+    public List<Map> autoComplete(String type, String search) {
+        //When we have multiple types then we need to delegate depending on the type.
+        Query query = new Query();
+        query
+            .addCriteria(new TextCriteria().matching(search))
+            .fields()
+            .include("data.entityid")
+            .include("data.name:en")
+            .include("data.name:nl");
+        return mongoTemplate.find(query, Map.class, type);
     }
 }

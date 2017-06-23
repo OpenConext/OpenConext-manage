@@ -1,59 +1,106 @@
 package mr.migration;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mongodb.WriteResult;
+import mr.conf.MetadataAutoConfiguration;
 import mr.model.MetaData;
+import mr.model.Revision;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.ApplicationListener;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+
+import static mr.mongo.MongobeeConfiguration.REVISION_POSTFIX;
 
 @Component
-public class JanusMigration {
+public class JanusMigration implements ApplicationListener<ApplicationReadyEvent> {
+
+    private static final Logger LOG = LoggerFactory.getLogger(JanusMigration.class);
 
     private JdbcTemplate jdbcTemplate;
     private MongoTemplate mongoTemplate;
     private ArpDeserializer arpDeserializer = new ArpDeserializer();
+    private MetadataAutoConfiguration metadataAutoConfiguration;
+    private boolean migrate;
+    private Map<String, Long> stats;
+
 
     @Autowired
-    public JanusMigration(@Value("${migrate_data_from_janus}") boolean migrate, DataSource dataSource, MongoTemplate mongoTemplate) {
+    public JanusMigration(@Value("${migrate_data_from_janus}") boolean migrate, DataSource dataSource, MongoTemplate mongoTemplate, MetadataAutoConfiguration metadataAutoConfiguration) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
         this.mongoTemplate = mongoTemplate;
-        if (migrate && false) {
-            migrate();
+        this.metadataAutoConfiguration = metadataAutoConfiguration;
+        this.migrate = migrate;
+    }
+
+    @Override
+    public void onApplicationEvent(ApplicationReadyEvent event) {
+        if (migrate) {
+            long start =System.currentTimeMillis();
+            stats = new HashMap<>();
+            emptyExistingCollections();
+            saveEntities(EntityType.SP);
+            try {
+                LOG.info("Finished migration in {} ms and results {}", System.currentTimeMillis() - start, new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(this.stats));
+            } catch (JsonProcessingException e) {
+                throw new IllegalArgumentException(e);
+            }
         }
     }
 
-    private void migrate() {
 
+    private void emptyExistingCollections() {
+        Set<String> schemaNames = this.metadataAutoConfiguration.schemaNames();
+        schemaNames.forEach(schema -> {
+            WriteResult writeResult = mongoTemplate.remove(new Query(), schema);
+            LOG.info("Deleted {} records from {}", writeResult.getN(), schema);
+
+            String revisionSchema = schema.concat(REVISION_POSTFIX);
+            writeResult = mongoTemplate.remove(new Query(), revisionSchema);
+            LOG.info("Deleted {} records from {}", writeResult.getN(), revisionSchema);
+        });
     }
 
-    public void saveEntities(EntityType entityType) {
+    private void saveEntities(EntityType entityType) {
         jdbcTemplate.query("SELECT CONNECTION.id, CONNECTION.revisionNr " +
                 "FROM janus__connection AS CONNECTION " +
                 "INNER JOIN janus__connectionRevision AS CONNECTION_REVISION ON CONNECTION_REVISION.eid = CONNECTION.id " +
                 "AND CONNECTION_REVISION.revisionid = CONNECTION.revisionNr WHERE " +
                 "CONNECTION.type=?",
             new String[]{entityType.getType()},
-            (rs, rowNum) -> saveEntity(rs.getLong("id"), rs.getLong("revisionNr"), entityType)
-        );
+            rs -> {
+                saveEntity(rs.getLong("id"), rs.getLong("revisionNr"), entityType.getType(), true, null);
+            });
 
     }
 
-    private long saveEntity(Long eid, Long revisionid, EntityType entityType) {
-        jdbcTemplate.queryForObject("SELECT id, eid, entityid, revisionid, state, allowedall, metadataurl" +
-                "allowedall, manipulation, created, arp_attributes FROM janus__connectionRevision " +
+    private void saveEntity(Long eid, Long revisionid, String type, boolean isPrimary, String parentId) {
+        jdbcTemplate.query("SELECT id, eid, entityid, revisionid, state, metadataurl, allowedall, " +
+                "manipulation, user, created, ip, revisionnote, active, arp_attributes, notes FROM janus__connectionRevision " +
                 "WHERE  eid = ? AND revisionid = ?",
             new Long[]{eid, revisionid},
-            (rs, rowNum) -> {
+            rs -> {
                 Map<String, Object> entity = new LinkedHashMap<>();
                 entity.put("id", rs.getLong("id"));
-                entity.put("eid", rs.getLong("id"));
+                entity.put("eid", rs.getLong("eid"));
                 entity.put("entityid", rs.getString("entityid"));
                 entity.put("revisionid", rs.getLong("revisionid"));
                 entity.put("state", rs.getString("state"));
@@ -64,16 +111,32 @@ public class JanusMigration {
                 entity.put("created", rs.getString("created"));
                 entity.put("ip", rs.getString("ip"));
                 entity.put("revisionnote", rs.getString("revisionnote"));
-                entity.put("ip", rs.getString("ip"));
                 entity.put("active", rs.getString("active").equals("yes") ? true : false);
                 entity.put("arp", arpDeserializer.parseArpAttributes(rs.getString("arp_attributes")));
                 entity.put("notes", rs.getString("notes"));
                 addMetaData(entity, eid, revisionid);
                 addAllowedEntities(entity, eid, revisionid);
-               // addConsentDisabled(entity, eid, revisionid);
-                return new MetaData();
+                addConsentDisabled(entity, eid, revisionid);
+                Instant instant = Instant.from(DateTimeFormatter.ISO_OFFSET_DATE_TIME.parse((String) entity.get("created")));
+                String id = UUID.randomUUID().toString();
+                MetaData metaData = new MetaData(id, type, new Revision(revisionid.intValue(), instant, parentId, (String) entity.get("user")), entity);
+                mongoTemplate.insert(metaData, type);
+                String key = String.format("%s-%s", entity.get("entityid"), eid);
+                Long revisionCount = this.stats.get(key);
+                if (revisionCount == null) {
+                    this.stats.put(key, 0L);
+                } else {
+                    this.stats.put(key, revisionCount + 1);
+                }
+                //now save all revisions
+                if (isPrimary) {
+                    jdbcTemplate.query("SELECT eid, revisionid from janus__connectionRevision WHERE  eid = ? AND revisionid <> ?",
+                        new Long[]{eid, revisionid},
+                        rs2 -> {
+                            saveEntity(rs.getLong("eid"), rs.getLong("revisionid"), type.concat(REVISION_POSTFIX), false, id);
+                        });
+                }
             });
-        return 1L;
     }
 
     private void addMetaData(Map<String, Object> entity, Long eid, Long revisionid) {
@@ -97,6 +160,18 @@ public class JanusMigration {
             String.class
         );
         entity.put("allowedEntities", allowedEntities);
+    }
+
+    private void addConsentDisabled(Map<String, Object> entity, Long eid, Long revisionid) {
+        List<String> disableConsent = jdbcTemplate.queryForList("SELECT ALLOWED_CONNECTION.name AS entityid " +
+                "FROM janus__connectionRevision AS CONNECTION_REVISION " +
+                "INNER JOIN janus__disableConsent disableConsent ON disableConsent.connectionRevisionId = CONNECTION_REVISION.id " +
+                "INNER JOIN janus__connection AS ALLOWED_CONNECTION ON ALLOWED_CONNECTION.id = disableConsent.remoteeid " +
+                "WHERE CONNECTION_REVISION.eid = ? AND CONNECTION_REVISION.revisionid = ?",
+            new Long[]{eid, revisionid},
+            String.class
+        );
+        entity.put("disableConsent", disableConsent);
     }
 
     private void parseMetaData(Map<String, Object> entity, String key, String value) {

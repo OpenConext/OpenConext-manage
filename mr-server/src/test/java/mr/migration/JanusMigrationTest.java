@@ -1,13 +1,24 @@
 package mr.migration;
 
-import com.github.ooxi.phparser.SerializedPhpParser;
+import mr.AbstractIntegrationTest;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
-public class JanusMigrationTest {
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+    properties = {"migrate_data_from_janus=true"})
+@Ignore
+public class JanusMigrationTest extends AbstractIntegrationTest {
 
     @Test
     public void migrate() throws Exception {
-        //read sql into database and perform actual migration and test the output
     }
+
+    @Override
+    protected boolean insertSeedData() {
+        return false;
+    }
+
 
 }

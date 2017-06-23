@@ -36,7 +36,7 @@
       "format": "boolean"
     }
   },
-  "patternProperties" : {
+  "patternProperties": {
     "^AssertionConsumerService:([0-9]{1}):Binding$": {
       "$ref": "#/definitions/AssertionConsumerServiceBinding",
       "multiplicity": 10
@@ -54,5 +54,18 @@
     "AssertionConsumerService:0:Binding",
     "AssertionConsumerService:0:Location"
   ],
-  "additionalProperties": false
+  "additionalProperties": false,
+  "indexes": [
+    {
+      "name": "autocomplete_text_query",
+      "type": "text",
+      "fields": [
+        "entityid",
+        "name:en",
+        "name:nl",
+        "description:en",
+        "description:nl"
+      ]
+    }
+  ]
 }
