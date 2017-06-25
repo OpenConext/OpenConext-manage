@@ -1,7 +1,9 @@
 package mr.conf;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import mr.migration.EntityType;
 import org.apache.commons.io.IOUtils;
+import org.everit.json.schema.ValidationException;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 
@@ -11,6 +13,7 @@ import java.util.List;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class MetadataAutoConfigurationTest {
 
@@ -23,6 +26,19 @@ public class MetadataAutoConfigurationTest {
     public void testSchema() throws Exception {
         String json = readFile("json/valid_service_provider.json");
         subject.validate(json, EntityType.SP.getType());
+    }
+
+
+    @Test
+    public void testSchemaInvalid() throws Exception {
+        String json = readFile("json/invalid_service_provider.json");
+        try {
+            subject.validate(json, EntityType.SP.getType());
+            fail();
+        } catch (ValidationException e) {
+            assertEquals(26, e.toJSON().getJSONArray("causingExceptions").toList().size());
+        }
+
     }
 
     @Test

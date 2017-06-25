@@ -1,0 +1,428 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "definitions": {},
+    "id": "http://example.com/example.json",
+    "properties": {
+        "_class": {
+            "id": "/properties/_class",
+            "type": "string"
+        },
+        "_id": {
+            "id": "/properties/_id",
+            "type": "string"
+        },
+        "data": {
+            "id": "/properties/data",
+            "properties": {
+                "AssertionConsumerService:0:Binding": {
+                    "id": "/properties/data/properties/AssertionConsumerService:0:Binding",
+                    "type": "string"
+                },
+                "AssertionConsumerService:0:Location": {
+                    "id": "/properties/data/properties/AssertionConsumerService:0:Location",
+                    "type": "string"
+                },
+                "AssertionConsumerService:0:index": {
+                    "id": "/properties/data/properties/AssertionConsumerService:0:index",
+                    "type": "string"
+                },
+                "AssertionConsumerService:1:Binding": {
+                    "id": "/properties/data/properties/AssertionConsumerService:1:Binding",
+                    "type": "string"
+                },
+                "AssertionConsumerService:1:Location": {
+                    "id": "/properties/data/properties/AssertionConsumerService:1:Location",
+                    "type": "string"
+                },
+                "AssertionConsumerService:1:index": {
+                    "id": "/properties/data/properties/AssertionConsumerService:1:index",
+                    "type": "string"
+                },
+                "AssertionConsumerService:2:Binding": {
+                    "id": "/properties/data/properties/AssertionConsumerService:2:Binding",
+                    "type": "string"
+                },
+                "AssertionConsumerService:2:Location": {
+                    "id": "/properties/data/properties/AssertionConsumerService:2:Location",
+                    "type": "string"
+                },
+                "AssertionConsumerService:2:index": {
+                    "id": "/properties/data/properties/AssertionConsumerService:2:index",
+                    "type": "string"
+                },
+                "NameIDFormat": {
+                    "id": "/properties/data/properties/NameIDFormat",
+                    "type": "string"
+                },
+                "NameIDFormats:0": {
+                    "id": "/properties/data/properties/NameIDFormats:0",
+                    "type": "string"
+                },
+                "NameIDFormats:1": {
+                    "id": "/properties/data/properties/NameIDFormats:1",
+                    "type": "string"
+                },
+                "NameIDFormats:2": {
+                    "id": "/properties/data/properties/NameIDFormats:2",
+                    "type": "string"
+                },
+                "OrganizationDisplayName:en": {
+                    "id": "/properties/data/properties/OrganizationDisplayName:en",
+                    "type": "string"
+                },
+                "OrganizationDisplayName:nl": {
+                    "id": "/properties/data/properties/OrganizationDisplayName:nl",
+                    "type": "string"
+                },
+                "OrganizationName:en": {
+                    "id": "/properties/data/properties/OrganizationName:en",
+                    "type": "string"
+                },
+                "OrganizationName:nl": {
+                    "id": "/properties/data/properties/OrganizationName:nl",
+                    "type": "string"
+                },
+                "OrganizationURL:en": {
+                    "id": "/properties/data/properties/OrganizationURL:en",
+                    "type": "string"
+                },
+                "OrganizationURL:nl": {
+                    "id": "/properties/data/properties/OrganizationURL:nl",
+                    "type": "string"
+                },
+                "active": {
+                    "id": "/properties/data/properties/active",
+                    "type": "boolean"
+                },
+                "allowedEntities": {
+                    "id": "/properties/data/properties/allowedEntities",
+                    "items": {},
+                    "type": "array"
+                },
+                "allowedall": {
+                    "id": "/properties/data/properties/allowedall",
+                    "type": "boolean"
+                },
+                "arp": {
+                    "id": "/properties/data/properties/arp",
+                    "properties": {
+                        "_class": {
+                            "id": "/properties/data/properties/arp/properties/_class",
+                            "type": "string"
+                        },
+                        "attributes": {
+                            "id": "/properties/data/properties/arp/properties/attributes",
+                            "properties": {
+                                "urn:mace:dir:attribute-def:displayName": {
+                                    "id": "/properties/data/properties/arp/properties/attributes/properties/urn:mace:dir:attribute-def:displayName",
+                                    "items": {
+                                        "id": "/properties/data/properties/arp/properties/attributes/properties/urn:mace:dir:attribute-def:displayName/items",
+                                        "properties": {
+                                            "source": {
+                                                "id": "/properties/data/properties/arp/properties/attributes/properties/urn:mace:dir:attribute-def:displayName/items/properties/source",
+                                                "type": "string"
+                                            },
+                                            "value": {
+                                                "id": "/properties/data/properties/arp/properties/attributes/properties/urn:mace:dir:attribute-def:displayName/items/properties/value",
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object"
+                                    },
+                                    "type": "array"
+                                },
+                                "urn:mace:dir:attribute-def:isMemberOf": {
+                                    "id": "/properties/data/properties/arp/properties/attributes/properties/urn:mace:dir:attribute-def:isMemberOf",
+                                    "items": {
+                                        "id": "/properties/data/properties/arp/properties/attributes/properties/urn:mace:dir:attribute-def:isMemberOf/items",
+                                        "properties": {
+                                            "source": {
+                                                "id": "/properties/data/properties/arp/properties/attributes/properties/urn:mace:dir:attribute-def:isMemberOf/items/properties/source",
+                                                "type": "string"
+                                            },
+                                            "value": {
+                                                "id": "/properties/data/properties/arp/properties/attributes/properties/urn:mace:dir:attribute-def:isMemberOf/items/properties/value",
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object"
+                                    },
+                                    "type": "array"
+                                },
+                                "urn:mace:dir:attribute-def:mail": {
+                                    "id": "/properties/data/properties/arp/properties/attributes/properties/urn:mace:dir:attribute-def:mail",
+                                    "items": {
+                                        "id": "/properties/data/properties/arp/properties/attributes/properties/urn:mace:dir:attribute-def:mail/items",
+                                        "properties": {
+                                            "source": {
+                                                "id": "/properties/data/properties/arp/properties/attributes/properties/urn:mace:dir:attribute-def:mail/items/properties/source",
+                                                "type": "string"
+                                            },
+                                            "value": {
+                                                "id": "/properties/data/properties/arp/properties/attributes/properties/urn:mace:dir:attribute-def:mail/items/properties/value",
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object"
+                                    },
+                                    "type": "array"
+                                },
+                                "urn:mace:dir:attribute-def:uid": {
+                                    "id": "/properties/data/properties/arp/properties/attributes/properties/urn:mace:dir:attribute-def:uid",
+                                    "items": {
+                                        "id": "/properties/data/properties/arp/properties/attributes/properties/urn:mace:dir:attribute-def:uid/items",
+                                        "properties": {
+                                            "source": {
+                                                "id": "/properties/data/properties/arp/properties/attributes/properties/urn:mace:dir:attribute-def:uid/items/properties/source",
+                                                "type": "string"
+                                            },
+                                            "value": {
+                                                "id": "/properties/data/properties/arp/properties/attributes/properties/urn:mace:dir:attribute-def:uid/items/properties/value",
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object"
+                                    },
+                                    "type": "array"
+                                },
+                                "urn:mace:terena_org:attribute-def:schacHomeOrganization": {
+                                    "id": "/properties/data/properties/arp/properties/attributes/properties/urn:mace:terena_org:attribute-def:schacHomeOrganization",
+                                    "items": {
+                                        "id": "/properties/data/properties/arp/properties/attributes/properties/urn:mace:terena_org:attribute-def:schacHomeOrganization/items",
+                                        "properties": {
+                                            "source": {
+                                                "id": "/properties/data/properties/arp/properties/attributes/properties/urn:mace:terena_org:attribute-def:schacHomeOrganization/items/properties/source",
+                                                "type": "string"
+                                            },
+                                            "value": {
+                                                "id": "/properties/data/properties/arp/properties/attributes/properties/urn:mace:terena_org:attribute-def:schacHomeOrganization/items/properties/value",
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object"
+                                    },
+                                    "type": "array"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "enabled": {
+                            "id": "/properties/data/properties/arp/properties/enabled",
+                            "type": "boolean"
+                        }
+                    },
+                    "type": "object"
+                },
+                "coin:application_url": {
+                    "id": "/properties/data/properties/coin:application_url",
+                    "type": "string"
+                },
+                "coin:eula": {
+                    "id": "/properties/data/properties/coin:eula",
+                    "type": "string"
+                },
+                "coin:gadgetbaseurl": {
+                    "id": "/properties/data/properties/coin:gadgetbaseurl",
+                    "type": "string"
+                },
+                "coin:institution_guid": {
+                    "id": "/properties/data/properties/coin:institution_guid",
+                    "type": "string"
+                },
+                "coin:institution_id": {
+                    "id": "/properties/data/properties/coin:institution_id",
+                    "type": "string"
+                },
+                "coin:no_consent_required": {
+                    "id": "/properties/data/properties/coin:no_consent_required",
+                    "type": "string"
+                },
+                "coin:oauth:secret": {
+                    "id": "/properties/data/properties/coin:oauth:secret",
+                    "type": "string"
+                },
+                "coin:oauth:two_legged_allowed": {
+                    "id": "/properties/data/properties/coin:oauth:two_legged_allowed",
+                    "type": "string"
+                },
+                "coin:ss:idp_visible_only": {
+                    "id": "/properties/data/properties/coin:ss:idp_visible_only",
+                    "type": "string"
+                },
+                "contacts:0:contactType": {
+                    "id": "/properties/data/properties/contacts:0:contactType",
+                    "type": "string"
+                },
+                "contacts:0:emailAddress": {
+                    "id": "/properties/data/properties/contacts:0:emailAddress",
+                    "type": "string"
+                },
+                "contacts:0:givenName": {
+                    "id": "/properties/data/properties/contacts:0:givenName",
+                    "type": "string"
+                },
+                "contacts:0:surName": {
+                    "id": "/properties/data/properties/contacts:0:surName",
+                    "type": "string"
+                },
+                "contacts:1:contactType": {
+                    "id": "/properties/data/properties/contacts:1:contactType",
+                    "type": "string"
+                },
+                "contacts:1:emailAddress": {
+                    "id": "/properties/data/properties/contacts:1:emailAddress",
+                    "type": "string"
+                },
+                "contacts:1:givenName": {
+                    "id": "/properties/data/properties/contacts:1:givenName",
+                    "type": "string"
+                },
+                "contacts:1:surName": {
+                    "id": "/properties/data/properties/contacts:1:surName",
+                    "type": "string"
+                },
+                "contacts:2:contactType": {
+                    "id": "/properties/data/properties/contacts:2:contactType",
+                    "type": "string"
+                },
+                "contacts:2:emailAddress": {
+                    "id": "/properties/data/properties/contacts:2:emailAddress",
+                    "type": "string"
+                },
+                "contacts:2:givenName": {
+                    "id": "/properties/data/properties/contacts:2:givenName",
+                    "type": "string"
+                },
+                "contacts:2:surName": {
+                    "id": "/properties/data/properties/contacts:2:surName",
+                    "type": "string"
+                },
+                "contacts:3:contactType": {
+                    "id": "/properties/data/properties/contacts:3:contactType",
+                    "type": "string"
+                },
+                "created": {
+                    "id": "/properties/data/properties/created",
+                    "type": "string"
+                },
+                "description:en": {
+                    "id": "/properties/data/properties/description:en",
+                    "type": "string"
+                },
+                "description:nl": {
+                    "id": "/properties/data/properties/description:nl",
+                    "type": "string"
+                },
+                "disableConsent": {
+                    "id": "/properties/data/properties/disableConsent",
+                    "items": {},
+                    "type": "array"
+                },
+                "displayName:en": {
+                    "id": "/properties/data/properties/displayName:en",
+                    "type": "string"
+                },
+                "displayName:nl": {
+                    "id": "/properties/data/properties/displayName:nl",
+                    "type": "string"
+                },
+                "eid": {
+                    "id": "/properties/data/properties/eid",
+                    "type": "integer"
+                },
+                "entityid": {
+                    "id": "/properties/data/properties/entityid",
+                    "type": "string"
+                },
+                "id": {
+                    "id": "/properties/data/properties/id",
+                    "type": "integer"
+                },
+                "ip": {
+                    "id": "/properties/data/properties/ip",
+                    "type": "string"
+                },
+                "logo:0:height": {
+                    "id": "/properties/data/properties/logo:0:height",
+                    "type": "string"
+                },
+                "logo:0:url": {
+                    "id": "/properties/data/properties/logo:0:url",
+                    "type": "string"
+                },
+                "logo:0:width": {
+                    "id": "/properties/data/properties/logo:0:width",
+                    "type": "string"
+                },
+                "manipulation": {
+                    "id": "/properties/data/properties/manipulation",
+                    "type": "string"
+                },
+                "metadataurl": {
+                    "id": "/properties/data/properties/metadataurl",
+                    "type": "string"
+                },
+                "name:en": {
+                    "id": "/properties/data/properties/name:en",
+                    "type": "string"
+                },
+                "name:nl": {
+                    "id": "/properties/data/properties/name:nl",
+                    "type": "string"
+                },
+                "notes": {
+                    "id": "/properties/data/properties/notes",
+                    "type": "null"
+                },
+                "revisionid": {
+                    "id": "/properties/data/properties/revisionid",
+                    "type": "integer"
+                },
+                "revisionnote": {
+                    "id": "/properties/data/properties/revisionnote",
+                    "type": "string"
+                },
+                "state": {
+                    "id": "/properties/data/properties/state",
+                    "type": "string"
+                },
+                "url:en": {
+                    "id": "/properties/data/properties/url:en",
+                    "type": "string"
+                },
+                "url:nl": {
+                    "id": "/properties/data/properties/url:nl",
+                    "type": "string"
+                },
+                "user": {
+                    "id": "/properties/data/properties/user",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "revision": {
+            "id": "/properties/revision",
+            "properties": {
+                "created": {
+                    "id": "/properties/revision/properties/created",
+                    "type": "string"
+                },
+                "number": {
+                    "id": "/properties/revision/properties/number",
+                    "type": "integer"
+                },
+                "updatedBy": {
+                    "id": "/properties/revision/properties/updatedBy",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "type": {
+            "id": "/properties/type",
+            "type": "string"
+        }
+    },
+    "type": "object"
+}
