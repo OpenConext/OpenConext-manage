@@ -1,6 +1,6 @@
 # OpenConext-metadata-registry
-[![Build Status](https://travis-ci.org/OpenConext/OpenConext-metadata-repository.svg)](https://travis-ci.org/OpenConext/OpenConext-metadata-repository)
-[![codecov.io](https://codecov.io/github/OpenConext/OpenConext-metadata-repository/coverage.svg)](https://codecov.io/github/OpenConext/OpenConext-metadata-repository)
+[![Build Status](https://travis-ci.org/OpenConext/OpenConext-metadata-registry.svg)](https://travis-ci.org/OpenConext/OpenConext-metadata-registry)
+[![codecov.io](https://codecov.io/github/OpenConext/OpenConext-metadata-registry/coverage.svg)](https://codecov.io/github/OpenConext/OpenConext-metadata-registry)
 
 Stores and publishes metadata of all entities known to OpenConext
 

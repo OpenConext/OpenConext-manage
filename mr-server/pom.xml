@@ -5,12 +5,12 @@
 
     <parent>
         <groupId>org.openconext</groupId>
-        <artifactId>metadata-repository</artifactId>
+        <artifactId>metadata-registry</artifactId>
         <version>1.0.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>metadata-repository-server</artifactId>
+    <artifactId>metadata-registry-server</artifactId>
     <packaging>jar</packaging>
 
     <name>mr-server</name>

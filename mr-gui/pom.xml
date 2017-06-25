@@ -4,12 +4,12 @@
 
     <parent>
         <groupId>org.openconext</groupId>
-        <artifactId>metadata-repository</artifactId>
+        <artifactId>metadata-registry</artifactId>
         <version>1.0.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>metadata-repository-gui</artifactId>
+    <artifactId>metadata-registry-gui</artifactId>
     <packaging>pom</packaging>
 
     <name>mr-gui</name>
