@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "saml20-sp",
+  "title": "saml20-idp",
   "definitions": {
     "AssertionConsumerServiceBinding": {
       "type": "string",
@@ -58,19 +58,35 @@
       ],
       "format": "boolean"
     },
+    "NameIDFormat": {
+      "$ref": "#/definitions/NameIDFormat"
+    },
+    "OrganizationDisplayName:en": {
+      "type": "string"
+    },
+    "OrganizationDisplayName:nl": {
+      "type": "string"
+    },
+    "OrganizationName:en": {
+      "type": "string"
+    },
+    "OrganizationName:nl": {
+      "type": "string"
+    },
+    "OrganizationURL:en": {
+      "type": "string",
+      "format": "uri"
+    },
+    "OrganizationURL:nl": {
+      "type": "string",
+      "format": "uri"
+    },
     "active": {
       "type": "boolean"
     },
     "allowedEntities": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string"
-          }
-        }
-      }
+      "items": {},
+      "type": "array"
     },
     "arp": {
       "type": "object",
@@ -165,78 +181,53 @@
           }
         }
       }
+    }
+  },
+  "patternProperties": {
+    "^AssertionConsumerService:([0-9]{1}):Binding$": {
+      "$ref": "#/definitions/AssertionConsumerServiceBinding",
+      "multiplicity": 10
     },
-    "metaDataFields" : {
-      "type": "object",
-      "properties": {
-        "NameIDFormat": {
-          "$ref": "#/definitions/NameIDFormat"
-        }
-      },
-      "patternProperties": {
-        "^AssertionConsumerService:([0-9]{1}):Binding$": {
-          "$ref": "#/definitions/AssertionConsumerServiceBinding",
-          "multiplicity": 10
-        },
-        "^AssertionConsumerService:([0-9]{1}):Location$": {
-          "type": "string",
-          "format": "uri",
-          "multiplicity": 10
-        },
-        "^AssertionConsumerService:([0-9]{1}):index$": {
-          "type": "string",
-          "format": "number"
-        },
-        "^NameIDFormats:([0-2]{1})$": {
-          "$ref": "#/definitions/NameIDFormat"
-        },
-        "^contacts:([0-3]{1}):surName$": {
-          "type": "string"
-        },
-        "^contacts:([0-3]{1}):givenName$": {
-          "type": "string"
-        },
-        "^contacts:([0-3]{1}):emailAddress$": {
-          "type": "string",
-          "format" : "email"
-        },
-        "^contacts:([0-3]{1}):telephoneNumber": {
-          "type": "string",
-          "format" : "email"
-        },
-        "^contacts:([0-3]{1}):contactType$": {
-          "type": "string",
-          "enum" : [
-            "technical",
-            "support",
-            "administrative",
-            "billing",
-            "other"
-          ]
-        },
-        "^OrganizationDisplayName:(en|nl)$": {
-          "type": "string"
-        },
-        "^OrganizationURL:(en|nl)$": {
-          "type": "string",
-          "format": "uri"
-        },
-        "^OrganizationName:(en|nl)$": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "AssertionConsumerService:0:Binding",
-        "AssertionConsumerService:0:Location",
-        "NameIDFormat"
-      ],
-      "additionalProperties": false
+    "^AssertionConsumerService:([0-9]{1}):Location$": {
+      "type": "string",
+      "format": "uri",
+      "multiplicity": 10
+    },
+    "^AssertionConsumerService:([0-9]{1}):index$": {
+      "type": "string",
+      "format": "number"
+    },
+    "^NameIDFormats:([0-2]{1})$": {
+      "$ref": "#/definitions/NameIDFormat"
+    },
+    "^contacts:([0-3]{1}):surName$": {
+      "type": "string"
+    },
+    "^contacts:([0-3]{1}):givenName$": {
+      "type": "string"
+    },
+    "^contacts:([0-3]{1}):emailAddress$": {
+      "type": "string",
+      "format" : "email"
+    },
+    "^contacts:([0-3]{1}):contactType$": {
+      "type": "string",
+      "enum" : [
+        "technical",
+        "support",
+        "administrative",
+        "billing",
+        "other"
+      ]
     }
   },
   "required": [
     "entityid",
     "state",
-    "allowedall"
+    "allowedall",
+    "AssertionConsumerService:0:Binding",
+    "AssertionConsumerService:0:Location",
+    "NameIDFormat"
   ],
   "additionalProperties": false,
   "indexes": [
@@ -245,10 +236,10 @@
       "type": "text",
       "fields": [
         "entityid",
-        "metaDataFields.name:en",
-        "metaDataFields.name:nl",
-        "metaDataFields.description:en",
-        "metaDataFields.description:nl"
+        "name:en",
+        "name:nl",
+        "description:en",
+        "description:nl"
       ]
     }
   ]

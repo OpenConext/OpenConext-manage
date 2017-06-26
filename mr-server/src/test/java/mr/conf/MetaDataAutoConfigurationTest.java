@@ -1,6 +1,5 @@
 package mr.conf;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import mr.migration.EntityType;
 import org.apache.commons.io.IOUtils;
 import org.everit.json.schema.ValidationException;
@@ -15,11 +14,11 @@ import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-public class MetadataAutoConfigurationTest {
+public class MetaDataAutoConfigurationTest {
 
-    private MetadataAutoConfiguration subject = new MetadataAutoConfiguration(new ClassPathResource("metadata_configuration"));
+    private MetaDataAutoConfiguration subject = new MetaDataAutoConfiguration(new ClassPathResource("metadata_configuration"));
 
-    public MetadataAutoConfigurationTest() throws IOException {
+    public MetaDataAutoConfigurationTest() throws IOException {
     }
 
     @Test
@@ -36,7 +35,7 @@ public class MetadataAutoConfigurationTest {
             subject.validate(json, EntityType.SP.getType());
             fail();
         } catch (ValidationException e) {
-            assertEquals(26, e.toJSON().getJSONArray("causingExceptions").toList().size());
+            assertEquals(13, e.toJSON().getJSONArray("causingExceptions").toList().size());
         }
 
     }

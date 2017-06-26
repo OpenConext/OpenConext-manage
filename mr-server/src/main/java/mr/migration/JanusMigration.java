@@ -3,7 +3,7 @@ package mr.migration;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.WriteResult;
-import mr.conf.MetadataAutoConfiguration;
+import mr.conf.MetaDataAutoConfiguration;
 import mr.model.MetaData;
 import mr.model.Revision;
 import org.slf4j.Logger;
@@ -21,6 +21,7 @@ import org.springframework.util.StringUtils;
 import javax.sql.DataSource;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -28,6 +29,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import static java.util.stream.Collectors.toList;
 import static mr.mongo.MongobeeConfiguration.REVISION_POSTFIX;
 
 @Component
@@ -38,14 +40,14 @@ public class JanusMigration implements ApplicationListener<ApplicationReadyEvent
     private JdbcTemplate jdbcTemplate;
     private MongoTemplate mongoTemplate;
     private ArpDeserializer arpDeserializer = new ArpDeserializer();
-    private MetadataAutoConfiguration metadataAutoConfiguration;
+    private MetaDataAutoConfiguration metaDataAutoConfiguration;
     private boolean migrate;
 
     @Autowired
-    public JanusMigration(@Value("${migrate_data_from_janus}") boolean migrate, DataSource dataSource, MongoTemplate mongoTemplate, MetadataAutoConfiguration metadataAutoConfiguration) {
+    public JanusMigration(@Value("${migrate_data_from_janus}") boolean migrate, DataSource dataSource, MongoTemplate mongoTemplate, MetaDataAutoConfiguration metaDataAutoConfiguration) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
         this.mongoTemplate = mongoTemplate;
-        this.metadataAutoConfiguration = metadataAutoConfiguration;
+        this.metaDataAutoConfiguration = metaDataAutoConfiguration;
         this.migrate = migrate;
     }
 
@@ -70,7 +72,7 @@ public class JanusMigration implements ApplicationListener<ApplicationReadyEvent
     }
 
     private void emptyExistingCollections() {
-        Set<String> schemaNames = this.metadataAutoConfiguration.schemaNames();
+        Set<String> schemaNames = this.metaDataAutoConfiguration.schemaNames();
         schemaNames.forEach(schema -> {
             WriteResult writeResult = mongoTemplate.remove(new Query(), schema);
             LOG.info("Deleted {} records from {}", writeResult.getN(), schema);
@@ -161,7 +163,7 @@ public class JanusMigration implements ApplicationListener<ApplicationReadyEvent
             new Long[]{eid, revisionid},
             String.class
         );
-        entity.put("allowedEntities", allowedEntities);
+        entity.put("allowedEntities", stringToNameMap(allowedEntities));
     }
 
     private void addConsentDisabled(Map<String, Object> entity, Long eid, Long revisionid) {
@@ -173,13 +175,19 @@ public class JanusMigration implements ApplicationListener<ApplicationReadyEvent
             new Long[]{eid, revisionid},
             String.class
         );
-        entity.put("disableConsent", disableConsent);
+        entity.put("disableConsent", stringToNameMap(disableConsent));
     }
 
     private void parseMetaData(Map<String, Object> entity, String key, String value) {
         if (StringUtils.hasText(value)) {
-            entity.put(key, value);
+            Map<String, String> metaDataFields = (Map<String, String>) entity.getOrDefault("metaDataFields", new HashMap<String, String>());
+            metaDataFields.put(key, value);
+            entity.put("metaDataFields", metaDataFields);
         }
+    }
+
+    private List<Map<String, String>> stringToNameMap(List<String> entityIds) {
+        return entityIds.stream().map(s -> Collections.singletonMap("name", s)).collect(toList());
     }
 
 }

@@ -50,8 +50,8 @@ public class MetaDataRepository {
             .addCriteria(new TextCriteria().matching(search))
             .fields()
             .include("data.entityid")
-            .include("data.name:en")
-            .include("data.name:nl");
+            .include("data.metaDataFields.name:en")
+            .include("data.metaDataFields.name:nl");
         return mongoTemplate.find(query, Map.class, type);
     }
 
@@ -61,8 +61,8 @@ public class MetaDataRepository {
         query
             .fields()
             .include("data.entityid")
-            .include("data.name:en")
-            .include("data.name:nl");
+            .include("data.metaDataFields.name:en")
+            .include("data.metaDataFields.name:nl");
         return mongoTemplate.find(query, Map.class, type);
     }
 }

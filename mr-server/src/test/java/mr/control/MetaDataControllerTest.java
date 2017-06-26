@@ -34,6 +34,17 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void configuration() throws Exception {
+        given()
+            .when()
+            .get("mr/api/client/metadata/configuration")
+            .then()
+            .statusCode(SC_OK)
+            .body("size()", is(2))
+            .body("title", hasItems("saml20-sp", "saml20-idp"));
+    }
+
+    @Test
     public void post() throws Exception {
         String json = fileContent("/json/valid_service_provider.json");
         Map data = objectMapper.readValue(json, Map.class);
@@ -110,9 +121,9 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     public void search() throws Exception {
         Map<String, Object> searchOptions = new HashMap<>();
         searchOptions.put("allowedall", "yes");
-        searchOptions.put("coin:do_not_add_attribute_aliases", "1");
-        searchOptions.put("contacts:3:contactType", "technical");
-        searchOptions.put("NameIDFormat", "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified");
+        searchOptions.put("metaDataFields.coin:do_not_add_attribute_aliases", "1");
+        searchOptions.put("metaDataFields.contacts:3:contactType", "technical");
+        searchOptions.put("metaDataFields.NameIDFormat", "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified");
 
         given()
             .when()
@@ -126,7 +137,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
             .body("data.entityid", hasItems(
                 "http://mock-sp",
                 "https://profile.test2.surfconext.nl/authentication/metadata"))
-            .body("data.'name:en'", hasItems(
+            .body("data.metaDataFields.'name:en'", hasItems(
                 "OpenConext Profile",
                 "OpenConext Mujina SP"));
     }

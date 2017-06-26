@@ -17,8 +17,8 @@ import org.springframework.util.Assert;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -30,15 +30,16 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
 @Component
-public class MetadataAutoConfiguration {
+public class MetaDataAutoConfiguration {
 
-    private static final Logger LOG = LoggerFactory.getLogger(MetadataAutoConfiguration.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MetaDataAutoConfiguration.class);
 
     private Map<String, Schema> schemas;
+    private List<Map<String, Object>> schemaRepresentations = new ArrayList<>();
     private Map<String, List<IndexConfiguration>> indexConfigurations = new HashMap<>();
 
     @Autowired
-    public MetadataAutoConfiguration(@Value("${metadata_configuration_path}") Resource metadataConfigurationPath) throws IOException {
+    public MetaDataAutoConfiguration(@Value("${metadata_configuration_path}") Resource metadataConfigurationPath) throws IOException {
         this.schemas = parseConfiguration(metadataConfigurationPath, Arrays.asList(
             new CertificateValidator(),
             new BooleanValidator()
@@ -63,6 +64,10 @@ public class MetadataAutoConfiguration {
         return this.indexConfigurations.getOrDefault(schemaType, Collections.emptyList());
     }
 
+    public List<Map<String, Object>> schemaRepresentations() {
+        return schemaRepresentations;
+    }
+
     private Map<String, Schema> parseConfiguration(Resource metadataConfigurationPath, List<FormatValidator> validators) throws IOException {
         File[] schemaFiles = metadataConfigurationPath.getFile().listFiles((dir, name) -> name.endsWith("schema.json"));
         Assert.notEmpty(schemaFiles, String.format("No schema.json files defined in %s", metadataConfigurationPath.getFilename()));
@@ -74,13 +79,14 @@ public class MetadataAutoConfiguration {
         JSONObject jsonObject;
         try {
             jsonObject = new JSONObject(new JSONTokener(new FileInputStream(file)));
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
             throw new IllegalArgumentException(String.format("%s not found", file.getAbsolutePath()));
         }
         SchemaLoader.SchemaLoaderBuilder schemaLoaderBuilder = SchemaLoader.builder().schemaJson(jsonObject);
         validators.forEach(schemaLoaderBuilder::addFormatValidator);
         Schema schema = schemaLoaderBuilder.build().load().build();
         addIndexes(schema.getTitle(), jsonObject);
+        this.schemaRepresentations.add(jsonObject.toMap());
         return schema;
     }
 

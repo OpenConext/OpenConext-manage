@@ -2,9 +2,8 @@ package mr.control;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import mr.conf.MetadataAutoConfiguration;
+import mr.conf.MetaDataAutoConfiguration;
 import mr.model.MetaData;
-import mr.mongo.MongobeeConfiguration;
 import mr.repository.MetaDataRepository;
 import mr.shibboleth.FederatedUser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +31,7 @@ public class MetaDataController {
     private MetaDataRepository metaDataRepository;
 
     @Autowired
-    private MetadataAutoConfiguration metadataAutoConfiguration;
+    private MetaDataAutoConfiguration metaDataAutoConfiguration;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -40,6 +39,11 @@ public class MetaDataController {
     @GetMapping("/client/metadata/{type}/{id}")
     public MetaData get(@PathVariable("type") String type, @PathVariable("id") String id) {
         return metaDataRepository.findById(id, type);
+    }
+
+    @GetMapping("/client/metadata/configuration")
+    public List<Map<String, Object>> configuration() {
+        return metaDataAutoConfiguration.schemaRepresentations();
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -85,7 +89,7 @@ public class MetaDataController {
 
     private void validate(MetaData metaData) throws JsonProcessingException {
         String json = objectMapper.writeValueAsString(metaData.getData());
-        metadataAutoConfiguration.validate(json, metaData.getType());
+        metaDataAutoConfiguration.validate(json, metaData.getType());
     }
 
 }

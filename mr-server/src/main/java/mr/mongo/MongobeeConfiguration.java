@@ -4,7 +4,7 @@ import com.github.mongobee.Mongobee;
 import com.github.mongobee.changeset.ChangeLog;
 import com.github.mongobee.changeset.ChangeSet;
 import mr.conf.IndexConfiguration;
-import mr.conf.MetadataAutoConfiguration;
+import mr.conf.MetaDataAutoConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -26,12 +26,12 @@ public class MongobeeConfiguration {
     public static final String REVISION_POSTFIX = "_revision";
 
     @Autowired
-    private MetadataAutoConfiguration metadataAutoConfiguration;
+    private MetaDataAutoConfiguration metaDataAutoConfiguration;
 
     @Autowired
     private MappingMongoConverter mongoConverter;
 
-    private static MetadataAutoConfiguration staticMetadataAutoConfiguration;
+    private static MetaDataAutoConfiguration staticMetaDataAutoConfiguration;
 
 
     // Converts . into a mongo friendly char
@@ -44,17 +44,17 @@ public class MongobeeConfiguration {
     public Mongobee mongobee(@Value("${spring.data.mongodb.uri}") String uri) {
         Mongobee runner = new Mongobee(uri);
         runner.setChangeLogsScanPackage("mr.mongo");
-        MongobeeConfiguration.staticMetadataAutoConfiguration = metadataAutoConfiguration;
+        MongobeeConfiguration.staticMetaDataAutoConfiguration = metaDataAutoConfiguration;
         return runner;
     }
 
     @ChangeSet(order = "001", id = "createCollections", author = "Okke Harsta", runAlways = true)
     public void createCollections(MongoTemplate mongoTemplate) {
-        Set<String> schemaNames = staticMetadataAutoConfiguration.schemaNames();
+        Set<String> schemaNames = staticMetaDataAutoConfiguration.schemaNames();
         schemaNames.forEach(schema -> {
             if (!mongoTemplate.collectionExists(schema)) {
                 mongoTemplate.createCollection(schema);
-                staticMetadataAutoConfiguration.indexConfigurations(schema).stream()
+                staticMetaDataAutoConfiguration.indexConfigurations(schema).stream()
                     .map(this::indexDefinition)
                     .forEach(mongoTemplate.indexOps(schema)::ensureIndex);
 

@@ -48,6 +48,7 @@ When new npm dependencies are added:
 ## [Miscellaneous](#miscellaneous)
 
 https://jsonschema.net/#/editor
+https://github.com/everit-org/json-schema
 
 ### [Testing](#testing)
 

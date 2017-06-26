@@ -3,12 +3,9 @@ package mr;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mongodb.BulkWriteResult;
-import com.mongodb.WriteResult;
 import io.restassured.RestAssured;
-import mr.conf.MetadataAutoConfiguration;
+import mr.conf.MetaDataAutoConfiguration;
 import mr.model.MetaData;
-import mr.mongo.MongobeeConfiguration;
 import mr.repository.MetaDataRepository;
 import org.junit.Before;
 import org.junit.runner.RunWith;
@@ -18,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.data.mongodb.core.BulkOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -50,7 +46,7 @@ public abstract class AbstractIntegrationTest {
     protected ObjectMapper objectMapper;
 
     @Autowired
-    private MetadataAutoConfiguration metadataAutoConfiguration;
+    private MetaDataAutoConfiguration metaDataAutoConfiguration;
 
     @LocalServerPort
     protected int port;
@@ -66,7 +62,7 @@ public abstract class AbstractIntegrationTest {
                 });
             }
             MongoTemplate mongoTemplate = metaDataRepository.getMongoTemplate();
-            metadataAutoConfiguration.schemaNames().forEach(schema -> {
+            metaDataAutoConfiguration.schemaNames().forEach(schema -> {
                 int removed = mongoTemplate.remove(new Query(Criteria.where("type").is(schema)), schema).getN();
                 String revisionsSchema = schema.concat(REVISION_POSTFIX);
                 int removedRevisions = mongoTemplate.remove(new Query(Criteria.where("type").is(revisionsSchema)), revisionsSchema).getN();
