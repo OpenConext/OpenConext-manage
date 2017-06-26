@@ -15,6 +15,7 @@ import static org.apache.http.HttpStatus.SC_OK;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -139,6 +140,19 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
             .body("data.metaDataFields.'name:en'", hasItems(
                 "OpenConext Profile",
                 "OpenConext Mujina SP"));
+    }
+
+
+    @Test
+    public void whiteListing() throws Exception {
+        given()
+            .when()
+            .get("mr/api/client/whiteListing/saml20-sp")
+            .then()
+            .statusCode(SC_OK)
+            .body("size()", is(5))
+            .body("data.allowedall", hasItems("yes", "no"))
+            .body("[2].data.allowedEntities.name", hasItems("http://mock-idp"));
     }
 
 }

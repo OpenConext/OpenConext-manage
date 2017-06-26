@@ -73,7 +73,7 @@ public class MetaDataRepository {
             .include("data.entityid")
             .include("data.allowedall")
             .include("data.allowedEntities")
-            .include("data.metaDataFields.name:nl")
+            .include("data.metaDataFields.name:en")
             .include("data.metaDataFields.name:nl");
         return mongoTemplate.find(query, Map.class, type);
     }
