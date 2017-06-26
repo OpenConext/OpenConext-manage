@@ -4,6 +4,7 @@ import mr.model.MetaData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Field;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.TextCriteria;
 import org.springframework.stereotype.Repository;
@@ -44,37 +45,33 @@ public class MetaDataRepository {
     }
 
     public List<Map> autoComplete(String type, String search) {
-        //When we have multiple types then we need to delegate depending on the type.
-        Query query = new Query();
-        query
-            .addCriteria(new TextCriteria().matching(search))
-            .fields()
-            .include("data.entityid")
-            .include("data.metaDataFields.name:en")
-            .include("data.metaDataFields.name:nl");
+        Query query = queryWithSamlFields();
+        query.addCriteria(new TextCriteria().matching(search));
         return mongoTemplate.find(query, Map.class, type);
     }
 
     public List<Map> search(String type, Map<String, Object> properties) {
-        Query query = new Query();
+        Query query = queryWithSamlFields();
         properties.forEach((key, value) -> query.addCriteria(Criteria.where("data.".concat(key)).is(value)));
-        query
-            .fields()
-            .include("data.entityid")
-            .include("data.metaDataFields.name:en")
-            .include("data.metaDataFields.name:nl");
         return mongoTemplate.find(query, Map.class, type);
     }
 
     public List<Map> whiteListing(String type) {
+        Query query = queryWithSamlFields();
+        query.fields()
+            .include("data.allowedall")
+            .include("data.allowedEntities");
+        return mongoTemplate.find(query, Map.class, type);
+    }
+
+    private Query queryWithSamlFields() {
         Query query = new Query();
+        //When we have multiple types then we need to delegate depending on the type.
         query
             .fields()
             .include("data.entityid")
-            .include("data.allowedall")
-            .include("data.allowedEntities")
             .include("data.metaDataFields.name:en")
             .include("data.metaDataFields.name:nl");
-        return mongoTemplate.find(query, Map.class, type);
+        return query;
     }
 }
