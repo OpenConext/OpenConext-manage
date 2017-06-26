@@ -8,6 +8,7 @@ import mr.mongo.MongobeeConfiguration;
 import mr.repository.MetaDataRepository;
 import mr.shibboleth.FederatedUser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,6 +42,7 @@ public class MetaDataController {
         return metaDataRepository.findById(id, type);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/client/metadata")
     public MetaData post(@Validated @RequestBody MetaData metaData, FederatedUser federatedUser) throws JsonProcessingException {
         validate(metaData);
@@ -49,6 +51,7 @@ public class MetaDataController {
         return metaDataRepository.save(metaData);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/client/metadata")
     @Transactional
     public MetaData put(@Validated @RequestBody MetaData metaData, FederatedUser federatedUser) throws JsonProcessingException {
@@ -77,7 +80,7 @@ public class MetaDataController {
 
     @PostMapping("/client/search/{type}")
     public List<Map> searchEntities(@PathVariable("type") String type, @RequestBody Map<String, Object> properties) {
-        return null;//metaDataRepository.search(type, properties);
+        return metaDataRepository.search(type, properties);
     }
 
     private void validate(MetaData metaData) throws JsonProcessingException {

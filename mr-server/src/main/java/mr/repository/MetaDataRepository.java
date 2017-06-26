@@ -54,4 +54,15 @@ public class MetaDataRepository {
             .include("data.name:nl");
         return mongoTemplate.find(query, Map.class, type);
     }
+
+    public List<Map> search(String type, Map<String, Object> properties) {
+        Query query = new Query();
+        properties.forEach((key, value) -> query.addCriteria(Criteria.where("data.".concat(key)).is(value)));
+        query
+            .fields()
+            .include("data.entityid")
+            .include("data.name:en")
+            .include("data.name:nl");
+        return mongoTemplate.find(query, Map.class, type);
+    }
 }

@@ -6,12 +6,16 @@ import mr.model.MetaData;
 import mr.model.Revision;
 import org.junit.Test;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 import static org.apache.http.HttpStatus.SC_OK;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -101,4 +105,30 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 "http://mock-sp",
                 "https://serviceregistry.test2.surfconext.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp"));
     }
+
+    @Test
+    public void search() throws Exception {
+        Map<String, Object> searchOptions = new HashMap<>();
+        searchOptions.put("allowedall", "yes");
+        searchOptions.put("coin:do_not_add_attribute_aliases", "1");
+        searchOptions.put("contacts:3:contactType", "technical");
+        searchOptions.put("NameIDFormat", "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified");
+
+        given()
+            .when()
+            .body(searchOptions)
+            .header("Content-type", "application/json")
+            .post("mr/api/client/search/saml20-sp")
+            .then()
+            .statusCode(SC_OK)
+            .body("size()", is(2))
+            .body("'.id'", hasItems("2", "3"))
+            .body("data.entityid", hasItems(
+                "http://mock-sp",
+                "https://profile.test2.surfconext.nl/authentication/metadata"))
+            .body("data.'name:en'", hasItems(
+                "OpenConext Profile",
+                "OpenConext Mujina SP"));
+    }
+
 }

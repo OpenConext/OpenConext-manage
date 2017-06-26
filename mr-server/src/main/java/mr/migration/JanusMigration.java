@@ -40,8 +40,6 @@ public class JanusMigration implements ApplicationListener<ApplicationReadyEvent
     private ArpDeserializer arpDeserializer = new ArpDeserializer();
     private MetadataAutoConfiguration metadataAutoConfiguration;
     private boolean migrate;
-    private Map<String, Long> stats;
-
 
     @Autowired
     public JanusMigration(@Value("${migrate_data_from_janus}") boolean migrate, DataSource dataSource, MongoTemplate mongoTemplate, MetadataAutoConfiguration metadataAutoConfiguration) {
@@ -54,18 +52,22 @@ public class JanusMigration implements ApplicationListener<ApplicationReadyEvent
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
         if (migrate) {
-            long start =System.currentTimeMillis();
-            stats = new HashMap<>();
-            emptyExistingCollections();
-            saveEntities(EntityType.SP);
-            try {
-                LOG.info("Finished migration in {} ms and results {}", System.currentTimeMillis() - start, new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(this.stats));
-            } catch (JsonProcessingException e) {
-                throw new IllegalArgumentException(e);
-            }
+            doMigrate();
         }
     }
 
+    public Map<String, Long> doMigrate() {
+        long start =System.currentTimeMillis();
+        Map<String, Long> stats = new HashMap<>();
+        emptyExistingCollections();
+        saveEntities(EntityType.SP, stats);
+        try {
+            LOG.info("Finished migration in {} ms and results {}", System.currentTimeMillis() - start, new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(stats));
+        } catch (JsonProcessingException e) {
+            throw new IllegalArgumentException(e);
+        }
+        return stats;
+    }
 
     private void emptyExistingCollections() {
         Set<String> schemaNames = this.metadataAutoConfiguration.schemaNames();
@@ -79,7 +81,7 @@ public class JanusMigration implements ApplicationListener<ApplicationReadyEvent
         });
     }
 
-    private void saveEntities(EntityType entityType) {
+    private void saveEntities(EntityType entityType, Map<String, Long> stats) {
         jdbcTemplate.query("SELECT CONNECTION.id, CONNECTION.revisionNr " +
                 "FROM janus__connection AS CONNECTION " +
                 "INNER JOIN janus__connectionRevision AS CONNECTION_REVISION ON CONNECTION_REVISION.eid = CONNECTION.id " +
@@ -87,12 +89,12 @@ public class JanusMigration implements ApplicationListener<ApplicationReadyEvent
                 "CONNECTION.type=?",
             new String[]{entityType.getType()},
             rs -> {
-                saveEntity(rs.getLong("id"), rs.getLong("revisionNr"), entityType.getType(), true, null);
+                saveEntity(rs.getLong("id"), rs.getLong("revisionNr"), entityType.getType(), true, null, stats);
             });
 
     }
 
-    private void saveEntity(Long eid, Long revisionid, String type, boolean isPrimary, String parentId) {
+    private void saveEntity(Long eid, Long revisionid, String type, boolean isPrimary, String parentId, Map<String, Long> stats) {
         jdbcTemplate.query("SELECT id, eid, entityid, revisionid, state, metadataurl, allowedall, " +
                 "manipulation, user, created, ip, revisionnote, active, arp_attributes, notes FROM janus__connectionRevision " +
                 "WHERE  eid = ? AND revisionid = ?",
@@ -122,18 +124,18 @@ public class JanusMigration implements ApplicationListener<ApplicationReadyEvent
                 MetaData metaData = new MetaData(id, type, new Revision(revisionid.intValue(), instant, parentId, (String) entity.get("user")), entity);
                 mongoTemplate.insert(metaData, type);
                 String key = String.format("%s-%s", entity.get("entityid"), eid);
-                Long revisionCount = this.stats.get(key);
+                Long revisionCount = stats.get(key);
                 if (revisionCount == null) {
-                    this.stats.put(key, 0L);
+                    stats.put(key, 0L);
                 } else {
-                    this.stats.put(key, revisionCount + 1);
+                    stats.put(key, revisionCount + 1);
                 }
                 //now save all revisions
                 if (isPrimary) {
                     jdbcTemplate.query("SELECT eid, revisionid from janus__connectionRevision WHERE  eid = ? AND revisionid <> ?",
                         new Long[]{eid, revisionid},
                         rs2 -> {
-                            saveEntity(rs.getLong("eid"), rs.getLong("revisionid"), type.concat(REVISION_POSTFIX), false, id);
+                            saveEntity(rs.getLong("eid"), rs.getLong("revisionid"), type.concat(REVISION_POSTFIX), false, id, stats);
                         });
                 }
             });
