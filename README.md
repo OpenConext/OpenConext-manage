@@ -41,7 +41,11 @@ To run locally:
 
 Browse to the [application homepage](http://localhost:8000/).
 
-When new npm dependencies are added:
+To add new dependencies:
+
+`yarn add package --dev`
+
+When new yarn dependencies are added:
 
 `yarn install`
 
@@ -49,12 +53,13 @@ When new npm dependencies are added:
 
 https://jsonschema.net/#/editor
 https://github.com/everit-org/json-schema
+https://github.com/facebookincubator/create-react-app
 
 ### [Testing](#testing)
 
 ### [New MetaData Type](#new-metadata-type)
 
-New MetaData types must first be described in JSON Schema and the schema must be places in... 
+New MetaData types must first be described in JSON Schema and the schema must be places in...  
 
 ### [Configuration and deployment](#configuration-and-deployment)
 

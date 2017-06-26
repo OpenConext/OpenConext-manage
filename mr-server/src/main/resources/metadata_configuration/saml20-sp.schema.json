@@ -371,16 +371,16 @@
   ],
   "additionalProperties": false,
   "indexes": [
-    {
-      "name": "autocomplete_text_query",
-      "type": "text",
-      "fields": [
-        "entityid",
-        "metaDataFields.name:en",
-        "metaDataFields.name:nl",
-        "metaDataFields.description:en",
-        "metaDataFields.description:nl"
-      ]
-    }
-  ]
+  {
+    "name": "autocomplete_text_query",
+    "type": "text",
+    "fields": [
+      "entityid",
+      "metaDataFields.name:en",
+      "metaDataFields.name:nl",
+      "metaDataFields.description:en",
+      "metaDataFields.description:nl"
+    ]
+  }
+]
 }
