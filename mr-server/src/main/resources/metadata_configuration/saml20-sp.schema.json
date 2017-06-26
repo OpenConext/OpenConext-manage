@@ -171,9 +171,62 @@
       "properties": {
         "NameIDFormat": {
           "$ref": "#/definitions/NameIDFormat"
+        },
+        "certData": {
+          "type": "string",
+          "format": "certificate"
+        },
+        "certData2": {
+          "type": "string",
+          "format": "certificate"
+        },
+        "certData3": {
+          "type": "string",
+          "format": "certificate"
+        },
+        "SingleLogoutService_Binding" : {
+          "type": "string",
+          "enum": [
+            "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect",
+            "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
+            "urn:oasis:names:tc:SAML:2.0:bindings:SOAP",
+            "urn:oasis:names:tc:SAML:2.0:bindings:PAOS",
+            "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Artifact",
+            "urn:oasis:names:tc:SAML:2.0:bindings:URI"
+          ],
+          "default": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
+        },
+        "SingleLogoutService_Location": {
+          "type": "string",
+          "format": "uri"
+        },
+        "logo:0:url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "logo:0:width": {
+          "type": "string",
+          "format": "number"
+        },
+        "logo:0:height": {
+          "type": "string",
+          "format": "number"
+        },
+        "redirect.sign": {
+          "type": "boolean"
         }
+
       },
       "patternProperties": {
+        "^name:(en|nl)$": {
+          "type": "string"
+        },
+        "^displayName:(en|nl)$": {
+          "type": "string"
+        },
+        "^description:(en|nl)$": {
+          "type": "string"
+        },
         "^AssertionConsumerService:([0-9]{1}):Binding$": {
           "$ref": "#/definitions/AssertionConsumerServiceBinding",
           "multiplicity": 10
@@ -226,6 +279,7 @@
         }
       },
       "required": [
+        "name:en",
         "AssertionConsumerService:0:Binding",
         "AssertionConsumerService:0:Location",
         "NameIDFormat"

@@ -3,6 +3,7 @@
   "state": "testaccepted",
   "allowedall": "yes",
   "metaDataFields" : {
+    "name:en": "OpenConext Valid SP",
     "AssertionConsumerService:0:Binding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
     "AssertionConsumerService:9:Binding": "urn:oasis:names:tc:SAML:2.0:bindings:URI",
     "AssertionConsumerService:0:Location": "https://acs",

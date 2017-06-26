@@ -35,7 +35,7 @@ public class MetaDataAutoConfigurationTest {
             subject.validate(json, EntityType.SP.getType());
             fail();
         } catch (ValidationException e) {
-            assertEquals(13, e.toJSON().getJSONArray("causingExceptions").toList().size());
+            assertEquals(4, e.toJSON().getJSONArray("causingExceptions").toList().size());
         }
 
     }
