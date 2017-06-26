@@ -1,0 +1,88 @@
+{
+  "entityid": "http://mock-idp",
+  "state": "prodaccepted",
+  "allowedall": "yes",
+  "active": true,
+  "allowedEntities": [
+    {
+      "name": "https://allowed-sp-1"
+    },
+    {
+      "name": "https://allowed-sp-2"
+    },
+    {
+      "name": "https://allowed-sp-3"
+    }
+  ],
+  "disableConsent": [
+    {
+      "name": "https://allowed-sp-1"
+    }
+  ],
+  "metaDataFields": {
+    "name:en": "OpenConext Valid IDP EN",
+    "name:nl": "OpenConext Valid IDP NL",
+    "displayName:en": "OpenConext Valid IDP EN",
+    "displayName:nl": "OpenConext Valid IDP NL",
+    "description:en": "OpenConext Valid IDP EN",
+    "description:nl": "OpenConext Valid IDP NL",
+    "contacts:0:surName": "John",
+    "contacts:0:givenName": "Doe",
+    "contacts:0:emailAddress": "jdoe@example.org",
+    "contacts:0:telephoneNumber": "+31611860174",
+    "contacts:0:contactType": "technical",
+    "contacts:1:surName": "John",
+    "contacts:1:givenName": "Doe",
+    "contacts:1:emailAddress": "jdoe@example.org",
+    "contacts:1:telephoneNumber": "+31611860174",
+    "contacts:1:contactType": "support",
+    "contacts:2:surName": "John",
+    "contacts:2:givenName": "Doe",
+    "contacts:2:emailAddress": "jdoe@example.org",
+    "contacts:2:telephoneNumber": "+31611860174",
+    "contacts:2:contactType": "administrative",
+    "contacts:3:surName": "John",
+    "contacts:3:givenName": "Doe",
+    "contacts:3:emailAddress": "jdoe@example.org",
+    "contacts:3:telephoneNumber": "+31611860174",
+    "contacts:3:contactType": "billing",
+    "OrganizationName:en": "OpenConext Valid IDP EN",
+    "OrganizationName:nl": "OpenConext Valid IDP NL",
+    "OrganizationDisplayName:en": "OpenConext Valid IDP EN",
+    "OrganizationDisplayName:nl": "OpenConext Valid IDP NL",
+    "OrganizationURL:en": "https://mock-idp",
+    "OrganizationURL:nl": "https://mock-idp",
+    "coin:entity_categories:1": "http://refeds.org/category/hide-from-discovery",
+    "coin:entity_categories:2": "http://refeds.org/category/research-and-scholarship",
+    "SingleSignOnService:0:Binding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect",
+    "SingleSignOnService:1:Binding": "urn:oasis:names:tc:SAML:2.0:bindings:SOAP",
+    "SingleSignOnService:2:Binding": "urn:oasis:names:tc:SAML:2.0:bindings:PAOS",
+    "SingleSignOnService:0:Location": "https://single-sing-service-0",
+    "SingleSignOnService:1:Location": "https://single-sing-service-1",
+    "SingleSignOnService:2:Location": "https://single-sing-service-2",
+    "keywords:en": "mock help test",
+    "keywords:nl": "mock help test",
+    "shibmd:scope:0:allowed": "yes",
+    "shibmd:scope:1:allowed": "yes",
+    "shibmd:scope:0:regexp": ".*",
+    "shibmd:scope:1:regexp": ".*",
+    "certData": "MIIDEzCCAfugAwIBAgIJAKoK/heBjcOYMA0GCSqGSIb3DQEBBQUAMCAxHjAcBgNVBAoMFU9yZ2FuaXphdGlvbiwgQ049T0lEQzAeFw0xNTExMTExMDEyMTVaFw0yNTExMTAxMDEyMTVaMCAxHjAcBgNVBAoMFU9yZ2FuaXphdGlvbiwgQ049T0lEQzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANBGwJ/qpTQNiSgUglSE2UzEkUow+wS8r67etxoEhlzJZfgK/k5TfG1wICDqapHAxEVgUM10aBHRctNocA5wmlHtxdidhzRZroqHwpKy2BmsKX5Z2oK25RLpsyusB1KroemgA/CjUnI6rIL1xxFn3KyOFh1ZBLUQtKNQeMS7HFGgSDAp+sXuTFujz12LFDugX0T0KB5a1+0l8y0PEa0yGa1oi6seONx849ZHxM0PRvUunWkuTM+foZ0jZpFapXe02yWMqhc/2iYMieE/3GvOguJchJt6R+cut8VBb6ubKUIGK7pmoq/TB6DVXpvsHqsDJXechxcicu4pdKVDHSec850CAwEAAaNQME4wHQYDVR0OBBYEFK7RqjoodSYVXGTVEdLf3kJflP/sMB8GA1UdIwQYMBaAFK7RqjoodSYVXGTVEdLf3kJflP/sMAwGA1UdEwQFMAMBAf8wDQYJKoZIhvcNAQEFBQADggEBADNZkxlFXh4F45muCbnQd+WmaXlGvb9tkUyAIxVL8AIu8J18F420vpnGpoUAE+Hy3evBmp2nkrFAgmr055fAjpHeZFgDZBAPCwYd3TNMDeSyMta3Ka+oS7GRFDePkMEm+kH4/rITNKUF1sOvWBTSowk9TudEDyFqgGntcdu/l/zRxvx33y3LMG5USD0x4X4IKjRrRN1BbcKgi8dq10C3jdqNancTuPoqT3WWzRvVtB/q34B7F74/6JzgEoOCEHufBMp4ZFu54P0yEGtWfTwTzuoZobrChVVBt4w/XZagrRtUCDNwRpHNbpjxYudbqLqpi1MQpV9oht/BpTHVJG2i0ro=",
+    "certData2": "MIIDEzCCAfugAwIBAgIJAKoK/heBjcOYMA0GCSqGSIb3DQEBBQUAMCAxHjAcBgNVBAoMFU9yZ2FuaXphdGlvbiwgQ049T0lEQzAeFw0xNTExMTExMDEyMTVaFw0yNTExMTAxMDEyMTVaMCAxHjAcBgNVBAoMFU9yZ2FuaXphdGlvbiwgQ049T0lEQzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANBGwJ/qpTQNiSgUglSE2UzEkUow+wS8r67etxoEhlzJZfgK/k5TfG1wICDqapHAxEVgUM10aBHRctNocA5wmlHtxdidhzRZroqHwpKy2BmsKX5Z2oK25RLpsyusB1KroemgA/CjUnI6rIL1xxFn3KyOFh1ZBLUQtKNQeMS7HFGgSDAp+sXuTFujz12LFDugX0T0KB5a1+0l8y0PEa0yGa1oi6seONx849ZHxM0PRvUunWkuTM+foZ0jZpFapXe02yWMqhc/2iYMieE/3GvOguJchJt6R+cut8VBb6ubKUIGK7pmoq/TB6DVXpvsHqsDJXechxcicu4pdKVDHSec850CAwEAAaNQME4wHQYDVR0OBBYEFK7RqjoodSYVXGTVEdLf3kJflP/sMB8GA1UdIwQYMBaAFK7RqjoodSYVXGTVEdLf3kJflP/sMAwGA1UdEwQFMAMBAf8wDQYJKoZIhvcNAQEFBQADggEBADNZkxlFXh4F45muCbnQd+WmaXlGvb9tkUyAIxVL8AIu8J18F420vpnGpoUAE+Hy3evBmp2nkrFAgmr055fAjpHeZFgDZBAPCwYd3TNMDeSyMta3Ka+oS7GRFDePkMEm+kH4/rITNKUF1sOvWBTSowk9TudEDyFqgGntcdu/l/zRxvx33y3LMG5USD0x4X4IKjRrRN1BbcKgi8dq10C3jdqNancTuPoqT3WWzRvVtB/q34B7F74/6JzgEoOCEHufBMp4ZFu54P0yEGtWfTwTzuoZobrChVVBt4w/XZagrRtUCDNwRpHNbpjxYudbqLqpi1MQpV9oht/BpTHVJG2i0ro=",
+    "SingleLogoutService_Binding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
+    "SingleLogoutService_Location": "https://single-logout",
+    "logo:0:url": "https:/logo",
+    "logo:0:width": "150",
+    "logo:0:height": "150",
+    "redirect.sign": true,
+    "coin:publish_in_edugain": true,
+    "coin:publish_in_edugain_date": "2011-12-03T10:15:30+01:00",
+    "coin:additional_logging": true,
+    "coin:institution_id": "mock.sp",
+    "coin:institution_guid": "308306B3-E2F6-446F-A8E3-ECEF473FCDA1",
+    "coin:guest_qualifier": "All",
+    "coin:schachomeorganization": "example.org",
+    "NameIDFormat": "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
+    "coin:disable_scoping": true,
+    "coin:hidden": true
+  }
+}

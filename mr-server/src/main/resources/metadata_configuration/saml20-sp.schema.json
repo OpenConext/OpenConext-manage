@@ -200,6 +200,9 @@
           "type": "string",
           "format": "uri"
         },
+        "mdui:RegistrationInfo": {
+          "type": "string"
+        },
         "logo:0:url": {
           "type": "string",
           "format": "uri"
@@ -214,8 +217,63 @@
         },
         "redirect.sign": {
           "type": "boolean"
+        },
+        "coin:publish_in_edugain": {
+          "type": "boolean",
+          "default": false
+        },
+        "coin:publish_in_edugain_date": {
+          "type": "string"
+        },
+        "coin:interfed_source": {
+          "type": "string",
+          "enum": [
+            "Entree",
+            "eduGAIN"
+          ]
+        },
+        "coin:additional_logging": {
+          "type": "boolean"
+        },
+        "coin:institution_id": {
+          "type": "string"
+        },
+        "coin:institution_guid": {
+          "type": "string"
+        },
+        "coin:trusted_proxy": {
+          "type": "boolean",
+          "default": "false"
+        },
+        "coin:no_consent_required": {
+          "type": "boolean"
+        },
+        "coin:eula": {
+          "type": "string",
+          "format": "uri"
+        },
+        "coin:ss:idp_visible_only": {
+          "type": "boolean"
+        },
+        "coin:ss:application_url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "coin:ss:transparant_issuer": {
+          "type": "boolean"
+        },
+        "coin:ss:do_not_add_attribute_aliases": {
+          "type": "boolean"
+        },
+        "coin:ss:display_unconnected_idps_wayf": {
+          "type": "boolean"
+        },
+        "coin:ss:policy_enforcement_decision_required": {
+          "type": "boolean"
+        },
+        "coin:ss:attribute_aggregation_required": {
+          "type": "boolean"
         }
-
       },
       "patternProperties": {
         "^name:(en|nl)$": {
@@ -267,6 +325,9 @@
             "other"
           ]
         },
+        "^OrganizationName:(en|nl)$": {
+          "type": "string"
+        },
         "^OrganizationDisplayName:(en|nl)$": {
           "type": "string"
         },
@@ -274,9 +335,25 @@
           "type": "string",
           "format": "uri"
         },
-        "^OrganizationName:(en|nl)$": {
+        "^url:(en|nl)$": {
+          "type": "string",
+          "format": "uri"
+        },
+        "^mdui:PrivacyStatementURL:(en|nl)$": {
+          "type": "string",
+          "format": "uri"
+        },
+        "^mdui:RegistrationPolicy:(en|nl)$": {
           "type": "string"
-        }
+        },
+        "^coin:entity_categories:([1-2]{1})$": {
+          "type": "string",
+          "enum": [
+            "http://refeds.org/category/research-and-scholarship",
+            "http://refeds.org/category/hide-from-discovery"
+          ]
+        },
+
       },
       "required": [
         "name:en",

@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-04/schema#",
   "title": "saml20-idp",
   "definitions": {
-    "AssertionConsumerServiceBinding": {
+    "SingleSignOnService": {
       "type": "string",
       "enum": [
         "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect",
@@ -12,7 +12,7 @@
         "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Artifact",
         "urn:oasis:names:tc:SAML:2.0:bindings:URI"
       ],
-      "default": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+      "default": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
     },
     "NameIDFormat": {
       "type": "string",
@@ -21,21 +21,7 @@
         "urn:oasis:names:tc:SAML:2.0:nameid-format:transient",
         "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"
       ],
-      "default": "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"
-    },
-    "ArpAttribute": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "source": {
-            "type": "string"
-          },
-          "value": {
-            "type": "string"
-          }
-        }
-      }
+      "default": "urn:oasis:names:tc:SAML:2.0:nameid-format:transient"
     }
   },
   "type": "object",
@@ -58,176 +44,198 @@
       ],
       "format": "boolean"
     },
-    "NameIDFormat": {
-      "$ref": "#/definitions/NameIDFormat"
-    },
-    "OrganizationDisplayName:en": {
-      "type": "string"
-    },
-    "OrganizationDisplayName:nl": {
-      "type": "string"
-    },
-    "OrganizationName:en": {
-      "type": "string"
-    },
-    "OrganizationName:nl": {
-      "type": "string"
-    },
-    "OrganizationURL:en": {
-      "type": "string",
-      "format": "uri"
-    },
-    "OrganizationURL:nl": {
-      "type": "string",
-      "format": "uri"
-    },
     "active": {
       "type": "boolean"
     },
     "allowedEntities": {
-      "items": {},
-      "type": "array"
-    },
-    "arp": {
-      "type": "object",
-      "properties": {
-        "_class": {
-          "type": "string",
-          "default": "mr.migration.ArpAttributes"
-        },
-        "enabled": {
-          "type": "boolean"
-        },
-        "attributes": {
-          "properties": {
-            "urn:mace:dir:attribute-def:eduPersonTargetedID": {
-              "$ref": "#/definitions/ArpAttribute"
-            },
-            "urn:mace:dir:attribute-def:eduPersonPrincipalName": {
-              "$ref": "#/definitions/ArpAttribute"
-            },
-            "urn:mace:dir:attribute-def:displayName": {
-              "$ref": "#/definitions/ArpAttribute"
-            },
-            "urn:mace:dir:attribute-def:cn": {
-              "$ref": "#/definitions/ArpAttribute"
-            },
-            "urn:mace:dir:attribute-def:givenName": {
-              "$ref": "#/definitions/ArpAttribute"
-            },
-            "urn:mace:dir:attribute-def:sn": {
-              "$ref": "#/definitions/ArpAttribute"
-            },
-            "urn:mace:dir:attribute-def:mail": {
-              "$ref": "#/definitions/ArpAttribute"
-            },
-            "urn:mace:terena.org:attribute-def:schacHomeOrganization": {
-              "$ref": "#/definitions/ArpAttribute"
-            },
-            "urn:mace:terena.org:attribute-def:schacHomeOrganizationType": {
-              "$ref": "#/definitions/ArpAttribute"
-            },
-            "urn:schac:attribute-def:schacPersonalUniqueCode": {
-              "$ref": "#/definitions/ArpAttribute"
-            },
-            "urn:mace:dir:attribute-def:eduPersonAffiliation": {
-              "$ref": "#/definitions/ArpAttribute",
-              "multiplicity": true
-            },
-            "urn:mace:dir:attribute-def:eduPersonScopedAffiliation": {
-              "$ref": "#/definitions/ArpAttribute",
-              "multiplicity": true
-            },
-            "urn:mace:dir:attribute-def:eduPersonEntitlement": {
-              "$ref": "#/definitions/ArpAttribute",
-              "multiplicity": true
-            },
-            "urn:mace:dir:attribute-def:eduPersonOrcid": {
-              "$ref": "#/definitions/ArpAttribute"
-            },
-            "urn:mace:dir:attribute-def:isMemberOf": {
-              "$ref": "#/definitions/ArpAttribute",
-              "multiplicity": true
-            },
-            "urn:mace:dir:attribute-def:uid": {
-              "$ref": "#/definitions/ArpAttribute"
-            },
-            "urn:mace:dir:attribute-def:preferredLanguage": {
-              "$ref": "#/definitions/ArpAttribute"
-            },
-            "urn:mace:surffederatie.nl:attribute-def:nlEduPersonOrgUnit": {
-              "$ref": "#/definitions/ArpAttribute",
-              "deprecated" : true,
-              "multiplicity": true
-            },
-            "urn:mace:surffederatie.nl:attribute-def:nlEduPersonStudyBranch": {
-              "$ref": "#/definitions/ArpAttribute",
-              "deprecated" : true,
-              "multiplicity": true
-            },
-            "urn:mace:surffederatie.nl:attribute-def:nlStudielinkNummer": {
-              "$ref": "#/definitions/ArpAttribute",
-              "deprecated" : true
-            },
-            "urn:mace:surffederatie.nl:attribute-def:nlDigitalAuthorIdentifier": {
-              "$ref": "#/definitions/ArpAttribute",
-              "deprecated" : true
-            },
-            "urn:oid:1.3.6.1.4.1.1076.20.40.40.1": {
-              "$ref": "#/definitions/ArpAttribute",
-              "displayName": "collabPersonId",
-              "deprecated" : true
-            }
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
           }
         }
       }
-    }
-  },
-  "patternProperties": {
-    "^AssertionConsumerService:([0-9]{1}):Binding$": {
-      "$ref": "#/definitions/AssertionConsumerServiceBinding",
-      "multiplicity": 10
     },
-    "^AssertionConsumerService:([0-9]{1}):Location$": {
-      "type": "string",
-      "format": "uri",
-      "multiplicity": 10
+    "disableConsent": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
+      }
     },
-    "^AssertionConsumerService:([0-9]{1}):index$": {
-      "type": "string",
-      "format": "number"
-    },
-    "^NameIDFormats:([0-2]{1})$": {
-      "$ref": "#/definitions/NameIDFormat"
-    },
-    "^contacts:([0-3]{1}):surName$": {
-      "type": "string"
-    },
-    "^contacts:([0-3]{1}):givenName$": {
-      "type": "string"
-    },
-    "^contacts:([0-3]{1}):emailAddress$": {
-      "type": "string",
-      "format" : "email"
-    },
-    "^contacts:([0-3]{1}):contactType$": {
-      "type": "string",
-      "enum" : [
-        "technical",
-        "support",
-        "administrative",
-        "billing",
-        "other"
-      ]
+    "metaDataFields": {
+      "type": "object",
+      "properties": {
+        "certData": {
+          "type": "string",
+          "format": "certificate"
+        },
+        "certData2": {
+          "type": "string",
+          "format": "certificate"
+        },
+        "certData3": {
+          "type": "string",
+          "format": "certificate"
+        },
+        "SingleLogoutService_Binding": {
+          "type": "string",
+          "enum": [
+            "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect",
+            "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
+            "urn:oasis:names:tc:SAML:2.0:bindings:SOAP",
+            "urn:oasis:names:tc:SAML:2.0:bindings:PAOS",
+            "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Artifact",
+            "urn:oasis:names:tc:SAML:2.0:bindings:URI"
+          ],
+          "default": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
+        },
+        "SingleLogoutService_Location": {
+          "type": "string",
+          "format": "uri"
+        },
+        "logo:0:url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "logo:0:width": {
+          "type": "string",
+          "format": "number"
+        },
+        "logo:0:height": {
+          "type": "string",
+          "format": "number"
+        },
+        "redirect.sign": {
+          "type": "boolean"
+        },
+        "coin:publish_in_edugain": {
+          "type": "boolean",
+          "default": false
+        },
+        "coin:publish_in_edugain_date": {
+          "type": "string"
+        },
+        "coin:additional_logging": {
+          "type": "boolean"
+        },
+        "coin:institution_id": {
+          "type": "string"
+        },
+        "coin:institution_guid": {
+          "type": "string"
+        },
+        "coin:guest_qualifier": {
+          "type": "string",
+          "enum": [
+            "All",
+            "Some",
+            "None"
+          ]
+        },
+        "coin:schachomeorganization": {
+          "type": "string"
+        },
+        "NameIDFormat": {
+          "$ref": "#/definitions/NameIDFormat"
+        },
+        "coin:disable_scoping": {
+          "type": "boolean"
+        },
+        "coin:hidden": {
+          "type": "boolean"
+        }
+      },
+      "patternProperties": {
+        "^name:(en|nl)$": {
+          "type": "string"
+        },
+        "^displayName:(en|nl)$": {
+          "type": "string"
+        },
+        "^description:(en|nl)$": {
+          "type": "string"
+        },
+        "^contacts:([0-3]{1}):surName$": {
+          "type": "string"
+        },
+        "^contacts:([0-3]{1}):givenName$": {
+          "type": "string"
+        },
+        "^contacts:([0-3]{1}):emailAddress$": {
+          "type": "string",
+          "format": "email"
+        },
+        "^contacts:([0-3]{1}):telephoneNumber": {
+          "type": "string",
+          "format": "string"
+        },
+        "^contacts:([0-3]{1}):contactType$": {
+          "type": "string",
+          "enum": [
+            "technical",
+            "support",
+            "administrative",
+            "billing",
+            "other"
+          ]
+        },
+        "^OrganizationName:(en|nl)$": {
+          "type": "string"
+        },
+        "^OrganizationDisplayName:(en|nl)$": {
+          "type": "string"
+        },
+        "^OrganizationURL:(en|nl)$": {
+          "type": "string",
+          "format": "uri"
+        },
+        "^coin:entity_categories:([1-2]{1})$": {
+          "type": "string",
+          "enum": [
+            "http://refeds.org/category/research-and-scholarship",
+            "http://refeds.org/category/hide-from-discovery"
+          ]
+        },
+        "^SingleSignOnService:([0-9]{1}):Binding$": {
+          "$ref": "#/definitions/SingleSignOnService",
+          "multiplicity": 10
+        },
+        "^SingleSignOnService:([0-9]{1}):Location$": {
+          "type": "string",
+          "format": "uri",
+          "multiplicity": 10
+        },
+        "^keywords:(en|nl)$": {
+          "type": "string"
+        },
+        "^shibmd:scope:([0-5]{1}):allowed$": {
+          "type": "string",
+          "multiplicity": 10
+        },
+        "^shibmd:scope:([0-5]{1}):regexp": {
+          "type": "string",
+          "multiplicity": 10
+        }
+      },
+      "required": [
+        "name:en",
+        "SingleSignOnService:0:Binding",
+        "SingleSignOnService:0:Location"
+      ],
+      "additionalProperties": false
     }
   },
   "required": [
     "entityid",
     "state",
-    "allowedall",
-    "AssertionConsumerService:0:Binding",
-    "AssertionConsumerService:0:Location",
-    "NameIDFormat"
+    "allowedall"
   ],
   "additionalProperties": false,
   "indexes": [
@@ -236,10 +244,10 @@
       "type": "text",
       "fields": [
         "entityid",
-        "name:en",
-        "name:nl",
-        "description:en",
-        "description:nl"
+        "metaDataFields.name:en",
+        "metaDataFields.name:nl",
+        "metaDataFields.description:en",
+        "metaDataFields.description:nl"
       ]
     }
   ]

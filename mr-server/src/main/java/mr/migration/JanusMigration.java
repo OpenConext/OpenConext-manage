@@ -21,6 +21,7 @@ import org.springframework.util.StringUtils;
 import javax.sql.DataSource;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -58,17 +59,29 @@ public class JanusMigration implements ApplicationListener<ApplicationReadyEvent
         }
     }
 
-    public Map<String, Long> doMigrate() {
+    public List<Map<String, Long>> doMigrate() {
         long start =System.currentTimeMillis();
-        Map<String, Long> stats = new HashMap<>();
+
+        Map<String, Long> spStats = new HashMap<>();
+        Map<String, Long> idpStats = new HashMap<>();
+
         emptyExistingCollections();
-        saveEntities(EntityType.SP, stats);
+
+        saveEntities(EntityType.SP, spStats);
+        LOG.info("Finished migration of SPs in {} ms and results {}", System.currentTimeMillis() - start, prettyPrint(spStats));
+
+        start =System.currentTimeMillis();
+        saveEntities(EntityType.IDP, idpStats);
+        LOG.info("Finished migration of IDPs in {} ms and results {}", System.currentTimeMillis() - start, prettyPrint(spStats));
+        return Arrays.asList(spStats, idpStats);
+    }
+
+    private String prettyPrint(Object obj) {
         try {
-            LOG.info("Finished migration in {} ms and results {}", System.currentTimeMillis() - start, new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(stats));
+            return new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(obj);
         } catch (JsonProcessingException e) {
             throw new IllegalArgumentException(e);
         }
-        return stats;
     }
 
     private void emptyExistingCollections() {
@@ -116,7 +129,9 @@ public class JanusMigration implements ApplicationListener<ApplicationReadyEvent
                 entity.put("ip", rs.getString("ip"));
                 entity.put("revisionnote", rs.getString("revisionnote"));
                 entity.put("active", rs.getString("active").equals("yes") ? true : false);
-                entity.put("arp", arpDeserializer.parseArpAttributes(rs.getString("arp_attributes")));
+                if (type.equals(EntityType.SP.getType())) {
+                    entity.put("arp", arpDeserializer.parseArpAttributes(rs.getString("arp_attributes")));
+                }
                 entity.put("notes", rs.getString("notes"));
                 addMetaData(entity, eid, revisionid);
                 addAllowedEntities(entity, eid, revisionid);
