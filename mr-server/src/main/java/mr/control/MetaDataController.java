@@ -82,6 +82,11 @@ public class MetaDataController {
         return metaDataRepository.autoComplete(type, query);
     }
 
+    @GetMapping("/client/whiteListing/{type}")
+    public List<Map> whiteListing(@PathVariable("type") String type) {
+        return metaDataRepository.whiteListing(type);
+    }
+
     @PostMapping("/client/search/{type}")
     public List<Map> searchEntities(@PathVariable("type") String type, @RequestBody Map<String, Object> properties) {
         return metaDataRepository.search(type, properties);

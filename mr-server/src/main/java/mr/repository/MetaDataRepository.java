@@ -65,4 +65,16 @@ public class MetaDataRepository {
             .include("data.metaDataFields.name:nl");
         return mongoTemplate.find(query, Map.class, type);
     }
+
+    public List<Map> whiteListing(String type) {
+        Query query = new Query();
+        query
+            .fields()
+            .include("data.entityid")
+            .include("data.allowedall")
+            .include("data.allowedEntities")
+            .include("data.metaDataFields.name:nl")
+            .include("data.metaDataFields.name:nl");
+        return mongoTemplate.find(query, Map.class, type);
+    }
 }

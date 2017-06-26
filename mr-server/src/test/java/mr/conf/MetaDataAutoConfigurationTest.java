@@ -49,7 +49,7 @@ public class MetaDataAutoConfigurationTest {
         assertEquals("text", indexConfiguration.getType());
         assertEquals("autocomplete_text_query", indexConfiguration.getName());
         assertEquals(
-            asList("entityid", "name:en", "name:nl", "description:en", "description:nl"),
+            asList("entityid", "metaDataFields.name:en", "metaDataFields.name:nl", "metaDataFields.description:en", "metaDataFields.description:nl"),
             indexConfiguration.getFields());
 
     }
