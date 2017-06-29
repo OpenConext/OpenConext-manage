@@ -8,3 +8,4 @@ TODO.txt
 target
 mr-gui/dist
 mr-gui/coverage
+*.css

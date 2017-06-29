@@ -1,7 +1,7 @@
-import spinner from "../lib/spin";
-import {isEmpty} from "../utils/utils";
+import spinner from "../lib/Spin";
+import {isEmpty} from "../utils/Utils";
 
-const apiPath = "/mr/api/client";
+const apiPath = "/mr/api/client/";
 let csrfToken = null;
 
 function apiUrl(path) {
