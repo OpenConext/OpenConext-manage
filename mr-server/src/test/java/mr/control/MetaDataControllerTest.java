@@ -26,7 +26,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     public void get() throws Exception {
         given()
             .when()
-            .get("mr/api/client/metadata/saml20-sp/1")
+            .get("mr/api/client/metadata/saml20_sp/1")
             .then()
             .statusCode(SC_OK)
             .body("id", equalTo("1"))
@@ -42,7 +42,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
             .then()
             .statusCode(SC_OK)
             .body("size()", is(2))
-            .body("title", hasItems("saml20-sp", "saml20-idp"));
+            .body("title", hasItems("saml20_sp", "saml20_idp"));
     }
 
     @Test
@@ -83,7 +83,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
             .body("revision.updatedBy", equalTo("saml2_user.com"))
             .body("data.entityid", equalTo("changed"));
 
-        List<MetaData> revisions = metaDataRepository.getMongoTemplate().findAll(MetaData.class, "saml20-sp_revision");
+        List<MetaData> revisions = metaDataRepository.getMongoTemplate().findAll(MetaData.class, "saml20_sp_revision");
         assertEquals(1, revisions.size());
 
         Revision revision = revisions.get(0).getRevision();
@@ -93,7 +93,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
 
         given()
             .when()
-            .get("mr/api/client/revisions/saml20-sp/1")
+            .get("mr/api/client/revisions/saml20_sp/1")
             .then()
             .statusCode(SC_OK)
             .body("size()", is(1))
@@ -107,7 +107,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         given()
             .when()
             .queryParam("query", "mock")
-            .get("mr/api/client/autocomplete/saml20-sp")
+            .get("mr/api/client/autocomplete/saml20_sp")
             .then()
             .statusCode(SC_OK)
             .body("size()", is(3))
@@ -129,7 +129,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
             .when()
             .body(searchOptions)
             .header("Content-type", "application/json")
-            .post("mr/api/client/search/saml20-sp")
+            .post("mr/api/client/search/saml20_sp")
             .then()
             .statusCode(SC_OK)
             .body("size()", is(2))
@@ -147,7 +147,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     public void whiteListing() throws Exception {
         given()
             .when()
-            .get("mr/api/client/whiteListing/saml20-sp")
+            .get("mr/api/client/whiteListing/saml20_sp")
             .then()
             .statusCode(SC_OK)
             .body("size()", is(5))

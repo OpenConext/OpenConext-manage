@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "saml20-idp",
+  "title": "saml20_idp",
   "definitions": {
     "SingleSignOnService": {
       "type": "string",

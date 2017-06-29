@@ -30,6 +30,7 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
             //this is the contract. See AbstractPreAuthenticatedProcessingFilter#doAuthenticate
             return null;
         }
+        //TODO how to detemrine guest membership
         return new FederatedUser(uid, displayName, schacHomeOrganization, createAuthorityList("ROLE_USER", "ROLE_ADMIN"));
     }
 

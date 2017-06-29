@@ -18,4 +18,9 @@ public class FederatedUser extends User {
         this.schacHomeOrganization = schacHomeOrganization;
     }
 
+    public boolean isGuest() {
+        return getAuthorities().stream()
+            .noneMatch(authority -> authority.getAuthority().equalsIgnoreCase("ROLE_ADMIN"));
+    }
+
 }

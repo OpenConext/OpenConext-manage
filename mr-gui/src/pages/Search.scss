@@ -1,0 +1,43 @@
+@import "../stylesheets/mixins.scss";
+
+.search-metadata {
+    @include page;
+
+    section.tabs {
+        display: flex;
+        padding: 10px;
+        span {
+            padding: 15px;
+            background-color: white;
+            color: $blue;
+            text-transform: uppercase;
+            border: 1px solid $blue;
+            border-radius: $br;
+
+            &.active {
+                background-color: $blue;
+                color: white;
+            }
+
+            &:first-child {
+                border-bottom-right-radius: 0;
+                border-top-right-radius: 0;
+            }
+
+            &:last-child {
+                border-bottom-left-radius: 0;
+                border-top-left-radius: 0;
+            }
+        }
+    }
+
+    section.search {
+        display: flex;
+        padding: 10px;
+
+        .search-input {
+            width: 260px;
+        }
+    }
+}
+

@@ -1,7 +1,19 @@
 import React from "react";
-import logo from "./logo.svg";
+import {BrowserRouter as Router, Redirect, Route, Switch} from "react-router-dom";
 import "./App.css";
-import {me, reportError} from "../api";
+import ErrorDialog from "../components/ErrorDialog";
+import Flash from "../components/Flash";
+import ProtectedRoute from "../components/ProtectedRoute";
+import NotFound from "../pages/NotFound";
+import Search from "../pages/Search";
+import Detail from "../pages/Detail";
+import New from "../pages/New";
+import ServerError from "../pages/ServerError";
+import Header from "../components/Header";
+import Navigation from "../components/Navigation";
+import {me, reportError, configuration} from "../api";
+import "../locale/en";
+import "../locale/nl";
 
 const S4 = () => (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
 
@@ -11,7 +23,8 @@ class App extends React.PureComponent {
         super(props, context);
         this.state = {
             loading: true,
-            currentUser: {person: {guest: true}},
+            currentUser: {},
+            configuration: {},
             error: false,
             errorDialogOpen: false,
             errorDialogAction: () => {
@@ -57,7 +70,8 @@ class App extends React.PureComponent {
             me().catch(() => this.handleBackendDown())
                 .then(currentUser => {
                     if (currentUser && currentUser.uid) {
-                        this.setState({loading: false, currentUser: currentUser});
+                        configuration().then(configuration =>
+                            this.setState({loading: false, currentUser: currentUser, configuration: configuration}))
                     } else {
                         this.handleBackendDown();
                     }
@@ -73,18 +87,35 @@ class App extends React.PureComponent {
             return null; // render null when app is not ready yet
         }
 
-        const {currentUser} = this.state;
+        const {currentUser, configuration} = this.state;
 
         return (
-            <div className="App">
-                <div className="App-header">
-                    <img src={logo} className="App-logo" alt="logo"/>
-                    <h2>{currentUser.displayName}</h2><i className="fa fa-info-circle"></i>
+            <Router>
+                <div>
+                    <div>
+                        <Flash/>
+                        <Header currentUser={currentUser}/>
+                        <Navigation currentUser={currentUser}/>
+                        <ErrorDialog isOpen={errorDialogOpen}
+                                     close={errorDialogAction}/>
+                    </div>
+                    <Switch>
+                        <Route exact path="/" render={() => <Redirect to="/search"/>}/>
+                        <Route path="/search"
+                               render={props => <Search  configuration={configuration} {...props}/>}/>
+                        <Route path="/metadata/:type/:id"
+                               render={props => <Detail currentUser={currentUser} configuration={configuration} {...props}/>}/>
+                        <Route path="/error"
+                               render={props => <ServerError {...props}/>}/>
+                        <ProtectedRoute path="/new"
+                                        guest={currentUser.guest}
+                                        render={props => <New configuration={configuration} {...props}/>}/>
+
+                        <Route component={NotFound}/>
+                    </Switch>
                 </div>
-                <p className="App-intro">
-                    To get started, edit <code>src/App.js</code> and save to reload.
-                </p>
-            </div>
+            </Router>
+
         );
     }
 }

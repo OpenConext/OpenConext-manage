@@ -37,7 +37,7 @@ The client is build with react.js and to get initially started:
 
 To run locally:
 
-`yarn local`
+`yarn start`
 
 Browse to the [application homepage](http://localhost:8000/).
 

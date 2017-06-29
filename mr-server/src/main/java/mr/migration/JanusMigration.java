@@ -102,7 +102,7 @@ public class JanusMigration implements ApplicationListener<ApplicationReadyEvent
                 "INNER JOIN janus__connectionRevision AS CONNECTION_REVISION ON CONNECTION_REVISION.eid = CONNECTION.id " +
                 "AND CONNECTION_REVISION.revisionid = CONNECTION.revisionNr WHERE " +
                 "CONNECTION.type=?",
-            new String[]{entityType.getType()},
+            new String[]{entityType.getJanusDbValue()},
             rs -> {
                 saveEntity(rs.getLong("id"), rs.getLong("revisionNr"), entityType.getType(), true, null, stats);
             });

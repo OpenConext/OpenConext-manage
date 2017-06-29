@@ -1,0 +1,53 @@
+@import "../stylesheets/vars.scss";
+
+div.flash {
+  color: white;
+
+  position: fixed;
+  width: 100%;
+  top: 0;
+  z-index: 6;
+  opacity: .9;
+
+  transition: top 150ms ease-in-out;
+
+  &.hide {
+    transition: top 1000ms ease-in-out;
+    top: -80px;
+
+  }
+
+  &.info {
+    background-color: darken($green, 15%);
+  }
+  &.warning {
+    background-color: $orange;
+  }
+  &.error {
+    background-color: $red;
+  }
+
+  .message-container {
+    max-width: $medium;
+    margin: 0 auto;
+    position: relative;
+
+    p {
+      padding: 10px 25px 10px 15px;
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+    a.close {
+      text-decoration: none;
+      position: absolute;
+      right: 10px;
+      top: -5px;
+      color: white;
+      font-size: larger;
+      padding: 6px;
+    }
+  }
+
+
+
+}

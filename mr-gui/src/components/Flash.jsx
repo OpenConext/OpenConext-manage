@@ -2,6 +2,7 @@ import React from "react";
 
 import {emitter, getFlash, clearFlash} from "../utils/Flash";
 import {isEmpty} from "../utils/Utils";
+import "./Flash.css";
 
 export default class Flash extends React.PureComponent {
 
@@ -31,8 +32,7 @@ export default class Flash extends React.PureComponent {
         return (
             <div className={`flash ${className} ${flash.type}`}>
                 <div className="message-container">
-                    <p dangerouslySetInnerHTML={{__html: flash.message}}>
-                    </p>
+                    <p dangerouslySetInnerHTML={{__html: flash.message}}/>
                     <a className="close" onClick={clearFlash}>
                         <i className="fa fa-remove"></i>
                     </a>
