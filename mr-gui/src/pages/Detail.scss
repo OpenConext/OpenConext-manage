@@ -1,13 +1,15 @@
 @import "../stylesheets/mixins.scss";
 
-.search-metadata {
+.detail-metadata {
     @include page;
 
     section.tabs {
         display: flex;
         margin-top: 40px;
-        padding: 0;
+        padding: 10px 0 0 0;
         span {
+            flex-grow: 1;
+            text-align: center;
             cursor: pointer;
             padding: 15px;
             background-color: white;
@@ -33,25 +35,5 @@
         }
     }
 
-    section.search {
-        display: flex;
-        padding: 30px;
-        background-color: white;
-        border-top: 1px solid $blue;
-        position: relative;
-
-        .search-input {
-            width: 100%;
-            padding: 8px;
-            font-size: larger;
-        }
-        .fa-search {
-            position: absolute;
-            right: 35px;
-            top: 40px;
-            font-size: 20px;
-            color: $blue;
-        }
-    }
 }
 

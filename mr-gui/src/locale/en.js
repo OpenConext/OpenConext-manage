@@ -26,9 +26,23 @@ I18n.translations.en = {
     },
 
     metadata: {
-        saml20_sp:  "Service Providers",
-        saml20_idp:  "Identity Providers",
+        saml20_sp: "Service Providers",
+        saml20_idp: "Identity Providers",
+        searchPlaceHolder: "Search for metadata",
+
+        tabs: {
+            connection: "Connection",
+            whitelist: "Whitelisting",
+            metadata: "Metadata",
+            arp: "ARP",
+            manipulation: "manipulation",
+            consent_disabling: "Consent Disabling"
+        },
+        notFound: "No Metadata found",
+        entityId: "Entity ID",
+
     },
+
     error_dialog: {
         title: "Unexpected error",
         body: "This is embarrassing; an unexpected error has occurred. It has been logged and reported. Please try again. Still doesn't work? Please click 'Help'.",
@@ -45,7 +59,11 @@ I18n.translations.en = {
         leave: "Leave"
     },
 
-
+    metadata_autocomplete: {
+        entity_id: "Entity ID",
+        name: "Name",
+        no_results: "No results"
+    },
 };
 
 export default I18n.translations.en;

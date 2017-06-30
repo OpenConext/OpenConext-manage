@@ -1,0 +1,59 @@
+@import "../stylesheets/vars.scss";
+
+section.metadata-autocomplete {
+
+    position: absolute;
+    z-index: 3;
+    top: 70px;
+    border-radius: $br;
+    background-color: white;
+    box-shadow: 1px 4px 12px 1px $medium-grey;
+    margin-bottom: 25px;
+
+    div.no-results {
+        padding: 10px 15px;
+        font-style: italic;
+    }
+
+    table.result {
+        width: 100%;
+        word-break: break-all;
+
+        thead th {
+            color: $medium-grey;
+            font-size: larger;
+            font-weight: bold;
+            text-transform: uppercase;
+            padding: 10px;
+            text-align: left;
+
+            &.entity_id {
+                width: 60%;
+            }
+            &.name {
+                width: 40%;
+            }
+
+        }
+        tbody tr {
+            border-top: 1px solid $light-grey;
+            cursor: pointer;
+
+            &.active, &:hover {
+                background-color: $light-grey;
+            }
+            td {
+                padding: 5px 10px;
+                vertical-align: middle;
+            }
+
+            span {
+                &.matched {
+                    font-weight: bold;
+                    text-decoration: underline;
+                }
+            }
+
+        }
+    }
+}

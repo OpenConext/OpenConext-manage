@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
 
@@ -31,6 +32,11 @@ public class UserController {
     @GetMapping("/client/users/me")
     public FederatedUser me(FederatedUser federatedUser) {
         return federatedUser;
+    }
+
+    @GetMapping("/client/users/ping")
+    public Map<String, String> ping() {
+        return Collections.singletonMap("Ping", "Ok");
     }
 
     @DeleteMapping("/client/users/logout")

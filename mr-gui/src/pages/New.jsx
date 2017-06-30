@@ -1,8 +1,7 @@
 import React from "react";
 import I18n from "i18n-js";
 import PropTypes from "prop-types";
-import {detail} from "../api";
-
+import {ping} from "../api";
 const tabsSp = ["connection", "whitelist", "metadata", "arp", "manipulation"];
 const tabsIdP = ["connection", "whitelist", "consent", "metadata", "manipulation"];
 
@@ -19,7 +18,8 @@ export default class New extends React.PureComponent {
     }
 
     componentDidMount() {
-        window.scrollTo(0, 0);
+        ping();//.then(configuration =>
+           // this.setState({configuration: configuration}))
     }
 
     renderTab = tab =>
@@ -42,6 +42,6 @@ export default class New extends React.PureComponent {
 
 New.propTypes = {
     history: PropTypes.object.isRequired,
-    configuration: PropTypes.object.isRequired,
+    configuration: PropTypes.array.isRequired,
 };
 

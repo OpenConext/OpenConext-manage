@@ -1,0 +1,21 @@
+@import "../../stylesheets/vars.scss";
+
+.inline-editable {
+    span {
+        min-height: 28px;
+        padding: 5px 0 5px 10px;
+
+        &.edit-editable {
+            background-color: $light-blue;
+        }
+    }
+
+    input[type=text], input[type=email] {
+        display: block;
+        width: 100%;
+        padding: 5px 0 5px 10px;
+        font-size: 14px;
+        background-color: $light-grey;
+    }
+
+}

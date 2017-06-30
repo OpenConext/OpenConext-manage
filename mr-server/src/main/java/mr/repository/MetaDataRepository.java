@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.TextCriteria;
 import org.springframework.stereotype.Repository;
 
 import java.util.Arrays;
@@ -18,6 +17,8 @@ import java.util.Map;
  */
 @Repository
 public class MetaDataRepository {
+
+    private static final int AUTOCOMPLETE_LIMIT = 15;
 
     @Autowired
     private MongoTemplate mongoTemplate;
@@ -45,25 +46,26 @@ public class MetaDataRepository {
     }
 
     public List<Map> autoComplete(String type, String search) {
-        Query query = queryWithSamlFields();
-        query.addCriteria(new TextCriteria().matching(search));
-        query.limit(20);
-        List<Map> results = mongoTemplate.find(query, Map.class, type);
-        if (results.size() < 20) {
-            final Query secondQuery = queryWithSamlFields();
-            secondQuery.limit(20 - results.size());
-            //TODO get from index from schema
-            List<String> fields = Arrays.asList(
-                "data.entityid",
-                "data.metaDataFields.name:en",
-                "data.metaDataFields.name:nl",
-                "data.metaDataFields.description:en",
-                "data.metaDataFields.description:nl");
-            fields.forEach(field -> secondQuery.addCriteria(Criteria.where(field)
-                .regex(".*" + search + ".*", "i")));
-            results.addAll(mongoTemplate.find(secondQuery, Map.class, type));
-        }
-        return results;
+//        Query query = queryWithSamlFields();
+//        query.addCriteria(new TextCriteria().matching(search));
+//        query.limit(AUTOCOMPLETE_LIMIT);
+//        List<Map> results = mongoTemplate.find(query, Map.class, type);
+//        if (results.size() < AUTOCOMPLETE_LIMIT) {
+        final Query secondQuery = queryWithSamlFields();
+        secondQuery.limit(AUTOCOMPLETE_LIMIT);
+        //TODO get from index from schema
+        List<String> fields = Arrays.asList(
+            "data.entityid",
+            "data.metaDataFields.name:en",
+            "data.metaDataFields.name:nl"
+//                "data.metaDataFields.description:en",
+//                "data.metaDataFields.description:nl"
+        );
+        fields.forEach(field -> secondQuery.addCriteria(Criteria.where(field)
+            .regex(".*" + search + ".*", "i")));
+        return mongoTemplate.find(secondQuery, Map.class, type);
+//        }
+//        return results;
     }
 
     public List<Map> search(String type, Map<String, Object> properties) {

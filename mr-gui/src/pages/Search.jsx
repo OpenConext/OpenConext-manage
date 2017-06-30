@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import debounce from "lodash.debounce";
 
 import Autocomplete from "../components/Autocomplete";
-import {autocomplete} from "../api";
+import {autocomplete, ping} from "../api";
 import {isEmpty, stop} from "../utils/Utils";
 
 import "./Search.css";
@@ -23,6 +23,10 @@ export default class Search extends React.PureComponent {
             selectedTab: tabs[0],
             loadingAutoComplete: false
         };
+    }
+
+    componentDidMount() {
+        ping();
     }
 
     onSearchKeyDown = e => {
@@ -61,7 +65,7 @@ export default class Search extends React.PureComponent {
             loadingAutoComplete: false
         })), 200);
 
-    itemSelected = metaData => this.props.history.push(`/metadata/${metaData.type}/${metaData.id}`);
+    itemSelected = metaData => this.props.history.push(`/metadata/${metaData.type}/${metaData[".id"]}`);
 
     onBlurSearch = suggestions => () => {
         if (!isEmpty(suggestions)) {
@@ -71,8 +75,14 @@ export default class Search extends React.PureComponent {
         }
     };
 
+    switchTab = tab => e => {
+        stop(e);
+        this.setState({selectedTab: tab});
+        this.search(tab)({target: {value: this.state.query}});
+    };
+
     renderTab = (tab, selectedTab) =>
-        <span key={tab} className={tab === selectedTab ? "active" : ""}>
+        <span key={tab} className={tab === selectedTab ? "active" : ""} onClick={this.switchTab(tab)}>
             {I18n.t(`metadata.${tab}`)}
         </span>;
 

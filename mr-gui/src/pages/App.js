@@ -11,7 +11,7 @@ import New from "../pages/New";
 import ServerError from "../pages/ServerError";
 import Header from "../components/Header";
 import Navigation from "../components/Navigation";
-import {me, reportError, configuration} from "../api";
+import {configuration, me, reportError} from "../api";
 import "../locale/en";
 import "../locale/nl";
 
@@ -95,16 +95,17 @@ class App extends React.PureComponent {
                     <div>
                         <Flash/>
                         <Header currentUser={currentUser}/>
-                        <Navigation currentUser={currentUser}/>
+                        <Navigation currentUser={currentUser} {...this.props}/>
                         <ErrorDialog isOpen={errorDialogOpen}
                                      close={errorDialogAction}/>
                     </div>
                     <Switch>
                         <Route exact path="/" render={() => <Redirect to="/search"/>}/>
                         <Route path="/search"
-                               render={props => <Search  configuration={configuration} {...props}/>}/>
+                               render={props => <Search configuration={configuration} {...props}/>}/>
                         <Route path="/metadata/:type/:id"
-                               render={props => <Detail currentUser={currentUser} configuration={configuration} {...props}/>}/>
+                               render={props => <Detail currentUser={currentUser}
+                                                        configuration={configuration} {...props}/>}/>
                         <Route path="/error"
                                render={props => <ServerError {...props}/>}/>
                         <ProtectedRoute path="/new"
