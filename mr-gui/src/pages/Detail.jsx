@@ -67,7 +67,7 @@ export default class Detail extends React.PureComponent {
             case "whitelist" :
                 return <WhiteList whiteListing={whiteListing} allowedEntities={metaData.data.allowedEntities} allowedAll={metaData.data.allowedall} onChange={this.onChange}/>;
             case "metadata":
-                return <MetaData entries={metaData.metaDataFields} configuration={configuration}/>;
+                return <MetaData entries={metaData.data.metaDataFields} configuration={configuration} onChange={this.onChange}/>;
             case "arp":
                 return <ARP arp={metaData.data.arp} arpConfiguration={configuration.properties.arp} onChange={this.onChange}/>;
             case "manipulation":

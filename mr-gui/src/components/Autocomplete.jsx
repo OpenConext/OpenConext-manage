@@ -2,6 +2,7 @@ import React from "react";
 import I18n from "i18n-js";
 import PropTypes from "prop-types";
 import scrollIntoView from "scroll-into-view";
+import {isEmpty} from "../utils/Utils";
 
 import "./Autocomplete.css";
 
@@ -14,8 +15,14 @@ export default class Autocomplete extends React.PureComponent {
     }
 
     item = (value, query) => {
+        if (isEmpty(value)) {
+            return <span></span>;
+        }
         const nameToLower = value.toLowerCase();
         const indexOf = nameToLower.indexOf(query.toLowerCase());
+        if (indexOf < 0) {
+            return <span>{value}</span>;
+        }
         const first = value.substring(0, indexOf);
         const middle = value.substring(indexOf, indexOf + query.length);
         const last = value.substring(indexOf + query.length);

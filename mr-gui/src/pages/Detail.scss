@@ -12,25 +12,20 @@
             text-align: center;
             cursor: pointer;
             padding: 15px;
-            background-color: white;
-            color: $medium-grey;
+            background-color: $light-grey;
+            color: $dark-grey;
             text-transform: uppercase;
-            border: 1px solid $blue;
-            border-right: none;
-            border-bottom: none;
+            border-right: 1px solid white;
 
             &.active {
-                background-color: $blue;
-                color: white;
-            }
-
-            &:first-child {
-                border-top-left-radius: $br;
+                background-color: white;
+                color: $darker-blue;
+                border-top: 2px solid $blue;
+                border-right: none;
             }
 
             &:last-child {
-                border-top-right-radius: $br;
-                border-right: 1px solid $blue;
+                border-right: none;
             }
         }
     }

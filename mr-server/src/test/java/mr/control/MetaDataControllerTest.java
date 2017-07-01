@@ -110,10 +110,9 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
             .get("mr/api/client/autocomplete/saml20_sp")
             .then()
             .statusCode(SC_OK)
-            .body("size()", is(3))
-            .body("'.id'", hasItems("2", "3", "5"))
+            .body("size()", is(2))
+            .body("'.id'", hasItems("3", "5"))
             .body("data.entityid", hasItems(
-                "https://profile.test2.surfconext.nl/authentication/metadata",
                 "http://mock-sp",
                 "https://serviceregistry.test2.surfconext.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp"));
     }

@@ -32,8 +32,7 @@ export default class MetaData extends React.PureComponent {
 
 MetaData.propTypes = {
     onChange: PropTypes.func.isRequired,
-    whiteListing: PropTypes.array.isRequired,
-    entries: PropTypes.array.isRequired,
+    entries: PropTypes.object.isRequired,
     configuration: PropTypes.object.isRequired
 };
 

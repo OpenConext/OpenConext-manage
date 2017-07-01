@@ -31,7 +31,7 @@ export default class Manipulation extends React.PureComponent {
 }
 
 Manipulation.propTypes = {
-    content: PropTypes.array.isRequired,
+    content: PropTypes.string,
     onChange: PropTypes.func.isRequired
 };
 
