@@ -78,7 +78,7 @@ public class MetaDataRepository {
         //When we have multiple types then we need to delegate depending on the type.
         query
             .fields()
-            .include("type")
+            .include("data.state")
             .include("data.entityid")
             .include("data.metaDataFields.name:en")
             .include("data.metaDataFields.name:nl");

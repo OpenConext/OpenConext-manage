@@ -4,6 +4,12 @@
     span {
         min-height: 28px;
         padding: 5px 0 5px 10px;
+        width: 100%;
+        display: block;
+
+        i.fa-pencil {
+            float: right;
+        }
 
         &.edit-editable {
             background-color: $light-blue;

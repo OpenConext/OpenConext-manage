@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import scrollIntoView from "scroll-into-view";
 import {isEmpty} from "../utils/Utils";
 
+import CheckBox from "./CheckBox";
 import "./Autocomplete.css";
 
 export default class Autocomplete extends React.PureComponent {
@@ -41,6 +42,7 @@ export default class Autocomplete extends React.PureComponent {
                     <thead>
                     <tr>
                         <th className="name">{I18n.t("metadata_autocomplete.name")}</th>
+                        <th className="state">{I18n.t("metadata_autocomplete.state")}</th>
                         <th className="entity_id">{I18n.t("metadata_autocomplete.entity_id")}</th>
                     </tr>
                     </thead>
@@ -56,6 +58,9 @@ export default class Autocomplete extends React.PureComponent {
                                         }
                                     }}>
                                     <td>{this.item(item.data.metaDataFields["name:en"] || item.data.metaDataFields["name:nl"], query)}</td>
+                                    <td className="state">
+                                        <CheckBox name="state" value={item.data.state === "prodaccepted"} onChange={() => this} readOnly={true}/>
+                                    </td>
                                     <td>{this.item(item.data.entityid, query)}</td>
                                 </tr>
                             )

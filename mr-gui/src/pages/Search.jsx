@@ -65,7 +65,7 @@ export default class Search extends React.PureComponent {
             loadingAutoComplete: false
         })), 200);
 
-    itemSelected = metaData => this.props.history.push(`/metadata/${metaData.type}/${metaData[".id"]}`);
+    itemSelected = metaData => this.props.history.push(`/metadata/${this.state.selectedTab}/${metaData[".id"]}`);
 
     onBlurSearch = suggestions => () => {
         if (!isEmpty(suggestions)) {

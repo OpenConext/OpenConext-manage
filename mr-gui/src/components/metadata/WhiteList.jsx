@@ -2,6 +2,7 @@ import React from "react";
 import I18n from "i18n-js";
 import PropTypes from "prop-types";
 import InlineEditable from "./InlineEditable";
+import CheckBox from "./../CheckBox";
 
 import "./WhiteList.css";
 
@@ -17,14 +18,18 @@ export default class WhiteList extends React.PureComponent {
     }
 
     onChange = name => value => {
-        this.props.onChange(name, value);
+        if (value.target) {
+            this.props.onChange(name, value.target.checked);
+        } else {
+            this.props.onChange(name, value);
+        }
     };
 
     render() {
-        //const {whiteListing, allowedEntities} = this.props;
+        const {allowedAll, allowedEntities, whiteListing} = this.props;
         return (
             <div className="metadata-whitelist">
-                <p>WhiteList</p>
+                <CheckBox info={I18n.t("metadata.allowAll")} name="allow-all" value={allowedAll} onChange={this.onChange("data.allowedall")}/>
             </div>
         );
     }

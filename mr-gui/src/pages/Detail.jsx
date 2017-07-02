@@ -8,14 +8,15 @@ import ConsentDisabling from "../components/metadata/ConsentDisabling";
 import Manipulation from "../components/metadata/Manipulation";
 import MetaData from "../components/metadata/MetaData";
 import WhiteList from "../components/metadata/WhiteList";
+import Revisions from "../components/metadata/Revisions";
 
-import {detail, whiteListing} from "../api";
+import {detail, whiteListing, revisions} from "../api";
 import {stop} from "../utils/Utils";
 
 import "./Detail.css";
 
-const tabsSp = ["connection", "whitelist", "metadata", "arp", "manipulation"];
-const tabsIdP = ["connection", "whitelist", "consent_disabling", "metadata", "manipulation"];
+const tabsSp = ["connection", "whitelist", "metadata", "arp", "manipulation", "revisions"];
+const tabsIdP = ["connection", "whitelist", "consent_disabling", "metadata", "manipulation", "revisions"];
 
 export default class Detail extends React.PureComponent {
 
@@ -24,6 +25,7 @@ export default class Detail extends React.PureComponent {
         this.state = {
             metaData: {},
             whiteListing: [],
+            revisions: [],
             notFound: false,
             loaded: false,
             selectedTab: "connection"
@@ -34,7 +36,10 @@ export default class Detail extends React.PureComponent {
         const {type, id} = this.props.match.params;
         detail(type, id).then(metaData => {
             this.setState({metaData: metaData, loaded: true});
-            whiteListing(metaData.type === "saml20_sp" ? "saml20_idp" : "saml20_sp").then(whiteListing => this.setState({whiteListing: whiteListing}))
+            whiteListing(metaData.type === "saml20_sp" ? "saml20_idp" : "saml20_sp").then(whiteListing => {
+                this.setState({whiteListing: whiteListing});
+                revisions(type, id).then(revisions => this.setState({revisions: revisions}))
+            })
         }).catch(err => {
             if (err.response.status === 404) {
                 this.setState({notFound: true, loaded: true});
@@ -52,14 +57,23 @@ export default class Detail extends React.PureComponent {
     };
 
     onChange = (name, value) => {
-        //todo
+        const metaData = {...this.state.metaData, data: {...this.state.metaData.data}};
+        const parts = name.split(".");
+        const last = parts.pop();
+
+        let ref = metaData;
+        parts.forEach(part => ref = ref[part]);
+        ref[last] = value;
+
+        this.setState({metaData: metaData});
+
     };
 
     renderTab = tab =>
         <span key={tab} className={this.state.selectedTab === tab ? "active" : ""}
               onClick={this.switchTab(tab)}>{I18n.t(`metadata.tabs.${tab}`)}</span>;
 
-    renderCurrentTab = (tab, metaData, whiteListing) => {
+    renderCurrentTab = (tab, metaData, whiteListing, revisions) => {
         const configuration = this.props.configuration.filter(conf => conf.title === this.props.match.params.type)[0];
         switch (tab) {
             case "connection" :
@@ -74,12 +88,14 @@ export default class Detail extends React.PureComponent {
                 return <Manipulation content={metaData.data.manipulation} onChange={this.onChange}/>;
             case "consent_disabling":
                 return <ConsentDisabling disableConsent={metaData.data.disableConsent} whiteListing={whiteListing} onChange={this.onChange}/>;
+            case "revisions":
+                return <Revisions revisions={revisions} metaData={metaData}/>;
             default: throw new Error(`Unknown tab ${tab}`);
         }
     };
 
     render() {
-        const {loaded, notFound, metaData, whiteListing, selectedTab} = this.state;
+        const {loaded, notFound, metaData, whiteListing, revisions, selectedTab} = this.state;
         const type = metaData.type;
         const tabs = type === "saml20_sp" ? tabsSp : tabsIdP;
 
@@ -92,7 +108,7 @@ export default class Detail extends React.PureComponent {
                 {!notFound && <section className="tabs">
                     {tabs.map(tab => this.renderTab(tab))}
                 </section>}
-                {renderContent && this.renderCurrentTab(selectedTab, metaData, whiteListing)}
+                {renderContent && this.renderCurrentTab(selectedTab, metaData, whiteListing, revisions)}
             </div>
         );
     }

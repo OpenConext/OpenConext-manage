@@ -28,6 +28,8 @@ I18n.translations.en = {
     metadata: {
         saml20_sp: "Service Providers",
         saml20_idp: "Identity Providers",
+        saml20_sp_single: "Service Provider",
+        saml20_idp_single: "Identity Provider",
         searchPlaceHolder: "Search for metadata",
 
         tabs: {
@@ -36,10 +38,19 @@ I18n.translations.en = {
             metadata: "Metadata",
             arp: "ARP",
             manipulation: "manipulation",
-            consent_disabling: "Consent Disabling"
+            consent_disabling: "Consent Disabling",
+            revisions: "Revisions"
         },
         notFound: "No Metadata found",
         entityId: "Entity ID",
+        metaDataUrl: "Metadata URL",
+        state: "State",
+        prodaccepted: "Production",
+        testaccepted: "Test",
+        notes: "Notes",
+        allowAll: "Allow all identity providers access to this service",
+        edit: "Edit",
+        none: ""
 
     },
 
@@ -62,6 +73,7 @@ I18n.translations.en = {
     metadata_autocomplete: {
         entity_id: "Entity ID",
         name: "Name",
+        state: "Production",
         no_results: "No results"
     },
 };
