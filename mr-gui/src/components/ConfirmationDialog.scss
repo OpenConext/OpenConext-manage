@@ -3,6 +3,9 @@
 
 .confirmation-dialog-overlay {
     position: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     top: 0;
     left: 0;
     right: 0;
@@ -11,10 +14,6 @@
     z-index: 4;
 
     .confirmation-dialog-content {
-        top: 30%;
-        left: 35%;
-        bottom: 30%;
-        position: absolute;
         background-color: rgb(245, 245, 245);
         overflow: auto;
         border-radius: 3px;

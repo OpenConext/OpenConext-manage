@@ -3,6 +3,7 @@ import I18n from "i18n-js";
 import PropTypes from "prop-types";
 import ConfirmationDialog from "../../components/ConfirmationDialog";
 import CheckBox from "./../CheckBox";
+import SelectEntities from "./../SelectEntities";
 import {stop} from "../../utils/Utils";
 
 import "./WhiteList.css";
@@ -23,9 +24,8 @@ export default class WhiteList extends React.PureComponent {
 
     confirmationDialogAction = e => {
         stop(e);
-        debugger;
         this.setState({confirmationDialogOpen: false});
-        this.onChange("data.allowedall", false);
+        this.props.onChange("data.allowedall", false);
     };
 
     cancel = e => {
@@ -61,6 +61,7 @@ export default class WhiteList extends React.PureComponent {
                                     leavePage={false}
                                     question={I18n.t("whitelisting.confirmation", {name: name, type: typeS})}/>
                 <CheckBox info={I18n.t("metadata.allowAll", {name: name || "this service"})} name="allow-all" value={allowedAll} onChange={this.allowAllChanged}/>
+                <SelectEntities whiteListing={whiteListing} onChange={this.onChange("")}/>
             </div>
         );
     }

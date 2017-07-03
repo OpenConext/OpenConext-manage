@@ -55,7 +55,7 @@ I18n.translations.en = {
     },
 
     whitelisting: {
-        confirmation:"Are you sure you want to allow no {{type}} access to {{name}}. You will have to add {{type}} one-by-one or allow them all."
+        confirmation:"Are you sure you want to deny all {{type}} access to {{name}}? You will have to add {{type}} one-by-one or allow them all again."
     },
     error_dialog: {
         title: "Unexpected error",
