@@ -75,11 +75,13 @@ export default class Detail extends React.PureComponent {
 
     renderCurrentTab = (tab, metaData, whiteListing, revisions) => {
         const configuration = this.props.configuration.filter(conf => conf.title === this.props.match.params.type)[0];
+        const name = metaData.data.metaDataFields["name:en"] || metaData.data.metaDataFields["name:nl"] || "this service";
         switch (tab) {
             case "connection" :
                 return <Connection metaData={metaData} onChange={this.onChange}/>;
             case "whitelist" :
-                return <WhiteList whiteListing={whiteListing} allowedEntities={metaData.data.allowedEntities} allowedAll={metaData.data.allowedall} onChange={this.onChange}/>;
+                return <WhiteList whiteListing={whiteListing} name={name} allowedEntities={metaData.data.allowedEntities}
+                                  allowedAll={metaData.data.allowedall} type={metaData.type} onChange={this.onChange}/>;
             case "metadata":
                 return <MetaData entries={metaData.data.metaDataFields} configuration={configuration} onChange={this.onChange}/>;
             case "arp":

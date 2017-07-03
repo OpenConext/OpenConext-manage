@@ -1,0 +1,62 @@
+@import "vars.scss";
+
+.button {
+    display: inline-block;
+    padding: 10px 15px;
+    text-transform: uppercase;
+    background-color: white;
+    color: $blue;
+    border: 1px solid $lighter-grey;
+    border-radius: $br;
+    font-size: larger;
+    font-weight: bold;
+    text-align: center;
+    cursor: pointer;
+
+    text-decoration: none;
+    &:hover, &:visited {
+        text-decoration: none;
+    }
+
+    &:not(:last-child) {
+        margin-right: 15px;
+    }
+
+    &.disabled {
+        cursor: no-drop;
+    }
+
+    i {
+        margin-left: 10px;
+        color: $medium-grey;
+    }
+
+    &.blue {
+        background-color: $blue;
+        color: white;
+        border: none;
+        &.error {
+            background-color: $red;
+        }
+        i {
+            color: white;
+        }
+    }
+    &.grey {
+        background-color: $lighter-grey;
+        color: white;
+        border: none;
+    }
+    &.green {
+        background-color: $green;
+        color: white;
+        border: none;
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        i {
+            color: white;
+            margin: 0;
+            font-size: larger;
+        }
+    }
+}

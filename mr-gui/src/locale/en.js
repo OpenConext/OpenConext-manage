@@ -48,12 +48,15 @@ I18n.translations.en = {
         prodaccepted: "Production",
         testaccepted: "Test",
         notes: "Notes",
-        allowAll: "Allow all identity providers access to this service",
+        allowAll: "Allow all Identity Providers access to {{name}}",
         edit: "Edit",
         none: ""
 
     },
 
+    whitelisting: {
+        confirmation:"Are you sure you want to allow no {{type}} access to {{name}}. You will have to add {{type}} one-by-one or allow them all."
+    },
     error_dialog: {
         title: "Unexpected error",
         body: "This is embarrassing; an unexpected error has occurred. It has been logged and reported. Please try again. Still doesn't work? Please click 'Help'.",

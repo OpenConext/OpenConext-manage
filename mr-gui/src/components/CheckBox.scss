@@ -9,6 +9,9 @@ div.checkbox {
   label {
     display: inline-block;
     margin: 3px 0;
+    &.info {
+        margin-left: 10px;
+    }
   }
 
   input[type="checkbox"] + label span {
