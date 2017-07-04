@@ -33,6 +33,18 @@ export default class WhiteList extends React.PureComponent {
         this.setState({confirmationDialogOpen: false});
     };
 
+    addAllowedEntry = allowedEntry => {
+        const {allowedEntities} = this.props;
+        const newState = [...allowedEntities].concat({name: allowedEntry});
+        this.onChange("data.allowedEntities")(newState);
+    };
+
+    removeAllowedEntry = allowedEntry => {
+        const {allowedEntities} = this.props;
+        const newState = [...allowedEntities].filter(entity => entity.name !== allowedEntry.name);
+        this.onChange("data.allowedEntities")(newState);
+    };
+
     onChange = name => value => {
         if (value.target) {
             this.props.onChange(name, value.target.checked);
@@ -44,10 +56,15 @@ export default class WhiteList extends React.PureComponent {
     allowAllChanged = e => {
         if (e.target.checked) {
             this.props.onChange("data.allowedall", true);
-        } else {
+        } else if (this.props.allowedEntities.length > 0) {
             this.setState({confirmationDialogOpen: true});
+        } else {
+            this.props.onChange("data.allowedall", false);
         }
     };
+
+    renderAllowedEntity = entity =>
+        <CheckBox key={entity.name} info={entity.name} name={entity.name} value={true} onChange={() => this.removeAllowedEntry(entity)}/>
 
     render() {
         const {allowedAll, allowedEntities, whiteListing, name, type} = this.props;
@@ -61,7 +78,9 @@ export default class WhiteList extends React.PureComponent {
                                     leavePage={false}
                                     question={I18n.t("whitelisting.confirmation", {name: name, type: typeS})}/>
                 <CheckBox info={I18n.t("metadata.allowAll", {name: name || "this service"})} name="allow-all" value={allowedAll} onChange={this.allowAllChanged}/>
-                <SelectEntities whiteListing={whiteListing} onChange={this.onChange("")}/>
+                <SelectEntities whiteListing={whiteListing} allowedEntities={allowedEntities}
+                                onChange={this.addAllowedEntry}/>
+                {allowedEntities.map(this.renderAllowedEntity)}
             </div>
         );
     }

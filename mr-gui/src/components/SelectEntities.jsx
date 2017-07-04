@@ -17,19 +17,20 @@ export default class SelectEntities extends React.PureComponent {
         );
     };
 
-    options = whiteListing => whiteListing
+    options = (whiteListing, allowedEntities) => whiteListing
         .map(entry => {
             const metaDataFields = entry.data.metaDataFields;
             const value = entry.data.entityid;
             return {value: value, label: metaDataFields["name:en"] || metaDataFields["name:nl"] || value};
-        });
+        })
+        .filter(entry => allowedEntities.indexOf(entry.value) === -1);
 
     render() {
-        const {onChange, whiteListing} = this.props;
+        const {onChange, whiteListing, allowedEntities} = this.props;
         return <Select className="select-state"
                        onChange={option => onChange(option.value)}
                        optionRenderer={this.renderOption}
-                       options={this.options(whiteListing)}
+                       options={this.options(whiteListing, allowedEntities.map(entity => entity.name))}
                        value={null}
                        searchable={true}
                        valueRenderer={this.renderOption}/>;
@@ -40,7 +41,8 @@ export default class SelectEntities extends React.PureComponent {
 
 SelectEntities.propTypes = {
     onChange: PropTypes.func.isRequired,
-    whiteListing: PropTypes.array.isRequired
+    whiteListing: PropTypes.array.isRequired,
+    allowedEntities: PropTypes.array.isRequired
 };
 
 
