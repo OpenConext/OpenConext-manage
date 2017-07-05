@@ -69,6 +69,7 @@ public class MetaDataRepository {
         Query query = queryWithSamlFields();
         query.fields()
             .include("data.allowedall")
+            .include("data.state")
             .include("data.allowedEntities");
         return mongoTemplate.find(query, Map.class, type);
     }

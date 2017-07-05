@@ -53,7 +53,7 @@ export default class Connection extends React.PureComponent {
                         <td className="key">{I18n.t("metadata.metaDataUrl")}</td>
                         <td className="value">
                             <input type="text"
-                                   value={data.metadataurl}
+                                   value={data.metadataurl || ""}
                                    onChange={this.onChange("data.metadataurl")}/>
                         </td>
                     </tr>

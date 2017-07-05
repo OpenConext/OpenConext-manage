@@ -1,0 +1,48 @@
+@import "../../stylesheets/vars.scss";
+
+.metadata-consent-disabling {
+    background-color: white;
+    padding: 20px;
+
+    .consent-disabling-info {
+        margin: 15px 0;
+        h2 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+    }
+    section.consent-disabling{
+        margin-top: 15px;
+        table {
+            width: 100%;
+            th {
+                text-align: left;
+                cursor: pointer;
+                i {
+                    margin-left: 15px;
+                    color: $lighter-grey;
+                    &.current, &.reverse {
+                        color: $blue;
+                    }
+                }
+                &.select {
+                   width: 35px;
+                }
+                &.status {
+                    width: 20%;
+                }
+                &.name {
+                    width: 40%;
+                }
+                &.entityId {
+                    width: 35%;
+                }
+            }
+            tbody tr:nth-child(odd) {
+                background-color: $lightest-grey;
+            }
+        }
+    }
+
+}

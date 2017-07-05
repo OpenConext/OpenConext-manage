@@ -1,8 +1,9 @@
 import React from "react";
 import I18n from "i18n-js";
 import PropTypes from "prop-types";
-import InlineEditable from "./InlineEditable";
-
+import CodeMirror from "react-codemirror";
+import "codemirror/mode/javascript/javascript";
+import "codemirror/lib/codemirror.css";
 import "./Manipulation.css";
 
 export default class Manipulation extends React.PureComponent {
@@ -21,10 +22,33 @@ export default class Manipulation extends React.PureComponent {
     };
 
     render() {
-        //const {whiteListing, allowedEntities} = this.props;
+        const {content} = this.props;
+        const optionsForInfo= {lineNumbers: false, mode: "javascript", readOnly: true};
+        const optionsForContent  = {lineNumbers: true, mode: "javascript"};
+
+        const info = `
+/**
+ * PHP code for advanced Response Manipulation.
+ * The following variables are available:
+ *
+ * @var string &$subjectId  NameID (empty for IdPs)
+ * @var array  &$attributes URN attributes (example: array('urn:mace:terena.org:attribute-def:schacHomeOrganization'=>array('example.edu')))
+ * @var array  &$response   XmlToArray formatted Response
+ */
+        `;
+
         return (
             <div className="metadata-manipulation">
-                <p>Manipulation</p>
+                <div className="manipulation-info">
+                    <h2>
+                        <a href="https://github.com/OpenConext/OpenConext-engineblock/wiki/Attribute-Manipulations" target="_blank">
+                            {I18n.t("manipulation.description")}
+                    </a>
+                    </h2>
+                </div>
+                <CodeMirror className="comments" value={info} options={optionsForInfo} />
+                <div className="spacer"></div>
+                <CodeMirror value={content} onChange={this.onChange("data.manipulation")} options={optionsForContent} />
             </div>
         );
     }

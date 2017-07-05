@@ -10,7 +10,7 @@ import MetaData from "../components/metadata/MetaData";
 import WhiteList from "../components/metadata/WhiteList";
 import Revisions from "../components/metadata/Revisions";
 
-import {detail, whiteListing, revisions} from "../api";
+import {detail, revisions, whiteListing} from "../api";
 import {stop} from "../utils/Utils";
 
 import "./Detail.css";
@@ -28,7 +28,8 @@ export default class Detail extends React.PureComponent {
             revisions: [],
             notFound: false,
             loaded: false,
-            selectedTab: "connection"
+            selectedTab: "connection",
+            revisionNote: ""
         };
     }
 
@@ -58,15 +59,38 @@ export default class Detail extends React.PureComponent {
 
     onChange = (name, value) => {
         const metaData = {...this.state.metaData, data: {...this.state.metaData.data}};
+        if (Array.isArray(name) && Array.isArray(value)) {
+            for (let i = 0; i < name.length; i++) {
+                this.changeValueReference(metaData, name[i], value[i]);
+            }
+        } else {
+            this.changeValueReference(metaData, name, value);
+        }
+        this.setState({metaData: metaData});
+
+    };
+
+    changeValueReference = (metaData, name, value) => {
         const parts = name.split(".");
         const last = parts.pop();
 
         let ref = metaData;
         parts.forEach(part => ref = ref[part]);
         ref[last] = value;
+    };
 
-        this.setState({metaData: metaData});
-
+    renderActions = (revisionNote) => {
+        return <section className="actions">
+            <section className="notes">
+                <label htmlFor="revisionnote">{I18n.t("metadata.revisionnote")}</label>
+                <input name="revisionnote" type="text" value={revisionNote}
+                       onChange={e => this.setState({revisionNote: e.target.value})}/>
+            </section>
+            <section className="buttons">
+                <a className="button grey">{I18n.t("metadata.cancel")}</a>
+                <a className="button blue">{I18n.t("metadata.submit")}</a>
+            </section>
+        </section>
     };
 
     renderTab = tab =>
@@ -80,24 +104,30 @@ export default class Detail extends React.PureComponent {
             case "connection" :
                 return <Connection metaData={metaData} onChange={this.onChange}/>;
             case "whitelist" :
-                return <WhiteList whiteListing={whiteListing} name={name} allowedEntities={metaData.data.allowedEntities}
-                                  allowedAll={metaData.data.allowedall} type={metaData.type} onChange={this.onChange}/>;
+                return <WhiteList whiteListing={whiteListing} name={name}
+                                  allowedEntities={metaData.data.allowedEntities}
+                                  allowedAll={metaData.data.allowedall} type={metaData.type} onChange={this.onChange}
+                                  entityId={metaData.data.entityid}/>;
             case "metadata":
-                return <MetaData entries={metaData.data.metaDataFields} configuration={configuration} onChange={this.onChange}/>;
+                return <MetaData entries={metaData.data.metaDataFields} configuration={configuration}
+                                 onChange={this.onChange}/>;
             case "arp":
-                return <ARP arp={metaData.data.arp} arpConfiguration={configuration.properties.arp} onChange={this.onChange}/>;
+                return <ARP arp={metaData.data.arp} arpConfiguration={configuration.properties.arp}
+                            onChange={this.onChange}/>;
             case "manipulation":
                 return <Manipulation content={metaData.data.manipulation} onChange={this.onChange}/>;
             case "consent_disabling":
-                return <ConsentDisabling disableConsent={metaData.data.disableConsent} whiteListing={whiteListing} onChange={this.onChange}/>;
+                return <ConsentDisabling disableConsent={metaData.data.disableConsent} name={name}
+                                         whiteListing={whiteListing} onChange={this.onChange}/>;
             case "revisions":
                 return <Revisions revisions={revisions} metaData={metaData}/>;
-            default: throw new Error(`Unknown tab ${tab}`);
+            default:
+                throw new Error(`Unknown tab ${tab}`);
         }
     };
 
     render() {
-        const {loaded, notFound, metaData, whiteListing, revisions, selectedTab} = this.state;
+        const {loaded, notFound, metaData, whiteListing, revisions, selectedTab, revisionNote} = this.state;
         const type = metaData.type;
         const tabs = type === "saml20_sp" ? tabsSp : tabsIdP;
 
@@ -111,6 +141,7 @@ export default class Detail extends React.PureComponent {
                     {tabs.map(tab => this.renderTab(tab))}
                 </section>}
                 {renderContent && this.renderCurrentTab(selectedTab, metaData, whiteListing, revisions)}
+                {renderContent && this.renderActions(revisionNote)}
             </div>
         );
     }

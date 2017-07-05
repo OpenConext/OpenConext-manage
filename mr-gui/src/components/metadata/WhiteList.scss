@@ -3,4 +3,60 @@
 .metadata-whitelist {
     background-color: white;
     padding: 20px;
+
+    .whitelist-info {
+        margin: 15px 0;
+        h2 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+    }
+    section.allowed-entities {
+        margin-top: 15px;
+        table {
+            width: 100%;
+            th {
+                text-align: left;
+                cursor: pointer;
+                i {
+                    margin-left: 15px;
+                    color: $lighter-grey;
+                    &.current, &.reverse {
+                        color: $blue;
+                    }
+                }
+                &.select {
+                    width: 1%;
+                }
+                &.blocked {
+                    min-width: 90px;
+                    text-align: center;
+                }
+                &.status {
+                    width: 15%;
+                }
+                &.name {
+                    width: 40%;
+                }
+                &.entityId {
+                    width: 35%;
+                }
+            }
+            tbody tr:nth-child(odd) {
+                background-color: $lightest-grey;
+            }
+            td {
+                &.blocked {
+                    text-align: center;
+                    vertical-align: middle;
+                    i.fa {
+                        color: $red;
+                        font-size: 20px;
+                    }
+                }
+            }
+        }
+    }
+
 }

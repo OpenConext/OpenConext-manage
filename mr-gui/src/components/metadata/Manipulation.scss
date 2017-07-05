@@ -1,0 +1,29 @@
+@import "../../stylesheets/vars.scss";
+@import "../../stylesheets/mixins.scss";
+
+.metadata-manipulation {
+    background-color: white;
+    padding: 20px;
+
+    .manipulation-info {
+        margin: 15px 0;
+        h2 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            a {
+                color: $blue;
+                &:visited {
+                    color: $blue;
+                }
+                @include no-text-decoration;
+            }
+        }
+
+    }
+    .comments {
+        .CodeMirror {
+            height: auto;
+            background-color: $lightest-grey;
+        }
+    }
+}

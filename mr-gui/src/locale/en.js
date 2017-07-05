@@ -48,15 +48,48 @@ I18n.translations.en = {
         prodaccepted: "Production",
         testaccepted: "Test",
         notes: "Notes",
-        allowAll: "Allow all Identity Providers access to {{name}}",
         edit: "Edit",
-        none: ""
+        none: "",
+        submit: "Submit",
+        cancel: "Cancel",
+        revisionnote: "Revision notes"
 
     },
 
     whitelisting: {
-        confirmation:"Are you sure you want to deny all {{type}} access to {{name}}? You will have to add {{type}} one-by-one or allow them all again."
+        confirmationAllowAll:"Are you sure you want to allow all {{type}} access to '{{name}}'? You will have to add {{type}} one-by-one to selectively deny them again.",
+        confirmationAllowNone:"Are you sure you want to deny all {{type}} access to '{{name}}'? You will have to add {{type}} one-by-one or allow them all again.",
+        placeholder: "Search, select and add {{type}} to the whitelist",
+        allowAllProviders: "Allow all {{type}} access to {{name}}",
+        title: "{{type}} Whitelist",
+        description: "Add only those {{type}} which are allowed to access {{name}}.",
+        allowedEntries: {
+            blocked: "Blocked",
+            status: "Status",
+            entityid:"Entity ID",
+            name: "Name"
+        }
     },
+
+    consentDisabling: {
+        title: "Consent disabling",
+        description: "Search and add Service Providers that will skip consent for '{{name}}'.",
+        placeholder: "Search, select and add Service Providers to the consent-disabled-list",
+        entries: {
+            status: "Status",
+            entityid:"Entity ID",
+            name: "Name"
+        }
+    },
+
+    manipulation : {
+        description: "Documentation on attribute manipulations"
+    },
+
+    selectEntities: {
+
+    },
+
     error_dialog: {
         title: "Unexpected error",
         body: "This is embarrassing; an unexpected error has occurred. It has been logged and reported. Please try again. Still doesn't work? Please click 'Help'.",

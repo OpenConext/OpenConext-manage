@@ -21,18 +21,6 @@ span.Select-arrow-zone {
     background-color: $light-grey;
 }
 
-span.select-option {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    i {
-        margin-right: 20px;
-        height: 18px;
-        color: $medium-grey;
-
-    }
-}
-
 .is-disabled {
     span.select-option {
         cursor: not-allowed;

@@ -1,4 +1,6 @@
 @import "../stylesheets/mixins.scss";
+@import "../stylesheets/buttons.scss";
+@import "../stylesheets/vars.scss";
 
 .detail-metadata {
     @include page;
@@ -27,6 +29,32 @@
             &:last-child {
                 border-right: none;
             }
+        }
+    }
+
+    .actions {
+        display: flex;
+        margin-top: 25px;
+        .notes {
+            display: flex;
+            align-items: center;
+            flex-grow: 2;
+        }
+        label {
+            margin-right: 10px;
+        }
+        input[type=text]{
+            width: 75%;
+            border: 1px solid $lighter-grey;
+            padding: 6px;
+            border-radius: $br;
+            font-size: 14px;
+            &[disabled] {
+                background-color: $light-grey;
+            }
+        }
+        .buttons {
+            margin-left:auto;
         }
     }
 

@@ -11,7 +11,7 @@ export default class SelectEntities extends React.PureComponent {
         return (
             <span className="select-option">
                 <span className="select-label">
-                    {`${option.label} - ${option.value}`}
+                    {`${option.label}  -  ${option.value} (${option.state})`}
                 </span>
             </span>
         );
@@ -21,19 +21,24 @@ export default class SelectEntities extends React.PureComponent {
         .map(entry => {
             const metaDataFields = entry.data.metaDataFields;
             const value = entry.data.entityid;
-            return {value: value, label: metaDataFields["name:en"] || metaDataFields["name:nl"] || value};
+            return {
+                value: value,
+                label: (metaDataFields["name:en"] || metaDataFields["name:nl"] || value) + entry.data.state,
+                state: entry.data.state
+            };
         })
         .filter(entry => allowedEntities.indexOf(entry.value) === -1);
 
     render() {
-        const {onChange, whiteListing, allowedEntities} = this.props;
+        const {onChange, whiteListing, allowedEntities, placeholder} = this.props;
         return <Select className="select-state"
                        onChange={option => onChange(option.value)}
                        optionRenderer={this.renderOption}
                        options={this.options(whiteListing, allowedEntities.map(entity => entity.name))}
                        value={null}
                        searchable={true}
-                       valueRenderer={this.renderOption}/>;
+                       valueRenderer={this.renderOption}
+                       placeholder={placeholder || "Select..."}/>;
     }
 
 
@@ -42,7 +47,8 @@ export default class SelectEntities extends React.PureComponent {
 SelectEntities.propTypes = {
     onChange: PropTypes.func.isRequired,
     whiteListing: PropTypes.array.isRequired,
-    allowedEntities: PropTypes.array.isRequired
+    allowedEntities: PropTypes.array.isRequired,
+    placeholder: PropTypes.string
 };
 
 
