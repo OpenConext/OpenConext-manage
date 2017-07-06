@@ -34,6 +34,7 @@ export default class Detail extends React.PureComponent {
     }
 
     componentDidMount() {
+        window.scrollTo(0, 0);
         const {type, id} = this.props.match.params;
         detail(type, id).then(metaData => {
             this.setState({metaData: metaData, loaded: true});
@@ -49,7 +50,6 @@ export default class Detail extends React.PureComponent {
             }
 
         });
-        window.scrollTo(0, 0);
     }
 
     switchTab = tab => e => {
@@ -58,7 +58,13 @@ export default class Detail extends React.PureComponent {
     };
 
     onChange = (name, value) => {
-        const metaData = {...this.state.metaData, data: {...this.state.metaData.data}};
+        const currentState = this.state.metaData;
+        const metaData = {
+            ...currentState,
+            data: {...currentState.data},
+            arp: {...currentState.arp}//,
+           // metaDataFields: {...currentState.metaDataFields}
+        };
         if (Array.isArray(name) && Array.isArray(value)) {
             for (let i = 0; i < name.length; i++) {
                 this.changeValueReference(metaData, name[i], value[i]);
@@ -98,7 +104,7 @@ export default class Detail extends React.PureComponent {
               onClick={this.switchTab(tab)}>{I18n.t(`metadata.tabs.${tab}`)}</span>;
 
     renderCurrentTab = (tab, metaData, whiteListing, revisions) => {
-        const configuration = this.props.configuration.filter(conf => conf.title === this.props.match.params.type)[0];
+        const configuration = this.props.configuration.find(conf => conf.title === this.props.match.params.type);
         const name = metaData.data.metaDataFields["name:en"] || metaData.data.metaDataFields["name:nl"] || "this service";
         switch (tab) {
             case "connection" :
@@ -109,8 +115,8 @@ export default class Detail extends React.PureComponent {
                                   allowedAll={metaData.data.allowedall} type={metaData.type} onChange={this.onChange}
                                   entityId={metaData.data.entityid}/>;
             case "metadata":
-                return <MetaData entries={metaData.data.metaDataFields} configuration={configuration}
-                                 onChange={this.onChange}/>;
+                return <MetaData metaDataFields={metaData.data.metaDataFields} configuration={configuration}
+                                 onChange={this.onChange} name={name}/>;
             case "arp":
                 return <ARP arp={metaData.data.arp} arpConfiguration={configuration.properties.arp}
                             onChange={this.onChange}/>;

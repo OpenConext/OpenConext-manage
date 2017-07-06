@@ -38,7 +38,7 @@ export default class ConsentDisabling extends React.PureComponent {
                 "status": I18n.t(`metadata.${moreInfo.data.state}`),
                 "entityid": entity.name,
                 "name": moreInfo.data.metaDataFields["name:en"] || moreInfo.data.metaDataFields["name:nl"] || "",
-                "id": moreInfo[".id"]
+                "id": moreInfo["_id"]
             };
         });
         this.setState({enrichedDisableConsent: enrichedDisableConsent.sort(this.sortByAttribute(this.state.sorted, this.state.reverse))});

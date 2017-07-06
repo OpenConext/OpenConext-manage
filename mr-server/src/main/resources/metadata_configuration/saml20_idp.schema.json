@@ -120,7 +120,8 @@
           "default": false
         },
         "coin:publish_in_edugain_date": {
-          "type": "string"
+          "type": "string",
+          "format": "date-time"
         },
         "coin:additional_logging": {
           "type": "boolean"

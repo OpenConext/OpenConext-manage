@@ -37,7 +37,7 @@ public class MongobeeConfiguration {
     // Converts . into a mongo friendly char
     @PostConstruct
     public void setUpMongoEscapeCharacterConversion() {
-        mongoConverter.setMapKeyDotReplacement("_");
+        mongoConverter.setMapKeyDotReplacement("@");
     }
 
     @Bean

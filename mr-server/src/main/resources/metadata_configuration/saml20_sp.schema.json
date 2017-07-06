@@ -200,7 +200,7 @@
           "type": "string",
           "format": "uri"
         },
-        "mdui:RegistrationInfo": {
+        "mdrpi:RegistrationInfo": {
           "type": "string"
         },
         "logo:0:url": {
@@ -223,7 +223,8 @@
           "default": false
         },
         "coin:publish_in_edugain_date": {
-          "type": "string"
+          "type": "string",
+          "format": "date-time"
         },
         "coin:interfed_source": {
           "type": "string",
@@ -246,7 +247,8 @@
           "default": "false"
         },
         "coin:no_consent_required": {
-          "type": "boolean"
+          "type": "boolean",
+          "info" : "Select this option to skip the consent for a user after the first login.",
         },
         "coin:eula": {
           "type": "string",
@@ -255,23 +257,23 @@
         "coin:ss:idp_visible_only": {
           "type": "boolean"
         },
-        "coin:ss:application_url": {
+        "coin:application_url": {
           "type": "string",
           "format": "uri"
         },
-        "coin:ss:transparant_issuer": {
+        "coin:transparant_issuer": {
           "type": "boolean"
         },
-        "coin:ss:do_not_add_attribute_aliases": {
+        "coin:do_not_add_attribute_aliases": {
           "type": "boolean"
         },
-        "coin:ss:display_unconnected_idps_wayf": {
+        "coin:display_unconnected_idps_wayf": {
           "type": "boolean"
         },
-        "coin:ss:policy_enforcement_decision_required": {
+        "coin:policy_enforcement_decision_required": {
           "type": "boolean"
         },
-        "coin:ss:attribute_aggregation_required": {
+        "coin:attribute_aggregation_required": {
           "type": "boolean"
         }
       },
@@ -296,24 +298,30 @@
         },
         "^AssertionConsumerService:([0-9]{1}):index$": {
           "type": "string",
-          "format": "number"
+          "format": "number",
+          "multiplicity": 10
         },
         "^NameIDFormats:([0-2]{1})$": {
-          "$ref": "#/definitions/NameIDFormat"
+          "$ref": "#/definitions/NameIDFormat",
+          "multiplicity": 3
         },
         "^contacts:([0-3]{1}):surName$": {
-          "type": "string"
+          "type": "string",
+          "multiplicity": 4
         },
         "^contacts:([0-3]{1}):givenName$": {
-          "type": "string"
+          "type": "string",
+          "multiplicity": 4
         },
         "^contacts:([0-3]{1}):emailAddress$": {
           "type": "string",
-          "format" : "email"
+          "format" : "email",
+          "multiplicity": 4
         },
         "^contacts:([0-3]{1}):telephoneNumber": {
           "type": "string",
-          "format" : "email"
+          "format" : "email",
+          "multiplicity": 4
         },
         "^contacts:([0-3]{1}):contactType$": {
           "type": "string",
@@ -323,7 +331,8 @@
             "administrative",
             "billing",
             "other"
-          ]
+          ],
+          "multiplicity": 4
         },
         "^OrganizationName:(en|nl)$": {
           "type": "string"
@@ -343,7 +352,7 @@
           "type": "string",
           "format": "uri"
         },
-        "^mdui:RegistrationPolicy:(en|nl)$": {
+        "^mdrpi:RegistrationPolicy:(en|nl)$": {
           "type": "string"
         },
         "^coin:entity_categories:([1-2]{1})$": {
@@ -351,7 +360,8 @@
           "enum": [
             "http://refeds.org/category/research-and-scholarship",
             "http://refeds.org/category/hide-from-discovery"
-          ]
+          ],
+          "multiplicity": 3
         }
 
       },

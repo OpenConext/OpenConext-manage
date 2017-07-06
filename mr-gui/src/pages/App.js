@@ -71,7 +71,7 @@ class App extends React.PureComponent {
                 .then(currentUser => {
                     if (currentUser && currentUser.uid) {
                         configuration().then(configuration =>
-                            this.setState({loading: false, currentUser: currentUser, configuration: configuration}))
+                            this.setState({loading: false, currentUser: currentUser, configuration: configuration}));
                     } else {
                         this.handleBackendDown();
                     }

@@ -39,7 +39,7 @@ To run locally:
 
 `yarn start`
 
-Browse to the [application homepage](http://localhost:8000/).
+Browse to the [application homepage](http://localhost:3000/).
 
 To add new dependencies:
 

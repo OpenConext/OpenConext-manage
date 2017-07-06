@@ -86,6 +86,13 @@ I18n.translations.en = {
         description: "Documentation on attribute manipulations"
     },
 
+    metaDataFields: {
+        title: "Metadata of {{name}}",
+        key: "Key",
+        value: "Value",
+        error: "Invalid {{format}}"
+    },
+
     selectEntities: {
 
     },

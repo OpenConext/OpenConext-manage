@@ -1,0 +1,68 @@
+@import "../../stylesheets/vars.scss";
+@import "../../stylesheets/mixins.scss";
+
+.metadata-metadata {
+    background-color: white;
+    padding: 20px;
+
+    .metadata-info {
+        margin: 15px 0;
+        h2 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+    }
+    table.metadata-fields-table {
+        width: 100%;
+        thead th {
+            text-align: left;
+            background-color: $lighter-blue;
+            padding: 3px;
+
+            &.key {
+                width: 35%;
+            }
+            &.value {
+                width: 65%;
+            }
+        }
+        tbody {
+            tr:nth-child(odd) {
+                background-color: $lightest-grey;
+            }
+            td {
+                padding: 3px;
+                input[type=text], input[type=email], textarea {
+                    width: 100%;
+                    font-size: 14px;
+                    padding: 0 10px;
+                    border-radius: 3px;
+                    border: 1px solid #d9d9d8;
+                    margin-top: 5px;
+                    line-height: 33px;
+                    &.error {
+                        border: solid 1px $red;
+                    }
+                }
+                .fa-info-circle {
+                    color: $blue;
+                    margin-left: 15px;
+                }
+                .tool-tip {
+                    box-shadow: 1px 2px 6px 1px $lighter-grey;
+                    padding: 10px !important;
+                    font-size: 14px !important;
+                    pointer-events: auto !important;
+                    color: $dark-grey !important;
+                    background-color: white !important;
+                    &.show {
+                        opacity: 1 !important;
+                    }
+                    max-width: 390px;
+                }
+            }
+        }
+
+    }
+}

@@ -103,6 +103,10 @@ export function revisions(type, parentId) {
     return fetchJson(`revisions/${type}/${parentId}`);
 }
 
+export function validation(format, value) {
+    return fetchJson(`validation/${format}?value=${encodeURIComponent(value)}`);
+}
+
 export function whiteListing(type) {
     return fetchJson(`whiteListing/${type}`);
 }

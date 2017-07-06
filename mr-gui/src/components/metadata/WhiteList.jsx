@@ -44,7 +44,7 @@ export default class WhiteList extends React.PureComponent {
                 "status": I18n.t(`metadata.${moreInfo.data.state}`),
                 "entityid": entity.name,
                 "name": moreInfo.data.metaDataFields["name:en"] || moreInfo.data.metaDataFields["name:nl"] || "",
-                "id": moreInfo[".id"]
+                "id": moreInfo["_id"]
             };
         });
         this.setState({enrichedAllowedEntries: enrichedAllowedEntries.sort(this.sortByAttribute(this.state.sorted, this.state.reverse))});

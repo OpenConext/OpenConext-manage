@@ -8,7 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
     properties = {"migrate_data_from_janus=true"})
-@Ignore
+//@Ignore
 public class JanusMigrationTest extends AbstractIntegrationTest {
 
     @Test
