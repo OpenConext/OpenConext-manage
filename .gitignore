@@ -10,3 +10,4 @@ mr-gui/dist
 mr-gui/coverage
 *.css
 whitelisting.json
+seeds

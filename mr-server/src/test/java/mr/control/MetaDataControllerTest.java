@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
+import static org.apache.http.HttpStatus.SC_NOT_FOUND;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItems;
@@ -32,6 +33,15 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
             .body("id", equalTo("1"))
             .body("revision.number", equalTo(0))
             .body("data.entityid", equalTo("Duis ad do"));
+    }
+
+    @Test
+    public void getNotFound() throws Exception {
+        given()
+            .when()
+            .get("mr/api/client/metadata/saml20_sp/x")
+            .then()
+            .statusCode(SC_NOT_FOUND);
     }
 
     @Test

@@ -6,10 +6,12 @@ import ReactTooltip from "react-tooltip";
 import SelectEnum from "./SelectEnum";
 import FormatInput from "./../FormatInput";
 import CheckBox from "./../CheckBox";
+import SelectNewMetaDataField from "./SelectNewMetaDataField";
+
 
 import "./MetaData.css";
 
-const patternPropertyRegex = /(.*)(\(.*?\))(.*)/g
+const patternPropertyRegex = /\^(.*)(\(.*?\))(.*)\$/g
 
 export default class MetaData extends React.PureComponent {
 
@@ -57,7 +59,7 @@ export default class MetaData extends React.PureComponent {
         if (!keyConf) {
             const patternKey = patternProperties.find(property => {
                 patternPropertyRegex.lastIndex = 0;
-                const patternResults = patternPropertyRegex.exec(property.substring(1, property.length - 1));
+                const patternResults = patternPropertyRegex.exec(property);
                 return patternResults && key.startsWith(patternResults[1]) && key.endsWith(patternResults[3]);
             });
             keyConf = configuration.properties.metaDataFields.patternProperties[patternKey];
@@ -115,6 +117,11 @@ export default class MetaData extends React.PureComponent {
                     </h2>
                 </div>
                 {this.renderMetaDataFields(keys, metaDataFields, configuration)}
+                <SelectNewMetaDataField metaDataFields={metaDataFields} configuration={configuration}
+                                        placeholder={I18n.t("metaDataFields.placeholder")}
+                                        onChange={value => {
+                    debugger;
+                }}/>
             </div>
         );
     }

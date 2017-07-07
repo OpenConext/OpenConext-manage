@@ -44,6 +44,8 @@ public class JanusMigration implements ApplicationListener<ApplicationReadyEvent
     private MetaDataAutoConfiguration metaDataAutoConfiguration;
     private boolean migrate;
 
+    private List<String> removedMetatData = Arrays.asList("coin:gadgetbaseurl","coin:oauth:secret","coin:oauth:two_legged_allowed");
+
     @Autowired
     public JanusMigration(@Value("${migrate_data_from_janus}") boolean migrate, DataSource dataSource, MongoTemplate mongoTemplate, MetaDataAutoConfiguration metaDataAutoConfiguration) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
@@ -196,6 +198,7 @@ public class JanusMigration implements ApplicationListener<ApplicationReadyEvent
     private void parseMetaData(Map<String, Object> entity, String key, String value) {
         if (StringUtils.hasText(value)) {
             Map<String, String> metaDataFields = (Map<String, String>) entity.getOrDefault("metaDataFields", new HashMap<String, String>());
+            removedMetatData.forEach(metaDataFields::remove);
             metaDataFields.put(key, value);
             entity.put("metaDataFields", metaDataFields);
         }

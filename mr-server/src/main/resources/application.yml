@@ -1,6 +1,6 @@
 logging:
   level:
-    org.springframework.data.mongodb: DEBUG
+    org.springframework.data.mongodb: INFO
 
 server:
   contextPath: /mr/api

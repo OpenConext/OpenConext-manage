@@ -80,7 +80,7 @@ export function autocomplete(type, query) {
 }
 
 export function detail(type, id) {
-    return fetchJson(`metadata/${type}/${id}`);
+    return fetchJson(`metadata/${type}/${id}`, {}, {}, false);
 }
 
 export function ping() {

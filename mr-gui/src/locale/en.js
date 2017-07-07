@@ -90,7 +90,8 @@ I18n.translations.en = {
         title: "Metadata of {{name}}",
         key: "Key",
         value: "Value",
-        error: "Invalid {{format}}"
+        error: "Invalid {{format}}",
+        placeholder: "Search and add metadata fields"
     },
 
     selectEntities: {

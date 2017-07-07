@@ -3,6 +3,7 @@ package mr.control;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import mr.conf.MetaDataAutoConfiguration;
+import mr.exception.ResourceNotFoundException;
 import mr.model.MetaData;
 import mr.repository.MetaDataRepository;
 import mr.shibboleth.FederatedUser;
@@ -40,7 +41,11 @@ public class MetaDataController {
 
     @GetMapping("/client/metadata/{type}/{id}")
     public MetaData get(@PathVariable("type") String type, @PathVariable("id") String id) {
-        return metaDataRepository.findById(id, type);
+        MetaData metaData = metaDataRepository.findById(id, type);
+        if (metaData == null) {
+            throw new ResourceNotFoundException(String.format("MetaData type %s with id %s does not exist", type, id ));
+        }
+        return metaData;
     }
 
     @GetMapping("/client/metadata/configuration")

@@ -43,6 +43,7 @@ export default class Detail extends React.PureComponent {
                 revisions(type, id).then(revisions => this.setState({revisions: revisions}))
             })
         }).catch(err => {
+            debugger;
             if (err.response.status === 404) {
                 this.setState({notFound: true, loaded: true});
             } else {

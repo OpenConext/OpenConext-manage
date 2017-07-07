@@ -318,7 +318,7 @@
           "format" : "email",
           "multiplicity": 4
         },
-        "^contacts:([0-3]{1}):telephoneNumber": {
+        "^contacts:([0-3]{1}):telephoneNumber$": {
           "type": "string",
           "format" : "email",
           "multiplicity": 4
@@ -361,7 +361,8 @@
             "http://refeds.org/category/research-and-scholarship",
             "http://refeds.org/category/hide-from-discovery"
           ],
-          "multiplicity": 3
+          "multiplicity": 2,
+          "startIndex": 1
         }
 
       },
