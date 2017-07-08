@@ -66,7 +66,6 @@ export default class SelectNewMetaDataField extends React.PureComponent {
                 if (highest < (patternProperty.multiplicity + (patternProperty.startIndex || -1))) {
                     const newMetaDataKey = patternPropertyKey.replace(patternPropertyRegex, `$1${highest + 1}$3`);
                     accumulator.push(newMetaDataKey);
-
                 }
             } else if (enumExec = enumPropertyRegex.exec(patternPropertyKey)) {
                 if (existingMetaDataKeys.length < 2) {

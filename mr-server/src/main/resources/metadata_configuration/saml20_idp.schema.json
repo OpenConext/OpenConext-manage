@@ -26,9 +26,19 @@
   },
   "type": "object",
   "properties": {
+    "id": {
+      "type": "number"
+    },
+    "eid": {
+      "type": "number"
+    },
     "entityid": {
       "type": "string"
     },
+    "revisionid": {
+      "type": "number"
+    },
+
     "state": {
       "type": "string",
       "enum": [
@@ -36,8 +46,26 @@
         "testaccepted"
       ]
     },
+    "metadataurl": {
+      "type": ["string", "null"]
+    },
     "allowedall": {
       "type": "boolean"
+    },
+    "manipulation": {
+      "type": ["string", "null"]
+    },
+    "user": {
+      "type": "string"
+    },
+    "created": {
+      "type": "string"
+    },
+    "ip": {
+      "type": "string"
+    },
+    "revisionnote": {
+      "type": "string"
     },
     "active": {
       "type": "boolean"
@@ -63,6 +91,9 @@
           }
         }
       }
+    },
+    "notes": {
+      "type": ["string", "null"]
     },
     "metaDataFields": {
       "type": "object",
@@ -108,18 +139,20 @@
           "format": "number"
         },
         "redirect.sign": {
-          "type": "boolean"
+          "type": "string",
+          "format": "boolean"
         },
         "coin:publish_in_edugain": {
-          "type": "boolean",
-          "default": false
+          "type": "string",
+          "format": "boolean"
         },
         "coin:publish_in_edugain_date": {
           "type": "string",
           "format": "date-time"
         },
         "coin:additional_logging": {
-          "type": "boolean"
+          "type": "string",
+          "format": "boolean"
         },
         "coin:institution_id": {
           "type": "string"
@@ -133,7 +166,8 @@
             "All",
             "Some",
             "None"
-          ]
+          ],
+          "default": "All"
         },
         "coin:schachomeorganization": {
           "type": "string"
@@ -142,10 +176,12 @@
           "$ref": "#/definitions/NameIDFormat"
         },
         "coin:disable_scoping": {
-          "type": "boolean"
+          "type": "string",
+          "format": "boolean"
         },
         "coin:hidden": {
-          "type": "boolean"
+          "type": "string",
+          "format": "boolean"
         }
       },
       "patternProperties": {
@@ -159,18 +195,22 @@
           "type": "string"
         },
         "^contacts:([0-3]{1}):surName$": {
-          "type": "string"
+          "type": "string",
+          "multiplicity": 4
         },
         "^contacts:([0-3]{1}):givenName$": {
-          "type": "string"
+          "type": "string",
+          "multiplicity": 4
         },
         "^contacts:([0-3]{1}):emailAddress$": {
           "type": "string",
-          "format": "email"
+          "format": "email",
+          "multiplicity": 4
         },
-        "^contacts:([0-3]{1}):telephoneNumber": {
+        "^contacts:([0-3]{1}):telephoneNumber$": {
           "type": "string",
-          "format": "string"
+          "format": "string",
+          "multiplicity": 4
         },
         "^contacts:([0-3]{1}):contactType$": {
           "type": "string",
@@ -180,7 +220,8 @@
             "administrative",
             "billing",
             "other"
-          ]
+          ],
+          "multiplicity": 4
         },
         "^OrganizationName:(en|nl)$": {
           "type": "string"
@@ -197,7 +238,9 @@
           "enum": [
             "http://refeds.org/category/research-and-scholarship",
             "http://refeds.org/category/hide-from-discovery"
-          ]
+          ],
+          "multiplicity": 2,
+          "startIndex": 1
         },
         "^SingleSignOnService:([0-9]{1}):Binding$": {
           "$ref": "#/definitions/SingleSignOnService",
@@ -213,11 +256,11 @@
         },
         "^shibmd:scope:([0-5]{1}):allowed$": {
           "type": "string",
-          "multiplicity": 10
+          "multiplicity": 5
         },
-        "^shibmd:scope:([0-5]{1}):regexp": {
+        "^shibmd:scope:([0-5]{1}):regexp$": {
           "type": "string",
-          "multiplicity": 10
+          "multiplicity": 5
         }
       },
       "required": [

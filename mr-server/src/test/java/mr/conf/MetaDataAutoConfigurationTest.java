@@ -46,7 +46,7 @@ public class MetaDataAutoConfigurationTest {
 
     @Test
     public void testSchemaIdpInvalid() throws Exception {
-        testErrors("json/invalid_identity_provider.json", EntityType.IDP, 6);
+        testErrors("json/invalid_identity_provider.json", EntityType.IDP, 11);
     }
 
     private void testErrors(String path, EntityType type, int errorsExpected) throws IOException {

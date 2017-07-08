@@ -12,8 +12,6 @@ import SelectNewMetaDataField from "./SelectNewMetaDataField";
 import {isEmpty} from "../../utils/Utils";
 import "./MetaData.css";
 
-const patternPropertyRegex = /\^(.*)(\(.*?\))(.*)\$/g
-
 export default class MetaData extends React.PureComponent {
 
     constructor(props) {
@@ -58,7 +56,7 @@ export default class MetaData extends React.PureComponent {
 
     renderMetaDataValue = (key, value, keyConfiguration) => {
         const autoFocus = this.state.newMetaDataFieldKey === key;
-        if (keyConfiguration.type === "string") {
+        if (keyConfiguration.type === "string" && keyConfiguration.format !== "boolean") {
             if (!keyConfiguration.format && !keyConfiguration.enum) {
                 return <input ref={ref => this.newMetaDataFieldRendered(ref, autoFocus)} type="text" name={key} value={value} onChange={this.onChangeInputEvent(key)}/>
             } else if (keyConfiguration.enum) {
@@ -69,7 +67,7 @@ export default class MetaData extends React.PureComponent {
                                     name={key} input={value} format={keyConfiguration.format}
                                     onChange={this.onChange(key)}/>
             }
-        } else if (keyConfiguration.type === "boolean") {
+        } else if (keyConfiguration.format === "boolean") {
             return <CheckBox autofocus={autoFocus} onChange={this.onChangeCheckEvent(key)}
                              value={value === "1" ? true : false} name={key}/>
         }
@@ -80,11 +78,7 @@ export default class MetaData extends React.PureComponent {
         const patternProperties = Object.keys(configuration.properties.metaDataFields.patternProperties);
         let keyConf = configuration.properties.metaDataFields.properties[key];
         if (!keyConf) {
-            const patternKey = patternProperties.find(property => {
-                patternPropertyRegex.lastIndex = 0;
-                const patternResults = patternPropertyRegex.exec(property);
-                return patternResults && key.startsWith(patternResults[1]) && key.endsWith(patternResults[3]);
-            });
+            const patternKey = patternProperties.find(property => new RegExp(property).test(key));
             keyConf = configuration.properties.metaDataFields.patternProperties[patternKey];
         }
         if (!keyConf) {
@@ -146,11 +140,25 @@ export default class MetaData extends React.PureComponent {
         </table>
     };
 
+    getDefaultValueForKey = (key, configuration) => {
+        const keyConf = this.metaDataFieldConfiguration(key, configuration);
+        if (keyConf.enum) {
+            return keyConf.default || "";
+        }
+        if (keyConf.format === "boolean") {
+            return "0";
+        }
+        if (keyConf.format === "date-time") {
+            return new Date().toISOString();
+        }
+        return "";
+    };
+
     renderMetaDataSearch = (metaDataFields, configuration) =>
         <SelectNewMetaDataField metaDataFields={metaDataFields} configuration={configuration}
                                 placeholder={I18n.t("metaDataFields.placeholder")}
                                 onChange={value => {
-                                    this.doChange(value, "");
+                                    this.doChange(value, this.getDefaultValueForKey(value, configuration));
                                     const newAddedMetaDataState = [...this.state.newAddedMetaData];
                                     newAddedMetaDataState.push(value);
                                     this.setState({

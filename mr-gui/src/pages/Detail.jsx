@@ -111,7 +111,7 @@ export default class Detail extends React.PureComponent {
                     update(this.state.metaData).then(json => {
                         this.props.history.replace("/search");
                         const name = json.data.metaDataFields["name:en"] || json.data.metaDataFields["name:nl"] || "this service";
-                        setFlash(I18n.t("metadata.flash.updated", {name: name}));
+                        setFlash(I18n.t("metadata.flash.updated", {name: name, revision: json.revision.number}));
                     });
                 }}>{I18n.t("metadata.submit")}</a>
             </section>

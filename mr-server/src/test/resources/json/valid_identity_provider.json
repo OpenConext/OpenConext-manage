@@ -62,8 +62,8 @@
     "SingleSignOnService:2:Location": "https://single-sing-service-2",
     "keywords:en": "mock help test",
     "keywords:nl": "mock help test",
-    "shibmd:scope:0:allowed": "yes",
-    "shibmd:scope:1:allowed": "yes",
+    "shibmd:scope:0:allowed": "1",
+    "shibmd:scope:1:allowed": "1",
     "shibmd:scope:0:regexp": ".*",
     "shibmd:scope:1:regexp": ".*",
     "certData": "MIIDEzCCAfugAwIBAgIJAKoK/heBjcOYMA0GCSqGSIb3DQEBBQUAMCAxHjAcBgNVBAoMFU9yZ2FuaXphdGlvbiwgQ049T0lEQzAeFw0xNTExMTExMDEyMTVaFw0yNTExMTAxMDEyMTVaMCAxHjAcBgNVBAoMFU9yZ2FuaXphdGlvbiwgQ049T0lEQzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANBGwJ/qpTQNiSgUglSE2UzEkUow+wS8r67etxoEhlzJZfgK/k5TfG1wICDqapHAxEVgUM10aBHRctNocA5wmlHtxdidhzRZroqHwpKy2BmsKX5Z2oK25RLpsyusB1KroemgA/CjUnI6rIL1xxFn3KyOFh1ZBLUQtKNQeMS7HFGgSDAp+sXuTFujz12LFDugX0T0KB5a1+0l8y0PEa0yGa1oi6seONx849ZHxM0PRvUunWkuTM+foZ0jZpFapXe02yWMqhc/2iYMieE/3GvOguJchJt6R+cut8VBb6ubKUIGK7pmoq/TB6DVXpvsHqsDJXechxcicu4pdKVDHSec850CAwEAAaNQME4wHQYDVR0OBBYEFK7RqjoodSYVXGTVEdLf3kJflP/sMB8GA1UdIwQYMBaAFK7RqjoodSYVXGTVEdLf3kJflP/sMAwGA1UdEwQFMAMBAf8wDQYJKoZIhvcNAQEFBQADggEBADNZkxlFXh4F45muCbnQd+WmaXlGvb9tkUyAIxVL8AIu8J18F420vpnGpoUAE+Hy3evBmp2nkrFAgmr055fAjpHeZFgDZBAPCwYd3TNMDeSyMta3Ka+oS7GRFDePkMEm+kH4/rITNKUF1sOvWBTSowk9TudEDyFqgGntcdu/l/zRxvx33y3LMG5USD0x4X4IKjRrRN1BbcKgi8dq10C3jdqNancTuPoqT3WWzRvVtB/q34B7F74/6JzgEoOCEHufBMp4ZFu54P0yEGtWfTwTzuoZobrChVVBt4w/XZagrRtUCDNwRpHNbpjxYudbqLqpi1MQpV9oht/BpTHVJG2i0ro=",
@@ -73,16 +73,16 @@
     "logo:0:url": "https:/logo",
     "logo:0:width": "150",
     "logo:0:height": "150",
-    "redirect.sign": true,
-    "coin:publish_in_edugain": true,
+    "redirect.sign": "1",
+    "coin:publish_in_edugain": "1",
     "coin:publish_in_edugain_date": "2011-12-03T10:15:30+01:00",
-    "coin:additional_logging": true,
+    "coin:additional_logging": "1",
     "coin:institution_id": "mock.sp",
     "coin:institution_guid": "308306B3-E2F6-446F-A8E3-ECEF473FCDA1",
     "coin:guest_qualifier": "All",
     "coin:schachomeorganization": "example.org",
     "NameIDFormat": "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
-    "coin:disable_scoping": true,
-    "coin:hidden": true
+    "coin:disable_scoping": "1",
+    "coin:hidden": "1"
   }
 }

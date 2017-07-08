@@ -54,7 +54,7 @@ I18n.translations.en = {
         cancel: "Cancel",
         revisionnote: "Revision notes",
         flash: {
-            updated: "{{name}} was successfully updated"
+            updated: "{{name}} was successfully updated to revision {{revision}}"
         }
 
     },

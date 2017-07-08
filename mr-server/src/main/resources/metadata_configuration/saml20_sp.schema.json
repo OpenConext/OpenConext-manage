@@ -61,13 +61,13 @@
       ]
     },
     "metadataurl": {
-      "type": "string"
+      "type": ["string", "null"]
     },
     "allowedall": {
       "type": "boolean"
     },
     "manipulation": {
-      "type": "string"
+      "type": ["string", "null"]
     },
     "user": {
       "type": "string"
