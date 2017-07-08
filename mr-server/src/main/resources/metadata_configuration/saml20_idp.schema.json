@@ -37,12 +37,7 @@
       ]
     },
     "allowedall": {
-      "type": "string",
-      "enum": [
-        "yes",
-        "no"
-      ],
-      "format": "boolean"
+      "type": "boolean"
     },
     "active": {
       "type": "boolean"

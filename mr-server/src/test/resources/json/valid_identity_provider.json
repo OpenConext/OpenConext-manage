@@ -1,7 +1,7 @@
 {
   "entityid": "http://mock-idp",
   "state": "prodaccepted",
-  "allowedall": "yes",
+  "allowedall": true,
   "active": true,
   "allowedEntities": [
     {

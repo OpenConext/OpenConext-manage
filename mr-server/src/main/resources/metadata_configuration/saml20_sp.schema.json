@@ -40,9 +40,19 @@
   },
   "type": "object",
   "properties": {
+    "id": {
+      "type": "number"
+    },
+    "eid": {
+      "type": "number"
+    },
     "entityid": {
       "type": "string"
     },
+    "revisionid": {
+      "type": "number"
+    },
+
     "state": {
       "type": "string",
       "enum": [
@@ -50,18 +60,42 @@
         "testaccepted"
       ]
     },
+    "metadataurl": {
+      "type": "string"
+    },
     "allowedall": {
-      "type": "string",
-      "enum": [
-        "yes",
-        "no"
-      ],
-      "format": "boolean"
+      "type": "boolean"
+    },
+    "manipulation": {
+      "type": "string"
+    },
+    "user": {
+      "type": "string"
+    },
+    "created": {
+      "type": "string"
+    },
+    "ip": {
+      "type": "string"
+    },
+    "revisionnote": {
+      "type": "string"
     },
     "active": {
       "type": "boolean"
     },
     "allowedEntities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "disableConsent": {
       "type": "array",
       "items": {
         "type": "object",
@@ -166,6 +200,9 @@
         }
       }
     },
+    "notes": {
+      "type": ["string", "null"]
+    },
     "metaDataFields" : {
       "type": "object",
       "properties": {
@@ -216,10 +253,12 @@
           "format": "number"
         },
         "redirect.sign": {
-          "type": "boolean"
+          "type": "string",
+          "format": "boolean"
         },
         "coin:publish_in_edugain": {
-          "type": "boolean",
+          "type": "string",
+          "format": "boolean",
           "default": false
         },
         "coin:publish_in_edugain_date": {
@@ -234,7 +273,8 @@
           ]
         },
         "coin:additional_logging": {
-          "type": "boolean"
+          "type": "string",
+          "format": "boolean"
         },
         "coin:institution_id": {
           "type": "string"
@@ -243,38 +283,46 @@
           "type": "string"
         },
         "coin:trusted_proxy": {
-          "type": "boolean",
+          "type": "string",
+          "format": "boolean",
           "default": "false"
         },
         "coin:no_consent_required": {
-          "type": "boolean",
-          "info" : "Select this option to skip the consent for a user after the first login.",
+          "type": "string",
+          "format": "boolean",
+          "info" : "Select this option to skip the consent for a user after the first login."
         },
         "coin:eula": {
           "type": "string",
           "format": "uri"
         },
         "coin:ss:idp_visible_only": {
-          "type": "boolean"
+          "type": "string",
+          "format": "boolean"
         },
         "coin:application_url": {
           "type": "string",
           "format": "uri"
         },
         "coin:transparant_issuer": {
-          "type": "boolean"
+          "type": "string",
+          "format": "boolean"
         },
         "coin:do_not_add_attribute_aliases": {
-          "type": "boolean"
+          "type": "string",
+          "format": "boolean"
         },
         "coin:display_unconnected_idps_wayf": {
-          "type": "boolean"
+          "type": "string",
+          "format": "boolean"
         },
         "coin:policy_enforcement_decision_required": {
-          "type": "boolean"
+          "type": "string",
+          "format": "boolean"
         },
         "coin:attribute_aggregation_required": {
-          "type": "boolean"
+          "type": "string",
+          "format": "boolean"
         }
       },
       "patternProperties": {

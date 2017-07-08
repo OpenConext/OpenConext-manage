@@ -12,8 +12,8 @@ public class ValidationControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void validationBoolean() throws Exception {
-        doValidation("boolean", "yes", true);
-        doValidation("boolean", "no", true);
+        doValidation("boolean", "1", true);
+        doValidation("boolean", "0", true);
         doValidation("boolean", "nope", false);
     }
 

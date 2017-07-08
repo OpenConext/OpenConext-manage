@@ -121,7 +121,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
             .then()
             .statusCode(SC_OK)
             .body("size()", is(2))
-            .body("'.id'", hasItems("3", "5"))
+            .body("'_id'", hasItems("3", "5"))
             .body("data.entityid", hasItems(
                 "http://mock-sp",
                 "https://serviceregistry.test2.surfconext.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp"));
@@ -142,7 +142,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
             .then()
             .statusCode(SC_OK)
             .body("size()", is(2))
-            .body("'.id'", hasItems("2", "3"))
+            .body("'_id'", hasItems("2", "3"))
             .body("data.entityid", hasItems(
                 "http://mock-sp",
                 "https://profile.test2.surfconext.nl/authentication/metadata"))
@@ -160,7 +160,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
             .then()
             .statusCode(SC_OK)
             .body("size()", is(5))
-            .body("data.allowedall", hasItems("yes", "no"))
+            .body("data.allowedall", hasItems(true, false))
             .body("[2].data.allowedEntities.name", hasItems("http://mock-idp"));
     }
 

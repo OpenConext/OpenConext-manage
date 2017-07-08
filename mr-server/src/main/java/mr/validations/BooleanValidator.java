@@ -7,8 +7,8 @@ import java.util.Optional;
 public class BooleanValidator implements FormatValidator {
     @Override
     public Optional<String> validate(String subject) {
-        return "yes".equals(subject) || "no".equals(subject) ? Optional.empty() :
-            Optional.of(String.format("Allowed values are %s, %s", "yes", "no"));
+        return "1".equals(subject) || "0".equals(subject) ? Optional.empty() :
+            Optional.of(String.format("Allowed values are %s, %s", "1", "0"));
     }
 
     @Override

@@ -52,7 +52,10 @@ I18n.translations.en = {
         none: "",
         submit: "Submit",
         cancel: "Cancel",
-        revisionnote: "Revision notes"
+        revisionnote: "Revision notes",
+        flash: {
+            updated: "{{name}} was successfully updated"
+        }
 
     },
 

@@ -9,9 +9,11 @@ import Manipulation from "../components/metadata/Manipulation";
 import MetaData from "../components/metadata/MetaData";
 import WhiteList from "../components/metadata/WhiteList";
 import Revisions from "../components/metadata/Revisions";
+import ConfirmationDialog from "../components/ConfirmationDialog";
 
-import {detail, revisions, whiteListing} from "../api";
+import {detail, revisions, whiteListing, update} from "../api";
 import {stop} from "../utils/Utils";
+import {setFlash} from "../utils/Flash";
 
 import "./Detail.css";
 
@@ -29,7 +31,9 @@ export default class Detail extends React.PureComponent {
             notFound: false,
             loaded: false,
             selectedTab: "connection",
-            revisionNote: ""
+            revisionNote: "",
+            confirmationDialogOpen: false,
+            confirmationDialogAction: () => props.history.replace("/search")
         };
     }
 
@@ -98,8 +102,18 @@ export default class Detail extends React.PureComponent {
                        onChange={e => this.setState({revisionNote: e.target.value})}/>
             </section>
             <section className="buttons">
-                <a className="button grey">{I18n.t("metadata.cancel")}</a>
-                <a className="button blue">{I18n.t("metadata.submit")}</a>
+                <a className="button grey" onClick={e => {
+                    stop(e);
+                    this.setState({confirmationDialogOpen: true});
+                }}>{I18n.t("metadata.cancel")}</a>
+                <a className="button blue" onClick={e => {
+                    stop(e);
+                    update(this.state.metaData).then(json => {
+                        this.props.history.replace("/search");
+                        const name = json.data.metaDataFields["name:en"] || json.data.metaDataFields["name:nl"] || "this service";
+                        setFlash(I18n.t("metadata.flash.updated", {name: name}));
+                    });
+                }}>{I18n.t("metadata.submit")}</a>
             </section>
         </section>
     };
@@ -138,7 +152,8 @@ export default class Detail extends React.PureComponent {
     };
 
     render() {
-        const {loaded, notFound, metaData, whiteListing, revisions, selectedTab, revisionNote} = this.state;
+        const {loaded, notFound, metaData, whiteListing, revisions, selectedTab, revisionNote,
+            confirmationDialogOpen, confirmationDialogAction} = this.state;
         const type = metaData.type;
         const tabs = type === "saml20_sp" ? tabsSp : tabsIdP;
 
@@ -147,6 +162,11 @@ export default class Detail extends React.PureComponent {
 
         return (
             <div className="detail-metadata">
+                <ConfirmationDialog isOpen={confirmationDialogOpen}
+                                    cancel={confirmationDialogAction}
+                                    confirm={() => this.setState({confirmationDialogOpen: false})}
+                                    leavePage={true}/>
+
                 {renderNotFound && <section>{I18n.t("metadata.notFound")}</section>}
                 {!notFound && <section className="tabs">
                     {tabs.map(tab => this.renderTab(tab))}

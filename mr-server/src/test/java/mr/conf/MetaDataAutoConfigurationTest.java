@@ -33,6 +33,12 @@ public class MetaDataAutoConfigurationTest {
     }
 
     @Test
+    public void testSchemaSpForUpdateIsValid() throws Exception {
+        String json = readFile("json/updated_metadata.json");
+        subject.validate(json, EntityType.SP.getType());
+    }
+
+    @Test
     public void testIdpSchema() throws Exception {
         String json = readFile("json/valid_identity_provider.json");
         subject.validate(json, EntityType.IDP.getType());
