@@ -15,6 +15,12 @@ export default class FormatInput extends React.PureComponent {
         };
     }
 
+    componentDidMount () {
+        if (this.props.autofocus && this.input !== null) {
+            this.input.focus();
+        }
+    }
+
     onChange = e => this.props.onChange(e.target.value);
 
     onBlur = format => e => {
@@ -32,7 +38,7 @@ export default class FormatInput extends React.PureComponent {
         const {error, errorMessage} = this.state;
         const className = error ? "error" : "";
         return <div className="format-input">
-            <input className={className} type="text" id={name} name={name} value={input}
+            <input ref={ref => this.input = ref} className={className} type="text" id={name} name={name} value={input}
                    onChange={this.onChange} onBlur={this.onBlur(format)} disabled={readOnly}/>
             {error && <span><i className="fa fa-warning"></i>{errorMessage}</span>}
         </div>
@@ -46,6 +52,7 @@ FormatInput.propTypes = {
     input: PropTypes.string.isRequired,
     format: PropTypes.string.isRequired,
     onChange: PropTypes.func.isRequired,
+    autofocus: PropTypes.bool,
     readOnly: PropTypes.bool
 };
 

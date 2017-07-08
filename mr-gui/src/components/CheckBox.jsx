@@ -3,18 +3,29 @@ import PropTypes from "prop-types";
 
 import "./CheckBox.css";
 
-export default function CheckBox({name, value, readOnly = false, onChange, info = null, className = "checkbox"}) {
-    return (
-        <div className={className}>
-            <input type="checkbox" id={name} name={name} checked={value}
-                   onChange={onChange} disabled={readOnly}/>
-            <label htmlFor={name}>
-                <span><i className="fa fa-check"></i></span>
-            </label>
-            {info && <label htmlFor={name} className="info">{info}</label>}
-        </div>
-    );
 
+export default class CheckBox extends React.PureComponent {
+
+    componentDidMount() {
+        if (this.props.autofocus && this.input !== null) {
+            this.input.focus();
+        }
+    }
+
+    render() {
+        const {name, value, readOnly = false, onChange, info, className = "checkbox"} = this.props;
+        return (
+            <div className={className}>
+                <input ref={ref => this.input = ref}
+                       type="checkbox" id={name} name={name} checked={value}
+                       onChange={onChange} disabled={readOnly}/>
+                <label htmlFor={name}>
+                    <span><i className="fa fa-check"></i></span>
+                </label>
+                {info && <label htmlFor={name} className="info">{info}</label>}
+            </div>
+        );
+    }
 }
 
 CheckBox.propTypes = {
@@ -23,7 +34,8 @@ CheckBox.propTypes = {
     onChange: PropTypes.func.isRequired,
     readOnly: PropTypes.bool,
     info: PropTypes.string,
-    className: PropTypes.string
+    className: PropTypes.string,
+    autofocus: PropTypes.bool
 };
 
 

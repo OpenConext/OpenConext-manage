@@ -26,7 +26,7 @@ export default class Search extends React.PureComponent {
     }
 
     componentDidMount() {
-        ping();
+        ping().then(() => this.searchInput.focus());
     }
 
     onSearchKeyDown = e => {
@@ -79,6 +79,7 @@ export default class Search extends React.PureComponent {
         stop(e);
         this.setState({selectedTab: tab});
         this.search(tab)({target: {value: this.state.query}});
+        this.searchInput.focus()
     };
 
     renderTab = (tab, selectedTab) =>
@@ -97,6 +98,7 @@ export default class Search extends React.PureComponent {
                 <section className="search"
                          tabIndex="1" onBlur={this.onBlurSearch(suggestions)}>
                     <input className="search-input"
+                           ref={ref => this.searchInput = ref}
                            placeholder={I18n.t("metadata.searchPlaceHolder")}
                            type="text"
                            onChange={this.search(selectedTab)}

@@ -2,13 +2,14 @@ import React from "react";
 import I18n from "i18n-js";
 import PropTypes from "prop-types";
 import ReactTooltip from "react-tooltip";
+import scrollIntoView from "scroll-into-view";
 
 import SelectEnum from "./SelectEnum";
 import FormatInput from "./../FormatInput";
 import CheckBox from "./../CheckBox";
 import SelectNewMetaDataField from "./SelectNewMetaDataField";
 
-
+import {isEmpty} from "../../utils/Utils";
 import "./MetaData.css";
 
 const patternPropertyRegex = /\^(.*)(\(.*?\))(.*)\$/g
@@ -17,15 +18,27 @@ export default class MetaData extends React.PureComponent {
 
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            newMetaDataFieldKey: null
+        };
     }
 
     componentDidMount() {
         window.scrollTo(0, 0);
     }
 
-    //React decides not to -re-render on metadata value changes due to derived values, but the props are consistently different
+    //React decides not to re-render on metadata value changes due to derived values, but the props are consistently different
     shouldComponentUpdate = (nextProps, nextState) => true;
+
+    componentDidUpdate = () => {
+        const newMetaDataFieldKey = this.state.newMetaDataFieldKey;
+        if (!isEmpty(newMetaDataFieldKey) && !isEmpty(this.newMetaDataField)) {
+            scrollIntoView(this.newMetaDataField);
+            this.newMetaDataField.focus();
+            this.newMetaDataField = null;
+        }
+
+    };
 
     onChange = key => value => this.doChange(key, value);
 
@@ -36,19 +49,28 @@ export default class MetaData extends React.PureComponent {
 
     doChange = (key, value) => this.props.onChange(`data.metaDataFields.${key}`, value);
 
+    newMetaDataFieldRendered = (ref, autoFocus) => {
+        if (autoFocus) {
+            this.newMetaDataField = ref;
+        }
+    };
+
     renderMetaDataValue = (key, value, keyConfiguration) => {
+        const autoFocus = this.state.newMetaDataFieldKey === key;
         if (keyConfiguration.type === "string") {
             if (!keyConfiguration.format && !keyConfiguration.enum) {
-                return <input type="text" name={key} value={value} onChange={this.onChangeInputEvent(key)}/>
+                return <input ref={ref => this.newMetaDataFieldRendered(ref, autoFocus)} type="text" name={key} value={value} onChange={this.onChangeInputEvent(key)}/>
             } else if (keyConfiguration.enum) {
-                return <SelectEnum onChange={this.onChange(key)} state={value}
+                return <SelectEnum autofocus={autoFocus} onChange={this.onChange(key)} state={value}
                                             enumValues={keyConfiguration.enum} disabled={false}/>
             } else if (keyConfiguration.format) {
-                return <FormatInput name={key} input={value} format={keyConfiguration.format}
+                return <FormatInput autofocus={autoFocus}
+                                    name={key} input={value} format={keyConfiguration.format}
                                     onChange={this.onChange(key)}/>
             }
         } else if (keyConfiguration.type === "boolean") {
-            return <CheckBox onChange={this.onChangeCheckEvent(key)} value={value === "1" ? true : false} name={key}/>
+            return <CheckBox autofocus={autoFocus} onChange={this.onChangeCheckEvent(key)}
+                             value={value === "1" ? true : false} name={key}/>
         }
         throw new Error("Unsupported metaData key configuration " + JSON.stringify(keyConfiguration));
     };
@@ -120,7 +142,8 @@ export default class MetaData extends React.PureComponent {
                 <SelectNewMetaDataField metaDataFields={metaDataFields} configuration={configuration}
                                         placeholder={I18n.t("metaDataFields.placeholder")}
                                         onChange={value => {
-                    debugger;
+                    this.doChange(value, "");
+                    this.setState({newMetaDataFieldKey: value});
                 }}/>
             </div>
         );

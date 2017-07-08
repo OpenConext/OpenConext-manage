@@ -71,7 +71,7 @@ export default class SelectNewMetaDataField extends React.PureComponent {
             } else if (enumExec = enumPropertyRegex.exec(patternPropertyKey)) {
                 if (existingMetaDataKeys.length < 2) {
                     const missingLang = existingMetaDataKeys[0].indexOf(":en") > 0 ? "nl" : "en";
-                    accumulator.push(`${enumExec[1]}:missingLang`);
+                    accumulator.push(`${enumExec[1]}:${missingLang}`);
                 }
             } else {
                 throw new Error("Not supported patternProperty " + patternPropertyKey);
@@ -82,7 +82,7 @@ export default class SelectNewMetaDataField extends React.PureComponent {
 
     render() {
         const {onChange, configuration, metaDataFields, placeholder} = this.props;
-        return <Select className="select-state"
+        return <Select className="select-new-metadata"
                        onChange={option => onChange(option.value)}
                        options={this.options(configuration, metaDataFields)}
                        value={null}
