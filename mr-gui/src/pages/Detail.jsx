@@ -82,7 +82,12 @@ export default class Detail extends React.PureComponent {
 
         let ref = metaData;
         parts.forEach(part => ref = ref[part]);
-        ref[last] = value;
+        if (value === null) {
+            delete ref[last];
+        } else {
+            ref[last] = value;
+        }
+
     };
 
     renderActions = (revisionNote) => {

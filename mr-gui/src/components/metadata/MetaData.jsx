@@ -19,7 +19,8 @@ export default class MetaData extends React.PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            newMetaDataFieldKey: null
+            newMetaDataFieldKey: null,
+            newAddedMetaData: []
         };
     }
 
@@ -109,27 +110,59 @@ export default class MetaData extends React.PureComponent {
                     </span>}
             </td>
             <td className="value">{this.renderMetaDataValue(key, metaDataFields[key], keyConfiguration)}</td>
+            <td className="trash"><span onClick={this.deleteMetaDataField(key)}><i className="fa fa-trash-o"></i></span></td>
         </tr>;
     };
 
+    deleteMetaDataField = key => () => {
+        const indexOf = this.state.newAddedMetaData.indexOf(key);
+        if (indexOf > -1) {
+            const newAddedMetaData = [...this.state.newAddedMetaData];
+            newAddedMetaData.splice(indexOf, 1);
+            this.setState({newAddedMetaData: newAddedMetaData});
+        }
+        this.doChange(key, null);
+    };
 
-    renderMetaDataFields = (keys, metaDataFields, configuration) => {
+    renderMetaDataFields = (keys, metaDataFields, configuration, newAddedMetaData) => {
+        const existingKeys = keys.filter(key => newAddedMetaData.indexOf(key) === -1);
         return <table className="metadata-fields-table">
             <thead>
             <tr>
                 <th className="key">{I18n.t("metaDataFields.key")}</th>
                 <th className="value">{I18n.t("metaDataFields.value")}</th>
+                <th></th>
             </tr>
             </thead>
             <tbody>
-            {keys.map(key => this.renderMetaDataRow(key, metaDataFields, configuration))}
-
+            {existingKeys.map(key => this.renderMetaDataRow(key, metaDataFields, configuration))}
+            {newAddedMetaData.map(key => this.renderMetaDataRow(key, metaDataFields, configuration))}
+            <tr>
+                <td colSpan={3}>
+                    {this.renderMetaDataSearch(metaDataFields, configuration)}
+                </td>
+            </tr>
             </tbody>
         </table>
     };
 
+    renderMetaDataSearch = (metaDataFields, configuration) =>
+        <SelectNewMetaDataField metaDataFields={metaDataFields} configuration={configuration}
+                                placeholder={I18n.t("metaDataFields.placeholder")}
+                                onChange={value => {
+                                    this.doChange(value, "");
+                                    const newAddedMetaDataState = [...this.state.newAddedMetaData];
+                                    newAddedMetaDataState.push(value);
+                                    this.setState({
+                                        newMetaDataFieldKey: value,
+                                        newAddedMetaData: newAddedMetaDataState
+                                    });
+                                }}/>;
+
+
     render() {
         const {metaDataFields, configuration, name} = this.props;
+        const {newAddedMetaData} = this.state;
         const keys = Object.keys(metaDataFields).sort();
         return (
             <div className="metadata-metadata">
@@ -138,13 +171,7 @@ export default class MetaData extends React.PureComponent {
                         {I18n.t("metaDataFields.title", {name: name})}
                     </h2>
                 </div>
-                {this.renderMetaDataFields(keys, metaDataFields, configuration)}
-                <SelectNewMetaDataField metaDataFields={metaDataFields} configuration={configuration}
-                                        placeholder={I18n.t("metaDataFields.placeholder")}
-                                        onChange={value => {
-                    this.doChange(value, "");
-                    this.setState({newMetaDataFieldKey: value});
-                }}/>
+                {this.renderMetaDataFields(keys, metaDataFields, configuration, newAddedMetaData)}
             </div>
         );
     }

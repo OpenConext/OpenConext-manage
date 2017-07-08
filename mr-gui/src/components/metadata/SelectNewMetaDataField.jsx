@@ -22,7 +22,7 @@ export default class SelectNewMetaDataField extends React.PureComponent {
          * Do the same for the patternProperties
          */
         const patternProperties = configuration.properties.metaDataFields.patternProperties;
-        const patternPropertiesKeys = Object.keys(configuration.properties.metaDataFields.patternProperties);
+        const patternPropertiesKeys = Object.keys(patternProperties);
         const missingPatternProperties = patternPropertiesKeys
             .reduce((accumulator, patternPropertyKey) => {
                 let patternProperty = patternProperties[patternPropertyKey];
@@ -43,7 +43,6 @@ export default class SelectNewMetaDataField extends React.PureComponent {
         patternPropertyRegex.lastIndex = 0;
         enumPropertyRegex.lastIndex = 0;
         multiplicityRegex.lastIndex = 0;
-
         const regExp = new RegExp(patternPropertyKey);
         const existingMetaDataKeys = metaDataKeys.filter(metaDataKey => regExp.test(metaDataKey));
         let enumExec;
@@ -53,7 +52,8 @@ export default class SelectNewMetaDataField extends React.PureComponent {
                 const newMetaDataKey = patternPropertyKey.replace(patternPropertyRegex, `$1${patternProperty.startIndex || 0}$3`);
                 accumulator.push(newMetaDataKey);
             } else if (enumExec = enumPropertyRegex.exec(patternPropertyKey)) {
-                accumulator.concat([`${enumExec[1]}:nl`, `${enumExec[1]}:en`]);
+                accumulator.push(`${enumExec[1]}nl`);
+                accumulator.push(`${enumExec[1]}en`);
             } else {
                 throw new Error("Not supported patternProperty " + patternPropertyKey);
             }
@@ -71,7 +71,7 @@ export default class SelectNewMetaDataField extends React.PureComponent {
             } else if (enumExec = enumPropertyRegex.exec(patternPropertyKey)) {
                 if (existingMetaDataKeys.length < 2) {
                     const missingLang = existingMetaDataKeys[0].indexOf(":en") > 0 ? "nl" : "en";
-                    accumulator.push(`${enumExec[1]}:${missingLang}`);
+                    accumulator.push(`${enumExec[1]}${missingLang}`);
                 }
             } else {
                 throw new Error("Not supported patternProperty " + patternPropertyKey);
