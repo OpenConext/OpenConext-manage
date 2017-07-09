@@ -110,6 +110,9 @@ export default class Detail extends React.PureComponent {
     };
 
     renderActions = (revisionNote) => {
+        if (this.props.currentUser.guest) {
+            return null;
+        }
         const {errors} = this.state;
         const hasErrors = Object.keys(errors)
                 .find(key => Object.keys(errors[key]).find(subKey => errors[key][subKey])) !== undefined;
@@ -152,29 +155,31 @@ export default class Detail extends React.PureComponent {
 
     renderCurrentTab = (tab, metaData, whiteListing, revisions) => {
         const configuration = this.props.configuration.find(conf => conf.title === this.props.match.params.type);
+        const guest = this.props.currentUser.guest;
         const name = metaData.data.metaDataFields["name:en"] || metaData.data.metaDataFields["name:nl"] || "this service";
         switch (tab) {
             case "connection" :
-                return <Connection metaData={metaData} onChange={this.onChange} onError={this.onError}/>;
+                return <Connection metaData={metaData} onChange={this.onChange} onError={this.onError} guest={guest}/>;
             case "whitelist" :
                 return <WhiteList whiteListing={whiteListing} name={name}
                                   allowedEntities={metaData.data.allowedEntities}
                                   allowedAll={metaData.data.allowedall} type={metaData.type} onChange={this.onChange}
-                                  entityId={metaData.data.entityid}/>;
+                                  entityId={metaData.data.entityid} guest={guest}/>;
             case "metadata":
                 return <MetaData metaDataFields={metaData.data.metaDataFields} configuration={configuration}
                                  onChange={this.onChange} name={name} onError={this.onError("metadata")}
-                                 errors={this.state.errors["metadata"]}/>;
+                                 errors={this.state.errors["metadata"]} guest={guest}/>;
             case "arp":
                 return <ARP arp={metaData.data.arp} arpConfiguration={configuration.properties.arp}
-                            onChange={this.onChange}/>;
+                            onChange={this.onChange} guest={guest}/>;
             case "manipulation":
-                return <Manipulation content={metaData.data.manipulation} onChange={this.onChange}/>;
+                return <Manipulation content={metaData.data.manipulation} onChange={this.onChange} guest={guest}/>;
             case "consent_disabling":
                 return <ConsentDisabling disableConsent={metaData.data.disableConsent} name={name}
-                                         whiteListing={whiteListing} onChange={this.onChange}/>;
+                                         whiteListing={whiteListing} onChange={this.onChange}
+                                         guest={guest}/>;
             case "revisions":
-                return <Revisions revisions={revisions} metaData={metaData}/>;
+                return <Revisions revisions={revisions} metaData={metaData} guest={guest}/>;
             default:
                 throw new Error(`Unknown tab ${tab}`);
         }

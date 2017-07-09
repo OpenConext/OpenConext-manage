@@ -129,11 +129,11 @@ export default class WhiteList extends React.PureComponent {
         this.setState({enrichedAllowedEntries: sorted, sorted: name, reverse: reverse});
     };
 
-    renderAllowedEntity = (entity, type) => {
+    renderAllowedEntity = (entity, type, guest) => {
         return <tr key={entity.entityid}>
             <td>
                 <CheckBox name={entity.entityid} value={true}
-                          onChange={() => this.removeAllowedEntry(entity)}/>
+                          onChange={() => this.removeAllowedEntry(entity)} readOnly={guest}/>
             </td>
             <td className="blocked">
                 {entity.blocked ? <i className="fa fa-window-close"></i> : <span></span>}
@@ -150,7 +150,7 @@ export default class WhiteList extends React.PureComponent {
         </tr>
     };
 
-    renderAllowedEntitiesTable = (enrichedAllowedEntries, type) => {
+    renderAllowedEntitiesTable = (enrichedAllowedEntries, type, guest) => {
         const {sorted, reverse} = this.state;
         const icon = name => {
             return name === sorted ? (reverse ? <i className="fa fa-arrow-up reverse"></i> :
@@ -170,7 +170,7 @@ export default class WhiteList extends React.PureComponent {
                 </tr>
                 </thead>
                 <tbody>
-                {enrichedAllowedEntries.map(entity => this.renderAllowedEntity(entity, type === "saml20_sp" ? "saml20_idp" : "saml20_sp"))}
+                {enrichedAllowedEntries.map(entity => this.renderAllowedEntity(entity, type === "saml20_sp" ? "saml20_idp" : "saml20_sp", guest))}
                 </tbody>
             </table>
 
@@ -178,7 +178,7 @@ export default class WhiteList extends React.PureComponent {
     };
 
     render() {
-        const {allowedAll, allowedEntities, whiteListing, name, type, entityId} = this.props;
+        const {allowedAll, allowedEntities, whiteListing, name, type, guest} = this.props;
         const providerType = type === "saml20_sp" ? "Identity Providers" : "Service Providers";
 
         const allowAllCheckBoxInfo = I18n.t("whitelisting.allowAllProviders", {
@@ -197,14 +197,14 @@ export default class WhiteList extends React.PureComponent {
                                     leavePage={false}
                                     question={confirmationDialogQuestion}/>
                 <CheckBox info={allowAllCheckBoxInfo} name="allow-all" value={allowedAll}
-                          onChange={this.allowAllChanged}/>
+                          onChange={this.allowAllChanged} readOnly={guest}/>
                 <div className="whitelist-info">
                     <h2>{I18n.t("whitelisting.title", {type: providerType})}</h2>
-                    <p>{I18n.t("whitelisting.description", {type: providerType, name: name})}</p>
+                    {!guest && <p>{I18n.t("whitelisting.description", {type: providerType, name: name})}</p>}
                 </div>
-                <SelectEntities whiteListing={whiteListing} allowedEntities={allowedEntities}
-                                onChange={this.addAllowedEntry} placeholder={placeholder}/>
-                {enrichedAllowedEntries.length > 0 && this.renderAllowedEntitiesTable(enrichedAllowedEntries, type)}
+                {!guest && <SelectEntities whiteListing={whiteListing} allowedEntities={allowedEntities}
+                                onChange={this.addAllowedEntry} placeholder={placeholder}/>}
+                {enrichedAllowedEntries.length > 0 && this.renderAllowedEntitiesTable(enrichedAllowedEntries, type, guest)}
 
             </div>
         );
@@ -218,6 +218,7 @@ WhiteList.propTypes = {
     entityId: PropTypes.string.isRequired,
     allowedEntities: PropTypes.array.isRequired,
     allowedAll: PropTypes.bool.isRequired,
-    onChange: PropTypes.func.isRequired
+    onChange: PropTypes.func.isRequired,
+    guest: PropTypes.bool.isRequired
 };
 

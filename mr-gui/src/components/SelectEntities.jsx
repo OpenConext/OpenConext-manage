@@ -23,7 +23,7 @@ export default class SelectEntities extends React.PureComponent {
             const value = entry.data.entityid;
             return {
                 value: value,
-                label: (metaDataFields["name:en"] || metaDataFields["name:nl"] || value) + entry.data.state,
+                label: (metaDataFields["name:en"] || metaDataFields["name:nl"] || value),
                 state: entry.data.state
             };
         })

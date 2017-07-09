@@ -108,6 +108,12 @@
     },
     "arp": {
       "type": "object",
+      "sources": [
+        "idp",
+        "orcid",
+        "sab",
+        "voot"
+      ],
       "properties": {
         "_class": {
           "type": "string",

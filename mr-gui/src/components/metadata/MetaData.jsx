@@ -56,26 +56,27 @@ export default class MetaData extends React.PureComponent {
         }
     };
 
-    renderMetaDataValue = (key, value, keyConfiguration) => {
+    renderMetaDataValue = (key, value, keyConfiguration, guest) => {
         const autoFocus = this.state.newMetaDataFieldKey === key;
         const isError = this.props.errors[key] || false;
         if (keyConfiguration.type === "string" && keyConfiguration.format !== "boolean") {
             if (!keyConfiguration.format && !keyConfiguration.enum) {
                 return <input ref={ref => this.newMetaDataFieldRendered(ref, autoFocus)} type="text" name={key}
-                              value={value} onChange={this.onChangeInputEvent(key)}/>
+                              value={value} onChange={this.onChangeInputEvent(key)} disabled={guest}/>
             } else if (keyConfiguration.enum) {
                 return <SelectEnum autofocus={autoFocus} onChange={this.onChange(key)} state={value}
-                                   enumValues={keyConfiguration.enum} disabled={false}/>
+                                   enumValues={keyConfiguration.enum} disabled={guest}/>
             } else if (keyConfiguration.format) {
                 return <FormatInput autofocus={autoFocus}
                                     name={key} input={value} format={keyConfiguration.format}
                                     onChange={this.onChange(key)}
                                     onError={this.onError(key)}
-                                    isError={isError}/>
+                                    isError={isError}
+                                    readOnly={guest}/>
             }
         } else if (keyConfiguration.format === "boolean") {
             return <CheckBox autofocus={autoFocus} onChange={this.onChangeCheckEvent(key)}
-                             value={value === "1" ? true : false} name={key}/>
+                             value={value === "1" ? true : false} name={key} readOnly={guest}/>
         }
         throw new Error("Unsupported metaData key configuration " + JSON.stringify(keyConfiguration));
     };
@@ -98,22 +99,22 @@ export default class MetaData extends React.PureComponent {
         return keyConf;
     };
 
-    renderMetaDataRow = (key, metaDataFields, configuration) => {
+    renderMetaDataRow = (key, metaDataFields, configuration, guest) => {
         const keyConfiguration = this.metaDataFieldConfiguration(key, configuration);
         const toolTip = keyConfiguration.info;
         return (<tr key={key}>
             <td className="key">{key}
                 {toolTip && <span>
                             <i className="fa fa-info-circle" data-for={key} data-tip></i>
-                                <ReactTooltip id={key} type="light" class="tool-tip" effect="solid">
+                                <ReactTooltip id={key} type="info" class="tool-tip" effect="solid">
                                     <span>{toolTip}</span>
                                 </ReactTooltip>
                         </span>}
             </td>
-            <td className="value">{this.renderMetaDataValue(key, metaDataFields[key], keyConfiguration)}</td>
-            <td className="trash">
-                <span onClick={this.deleteMetaDataField(key)}><i className="fa fa-trash-o"></i></span>
-            </td>
+            <td colSpan={guest ? 2 : 1} className="value">{this.renderMetaDataValue(key, metaDataFields[key], keyConfiguration, guest)}</td>
+            {!guest && <td className="trash">
+                 <span onClick={this.deleteMetaDataField(key)}><i className="fa fa-trash-o"></i></span>
+            </td>}
         </tr>);
     };
 
@@ -129,7 +130,7 @@ export default class MetaData extends React.PureComponent {
 
     };
 
-    renderMetaDataFields = (keys, metaDataFields, configuration, newAddedMetaData) => {
+    renderMetaDataFields = (keys, metaDataFields, configuration, newAddedMetaData, guest) => {
         const existingKeys = keys.filter(key => newAddedMetaData.indexOf(key) === -1);
         return <table className="metadata-fields-table">
             <thead>
@@ -140,11 +141,11 @@ export default class MetaData extends React.PureComponent {
             </tr>
             </thead>
             <tbody>
-            {existingKeys.map(key => this.renderMetaDataRow(key, metaDataFields, configuration))}
-            {newAddedMetaData.map(key => this.renderMetaDataRow(key, metaDataFields, configuration))}
+            {existingKeys.map(key => this.renderMetaDataRow(key, metaDataFields, configuration, guest))}
+            {newAddedMetaData.map(key => this.renderMetaDataRow(key, metaDataFields, configuration, guest))}
             <tr>
                 <td colSpan={2}>
-                    {this.renderMetaDataSearch(metaDataFields, configuration)}
+                    {!guest && this.renderMetaDataSearch(metaDataFields, configuration)}
                 </td>
                 <td></td>
             </tr>
@@ -181,7 +182,7 @@ export default class MetaData extends React.PureComponent {
 
 
     render() {
-        const {metaDataFields, configuration, name} = this.props;
+        const {metaDataFields, configuration, name, guest} = this.props;
         const {newAddedMetaData} = this.state;
         const keys = Object.keys(metaDataFields).sort();
         return (
@@ -191,7 +192,7 @@ export default class MetaData extends React.PureComponent {
                         {I18n.t("metaDataFields.title", {name: name})}
                     </h2>
                 </div>
-                {this.renderMetaDataFields(keys, metaDataFields, configuration, newAddedMetaData)}
+                {this.renderMetaDataFields(keys, metaDataFields, configuration, newAddedMetaData, guest)}
             </div>
         );
     }
@@ -203,6 +204,7 @@ MetaData.propTypes = {
     errors: PropTypes.object.isRequired,
     metaDataFields: PropTypes.object.isRequired,
     name: PropTypes.string.isRequired,
-    configuration: PropTypes.object.isRequired
+    configuration: PropTypes.object.isRequired,
+    guest: PropTypes.bool.isRequired
 };
 

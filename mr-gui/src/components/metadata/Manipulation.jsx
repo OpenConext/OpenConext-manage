@@ -22,9 +22,9 @@ export default class Manipulation extends React.PureComponent {
     };
 
     render() {
-        const {content} = this.props;
+        const {content, guest} = this.props;
         const optionsForInfo= {lineNumbers: false, mode: "javascript", readOnly: true};
-        const optionsForContent  = {lineNumbers: true, mode: "javascript"};
+        const optionsForContent  = {lineNumbers: true, mode: "javascript", readOnly: guest};
 
         const info = `
 /**
@@ -41,7 +41,7 @@ export default class Manipulation extends React.PureComponent {
             <div className="metadata-manipulation">
                 <div className="manipulation-info">
                     <h2>
-                        <a href="https://github.com/OpenConext/OpenConext-engineblock/wiki/Attribute-Manipulations" target="_blank">
+                        <a href="https://github.com/OpenConext/OpenConext-engineblock/wiki/Attribute-Manipulations" target="_blank" rel="noopener noreferrer">
                             {I18n.t("manipulation.description")}
                     </a>
                     </h2>
@@ -56,6 +56,7 @@ export default class Manipulation extends React.PureComponent {
 
 Manipulation.propTypes = {
     content: PropTypes.string,
-    onChange: PropTypes.func.isRequired
+    onChange: PropTypes.func.isRequired,
+    guest: PropTypes.bool.isRequired
 };
 

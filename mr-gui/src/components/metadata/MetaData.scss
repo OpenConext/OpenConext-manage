@@ -67,12 +67,17 @@
                     padding: 10px !important;
                     font-size: 14px !important;
                     pointer-events: auto !important;
-                    color: $dark-grey !important;
-                    background-color: white !important;
+                    color: white !important;
+                    background-color: $blue !important;
                     &.show {
                         opacity: 1 !important;
                     }
                     max-width: 390px;
+                    &:after {
+                        border-top-color: $blue !important;
+                        border-top-style: solid !important;
+                        border-top-width: 6px !important;
+                    }
                 }
 
             }

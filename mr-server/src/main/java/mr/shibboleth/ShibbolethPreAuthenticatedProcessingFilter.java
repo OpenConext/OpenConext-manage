@@ -31,7 +31,9 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
             return null;
         }
         //TODO how to detemrine guest membership
-        return new FederatedUser(uid, displayName, schacHomeOrganization, createAuthorityList("ROLE_USER", "ROLE_ADMIN"));
+        return new FederatedUser(uid, displayName, schacHomeOrganization,
+            createAuthorityList("ROLE_USER", "ROLE_ADMIN"));
+//        createAuthorityList("ROLE_USER"));
     }
 
     @Override

@@ -55,10 +55,14 @@ export default class Navigation extends React.PureComponent {
             <div className="navigation-container">
                 <div className="navigation">
                     {this.renderItem("/search", "search")}
-                    {this.renderItem("/new", "new")}
+                    {!this.props.currentUser.guest && this.renderItem("/new", "new")}
                     {this.renderSpinner()}
                 </div>
             </div>
         );
     }
 }
+
+Navigation.propTypes = {
+    currentUser: PropTypes.object.isRequired
+};

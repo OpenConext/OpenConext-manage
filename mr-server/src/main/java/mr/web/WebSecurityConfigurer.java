@@ -69,7 +69,7 @@ public class WebSecurityConfigurer {
                     AbstractPreAuthenticatedProcessingFilter.class
                 )
                 .authorizeRequests()
-                .antMatchers("/client/**").hasRole("ADMIN");
+                .antMatchers("/client/**").hasRole("USER");
 
             if (environment.acceptsProfiles("no-csrf")) {
                 http.csrf().disable();

@@ -32,6 +32,7 @@ export default class Revisions extends React.PureComponent {
 
 Revisions.propTypes = {
     metaData: PropTypes.object.isRequired,
-    revisions: PropTypes.array.isRequired
+    revisions: PropTypes.array.isRequired,
+    guest: PropTypes.bool.isRequired
 };
 

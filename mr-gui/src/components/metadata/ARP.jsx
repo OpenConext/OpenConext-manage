@@ -33,6 +33,7 @@ export default class ARP extends React.PureComponent {
 ARP.propTypes = {
     arp: PropTypes.object.isRequired,
     onChange: PropTypes.func.isRequired,
-    arpConfiguration: PropTypes.object.isRequired
+    arpConfiguration: PropTypes.object.isRequired,
+    guest: PropTypes.bool.isRequired
 };
 

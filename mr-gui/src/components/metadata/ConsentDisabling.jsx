@@ -76,11 +76,11 @@ export default class ConsentDisabling extends React.PureComponent {
         this.setState({enrichedDisableConsent: sorted, sorted: name, reverse: reverse});
     };
 
-    renderDisableConsent = (entity, type) => {
+    renderDisableConsent = (entity, type, guest) => {
         return <tr key={entity.entityid}>
             <td>
                 <CheckBox name={entity.entityid} value={true}
-                          onChange={() => this.removeDisableConsent(entity)}/>
+                          onChange={() => this.removeDisableConsent(entity)} readOnly={guest}/>
             </td>
             <td>
                 {entity.status}
@@ -94,7 +94,7 @@ export default class ConsentDisabling extends React.PureComponent {
         </tr>
     };
 
-    renderDisableConsentTable = (enrichedDisableConsent, type) => {
+    renderDisableConsentTable = (enrichedDisableConsent, type, guest) => {
         const {sorted, reverse} = this.state;
         const icon = name => {
             return name === sorted ? (reverse ? <i className="fa fa-arrow-up reverse"></i> :
@@ -114,7 +114,7 @@ export default class ConsentDisabling extends React.PureComponent {
                 </tr>
                 </thead>
                 <tbody>
-                {enrichedDisableConsent.map(entity => this.renderDisableConsent(entity, type === "saml20_sp" ? "saml20_idp" : "saml20_sp"))}
+                {enrichedDisableConsent.map(entity => this.renderDisableConsent(entity, type === "saml20_sp" ? "saml20_idp" : "saml20_sp", guest))}
                 </tbody>
             </table>
 
@@ -122,7 +122,7 @@ export default class ConsentDisabling extends React.PureComponent {
     };
 
     render() {
-        const {disableConsent, whiteListing, name} = this.props;
+        const {disableConsent, whiteListing, name, guest} = this.props;
         const placeholder = I18n.t("consentDisabling.placeholder");
         const {enrichedDisableConsent} = this.state;
 
@@ -130,11 +130,11 @@ export default class ConsentDisabling extends React.PureComponent {
             <div className="metadata-consent-disabling">
                 <div className="consent-disabling-info">
                     <h2>{I18n.t("consentDisabling.title")}</h2>
-                    <p>{I18n.t("consentDisabling.description", {name: name})}</p>
+                    {!guest && <p>{I18n.t("consentDisabling.description", {name: name})}</p>}
                 </div>
-                <SelectEntities whiteListing={whiteListing} allowedEntities={disableConsent}
-                                onChange={this.addDisableConsent} placeholder={placeholder}/>
-                {enrichedDisableConsent.length > 0 && this.renderDisableConsentTable(enrichedDisableConsent, "saml20_sp")}
+                {!guest && <SelectEntities whiteListing={whiteListing} allowedEntities={disableConsent}
+                                onChange={this.addDisableConsent} placeholder={placeholder}/>}
+                {enrichedDisableConsent.length > 0 && this.renderDisableConsentTable(enrichedDisableConsent, "saml20_sp", guest)}
 
             </div>
         );
@@ -145,6 +145,7 @@ ConsentDisabling.propTypes = {
     whiteListing: PropTypes.array.isRequired,
     disableConsent: PropTypes.array.isRequired,
     name: PropTypes.string.isRequired,
-    onChange: PropTypes.func.isRequired
+    onChange: PropTypes.func.isRequired,
+    guest: PropTypes.bool.isRequired
 };
 

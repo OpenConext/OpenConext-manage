@@ -106,12 +106,11 @@ class App extends React.PureComponent {
                         <Route path="/metadata/:type/:id"
                                render={props => <Detail currentUser={currentUser}
                                                         configuration={configuration} {...props}/>}/>
-                        <Route path="/error"
-                               render={props => <ServerError {...props}/>}/>
                         <ProtectedRoute path="/new"
                                         guest={currentUser.guest}
                                         render={props => <New configuration={configuration} {...props}/>}/>
-
+                        <Route path="/error"
+                               render={props => <ServerError {...props}/>}/>
                         <Route component={NotFound}/>
                     </Switch>
                 </div>
