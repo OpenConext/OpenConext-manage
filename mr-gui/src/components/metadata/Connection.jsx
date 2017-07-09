@@ -80,6 +80,7 @@ export default class Connection extends React.PureComponent {
 
 Connection.propTypes = {
     metaData: PropTypes.object.isRequired,
-    onChange: PropTypes.func.isRequired
+    onChange: PropTypes.func.isRequired,
+    onError: PropTypes.func.isRequired
 };
 

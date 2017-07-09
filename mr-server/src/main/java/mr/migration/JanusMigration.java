@@ -44,7 +44,7 @@ public class JanusMigration implements ApplicationListener<ApplicationReadyEvent
     private MetaDataAutoConfiguration metaDataAutoConfiguration;
     private boolean migrate;
 
-    private List<String> removedMetatData = Arrays.asList("coin:gadgetbaseurl","coin:oauth:secret","coin:oauth:two_legged_allowed");
+    private List<String> removedMetatData = Arrays.asList("coin:gadgetbaseurl", "coin:oauth:secret", "coin:oauth:two_legged_allowed");
 
     @Autowired
     public JanusMigration(@Value("${migrate_data_from_janus}") boolean migrate, DataSource dataSource, MongoTemplate mongoTemplate, MetaDataAutoConfiguration metaDataAutoConfiguration) {
@@ -62,7 +62,7 @@ public class JanusMigration implements ApplicationListener<ApplicationReadyEvent
     }
 
     public List<Map<String, Long>> doMigrate() {
-        long start =System.currentTimeMillis();
+        long start = System.currentTimeMillis();
 
         Map<String, Long> spStats = new HashMap<>();
         Map<String, Long> idpStats = new HashMap<>();
@@ -72,7 +72,7 @@ public class JanusMigration implements ApplicationListener<ApplicationReadyEvent
         saveEntities(EntityType.SP, spStats);
         LOG.info("Finished migration of SPs in {} ms and results {}", System.currentTimeMillis() - start, prettyPrint(spStats));
 
-        start =System.currentTimeMillis();
+        start = System.currentTimeMillis();
         saveEntities(EntityType.IDP, idpStats);
         LOG.info("Finished migration of IDPs in {} ms and results {}", System.currentTimeMillis() - start, prettyPrint(spStats));
         return Arrays.asList(spStats, idpStats);
@@ -151,7 +151,7 @@ public class JanusMigration implements ApplicationListener<ApplicationReadyEvent
                 }
                 //now save all revisions
                 if (isPrimary) {
-                    jdbcTemplate.query("SELECT eid, revisionid from janus__connectionRevision WHERE  eid = ? AND revisionid <> ?",
+                    jdbcTemplate.query("SELECT eid, revisionid FROM janus__connectionRevision WHERE  eid = ? AND revisionid <> ?",
                         new Long[]{eid, revisionid},
                         rs2 -> {
                             saveEntity(rs.getLong("eid"), rs.getLong("revisionid"), type.concat(REVISION_POSTFIX), false, id, stats);

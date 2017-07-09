@@ -24,10 +24,18 @@
                 color: $darker-blue;
                 border-top: 2px solid $blue;
                 border-right: none;
+                &.errors {
+                    border-top: 2px solid $red;
+                }
             }
-
+            &.errors {
+                color: $red;
+            }
             &:last-child {
                 border-right: none;
+            }
+            i.fa-warning {
+                float: right;
             }
         }
     }

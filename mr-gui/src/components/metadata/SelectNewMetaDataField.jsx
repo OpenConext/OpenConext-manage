@@ -43,8 +43,10 @@ export default class SelectNewMetaDataField extends React.PureComponent {
         patternPropertyRegex.lastIndex = 0;
         enumPropertyRegex.lastIndex = 0;
         multiplicityRegex.lastIndex = 0;
+
         const regExp = new RegExp(patternPropertyKey);
         const existingMetaDataKeys = metaDataKeys.filter(metaDataKey => regExp.test(metaDataKey));
+
         let enumExec;
         if (existingMetaDataKeys.length === 0) {
             //translate the patternPropertyKey to a metaDataKey and add it to the accumulator

@@ -10,8 +10,8 @@ export default class FormatInput extends React.PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            error: false,
-            errorMessage: ""
+            error: props.isError,
+            errorMessage: I18n.t("metaDataFields.error", {format: props.format})
         };
     }
 
@@ -27,9 +27,9 @@ export default class FormatInput extends React.PureComponent {
         const value = e.target.value;
         validation(format, value).then(result => {
             this.setState({
-                error: !result,
-                errorMessage: I18n.t("metaDataFields.error", {format: format})
+                error: !result
             });
+            this.props.onError(!result);
         })
     };
 
@@ -52,6 +52,8 @@ FormatInput.propTypes = {
     input: PropTypes.string.isRequired,
     format: PropTypes.string.isRequired,
     onChange: PropTypes.func.isRequired,
+    onError: PropTypes.func.isRequired,
+    isError: PropTypes.bool.isRequired,
     autofocus: PropTypes.bool,
     readOnly: PropTypes.bool
 };
