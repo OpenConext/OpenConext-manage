@@ -3,6 +3,7 @@ package mr.conf;
 import mr.validations.BooleanValidator;
 import mr.validations.CertificateValidator;
 import mr.validations.NumberValidator;
+import mr.validations.SAMLEmailValidator;
 import org.everit.json.schema.FormatValidator;
 import org.everit.json.schema.Schema;
 import org.everit.json.schema.loader.SchemaLoader;
@@ -43,6 +44,7 @@ public class MetaDataAutoConfiguration {
     public MetaDataAutoConfiguration(@Value("${metadata_configuration_path}") Resource metadataConfigurationPath) throws IOException {
         this.schemas = parseConfiguration(metadataConfigurationPath, Arrays.asList(
             new CertificateValidator(),
+            new SAMLEmailValidator(),
             new NumberValidator(),
             new BooleanValidator()
         ));

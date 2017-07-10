@@ -27,8 +27,10 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 import static java.util.stream.Collectors.toList;
 import static mr.mongo.MongobeeConfiguration.REVISION_POSTFIX;
@@ -44,10 +46,9 @@ public class JanusMigration implements ApplicationListener<ApplicationReadyEvent
     private MetaDataAutoConfiguration metaDataAutoConfiguration;
     private boolean migrate;
 
-    private List<String> removedMetatData = Arrays.asList("coin:gadgetbaseurl", "coin:oauth:secret", "coin:oauth:two_legged_allowed");
-
     @Autowired
-    public JanusMigration(@Value("${migrate_data_from_janus}") boolean migrate, DataSource dataSource, MongoTemplate mongoTemplate, MetaDataAutoConfiguration metaDataAutoConfiguration) {
+    public JanusMigration(@Value("${migrate_data_from_janus}") boolean migrate, DataSource dataSource,
+                          MongoTemplate mongoTemplate, MetaDataAutoConfiguration metaDataAutoConfiguration) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
         this.mongoTemplate = mongoTemplate;
         this.metaDataAutoConfiguration = metaDataAutoConfiguration;
@@ -106,12 +107,12 @@ public class JanusMigration implements ApplicationListener<ApplicationReadyEvent
                 "CONNECTION.type=?",
             new String[]{entityType.getJanusDbValue()},
             rs -> {
-                saveEntity(rs.getLong("id"), rs.getLong("revisionNr"), entityType.getType(), true, null, stats);
+                saveEntity(rs.getLong("id"), rs.getLong("revisionNr"), entityType.getType(), true, null, stats, entityType);
             });
 
     }
 
-    private void saveEntity(Long eid, Long revisionid, String type, boolean isPrimary, String parentId, Map<String, Long> stats) {
+    private void saveEntity(Long eid, Long revisionid, String type, boolean isPrimary, String parentId, Map<String, Long> stats, EntityType entityType) {
         jdbcTemplate.query("SELECT id, eid, entityid, revisionid, state, metadataurl, allowedall, " +
                 "manipulation, user, created, ip, revisionnote, active, arp_attributes, notes FROM janus__connectionRevision " +
                 "WHERE  eid = ? AND revisionid = ?",
@@ -135,7 +136,7 @@ public class JanusMigration implements ApplicationListener<ApplicationReadyEvent
                     entity.put("arp", arpDeserializer.parseArpAttributes(rs.getString("arp_attributes")));
                 }
                 entity.put("notes", rs.getString("notes"));
-                addMetaData(entity, eid, revisionid);
+                addMetaData(entity, eid, revisionid, isPrimary, entityType);
                 addAllowedEntities(entity, eid, revisionid);
                 addConsentDisabled(entity, eid, revisionid);
                 Instant instant = Instant.from(DateTimeFormatter.ISO_OFFSET_DATE_TIME.parse((String) entity.get("created")));
@@ -154,19 +155,20 @@ public class JanusMigration implements ApplicationListener<ApplicationReadyEvent
                     jdbcTemplate.query("SELECT eid, revisionid FROM janus__connectionRevision WHERE  eid = ? AND revisionid <> ?",
                         new Long[]{eid, revisionid},
                         rs2 -> {
-                            saveEntity(rs.getLong("eid"), rs.getLong("revisionid"), type.concat(REVISION_POSTFIX), false, id, stats);
+                            saveEntity(rs.getLong("eid"), rs.getLong("revisionid"),
+                                type.concat(REVISION_POSTFIX), false, id, stats, entityType);
                         });
                 }
             });
     }
 
-    private void addMetaData(Map<String, Object> entity, Long eid, Long revisionid) {
+    private void addMetaData(Map<String, Object> entity, Long eid, Long revisionid, boolean isPrimary, EntityType entityType) {
         jdbcTemplate.query("SELECT METADATA.`key`, METADATA.`value` FROM janus__connectionRevision AS CONNECTION_REVISION " +
                 "INNER JOIN janus__metadata AS METADATA ON METADATA.connectionRevisionId = CONNECTION_REVISION.id " +
                 "WHERE CONNECTION_REVISION.eid = ? AND CONNECTION_REVISION.revisionid = ?",
             new Long[]{eid, revisionid},
             (rs) -> {
-                parseMetaData(entity, rs.getString("key"), rs.getString("value"));
+                parseMetaData(entity, rs.getString("key"), rs.getString("value"), isPrimary, entityType);
             }
         );
     }
@@ -195,11 +197,37 @@ public class JanusMigration implements ApplicationListener<ApplicationReadyEvent
         entity.put("disableConsent", stringToNameMap(disableConsent));
     }
 
-    private void parseMetaData(Map<String, Object> entity, String key, String value) {
+    private boolean keyIsPatternProperty(String key, Map<String, Object> patternProperties) {
+        return patternProperties.keySet().stream().anyMatch(pattern -> Pattern.compile(pattern).matcher(key).matches());
+    }
+
+    private void parseMetaData(Map<String, Object> entity, String key, String value, boolean isPrimary, EntityType entityType) {
         if (StringUtils.hasText(value)) {
+            /**
+             * Prevent validation exceptions for example URI with trailing spaces
+             */
+            value = value.trim();
             Map<String, String> metaDataFields = (Map<String, String>) entity.getOrDefault("metaDataFields", new HashMap<String, String>());
-            removedMetatData.forEach(metaDataFields::remove);
-            metaDataFields.put(key, value);
+            if (isPrimary) {
+                Optional<Map<String, Object>> schemaRepresentationOptional = metaDataAutoConfiguration.schemaRepresentations().stream().filter(map -> map.get("title").equals(entityType.getType())).findFirst();
+                Map<String, Object> schema = schemaRepresentationOptional.orElseThrow(() -> new IllegalArgumentException(String.format("The %s schema does not exists", entityType.getType())));
+                /**
+                 * We only import known metadata for primary - e.g. not revisions - metadata
+                 */
+                Map<String, Object> metaDataSchema =
+                    Map.class.cast(Map.class.cast(schema.get("properties")).get("metaDataFields"));
+                Map<String, Object> properties = Map.class.cast(metaDataSchema.get("properties"));
+                Map<String, Object> patternProperties = Map.class.cast(metaDataSchema.get("patternProperties"));
+
+                if (properties.containsKey(key) || keyIsPatternProperty(key, patternProperties)) {
+                    metaDataFields.put(key, value);
+                } else {
+                    LOG.info("Not adding unknown property {} for entity {} with type {}",
+                        key, entity.get("entityid"), entityType.getType());
+                }
+            } else {
+                metaDataFields.put(key, value);
+            }
             entity.put("metaDataFields", metaDataFields);
         }
     }

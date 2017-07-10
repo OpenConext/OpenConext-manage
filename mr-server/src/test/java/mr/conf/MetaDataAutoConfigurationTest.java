@@ -3,15 +3,20 @@ package mr.conf;
 import mr.migration.EntityType;
 import org.apache.commons.io.IOUtils;
 import org.everit.json.schema.ValidationException;
+import org.everit.json.schema.internal.URIFormatValidator;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.List;
+import java.util.Optional;
+import java.util.regex.Pattern;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 public class MetaDataAutoConfigurationTest {
@@ -72,6 +77,20 @@ public class MetaDataAutoConfigurationTest {
             asList("entityid", "metaDataFields.name:en", "metaDataFields.name:nl", "metaDataFields.description:en", "metaDataFields.description:nl"),
             indexConfiguration.getFields());
 
+    }
+
+    @Test
+    public void testRegularExpression() {
+        boolean matches = Pattern.compile("^contacts:([0-3]{1}):emailAddress$").matcher("contacts:0:emailAddress").matches();
+        assertTrue(matches);
+    }
+
+    @Test
+    public void testUriValidator() {
+        URIFormatValidator uriFormatValidator = new URIFormatValidator();
+        String uri = "http://www.crossknowledge.com ";
+        assertTrue(uriFormatValidator.validate(uri).isPresent());
+        assertFalse(uriFormatValidator.validate(uri.trim()).isPresent());
     }
 
     private String readFile(String path) throws IOException {

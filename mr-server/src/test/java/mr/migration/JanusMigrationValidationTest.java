@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Map;
+import java.util.stream.Stream;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Ignore
@@ -31,24 +32,26 @@ public class JanusMigrationValidationTest extends AbstractIntegrationTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private int count = 0;
-
     @Test
     public void validateMigrate() throws Exception {
-        metaDataRepository.getMongoTemplate().findAll(MetaData.class, "saml20_idp_revision")
-            .stream().forEach(metaData -> this.validate(metaData, "saml20_idp"));
-        System.out.println(count);
+        Stream.of(EntityType.values()).map(EntityType::getType).forEach(type -> {
+            metaDataRepository.getMongoTemplate().findAll(MetaData.class, type)
+                .stream().forEach(metaData -> this.validate(metaData, type));
+        });
     }
 
     private void validate(MetaData metaData, String type) {
+        if (Map.class.cast(metaData.getData()).get("state").equals("testaccepted")) {
+            //we are only interested in inval prodaccepted states
+            return;
+        }
         try {
             String json = objectMapper.writeValueAsString(metaData.getData());
             metaDataAutoConfiguration.validate(json, type);
         } catch (ValidationException e) {
-            ++this.count;
-//            Map data = Map.class.cast(metaData.getData());
-//            LOG.info("ValidationException for id {} eid {} entityId {} with exception {}",
-//                data.get("id"), data.get("eid"), data.get("entityid"), e.toJSON().toMap());
+            Map data = Map.class.cast(metaData.getData());
+            LOG.info("ValidationException for id {} eid {} entityId {} type {} with exception {}",
+                data.get("id"), data.get("eid"), data.get("entityid"), type, e.toJSON().toMap());
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
