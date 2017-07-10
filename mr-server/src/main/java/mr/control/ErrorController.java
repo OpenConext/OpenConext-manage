@@ -52,6 +52,7 @@ public class ErrorController implements org.springframework.boot.autoconfigure.w
             ResponseStatus annotation = AnnotationUtils.getAnnotation(error.getClass(), ResponseStatus.class);
             statusCode = annotation != null ? annotation.value() : INTERNAL_SERVER_ERROR;
         }
+        result.remove("message");
         return new ResponseEntity<>(result, statusCode);
     }
 

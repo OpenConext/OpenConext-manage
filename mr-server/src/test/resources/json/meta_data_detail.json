@@ -1,0 +1,122 @@
+{
+  "id": "bcd9c7f0-1d97-4fb2-9a20-7e56c9c661de",
+  "type": "saml20_sp",
+  "revision": {
+    "number": 72,
+    "created": 1475224818.000000000,
+    "parentId": null,
+    "updatedBy": "37"
+  },
+  "data": {
+    "id": 59425,
+    "eid": 2,
+    "entityid": "https://teams.surfconext.nl/shibboleth",
+    "revisionid": 72,
+    "state": "prodaccepted",
+    "metadataurl": "https://teams.surfconext.nl/Shibboleth.sso/Metadata",
+    "allowedall": true,
+    "manipulation": "",
+    "user": "37",
+    "created": "2016-09-30T10:40:18+02:00",
+    "ip": "145.101.112.195",
+    "revisionnote": "No revision note",
+    "active": true,
+    "arp": {
+      "enabled": true,
+      "attributes": {
+        "urn:mace:dir:attribute-def:displayName": [
+          {
+            "value": "*",
+            "source": "idp"
+          }
+        ],
+        "urn:mace:dir:attribute-def:mail": [
+          {
+            "value": "*",
+            "source": "idp"
+          }
+        ],
+        "urn:mace:dir:attribute-def:isMemberOf": [
+          {
+            "value": "*",
+            "source": "idp"
+          },
+          {
+            "value": "urn:collab:org:surf.nl*",
+            "source": "voot"
+          },
+          {
+            "value": "*",
+            "source": "sab"
+          }
+        ],
+        "urn:mace:dir:attribute-def:uid": [
+          {
+            "value": "*",
+            "source": "idp"
+          }
+        ],
+        "urn:mace:terena.org:attribute-def:schacHomeOrganization": [
+          {
+            "value": "*",
+            "source": "idp"
+          }
+        ]
+      }
+    },
+    "notes": null,
+    "metaDataFields": {
+      "AssertionConsumerService:1:index": "3",
+      "displayName:nl": "SURFconext Teams | SURFnet",
+      "OrganizationName:nl": "SURFnet BV",
+      "url:en": "https://www.surfnet.nl/",
+      "AssertionConsumerService:2:Location": "https://teams.surfconext.nl/Shibboleth.sso/SAML2/ECP",
+      "contacts:2:givenName": "Conext",
+      "contacts:1:surName": "net",
+      "AssertionConsumerService:2:Binding": "urn:oasis:names:tc:SAML:2.0:bindings:PAOS",
+      "coin:application_url": "https://teams.surfconext.nl/",
+      "contacts:2:emailAddress": "conext-beheer@surfnet.nl",
+      "OrganizationName:en": "SURFnet BV",
+      "logo:0:width": "500",
+      "contacts:0:emailAddress": "help@surfconext.nl",
+      "contacts:0:contactType": "support",
+      "AssertionConsumerService:0:index": "1",
+      "contacts:2:contactType": "technical",
+      "coin:institution_guid": "ad93daef-0911-e511-80d0-005056956c1a",
+      "contacts:1:contactType": "administrative",
+      "contacts:1:givenName": "SURF",
+      "name:nl": "SURFconext Teams | SURFnet",
+      "OrganizationURL:nl": "https://www.surfnet.nl/",
+      "AssertionConsumerService:1:Binding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Artifact",
+      "NameIDFormat": "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
+      "OrganizationURL:en": "https://www.surfnet.nl/en/",
+      "AssertionConsumerService:1:Location": "https://teams.surfconext.nl/Shibboleth.sso/SAML2/Artifact",
+      "url:nl": "https://www.surfnet.nl/",
+      "displayName:en": "SURFconext Teams | SURFnet",
+      "contacts:3:contactType": "technical",
+      "NameIDFormats:1": "urn:oasis:names:tc:SAML:2.0:nameid-format:transient",
+      "NameIDFormats:0": "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent",
+      "NameIDFormats:2": "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
+      "coin:institution_id": "SURFNET",
+      "description:en": "Teams for SURFconext.",
+      "contacts:2:surName": "Beheer",
+      "description:nl": "Teams voor SURFconext.",
+      "logo:0:url": "https://static.surfconext.nl/media/sp/SURFnetdienst.png",
+      "name:en": "SURFconext Teams | SURFnet",
+      "contacts:0:givenName": "SURFconext",
+      "contacts:0:surName": "Support",
+      "contacts:1:emailAddress": "conext-beheer@surfnet.nl",
+      "AssertionConsumerService:0:Location": "https://teams.surfconext.nl/Shibboleth.sso/SAML2/POST",
+      "coin:no_consent_required": "1",
+      "coin:ss:idp_visible_only": "1",
+      "logo:0:height": "300",
+      "OrganizationDisplayName:en": "SURFnet",
+      "coin:eula": "https://wiki.surfnetlabs.nl/display/conextsupport/Terms+of+Service+%28EN%29",
+      "AssertionConsumerService:0:Binding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
+      "AssertionConsumerService:2:index": "4",
+      "OrganizationDisplayName:nl": "SURFnet"
+    },
+    "allowedEntities": [],
+    "disableConsent": []
+  }
+}

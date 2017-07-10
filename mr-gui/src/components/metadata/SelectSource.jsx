@@ -2,9 +2,9 @@ import React from "react";
 import PropTypes from "prop-types";
 import Select from "react-select";
 import "react-select/dist/react-select.css";
-import "./SelectEnum.css";
+import "./SelectSource.css";
 
-export default class SelectEnum extends React.PureComponent {
+export default class SelectSource extends React.PureComponent {
 
     renderOption = option => {
         return (
@@ -17,28 +17,26 @@ export default class SelectEnum extends React.PureComponent {
     };
 
     render() {
-        const {onChange, state, enumValues, disabled, autofocus} = this.props;
-        const options = enumValues.map(s => {
+        const {onChange, source, sources, disabled} = this.props;
+        const options = sources.map(s => {
             return {value: s, label: s};
         });
         return <Select className="select-state"
                        onChange={option => onChange(option.value)}
-                       optionRenderer={this.renderOption}
+                       //optionRenderer={this.renderOption}
                        options={options}
-                       value={state}
-                       autofocus={autofocus}
+                       value={source}
                        searchable={false}
-                       valueRenderer={this.renderOption}
+                       //valueRenderer={this.renderOption}
                        disabled={disabled || false}/>;
     }
 }
 
-SelectEnum.propTypes = {
+SelectSource.propTypes = {
     onChange: PropTypes.func.isRequired,
-    state: PropTypes.string.isRequired,
-    enumValues: PropTypes.array.isRequired,
-    disabled: PropTypes.bool,
-    autofocus: PropTypes.bool
+    source: PropTypes.string.isRequired,
+    sources: PropTypes.array.isRequired,
+    disabled: PropTypes.bool
 };
 
 

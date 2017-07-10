@@ -123,6 +123,19 @@ I18n.translations.en = {
         state: "Production",
         no_results: "No results"
     },
+
+    arp: {
+        description: "Documentation about ARP",
+        arp_enabled: "No ARP - all attributes are released to the SP",
+        attributes: "ARP Attributes",
+        name: "Name",
+        source: "Source",
+        value: "Value",
+        matching_rule: "Matching rule",
+        wildcard: "Wildcard",
+        exact: "Exact",
+        prefix: "Prefix"
+    }
 };
 
 export default I18n.translations.en;
