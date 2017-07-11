@@ -12,7 +12,8 @@ import SelectNewMetaDataField from "./SelectNewMetaDataField";
 import {isEmpty} from "../../utils/Utils";
 import "./MetaData.css";
 
-export default class MetaData extends React.PureComponent {
+//PureComponent only does a shallow comparison and we use derived values from deeply nested objects
+export default class MetaData extends React.Component {
 
     constructor(props) {
         super(props);
@@ -25,9 +26,6 @@ export default class MetaData extends React.PureComponent {
     componentDidMount() {
         window.scrollTo(0, 0);
     }
-
-    //React decides not to re-render on metadata value changes due to derived values, but the props are consistently different
-    shouldComponentUpdate = (nextProps, nextState) => true;
 
     componentDidUpdate = () => {
         const newMetaDataFieldKey = this.state.newMetaDataFieldKey;

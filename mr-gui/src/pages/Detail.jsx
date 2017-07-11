@@ -76,7 +76,7 @@ export default class Detail extends React.PureComponent {
     };
 
 
-    onChange = (name, value) => {
+    onChange = (name, value, replaceAtSignWithDotsInName = false) => {
         const currentState = this.state.metaData;
         const metaData = {
             ...currentState,
@@ -86,21 +86,22 @@ export default class Detail extends React.PureComponent {
         };
         if (Array.isArray(name) && Array.isArray(value)) {
             for (let i = 0; i < name.length; i++) {
-                this.changeValueReference(metaData, name[i], value[i]);
+                this.changeValueReference(metaData, name[i], value[i], replaceAtSignWithDotsInName);
             }
         } else {
-            this.changeValueReference(metaData, name, value);
+            this.changeValueReference(metaData, name, value, replaceAtSignWithDotsInName);
         }
         this.setState({metaData: metaData});
 
     };
 
-    changeValueReference = (metaData, name, value) => {
+    changeValueReference = (metaData, name, value, replaceAtSignWithDotsInName) => {
         const parts = name.split(".");
-        const last = parts.pop();
+        let last = parts.pop();
 
         let ref = metaData;
         parts.forEach(part => ref = ref[part]);
+        last = replaceAtSignWithDotsInName ? last.replace(/@/g, ".") : last;
         if (value === null) {
             delete ref[last];
         } else {
@@ -196,13 +197,16 @@ export default class Detail extends React.PureComponent {
         const renderNotFound = loaded && notFound;
         const renderContent = loaded && !notFound;
 
+        const name = renderContent ? metaData.data.metaDataFields["name:en"] || metaData.data.metaDataFields["name:nl"] || metaData.data["entityid"] : "";
+        const typeMetaData = I18n.t(`metadata.${type}_single`);
+
         return (
             <div className="detail-metadata">
                 <ConfirmationDialog isOpen={confirmationDialogOpen}
                                     cancel={confirmationDialogAction}
                                     confirm={() => this.setState({confirmationDialogOpen: false})}
                                     leavePage={true}/>
-
+                {renderContent && <section className="info">{`${typeMetaData} - ${name}`}</section>}
                 {renderNotFound && <section>{I18n.t("metadata.notFound")}</section>}
                 {!notFound && <section className="tabs">
                     {tabs.map(tab => this.renderTab(tab))}

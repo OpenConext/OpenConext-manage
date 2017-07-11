@@ -17,7 +17,7 @@ export default class SelectSource extends React.PureComponent {
     };
 
     render() {
-        const {onChange, source, sources, disabled} = this.props;
+        const {onChange, source, sources, disabled, autofocus = false} = this.props;
         const options = sources.map(s => {
             return {value: s, label: s};
         });
@@ -26,6 +26,7 @@ export default class SelectSource extends React.PureComponent {
                        //optionRenderer={this.renderOption}
                        options={options}
                        value={source}
+                       autofocus={autofocus}
                        searchable={false}
                        //valueRenderer={this.renderOption}
                        disabled={disabled || false}/>;
@@ -36,7 +37,8 @@ SelectSource.propTypes = {
     onChange: PropTypes.func.isRequired,
     source: PropTypes.string.isRequired,
     sources: PropTypes.array.isRequired,
-    disabled: PropTypes.bool
+    disabled: PropTypes.bool,
+    autofocus: PropTypes.bool
 };
 
 

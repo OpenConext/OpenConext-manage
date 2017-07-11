@@ -52,7 +52,6 @@
     "revisionid": {
       "type": "number"
     },
-
     "state": {
       "type": "string",
       "enum": [
@@ -61,13 +60,19 @@
       ]
     },
     "metadataurl": {
-      "type": ["string", "null"]
+      "type": [
+        "string",
+        "null"
+      ]
     },
     "allowedall": {
       "type": "boolean"
     },
     "manipulation": {
-      "type": ["string", "null"]
+      "type": [
+        "string",
+        "null"
+      ]
     },
     "user": {
       "type": "string"
@@ -134,13 +139,15 @@
               "$ref": "#/definitions/ArpAttribute"
             },
             "urn:mace:dir:attribute-def:cn": {
-              "$ref": "#/definitions/ArpAttribute"
+              "$ref": "#/definitions/ArpAttribute",
+              "description": "common name"
             },
             "urn:mace:dir:attribute-def:givenName": {
               "$ref": "#/definitions/ArpAttribute"
             },
             "urn:mace:dir:attribute-def:sn": {
-              "$ref": "#/definitions/ArpAttribute"
+              "$ref": "#/definitions/ArpAttribute",
+              "description": "surname"
             },
             "urn:mace:dir:attribute-def:mail": {
               "$ref": "#/definitions/ArpAttribute"
@@ -181,35 +188,38 @@
             },
             "urn:mace:surffederatie.nl:attribute-def:nlEduPersonOrgUnit": {
               "$ref": "#/definitions/ArpAttribute",
-              "deprecated" : true,
+              "deprecated": true,
               "multiplicity": true
             },
             "urn:mace:surffederatie.nl:attribute-def:nlEduPersonStudyBranch": {
               "$ref": "#/definitions/ArpAttribute",
-              "deprecated" : true,
+              "deprecated": true,
               "multiplicity": true
             },
             "urn:mace:surffederatie.nl:attribute-def:nlStudielinkNummer": {
               "$ref": "#/definitions/ArpAttribute",
-              "deprecated" : true
+              "deprecated": true
             },
             "urn:mace:surffederatie.nl:attribute-def:nlDigitalAuthorIdentifier": {
               "$ref": "#/definitions/ArpAttribute",
-              "deprecated" : true
+              "deprecated": true
             },
             "urn:oid:1.3.6.1.4.1.1076.20.40.40.1": {
               "$ref": "#/definitions/ArpAttribute",
               "displayName": "collabPersonId",
-              "deprecated" : true
+              "deprecated": true
             }
           }
         }
       }
     },
     "notes": {
-      "type": ["string", "null"]
+      "type": [
+        "string",
+        "null"
+      ]
     },
-    "metaDataFields" : {
+    "metaDataFields": {
       "type": "object",
       "properties": {
         "NameIDFormat": {
@@ -227,7 +237,7 @@
           "type": "string",
           "format": "certificate"
         },
-        "SingleLogoutService_Binding" : {
+        "SingleLogoutService_Binding": {
           "type": "string",
           "enum": [
             "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect",
@@ -296,7 +306,7 @@
         "coin:no_consent_required": {
           "type": "string",
           "format": "boolean",
-          "info" : "Select this option to skip the consent for a user after the first login."
+          "info": "Select this option to skip the consent for a user after the first login."
         },
         "coin:eula": {
           "type": "string",
@@ -369,7 +379,7 @@
         },
         "^contacts:([0-3]{1}):emailAddress$": {
           "type": "string",
-          "format" : "saml-email",
+          "format": "saml-email",
           "multiplicity": 4
         },
         "^contacts:([0-3]{1}):telephoneNumber$": {
@@ -378,7 +388,7 @@
         },
         "^contacts:([0-3]{1}):contactType$": {
           "type": "string",
-          "enum" : [
+          "enum": [
             "technical",
             "support",
             "administrative",
@@ -418,7 +428,6 @@
           "multiplicity": 2,
           "startIndex": 1
         }
-
       },
       "required": [
         "name:en",
@@ -436,16 +445,16 @@
   ],
   "additionalProperties": false,
   "indexes": [
-  {
-    "name": "autocomplete_text_query",
-    "type": "text",
-    "fields": [
-      "entityid",
-      "metaDataFields.name:en",
-      "metaDataFields.name:nl",
-      "metaDataFields.description:en",
-      "metaDataFields.description:nl"
-    ]
-  }
-]
+    {
+      "name": "autocomplete_text_query",
+      "type": "text",
+      "fields": [
+        "entityid",
+        "metaDataFields.name:en",
+        "metaDataFields.name:nl",
+        "metaDataFields.description:en",
+        "metaDataFields.description:nl"
+      ]
+    }
+  ]
 }

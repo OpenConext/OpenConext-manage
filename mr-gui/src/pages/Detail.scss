@@ -5,9 +5,14 @@
 .detail-metadata {
     @include page;
 
+    section.info {
+        margin: 20px 0;
+        font-size: larger;
+        color: $blue;
+    }
+
     section.tabs {
         display: flex;
-        margin-top: 40px;
         padding: 10px 0 0 0;
         span {
             flex-grow: 1;

@@ -130,11 +130,13 @@ I18n.translations.en = {
         attributes: "ARP Attributes",
         name: "Name",
         source: "Source",
-        value: "Value",
+        enabled: "Enabled",
         matching_rule: "Matching rule",
+        action: "",
         wildcard: "Wildcard",
         exact: "Exact",
-        prefix: "Prefix"
+        prefix: "Prefix",
+        new_attribute_value: "Enter the new ARP value for {{key}}"
     }
 };
 

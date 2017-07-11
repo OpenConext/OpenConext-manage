@@ -145,7 +145,7 @@ export default class WhiteList extends React.PureComponent {
                 {entity.name}
             </td>
             <td>
-                <NavLink to={`/metadata/${type}/${entity.id}`}>{entity.entityid}</NavLink>
+                <a href={`/metadata/${type}/${entity.id}`}>{entity.entityid}</a>
             </td>
         </tr>
     };
