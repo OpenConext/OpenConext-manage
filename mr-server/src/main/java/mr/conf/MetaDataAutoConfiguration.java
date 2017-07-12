@@ -1,5 +1,6 @@
 package mr.conf;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import mr.validations.BooleanValidator;
 import mr.validations.CertificateValidator;
 import mr.validations.NumberValidator;
@@ -27,6 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
@@ -37,17 +39,23 @@ public class MetaDataAutoConfiguration {
     private static final Logger LOG = LoggerFactory.getLogger(MetaDataAutoConfiguration.class);
 
     private Map<String, Schema> schemas;
+    private Map<String, Object> templates;
     private List<Map<String, Object>> schemaRepresentations = new ArrayList<>();
     private Map<String, List<IndexConfiguration>> indexConfigurations = new HashMap<>();
+    private ObjectMapper objectMapper;
 
     @Autowired
-    public MetaDataAutoConfiguration(@Value("${metadata_configuration_path}") Resource metadataConfigurationPath) throws IOException {
+    public MetaDataAutoConfiguration(ObjectMapper objectMapper,
+                                     @Value("${metadata_configuration_path}") Resource metadataConfigurationPath,
+                                     @Value("${metadata_templates_path}") Resource metadataTemplatesPath) throws IOException {
         this.schemas = parseConfiguration(metadataConfigurationPath, Arrays.asList(
             new CertificateValidator(),
             new SAMLEmailValidator(),
             new NumberValidator(),
             new BooleanValidator()
         ));
+        this.objectMapper = objectMapper;
+        this.templates = parseTemplates(metadataTemplatesPath);
         LOG.info("Finished loading {} metadata configurations", schemas.size());
     }
 
@@ -62,6 +70,12 @@ public class MetaDataAutoConfiguration {
 
     public Set<String> schemaNames() {
         return schemas.keySet();
+    }
+
+    public Object metaDataTemplate(String type) {
+        return templates.computeIfAbsent(type, key -> {
+            throw new IllegalArgumentException(String.format("No template defined for %s", key));
+        } );
     }
 
     public List<IndexConfiguration> indexConfigurations(String schemaType) {
@@ -79,6 +93,13 @@ public class MetaDataAutoConfiguration {
             .collect(toMap(Schema::getTitle, schema -> schema));
     }
 
+    private Map<String, Object> parseTemplates(Resource metadataTemplatesPath) throws IOException {
+        File[] templates = metadataTemplatesPath.getFile().listFiles((dir, name) -> name.endsWith("template.json"));
+        Assert.notEmpty(templates, String.format("No template.json files defined in %s", metadataTemplatesPath.getFilename()));
+        return Arrays.stream(templates).map(this::parseTemplate)
+            .collect(toMap(map -> map.keySet().iterator().next(), map -> map.values().iterator().next()));
+    }
+
     private Schema parse(File file, List<FormatValidator> validators) {
         JSONObject jsonObject;
         try {
@@ -92,6 +113,18 @@ public class MetaDataAutoConfiguration {
         addIndexes(schema.getTitle(), jsonObject);
         this.schemaRepresentations.add(jsonObject.toMap());
         return schema;
+    }
+
+    private Map<String, Object> parseTemplate(File file) {
+        Map<String, Object> result = new HashMap<>();
+        try {
+            Object template = objectMapper.readValue(file, Object.class);
+            String name = file.getName();
+            result.put(name.substring(0, name.indexOf(".template.json")), template);
+            return result;
+        } catch (IOException e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 
     @SuppressWarnings("unchecked")

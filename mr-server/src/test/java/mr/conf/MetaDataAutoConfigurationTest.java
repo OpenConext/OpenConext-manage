@@ -1,5 +1,6 @@
 package mr.conf;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import mr.migration.EntityType;
 import org.apache.commons.io.IOUtils;
 import org.everit.json.schema.ValidationException;
@@ -10,7 +11,6 @@ import org.springframework.core.io.ClassPathResource;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.List;
-import java.util.Optional;
 import java.util.regex.Pattern;
 
 import static java.util.Arrays.asList;
@@ -21,7 +21,10 @@ import static org.junit.Assert.fail;
 
 public class MetaDataAutoConfigurationTest {
 
-    private MetaDataAutoConfiguration subject = new MetaDataAutoConfiguration(new ClassPathResource("metadata_configuration"));
+    private MetaDataAutoConfiguration subject = new MetaDataAutoConfiguration(
+        new ObjectMapper(),
+        new ClassPathResource("metadata_configuration"),
+        new ClassPathResource("metadata_templates"));
 
     public MetaDataAutoConfigurationTest() throws IOException {
     }

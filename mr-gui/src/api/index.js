@@ -83,6 +83,10 @@ export function detail(type, id) {
     return fetchJson(`metadata/${type}/${id}`, {}, {}, false);
 }
 
+export function template(type) {
+    return fetchJson(`template/${type}`);
+}
+
 export function ping() {
     return fetchJson("users/ping");
 }

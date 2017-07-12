@@ -11,7 +11,7 @@ import WhiteList from "../components/metadata/WhiteList";
 import Revisions from "../components/metadata/Revisions";
 import ConfirmationDialog from "../components/ConfirmationDialog";
 
-import {detail, revisions, update, whiteListing, remove} from "../api";
+import {detail, revisions, update, save, whiteListing, remove, template} from "../api";
 import {stop} from "../utils/Utils";
 import {setFlash} from "../utils/Flash";
 
@@ -36,19 +36,22 @@ export default class Detail extends React.PureComponent {
             confirmationDialogAction: () => this,
             cancelDialogAction: () => this,
             leavePage: false,
-            errors: {}
+            errors: {},
+            isNew: true
         };
     }
 
     componentDidMount() {
         window.scrollTo(0, 0);
         const {type, id} = this.props.match.params;
-        detail(type, id).then(metaData => {
+        const isNew = id === "new";
+        const promise = isNew ? template(type) : detail(type, id);
+        promise.then(metaData => {
             const isSp = metaData.type === "saml20_sp";
             const whiteListingType = isSp ? "saml20_idp" : "saml20_sp";
             const errorKeys = isSp ? tabsSp : tabsIdP;
             this.setState({
-                metaData: metaData, loaded: true, errors: errorKeys.reduce((acc, tab) => {
+                metaData: metaData, isNew: isNew, loaded: true, errors: errorKeys.reduce((acc, tab) => {
                     acc[tab] = {};
                     return acc;
                 }, {})
@@ -117,7 +120,7 @@ export default class Detail extends React.PureComponent {
         if (this.props.currentUser.guest) {
             return null;
         }
-        const {errors} = this.state;
+        const {errors, isNew} = this.state;
         const hasErrors = Object.keys(errors)
                 .find(key => Object.keys(errors[key]).find(subKey => errors[key][subKey])) !== undefined;
         return <section className="actions">
@@ -136,7 +139,7 @@ export default class Detail extends React.PureComponent {
                         leavePage: true
                     });
                 }}>{I18n.t("metadata.cancel")}</a>
-                <a className="button red" onClick={e => {
+                {!isNew && <a className="button red" onClick={e => {
                     stop(e);
                     this.setState({
                         confirmationDialogAction: () => {
@@ -150,13 +153,14 @@ export default class Detail extends React.PureComponent {
                         confirmationDialogOpen: true,
                         leavePage: false
                     });
-                }}>{I18n.t("metadata.remove")}</a>
+                }}>{I18n.t("metadata.remove")}</a>}
                 <a className={`button ${hasErrors ? "grey disabled" : "blue"}`} onClick={e => {
                     stop(e);
                     if (hasErrors) {
                         return false;
                     }
-                    update(this.state.metaData).then(json => {
+                    const promise = this.state.isNew ? save : update;
+                    promise(this.state.metaData).then(json => {
                         this.props.history.replace("/search");
                         const name = json.data.metaDataFields["name:en"] || json.data.metaDataFields["name:nl"] || "this service";
                         setFlash(I18n.t("metadata.flash.updated", {name: name, revision: json.revision.number}));

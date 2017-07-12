@@ -7,7 +7,7 @@ import SelectEntities from "./../SelectEntities";
 
 import "./ConsentDisabling.css";
 
-export default class ConsentDisabling extends React.PureComponent {
+export default class ConsentDisabling extends React.Component {
 
     constructor(props) {
         super(props);
@@ -24,36 +24,49 @@ export default class ConsentDisabling extends React.PureComponent {
         this.enrichDisableConsent(disableConsent, entityid, whiteListing);
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.disableConsent.length !== this.state.enrichedDisableConsent.length) {
-            const {disableConsent, entityid, whiteListing} = nextProps;
-            this.enrichDisableConsent(disableConsent, entityid, whiteListing);
-        }
-    }
-
     enrichDisableConsent = (disableConsent, entityid, whiteListing) => {
-        const enrichedDisableConsent = disableConsent.map(entity => {
-            const moreInfo = whiteListing.find(entry => entry.data.entityid === entity.name);
-            return {
-                "status": I18n.t(`metadata.${moreInfo.data.state}`),
-                "entityid": entity.name,
-                "name": moreInfo.data.metaDataFields["name:en"] || moreInfo.data.metaDataFields["name:nl"] || "",
-                "id": moreInfo["_id"]
-            };
-        });
-        this.setState({enrichedDisableConsent: enrichedDisableConsent.sort(this.sortByAttribute(this.state.sorted, this.state.reverse))});
+        const enrichedDisableConsent = disableConsent
+            .map(entity => this.enrichSingleDisableConsent(entity, entityid, whiteListing))
+            .filter(enriched => enriched !== null);
+        this.setDisableConsentState(enrichedDisableConsent);
     };
 
+    enrichSingleDisableConsent = (disableConsent, whiteListing) => {
+        const moreInfo = whiteListing.find(entry => entry.data.entityid === disableConsent.name);
+        if (moreInfo === undefined) {
+            //this can happen as SP's are deleted
+            return null;
+        }
+        return {
+            "status": I18n.t(`metadata.${moreInfo.data.state}`),
+            "entityid": disableConsent.name,
+            "name": moreInfo.data.metaDataFields["name:en"] || moreInfo.data.metaDataFields["name:nl"] || "",
+            "id": moreInfo["_id"]
+        };
+    };
+
+    setDisableConsentState = newDisableConsent =>
+        this.setState({enrichedDisableConsent: newDisableConsent.sort(this.sortByAttribute(this.state.sorted, this.state.reverse))});
+
     addDisableConsent = entityid => {
-        const {disableConsent} = this.props;
+        const {disableConsent, whiteListing} = this.props;
         const newState = [...disableConsent].concat({name: entityid});
         this.props.onChange("data.disableConsent", newState);
+
+        const newDisableConsent = [...this.state.enrichedDisableConsent]
+            .concat(this.enrichSingleDisableConsent({name: entityid}, whiteListing));
+        this.setDisableConsentState(newDisableConsent);
     };
 
     removeDisableConsent = entry => {
         const {disableConsent} = this.props;
         const newState = [...disableConsent].filter(entity => entity.name !== entry.entityid);
         this.props.onChange("data.disableConsent", newState);
+
+        const newDisableConsent = [...this.state.enrichedDisableConsent]
+            .filter(entity => entity.name !== entry.name);
+        this.setDisableConsentState(newDisableConsent);
+
     };
 
     onChange = name => value => {
@@ -133,7 +146,7 @@ export default class ConsentDisabling extends React.PureComponent {
                     {!guest && <p>{I18n.t("consentDisabling.description", {name: name})}</p>}
                 </div>
                 {!guest && <SelectEntities whiteListing={whiteListing} allowedEntities={disableConsent}
-                                onChange={this.addDisableConsent} placeholder={placeholder}/>}
+                                           onChange={this.addDisableConsent} placeholder={placeholder}/>}
                 {enrichedDisableConsent.length > 0 && this.renderDisableConsentTable(enrichedDisableConsent, "saml20_sp", guest)}
 
             </div>

@@ -7,7 +7,7 @@ import ProtectedRoute from "../components/ProtectedRoute";
 import NotFound from "../pages/NotFound";
 import Search from "../pages/Search";
 import Detail from "../pages/Detail";
-import New from "../pages/New";
+import Playgound from "../pages/Playground";
 import ServerError from "../pages/ServerError";
 import Header from "../components/Header";
 import Navigation from "../components/Navigation";
@@ -102,13 +102,14 @@ class App extends React.PureComponent {
                     <Switch>
                         <Route exact path="/" render={() => <Redirect to="/search"/>}/>
                         <Route path="/search"
-                               render={props => <Search configuration={configuration} {...props}/>}/>
+                               render={props => <Search currentUser={currentUser}
+                                                        configuration={configuration} {...props}/>}/>
                         <Route path="/metadata/:type/:id"
                                render={props => <Detail currentUser={currentUser}
                                                         configuration={configuration} {...props}/>}/>
-                        <ProtectedRoute path="/new"
+                        <ProtectedRoute path="/playground"
                                         guest={currentUser.guest}
-                                        render={props => <New configuration={configuration} {...props}/>}/>
+                                        render={props => <Playgound configuration={configuration} {...props}/>}/>
                         <Route path="/error"
                                render={props => <ServerError {...props}/>}/>
                         <Route component={NotFound}/>

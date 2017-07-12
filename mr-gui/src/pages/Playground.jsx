@@ -22,17 +22,14 @@ export default class New extends React.PureComponent {
            // this.setState({configuration: configuration}))
     }
 
-    renderTab = tab =>
-        <span key={tab} className={this.state.selectedTab == tab ? "active" : ""}>{I18n.t(`metadata.tabs.${tab}`)}</span>;
-
     render() {
         const {loaded, notFound, metaData, selectedTab} = this.state;
         const type = metaData.type;
         const tabs = type == "saml20_sp" ? tabsSp : tabsIdP;
         return (
-            <div className="detail-metadata">
-                <section className="tabs">
-                    {tabs.map(tab => this.renderTab(tab))}
+            <div className="playground-metadata">
+                <section className="playground">
+                    {I18n.t("playground.migrate")}
                 </section>
 
             </div>

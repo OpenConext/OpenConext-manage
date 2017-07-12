@@ -51,9 +51,9 @@ export default class Connection extends React.PureComponent {
                         <td className="value">
                             <InlineEditable name="EntityId" mayEdit={!guest}
                                             value={data.entityid || ""}
-                                            onChange={this.onChange("data.entityId")}
+                                            onChange={this.onChange("data.entityid")}
                                             required={true}
-                                            onError={this.onError("entityId")}/>
+                                            onError={this.onError("entityid")}/>
                         </td>
                     </tr>
                     <tr>

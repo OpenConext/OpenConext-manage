@@ -20,6 +20,7 @@ import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 public class MetaDataControllerTest extends AbstractIntegrationTest {
 
@@ -43,6 +44,55 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
             .then()
             .statusCode(SC_NOT_FOUND);
     }
+
+    @Test
+    public void templateSp() throws Exception {
+        given()
+            .when()
+            .get("mr/api/client/template/saml20_sp")
+            .then()
+            .statusCode(SC_OK)
+            .body("type", equalTo("saml20_sp"))
+            .body("data.arp.enabled", equalTo(false))
+            .body("data.arp.attributes", notNullValue())
+            .body("data.metaDataFields", notNullValue())
+            .body("data.entityid", isEmptyOrNullString())
+            .body("data.state", equalTo("testaccepted"))
+            .body("data.allowedEntities.size()", is(0))
+            .body("data.disableConsent.size()", is(0));
+    }
+
+    @Test
+    public void templateIdp() throws Exception {
+        given()
+            .when()
+            .get("mr/api/client/template/saml20_idp")
+            .then()
+            .statusCode(SC_OK)
+            .body("type", equalTo("saml20_idp"))
+            .body("data.allowedall", equalTo(true))
+            .body("data.metaDataFields", notNullValue())
+            .body("data.entityid", isEmptyOrNullString())
+            .body("data.state", equalTo("testaccepted"))
+            .body("data.allowedEntities.size()", is(0))
+            .body("data.disableConsent.size()", is(0));
+    }
+
+    @Test
+    public void remove() throws Exception {
+        MetaData metaData = metaDataRepository.findById("1", "saml20_sp");
+        assertNotNull(metaData);
+
+        given()
+            .when()
+            .delete("mr/api/client/metadata/saml20_sp/1")
+            .then()
+            .statusCode(SC_OK);
+
+        metaData = metaDataRepository.findById("1", "saml20_sp");
+        assertNull(metaData);
+    }
+
 
     @Test
     public void configuration() throws Exception {

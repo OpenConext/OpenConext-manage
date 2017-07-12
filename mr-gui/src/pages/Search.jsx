@@ -75,6 +75,11 @@ export default class Search extends React.PureComponent {
         }
     };
 
+    newMetaData = e => {
+        stop(e);
+        this.props.history.push(`/metadata/${this.state.selectedTab}/new`);
+    };
+
     switchTab = tab => e => {
         stop(e);
         this.setState({selectedTab: tab});
@@ -97,19 +102,24 @@ export default class Search extends React.PureComponent {
                 </section>
                 <section className="search"
                          tabIndex="1" onBlur={this.onBlurSearch(suggestions)}>
-                    <input className="search-input"
-                           ref={ref => this.searchInput = ref}
-                           placeholder={I18n.t("metadata.searchPlaceHolder")}
-                           type="text"
-                           onChange={this.search(selectedTab)}
-                           value={query}
-                           onKeyDown={this.onSearchKeyDown}/>
-                    <i className="fa fa-search"></i>
-                    {showAutoCompletes && <Autocomplete suggestions={suggestions}
-                                                        query={query}
-                                                        selected={selected}
-                                                        itemSelected={this.itemSelected}
-                    />}
+                    <div className="search-input-container">
+                        <input className="search-input"
+                               ref={ref => this.searchInput = ref}
+                               placeholder={I18n.t("metadata.searchPlaceHolder")}
+                               type="text"
+                               onChange={this.search(selectedTab)}
+                               value={query}
+                               onKeyDown={this.onSearchKeyDown}/>
+                        <i className="fa fa-search"></i>
+                        {showAutoCompletes && <Autocomplete suggestions={suggestions}
+                                                            query={query}
+                                                            selected={selected}
+                                                            itemSelected={this.itemSelected}
+                        />}
+                    </div>
+                    {!this.props.currentUser.guest && <a className="new button green" onClick={this.newMetaData}>
+                        {I18n.t("metadata.new")}<i className="fa fa-plus"></i>
+                    </a>}
                 </section>
             </div>
         );
@@ -118,6 +128,7 @@ export default class Search extends React.PureComponent {
 
 Search.propTypes = {
     history: PropTypes.object.isRequired,
+    currentUser: PropTypes.object.isRequired,
     configuration: PropTypes.array.isRequired
 };
 

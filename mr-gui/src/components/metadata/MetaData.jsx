@@ -33,8 +33,8 @@ export default class MetaData extends React.Component {
             scrollIntoView(this.newMetaDataField);
             this.newMetaDataField.focus();
             this.newMetaDataField = null;
+            this.setState({newMetaDataFieldKey: null})
         }
-
     };
 
     onChange = key => value => this.doChange(key, value);

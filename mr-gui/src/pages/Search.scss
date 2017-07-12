@@ -33,20 +33,30 @@
         display: flex;
         padding: 30px;
         background-color: white;
-        position: relative;
 
+        .search-input-container {
+            flex-grow: 2;
+            position: relative;
+        }
         .search-input {
-            width: 100%;
             padding: 8px;
             font-size: larger;
+            width: 100%;
         }
         .fa-search {
             position: absolute;
-            right: 35px;
-            top: 40px;
+            right: 15px;
+            top: 10px;
             font-size: 20px;
             color: $blue;
         }
+        a.new {
+            margin-left: 25px;
+            i.fa-plus {
+                margin-left: 35px;
+            }
+        }
+
     }
 }
 

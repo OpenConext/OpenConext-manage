@@ -1,7 +1,6 @@
 import React from "react";
 import I18n from "i18n-js";
 import PropTypes from "prop-types";
-import {NavLink} from "react-router-dom";
 import ConfirmationDialog from "../../components/ConfirmationDialog";
 import CheckBox from "./../CheckBox";
 import SelectEntities from "./../SelectEntities";
@@ -9,7 +8,7 @@ import {stop} from "../../utils/Utils";
 
 import "./WhiteList.css";
 
-export default class WhiteList extends React.PureComponent {
+export default class WhiteList extends React.Component {
 
     constructor(props) {
         super(props);
@@ -25,29 +24,30 @@ export default class WhiteList extends React.PureComponent {
 
     componentDidMount() {
         window.scrollTo(0, 0);
-        const {allowedEntities, entityId, whiteListing}= this.props;
+        const {allowedEntities, entityId, whiteListing} = this.props;
         this.enrichAllowedEntries(allowedEntities, entityId, whiteListing);
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.allowedEntities.length !== this.state.enrichedAllowedEntries.length) {
-            const {allowedEntities, entityId, whiteListing}= nextProps;
-            this.enrichAllowedEntries(allowedEntities, entityId, whiteListing);
-        }
-    }
-
     enrichAllowedEntries = (allowedEntities, entityId, whiteListing) => {
-        const enrichedAllowedEntries = allowedEntities.map(entity => {
-            const moreInfo = whiteListing.find(entry => entry.data.entityid === entity.name);
-            return {
-                "blocked": !moreInfo.data.allowedall && moreInfo.data.allowedEntities.find(allowed => allowed.name === entityId),
-                "status": I18n.t(`metadata.${moreInfo.data.state}`),
-                "entityid": entity.name,
-                "name": moreInfo.data.metaDataFields["name:en"] || moreInfo.data.metaDataFields["name:nl"] || "",
-                "id": moreInfo["_id"]
-            };
-        });
-        this.setState({enrichedAllowedEntries: enrichedAllowedEntries.sort(this.sortByAttribute(this.state.sorted, this.state.reverse))});
+        const enrichedAllowedEntries = allowedEntities
+            .map(entity => this.enrichAllowedEntry(entity, entityId, whiteListing))
+            .filter(enriched => enriched !== null);
+        this.setAllowedEntryState(enrichedAllowedEntries);
+    };
+
+    enrichAllowedEntry = (allowedEntry, entityId, whiteListing) => {
+        const moreInfo = whiteListing.find(entry => entry.data.entityid === allowedEntry.name);
+        if (moreInfo === undefined) {
+            //this can happen as SP's are deleted
+            return null;
+        }
+        return {
+            "blocked": !moreInfo.data.allowedall && moreInfo.data.allowedEntities.find(allowed => allowed.name === entityId),
+            "status": I18n.t(`metadata.${moreInfo.data.state}`),
+            "entityid": allowedEntry.name,
+            "name": moreInfo.data.metaDataFields["name:en"] || moreInfo.data.metaDataFields["name:nl"] || "",
+            "id": moreInfo["_id"]
+        };
     };
 
     confirmationDialogAction = e => {
@@ -67,21 +67,31 @@ export default class WhiteList extends React.PureComponent {
         this.setState({confirmationDialogOpen: false});
     };
 
-    addAllowedEntry = allowedEntry => {
-        const {allowedAll, allowedEntities} = this.props;
-        const newState = [...allowedEntities].concat({name: allowedEntry});
+    setAllowedEntryState = newAllowedEntries =>
+        this.setState({enrichedAllowedEntries: newAllowedEntries.sort(this.sortByAttribute(this.state.sorted, this.state.reverse))});
 
+    addAllowedEntry = allowedEntryEntityId => {
+        const {allowedAll, allowedEntities, entityId, whiteListing} = this.props;
+        const newState = [...allowedEntities].concat({name: allowedEntryEntityId});
         if (allowedAll) {
             this.props.onChange(["data.allowedEntities", "data.allowedall"], [newState, false]);
         } else {
             this.props.onChange("data.allowedEntities", newState);
         }
+
+        const newAllowedEntries = [...this.state.enrichedAllowedEntries]
+            .concat(this.enrichAllowedEntry({name: allowedEntryEntityId}, entityId, whiteListing));
+        this.setAllowedEntryState(newAllowedEntries);
     };
 
     removeAllowedEntry = allowedEntry => {
         const {allowedEntities} = this.props;
         const newState = [...allowedEntities].filter(entity => entity.name !== allowedEntry.entityid);
         this.props.onChange("data.allowedEntities", newState);
+
+        const newAllowedEntries = [...this.state.enrichedAllowedEntries]
+            .filter(entity => entity.name !== allowedEntry.name);
+        this.setAllowedEntryState(newAllowedEntries);
     };
 
     onChange = name => value => {
@@ -203,7 +213,7 @@ export default class WhiteList extends React.PureComponent {
                     {!guest && <p>{I18n.t("whitelisting.description", {type: providerType, name: name})}</p>}
                 </div>
                 {!guest && <SelectEntities whiteListing={whiteListing} allowedEntities={allowedEntities}
-                                onChange={this.addAllowedEntry} placeholder={placeholder}/>}
+                                           onChange={this.addAllowedEntry} placeholder={placeholder}/>}
                 {enrichedAllowedEntries.length > 0 && this.renderAllowedEntitiesTable(enrichedAllowedEntries, type, guest)}
 
             </div>

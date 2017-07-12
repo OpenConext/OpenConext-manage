@@ -23,7 +23,7 @@ I18n.translations.en = {
 
     navigation: {
         search: "Search",
-        new: "New"
+        playground: "Playground"
     },
 
     metadata: {
@@ -32,7 +32,7 @@ I18n.translations.en = {
         saml20_sp_single: "Service Provider",
         saml20_idp_single: "Identity Provider",
         searchPlaceHolder: "Search for metadata",
-
+        new: "New",
         tabs: {
             connection: "Connection",
             whitelist: "Whitelisting",
@@ -62,6 +62,10 @@ I18n.translations.en = {
         required: "{{name}} is required",
         deleteConfirmation: "Are you sure you want to delete {{name}}?"
 
+    },
+
+    playground: {
+        migrate: "Migrate"
     },
 
     whitelisting: {

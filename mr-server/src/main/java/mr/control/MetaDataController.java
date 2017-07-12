@@ -40,6 +40,11 @@ public class MetaDataController {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @GetMapping("/client/template/{type}")
+    public MetaData template(@PathVariable("type") String type) {
+        return new MetaData(type, metaDataAutoConfiguration.metaDataTemplate(type));
+    }
+
     @GetMapping("/client/metadata/{type}/{id}")
     public MetaData get(@PathVariable("type") String type, @PathVariable("id") String id) {
         MetaData metaData = metaDataRepository.findById(id, type);
