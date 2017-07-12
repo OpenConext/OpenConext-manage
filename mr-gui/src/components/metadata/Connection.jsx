@@ -1,8 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
 import I18n from "i18n-js";
+
 import InlineEditable from "./InlineEditable";
 import SelectState from "./SelectState";
+import FormatInput from "./../FormatInput";
 
 import "./Connection.css";
 
@@ -16,6 +18,8 @@ export default class Connection extends React.PureComponent {
     componentDidMount() {
         window.scrollTo(0, 0);
     }
+
+    onError = key => value => this.props.onError(key, value);
 
     onChange = name => value => {
         if (value.target) {
@@ -45,18 +49,22 @@ export default class Connection extends React.PureComponent {
                     <tr>
                         <td className="key">{I18n.t("metadata.entityId")}</td>
                         <td className="value">
-                            <InlineEditable name="metadata.none" mayEdit={!guest}
+                            <InlineEditable name="EntityId" mayEdit={!guest}
                                             value={data.entityid || ""}
-                                            onChange={this.onChange("data.entityId")}/>
+                                            onChange={this.onChange("data.entityId")}
+                                            required={true}
+                                            onError={this.onError("entityId")}/>
                         </td>
                     </tr>
                     <tr>
                         <td className="key">{I18n.t("metadata.metaDataUrl")}</td>
                         <td className="value">
-                            <input type="text"
-                                   value={data.metadataurl || ""}
-                                   onChange={this.onChange("data.metadataurl")}
-                                   disabled={guest}/>
+                            <FormatInput name="metaDataUrl"
+                                         input={data.metadataurl || ""} format="uri"
+                                         onChange={this.onChange("data.metadataurl")}
+                                         onError={this.onError("metaDataUrl")}
+                                         isError={this.props.errors["metaDataUrl"] || false}
+                                         readOnly={guest}/>
                         </td>
                     </tr>
                     <tr>
@@ -85,6 +93,7 @@ Connection.propTypes = {
     metaData: PropTypes.object.isRequired,
     onChange: PropTypes.func.isRequired,
     onError: PropTypes.func.isRequired,
+    errors: PropTypes.object.isRequired,
     guest: PropTypes.bool.isRequired
 };
 

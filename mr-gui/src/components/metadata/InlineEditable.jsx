@@ -3,13 +3,15 @@ import I18n from "i18n-js";
 import PropTypes from "prop-types";
 import ReactTooltip from "react-tooltip";
 
+import {isEmpty} from "../../utils/Utils";
+
 import "./InlineEditable.css";
 
 export default class InlineEditable extends React.PureComponent {
 
     constructor(props) {
         super(props);
-        this.state = {editable: false, newValue: props.value};
+        this.state = {editable: false, newValue: props.value, error: false};
     }
 
     onChangeInternal = e => this.setState({newValue: e.target.value});
@@ -25,8 +27,11 @@ export default class InlineEditable extends React.PureComponent {
     };
 
     save = () => {
-        this.setState({editable: false});
-        this.props.onChange(this.state.newValue);
+        const {required = false, onError, onChange} = this.props;
+        const error =  (required && isEmpty(this.state.newValue));
+        this.setState({editable: false, error: error});
+        onChange(this.state.newValue);
+        onError(error);
     };
 
     cancel = () => {
@@ -47,7 +52,7 @@ export default class InlineEditable extends React.PureComponent {
         setTimeout(() => this.input.focus(), 250);
     };
 
-    renderNonEditable(name, value, mayEdit) {
+    renderNonEditable(name, value, mayEdit, error) {
         const toolTipId = `edit-${name}`;
         const span = mayEdit ?
             <span className="attribute edit-editable" onClick={this.toggleEditable}>{value}
@@ -55,10 +60,12 @@ export default class InlineEditable extends React.PureComponent {
                 <ReactTooltip id={toolTipId} place="top">{I18n.t("metadata.edit")}</ReactTooltip>
             </span> :
             <span className="read-only-editable">{value}</span>;
+
         return (
             <div className="inline-editable">
                 <label className="title">{I18n.t(name)}</label>
                 {span}
+                {error && <div className="error">{I18n.t("metadata.required", {name: name})}</div>}
             </div>
         );
     }
@@ -66,8 +73,8 @@ export default class InlineEditable extends React.PureComponent {
 
     render() {
         const {name, mayEdit} = this.props;
-        const {editable, newValue} = this.state;
-        return (editable && mayEdit) ? this.renderEditable(name, newValue) : this.renderNonEditable(name, newValue, mayEdit);
+        const {editable, newValue, error} = this.state;
+        return (editable && mayEdit) ? this.renderEditable(name, newValue) : this.renderNonEditable(name, newValue, mayEdit, error);
     }
 
 }
@@ -76,6 +83,8 @@ InlineEditable.propTypes = {
     name: PropTypes.string.isRequired,
     value: PropTypes.string.isRequired,
     mayEdit: PropTypes.bool.isRequired,
-    onChange: PropTypes.func.isRequired
+    onChange: PropTypes.func.isRequired,
+    required: PropTypes.bool,
+    onError: PropTypes.func
 };
 

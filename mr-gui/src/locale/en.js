@@ -9,6 +9,7 @@ I18n.translations.en = {
     code: "EN",
     name: "English",
     select_locale: "Select English",
+    EntityId: "",
 
     header: {
         title: "Metadata Registry",
@@ -52,10 +53,13 @@ I18n.translations.en = {
         none: "",
         submit: "Submit",
         cancel: "Cancel",
+        remove: "Delete",
         revisionnote: "Revision notes",
         flash: {
             updated: "{{name}} was successfully updated to revision {{revision}}"
-        }
+        },
+        required: "{{name}} is required",
+        deleteConfirmation: "Are you sure you want to delete {{name}}?"
 
     },
 

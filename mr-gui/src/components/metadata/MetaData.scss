@@ -78,6 +78,10 @@
                         border-top-width: 6px !important;
                     }
                 }
+                div.error {
+                    color: $red;
+                    margin-top: 10px;
+                }
 
             }
         }

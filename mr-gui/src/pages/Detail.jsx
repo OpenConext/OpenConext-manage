@@ -11,7 +11,7 @@ import WhiteList from "../components/metadata/WhiteList";
 import Revisions from "../components/metadata/Revisions";
 import ConfirmationDialog from "../components/ConfirmationDialog";
 
-import {detail, revisions, update, whiteListing} from "../api";
+import {detail, revisions, update, whiteListing, remove} from "../api";
 import {stop} from "../utils/Utils";
 import {setFlash} from "../utils/Flash";
 
@@ -33,7 +33,8 @@ export default class Detail extends React.PureComponent {
             selectedTab: "connection",
             revisionNote: "",
             confirmationDialogOpen: false,
-            confirmationDialogAction: () => props.history.replace("/search"),
+            confirmationDialogAction: () => this,
+            leavePage: false,
             errors: {}
         };
     }
@@ -56,7 +57,7 @@ export default class Detail extends React.PureComponent {
                 revisions(type, id).then(revisions => this.setState({revisions: revisions}))
             })
         }).catch(err => {
-            if (err.response.status === 404) {
+            if (err.response && err.response.status === 404) {
                 this.setState({notFound: true, loaded: true});
             } else {
                 throw err;
@@ -126,8 +127,20 @@ export default class Detail extends React.PureComponent {
             <section className="buttons">
                 <a className="button grey" onClick={e => {
                     stop(e);
-                    this.setState({confirmationDialogOpen: true});
+                    this.setState({
+                        confirmationDialogAction: () => this.props.history.replace("/search"),
+                        confirmationDialogOpen: true,
+                        leavePage: true
+                    });
                 }}>{I18n.t("metadata.cancel")}</a>
+                <a className="button red" onClick={e => {
+                    stop(e);
+                    this.setState({
+                        confirmationDialogAction: () => remove(this.state.metaData),
+                        confirmationDialogOpen: true,
+                        leavePage: false
+                    });
+                }}>{I18n.t("metadata.remove")}</a>
                 <a className={`button ${hasErrors ? "grey disabled" : "blue"}`} onClick={e => {
                     stop(e);
                     if (hasErrors) {
@@ -160,7 +173,9 @@ export default class Detail extends React.PureComponent {
         const name = metaData.data.metaDataFields["name:en"] || metaData.data.metaDataFields["name:nl"] || "this service";
         switch (tab) {
             case "connection" :
-                return <Connection metaData={metaData} onChange={this.onChange} onError={this.onError} guest={guest}/>;
+                return <Connection metaData={metaData} onChange={this.onChange} onError={this.onError("connection")}
+                                   errors={this.state.errors["connection"]}
+                                   guest={guest}/>;
             case "whitelist" :
                 return <WhiteList whiteListing={whiteListing} name={name}
                                   allowedEntities={metaData.data.allowedEntities}
@@ -189,7 +204,7 @@ export default class Detail extends React.PureComponent {
     render() {
         const {
             loaded, notFound, metaData, whiteListing, revisions, selectedTab, revisionNote,
-            confirmationDialogOpen, confirmationDialogAction
+            confirmationDialogOpen, confirmationDialogAction, leavePage
         } = this.state;
         const type = metaData.type;
         const tabs = type === "saml20_sp" ? tabsSp : tabsIdP;
@@ -204,8 +219,14 @@ export default class Detail extends React.PureComponent {
             <div className="detail-metadata">
                 <ConfirmationDialog isOpen={confirmationDialogOpen}
                                     cancel={confirmationDialogAction}
-                                    confirm={() => this.setState({confirmationDialogOpen: false})}
-                                    leavePage={true}/>
+                                    confirm={() => {
+                                        this.setState({confirmationDialogOpen: false});
+                                        if (!leavePage) {
+
+                                        }
+                                    }}
+                                    question={leavePage ? undefined : I18n.t("metadata.deleteConfirmation",{name: name})}
+                                    leavePage={leavePage}/>
                 {renderContent && <section className="info">{`${typeMetaData} - ${name}`}</section>}
                 {renderNotFound && <section>{I18n.t("metadata.notFound")}</section>}
                 {!notFound && <section className="tabs">

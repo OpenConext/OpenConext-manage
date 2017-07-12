@@ -12,6 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -60,6 +61,14 @@ public class MetaDataController {
 
         metaData.initial(UUID.randomUUID().toString(), federatedUser.uid);
         return metaDataRepository.save(metaData);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/client/metadata/{type}/{id}")
+    @Transactional
+    public void remove(@PathVariable("type") String type, @PathVariable("id") String id, FederatedUser federatedUser) throws JsonProcessingException {
+        MetaData current = metaDataRepository.findById(id, type);
+        metaDataRepository.remove(current);
     }
 
     @PreAuthorize("hasRole('ADMIN')")

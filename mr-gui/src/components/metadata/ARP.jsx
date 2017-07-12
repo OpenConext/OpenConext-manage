@@ -19,7 +19,7 @@ export default class ARP extends React.Component {
             addInput: false,
             keyForNewInput: undefined,
             value: "",
-            newArpAttributeAdded: undefined
+            newArpAttributeAddedKey: undefined
         };
     }
 
@@ -32,24 +32,25 @@ export default class ARP extends React.Component {
         if (addInput && keyForNewInput && this.newAttributeValue && value === "") {
             this.newAttributeValue.focus();
         }
-        if (!isEmpty(this.state.newArpAttributeAdded) && !isEmpty(this.newArpAttribute)) {
-            scrollIntoView(this.newArpAttribute);
-            this.newArpAttribute.focus();
-            this.newArpAttribute = null;
+        if (this.state.newArpAttributeAddedKey) {
+            setTimeout(() => this.setState({newArpAttributeAddedKey: undefined}), 150);
         }
-
-
     };
 
     onChange = (name, value) => {
-        const cleansedName = `data.arp.attributes.${name.replace(/\./g, "@")}`
-        this.props.onChange(cleansedName, value, true);
+        const cleansedName = `data.arp.attributes.${name.replace(/\./g, "@")}`;
+        if (Array.isArray(value) && value.length > 0) {
+            this.props.onChange(["data.arp.enabled",cleansedName], [true, value], true);
+        } else {
+            this.props.onChange(cleansedName, value, true);
+        }
+
     };
 
     nameOfKey = key => key.substring(key.lastIndexOf(":") + 1);
 
     arpEnabled = e => {
-        const noArp =  e.target.checked;
+        const noArp = e.target.checked;
         this.props.onChange(["data.arp.enabled", "data.arp.attributes"], [!noArp, {}]);
     };
 
@@ -89,6 +90,7 @@ export default class ARP extends React.Component {
             this.setState({addInput: true, keyForNewInput: key});
         } else {
             this.onChange(key, [{value: "*", source: "idp"}]);
+            this.setState({newArpAttributeAddedKey: key});
         }
     };
 
@@ -99,7 +101,7 @@ export default class ARP extends React.Component {
         } else {
             const currentArpValues = [...this.props.arp.attributes[key] || []];
             currentArpValues.push({value: value, source: "idp"});
-            this.setState({addInput: false, keyForNewInput: undefined, value: ""});
+            this.setState({addInput: false, keyForNewInput: undefined, value: "", newArpAttributeAddedKey: key});
             this.onChange(key, currentArpValues);
         }
     };
@@ -142,7 +144,8 @@ export default class ARP extends React.Component {
     renderValueCellWithInput = (key, index) => {
         const {value} = this.state;
         return (<tr className={index % 2 === 0 ? "even" : "odd"}>
-            <td className="new-attribute-value" colSpan={2}>{I18n.t("arp.new_attribute_value", {key: this.nameOfKey(key)})}</td>
+            <td className="new-attribute-value"
+                colSpan={2}>{I18n.t("arp.new_attribute_value", {key: this.nameOfKey(key)})}</td>
             <td><input ref={ref => this.newAttributeValue = ref}
                        type="text" onKeyUp={this.onKeyUp(key)}
                        onChange={e => this.setState({value: e.target.value})}
@@ -170,11 +173,13 @@ export default class ARP extends React.Component {
         </ul>;
 
     renderSourceCell = (sources, key, attributeValues, guest) => {
+        const autoFocus = this.state.newArpAttributeAddedKey === key;
         return <ul className="sources">
             {attributeValues.map((attributeValue, index) =>
                 <li key={`${attributeValue.source}-${index}`}>
                     <SelectSource onChange={this.onChangeArp("source", key, index)} sources={sources}
-                                  source={attributeValue.source} disabled={guest}/>
+                                  source={attributeValue.source} disabled={guest}
+                                  autofocus={autoFocus}/>
                 </li>)}
         </ul>;
     };
@@ -197,8 +202,9 @@ export default class ARP extends React.Component {
         const renderAction = arpAttribute.multiplicity && !guest;
 
         return <tr key={attributeKey}>
-            <td className={`name ${deprecated ? "deprecated" : ""}`}><span className="display-name">{displayKey}</span><i className="fa fa-info-circle"
-                                                                                    data-for={attributeKey} data-tip></i>
+            <td className={`name ${deprecated ? "deprecated" : ""}`}><span
+                className="display-name">{displayKey}</span><i className="fa fa-info-circle"
+                                                               data-for={attributeKey} data-tip></i>
                 <ReactTooltip id={attributeKey} type="info" class="tool-tip" effect="solid">
                     <span>{attributeKey}</span>
                 </ReactTooltip>

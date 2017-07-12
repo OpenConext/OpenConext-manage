@@ -47,6 +47,11 @@
         color: white;
         border: none;
     }
+    &.red {
+        background-color: $red;
+        color: white;
+        border: none;
+    }
     &.green {
         background-color: $green;
         color: white;

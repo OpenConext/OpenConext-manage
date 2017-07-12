@@ -46,13 +46,18 @@ export default class MetaData extends React.Component {
     //Legacy issue with current metadata
     onChangeCheckEvent = key => e => this.doChange(key, e.target.checked ? "1" : "0");
 
-    doChange = (key, value) => this.props.onChange(`data.metaDataFields.${key}`, value);
+    doChange = (key, value) => {
+        this.props.onChange(`data.metaDataFields.${key}`, value);
+        this.props.onError(key, this.isError(key, value));
+    };
 
     newMetaDataFieldRendered = (ref, autoFocus) => {
         if (autoFocus) {
             this.newMetaDataField = ref;
         }
     };
+
+    isError = (key, value) => isEmpty(value) && this.props.configuration.properties.metaDataFields.required.indexOf(key) > -1;
 
     renderMetaDataValue = (key, value, keyConfiguration, guest) => {
         const autoFocus = this.state.newMetaDataFieldKey === key;
@@ -100,6 +105,8 @@ export default class MetaData extends React.Component {
     renderMetaDataRow = (key, metaDataFields, configuration, guest) => {
         const keyConfiguration = this.metaDataFieldConfiguration(key, configuration);
         const toolTip = keyConfiguration.info;
+        const value = metaDataFields[key];
+        const error = this.isError(key, value);
         return (<tr key={key}>
             <td className="key">{key}
                 {toolTip && <span>
@@ -109,9 +116,13 @@ export default class MetaData extends React.Component {
                                 </ReactTooltip>
                         </span>}
             </td>
-            <td colSpan={guest ? 2 : 1} className="value">{this.renderMetaDataValue(key, metaDataFields[key], keyConfiguration, guest)}</td>
-            {!guest && <td className="trash">
-                 <span onClick={this.deleteMetaDataField(key)}><i className="fa fa-trash-o"></i></span>
+            <td colSpan={guest ? 2 : 1} className="value">
+                {this.renderMetaDataValue(key, value, keyConfiguration, guest)}
+                {error && <div className="error">{I18n.t("metadata.required", {name: key})}</div>}
+            </td>
+            {(!guest && configuration.properties.metaDataFields.required.indexOf(key) < 0)
+                && <td className="trash">
+                <span onClick={this.deleteMetaDataField(key)}><i className="fa fa-trash-o"></i></span>
             </td>}
         </tr>);
     };

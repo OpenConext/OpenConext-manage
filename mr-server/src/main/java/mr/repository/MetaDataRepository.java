@@ -31,6 +31,10 @@ public class MetaDataRepository {
         return metaData;
     }
 
+    public void remove(MetaData metaData) {
+        mongoTemplate.remove(metaData, metaData.getType());
+    }
+
     public List<MetaData> revisions(String type, String parentId) {
         Query query = new Query(Criteria.where("revision.parentId").is(parentId));
         return mongoTemplate.find(query, MetaData.class, type);
