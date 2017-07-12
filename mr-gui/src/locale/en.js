@@ -40,7 +40,9 @@ I18n.translations.en = {
             arp: "ARP",
             manipulation: "manipulation",
             consent_disabling: "Consent Disabling",
-            revisions: "Revisions"
+            revisions: "Revisions",
+            import: "Import",
+            export: "Export"
         },
         notFound: "No Metadata found",
         entityId: "Entity ID",
@@ -48,6 +50,8 @@ I18n.translations.en = {
         state: "State",
         prodaccepted: "Production",
         testaccepted: "Test",
+        revision: "Revision",
+        revisionInfo: "Revision {{number}} last updated by {{updatedBy}} on {{created}}",
         notes: "Notes",
         edit: "Edit",
         none: "",
@@ -65,7 +69,10 @@ I18n.translations.en = {
     },
 
     playground: {
-        migrate: "Migrate"
+        migrate: "Migrate",
+        validate: "Validate",
+        runMigration: "RUN MIGRATION",
+        runValidation: "VALIDATE MIGRATION",
     },
 
     whitelisting: {

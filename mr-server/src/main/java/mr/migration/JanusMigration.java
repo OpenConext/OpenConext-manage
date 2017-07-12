@@ -65,17 +65,23 @@ public class JanusMigration implements ApplicationListener<ApplicationReadyEvent
     public List<Map<String, Long>> doMigrate() {
         long start = System.currentTimeMillis();
 
-        Map<String, Long> spStats = new HashMap<>();
-        Map<String, Long> idpStats = new HashMap<>();
+        Map<String, Long> spStats = new LinkedHashMap<>();
+        spStats.put("Start migration of Service Providers", 0L);
+
+        Map<String, Long> idpStats = new LinkedHashMap<>();
+        idpStats.put("Start migration of Identity Providers", 0L);
 
         emptyExistingCollections();
 
         saveEntities(EntityType.SP, spStats);
         LOG.info("Finished migration of SPs in {} ms and results {}", System.currentTimeMillis() - start, prettyPrint(spStats));
+        spStats.put("Finished migration of Service Providers", spStats.size() - 1L);
 
         start = System.currentTimeMillis();
         saveEntities(EntityType.IDP, idpStats);
         LOG.info("Finished migration of IDPs in {} ms and results {}", System.currentTimeMillis() - start, prettyPrint(spStats));
+        idpStats.put("Finished migration of Identity Providers", idpStats.size() - 1L);
+
         return Arrays.asList(spStats, idpStats);
     }
 

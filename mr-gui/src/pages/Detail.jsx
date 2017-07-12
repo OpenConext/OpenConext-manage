@@ -17,8 +17,8 @@ import {setFlash} from "../utils/Flash";
 
 import "./Detail.css";
 
-const tabsSp = ["connection", "whitelist", "metadata", "arp", "manipulation", "revisions"];
-const tabsIdP = ["connection", "whitelist", "consent_disabling", "metadata", "manipulation", "revisions"];
+const tabsSp = ["connection", "whitelist", "metadata", "arp", "manipulation", "revisions", "import", "export"];
+const tabsIdP = ["connection", "whitelist", "consent_disabling", "metadata", "manipulation", "revisions", "import", "export"];
 
 export default class Detail extends React.PureComponent {
 

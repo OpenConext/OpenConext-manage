@@ -1,0 +1,54 @@
+@import "../stylesheets/vars.scss";
+@import "../stylesheets/mixins.scss";
+
+.playground {
+    @include page;
+
+    section.tabs {
+        display: flex;
+        margin-top: 40px;
+        padding: 0;
+        span {
+            text-align: center;
+            cursor: pointer;
+            padding: 15px 50px;
+            background-color: $light-grey;
+            color: $dark-grey;
+            text-transform: uppercase;
+            border-right: 1px solid white;
+
+            &.active {
+                background-color: white;
+                color: $darker-blue;
+                border-top: 2px solid $blue;
+                border-right: none;
+            }
+
+            &:last-child {
+                border-right: none;
+            }
+        }
+    }
+
+    section.validate, section.migrate {
+        background-color: white;
+        padding: 15px 15px 150px 15px;
+        p {
+            padding: 15px 0;
+        }
+        a {
+            margin: 15px 0;
+            i.fa {
+                margin-left: 35px;
+            }
+        }
+
+    }
+
+    section.results {
+        padding: 30px;
+        background-color: white;
+        border: 1px solid $light-grey;
+    }
+}
+

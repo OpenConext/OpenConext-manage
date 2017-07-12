@@ -31,7 +31,7 @@ export default class Connection extends React.PureComponent {
     };
 
     render() {
-        const {type, revision, data} = this.props.metaData;
+        const {type, revision, data, id} = this.props.metaData;
         const logo = data.metaDataFields["logo:0:url"];
         const name = data.metaDataFields["name:en"] || data.metaDataFields["name:nl"] || "";
         const fullName = I18n.t(`metadata.${type}_single`) + " - " + name;
@@ -73,6 +73,18 @@ export default class Connection extends React.PureComponent {
                             <SelectState onChange={this.onChange("data.state")} state={data.state} disabled={guest}/>
                         </td>
                     </tr>
+                    {id && <tr>
+                        <td className="key">{I18n.t("metadata.revision")}</td>
+                        <td className="value">
+                            <span>{I18n.t("metadata.revisionInfo",
+                                {
+                                    number: revision.number,
+                                    updatedBy: revision.updatedBy,
+                                    created: new Date(revision.created * 1000).toGMTString()
+                                })}
+                                </span>
+                        </td>
+                    </tr>}
                     <tr>
                         <td className="key">{I18n.t("metadata.notes")}</td>
                         <td className="value">

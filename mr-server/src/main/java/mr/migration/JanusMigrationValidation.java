@@ -48,10 +48,10 @@ public class JanusMigrationValidation  {
             metaDataAutoConfiguration.validate(json, type);
         } catch (ValidationException e) {
             Map data = Map.class.cast(metaData.getData());
-            Map<String, Object> json = e.toJSON().toMap();
+            Map<String, Object> resultsMap = e.toJSON().toMap();
             LOG.info("ValidationException for id {} eid {} entityId {} type {} with exception {}",
-                data.get("id"), data.get("eid"), data.get("entityid"), type, json);
-            results.put(String.class.cast(data.get("entityid")), json);
+                data.get("id"), data.get("eid"), data.get("entityid"), type, resultsMap);
+            results.put(String.class.cast(data.get("entityid")), resultsMap);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

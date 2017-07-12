@@ -134,3 +134,11 @@ export function reportError(error) {
 export function logOut() {
     return fetchDelete("users/logout");
 }
+
+export function migrate() {
+    return fetchJson("playground/migrate");
+}
+
+export function validate() {
+    return fetchJson("playground/validate");
+}
