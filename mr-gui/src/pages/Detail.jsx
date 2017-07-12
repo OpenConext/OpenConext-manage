@@ -34,6 +34,7 @@ export default class Detail extends React.PureComponent {
             revisionNote: "",
             confirmationDialogOpen: false,
             confirmationDialogAction: () => this,
+            cancelDialogAction: () => this,
             leavePage: false,
             errors: {}
         };
@@ -76,6 +77,7 @@ export default class Detail extends React.PureComponent {
         this.setState({errors: errors});
     };
 
+    nameOfMetaData = metaData => metaData.data.metaDataFields["name:en"] || metaData.data.metaDataFields["name:nl"] || metaData.data["entityid"];
 
     onChange = (name, value, replaceAtSignWithDotsInName = false) => {
         const currentState = this.state.metaData;
@@ -128,7 +130,8 @@ export default class Detail extends React.PureComponent {
                 <a className="button grey" onClick={e => {
                     stop(e);
                     this.setState({
-                        confirmationDialogAction: () => this.props.history.replace("/search"),
+                        cancelDialogAction: () => this.props.history.replace("/search"),
+                        confirmationDialogAction: () => this.setState({confirmationDialogOpen: false}),
                         confirmationDialogOpen: true,
                         leavePage: true
                     });
@@ -136,7 +139,14 @@ export default class Detail extends React.PureComponent {
                 <a className="button red" onClick={e => {
                     stop(e);
                     this.setState({
-                        confirmationDialogAction: () => remove(this.state.metaData),
+                        confirmationDialogAction: () => {
+                            remove(this.state.metaData).then(res => {
+                                this.props.history.replace("/search");
+                                const name = this.nameOfMetaData(this.state.metaData);
+                                setFlash(I18n.t("metadata.flash.deleted", {name: name}));
+                            });
+                        },
+                        cancelDialogAction: () => this.setState({confirmationDialogOpen: false}),
                         confirmationDialogOpen: true,
                         leavePage: false
                     });
@@ -204,7 +214,7 @@ export default class Detail extends React.PureComponent {
     render() {
         const {
             loaded, notFound, metaData, whiteListing, revisions, selectedTab, revisionNote,
-            confirmationDialogOpen, confirmationDialogAction, leavePage
+            confirmationDialogOpen, confirmationDialogAction, cancelDialogAction, leavePage
         } = this.state;
         const type = metaData.type;
         const tabs = type === "saml20_sp" ? tabsSp : tabsIdP;
@@ -212,19 +222,14 @@ export default class Detail extends React.PureComponent {
         const renderNotFound = loaded && notFound;
         const renderContent = loaded && !notFound;
 
-        const name = renderContent ? metaData.data.metaDataFields["name:en"] || metaData.data.metaDataFields["name:nl"] || metaData.data["entityid"] : "";
+        const name = renderContent ? this.nameOfMetaData(metaData) : "";
         const typeMetaData = I18n.t(`metadata.${type}_single`);
 
         return (
             <div className="detail-metadata">
                 <ConfirmationDialog isOpen={confirmationDialogOpen}
-                                    cancel={confirmationDialogAction}
-                                    confirm={() => {
-                                        this.setState({confirmationDialogOpen: false});
-                                        if (!leavePage) {
-
-                                        }
-                                    }}
+                                    cancel={cancelDialogAction}
+                                    confirm={confirmationDialogAction}
                                     question={leavePage ? undefined : I18n.t("metadata.deleteConfirmation",{name: name})}
                                     leavePage={leavePage}/>
                 {renderContent && <section className="info">{`${typeMetaData} - ${name}`}</section>}

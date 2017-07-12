@@ -56,7 +56,8 @@ I18n.translations.en = {
         remove: "Delete",
         revisionnote: "Revision notes",
         flash: {
-            updated: "{{name}} was successfully updated to revision {{revision}}"
+            updated: "{{name}} was successfully updated to revision {{revision}}",
+            deleted: "{{name}} was successfully deleted"
         },
         required: "{{name}} is required",
         deleteConfirmation: "Are you sure you want to delete {{name}}?"

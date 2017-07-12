@@ -65,10 +65,10 @@ public class MetaDataController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/client/metadata/{type}/{id}")
-    @Transactional
-    public void remove(@PathVariable("type") String type, @PathVariable("id") String id, FederatedUser federatedUser) throws JsonProcessingException {
+    public boolean remove(@PathVariable("type") String type, @PathVariable("id") String id, FederatedUser federatedUser) throws JsonProcessingException {
         MetaData current = metaDataRepository.findById(id, type);
         metaDataRepository.remove(current);
+        return true;
     }
 
     @PreAuthorize("hasRole('ADMIN')")
