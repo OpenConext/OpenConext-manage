@@ -161,8 +161,9 @@ public class JanusMigration implements ApplicationListener<ApplicationReadyEvent
                     jdbcTemplate.query("SELECT eid, revisionid FROM janus__connectionRevision WHERE  eid = ? AND revisionid <> ?",
                         new Long[]{eid, revisionid},
                         rs2 -> {
-                            saveEntity(rs.getLong("eid"), rs.getLong("revisionid"),
-                                type.concat(REVISION_POSTFIX), false, id, stats, entityType);
+                            long eid1 = rs2.getLong("eid");
+                            long revisionid1 = rs2.getLong("revisionid");
+                            saveEntity(eid1, revisionid1, type.concat(REVISION_POSTFIX), false, id, stats, entityType);
                         });
                 }
             });

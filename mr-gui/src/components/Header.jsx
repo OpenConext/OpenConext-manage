@@ -42,7 +42,7 @@ export default class Header extends React.PureComponent {
         return (
             <div className="header-container">
                 <div className="header">
-                    <Link to="/" className="logo"><img src={logo}/></Link>
+                    <Link to="/" className="logo"><img src={logo} alt=""/></Link>
                     <ul className="links">
                         <li className="title"><span>Metadata Registry</span></li>
                         <li className="profile"

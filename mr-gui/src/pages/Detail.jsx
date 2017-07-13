@@ -12,7 +12,7 @@ import Revisions from "../components/metadata/Revisions";
 import ConfirmationDialog from "../components/ConfirmationDialog";
 
 import {detail, revisions, update, save, whiteListing, remove, template} from "../api";
-import {stop} from "../utils/Utils";
+import {stop, isEmpty} from "../utils/Utils";
 import {setFlash} from "../utils/Flash";
 
 import "./Detail.css";
@@ -56,6 +56,9 @@ export default class Detail extends React.PureComponent {
                     return acc;
                 }, {})
             });
+
+            this.validate(metaData, this.props.configuration, type);
+
             whiteListing(whiteListingType).then(whiteListing => {
                 this.setState({whiteListing: whiteListing});
                 revisions(type, id).then(revisions => this.setState({revisions: revisions}))
@@ -68,6 +71,27 @@ export default class Detail extends React.PureComponent {
             }
         });
     }
+
+    validate = (metaData, configurations, type) => {
+        const configuration = configurations.find(conf => conf.title === type);
+        const requiredMetaData = configuration.properties.metaDataFields.required;
+        const metaDataFields = metaData.data.metaDataFields;
+        const metaDataErrors = {};
+        Object.keys(metaDataFields).forEach(key => {
+            if (isEmpty(metaDataFields[key]) && requiredMetaData.indexOf(key) > -1) {
+                metaDataErrors[key] = true;
+            }
+        });
+        const connectionErrors = {};
+        const required = configuration.required;
+        Object.keys(metaData.data).forEach(key => {
+            if (isEmpty(metaData.data[key]) && required.indexOf(key) > -1) {
+                connectionErrors[key] = true;
+            }
+        });
+        const newErrors =  {...this.state.errors, "connection": connectionErrors, "metadata" : metaDataErrors};
+        this.setState({errors: newErrors})
+    };
 
     switchTab = tab => e => {
         stop(e);

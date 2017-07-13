@@ -47,13 +47,13 @@ export default class SelectNewMetaDataField extends React.PureComponent {
         const regExp = new RegExp(patternPropertyKey);
         const existingMetaDataKeys = metaDataKeys.filter(metaDataKey => regExp.test(metaDataKey));
 
-        let enumExec;
+        const enumExec = enumPropertyRegex.exec(patternPropertyKey);
         if (existingMetaDataKeys.length === 0) {
             //translate the patternPropertyKey to a metaDataKey and add it to the accumulator
             if (patternProperty.multiplicity) {
                 const newMetaDataKey = patternPropertyKey.replace(patternPropertyRegex, `$1${patternProperty.startIndex || 0}$3`);
                 accumulator.push(newMetaDataKey);
-            } else if (enumExec = enumPropertyRegex.exec(patternPropertyKey)) {
+            } else if (enumExec) {
                 accumulator.push(`${enumExec[1]}nl`);
                 accumulator.push(`${enumExec[1]}en`);
             } else {
@@ -64,12 +64,12 @@ export default class SelectNewMetaDataField extends React.PureComponent {
             if (patternProperty.multiplicity) {
                 const highestMetaDataKey = existingMetaDataKeys.sort()[existingMetaDataKeys.length - 1];
                 const multiplicityParsed = multiplicityRegex.exec(highestMetaDataKey);
-                const highest = parseInt(multiplicityParsed[1]);
+                const highest = parseInt(multiplicityParsed[1], 10);
                 if (highest < (patternProperty.multiplicity + (patternProperty.startIndex || -1))) {
                     const newMetaDataKey = patternPropertyKey.replace(patternPropertyRegex, `$1${highest + 1}$3`);
                     accumulator.push(newMetaDataKey);
                 }
-            } else if (enumExec = enumPropertyRegex.exec(patternPropertyKey)) {
+            } else if (enumExec) {
                 if (existingMetaDataKeys.length < 2) {
                     const missingLang = existingMetaDataKeys[0].indexOf(":en") > 0 ? "nl" : "en";
                     accumulator.push(`${enumExec[1]}${missingLang}`);

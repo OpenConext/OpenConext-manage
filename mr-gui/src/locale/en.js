@@ -117,6 +117,9 @@ I18n.translations.en = {
 
     },
 
+    revisions: {
+        info: "All revisions"
+    },
     error_dialog: {
         title: "Unexpected error",
         body: "This is embarrassing; an unexpected error has occurred. It has been logged and reported. Please try again. Still doesn't work? Please click 'Help'.",

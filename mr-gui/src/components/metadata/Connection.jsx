@@ -53,7 +53,8 @@ export default class Connection extends React.PureComponent {
                                             value={data.entityid || ""}
                                             onChange={this.onChange("data.entityid")}
                                             required={true}
-                                            onError={this.onError("entityid")}/>
+                                            onError={this.onError("entityid")}
+                                            />
                         </td>
                     </tr>
                     <tr>

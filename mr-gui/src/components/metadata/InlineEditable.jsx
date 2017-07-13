@@ -14,6 +14,12 @@ export default class InlineEditable extends React.PureComponent {
         this.state = {editable: false, newValue: props.value, error: false};
     }
 
+    componentDidMount() {
+        const {required = false, value} = this.props;
+        const error =  (required && isEmpty(value));
+        this.setState({error: error});
+    }
+
     onChangeInternal = e => this.setState({newValue: e.target.value});
 
     onKeyUp = e => {

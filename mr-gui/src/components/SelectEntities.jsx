@@ -2,7 +2,6 @@ import React from "react";
 import PropTypes from "prop-types";
 import Select from "react-select";
 import "react-select/dist/react-select.css";
-import I18n from "i18n-js";
 import "./SelectEntities.css";
 
 export default class SelectEntities extends React.PureComponent {

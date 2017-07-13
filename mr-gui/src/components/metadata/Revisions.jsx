@@ -21,10 +21,17 @@ export default class Revisions extends React.PureComponent {
     };
 
     render() {
-        //const {revisions, allowedEntities} = this.props;
+        const {revisions, metaData} = this.props;
+        debugger;
         return (
             <div className="metadata-revisions">
-                <p>Revisions</p>
+                <div className="revisions-info">
+                    <h2>{I18n.t("revisions.info")}</h2>
+                </div>
+                <div className="revisions">
+
+                </div>
+
             </div>
         );
     }

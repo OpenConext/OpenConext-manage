@@ -2,7 +2,6 @@ import React from "react";
 import I18n from "i18n-js";
 import PropTypes from "prop-types";
 import ReactTooltip from "react-tooltip";
-import scrollIntoView from "scroll-into-view";
 
 import CheckBox from "./../../components/CheckBox";
 import SelectSource from "./SelectSource";
