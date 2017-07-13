@@ -61,7 +61,11 @@ export default class Detail extends React.PureComponent {
 
             whiteListing(whiteListingType).then(whiteListing => {
                 this.setState({whiteListing: whiteListing});
-                revisions(type, id).then(revisions => this.setState({revisions: revisions}))
+                revisions(type, id).then(revisions => {
+                    revisions.push(metaData);
+                    revisions.sort((r1, r2) => r1.revision.number < r2.revision.number ? 1 : r1.revision.number > r2.revision.number ? -1 : 0);
+                    this.setState({revisions: revisions})
+                })
             })
         }).catch(err => {
             if (err.response && err.response.status === 404) {
@@ -208,6 +212,7 @@ export default class Detail extends React.PureComponent {
     renderCurrentTab = (tab, metaData, whiteListing, revisions) => {
         const configuration = this.props.configuration.find(conf => conf.title === this.props.match.params.type);
         const guest = this.props.currentUser.guest;
+        const {isNew} = this.state;
         const name = metaData.data.metaDataFields["name:en"] || metaData.data.metaDataFields["name:nl"] || "this service";
         switch (tab) {
             case "connection" :
@@ -233,7 +238,7 @@ export default class Detail extends React.PureComponent {
                                          whiteListing={whiteListing} onChange={this.onChange}
                                          guest={guest}/>;
             case "revisions":
-                return <Revisions revisions={revisions} metaData={metaData} guest={guest}/>;
+                return <Revisions revisions={revisions} isNew={isNew}/>;
             default:
                 throw new Error(`Unknown tab ${tab}`);
         }

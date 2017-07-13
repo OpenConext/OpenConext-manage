@@ -1,0 +1,52 @@
+@import "../../stylesheets/vars.scss";
+@import "../../stylesheets/mixins.scss";
+
+.metadata-revisions {
+    background-color: white;
+    padding: 20px;
+
+    .revisions-info {
+        margin: 15px 0;
+        h2 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+    }
+    table.revision-table {
+        width: 100%;
+        table-layout: fixed;
+        border: 1px solid $light-grey;
+        border-radius: $br;
+        margin: 15px;
+        thead th {
+            text-align: left;
+            padding: 10px;
+            background-color: $lightest-grey;
+
+            &.number {
+                width: 15%;
+            }
+            &.created {
+                width: 25%;
+            }
+            &.updatedBy {
+                width: 20%;
+            }
+            &.status {
+                width: 15%;
+            }
+            &.notes {
+                width: 25%;
+            }
+        }
+        tbody {
+            tr:nth-child(even) {
+                background-color: $lightest-grey;
+            }
+            td {
+                padding: 10px;
+            }
+        }
+    }
+}

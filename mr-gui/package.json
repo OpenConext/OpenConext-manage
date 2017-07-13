@@ -10,6 +10,7 @@
     "codemirror": "^5.27.4",
     "events": "^1.1.1",
     "i18n-js": "^1.0.0",
+    "jsondiffpatch": "^0.2.4",
     "lodash.debounce": "^4.0.8",
     "node-sass-chokidar": "^0.0.3",
     "npm-run-all": "^4.0.2",

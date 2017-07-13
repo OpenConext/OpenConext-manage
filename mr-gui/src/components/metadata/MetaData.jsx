@@ -48,7 +48,7 @@ export default class MetaData extends React.Component {
 
     doChange = (key, value) => {
         this.props.onChange(`data.metaDataFields.${key}`, value);
-        this.props.onError(key, this.isError(key, value));
+        this.props.onError(key, this.isRequired(key, value));
     };
 
     newMetaDataFieldRendered = (ref, autoFocus) => {
@@ -57,11 +57,11 @@ export default class MetaData extends React.Component {
         }
     };
 
-    isError = (key, value) => isEmpty(value) && this.props.configuration.properties.metaDataFields.required.indexOf(key) > -1;
+    isRequired = (key, value) => isEmpty(value) && this.props.configuration.properties.metaDataFields.required.indexOf(key) > -1;
 
     renderMetaDataValue = (key, value, keyConfiguration, guest) => {
         const autoFocus = this.state.newMetaDataFieldKey === key;
-        const isError = this.props.errors[key] || false;
+        const isError = (this.props.errors[key] && !isEmpty(value)) || false;
         if (keyConfiguration.type === "string" && keyConfiguration.format !== "boolean") {
             if (!keyConfiguration.format && !keyConfiguration.enum) {
                 return <input ref={ref => this.newMetaDataFieldRendered(ref, autoFocus)} type="text" name={key}
@@ -106,7 +106,7 @@ export default class MetaData extends React.Component {
         const keyConfiguration = this.metaDataFieldConfiguration(key, configuration);
         const toolTip = keyConfiguration.info;
         const value = metaDataFields[key];
-        const error = this.isError(key, value);
+        const required = this.isRequired(key, value);
         return (<tr key={key}>
             <td className="key">{key}
                 {toolTip && <span>
@@ -118,7 +118,7 @@ export default class MetaData extends React.Component {
             </td>
             <td colSpan={guest ? 2 : 1} className="value">
                 {this.renderMetaDataValue(key, value, keyConfiguration, guest)}
-                {error && <div className="error">{I18n.t("metadata.required", {name: key})}</div>}
+                {required && <div className="error">{I18n.t("metadata.required", {name: key})}</div>}
             </td>
             {(!guest && configuration.properties.metaDataFields.required.indexOf(key) < 0)
                 && <td className="trash">

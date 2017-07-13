@@ -118,7 +118,15 @@ I18n.translations.en = {
     },
 
     revisions: {
-        info: "All revisions"
+        info: "All revisions",
+        noRevisions: "No revisions",
+        number: "Number",
+        created: "Created",
+        updatedBy: "Updater",
+        status: "Status",
+        notes: "Notes",
+        toggleAllDetails: "Show diffs for all revisions",
+        toggleDetails: "Show diff with previous revision"
     },
     error_dialog: {
         title: "Unexpected error",
