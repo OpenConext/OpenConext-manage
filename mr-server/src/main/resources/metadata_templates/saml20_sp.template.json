@@ -13,6 +13,5 @@
     "AssertionConsumerService:0:Location": "",
     "NameIDFormat": "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"
   },
-  "allowedEntities": [],
-  "disableConsent": []
+  "allowedEntities": []
 }
