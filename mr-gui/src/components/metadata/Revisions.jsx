@@ -1,6 +1,7 @@
 import React from "react";
 import I18n from "i18n-js";
-import {diff} from "jsondiffpatch";
+
+import {DiffPatcher} from 'jsondiffpatch/src/diffpatcher';
 import htmlFormatter from "jsondiffpatch/src/formatters/html";
 
 import PropTypes from "prop-types";
@@ -24,6 +25,7 @@ export default class Revisions extends React.Component {
             }, {}),
             showAllDetails: false
         };
+        this.differ = new DiffPatcher();
     }
 
     componentDidMount() {
@@ -51,9 +53,9 @@ export default class Revisions extends React.Component {
         const prev = {...previous.data};
         ignoreInDiff.forEach(ignore => delete prev[ignore]);
 
-        const diffs = diff(prev, rev);
-        htmlFormatter.hideUnchanged();
+        const diffs = this.differ.diff(prev, rev);
         const html = htmlFormatter.format(diffs);
+
         return diffs ?  <p dangerouslySetInnerHTML={{__html: html}}/> : <p>{I18n.t("revisions.identical")}</p>
     };
 

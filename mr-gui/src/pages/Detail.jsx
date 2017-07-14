@@ -241,7 +241,7 @@ export default class Detail extends React.PureComponent {
             case "revisions":
                 return <Revisions revisions={revisions} isNew={isNew}/>;
             case "export":
-                return <Export metaData={metaData} name={name} />;
+                return <Export metaData={metaData} />;
             default:
                 throw new Error(`Unknown tab ${tab}`);
         }

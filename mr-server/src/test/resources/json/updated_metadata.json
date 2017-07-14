@@ -99,6 +99,5 @@
     "AssertionConsumerService:2:index": "4",
     "OrganizationDisplayName:nl": "SURFnet"
   },
-  "allowedEntities": [],
-  "disableConsent": []
+  "allowedEntities": []
 }

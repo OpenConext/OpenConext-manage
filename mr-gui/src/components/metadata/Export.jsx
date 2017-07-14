@@ -37,7 +37,6 @@ export default class Export extends React.Component {
     }
 
     render() {
-        const {name} = this.props;
         const {showJsonFlat, showJson, showXml, json, xml, jsonFlat} = this.state;
 
         return (
@@ -75,7 +74,6 @@ export default class Export extends React.Component {
 }
 
 Export.propTypes = {
-    name: PropTypes.string.isRequired,
     metaData: PropTypes.object.isRequired
 };
 
