@@ -9,10 +9,11 @@ import Manipulation from "../components/metadata/Manipulation";
 import MetaData from "../components/metadata/MetaData";
 import WhiteList from "../components/metadata/WhiteList";
 import Revisions from "../components/metadata/Revisions";
+import Export from "../components/metadata/Export";
 import ConfirmationDialog from "../components/ConfirmationDialog";
 
-import {detail, revisions, update, save, whiteListing, remove, template} from "../api";
-import {stop, isEmpty} from "../utils/Utils";
+import {detail, remove, revisions, save, template, update, whiteListing} from "../api";
+import {isEmpty, stop} from "../utils/Utils";
 import {setFlash} from "../utils/Flash";
 
 import "./Detail.css";
@@ -64,7 +65,7 @@ export default class Detail extends React.PureComponent {
                 revisions(type, id).then(revisions => {
                     revisions.push(metaData);
                     revisions.sort((r1, r2) => r1.revision.number < r2.revision.number ? 1 : r1.revision.number > r2.revision.number ? -1 : 0);
-                    this.setState({revisions: revisions})
+                    this.setState({revisions: revisions});
                 })
             })
         }).catch(err => {
@@ -239,6 +240,8 @@ export default class Detail extends React.PureComponent {
                                          guest={guest}/>;
             case "revisions":
                 return <Revisions revisions={revisions} isNew={isNew}/>;
+            case "export":
+                return <Export metaData={metaData} name={name} />;
             default:
                 throw new Error(`Unknown tab ${tab}`);
         }

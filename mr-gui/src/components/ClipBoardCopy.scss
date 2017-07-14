@@ -1,0 +1,31 @@
+@import "../stylesheets/vars.scss";
+
+span.clipboard {
+
+    i {
+        color: $blue;
+        font-size: 22px;
+        cursor: pointer;
+    }
+
+    i.copied {
+        animation: pulse 1.5s;
+        animation-iteration-count: 1;
+        border-radius: 50%;
+        position: relative;
+    }
+
+    @keyframes pulse {
+        0% {
+            box-shadow: 0 0 0 0 white;
+        }
+        70% {
+            box-shadow: 0 0 12px 10px lighten($blue, 15%);
+        }
+        100% {
+            box-shadow: 0 0 0 0 white;
+        }
+    }
+
+}
+

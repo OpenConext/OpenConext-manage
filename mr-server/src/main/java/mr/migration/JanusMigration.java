@@ -144,7 +144,9 @@ public class JanusMigration implements ApplicationListener<ApplicationReadyEvent
                 entity.put("notes", rs.getString("notes"));
                 addMetaData(entity, eid, revisionid, isPrimary, entityType);
                 addAllowedEntities(entity, eid, revisionid);
-                addConsentDisabled(entity, eid, revisionid);
+                if (entityType.equals(EntityType.IDP)) {
+                    addConsentDisabled(entity, eid, revisionid);
+                }
                 Instant instant = Instant.from(DateTimeFormatter.ISO_OFFSET_DATE_TIME.parse((String) entity.get("created")));
                 String id = UUID.randomUUID().toString();
                 MetaData metaData = new MetaData(id, type, new Revision(revisionid.intValue(), instant, parentId, (String) entity.get("user")), entity);

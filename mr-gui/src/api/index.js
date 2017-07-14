@@ -119,6 +119,10 @@ export function whiteListing(type) {
     return fetchJson(`whiteListing/${type}`);
 }
 
+export function exportMetaData(metaData) {
+    return postPutJson("export", metaData, "post");
+}
+
 export function search(options, type) {
     return postPutJson(`search/${type}`, options, "post");
 }

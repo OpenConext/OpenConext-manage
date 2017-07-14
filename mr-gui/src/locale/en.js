@@ -126,8 +126,23 @@ I18n.translations.en = {
         status: "Status",
         notes: "Notes",
         toggleAllDetails: "Show diffs for all revisions",
-        toggleDetails: "Show diff with previous revision"
+        toggleDetails: "Show diff with previous revision",
+        identical: "This revision is identical to the previous revision"
     },
+
+    export: {
+        title: "Metadata export",
+        description: "The metadata export is available in JSON - flat or structured - and SAML format.",
+        showXml: "Show the SAML / XML exported MetaData",
+        showJson: "Show the JSON exported MetaData",
+        showJsonFlat: "Flatten the JSON. This is the repository format, but not backward compatible with ServiceRegistry imports",
+    },
+
+    clipboard: {
+        copied: "Copied!",
+        copy: "Copy to clipboard"
+    },
+
     error_dialog: {
         title: "Unexpected error",
         body: "This is embarrassing; an unexpected error has occurred. It has been logged and reported. Please try again. Still doesn't work? Please click 'Help'.",

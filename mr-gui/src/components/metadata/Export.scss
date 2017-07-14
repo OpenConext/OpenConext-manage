@@ -1,0 +1,44 @@
+@import "../../stylesheets/vars.scss";
+
+.metadata-export {
+    background-color: white;
+    padding: 20px;
+
+    .export-info {
+        margin: 15px 0;
+        h2 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+    }
+
+    i.fa-clipboard {
+        margin-left: 10px;
+    }
+
+    div.copy-container {
+        display: flex;
+        align-items: center;
+        div.checkbox {
+            display: inline-block;
+        }
+
+    }
+
+    section.xml-export {
+        margin-top: 15px;
+        div.copy-container {
+            margin-bottom: 10px;
+        }
+    }
+
+    section.json-export{
+        margin-top: 35px;
+        div.last {
+            margin-bottom: 10px;
+        }
+
+    }
+
+}
