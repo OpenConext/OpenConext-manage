@@ -59,7 +59,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
             .body("data.entityid", isEmptyOrNullString())
             .body("data.state", equalTo("testaccepted"))
             .body("data.allowedEntities.size()", is(0))
-            .body("data.disableConsent.size()", is(0));
+            .body("data.disableConsent", isEmptyOrNullString());
     }
 
     @Test

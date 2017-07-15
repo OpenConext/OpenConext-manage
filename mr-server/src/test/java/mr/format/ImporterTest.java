@@ -24,6 +24,7 @@ public class ImporterTest {
         Map metaDataFields = Map.class.cast(result.get(Importer.META_DATA_FIELDS));
 
         assertNotNull(metaDataFields.get("certData"));
+        System.out.println(metaDataFields);
 
 
     }

@@ -10,18 +10,14 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.IntStream.range;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
@@ -29,6 +25,8 @@ public class Importer {
 
 
     public static final String META_DATA_FIELDS = "metaDataFields";
+    private static final List<String> languages = Arrays.asList("en", "nl");
+    private static final List<String> contactTypes = Arrays.asList("technical", "support", "administrative", "billing", "other");
 
     public Map<String, Object> importURL(String endPoint) throws XMLStreamException, IOException {
         URL url = new URL(endPoint);
@@ -47,6 +45,7 @@ public class Importer {
         result.put(META_DATA_FIELDS, metaDataFields);
 
         boolean inKeyDescriptor = false;
+        boolean inContact = true;
 
         while (reader.hasNext()) {
             switch (reader.next()) {
@@ -54,7 +53,7 @@ public class Importer {
                     switch (reader.getLocalName()) {
                         case "EntityDescriptor":
                             getAttributeValue(reader, "entityID")
-                                .ifPresent(entityID -> result.put("entityid",entityID));
+                                .ifPresent(entityID -> result.put("entityid", entityID));
                             break;
                         case "KeyDescriptor":
                             if (attributeValueMatches(reader, "use", "signing") ||
@@ -75,19 +74,59 @@ public class Importer {
                                 addMultiplicity(metaDataFields, "AssertionConsumerService:%s:Binding",
                                     10, binding));
                             Optional<String> locationOpt = getAttributeValue(reader, "Location");
-                            locationOpt.ifPresent(binding ->
+                            locationOpt.ifPresent(location ->
                                 addMultiplicity(metaDataFields, "AssertionConsumerService:%s:Location",
-                                    10, binding));
+                                    10, location));
+                            break;
+                        case "OrganizationName":
+                            addLanguageElement(metaDataFields, reader, "OrganizationName");
+                            break;
+                        case "OrganizationDisplayName":
+                            addLanguageElement(metaDataFields, reader, "OrganizationDisplayName");
+                            break;
+                        case "OrganizationURL":
+                            addLanguageElement(metaDataFields, reader, "OrganizationDisplayName");
+                            break;
+                        case "ContactPerson":
+                            String contactType = getAttributeValue(reader, "contactType").orElse("other");
+                            addMultiplicity(metaDataFields,"contacts:%s:contactType",4, contactType);
+                            inContact = true;
+                            break;
+                        case "GivenName":
+                            if (inContact) {
+                                addMultiplicity(metaDataFields,"contacts:%s:givenName",4, reader.getElementText());
+                            }
+                            break;
+                        case "SurName":
+                            if (inContact) {
+                                addMultiplicity(metaDataFields,"contacts:%s:surName",4, reader.getElementText());
+                            }
+                            break;
+                        case "EmailAddress":
+                            if (inContact) {
+                                addMultiplicity(metaDataFields,"contacts:%s:emailAddress",4, reader.getElementText());
+                            }
+                            break;
+
                     }
                     break;
                 case END_ELEMENT:
-//                    if (processRoles && reader.getLocalName().equals("Attribute")) {
-//                        //we got what we wanted
-//                        return null;
-//                    }
+                    switch (reader.getLocalName()) {
+                        case "ContactPerson":
+                            inContact = false;
+                            break;
+                    }
             }
         }
         return result;
+    }
+
+    private void addLanguageElement(Map<String, String> metaDataFields, XMLStreamReader reader, String elementName) throws XMLStreamException {
+        String language = getAttributeValue(reader, "lang").orElse("en");
+        if (languages.contains(language)) {
+            metaDataFields.put(String.format("%s:%s", elementName, language), reader.getElementText());
+        }
+
     }
 
     private void addMultiplicity(Map<String, String> result, String format, int multiplicity, String value) {
