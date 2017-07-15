@@ -1,0 +1,88 @@
+@import "../../stylesheets/vars.scss";
+
+.metadata-import {
+    background-color: white;
+    padding: 20px;
+
+    .import-info {
+        margin: 15px 0;
+        h2 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+    }
+
+    section.sub-tabs {
+        display: flex;
+        padding: 0;
+        span {
+            text-align: center;
+            cursor: pointer;
+            padding: 15px 50px;
+            background-color: $light-grey;
+            color: $dark-grey;
+            text-transform: uppercase;
+            border-right: 1px solid white;
+
+            &.active {
+                background-color: white;
+                color: $darker-blue;
+                border-top: 2px solid $blue;
+                border-right: none;
+            }
+
+            &:last-child {
+                border-right: none;
+            }
+        }
+    }
+    div.imports {
+
+    }
+    section.import-url, section.import-xml, section.import-json {
+        section.import-header {
+            display: flex;
+            align-items: center;
+            margin: 20px 0 10px 0;
+        }
+        h2 {
+            margin-right: auto;
+        }
+        a.button {
+            &.green {
+                i.fa-cloud-download {
+                    margin-left: 65px;
+                }
+            }
+        }
+        div.ReactCodeMirror {
+            border: 2px solid #f7f7f7;
+
+            div.CodeMirror {
+                height: 1000px;
+            }
+        }
+    }
+
+    section.import-url {
+        margin-bottom: 50px;
+    }
+    section.import-xml {
+    }
+    section.import-json {
+    }
+    input[type=text], textarea {
+        width: 100%;
+        font-size: 14px;
+        padding: 0 10px;
+        border-radius: 3px;
+        border: 1px solid #d9d9d8;
+        margin-top: 5px;
+        line-height: 33px;
+        &.error {
+            border: solid 1px $red;
+        }
+    }
+
+}

@@ -123,6 +123,18 @@ export function exportMetaData(metaData) {
     return postPutJson("export", metaData, "post");
 }
 
+export function importMetaDataUrl(type, url) {
+    return fetchJson(`import/endpoint/${type}/${encodeURIComponent(url)}`);
+}
+
+export function importMetaDataXML(type, xml) {
+    return postPutJson(`import/xml/${type}`, {xml: xml}, "post");
+}
+
+export function importMetaDataJSON(type, metaData) {
+    return postPutJson(`import/json/${type}`, JSON.parse(metaData), "post");
+}
+
 export function search(options, type) {
     return postPutJson(`search/${type}`, options, "post");
 }

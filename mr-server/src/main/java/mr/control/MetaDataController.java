@@ -44,9 +44,6 @@ public class MetaDataController {
     @Autowired
     private MetaDataAutoConfiguration metaDataAutoConfiguration;
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
     @GetMapping("/client/template/{type}")
     public MetaData template(@PathVariable("type") String type) {
         return new MetaData(type, metaDataAutoConfiguration.metaDataTemplate(type));
@@ -121,7 +118,7 @@ public class MetaDataController {
     }
 
     private void validate(MetaData metaData) throws JsonProcessingException {
-        String json = objectMapper.writeValueAsString(metaData.getData());
+        String json = metaDataAutoConfiguration.getObjectMapper().writeValueAsString(metaData.getData());
         metaDataAutoConfiguration.validate(json, metaData.getType());
     }
 

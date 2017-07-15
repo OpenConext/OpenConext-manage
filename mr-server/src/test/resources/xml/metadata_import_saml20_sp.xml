@@ -21,6 +21,7 @@
         <md:AssertionConsumerService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://teams.surfconext.nl/Shibboleth.sso/SAML2/POST" index="0"/>
         <md:AssertionConsumerService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Artifact" Location="https://teams.surfconext.nl/Shibboleth.sso/SAML2/Artifact" index="1"/>
         <md:AssertionConsumerService Binding="urn:oasis:names:tc:SAML:2.0:bindings:PAOS" Location="https://teams.surfconext.nl/Shibboleth.sso/SAML2/ECP" index="2"/>
+        <md:SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://global.replicon.com/!/saml2/YourCompanyKey/slo/redirect" />
     </md:SPSSODescriptor>
     <md:Organization>
         <md:OrganizationName xml:lang="en">SURFnet BV</md:OrganizationName>

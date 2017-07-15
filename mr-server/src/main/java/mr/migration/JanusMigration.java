@@ -218,8 +218,7 @@ public class JanusMigration implements ApplicationListener<ApplicationReadyEvent
             value = value.trim();
             Map<String, String> metaDataFields = (Map<String, String>) entity.getOrDefault("metaDataFields", new HashMap<String, String>());
             if (isPrimary) {
-                Optional<Map<String, Object>> schemaRepresentationOptional = metaDataAutoConfiguration.schemaRepresentations().stream().filter(map -> map.get("title").equals(entityType.getType())).findFirst();
-                Map<String, Object> schema = schemaRepresentationOptional.orElseThrow(() -> new IllegalArgumentException(String.format("The %s schema does not exists", entityType.getType())));
+                Map<String, Object> schema = metaDataAutoConfiguration.schemaRepresentation(entityType);
                 /**
                  * We only import known metadata for primary - e.g. not revisions - metadata
                  */

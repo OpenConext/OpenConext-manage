@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import mr.AbstractIntegrationTest;
+import mr.TestUtils;
 import mr.model.MetaData;
 import mr.repository.MetaDataRepository;
 import org.apache.commons.io.IOUtils;
@@ -22,7 +23,7 @@ import java.util.Map;
 
 import static org.junit.Assert.*;
 
-public class ExporterTest  {
+public class ExporterTest  implements TestUtils {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -38,7 +39,7 @@ public class ExporterTest  {
         MetaData metaData = this.metaData();
         String xml = subject.exportToXml(metaData);
 
-        String expected = IOUtils.toString(new ClassPathResource("/xml/expected_metadata_export_saml20_sp.xml").getInputStream(), Charset.defaultCharset());
+        String expected = readFile("/xml/expected_metadata_export_saml20_sp.xml");
         assertEquals(expected, xml);
     }
 
@@ -49,7 +50,7 @@ public class ExporterTest  {
         Map<String, Object> result = subject.exportToMap(metaData, true);
 
         String json = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(result);
-        String expected = IOUtils.toString(new ClassPathResource("/json/expected_metadata_export_saml20_sp_nested.json").getInputStream(), Charset.defaultCharset());
+        String expected = readFile("/json/expected_metadata_export_saml20_sp_nested.json");
         assertEquals(expected, json);
     }
 

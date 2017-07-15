@@ -1,6 +1,7 @@
 package mr.conf;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import mr.TestUtils;
 import mr.migration.EntityType;
 import org.apache.commons.io.IOUtils;
 import org.everit.json.schema.ValidationException;
@@ -19,7 +20,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-public class MetaDataAutoConfigurationTest {
+public class MetaDataAutoConfigurationTest implements TestUtils {
 
     private MetaDataAutoConfiguration subject = new MetaDataAutoConfiguration(
         new ObjectMapper(),
@@ -95,10 +96,5 @@ public class MetaDataAutoConfigurationTest {
         assertTrue(uriFormatValidator.validate(uri).isPresent());
         assertFalse(uriFormatValidator.validate(uri.trim()).isPresent());
     }
-
-    private String readFile(String path) throws IOException {
-        return IOUtils.toString(new ClassPathResource(path).getInputStream(), Charset.defaultCharset());
-    }
-
 
 }

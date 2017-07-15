@@ -138,6 +138,18 @@ I18n.translations.en = {
         showJsonFlat: "Flatten the JSON. This is the repository format, but not backward compatible with ServiceRegistry imports",
     },
 
+    import: {
+        title: "Metadata import",
+        import_url: "Import URL",
+        import_xml: "Import XML",
+        import_json: "Import JSON",
+        results: "Results",
+        url: "Enter a valid SAML metadata endpoint",
+        fetch: "Import",
+        xml: "Paste XML metadata",
+        json: "Paste JSON metadata",
+    },
+
     clipboard: {
         copied: "Copied!",
         copy: "Copy to clipboard"

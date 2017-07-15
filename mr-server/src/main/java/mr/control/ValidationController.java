@@ -2,8 +2,10 @@ package mr.control;
 
 import mr.validations.BooleanValidator;
 import mr.validations.CertificateValidator;
+import mr.validations.JSONFormatValidator;
 import mr.validations.NumberValidator;
 import mr.validations.SAMLEmailValidator;
+import mr.validations.XMLFormatValidator;
 import org.everit.json.schema.FormatValidator;
 import org.everit.json.schema.internal.DateTimeFormatValidator;
 import org.everit.json.schema.internal.EmailFormatValidator;
@@ -32,6 +34,8 @@ public class ValidationController {
 //        validators.put("ipv6", new IPV6Validator());
         validators.put("number", new NumberValidator());
         validators.put("uri", new URIFormatValidator());
+        validators.put("xml", new XMLFormatValidator());
+        validators.put("json", new JSONFormatValidator());
     }
 
     @GetMapping("/client/validation/{type}")

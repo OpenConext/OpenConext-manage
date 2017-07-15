@@ -10,6 +10,8 @@ import MetaData from "../components/metadata/MetaData";
 import WhiteList from "../components/metadata/WhiteList";
 import Revisions from "../components/metadata/Revisions";
 import Export from "../components/metadata/Export";
+import Import from "../components/metadata/Import";
+
 import ConfirmationDialog from "../components/ConfirmationDialog";
 
 import {detail, remove, revisions, save, template, update, whiteListing} from "../api";
@@ -242,6 +244,8 @@ export default class Detail extends React.PureComponent {
                 return <Revisions revisions={revisions} isNew={isNew}/>;
             case "export":
                 return <Export metaData={metaData} />;
+            case "import":
+                return <Import configuration={configuration} metaData={metaData} />;
             default:
                 throw new Error(`Unknown tab ${tab}`);
         }

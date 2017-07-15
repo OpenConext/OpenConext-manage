@@ -1,6 +1,7 @@
 package mr.conf;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import mr.migration.EntityType;
 import mr.validations.BooleanValidator;
 import mr.validations.CertificateValidator;
 import mr.validations.NumberValidator;
@@ -27,6 +28,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -84,6 +86,15 @@ public class MetaDataAutoConfiguration {
 
     public List<Map<String, Object>> schemaRepresentations() {
         return schemaRepresentations;
+    }
+    public Map<String, Object> schemaRepresentation(EntityType entityType) {
+        Optional<Map<String, Object>> schemaRepresentationOptional = schemaRepresentations().stream().filter(map -> map.get("title").equals(entityType.getType())).findFirst();
+        return schemaRepresentationOptional.orElseThrow(() -> new IllegalArgumentException(String.format("The %s schema does not exists", entityType.getType())));
+
+    }
+
+    public ObjectMapper getObjectMapper() {
+        return objectMapper;
     }
 
     private Map<String, Schema> parseConfiguration(Resource metadataConfigurationPath, List<FormatValidator> validators) throws IOException {

@@ -26,9 +26,6 @@ public class JanusMigrationValidation  {
     @Autowired
     private MetaDataAutoConfiguration metaDataAutoConfiguration;
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
     public Map<String, Object> validateMigration() {
         Map<String, Object> results = new HashMap<>();
         Stream.of(EntityType.values()).map(EntityType::getType).forEach(type -> {
@@ -44,7 +41,7 @@ public class JanusMigrationValidation  {
             return;
         }
         try {
-            String json = objectMapper.writeValueAsString(metaData.getData());
+            String json = metaDataAutoConfiguration.getObjectMapper().writeValueAsString(metaData.getData());
             metaDataAutoConfiguration.validate(json, type);
         } catch (ValidationException e) {
             Map data = Map.class.cast(metaData.getData());
