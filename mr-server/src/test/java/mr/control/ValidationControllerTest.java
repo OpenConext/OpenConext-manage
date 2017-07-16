@@ -1,6 +1,7 @@
 package mr.control;
 
 import mr.AbstractIntegrationTest;
+import mr.model.Validation;
 import org.junit.Test;
 
 import static io.restassured.RestAssured.given;
@@ -47,11 +48,24 @@ public class ValidationControllerTest extends AbstractIntegrationTest {
         doValidation("uri", "{nope://nope}", false);
     }
 
+    @Test
+    public void validationXml() throws Exception {
+        doValidation("xml", readFile("/xml/metadata_import_saml20_sp.xml"), true);
+        doValidation("xml", "nope", false);
+    }
+
+    @Test
+    public void validationJson() throws Exception {
+        doValidation("json", readFile("/json/metadata_import_saml20_sp_nested.json"), true);
+        doValidation("json", "nope:", false);
+    }
+
     private void doValidation(String type, String value, boolean valid) throws Exception {
         given()
             .when()
-            .queryParam("value", value)
-            .get("mr/api/client/validation/{type}", type)
+            .body(new Validation(type, value))
+            .header("Content-type", "application/json")
+            .post("mr/api/client/validation")
             .then()
             .statusCode(SC_OK)
             .body(equalTo(String.valueOf(valid)));

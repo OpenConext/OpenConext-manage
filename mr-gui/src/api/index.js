@@ -112,7 +112,7 @@ export function revisions(type, parentId) {
 }
 
 export function validation(format, value) {
-    return fetchJson(`validation/${format}?value=${encodeURIComponent(value)}`);
+    return postPutJson("validation", {type: format, value: value}, "post");
 }
 
 export function whiteListing(type) {
@@ -124,7 +124,7 @@ export function exportMetaData(metaData) {
 }
 
 export function importMetaDataUrl(type, url) {
-    return fetchJson(`import/endpoint/${type}/${encodeURIComponent(url)}`);
+    return postPutJson("import/endpoint", {type: type, url: url}, "post");
 }
 
 export function importMetaDataXML(type, xml) {

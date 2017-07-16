@@ -50,7 +50,7 @@ export default class Import extends React.Component {
     importUrl = e => {
         stop(e);
         const {url} = this.state;
-        const type = this.props.metaData;
+        const {type} = this.props.metaData;
         validation("uri", url).then(result => {
             this.setState({
                 validUrl: !result
@@ -90,9 +90,8 @@ export default class Import extends React.Component {
 
     };
 
-
     renderResults = () => {
-        const {results, errors} = this.state;
+       // const {results, errors} = this.state;
         return <p>Results</p>;
     };
 

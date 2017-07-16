@@ -35,7 +35,7 @@ import static mr.mongo.MongobeeConfiguration.REVISION_POSTFIX;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = "spring.data.mongodb.uri=mongodb://localhost:27017/metadata_test")
 @ActiveProfiles("dev")
-public abstract class AbstractIntegrationTest {
+public abstract class AbstractIntegrationTest implements TestUtils{
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractIntegrationTest.class);
 

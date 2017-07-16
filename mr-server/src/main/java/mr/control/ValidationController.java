@@ -1,5 +1,6 @@
 package mr.control;
 
+import mr.model.Validation;
 import mr.validations.BooleanValidator;
 import mr.validations.CertificateValidator;
 import mr.validations.JSONFormatValidator;
@@ -10,8 +11,11 @@ import org.everit.json.schema.FormatValidator;
 import org.everit.json.schema.internal.DateTimeFormatValidator;
 import org.everit.json.schema.internal.EmailFormatValidator;
 import org.everit.json.schema.internal.URIFormatValidator;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -38,9 +42,8 @@ public class ValidationController {
         validators.put("json", new JSONFormatValidator());
     }
 
-    @GetMapping("/client/validation/{type}")
-    public boolean validation(@PathVariable("type") String type, @RequestParam("value") String value) {
-        return !validators.get(type).validate(value).isPresent();
+    @PostMapping("/client/validation")
+    public boolean validation(@Validated @RequestBody Validation validation) {
+        return !validators.get(validation.getType()).validate(validation.getValue()).isPresent();
     }
-
 }
