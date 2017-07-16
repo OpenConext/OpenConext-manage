@@ -6,8 +6,9 @@ import "codemirror/mode/javascript/javascript";
 import "codemirror/mode/xml/xml";
 
 import {stop} from "../../utils/Utils";
-
 import {importMetaDataJSON, importMetaDataUrl, importMetaDataXML, validation} from "../../api";
+
+import CheckBox from "../../components/CheckBox";
 
 import "codemirror/lib/codemirror.css";
 import "./Import.css";
@@ -30,7 +31,8 @@ export default class Import extends React.Component {
             errorsJson: undefined,
             errorsXml: undefined,
             tabs: ["import_url", "import_xml", "import_json", "results"],
-            selectedTab: "import_url"
+            selectedTab: "import_url",
+            applyChangesFor: {}
         };
     }
 
@@ -38,31 +40,105 @@ export default class Import extends React.Component {
         window.scrollTo(0, 0);
     }
 
+    sortArpArrayValues = (a, b) => a.source === b.source ? a.value.localeCompare(b.value) : a.source.localeCompare(b.source);
+
+    arpChanged = (current, imported) => {
+        if (!current.enabled && !imported.enabled) {
+            return false;
+        }
+        if (current.enabled !== imported.enabled) {
+            return true;
+        }
+        const currentAttributes = Object.keys(current.attributes);
+        const importedAttributes = Object.keys(imported.attributes);
+        const removed = currentAttributes.some(name => imported.attributes[name] === undefined);
+        if (removed) {
+            return true;
+        }
+        const added = importedAttributes.some(name => current.attributes[name] === undefined);
+        if (added) {
+            return true;
+        }
+        const detailsChanged = currentAttributes.some(name => {
+            const imp = imported.attributes[name];
+            const curr = current.attributes[name];
+            if (curr.length !== imp.length) {
+                return true;
+            }
+            imp.sort(this.sortArpArrayValues);
+            curr.sort(this.sortArpArrayValues);
+            return JSON.stringify(imp) !== JSON.stringify(curr);
+        });
+        return detailsChanged;
+    };
+
+    allowedEntitiesOrDisableConsentChanged = (current, imported) => {
+        const currentNames = current.map(entity => entity.name);
+        const importedNames = imported.map(entity => entity.name);
+        const added = currentNames.some(name => importedNames.indexOf(name) === -1);
+        if (added) {
+            return true;
+        }
+        return importedNames.some(name => currentNames.indexOf(name) === -1);
+    };
+
     /**
      * This is not generic on purpose. It is possible, but it makes the code very complex and
-     * we already make assumptions about the data structure
+     * we need to make assumptions about the data structure anyway for the different tabs.
      */
     resultsToMap = results => {
+        const currentMetaData = this.props.metaData.data;
+        results.connection = {};
         const keys = Object.keys(results);
         keys.forEach(key => {
             const value = results[key];
             if (key === "allowedEntities" || key === "disableConsent") {
-                value.forEach(obj => obj.selected = true);
+                const changed = this.allowedEntitiesOrDisableConsentChanged(currentMetaData[key], value);
+                if (!changed) {
+                    delete results[key];
+                }
             } else if (key === "arp") {
-                const arpAttributes = Object.keys(value.attributes);
-                arpAttributes.forEach(attr => {
-                    value.attributes[attr].forEach(arpValue => arpValue.selected = true);
-                });
-                value.enabled = {value: value.enabled, selected: true};
+                const changed = this.arpChanged(currentMetaData[key], value);
+                if (!changed) {
+                    delete results[key];
+                }
             } else if (key === "metaDataFields") {
                 const metaDataFields = Object.keys(value);
                 metaDataFields.forEach(field => {
-                    value[field] = {value: value[field], selected: true};
-                })
-            } else {
-                results[key] = {value: results[key], selected: true}
+                    const current = currentMetaData[key][field];
+                    if (current === value[field]) {
+                        delete value[field];
+                    } else {
+                        value[field] = {
+                            value: value[field],
+                            selected: true,
+                            current: current
+                        };
+                    }
+                });
+                if (Object.keys(value).length === 0) {
+                    delete results[key];
+                }
+            } else if (key !== "connection") {
+                const current = currentMetaData[key];
+                if (current === results[key]) {
+                    delete results[key];
+                } else {
+                    results.connection[key] = {value: results[key], selected: true, current: current};
+                    delete results[key];
+                }
             }
         });
+        if (results.connection.length === 0) {
+            delete results.connection;
+        }
+    };
+
+    changeMetaPropertySelected = (group, name) => e => {
+        debugger;
+        const newResults = {...this.state.results};
+        newResults[group][name].selected = e.target.checked;
+        this.setState({results: newResults});
     };
 
     doImport = (promise, errorsName) => {
@@ -75,17 +151,22 @@ export default class Import extends React.Component {
                 this.setState({...newState});
             } else {
                 this.resultsToMap(json);
-                debugger;
                 this.setState({
                     results: json,
                     errorsUrl: undefined,
                     errorsJson: undefined,
                     errorsXml: undefined,
-                    selectedTab: "results"
+                    selectedTab: "results",
+                    applyChangesFor: {
+                        "allowedEntities": true,
+                        "disableConsent": true,
+                        "arp" : true,
+                        "metaDataFields": true,
+                        "connection": true
+                    }
                 });
             }
         });
-
     };
 
     importUrl = e => {
@@ -131,6 +212,32 @@ export default class Import extends React.Component {
 
     };
 
+
+    renderConnectionTable = (results, headers) =>
+        <table>
+            <thead>
+            <tr>
+                <th className="title" colSpan={4}>{I18n.t("metadata.tabs.connection")}</th>
+            </tr>
+            <tr>
+                {headers.map(header => <th key={header}>{I18n.t(`import.headers.${header}`)}</th>)}
+            </tr>
+            </thead>
+            <tbody>
+            {Object.keys(results.connection).map(key => {
+                const prop = results.connection[key];
+                return (
+                    <tr key={key}>
+                        <td>{<CheckBox name={key} value={prop.selected}
+                                       onChange={this.changeMetaPropertySelected("connection", key)}/>}</td>
+                        <td>{key}</td>
+                        <td>{prop.current}</td>
+                        <td>{prop.value}</td>
+                    </tr> )
+            })}
+            </tbody>
+        </table>;
+
     renderResults = () => {
         const {results, errorsXml, errorsUrl, errorsJson} = this.state;
         if (errorsUrl || errorsJson || errorsXml) {
@@ -139,9 +246,19 @@ export default class Import extends React.Component {
         if (!results) {
             return <h2 className="no_results">{I18n.t("import.no_results")}</h2>
         }
-        return <section className="import-results">
+        const keys = Object.keys(results);
+        if (keys.length === 0) {
+            return <h2 className="no_results">{I18n.t("import.nothingChanged")}</h2>
 
-        </section>;
+        }
+        const headers = ["include", "name", "current", "newValue"];
+        return (
+            <section className="import-results">
+                <h2>{I18n.t("import.resultsInfo")}</h2>
+                <p>{I18n.t("import.resultsSubInfo")}</p>
+                {results.connection && this.renderConnectionTable(results, headers)}
+            </section>
+        );
     };
 
     renderErrors = errors =>

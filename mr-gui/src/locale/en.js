@@ -38,7 +38,7 @@ I18n.translations.en = {
             whitelist: "Whitelisting",
             metadata: "Metadata",
             arp: "ARP",
-            manipulation: "manipulation",
+            manipulation: "Manipulation",
             consent_disabling: "Consent Disabling",
             revisions: "Revisions",
             import: "Import",
@@ -152,7 +152,16 @@ I18n.translations.en = {
         json: "Paste JSON metadata",
         invalid: "Invalid {{type}}",
         no_results: "No results yet. Import metadata first...",
-        validationErrors: "The import validation against the {{type}} schema failed. Correct the errors and import again."
+        validationErrors: "The import validation against the {{type}} schema failed. Correct the errors and import again.",
+        nothingChanged: "The imported metadata is exactly the same as the current metadata. Nothing to import...",
+        resultsInfo: "Delta of current metadata and the imported metadata",
+        resultsSubInfo: "Select the metadata parts to add / replace",
+        headers: {
+            include: "Include",
+            name: "Name",
+            current: "Current value",
+            newValue: "New value"
+        }
     },
 
     clipboard: {

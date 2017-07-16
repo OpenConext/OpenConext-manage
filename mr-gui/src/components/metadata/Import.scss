@@ -44,7 +44,7 @@
         section.import-header {
             display: flex;
             align-items: center;
-            margin: 20px 0 10px 0;
+            margin: 10px 0 15px 0;
         }
         h2 {
             margin-right: auto;
@@ -87,6 +87,9 @@
     }
     section.import-results {
         margin: 20px 0 10px 0;
+        table {
+            width: 100%;
+        }
     }
     input[type=text], textarea {
         width: 100%;
