@@ -8,11 +8,11 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.util.Optional;
 
-public class CertificateValidator implements FormatValidator {
+public class CertificateFormatValidator implements FormatValidator {
 
     private CertificateFactory certificateFactory;
 
-    public CertificateValidator() {
+    public CertificateFormatValidator() {
         try {
             this.certificateFactory = CertificateFactory.getInstance("X.509");
         } catch (CertificateException e) {

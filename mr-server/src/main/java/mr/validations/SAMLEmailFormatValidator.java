@@ -5,7 +5,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.Optional;
 
-public class SAMLEmailValidator extends EmailFormatValidator {
+public class SAMLEmailFormatValidator extends EmailFormatValidator {
 
     @Override
     public Optional<String> validate(String subject) {

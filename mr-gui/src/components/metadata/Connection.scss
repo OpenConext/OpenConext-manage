@@ -37,6 +37,10 @@
                 width: 85%;
                 padding-right: 15px;
             }
+            p.error {
+                color: $red;
+                margin: 10px 0 15px 0;
+            }
         }
 
         div.inline-editable {

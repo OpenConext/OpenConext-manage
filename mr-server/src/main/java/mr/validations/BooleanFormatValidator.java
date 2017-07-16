@@ -4,7 +4,7 @@ import org.everit.json.schema.FormatValidator;
 
 import java.util.Optional;
 
-public class BooleanValidator implements FormatValidator {
+public class BooleanFormatValidator implements FormatValidator {
     @Override
     public Optional<String> validate(String subject) {
         return "1".equals(subject) || "0".equals(subject) ? Optional.empty() :

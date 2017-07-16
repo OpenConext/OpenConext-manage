@@ -16,7 +16,7 @@ export default class InlineEditable extends React.PureComponent {
 
     componentDidMount() {
         const {required = false, value} = this.props;
-        const error =  (required && isEmpty(value));
+        const error = (required && isEmpty(value));
         this.setState({error: error});
     }
 
@@ -32,12 +32,18 @@ export default class InlineEditable extends React.PureComponent {
         return true;
     };
 
-    save = () => {
-        const {required = false, onError, onChange} = this.props;
-        const error =  (required && isEmpty(this.state.newValue));
+    save = e => {
+        const {required = false, onError, onChange, onBlur} = this.props;
+        const error = (required && isEmpty(this.state.newValue));
         this.setState({editable: false, error: error});
         onChange(this.state.newValue);
-        onError(error);
+        if (onError) {
+            onError(error);
+        }
+        if (onBlur) {
+            onBlur(e);
+        }
+
     };
 
     cancel = () => {
@@ -91,6 +97,7 @@ InlineEditable.propTypes = {
     mayEdit: PropTypes.bool.isRequired,
     onChange: PropTypes.func.isRequired,
     required: PropTypes.bool,
-    onError: PropTypes.func
+    onError: PropTypes.func,
+    onBlur: PropTypes.func
 };
 

@@ -80,6 +80,9 @@ public class MongobeeConfiguration {
         Index index = new Index();
         indexConfiguration.getFields().forEach(field -> index.on("data.".concat(field), Sort.Direction.ASC));
         index.named(indexConfiguration.getName());
+        if (indexConfiguration.isUnique()) {
+            index.unique();
+        }
         return index;
     }
 

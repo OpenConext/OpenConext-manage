@@ -12,6 +12,7 @@ public class IndexConfiguration {
     private String name;
     private String type;
     private List<String> fields;
+    private boolean unique;
 
 
 }

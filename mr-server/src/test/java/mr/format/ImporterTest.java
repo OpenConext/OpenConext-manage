@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import mr.TestUtils;
 import mr.conf.MetaDataAutoConfiguration;
 import mr.migration.EntityType;
-import org.apache.commons.io.IOUtils;
 import org.everit.json.schema.ValidationException;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
@@ -14,7 +13,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import static java.nio.charset.Charset.defaultCharset;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -33,11 +31,10 @@ public class ImporterTest implements TestUtils {
 
     @Test
     public void importSPMetaData() throws IOException, XMLStreamException {
-        String url = new ClassPathResource("/xml/metadata_import_saml20_sp.xml").getURL().toString();
-        Map<String, Object> result = subject.importURL(EntityType.SP, url);
+        String xml = readFile("/xml/metadata_import_saml20_sp.xml");
+        Map<String, Object> result = subject.importXML(EntityType.SP, xml);
 
         assertEquals("https://teams.surfconext.nl/shibboleth", result.get("entityid"));
-        assertEquals(url, result.get("metadataurl"));
 
         Map metaDataFields = Map.class.cast(result.get(Importer.META_DATA_FIELDS));
 
@@ -47,8 +44,8 @@ public class ImporterTest implements TestUtils {
 
     @Test
     public void importIdPMetaData() throws IOException, XMLStreamException {
-        String url = new ClassPathResource("/xml/metadata_import_saml20_idp.xml").getURL().toString();
-        Map<String, Object> result = subject.importURL(EntityType.IDP, url);
+        String xml = readFile("/xml/metadata_import_saml20_idp.xml");
+        Map<String, Object> result = subject.importXML(EntityType.IDP, xml);
 
         assertEquals("https://beta.surfnet.nl/simplesaml/saml2/idp/metadata.php", result.get("entityid"));
 

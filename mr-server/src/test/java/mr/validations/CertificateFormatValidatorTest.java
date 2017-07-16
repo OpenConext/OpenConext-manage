@@ -2,14 +2,13 @@ package mr.validations;
 
 import org.junit.Test;
 
-import java.security.cert.CertificateException;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
 
-public class CertificateValidatorTest {
+public class CertificateFormatValidatorTest {
 
-    private CertificateValidator subject = new CertificateValidator();
+    private CertificateFormatValidator subject = new CertificateFormatValidator();
 
     @Test
     public void validate() throws Exception {

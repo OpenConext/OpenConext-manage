@@ -38,16 +38,7 @@ public class Importer {
         this.metaDataAutoConfiguration = metaDataAutoConfiguration;
     }
 
-
-    public Map<String, Object> importURL(EntityType type, String endPoint) throws XMLStreamException, IOException {
-        URL url = new URL(endPoint);
-        String xml = IOUtils.toString(url.openConnection().getInputStream(), Charset.defaultCharset());
-        Map<String, Object> result = importXML(type, xml);
-        result.put("metadataurl", endPoint);
-        return result;
-    }
-
-    public Map<String, Object> importXML(EntityType type, String xml) throws XMLStreamException {
+    public Map<String, Object> importXML(EntityType type, String xml) throws XMLStreamException, JsonProcessingException {
         //despite it's name, the XMLInputFactoryImpl is not thread safe
         XMLInputFactory factory = XMLInputFactory.newInstance();
 
@@ -173,13 +164,13 @@ public class Importer {
         if (entityType.equals(EntityType.SP) && json.containsKey("disableConsent")) {
             json.remove("disableConsent");
         }
-        if (json.containsKey("allowedEntities")) {
-            List<String> allowedEntities = (List<String>) json.get("allowedEntities");
-            json.put("allowedEntities", allowedEntities.stream()
-                .map(name -> Collections.singletonMap("name", name)).collect(toList()));
-        }
 
         if (metaDataFields.values().stream().anyMatch(value -> value instanceof Map)) {
+            if (json.containsKey("allowedEntities")) {
+                List<String> allowedEntities = (List<String>) json.get("allowedEntities");
+                json.put("allowedEntities", allowedEntities.stream()
+                    .map(name -> Collections.singletonMap("name", name)).collect(toList()));
+            }
             //if the structure is nested then we need to flatten it
             Map<String, Object> flattened = new ConcurrentHashMap<>();
             metaDataFields.entrySet().stream().forEach(entry -> {

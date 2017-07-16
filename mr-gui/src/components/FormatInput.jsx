@@ -1,7 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
 import I18n from "i18n-js";
+
 import {validation} from "./../api";
+import {isEmpty} from "../utils/Utils";
 
 import "./FormatInput.css";
 
@@ -25,12 +27,21 @@ export default class FormatInput extends React.PureComponent {
 
     onBlur = format => e => {
         const value = e.target.value;
-        validation(format, value).then(result => {
+        const {isRequired = true} = this.props;
+        if (isEmpty(value)) {
             this.setState({
-                error: !result
+                error: isRequired
             });
-            this.props.onError(!result);
-        })
+            this.props.onError(isRequired);
+
+        } else {
+            validation(format, value).then(result => {
+                this.setState({
+                    error: !result
+                });
+                this.props.onError(!result);
+            })
+        }
     };
 
     render() {
@@ -55,6 +66,7 @@ FormatInput.propTypes = {
     onError: PropTypes.func.isRequired,
     isError: PropTypes.bool.isRequired,
     autofocus: PropTypes.bool,
+    isRequired: PropTypes.bool,
     readOnly: PropTypes.bool
 };
 

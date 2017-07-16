@@ -56,6 +56,9 @@
                 }
             }
         }
+        p.invalid {
+            color: $red;
+        }
         div.ReactCodeMirror {
             border: 2px solid #f7f7f7;
 
@@ -64,13 +67,26 @@
             }
         }
     }
-
+    section.validation-errors {
+        background-color: $red;
+        color: white;
+        padding: 25px;
+        border-radius: $br;
+        border: 1px solid $red;
+        margin: 15px 0;
+        ul {
+            list-style: none;
+            padding:15px 25px;
+        }
+    }
+    h2.no_results {
+        margin: 20px 0 10px 0;
+    }
     section.import-url {
         margin-bottom: 50px;
     }
-    section.import-xml {
-    }
-    section.import-json {
+    section.import-results {
+        margin: 20px 0 10px 0;
     }
     input[type=text], textarea {
         width: 100%;

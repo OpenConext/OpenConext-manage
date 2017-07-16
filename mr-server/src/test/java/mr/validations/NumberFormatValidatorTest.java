@@ -4,9 +4,9 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class NumberValidatorTest {
+public class NumberFormatValidatorTest {
 
-    private NumberValidator subject = new NumberValidator();
+    private NumberFormatValidator subject = new NumberFormatValidator();
 
     @Test
     public void validate() throws Exception {

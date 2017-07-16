@@ -19,13 +19,15 @@ export default class Import extends React.Component {
         super(props);
         this.state = {
             url: "",
-            validUrl: false,
+            invalidUrl: false,
             xml: "",
-            validXml: false,
+            invalidXml: false,
             json: "",
-            validJson: false,
-            results: {},
-            errors: {},
+            invalidJson: false,
+            results: undefined,
+            errorsUrl: undefined,
+            errorsJson: undefined,
+            errorsXml: undefined,
             tabs: ["import_url", "import_xml", "import_json", "results"],
             selectedTab: "import_url"
         };
@@ -35,13 +37,17 @@ export default class Import extends React.Component {
         window.scrollTo(0, 0);
     }
 
-    doImport = promise => {
+    doImport = (promise, errorsName) => {
+        const newState = {...this.state};
+
         promise.then(json => {
             debugger;
             if (json.errors) {
-                this.setState({errors: json.errors});
+                newState[errorsName] = json.errors;
+                newState.results = undefined;
+                this.setState({...newState});
             } else {
-                this.setState({results: json, selectedTab: "results"});
+                this.setState({results: json, errorsUrl: undefined, errorsJson: undefined, errorsXml: undefined, selectedTab: "results"});
             }
         });
 
@@ -51,12 +57,12 @@ export default class Import extends React.Component {
         stop(e);
         const {url} = this.state;
         const {type} = this.props.metaData;
-        validation("uri", url).then(result => {
+        validation("url", url).then(result => {
             this.setState({
-                validUrl: !result
+                invalidUrl: !result
             });
             if (result) {
-                this.doImport(importMetaDataUrl(type, url));
+                this.doImport(importMetaDataUrl(type, url), "errorsUrl");
             }
         });
     };
@@ -64,13 +70,13 @@ export default class Import extends React.Component {
     importJson = e => {
         stop(e);
         const {json} = this.state;
-        const type = this.props.metaData;
+        const {type} = this.props.metaData;
         validation("json", json).then(result => {
             this.setState({
-                validJson: !result
+                invalidJson: !result
             });
             if (result) {
-                this.doImport(importMetaDataJSON(type, json));
+                this.doImport(importMetaDataJSON(type, json), "errorsJson");
             }
         });
     };
@@ -78,34 +84,55 @@ export default class Import extends React.Component {
     importXml = e => {
         stop(e);
         const {xml} = this.state;
-        const type = this.props.metaData;
+        const {type} = this.props.metaData;
         validation("xml", xml).then(result => {
             this.setState({
-                validXml: !result
+                invalidXml: !result
             });
             if (result) {
-                this.doImport(importMetaDataXML(type, xml));
+                this.doImport(importMetaDataXML(type, xml), "errorsJson");
             }
         });
 
     };
 
     renderResults = () => {
-       // const {results, errors} = this.state;
-        return <p>Results</p>;
+        const {results, errorsXml, errorsUrl, errorsJson} = this.state;
+        if (errorsUrl || errorsJson || errorsXml) {
+            return this.renderErrors(errorsXml || errorsJson || errorsUrl);
+        }
+        if (!results) {
+            return <h2 className="no_results">{I18n.t("import.no_results")}</h2>
+        }
+        return <section className="import-results">
+
+        </section>;
     };
 
-    renderImportHeader = (info, action) =>
-        <section className="import-header">
-            <h2>{info}</h2>
-            <a onClick={action} className="button green large">
-                {I18n.t("import.fetch")}<i className="fa fa-cloud-download"></i></a>
+    renderErrors = errors =>
+        <section className="validation-errors">
+            <p>{I18n.t("import.validationErrors", {type: this.props.metaData.type})}</p>
+            <ul>
+                {errors.map((msg, index) =>
+                    <li key={index}>{msg}</li>)}
+            </ul>
+        </section>;
+
+    renderImportHeader = (info, action, errors) =>
+        <section>
+            <section className="import-header">
+                <h2>{info}</h2>
+                {!this.props.guest && <a onClick={action} className="button green large">
+                    {I18n.t("import.fetch")}<i className="fa fa-cloud-download"></i></a>}
+            </section>
+            {errors && this.renderErrors(errors)}
         </section>;
 
 
     renderImportUrl = () =>
         <section className="import-url">
-            {this.renderImportHeader(I18n.t("import.url"), this.importUrl)}
+            {this.renderImportHeader(I18n.t("import.url"), this.importUrl, this.state.errorsUrl)}
+            {this.state.invalidUrl && <p className="invalid">{I18n.t("import.invalid", {type: "URL"})}</p>}
             <input type="text" value={this.state.url} onChange={e => this.setState({url: e.target.value})}/>
         </section>;
 
@@ -117,8 +144,10 @@ export default class Import extends React.Component {
             scrollbarStyle: null
         };
         return <section className="import-json">
-            {this.renderImportHeader(I18n.t("import.json"), this.importJson)}
-            <CodeMirror key="json" name="json" value={this.state.json} onChange={newJson => this.setState({json: newJson})}
+            {this.renderImportHeader(I18n.t("import.json"), this.importJson, this.state.errorsJson)}
+            {this.state.invalidJson && <p className="invalid">{I18n.t("import.invalid", {type: "JSON"})}</p>}
+            <CodeMirror key="json" name="json" value={this.state.json}
+                        onChange={newJson => this.setState({json: newJson})}
                         options={jsonOptions}/>
         </section>
 
@@ -132,7 +161,8 @@ export default class Import extends React.Component {
             scrollbarStyle: null
         };
         return <section className="import-xml">
-            {this.renderImportHeader(I18n.t("import.xml"), this.importXml)}
+            {this.renderImportHeader(I18n.t("import.xml"), this.importXml, this.state.errorsXml)}
+            {this.state.invalidXml && <p className="invalid">{I18n.t("import.invalid", {type: "XML"})}</p>}
             <CodeMirror key="xml" name="xml" value={this.state.xml} onChange={newXml => this.setState({xml: newXml})}
                         options={xmlOptions}/>
         </section>;
@@ -179,6 +209,7 @@ export default class Import extends React.Component {
 
 Import.propTypes = {
     metaData: PropTypes.object.isRequired,
-    configuration: PropTypes.object.isRequired
+    configuration: PropTypes.object.isRequired,
+    guest: PropTypes.bool.isRequired
 };
 

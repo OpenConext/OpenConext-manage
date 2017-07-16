@@ -240,14 +240,14 @@
         },
         "SingleLogoutService_Location": {
           "type": "string",
-          "format": "uri"
+          "format": "url"
         },
         "mdrpi:RegistrationInfo": {
           "type": "string"
         },
         "logo:0:url": {
           "type": "string",
-          "format": "uri"
+          "format": "url"
         },
         "logo:0:width": {
           "type": "string",
@@ -299,7 +299,7 @@
         },
         "coin:eula": {
           "type": "string",
-          "format": "uri"
+          "format": "url"
         },
         "coin:ss:idp_visible_only": {
           "type": "string",
@@ -307,7 +307,7 @@
         },
         "coin:application_url": {
           "type": "string",
-          "format": "uri"
+          "format": "url"
         },
         "coin:transparant_issuer": {
           "type": "string",
@@ -346,7 +346,7 @@
         },
         "^AssertionConsumerService:([0-9]{1}):Location$": {
           "type": "string",
-          "format": "uri",
+          "format": "url",
           "multiplicity": 10
         },
         "^AssertionConsumerService:([0-9]{1}):index$": {
@@ -394,15 +394,15 @@
         },
         "^OrganizationURL:(en|nl)$": {
           "type": "string",
-          "format": "uri"
+          "format": "url"
         },
         "^url:(en|nl)$": {
           "type": "string",
-          "format": "uri"
+          "format": "url"
         },
         "^mdui:PrivacyStatementURL:(en|nl)$": {
           "type": "string",
-          "format": "uri"
+          "format": "url"
         },
         "^mdrpi:RegistrationPolicy:(en|nl)$": {
           "type": "string"
@@ -430,20 +430,18 @@
   "required": [
     "entityid",
     "state",
-    "allowedall"
+    "allowedall",
+    "metaDataFields"
   ],
   "additionalProperties": false,
   "indexes": [
     {
-      "name": "autocomplete_text_query",
-      "type": "text",
+      "name": "field_entityid",
+      "type": "field",
       "fields": [
-        "entityid",
-        "metaDataFields.name:en",
-        "metaDataFields.name:nl",
-        "metaDataFields.description:en",
-        "metaDataFields.description:nl"
-      ]
+        "entityid"
+      ],
+      "unique": true
     }
   ]
 }

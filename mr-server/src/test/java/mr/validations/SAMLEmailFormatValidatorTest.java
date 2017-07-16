@@ -4,9 +4,9 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class SAMLEmailValidatorTest {
+public class SAMLEmailFormatValidatorTest {
 
-    private SAMLEmailValidator subject = new SAMLEmailValidator();
+    private SAMLEmailFormatValidator subject = new SAMLEmailFormatValidator();
 
     @Test
     public void validate() throws Exception {

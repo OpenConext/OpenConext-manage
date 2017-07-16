@@ -46,6 +46,7 @@ I18n.translations.en = {
         },
         notFound: "No Metadata found",
         entityId: "Entity ID",
+        entityIdAlreadyExists: "Entity ID {{entityid}} is already taken.",
         metaDataUrl: "Metadata URL",
         state: "State",
         prodaccepted: "Production",
@@ -148,6 +149,9 @@ I18n.translations.en = {
         fetch: "Import",
         xml: "Paste XML metadata",
         json: "Paste JSON metadata",
+        invalid: "Invalid {{type}}",
+        no_results: "No results yet. Import metadata first...",
+        validationErrors: "The import validation against the {{type}} schema failed. Correct the errors and import again."
     },
 
     clipboard: {

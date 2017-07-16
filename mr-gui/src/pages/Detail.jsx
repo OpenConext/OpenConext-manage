@@ -40,7 +40,8 @@ export default class Detail extends React.PureComponent {
             cancelDialogAction: () => this,
             leavePage: false,
             errors: {},
-            isNew: true
+            isNew: true,
+            originalEntityId: undefined
         };
     }
 
@@ -54,7 +55,7 @@ export default class Detail extends React.PureComponent {
             const whiteListingType = isSp ? "saml20_idp" : "saml20_sp";
             const errorKeys = isSp ? tabsSp : tabsIdP;
             this.setState({
-                metaData: metaData, isNew: isNew, loaded: true, errors: errorKeys.reduce((acc, tab) => {
+                metaData: metaData, isNew: isNew, originalEntityId: metaData.data.entityid,loaded: true, errors: errorKeys.reduce((acc, tab) => {
                     acc[tab] = {};
                     return acc;
                 }, {})
@@ -89,11 +90,22 @@ export default class Detail extends React.PureComponent {
                 metaDataErrors[key] = true;
             }
         });
+        requiredMetaData.forEach(req => {
+            if (!metaDataFields[req]) {
+                metaDataErrors[req] = true;
+                this.onChange(`data.metaDataFields.${req}`, "");
+            }
+        });
         const connectionErrors = {};
         const required = configuration.required;
         Object.keys(metaData.data).forEach(key => {
             if (isEmpty(metaData.data[key]) && required.indexOf(key) > -1) {
                 connectionErrors[key] = true;
+            }
+        });
+        required.forEach(req => {
+            if (metaData.data[req] === undefined) {
+                connectionErrors[req] = true;
             }
         });
         const newErrors =  {...this.state.errors, "connection": connectionErrors, "metadata" : metaDataErrors};
@@ -215,13 +227,13 @@ export default class Detail extends React.PureComponent {
     renderCurrentTab = (tab, metaData, whiteListing, revisions) => {
         const configuration = this.props.configuration.find(conf => conf.title === this.props.match.params.type);
         const guest = this.props.currentUser.guest;
-        const {isNew} = this.state;
+        const {isNew, originalEntityId} = this.state;
         const name = metaData.data.metaDataFields["name:en"] || metaData.data.metaDataFields["name:nl"] || "this service";
         switch (tab) {
             case "connection" :
                 return <Connection metaData={metaData} onChange={this.onChange} onError={this.onError("connection")}
                                    errors={this.state.errors["connection"]}
-                                   guest={guest}/>;
+                                   guest={guest} isNew={isNew} originalEntityId={originalEntityId}/>;
             case "whitelist" :
                 return <WhiteList whiteListing={whiteListing} name={name}
                                   allowedEntities={metaData.data.allowedEntities}
@@ -245,7 +257,7 @@ export default class Detail extends React.PureComponent {
             case "export":
                 return <Export metaData={metaData} />;
             case "import":
-                return <Import configuration={configuration} metaData={metaData} />;
+                return <Import configuration={configuration} metaData={metaData} guest={guest}/>;
             default:
                 throw new Error(`Unknown tab ${tab}`);
         }

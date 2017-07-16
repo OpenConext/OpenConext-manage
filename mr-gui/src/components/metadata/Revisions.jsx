@@ -55,7 +55,6 @@ export default class Revisions extends React.Component {
 
         const diffs = this.differ.diff(prev, rev);
         const html = htmlFormatter.format(diffs);
-
         return diffs ?  <p dangerouslySetInnerHTML={{__html: html}}/> : <p>{I18n.t("revisions.identical")}</p>
     };
 

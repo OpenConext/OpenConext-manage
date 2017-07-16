@@ -2,10 +2,10 @@ package mr.conf;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import mr.migration.EntityType;
-import mr.validations.BooleanValidator;
-import mr.validations.CertificateValidator;
-import mr.validations.NumberValidator;
-import mr.validations.SAMLEmailValidator;
+import mr.validations.BooleanFormatValidator;
+import mr.validations.CertificateFormatValidator;
+import mr.validations.NumberFormatValidator;
+import mr.validations.SAMLEmailFormatValidator;
 import org.everit.json.schema.FormatValidator;
 import org.everit.json.schema.Schema;
 import org.everit.json.schema.loader.SchemaLoader;
@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
@@ -51,10 +50,10 @@ public class MetaDataAutoConfiguration {
                                      @Value("${metadata_configuration_path}") Resource metadataConfigurationPath,
                                      @Value("${metadata_templates_path}") Resource metadataTemplatesPath) throws IOException {
         this.schemas = parseConfiguration(metadataConfigurationPath, Arrays.asList(
-            new CertificateValidator(),
-            new SAMLEmailValidator(),
-            new NumberValidator(),
-            new BooleanValidator()
+            new CertificateFormatValidator(),
+            new SAMLEmailFormatValidator(),
+            new NumberFormatValidator(),
+            new BooleanFormatValidator()
         ));
         this.objectMapper = objectMapper;
         this.templates = parseTemplates(metadataTemplatesPath);
@@ -144,7 +143,7 @@ public class MetaDataAutoConfiguration {
             List<Object> indexes = json.getJSONArray("indexes").toList();
             List<IndexConfiguration> indexConfigurations = indexes.stream().map(obj -> {
                 Map map = Map.class.cast(obj);
-                return new IndexConfiguration((String) map.get("name"), (String) map.get("type"), (List<String>) map.get("fields"));
+                return new IndexConfiguration((String) map.get("name"), (String) map.get("type"), (List<String>) map.get("fields"), (Boolean) map.get("unique"));
             }).collect(toList());
             this.indexConfigurations.put(schemaType, indexConfigurations);
         }

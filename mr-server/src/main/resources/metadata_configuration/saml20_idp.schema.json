@@ -124,11 +124,11 @@
         },
         "SingleLogoutService_Location": {
           "type": "string",
-          "format": "uri"
+          "format": "url"
         },
         "logo:0:url": {
           "type": "string",
-          "format": "uri"
+          "format": "url"
         },
         "logo:0:width": {
           "type": "string",
@@ -231,7 +231,7 @@
         },
         "^OrganizationURL:(en|nl)$": {
           "type": "string",
-          "format": "uri"
+          "format": "url"
         },
         "^coin:entity_categories:([1-2]{1})$": {
           "type": "string",
@@ -249,7 +249,7 @@
         },
         "^SingleSignOnService:([0-9]{1}):Location$": {
           "type": "string",
-          "format": "uri",
+          "format": "url",
           "multiplicity": 10
         },
         "^keywords:(en|nl)$": {
@@ -275,20 +275,18 @@
   "required": [
     "entityid",
     "state",
-    "allowedall"
+    "allowedall",
+    "metaDataFields"
   ],
   "additionalProperties": false,
   "indexes": [
     {
-      "name": "autocomplete_text_query",
-      "type": "text",
+      "name": "field_entityid",
+      "type": "field",
       "fields": [
-        "entityid",
-        "metaDataFields.name:en",
-        "metaDataFields.name:nl",
-        "metaDataFields.description:en",
-        "metaDataFields.description:nl"
-      ]
+        "entityid"
+      ],
+      "unique": true
     }
   ]
 }
