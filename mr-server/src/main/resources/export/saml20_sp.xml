@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
 <md:EntityDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
-                     entityID="{{entityid}}" validUntil="{{validUntil}}"
-                     cacheDuration="PT86400S">
+                     entityID="{{entityid}}" validUntil="{{validUntil}}" cacheDuration="PT86400S">
     <md:SPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
         {{#metaDataFields.certData}}
         <md:KeyDescriptor use="signing">

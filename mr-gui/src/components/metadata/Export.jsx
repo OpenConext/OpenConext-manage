@@ -19,10 +19,13 @@ export default class Export extends React.Component {
         this.state = {
             showJsonFlat: false,
             showJson: true,
+            showJsonMetaDataOnly: false,
             showXml: true,
             json: undefined,
             xml: undefined,
-            jsonFlat: undefined
+            jsonFlat: undefined,
+            jsonMetaDataOnly: undefined,
+            jsonMetaDataOnlyFlat: undefined
         };
     }
 
@@ -32,12 +35,15 @@ export default class Export extends React.Component {
             .then(json => this.setState({
                 xml: json.xml,
                 json: json.json,
-                jsonFlat: json.jsonFlat
+                jsonFlat: json.jsonFlat,
+                jsonMetaDataOnly: json.jsonMetaDataOnly,
+                jsonMetaDataOnlyFlat: json.jsonMetaDataOnlyFlat
             }));
     }
 
     render() {
-        const {showJsonFlat, showJson, showXml, json, xml, jsonFlat} = this.state;
+        const {showJsonFlat, showJson, showXml,showJsonMetaDataOnly ,json, xml, jsonFlat, jsonMetaDataOnly,
+            jsonMetaDataOnlyFlat} = this.state;
 
         return (
             <div className="metadata-export">
@@ -58,13 +64,18 @@ export default class Export extends React.Component {
                     <div className="copy-container">
                         <CheckBox name="json-export" value={showJson} info={I18n.t("export.showJson")}
                                   onChange={e => this.setState({showJson: e.target.checked})}/>
-                        <ClipBoardCopy identifier="json-export" text={showJsonFlat ? json : jsonFlat}/>
+                        <ClipBoardCopy identifier="json-export" text={showJsonFlat ? (showJsonMetaDataOnly ? jsonMetaDataOnlyFlat : jsonFlat) :
+                            (showJsonMetaDataOnly ? jsonMetaDataOnly: json)}/>
                     </div>
-                    {showJson && <CheckBox className="checkbox last" name="json-flatten" value={showJsonFlat} info={I18n.t("export.showJsonFlat")}
+                    {showJson && <CheckBox className="checkbox" name="json-flatten" value={showJsonFlat}
+                                           info={I18n.t("export.showJsonFlat")}
                               onChange={e => this.setState({showJsonFlat: e.target.checked})}/>}
-
+                    {showJson && <CheckBox className="checkbox last" name="json-metadata-only" value={showJsonMetaDataOnly}
+                                           info={I18n.t("export.showMetaDataOnly")}
+                                           onChange={e => this.setState({showJsonMetaDataOnly: e.target.checked})}/>}
                     {showJson && <Highlight className="JSON">
-                        {showJsonFlat ? json : jsonFlat}
+                        {showJsonFlat ? (showJsonMetaDataOnly ? jsonMetaDataOnlyFlat : jsonFlat) :
+                            (showJsonMetaDataOnly ? jsonMetaDataOnly: json)}
                     </Highlight>}
                 </section>}
 

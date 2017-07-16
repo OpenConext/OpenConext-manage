@@ -151,6 +151,8 @@ public class Importer {
     }
 
     public Map<String, Object> importJSON(EntityType entityType, Map<String, Object> data) throws JsonProcessingException {
+        data.entrySet().removeIf(entry-> entry.getValue() == null);
+
         Map<String, Object> json = new ConcurrentHashMap<>(data);
         Object metaDataFieldsMap = json.get(META_DATA_FIELDS);
         if (metaDataFieldsMap == null || !(metaDataFieldsMap instanceof Map)) {
@@ -171,6 +173,12 @@ public class Importer {
                 json.put("allowedEntities", allowedEntities.stream()
                     .map(name -> Collections.singletonMap("name", name)).collect(toList()));
             }
+            if (json.containsKey("disableConsent")) {
+                List<String> disableConsent = (List<String>) json.get("disableConsent");
+                json.put("disableConsent", disableConsent.stream()
+                    .map(name -> Collections.singletonMap("name", name)).collect(toList()));
+            }
+
             //if the structure is nested then we need to flatten it
             Map<String, Object> flattened = new ConcurrentHashMap<>();
             metaDataFields.entrySet().stream().forEach(entry -> {

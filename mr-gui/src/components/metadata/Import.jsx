@@ -25,6 +25,7 @@ export default class Import extends React.Component {
             json: "",
             invalidJson: false,
             results: undefined,
+            resultsMap: undefined,
             errorsUrl: undefined,
             errorsJson: undefined,
             errorsXml: undefined,
@@ -37,17 +38,51 @@ export default class Import extends React.Component {
         window.scrollTo(0, 0);
     }
 
+    /**
+     * This is not generic on purpose. It is possible, but it makes the code very complex and
+     * we already make assumptions about the data structure
+     */
+    resultsToMap = results => {
+        const keys = Object.keys(results);
+        keys.forEach(key => {
+            const value = results[key];
+            if (key === "allowedEntities" || key === "disableConsent") {
+                value.forEach(obj => obj.selected = true);
+            } else if (key === "arp") {
+                const arpAttributes = Object.keys(value.attributes);
+                arpAttributes.forEach(attr => {
+                    value.attributes[attr].forEach(arpValue => arpValue.selected = true);
+                });
+                value.enabled = {value: value.enabled, selected: true};
+            } else if (key === "metaDataFields") {
+                const metaDataFields = Object.keys(value);
+                metaDataFields.forEach(field => {
+                    value[field] = {value: value[field], selected: true};
+                })
+            } else {
+                results[key] = {value: results[key], selected: true}
+            }
+        });
+    };
+
     doImport = (promise, errorsName) => {
         const newState = {...this.state};
 
         promise.then(json => {
-            debugger;
             if (json.errors) {
                 newState[errorsName] = json.errors;
                 newState.results = undefined;
                 this.setState({...newState});
             } else {
-                this.setState({results: json, errorsUrl: undefined, errorsJson: undefined, errorsXml: undefined, selectedTab: "results"});
+                this.resultsToMap(json);
+                debugger;
+                this.setState({
+                    results: json,
+                    errorsUrl: undefined,
+                    errorsJson: undefined,
+                    errorsXml: undefined,
+                    selectedTab: "results"
+                });
             }
         });
 
@@ -163,8 +198,8 @@ export default class Import extends React.Component {
         return <section className="import-xml">
             {this.renderImportHeader(I18n.t("import.xml"), this.importXml, this.state.errorsXml)}
             {this.state.invalidXml && <p className="invalid">{I18n.t("import.invalid", {type: "XML"})}</p>}
-            <CodeMirror key="xml" name="xml" value={this.state.xml} onChange={newXml => this.setState({xml: newXml})}
-                        options={xmlOptions}/>
+            <CodeMirror key="xml" name="xml" value={this.state.xml}
+                        onChange={newXml => this.setState({xml: newXml})} options={xmlOptions}/>
         </section>;
     };
 

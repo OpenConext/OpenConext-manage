@@ -75,4 +75,9 @@ public class ImportController {
         }
         return entityType;
     }
+
+    private void removeNulls(Map<String, Object> data) {
+        data.entrySet().removeIf(entry-> entry.getValue() == null);;
+
+    }
 }

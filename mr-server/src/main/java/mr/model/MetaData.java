@@ -9,6 +9,7 @@ import org.springframework.data.annotation.Id;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.Map;
 
 import static mr.mongo.MongobeeConfiguration.REVISION_POSTFIX;
 
@@ -46,5 +47,9 @@ public class MetaData implements Serializable {
 
     public void promoteToLatest(String updatedBy) {
         this.revision = new Revision(revision.getNumber() + 1, Instant.now(), null, updatedBy);
+    }
+
+    public void setData(Map<String, Object> data) {
+        this.data = data;
     }
 }
