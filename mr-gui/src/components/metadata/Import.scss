@@ -140,7 +140,11 @@
                     background-color: $lightest-grey;
                 }
                 td {
+                    word-wrap: break-word;
                     padding: 5px;
+                    overflow: hidden;
+                    max-width: 600px;
+
                     &.include {
                         text-align: center;
                     }

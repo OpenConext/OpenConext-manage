@@ -1,5 +1,6 @@
 package mr.web;
 
+import mr.conf.Features;
 import mr.shibboleth.ShibbolethPreAuthenticatedProcessingFilter;
 import mr.shibboleth.ShibbolethUserDetailService;
 import mr.shibboleth.mock.MockShibbolethFilter;
@@ -22,7 +23,13 @@ import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * Protect endpoints for the internal JS API with Shibboleth AbstractPreAuthenticatedProcessingFilter.
@@ -51,8 +58,14 @@ public class WebSecurityConfigurer {
         @Autowired
         private Environment environment;
 
+        @Value("${features}")
+        private String features;
+
         @Override
         protected void configure(HttpSecurity http) throws Exception {
+            List<Features> featuresList = Stream.of(features.split(","))
+                .map(feature -> Features.valueOf(feature.trim().toUpperCase()))
+                .collect(toList());
             http
                 .requestMatchers().antMatchers("/client/**")
                 .and()
@@ -65,7 +78,7 @@ public class WebSecurityConfigurer {
                 .addFilterAfter(new CsrfTokenResponseHeaderBindingFilter(), CsrfFilter.class)
                 .addFilterBefore(new SessionAliveFilter(), CsrfFilter.class)
                 .addFilterBefore(
-                    new ShibbolethPreAuthenticatedProcessingFilter(authenticationManagerBean()),
+                    new ShibbolethPreAuthenticatedProcessingFilter(authenticationManagerBean(), featuresList),
                     AbstractPreAuthenticatedProcessingFilter.class
                 )
                 .authorizeRequests()

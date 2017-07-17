@@ -12,6 +12,7 @@ Stores and publishes metadata of all entities known to OpenConext
 - Maven 3
 - MongoDB 3.4.4
 - yarn
+- NodeJS 7.10.0 (best managed with `nvm`, current version in [.node-version](mr-gui/.node-version)
 - create-react-app
 
 ## [Building and running](#building-and-running)
@@ -32,8 +33,9 @@ to set the active profile to dev.
 The client is build with react.js and to get initially started:
 
 `cd aa-gui`
-`yarn install -g create-react-app` 
 `brew install yarn;`
+`yarn install -g create-react-app` 
+
 
 To run locally:
 

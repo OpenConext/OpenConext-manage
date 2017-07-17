@@ -64,6 +64,7 @@ public class Exporter {
             data.forEach((key, value) -> this.addKeyValue(key, value, result));
         } else {
             result.putAll(data);
+            result.put("metaDataFields",new TreeMap(Map.class.cast(result.get("metaDataFields"))));
         }
         this.excludedDataFields.forEach(result::remove);
         return result;
@@ -77,7 +78,7 @@ public class Exporter {
             return;
         }
         if (value instanceof List) {
-            if (key == "allowedEntities" || key == "disableConsent") {
+            if ("allowedEntities".equals(key) || "disableConsent".equals(key)) {
                 List<Map<String, String>> values = List.class.cast(value);
                 List<String> list = new ArrayList<>();
                 result.put(key, list);

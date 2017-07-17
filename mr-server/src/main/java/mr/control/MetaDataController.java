@@ -68,7 +68,7 @@ public class MetaDataController {
     public MetaData post(@Validated @RequestBody MetaData metaData, FederatedUser federatedUser) throws JsonProcessingException {
         validate(metaData);
 
-        metaData.initial(UUID.randomUUID().toString(), federatedUser.uid);
+        metaData.initial(UUID.randomUUID().toString(), federatedUser.getUid());
         return metaDataRepository.save(metaData);
     }
 
@@ -91,7 +91,7 @@ public class MetaDataController {
         previous.revision(UUID.randomUUID().toString());
         metaDataRepository.save(previous);
 
-        metaData.promoteToLatest(federatedUser.uid);
+        metaData.promoteToLatest(federatedUser.getUid());
         metaDataRepository.update(metaData);
 
         return metaData;

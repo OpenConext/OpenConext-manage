@@ -11,13 +11,6 @@
                 </ds:X509Data>
             </ds:KeyInfo>
         </md:KeyDescriptor>
-        <md:KeyDescriptor use="encryption">
-            <ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
-                <ds:X509Data>
-                    <ds:X509Certificate>{{metaDataFields.certData}}</ds:X509Certificate>
-                </ds:X509Data>
-            </ds:KeyInfo>
-        </md:KeyDescriptor>
         {{/metaDataFields.certData}}
         {{#metaDataFields.NameIDFormat}}
         <md:NameIDFormat>{{metaDataFields.NameIDFormat}}</md:NameIDFormat>

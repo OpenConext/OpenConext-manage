@@ -1,7 +1,10 @@
 package mr.control;
 
+import mr.conf.Features;
+import mr.exception.EndpointNotAllowed;
 import mr.migration.JanusMigration;
 import mr.migration.JanusMigrationValidation;
+import mr.shibboleth.FederatedUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,13 +27,19 @@ public class PlayGroundController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/client/playground/migrate")
-    public List<Map<String, Long>> migrate() {
+    public List<Map<String, Long>> migrate(FederatedUser federatedUser) {
+        if (!federatedUser.featureAllowed(Features.MIGRATION)) {
+            throw new EndpointNotAllowed();
+        }
         return janusMigration.doMigrate();
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/client/playground/validate")
-    public Map<String, Object> validate() {
+    public Map<String, Object> validate(FederatedUser federatedUser) {
+        if (!federatedUser.featureAllowed(Features.VALIDATION)) {
+            throw new EndpointNotAllowed();
+        }
         return janusMigrationValidation.validateMigration();
     }
 }

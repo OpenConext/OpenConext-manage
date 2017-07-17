@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -65,7 +66,20 @@ public class MetaDataRepository {
 
     public List<Map> search(String type, Map<String, Object> properties) {
         Query query = queryWithSamlFields();
-        properties.forEach((key, value) -> query.addCriteria(Criteria.where("data.".concat(key)).is(value)));
+        properties.forEach((key, value) -> {
+            if ("1".equals(value)) {
+                value = Boolean.TRUE;
+            } else if ("0".equals(value)) {
+                value = Boolean.FALSE;
+            }
+            if (value instanceof String && !StringUtils.hasText(String.class.cast(value))) {
+                query.addCriteria(Criteria.where("data.".concat(key)).exists(false));
+            } else if ("*".equals(value)) {
+                query.addCriteria(Criteria.where("data.".concat(key)).regex(".*", "i"));
+            } else {
+                query.addCriteria(Criteria.where("data.".concat(key)).is(value));
+            }
+        });
         return mongoTemplate.find(query, Map.class, type);
     }
 

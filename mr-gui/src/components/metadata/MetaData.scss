@@ -35,6 +35,7 @@
                 background-color: $lightest-grey;
             }
             td {
+                word-wrap: break-word;
                 padding: 3px;
                 &.trash {
                     text-align: center;

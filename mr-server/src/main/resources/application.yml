@@ -8,6 +8,8 @@ server:
   session:
     timeout: 28800
 
+features: migration, validation
+
 metadata_configuration_path: classpath:/metadata_configuration
 metadata_templates_path: classpath:/metadata_templates
 migrate_data_from_janus: false

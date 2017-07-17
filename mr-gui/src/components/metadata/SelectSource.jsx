@@ -6,16 +6,6 @@ import "./SelectSource.css";
 
 export default class SelectSource extends React.PureComponent {
 
-    renderOption = option => {
-        return (
-            <span className="select-option">
-                <span className="select-label">
-                    {option.label}
-                </span>
-            </span>
-        );
-    };
-
     render() {
         const {onChange, source, sources, disabled, autofocus = false} = this.props;
         const options = sources.map(s => {
@@ -23,12 +13,10 @@ export default class SelectSource extends React.PureComponent {
         });
         return <Select className="select-state"
                        onChange={option => onChange(option.value)}
-                       //optionRenderer={this.renderOption}
                        options={options}
                        value={source}
                        autofocus={autofocus}
                        searchable={false}
-                       //valueRenderer={this.renderOption}
                        disabled={disabled || false}/>;
     }
 }

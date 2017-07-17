@@ -14,7 +14,7 @@ I18n.translations.en = {
     header: {
         title: "Metadata Registry",
         links: {
-            help_html: "<a href=\"https://wiki.surfnet.nl/pages/viewpage.action?pageId=35422637\" target=\"_blank\">Help</a>",
+            help_html: "<a href=\"https://github.com/OpenConext/OpenConext-metadata-registry/wiki\" target=\"_blank\">Help</a>",
             logout: "Logout",
             exit: "Exit"
         },
@@ -73,8 +73,10 @@ I18n.translations.en = {
     playground: {
         migrate: "Migrate",
         validate: "Validate",
+        extended_search: "Extended Search",
         runMigration: "RUN MIGRATION",
         runValidation: "VALIDATE MIGRATION",
+        migrationConfirmation: "Are you sure you want to run the migration? All current data will be deleted."
     },
 
     whitelisting: {
