@@ -1,7 +1,7 @@
 import React from "react";
 import I18n from "i18n-js";
 import PropTypes from "prop-types";
-import {NavLink} from "react-router-dom";
+import {Link} from "react-router-dom";
 import CheckBox from "./../CheckBox";
 import SelectEntities from "./../SelectEntities";
 
@@ -20,13 +20,13 @@ export default class ConsentDisabling extends React.Component {
 
     componentDidMount() {
         window.scrollTo(0, 0);
-        const {disableConsent, entityid, whiteListing} = this.props;
-        this.enrichDisableConsent(disableConsent, entityid, whiteListing);
+        const {disableConsent, whiteListing} = this.props;
+        this.enrichDisableConsent(disableConsent, whiteListing);
     }
 
-    enrichDisableConsent = (disableConsent, entityid, whiteListing) => {
+    enrichDisableConsent = (disableConsent, whiteListing) => {
         const enrichedDisableConsent = disableConsent
-            .map(entity => this.enrichSingleDisableConsent(entity, entityid, whiteListing))
+            .map(entity => this.enrichSingleDisableConsent(entity , whiteListing))
             .filter(enriched => enriched !== null);
         this.setDisableConsentState(enrichedDisableConsent);
     };
@@ -102,7 +102,7 @@ export default class ConsentDisabling extends React.Component {
                 {entity.name}
             </td>
             <td>
-                <NavLink to={`/metadata/${type}/${entity.id}`}>{entity.entityid}</NavLink>
+                <Link to={`/metadata/${type}/${entity.id}`} target="_blank">{entity.entityid}</Link>
             </td>
         </tr>
     };
@@ -127,7 +127,7 @@ export default class ConsentDisabling extends React.Component {
                 </tr>
                 </thead>
                 <tbody>
-                {enrichedDisableConsent.map(entity => this.renderDisableConsent(entity, type === "saml20_sp" ? "saml20_idp" : "saml20_sp", guest))}
+                {enrichedDisableConsent.map(entity => this.renderDisableConsent(entity, type, guest))}
                 </tbody>
             </table>
 

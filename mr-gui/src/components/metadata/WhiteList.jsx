@@ -1,6 +1,7 @@
 import React from "react";
 import I18n from "i18n-js";
 import PropTypes from "prop-types";
+import {Link} from "react-router-dom";
 import ConfirmationDialog from "../../components/ConfirmationDialog";
 import CheckBox from "./../CheckBox";
 import SelectEntities from "./../SelectEntities";
@@ -155,7 +156,7 @@ export default class WhiteList extends React.Component {
                 {entity.name}
             </td>
             <td>
-                <a href={`/metadata/${type}/${entity.id}`}>{entity.entityid}</a>
+                <Link to={`/metadata/${type}/${entity.id}`} target="_blank">{entity.entityid}</Link>
             </td>
         </tr>
     };
