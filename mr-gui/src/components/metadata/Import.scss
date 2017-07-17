@@ -4,13 +4,10 @@
     background-color: white;
     padding: 20px;
 
-    .import-info {
-        margin: 15px 0;
-        h2 {
-            font-size: 18px;
-            margin-bottom: 10px;
-        }
-
+    h2 {
+        font-size: 18px;
+        color: $blue;
+        font-weight: normal;
     }
 
     section.sub-tabs {
@@ -37,22 +34,22 @@
             }
         }
     }
-    div.imports {
-
-    }
     section.import-url, section.import-xml, section.import-json {
-        section.import-header {
+        section.import-header, section.import-footer {
             display: flex;
             align-items: center;
             margin: 10px 0 15px 0;
-        }
-        h2 {
-            margin-right: auto;
-        }
-        a.button {
-            &.green {
-                i.fa-cloud-download {
-                    margin-left: 65px;
+            h2 {
+                margin-right: auto;
+            }
+            a.button {
+                &.green {
+                    i.fa-cloud-download {
+                        margin-left: 65px;
+                    }
+                }
+                &.footer {
+                    margin-left: auto;
                 }
             }
         }
@@ -76,7 +73,7 @@
         margin: 15px 0;
         ul {
             list-style: none;
-            padding:15px 25px;
+            padding: 15px 25px;
         }
     }
     h2.no_results {
@@ -84,12 +81,6 @@
     }
     section.import-url {
         margin-bottom: 50px;
-    }
-    section.import-results {
-        margin: 20px 0 10px 0;
-        table {
-            width: 100%;
-        }
     }
     input[type=text], textarea {
         width: 100%;
@@ -103,5 +94,94 @@
             border: solid 1px $red;
         }
     }
+    section.import-results {
+        div.import-results-info {
+            p {
+                margin-top: 10px;
+            }
+        }
+        margin: 20px 0 10px 0;
+        table {
+            margin: 35px 0;
+            width: 100%;
+            text-align: left;
+            border: 1px solid $light-grey;
+            border-radius: $br;
+            thead th {
+                text-align: left;
+                padding: 10px 5px;
+                &.title {
+                    color: $blue;
+                    padding: 15px;
+                    border-bottom: 1px solid $light-grey;
+                    font-size: larger;
+                }
+                &.include {
+                    width: 1%;
+                }
+                &.name {
+                    width: 25%;
+                }
+                &.current {
+                    width: 37%;
+                }
+                &.newValue {
+                    width: 37%;
+                }
+                &.left {
+                    width: 50%;
+                }
+                &.right {
+                    width: 50%;
+                }
+            }
+            tbody {
+                tr:nth-child(odd) {
+                    background-color: $lightest-grey;
+                }
+                td {
+                    padding: 5px;
+                    &.include {
+                        text-align: center;
+                    }
+                    &.isCheckBox {
+                        text-align: center;
+                    }
+                    ul.entities {
+                        list-style: none;
+                        li {
+                            padding: 5px 0;
+                        }
+                    }
+                }
 
+            }
+            &.arp, &.arpValues {
+                margin: 0;
+                width: 100%;
+                text-align: left;
+                border: none;
+                i.fa-arrow-right {
+                    margin: 3px 25px 3px 25px;
+                }
+            }
+        }
+
+        div.result-actions {
+            display: flex;
+            align-items: center;
+            span {
+                color: $orange;
+                font-size: 18px;
+                font-weight: bold;
+            }
+            a {
+                margin: 10px 10px 10px auto;
+                i {
+                    margin-left: 35px;
+                }
+            }
+        }
+
+    }
 }

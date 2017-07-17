@@ -37,6 +37,7 @@ I18n.translations.en = {
             connection: "Connection",
             whitelist: "Whitelisting",
             metadata: "Metadata",
+            metaDataFields: "Metadata fields",
             arp: "ARP",
             manipulation: "Manipulation",
             consent_disabling: "Consent Disabling",
@@ -160,8 +161,19 @@ I18n.translations.en = {
             include: "Include",
             name: "Name",
             current: "Current value",
-            newValue: "New value"
-        }
+            newValue: "New value",
+        },
+        currentEntries: "Current {{name}} entries",
+        newEntries: "New {{name}} entries",
+        connection: "Apply replacement / adding of new / changed Connection attributes?",
+        metaDataFields: "Apply replacement / adding of new / changed Metadata fields",
+        allowedEntities: "Apply replacement of the Whitelist?",
+        disableConsent: "Apply replacement of the Disabled Consent?",
+        arp: "Apply replacement of the ARP?",
+        arpEnabled: "ARP enabled?",
+        applyImportChanges: "Import changes",
+        applyImportChangesInfo: "Note that after importing the changes you still need to submit a new revision to persist the changes",
+        applyImportChangesFlash: "{{changes}} were updated. Note that you still need to submit a new revision to persist the changes"
     },
 
     clipboard: {

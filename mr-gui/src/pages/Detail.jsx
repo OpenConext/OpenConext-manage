@@ -55,7 +55,11 @@ export default class Detail extends React.PureComponent {
             const whiteListingType = isSp ? "saml20_idp" : "saml20_sp";
             const errorKeys = isSp ? tabsSp : tabsIdP;
             this.setState({
-                metaData: metaData, isNew: isNew, originalEntityId: metaData.data.entityid,loaded: true, errors: errorKeys.reduce((acc, tab) => {
+                metaData: metaData,
+                isNew: isNew,
+                originalEntityId: metaData.data.entityid,
+                loaded: true,
+                errors: errorKeys.reduce((acc, tab) => {
                     acc[tab] = {};
                     return acc;
                 }, {})
@@ -108,7 +112,7 @@ export default class Detail extends React.PureComponent {
                 connectionErrors[req] = true;
             }
         });
-        const newErrors =  {...this.state.errors, "connection": connectionErrors, "metadata" : metaDataErrors};
+        const newErrors = {...this.state.errors, "connection": connectionErrors, "metadata": metaDataErrors};
         this.setState({errors: newErrors})
     };
 
@@ -156,7 +160,36 @@ export default class Detail extends React.PureComponent {
         } else {
             ref[last] = value;
         }
+    };
 
+    applyImportChanges = (results, applyChangesFor) => {
+        const newData = {...this.state.metaData.data};
+        ["allowedEntities", "disableConsent", "arp"].forEach(name => {
+            if (applyChangesFor[name] && results[name]) {
+                newData[name] = results[name];
+            }
+        });
+        if (applyChangesFor["metaDataFields"] && results["metaDataFields"]) {
+            Object.keys(results.metaDataFields).forEach(key => {
+                if (results.metaDataFields[key].selected) {
+                    newData.metaDataFields[key] = results.metaDataFields[key].value;
+                }
+
+            });
+        }
+        if (applyChangesFor["connection"] && results["connection"]) {
+            Object.keys(results.connection).forEach(key => {
+                if (results.connection[key].selected) {
+                    newData[key] = results.connection[key].value;
+                }
+            });
+        }
+        this.setState({metaData: {...this.state.metaData, data: newData}});
+        const changes = Object.keys(applyChangesFor).filter(key => applyChangesFor[key]);
+        if (changes.length > 0) {
+            setFlash(I18n.t("import.applyImportChangesFlash", {changes: changes.join(", ")}), "warning");
+            this.setState({selectedTab: "connection"});
+        }
     };
 
     renderActions = (revisionNote) => {
@@ -255,9 +288,10 @@ export default class Detail extends React.PureComponent {
             case "revisions":
                 return <Revisions revisions={revisions} isNew={isNew}/>;
             case "export":
-                return <Export metaData={metaData} />;
+                return <Export metaData={metaData}/>;
             case "import":
-                return <Import configuration={configuration} metaData={metaData} guest={guest}/>;
+                return <Import configuration={configuration} metaData={metaData} guest={guest}
+                               applyImportChanges={this.applyImportChanges}/>;
             default:
                 throw new Error(`Unknown tab ${tab}`);
         }
@@ -282,7 +316,7 @@ export default class Detail extends React.PureComponent {
                 <ConfirmationDialog isOpen={confirmationDialogOpen}
                                     cancel={cancelDialogAction}
                                     confirm={confirmationDialogAction}
-                                    question={leavePage ? undefined : I18n.t("metadata.deleteConfirmation",{name: name})}
+                                    question={leavePage ? undefined : I18n.t("metadata.deleteConfirmation", {name: name})}
                                     leavePage={leavePage}/>
                 {renderContent && <section className="info">{`${typeMetaData} - ${name}`}</section>}
                 {renderNotFound && <section>{I18n.t("metadata.notFound")}</section>}

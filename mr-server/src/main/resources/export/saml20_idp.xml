@@ -24,43 +24,43 @@
         {{/metaDataFields.NameIDFormat}}
         {{#metaDataFields.SingleSignOnService:0:Location}}
         <md:SingleSignOnService Binding="{{metaDataFields.SingleSignOnService:0:Binding}}"
-                                Location="{{metaDataFields.SingleSignOnService:0:Binding}}"/>
+                                Location="{{metaDataFields.SingleSignOnService:0:Location}}"/>
         {{/metaDataFields.SingleSignOnService:0:Location}}
         {{#metaDataFields.SingleSignOnService:1:Location}}
         <md:SingleSignOnService Binding="{{metaDataFields.SingleSignOnService:1:Binding}}"
-                                Location="{{metaDataFields.SingleSignOnService:1:Binding}}"/>
+                                Location="{{metaDataFields.SingleSignOnService:1:Location}}"/>
         {{/metaDataFields.SingleSignOnService:1:Location}}
         {{#metaDataFields.SingleSignOnService:2:Location}}
         <md:SingleSignOnService Binding="{{metaDataFields.SingleSignOnService:2:Binding}}"
-                                Location="{{metaDataFields.SingleSignOnService:2:Binding}}"/>
+                                Location="{{metaDataFields.SingleSignOnService:2:Location}}"/>
         {{/metaDataFields.SingleSignOnService:2:Location}}
         {{#metaDataFields.SingleSignOnService:3:Location}}
         <md:SingleSignOnService Binding="{{metaDataFields.SingleSignOnService:3:Binding}}"
-                                Location="{{metaDataFields.SingleSignOnService:3:Binding}}"/>
+                                Location="{{metaDataFields.SingleSignOnService:3:Location}}"/>
         {{/metaDataFields.SingleSignOnService:3:Location}}
         {{#metaDataFields.SingleSignOnService:4:Location}}
         <md:SingleSignOnService Binding="{{metaDataFields.SingleSignOnService:4:Binding}}"
-                                Location="{{metaDataFields.SingleSignOnService:4:Binding}}"/>
+                                Location="{{metaDataFields.SingleSignOnService:4:Location}}"/>
         {{/metaDataFields.SingleSignOnService:4:Location}}
         {{#metaDataFields.SingleSignOnService:5:Location}}
         <md:SingleSignOnService Binding="{{metaDataFields.SingleSignOnService:5:Binding}}"
-                                Location="{{metaDataFields.SingleSignOnService:5:Binding}}"/>
+                                Location="{{metaDataFields.SingleSignOnService:5:Location}}"/>
         {{/metaDataFields.SingleSignOnService:5:Location}}
         {{#metaDataFields.SingleSignOnService:6:Location}}
         <md:SingleSignOnService Binding="{{metaDataFields.SingleSignOnService:6:Binding}}"
-                                Location="{{metaDataFields.SingleSignOnService:6:Binding}}"/>
+                                Location="{{metaDataFields.SingleSignOnService:6:Location}}"/>
         {{/metaDataFields.SingleSignOnService:6:Location}}
         {{#metaDataFields.SingleSignOnService:7:Location}}
         <md:SingleSignOnService Binding="{{metaDataFields.SingleSignOnService:7:Binding}}"
-                                Location="{{metaDataFields.SingleSignOnService:7:Binding}}"/>
+                                Location="{{metaDataFields.SingleSignOnService:7:Location}}"/>
         {{/metaDataFields.SingleSignOnService:7:Location}}
         {{#metaDataFields.SingleSignOnService:8:Location}}
         <md:SingleSignOnService Binding="{{metaDataFields.SingleSignOnService:8:Binding}}"
-                                Location="{{metaDataFields.SingleSignOnService:8:Binding}}"/>
+                                Location="{{metaDataFields.SingleSignOnService:8:Location}}"/>
         {{/metaDataFields.SingleSignOnService:8:Location}}
         {{#metaDataFields.SingleSignOnService:9:Location}}
         <md:SingleSignOnService Binding="{{metaDataFields.SingleSignOnService:9:Binding}}"
-                                Location="{{metaDataFields.SingleSignOnService:9:Binding}}"/>
+                                Location="{{metaDataFields.SingleSignOnService:9:Location}}"/>
         {{/metaDataFields.SingleSignOnService:9:Location}}
     </md:IDPSSODescriptor>
     {{#metaDataFields.OrganizationName}}
