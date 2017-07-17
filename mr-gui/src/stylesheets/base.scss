@@ -1,33 +1,53 @@
 @import "../stylesheets/vars.scss";
 
 body {
-  font-family: "Roboto", Sans-serif;
-  font-weight: 400;
-  font-size: 14px;
-  line-height: 20px;
-  color: $dark-grey;
-  -webkit-font-smoothing: antialiased;
-  background-color: $background;
+    font-family: "Roboto", Sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    color: $dark-grey;
+    -webkit-font-smoothing: antialiased;
+    background-color: $background;
 
-  &.ReactModal__Body--open {
-    overflow: hidden;
-  }
+    &:after {
+        content: "beta";
+        position: fixed;
+        width: 80px;
+        height: 25px;
+        background: #EE8E4A;
+        top: 7px;
+        left: -20px;
+        text-align: center;
+        font-size: 13px;
+        font-family: sans-serif;
+        text-transform: uppercase;
+        font-weight: bold;
+        color: #fff;
+        line-height: 27px;
+        -ms-transform: rotate(-45deg);
+        -webkit-transform: rotate(-45deg);
+        transform: rotate(-45deg);
+    }
+    
+    &.ReactModal__Body--open {
+        overflow: hidden;
+    }
 
 }
 
 a {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 *, *:before, *:after {
-  box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 ::-webkit-input-placeholder {
-  color: $blue;
+    color: $blue;
 }
 
 ::-moz-placeholder {
-  color: $blue;
-  opacity: 1;
+    color: $blue;
+    opacity: 1;
 }
