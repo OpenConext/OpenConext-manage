@@ -208,7 +208,7 @@ export default class Playground extends React.PureComponent {
                     <i className="fa fa-refresh" aria-hidden="true"></i></a>
                 {pushResults &&
                 <section className="results pushResults">
-                    {JSON.stringify(pushResults, null, '\t')}
+                    {JSON.stringify(pushResults)}
                 </section>}
             </section>
         );
