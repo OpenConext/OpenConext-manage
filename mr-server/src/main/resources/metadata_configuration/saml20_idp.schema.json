@@ -158,7 +158,8 @@
           "type": "string"
         },
         "coin:institution_guid": {
-          "type": "string"
+          "type": "string",
+          "format" : "uuid"
         },
         "coin:guest_qualifier": {
           "type": "string",

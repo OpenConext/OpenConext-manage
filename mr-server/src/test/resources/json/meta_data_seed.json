@@ -165,7 +165,7 @@
     "id": "5",
     "type": "saml20_sp",
     "data": {
-      "entityid": "https://serviceregistry.test2.surfconext.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp",
+      "entityid": "https://serviceregistry.test2.surfconext.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp-2",
       "state": "prodaccepted",
       "allowedall": true,
       "metaDataFields": {

@@ -285,7 +285,8 @@
           "type": "string"
         },
         "coin:institution_guid": {
-          "type": "string"
+          "type": "string",
+          "format" : "uuid"
         },
         "coin:trusted_proxy": {
           "type": "string",

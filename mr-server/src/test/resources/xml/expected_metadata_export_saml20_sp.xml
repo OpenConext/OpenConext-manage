@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
 <md:EntityDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
-                     entityID="https://teams.surfconext.nl/shibboleth" validUntil="2018-07-14T11:15:56.857+02:00"
-                     cacheDuration="PT86400S">
+                     entityID="https://teams.surfconext.nl/shibboleth" validUntil="2018-07-14T11:15:56.857+02:00" cacheDuration="PT86400S">
     <md:SPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
         <md:KeyDescriptor use="signing">
             <ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
@@ -18,9 +17,15 @@
             </ds:KeyInfo>
         </md:KeyDescriptor>
         <md:NameIDFormat>urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified</md:NameIDFormat>
-        <md:AssertionConsumerService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://teams.surfconext.nl/Shibboleth.sso/SAML2/POST" index="0"/>
-        <md:AssertionConsumerService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Artifact" Location="https://teams.surfconext.nl/Shibboleth.sso/SAML2/Artifact" index="1"/>
-        <md:AssertionConsumerService Binding="urn:oasis:names:tc:SAML:2.0:bindings:PAOS" Location="https://teams.surfconext.nl/Shibboleth.sso/SAML2/ECP" index="2"/>
+        <md:AssertionConsumerService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+                                     Location="https://teams.surfconext.nl/Shibboleth.sso/SAML2/POST"
+                                     index="1"/>
+        <md:AssertionConsumerService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Artifact"
+                                     Location="https://teams.surfconext.nl/Shibboleth.sso/SAML2/Artifact"
+                                     index="3"/>
+        <md:AssertionConsumerService Binding="urn:oasis:names:tc:SAML:2.0:bindings:PAOS"
+                                     Location="https://teams.surfconext.nl/Shibboleth.sso/SAML2/ECP"
+                                     index="4"/>
     </md:SPSSODescriptor>
     <md:Organization>
         <md:OrganizationName xml:lang="en">SURFnet BV</md:OrganizationName>

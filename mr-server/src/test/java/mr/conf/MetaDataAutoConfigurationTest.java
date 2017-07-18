@@ -75,12 +75,7 @@ public class MetaDataAutoConfigurationTest implements TestUtils {
         assertEquals(1, indexConfigurations.size());
 
         IndexConfiguration indexConfiguration = indexConfigurations.get(0);
-        assertEquals("text", indexConfiguration.getType());
-        assertEquals("autocomplete_text_query", indexConfiguration.getName());
-        assertEquals(
-            asList("entityid", "metaDataFields.name:en", "metaDataFields.name:nl", "metaDataFields.description:en", "metaDataFields.description:nl"),
-            indexConfiguration.getFields());
-
+        assertEquals("field", indexConfiguration.getType());
     }
 
     @Test

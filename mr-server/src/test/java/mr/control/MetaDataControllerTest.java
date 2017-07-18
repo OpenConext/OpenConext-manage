@@ -174,7 +174,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
             .body("'_id'", hasItems("3", "5"))
             .body("data.entityid", hasItems(
                 "http://mock-sp",
-                "https://serviceregistry.test2.surfconext.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp"));
+                "https://serviceregistry.test2.surfconext.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp-2"));
     }
 
     @Test

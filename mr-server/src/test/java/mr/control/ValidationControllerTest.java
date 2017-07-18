@@ -60,6 +60,13 @@ public class ValidationControllerTest extends AbstractIntegrationTest {
         doValidation("json", "nope:", false);
     }
 
+    @Test
+    public void validationUUID() throws Exception {
+        doValidation("uuid", "ad93daef-0911-e511-80d0-005056956c1a", true);
+        doValidation("uuid", "nope", false);
+    }
+
+
     private void doValidation(String type, String value, boolean valid) throws Exception {
         given()
             .when()

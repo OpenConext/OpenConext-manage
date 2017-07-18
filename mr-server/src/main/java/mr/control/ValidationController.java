@@ -7,6 +7,7 @@ import mr.validations.JSONFormatValidator;
 import mr.validations.NumberFormatValidator;
 import mr.validations.SAMLEmailFormatValidator;
 import mr.validations.URLFormatValidator;
+import mr.validations.UUIDFormatValidator;
 import mr.validations.XMLFormatValidator;
 import org.everit.json.schema.FormatValidator;
 import org.everit.json.schema.internal.DateTimeFormatValidator;
@@ -16,31 +17,35 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.Map;
+import java.util.function.Function;
+
+import static java.util.stream.Collectors.toMap;
 
 @RestController
 public class ValidationController {
 
-    private Map<String, FormatValidator> validators = new HashMap<>();
+    private final Map<String, FormatValidator> validators;
 
     public ValidationController() {
-        validators.put("boolean", new BooleanFormatValidator());
-        validators.put("certificate", new CertificateFormatValidator());
-        validators.put("date-time", new DateTimeFormatValidator());
-        validators.put("email", new EmailFormatValidator());
-        validators.put("saml-email", new SAMLEmailFormatValidator());
-//        validators.put("hostname", new HostnameFormatValidator());
-//        validators.put("ipv4", new IPV4Validator());
-//        validators.put("ipv6", new IPV6Validator());
-        validators.put("number", new NumberFormatValidator());
-        validators.put("url", new URLFormatValidator());
-        validators.put("xml", new XMLFormatValidator());
-        validators.put("json", new JSONFormatValidator());
+        this.validators = Arrays.asList(
+            new BooleanFormatValidator(),
+            new CertificateFormatValidator(),
+            new DateTimeFormatValidator(),
+            new EmailFormatValidator(),
+            new SAMLEmailFormatValidator(),
+            new NumberFormatValidator(),
+            new URLFormatValidator(),
+            new XMLFormatValidator(),
+            new JSONFormatValidator(),
+            new UUIDFormatValidator()).stream().collect(toMap(FormatValidator::formatName, Function.identity()));
     }
 
     @PostMapping("/client/validation")
     public boolean validation(@Validated @RequestBody Validation validation) {
-        return !validators.get(validation.getType()).validate(validation.getValue()).isPresent();
+        return !validators.computeIfAbsent(validation.getType(), key -> {
+            throw new IllegalArgumentException(String.format("No validation defined for %s", key));
+        }).validate(validation.getValue()).isPresent();
     }
 }
