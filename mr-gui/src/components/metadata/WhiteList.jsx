@@ -29,6 +29,12 @@ export default class WhiteList extends React.Component {
         this.enrichAllowedEntries(allowedEntities, entityId, whiteListing);
     }
 
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.allowedAll) {
+            this.setState({enrichedAllowedEntries: []})
+        }
+    }
+
     enrichAllowedEntries = (allowedEntities, entityId, whiteListing) => {
         const enrichedAllowedEntries = allowedEntities
             .map(entity => this.enrichAllowedEntry(entity, entityId, whiteListing))
@@ -142,9 +148,11 @@ export default class WhiteList extends React.Component {
 
     renderAllowedEntity = (entity, type, guest) => {
         return <tr key={entity.entityid}>
-            <td>
-                <CheckBox name={entity.entityid} value={true}
-                          onChange={() => this.removeAllowedEntry(entity)} readOnly={guest}/>
+            <td className="remove">
+                {!guest && <span><a onClick={e => {
+                    stop(e);
+                    this.removeAllowedEntry(entity)
+                }}><i className="fa fa-trash-o"></i></a></span>    }
             </td>
             <td className="blocked">
                 {entity.blocked ? <i className="fa fa-window-close"></i> : <span></span>}

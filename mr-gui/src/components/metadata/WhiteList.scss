@@ -47,9 +47,10 @@
                 background-color: $lightest-grey;
             }
             td {
-                &.blocked {
+                vertical-align: middle;
+                &.blocked, &.remove {
+                    padding: 5px;
                     text-align: center;
-                    vertical-align: middle;
                     i.fa {
                         color: $red;
                         font-size: 20px;

@@ -375,6 +375,11 @@
           "type": "string",
           "multiplicity": 4
         },
+        "^contacts:([0-3]{1}):isSirtfiSecurityContact$": {
+          "type": "string",
+          "format": "boolean",
+          "multiplicity": 4
+        },
         "^contacts:([0-3]{1}):contactType$": {
           "type": "string",
           "enum": [

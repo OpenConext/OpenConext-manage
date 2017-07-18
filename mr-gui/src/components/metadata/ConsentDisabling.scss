@@ -12,7 +12,7 @@
         }
 
     }
-    section.consent-disabling{
+    section.consent-disabling {
         margin-top: 15px;
         table {
             width: 100%;
@@ -27,7 +27,7 @@
                     }
                 }
                 &.select {
-                   min-width: 35px;
+                    min-width: 35px;
                 }
                 &.status {
                     width: 20%;
@@ -39,9 +39,24 @@
                     width: 35%;
                 }
             }
-            tbody tr:nth-child(odd) {
-                background-color: $lightest-grey;
+            tbody {
+                tr:nth-child(odd) {
+                    background-color: $lightest-grey;
+                }
+                td {
+                    vertical-align: middle;
+                    &.remove {
+                        padding: 5px 10px 5px 0;
+                        text-align: center;
+                        i.fa {
+                            color: $red;
+                            font-size: 20px;
+                        }
+                    }
+                }
+
             }
+
         }
     }
 

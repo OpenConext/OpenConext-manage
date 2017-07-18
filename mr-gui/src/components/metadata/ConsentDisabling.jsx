@@ -2,9 +2,9 @@ import React from "react";
 import I18n from "i18n-js";
 import PropTypes from "prop-types";
 import {Link} from "react-router-dom";
-import CheckBox from "./../CheckBox";
 import SelectEntities from "./../SelectEntities";
 
+import {stop} from "../../utils/Utils";
 import "./ConsentDisabling.css";
 
 export default class ConsentDisabling extends React.Component {
@@ -26,7 +26,7 @@ export default class ConsentDisabling extends React.Component {
 
     enrichDisableConsent = (disableConsent, whiteListing) => {
         const enrichedDisableConsent = disableConsent
-            .map(entity => this.enrichSingleDisableConsent(entity , whiteListing))
+            .map(entity => this.enrichSingleDisableConsent(entity, whiteListing))
             .filter(enriched => enriched !== null);
         this.setDisableConsentState(enrichedDisableConsent);
     };
@@ -91,10 +91,13 @@ export default class ConsentDisabling extends React.Component {
 
     renderDisableConsent = (entity, type, guest) => {
         return <tr key={entity.entityid}>
-            <td>
-                <CheckBox name={entity.entityid} value={true}
-                          onChange={() => this.removeDisableConsent(entity)} readOnly={guest}/>
+            <td className="remove">
+                {!guest && <span><a onClick={e => {
+                    stop(e);
+                    this.removeDisableConsent(entity)
+                }}><i className="fa fa-trash-o"></i></a></span>    }
             </td>
+
             <td>
                 {entity.status}
             </td>

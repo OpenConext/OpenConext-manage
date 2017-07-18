@@ -7,7 +7,8 @@ import ProtectedRoute from "../components/ProtectedRoute";
 import NotFound from "../pages/NotFound";
 import Search from "../pages/Search";
 import Detail from "../pages/Detail";
-import Playgound from "../pages/Playground";
+import Playground from "../pages/Playground";
+import API from "../pages/API";
 import ServerError from "../pages/ServerError";
 import Header from "../components/Header";
 import Navigation from "../components/Navigation";
@@ -107,9 +108,11 @@ class App extends React.PureComponent {
                         <Route path="/metadata/:type/:id"
                                render={props => <Detail currentUser={currentUser}
                                                         configuration={configuration} {...props}/>}/>
-                        <ProtectedRoute path="/playground"
+                        <Route path="/api"
+                               render={props => <API configuration={configuration} {...props}/>}/>
+                        <ProtectedRoute path="/system"
                                         guest={currentUser.guest}
-                                        render={props => <Playgound currentUser={currentUser}
+                                        render={props => <Playground currentUser={currentUser}
                                                                     configuration={configuration} {...props}/>}/>
                         <Route path="/error"
                                render={props => <ServerError {...props}/>}/>

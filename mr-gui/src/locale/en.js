@@ -23,7 +23,8 @@ I18n.translations.en = {
 
     navigation: {
         search: "Search",
-        playground: "Playground"
+        api: "API",
+        system: "System"
     },
 
     metadata: {

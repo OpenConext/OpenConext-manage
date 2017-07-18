@@ -1,0 +1,100 @@
+@import "../stylesheets/vars.scss";
+@import "../stylesheets/mixins.scss";
+
+.api {
+    @include page;
+
+    section.extended-search {
+        background-color: white;
+        padding: 15px 15px 150px 15px;
+        p {
+            padding: 15px 0;
+        }
+        a {
+            margin: 15px 0;
+            i.fa {
+                margin-left: 35px;
+            }
+        }
+
+    }
+
+    section.results {
+        padding: 30px;
+        background-color: white;
+        border: 1px solid $light-grey;
+
+        &.pushResults {
+            font-family: "Courier New";
+        }
+    }
+
+    table.metadata-search-table , table.search-results {
+        width: 100%;
+        th {
+            text-align: left;
+        }
+        tbody {
+            tr:nth-child(odd) {
+                background-color: $lightest-grey;
+            }
+            td {
+                word-wrap: break-word;
+                padding: 3px;
+                &.key {
+                    width: 30%;
+                }
+                &.value {
+                    width: 70%;
+                }
+                &.trash {
+                    text-align: center;
+                    cursor: pointer;
+                    i.fa {
+                        color: $red;
+                        font-size: 18px;
+                    }
+                }
+                &.state {
+                    width: 15%;
+                }
+                &.name {
+                    width: 40%;
+                }
+                &.entityId {
+                  width: 45%;
+                }
+
+                input[type=text], input[type=email], textarea {
+                    width: 100%;
+                    font-size: 14px;
+                    padding: 0 10px;
+                    border-radius: 3px;
+                    border: 1px solid #d9d9d8;
+                    margin-top: 5px;
+                    line-height: 33px;
+                    &.error {
+                        border: solid 1px $red;
+                    }
+                }
+            }
+        }
+    }
+    div.select-new-metadata {
+        .Select-menu-outer {
+            margin-bottom: 250px;
+        }
+    }
+
+    section.extended-search {
+        span.code {
+            font-family: "Courier New";
+            font-weight: bold;
+        }
+        a.reset {
+            margin-right: 25px;
+        }
+    }
+
+}
+
