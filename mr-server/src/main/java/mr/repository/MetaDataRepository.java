@@ -67,15 +67,13 @@ public class MetaDataRepository {
     public List<Map> search(String type, Map<String, Object> properties) {
         Query query = queryWithSamlFields();
         properties.forEach((key, value) -> {
-            if ("1".equals(value)) {
-                value = Boolean.TRUE;
-            } else if ("0".equals(value)) {
-                value = Boolean.FALSE;
-            }
             if (value instanceof String && !StringUtils.hasText(String.class.cast(value))) {
                 query.addCriteria(Criteria.where("data.".concat(key)).exists(false));
             } else if ("*".equals(value)) {
                 query.addCriteria(Criteria.where("data.".concat(key)).regex(".*", "i"));
+            } else if (value instanceof String && String.class.cast(value).contains("*")) {
+                String queryString = String.class.cast(value);
+                query.addCriteria(Criteria.where("data.".concat(key)).regex(queryString, "i"));
             } else {
                 query.addCriteria(Criteria.where("data.".concat(key)).is(value));
             }

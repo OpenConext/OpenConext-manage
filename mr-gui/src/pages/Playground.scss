@@ -51,8 +51,11 @@
         border: 1px solid $light-grey;
     }
 
-    table.metadata-search-table {
+    table.metadata-search-table , table.search-results {
         width: 100%;
+        th {
+            text-align: left;
+        }
         tbody {
             tr:nth-child(odd) {
                 background-color: $lightest-grey;
@@ -74,6 +77,15 @@
                         font-size: 18px;
                     }
                 }
+                &.state {
+                    width: 15%;
+                }
+                &.name {
+                    width: 40%;
+                }
+                &.entityId {
+                  width: 45%;
+                }
 
                 input[type=text], input[type=email], textarea {
                     width: 100%;
@@ -93,6 +105,16 @@
     div.select-new-metadata {
         .Select-menu-outer {
             margin-bottom: 250px;
+        }
+    }
+
+    section.extended-search {
+        span.code {
+            font-family: "Courier New";
+            font-weight: bold;
+        }
+        a.reset {
+            margin-right: 25px;
         }
     }
 

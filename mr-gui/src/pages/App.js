@@ -109,7 +109,8 @@ class App extends React.PureComponent {
                                                         configuration={configuration} {...props}/>}/>
                         <ProtectedRoute path="/playground"
                                         guest={currentUser.guest}
-                                        render={props => <Playgound configuration={configuration} {...props}/>}/>
+                                        render={props => <Playgound currentUser={currentUser}
+                                                                    configuration={configuration} {...props}/>}/>
                         <Route path="/error"
                                render={props => <ServerError {...props}/>}/>
                         <Route component={NotFound}/>

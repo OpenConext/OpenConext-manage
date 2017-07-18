@@ -71,12 +71,19 @@ I18n.translations.en = {
     },
 
     playground: {
-        migrate: "Migrate",
-        validate: "Validate",
+        migration: "Migrate",
+        validation: "Validate",
         extended_search: "Extended Search",
         runMigration: "RUN MIGRATION",
         runValidation: "VALIDATE MIGRATION",
-        migrationConfirmation: "Are you sure you want to run the migration? All current data will be deleted."
+        migrationConfirmation: "Are you sure you want to run the migration? All current data will be deleted.",
+        headers: {
+            status: "Status",
+            entityid:"Entity ID",
+            name: "Name"
+        },
+        no_results: "No results"
+
     },
 
     whitelisting: {
