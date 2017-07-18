@@ -27,7 +27,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.regex.Pattern;
@@ -66,23 +65,34 @@ public class JanusMigration implements ApplicationListener<ApplicationReadyEvent
         long start = System.currentTimeMillis();
 
         Map<String, Long> spStats = new LinkedHashMap<>();
+        spStats.put("Number of SPs'", countForEntityType("janus__connection", EntityType.SP));
+        spStats.put("Number of SP revisions", countForEntityType("janus__connectionRevision", EntityType.SP));
+
         spStats.put("Start migration of Service Providers", 0L);
 
         Map<String, Long> idpStats = new LinkedHashMap<>();
+        idpStats.put("Number of IDPs'", countForEntityType("janus__connection", EntityType.IDP));
+        idpStats.put("Number of IPD revisions", countForEntityType("janus__connectionRevision", EntityType.IDP));
+
         idpStats.put("Start migration of Identity Providers", 0L);
 
         emptyExistingCollections();
 
         saveEntities(EntityType.SP, spStats);
         LOG.info("Finished migration of SPs in {} ms and results {}", System.currentTimeMillis() - start, prettyPrint(spStats));
-        spStats.put("Finished migration of Service Providers", spStats.size() - 1L);
+        spStats.put("Finished migration of Service Providers in ms", System.currentTimeMillis() - start);
 
         start = System.currentTimeMillis();
         saveEntities(EntityType.IDP, idpStats);
         LOG.info("Finished migration of IDPs in {} ms and results {}", System.currentTimeMillis() - start, prettyPrint(spStats));
-        idpStats.put("Finished migration of Identity Providers", idpStats.size() - 1L);
+        idpStats.put("Finished migration of Identity Providers in ms", System.currentTimeMillis() - start);
 
         return Arrays.asList(spStats, idpStats);
+    }
+
+    private Long countForEntityType(String table, EntityType entityType) {
+        return this.jdbcTemplate.queryForObject(
+            "select count(*) from " + table + " where type = ?", new Object[]{entityType.getJanusDbValue()}, Long.class);
     }
 
     private String prettyPrint(Object obj) {
@@ -151,13 +161,9 @@ public class JanusMigration implements ApplicationListener<ApplicationReadyEvent
                 String id = UUID.randomUUID().toString();
                 MetaData metaData = new MetaData(id, type, new Revision(revisionid.intValue(), instant, parentId, (String) entity.get("user")), entity);
                 mongoTemplate.insert(metaData, type);
-                String key = String.format("%s-%s", entity.get("entityid"), eid);
+                String key = isPrimary ? entityType.getJanusDbValue() : entityType.getJanusDbValue() + "_revision";
                 Long revisionCount = stats.get(key);
-                if (revisionCount == null) {
-                    stats.put(key, 0L);
-                } else {
-                    stats.put(key, revisionCount + 1);
-                }
+                stats.put(key, revisionCount == null ? 1L : revisionCount + 1);
                 //now save all revisions
                 if (isPrimary) {
                     jdbcTemplate.query("SELECT eid, revisionid FROM janus__connectionRevision WHERE  eid = ? AND revisionid <> ?",
