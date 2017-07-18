@@ -8,7 +8,7 @@ server:
   session:
     timeout: 28800
 
-features: migration, validation
+features: migration, validation, push
 
 metadata_configuration_path: classpath:/metadata_configuration
 metadata_templates_path: classpath:/metadata_templates

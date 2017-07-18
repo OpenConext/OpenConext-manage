@@ -30,7 +30,7 @@
         }
     }
 
-    section.validate, section.migrate, section.extended-search {
+    section.validate, section.migrate, section.extended-search, section.push {
         background-color: white;
         padding: 15px 15px 150px 15px;
         p {
@@ -49,6 +49,10 @@
         padding: 30px;
         background-color: white;
         border: 1px solid $light-grey;
+
+        &.pushResults {
+            font-family: "Courier New";
+        }
     }
 
     table.metadata-search-table , table.search-results {

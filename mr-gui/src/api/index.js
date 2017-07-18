@@ -155,6 +155,10 @@ export function migrate() {
     return fetchJson("playground/migrate");
 }
 
+export function push() {
+    return fetchJson("playground/push");
+}
+
 export function validate() {
     return fetchJson("playground/validate");
 }

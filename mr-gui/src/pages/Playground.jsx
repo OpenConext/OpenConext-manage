@@ -2,7 +2,7 @@ import React from "react";
 import I18n from "i18n-js";
 import PropTypes from "prop-types";
 import {Link} from "react-router-dom";
-import {migrate, ping, search, validate} from "../api";
+import {migrate, ping, search, validate, push} from "../api";
 import {isEmpty, stop} from "../utils/Utils";
 import JsonView from "react-pretty-json";
 import ConfirmationDialog from "../components/ConfirmationDialog";
@@ -21,6 +21,7 @@ export default class Playground extends React.PureComponent {
             selectedTab: tabs[0],
             migrationResults: undefined,
             validationResults: undefined,
+            pushResults: undefined,
             loading: false,
             confirmationDialogOpen: false,
             confirmationDialogAction: () => {
@@ -187,6 +188,32 @@ export default class Playground extends React.PureComponent {
         );
     };
 
+    runPush = e => {
+        stop(e);
+        if (this.state.loading) {
+            return;
+        }
+        this.setState({loading: true});
+        push().then(json => this.setState({pushResults: json, loading: false}));
+
+    };
+
+    renderPush = () => {
+        const {pushResults, loading} = this.state;
+        return (
+            <section className="push">
+                <p>{I18n.t("playground.pushInfo")}</p>
+                <a className={`button ${loading ? "grey disabled" : "green"}`}
+                   onClick={this.runPush}>{I18n.t("playground.runPush")}
+                    <i className="fa fa-refresh" aria-hidden="true"></i></a>
+                {pushResults &&
+                <section className="results pushResults">
+                    {JSON.stringify(pushResults, null, '\t')}
+                </section>}
+            </section>
+        );
+    };
+
     renderMigrate = () => {
         const {migrationResults, loading} = this.state;
         return (
@@ -228,6 +255,8 @@ export default class Playground extends React.PureComponent {
                 return this.renderMigrate();
             case "validation" :
                 return this.renderValidate();
+            case "push":
+                return this.renderPush();
             case "extended_search":
                 return this.renderSearch();
             default :

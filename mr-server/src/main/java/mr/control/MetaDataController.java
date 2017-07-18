@@ -46,7 +46,7 @@ public class MetaDataController {
 
     @GetMapping("/client/template/{type}")
     public MetaData template(@PathVariable("type") String type) {
-        return new MetaData(type, metaDataAutoConfiguration.metaDataTemplate(type));
+        return new MetaData(type, Map.class.cast(metaDataAutoConfiguration.metaDataTemplate(type)));
     }
 
     @GetMapping("/client/metadata/{type}/{id}")

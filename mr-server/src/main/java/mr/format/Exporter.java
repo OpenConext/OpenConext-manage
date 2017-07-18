@@ -4,8 +4,6 @@ import com.github.mustachejava.DefaultMustacheFactory;
 import com.github.mustachejava.Mustache;
 import com.github.mustachejava.MustacheFactory;
 import mr.model.MetaData;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
@@ -17,11 +15,9 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.stream.Collectors;
 
 /*
  * Thread-safe
@@ -29,7 +25,7 @@ import java.util.stream.Collectors;
 @SuppressWarnings("unchecked")
 public class Exporter {
 
-    private final MustacheFactory mf = new DefaultMustacheFactory();
+    private final static MustacheFactory MUSTACHE_FACTORY = new DefaultMustacheFactory();
 
     private Clock clock;
 
@@ -40,7 +36,7 @@ public class Exporter {
     }
 
     public String exportToXml(MetaData metaData) {
-        Mustache mustache = mf.compile(String.format("export/%s.xml", metaData.getType()));
+        Mustache mustache = MUSTACHE_FACTORY.compile(String.format("export/%s.xml", metaData.getType()));
         StringWriter writer = new StringWriter();
         try {
             Map data = Map.class.cast(metaData.getData());

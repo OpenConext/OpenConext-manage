@@ -27,9 +27,9 @@ public class MetaData implements Serializable {
     private Revision revision;
 
     @NotNull
-    private Object data;
+    private Map<String, Object> data;
 
-    public MetaData(String type, Object data) {
+    public MetaData(String type, Map<String, Object> data) {
         this.type = type;
         this.data = data;
     }
