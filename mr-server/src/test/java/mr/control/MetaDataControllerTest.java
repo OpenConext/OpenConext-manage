@@ -210,8 +210,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
             .then()
             .statusCode(SC_OK)
             .body("size()", is(5))
-            .body("data.allowedall", hasItems(true, false))
-            .body("[2].data.allowedEntities.name", hasItems("http://mock-idp"));
+            .body("data.allowedall", hasItems(true, false));
     }
 
 }
