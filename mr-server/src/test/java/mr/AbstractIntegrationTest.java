@@ -25,8 +25,10 @@ import org.springframework.util.StreamUtils;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static mr.mongo.MongobeeConfiguration.REVISION_POSTFIX;
+import static org.awaitility.Awaitility.await;
 
 /**
  * Override the @WebIntegrationTest annotation if you don't want to have mock shibboleth headers (e.g. you want to
@@ -35,7 +37,7 @@ import static mr.mongo.MongobeeConfiguration.REVISION_POSTFIX;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = "spring.data.mongodb.uri=mongodb://localhost:27017/metadata_test")
 @ActiveProfiles("dev")
-public abstract class AbstractIntegrationTest implements TestUtils{
+public abstract class AbstractIntegrationTest implements TestUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractIntegrationTest.class);
 
@@ -66,9 +68,12 @@ public abstract class AbstractIntegrationTest implements TestUtils{
                 int removed = mongoTemplate.remove(new Query(Criteria.where("type").is(schema)), schema).getN();
                 String revisionsSchema = schema.concat(REVISION_POSTFIX);
                 int removedRevisions = mongoTemplate.remove(new Query(Criteria.where("type").is(revisionsSchema)), revisionsSchema).getN();
-                LOG.info("Removed {} records from {} and removed {} records from {}",removed, schema, removedRevisions, revisionsSchema);
+                LOG.info("Removed {} records from {} and removed {} records from {}", removed, schema, removedRevisions, revisionsSchema);
             });
             metaDataList.forEach(metaDataRepository::save);
+
+            metaDataList.stream().collect(Collectors.groupingBy(MetaData::getType))
+                .forEach((type, metaData) -> await().until(() -> mongoTemplate.count(new Query(), type) == metaData.size()));
         }
     }
 
