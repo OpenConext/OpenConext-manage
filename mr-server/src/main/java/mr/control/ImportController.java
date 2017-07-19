@@ -5,10 +5,11 @@ import mr.format.Importer;
 import mr.migration.EntityType;
 import mr.model.Import;
 import mr.model.XML;
-import mr.validations.XMLFormatValidator;
-import org.apache.commons.io.IOUtils;
 import org.everit.json.schema.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
@@ -29,8 +29,6 @@ public class ImportController {
 
     private Importer importer;
 
-    private XMLFormatValidator xmlFormatValidator = new XMLFormatValidator();
-
     @Autowired
     public ImportController(MetaDataAutoConfiguration metaDataAutoConfiguration) {
         this.importer = new Importer(metaDataAutoConfiguration);
@@ -38,24 +36,25 @@ public class ImportController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(value = "/client/import/endpoint")
-    public Map<String, Object> importUrl(@Validated @RequestBody Import importRequest) throws IOException, XMLStreamException {
-        URL url = new URL(importRequest.getUrl());
-        String xml = IOUtils.toString(url.openConnection().getInputStream(), Charset.defaultCharset());
-
-        Optional<String> validXml = xmlFormatValidator.validate(xml);
-        if (validXml.isPresent()) {
-            return Collections.singletonMap("errors", Collections.singletonList(validXml.get()));
+    public Map<String, Object> importUrl(@Validated @RequestBody Import importRequest) {
+        try {
+            Resource resource = new UrlResource(new URL(importRequest.getUrl()));
+            Map<String, Object> result = this.importer.importXML(getType(importRequest.getType()), resource, Optional.ofNullable(importRequest.getEntityId()));
+            result.put("metadataurl", importRequest.getUrl());
+            return result;
+        } catch (IOException | XMLStreamException e) {
+            return Collections.singletonMap("errors", Collections.singletonList(e.toString()));
         }
-
-        Map<String, Object> result = this.importer.importXML(getType(importRequest.getType()), xml);
-        result.put("metadataurl", importRequest.getUrl());
-        return result;
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(value = "/client/import/xml/{type}")
-    public Map<String, Object> importXml(@PathVariable("type") String type, @Validated @RequestBody XML container) throws IOException, XMLStreamException {
-        return this.importer.importXML(getType(type), container.getXml());
+    public Map<String, Object> importXml(@PathVariable("type") String type, @Validated @RequestBody XML container) {
+        try {
+            return this.importer.importXML(getType(type), new ByteArrayResource(container.getXml().getBytes()), Optional.ofNullable(container.getEntityId()));
+        } catch (IOException | XMLStreamException e) {
+            return Collections.singletonMap("errors", Collections.singletonList(e.toString()));
+        }
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -77,7 +76,8 @@ public class ImportController {
     }
 
     private void removeNulls(Map<String, Object> data) {
-        data.entrySet().removeIf(entry-> entry.getValue() == null);;
+        data.entrySet().removeIf(entry -> entry.getValue() == null);
+        ;
 
     }
 }

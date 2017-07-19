@@ -6,12 +6,15 @@ import mr.conf.MetaDataAutoConfiguration;
 import mr.migration.EntityType;
 import org.everit.json.schema.ValidationException;
 import org.junit.Test;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -32,7 +35,7 @@ public class ImporterTest implements TestUtils {
     @Test
     public void importSPMetaData() throws IOException, XMLStreamException {
         String xml = readFile("/xml/metadata_import_saml20_sp.xml");
-        Map<String, Object> result = subject.importXML(EntityType.SP, xml);
+        Map<String, Object> result = subject.importXML(EntityType.SP, new ByteArrayResource(xml.getBytes()), Optional.empty());
 
         assertEquals("https://teams.surfconext.nl/shibboleth", result.get("entityid"));
 
@@ -45,7 +48,7 @@ public class ImporterTest implements TestUtils {
     @Test
     public void importIdPMetaData() throws IOException, XMLStreamException {
         String xml = readFile("/xml/metadata_import_saml20_idp.xml");
-        Map<String, Object> result = subject.importXML(EntityType.IDP, xml);
+        Map<String, Object> result = subject.importXML(EntityType.IDP, new ByteArrayResource(xml.getBytes()), Optional.empty());
 
         assertEquals("https://beta.surfnet.nl/simplesaml/saml2/idp/metadata.php", result.get("entityid"));
 
@@ -53,6 +56,15 @@ public class ImporterTest implements TestUtils {
 
         String json = this.readFile("/json/expected_imported_metadata_saml20_idp.json");
         assertEquals(json, objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(metaDataFields));
+    }
+
+    @Test
+    public void importSpMetaDataWithARP() throws IOException, XMLStreamException {
+        Resource resource = new GZIPClassPathResource("/xml/eduGain.xml.gz");
+        Map<String, Object> result = subject.importXML(EntityType.SP, resource, Optional.of("https://wayf.nikhef.nl/wayf/sp"));
+
+        //TODO assertions
+        System.out.println(result);
     }
 
     @Test

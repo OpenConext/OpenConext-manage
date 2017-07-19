@@ -8,5 +8,7 @@ import lombok.NoArgsConstructor;
 public class XML {
 
     private String xml;
+    private String entityId;
+
 
 }

@@ -11,5 +11,6 @@ public class Import {
 
     private String type;
     private String url;
+    private String entityId;
 
 }
