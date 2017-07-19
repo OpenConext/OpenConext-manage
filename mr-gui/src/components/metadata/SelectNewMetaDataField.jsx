@@ -46,7 +46,9 @@ export default class SelectNewMetaDataField extends React.PureComponent {
 
         const regExp = new RegExp(patternPropertyKey);
         const existingMetaDataKeys = metaDataKeys.filter(metaDataKey => regExp.test(metaDataKey));
-
+        if (patternPropertyKey === "^contacts:([0-3]{1}):contactType$") {
+            debugger;
+        }
         const enumExec = enumPropertyRegex.exec(patternPropertyKey);
         if (existingMetaDataKeys.length === 0) {
             //translate the patternPropertyKey to a metaDataKey and add it to the accumulator
@@ -68,6 +70,14 @@ export default class SelectNewMetaDataField extends React.PureComponent {
                 if (highest < (patternProperty.multiplicity + (patternProperty.startIndex || -1))) {
                     const newMetaDataKey = patternPropertyKey.replace(patternPropertyRegex, `$1${highest + 1}$3`);
                     accumulator.push(newMetaDataKey);
+                } else if (existingMetaDataKeys.length < patternProperty.multiplicity) {
+                    //add the missing in-between one's - 'Raoul theorem'
+                    const allPossibleKeys = [];
+                    for (let count = (patternProperty.startIndex || 0); count < patternProperty.multiplicity; count++) {
+                        allPossibleKeys.push(patternPropertyKey.replace(patternPropertyRegex, `$1${count}$3`));
+                    }
+                    const missing = allPossibleKeys.filter(existing => existingMetaDataKeys.indexOf(existing) === -1);
+                    missing.forEach(miss => accumulator.push(miss));
                 }
             } else if (enumExec) {
                 if (existingMetaDataKeys.length < 2) {

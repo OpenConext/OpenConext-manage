@@ -39,6 +39,7 @@
                 background-color: $lightest-grey;
             }
             td {
+                vertical-align: middle;
                 word-wrap: break-word;
                 padding: 3px;
                 &.key {
@@ -52,7 +53,9 @@
                     cursor: pointer;
                     i.fa {
                         color: $red;
-                        font-size: 18px;
+                        font-size: 20px;
+                        text-align: center;
+                        padding: 0 10px;
                     }
                 }
                 &.state {
