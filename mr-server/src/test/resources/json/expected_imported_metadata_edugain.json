@@ -1,0 +1,87 @@
+{
+  "arp" : {
+    "enabled" : true,
+    "urn:mace:dir:attribute-def:displayName" : [ {
+      "source" : "idp"
+    }, {
+      "value" : "*"
+    } ],
+    "urn:mace:dir:attribute-def:eduPersonPrincipalName" : [ {
+      "source" : "idp"
+    }, {
+      "value" : "*"
+    } ],
+    "urn:mace:dir:attribute-def:eduPersonTargetedID" : [ {
+      "source" : "idp"
+    }, {
+      "value" : "*"
+    } ],
+    "urn:mace:dir:attribute-def:givenName" : [ {
+      "source" : "idp"
+    }, {
+      "value" : "*"
+    } ],
+    "urn:mace:dir:attribute-def:mail" : [ {
+      "source" : "idp"
+    }, {
+      "value" : "*"
+    } ],
+    "urn:mace:dir:attribute-def:sn" : [ {
+      "source" : "idp"
+    }, {
+      "value" : "*"
+    } ],
+    "urn:mace:terena.org:attribute-def:schacHomeOrganization" : [ {
+      "source" : "idp"
+    }, {
+      "value" : "*"
+    } ]
+  },
+  "entityid" : "https://wayf.nikhef.nl/wayf/sp",
+  "metaDataFields" : {
+    "AssertionConsumerService:0:Binding" : "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
+    "AssertionConsumerService:0:Location" : "https://wayf.nikhef.nl/sso/module.php/saml/sp/saml2-acs.php/default-sp",
+    "AssertionConsumerService:0:index" : "0",
+    "AssertionConsumerService:1:Binding" : "urn:oasis:names:tc:SAML:1.0:profiles:browser-post",
+    "AssertionConsumerService:1:Location" : "https://wayf.nikhef.nl/sso/module.php/saml/sp/saml1-acs.php/default-sp",
+    "AssertionConsumerService:1:index" : "1",
+    "AssertionConsumerService:2:Binding" : "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Artifact",
+    "AssertionConsumerService:2:Location" : "https://wayf.nikhef.nl/sso/module.php/saml/sp/saml2-acs.php/default-sp",
+    "AssertionConsumerService:2:index" : "2",
+    "AssertionConsumerService:3:Binding" : "urn:oasis:names:tc:SAML:1.0:profiles:artifact-01",
+    "AssertionConsumerService:3:Location" : "https://wayf.nikhef.nl/sso/module.php/saml/sp/saml1-acs.php/default-sp/artifact",
+    "AssertionConsumerService:3:index" : "3",
+    "OrganizationDisplayName:en" : "Nikhef",
+    "OrganizationDisplayName:nl" : "Nikhef",
+    "OrganizationName:en" : "Nikhef - Dutch National Institute for Subatomic Physics",
+    "OrganizationName:nl" : "Nikhef - Nationaal instituut voor subatomaire fysica",
+    "OrganizationURL:en" : "http://www.nikhef.nl/en/",
+    "OrganizationURL:nl" : "http://www.nikhef.nl/",
+    "SingleLogoutService_Binding" : "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect",
+    "SingleLogoutService_Location" : "https://wayf.nikhef.nl/sso/module.php/saml/sp/saml2-logout.php/default-sp",
+    "certData" : "MIIDoTCCAomgAwIBAgIJAITGJ+f/Nl2xMA0GCSqGSIb3DQEBCwUAMGcxEjAQBgoJkiaJk/IsZAEZFgJubDEWMBQGCgmSJomT8ixkARkWBm5pa2hlZjEdMBsGA1UECwwUQ29tcHV0ZXIgVGVjaG5vbG9naWUxGjAYBgNVBAMMEXNwcHJveHkubmlraGVmLm5sMB4XDTE2MDYwODE4MzY1MFoXDTI2MDcwODE4MzY1MFowZzESMBAGCgmSJomT8ixkARkWAm5sMRYwFAYKCZImiZPyLGQBGRYGbmlraGVmMR0wGwYDVQQLDBRDb21wdXRlciBUZWNobm9sb2dpZTEaMBgGA1UEAwwRc3Bwcm94eS5uaWtoZWYubmwwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDGLn7gmoMoAqXz8JM2mf20iFWTKz4F95hxxutAA/aX7UYQ8M6VNUPC6nHRcS0oiGEgG0SJiZ5qcofe89rZd9udQ84jgezO5CYHo5+nnXvV7+PRK5t5BvmvkceK0gMfRZ9PuMxwEuDTp8/tYqxm0z3pCC5Ndo6sgoZUUPUZ3BKOeoGwOgu3PSs9fGNg2zfendL6pKw3ouZxRLZFuV224gY/C8nK1JbS6iwJHqTFzVDsbLb+Qx6EGZw4Y1I6d+nnKtrKsP5qmBQkDqwIUMR4ASjN7Cr0gQVj8GLYXKYSJgdTdBGhzuVhDqBWXGbc4PaP1884UDJ3ZjV3Y3bUe4c1fl/ZAgMBAAGjUDBOMB0GA1UdDgQWBBSbeUFvE/ac4TA+TziT0ksby9tdpzAfBgNVHSMEGDAWgBSbeUFvE/ac4TA+TziT0ksby9tdpzAMBgNVHRMEBTADAQH/MA0GCSqGSIb3DQEBCwUAA4IBAQCxF/5gNHD5a1vFHdrOvGhDxWbMRJaU6vLu582urYXVD9aV2hdKFhNnvMU0QLmcJ30prxgg9v9G7ygFyxqqtrfWw3+yeSNk4MLYdegjLoLwWNAcUO8gxKLTS0/YN6tXvNs/5DopVT1h+zaB/G77FcpxY64MGEv7F65JjdzIOmwrS3oWqNR3B+EYhMHAp0UwD/Dz77GMOGhCG3NEc4BySAa8/BgANosyyGT9XNU9L8pa9PGPdaF2cJ6aaCzIzDon1CwNpu8pj7RMkWHqdLf5famI4AzqJinBzZwKjazo1TGQ+hWKY1jhcB5Vcm6szO5fnru5/jBhfGqOX9xeOOyvjwOX",
+    "contacts:0:contactType" : "technical",
+    "contacts:0:emailAddress" : "mailto:federation-admin@nikhef.nl",
+    "contacts:0:givenName" : "Nikhef",
+    "contacts:0:surName" : "Helpdesk",
+    "contacts:0:telephoneNumber" : "+31205925090",
+    "contacts:1:contactType" : "other",
+    "contacts:1:emailAddress" : "mailto:security@nikhef.nl",
+    "contacts:1:givenName" : "CSIRT",
+    "contacts:1:surName" : "Nikhef",
+    "contacts:1:telephoneNumber" : "+31205922000",
+    "contacts:2:contactType" : "administrative",
+    "contacts:2:emailAddress" : "mailto:nikidm-admin@nikhef.nl",
+    "contacts:2:surName" : "Nikhef",
+    "contacts:2:telephoneNumber" : "+31205922200",
+    "contacts:3:contactType" : "support",
+    "contacts:3:emailAddress" : "mailto:federation-support@nikhef.nl",
+    "contacts:3:surName" : "Nikhef",
+    "description:en" : "Proxy connecting services offer by Nikhef, the Dutch research institute for subatomic physics, to the global research and educational community. Services include collaboration tools, systems management, and access to compute and data services. This proxy request your identity information in order to grant you access to these services operated by or on behalf of Nikhef, its funding body, and partners.",
+    "description:nl" : "Schakelpunt voor de diensten die Nikhef - het nationaal instituut voor subatomaire fysica - aanbied in de wereldwijde onderzoeks en onderwijsgemeenschap. Diensten omvatten samenwerkingstools (wikis en web sites), infrastructuurdiensten, en toegang tot rekencapaciteit en data opslag. Dit schakelpunt vraagt om persoonsgegevens om u toegang tot deze diensten te kunnen bieden. De diensten worden beheerd door of namens Nikhef, haar financiers, en samenwerkende instituten.",
+    "mdrpi:RegistrationInfo" : "http://www.surfconext.nl/",
+    "mdrpi:RegistrationPolicy:en" : "https://wiki.surfnet.nl/display/eduGAIN/EduGAIN",
+    "name:en" : "Nikhef Service Proxy",
+    "name:nl" : "Nikhef schakelpunt voor diensten"
+  }
+}

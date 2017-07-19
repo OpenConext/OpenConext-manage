@@ -63,8 +63,10 @@ public class ImporterTest implements TestUtils {
         Resource resource = new GZIPClassPathResource("/xml/eduGain.xml.gz");
         Map<String, Object> result = subject.importXML(EntityType.SP, resource, Optional.of("https://wayf.nikhef.nl/wayf/sp"));
 
-        //TODO assertions
-        System.out.println(result);
+        String json = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(result);
+        String expected = readFile("json/expected_imported_metadata_edugain.json");
+        assertEquals(expected, json);
+
     }
 
     @Test
