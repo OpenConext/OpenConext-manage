@@ -3,6 +3,8 @@ package mr.format;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.github.mustachejava.DefaultMustacheFactory;
+import com.github.mustachejava.Mustache;
 import mr.AbstractIntegrationTest;
 import mr.TestUtils;
 import mr.model.MetaData;
@@ -12,13 +14,18 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.DefaultResourceLoader;
+import org.springframework.core.io.ResourceLoader;
 
 import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.nio.charset.Charset;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.*;
@@ -32,7 +39,8 @@ public class ExporterTest  implements TestUtils {
         objectMapper.registerModule(new JavaTimeModule());
     }
 
-    private Exporter subject = new Exporter(Clock.fixed(Instant.from(DateTimeFormatter.ISO_OFFSET_DATE_TIME.parse("2017-07-14T11:15:56.857+02:00")), ZoneId.systemDefault()));
+    private Exporter subject = new Exporter(Clock.fixed(Instant.from(DateTimeFormatter.ISO_OFFSET_DATE_TIME.parse("2017-07-14T11:15:56.857+02:00")), ZoneId.systemDefault()),
+        new DefaultResourceLoader(), "classpath:/metadata_export");
 
     @Test
     public void exportToXml() throws Exception {
@@ -68,4 +76,17 @@ public class ExporterTest  implements TestUtils {
         return objectMapper.readValue(new ClassPathResource("/json/exported_metadata_saml20_sp.json").getInputStream(), MetaData.class);
     }
 
+
+    @Test
+    public void testDelMe() throws IOException {
+        ResourceLoader resourceLoader = new DefaultResourceLoader();
+        String s = IOUtils.toString(resourceLoader.getResource("classpath:/metadata_export/saml20_idp.xml")
+            .getInputStream(), Charset.defaultCharset());
+
+        Mustache mustache = new DefaultMustacheFactory().compile(new StringReader(s),"saml20_idp.xml");
+        StringWriter writer = new StringWriter();
+        mustache.execute(writer, new HashMap<>()).flush();
+        String xml = writer.toString();
+        System.out.println(xml);
+    }
 }

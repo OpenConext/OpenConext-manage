@@ -4,10 +4,15 @@ import com.github.mustachejava.DefaultMustacheFactory;
 import com.github.mustachejava.Mustache;
 import com.github.mustachejava.MustacheFactory;
 import mr.model.MetaData;
+import org.apache.commons.io.IOUtils;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.io.StringWriter;
+import java.nio.charset.Charset;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -27,16 +32,24 @@ public class Exporter {
 
     private final static MustacheFactory MUSTACHE_FACTORY = new DefaultMustacheFactory();
 
-    private Clock clock;
+    private final ResourceLoader resourceLoader;
+    private final String metadataExportPath;
+    private final Clock clock;
 
     public final static List<String> excludedDataFields = Arrays.asList("id", "eid", "revisionid", "user", "created", "ip", "revisionnote", "notes");
 
-    public Exporter(Clock clock) {
+    public Exporter(Clock clock, ResourceLoader resourceLoader, String metadataExportPath) {
         this.clock = clock;
+        this.resourceLoader = resourceLoader;
+        this.metadataExportPath = metadataExportPath;
     }
 
-    public String exportToXml(MetaData metaData) {
-        Mustache mustache = MUSTACHE_FACTORY.compile(String.format("export/%s.xml", metaData.getType()));
+    public String exportToXml(MetaData metaData) throws IOException {
+        String path = String.format("%s/%s.xml", metadataExportPath, metaData.getType());
+        Resource resource = resourceLoader.getResource(path);
+        String template = IOUtils.toString(resource.getInputStream(), Charset.defaultCharset());
+
+        Mustache mustache = MUSTACHE_FACTORY.compile(new StringReader(template),metaData.getType());
         StringWriter writer = new StringWriter();
         try {
             Map data = Map.class.cast(metaData.getData());

@@ -4,7 +4,6 @@
   "allowedall": true,
   "arp": {
     "enabled": false,
-    "_class": "mr.migration.ArpAttributes",
     "attributes": {}
   },
   "metaDataFields": {

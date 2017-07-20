@@ -10,6 +10,9 @@ import mr.model.MetaData;
 import mr.repository.MetaDataRepository;
 import mr.shibboleth.FederatedUser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.DefaultResourceLoader;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -41,10 +44,16 @@ public class ExportController {
     private List<String> excludeMetaDataOnlyKeys = Arrays.asList("allowedEntities", "arp", "disableConsent",
         "active", "manipulation");
 
-    private Exporter exporter = new Exporter(Clock.systemDefaultZone());
+    private Exporter exporter;
+
+    private ObjectMapper objectMapper;
 
     @Autowired
-    private ObjectMapper objectMapper;
+    public ExportController(ObjectMapper objectMapper, ResourceLoader resourceLoader,
+                            @Value("${metadata_export_path}") String metadataExportPath) {
+        this.objectMapper = objectMapper;
+        this.exporter = new Exporter(Clock.systemDefaultZone(), resourceLoader, metadataExportPath);
+    }
 
     @PostMapping(value = "/client/export")
     public Map<String, Object> export(@RequestBody MetaData metaData) throws IOException {
