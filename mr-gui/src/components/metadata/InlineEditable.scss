@@ -9,10 +9,12 @@
 
         i.fa-pencil {
             float: right;
+            margin: 2px 10px;
         }
 
         &.edit-editable {
             background-color: $light-blue;
+            padding: 8px 4px 8px 10px;
         }
     }
 

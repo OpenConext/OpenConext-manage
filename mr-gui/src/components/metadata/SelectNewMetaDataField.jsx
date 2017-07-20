@@ -46,9 +46,6 @@ export default class SelectNewMetaDataField extends React.PureComponent {
 
         const regExp = new RegExp(patternPropertyKey);
         const existingMetaDataKeys = metaDataKeys.filter(metaDataKey => regExp.test(metaDataKey));
-        if (patternPropertyKey === "^contacts:([0-3]{1}):contactType$") {
-            debugger;
-        }
         const enumExec = enumPropertyRegex.exec(patternPropertyKey);
         if (existingMetaDataKeys.length === 0) {
             //translate the patternPropertyKey to a metaDataKey and add it to the accumulator
@@ -67,6 +64,7 @@ export default class SelectNewMetaDataField extends React.PureComponent {
                 const highestMetaDataKey = existingMetaDataKeys.sort()[existingMetaDataKeys.length - 1];
                 const multiplicityParsed = multiplicityRegex.exec(highestMetaDataKey);
                 const highest = parseInt(multiplicityParsed[1], 10);
+                //TODO add the highest not available and all in between current - lowest
                 if (highest < (patternProperty.multiplicity + (patternProperty.startIndex || -1))) {
                     const newMetaDataKey = patternPropertyKey.replace(patternPropertyRegex, `$1${highest + 1}$3`);
                     accumulator.push(newMetaDataKey);
