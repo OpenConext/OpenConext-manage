@@ -9,7 +9,7 @@ import "./API.css";
 import "react-pretty-json/assets/json-view.css";
 import SelectNewMetaDataField from "../components/metadata/SelectNewMetaDataField";
 
-export default class Playground extends React.PureComponent {
+export default class API extends React.PureComponent {
 
     constructor(props) {
         super(props);
@@ -63,6 +63,7 @@ export default class Playground extends React.PureComponent {
             keys.forEach(key => {
                 metaDataSearch[`metaDataFields.${key}`] = searchAttributes[key];
             });
+            metaDataSearch.REQUESTED_ATTRIBUTES = Object.keys(metaDataSearch);
             search(metaDataSearch, selectedType).then(json => this.setState({searchResults: json}));
         }
 
@@ -79,12 +80,61 @@ export default class Playground extends React.PureComponent {
         }
     };
 
+    renderSearchTable = (searchAttributes) =>
+        <table className="metadata-search-table">
+            <tbody>
+            {Object.keys(searchAttributes).map(key =>
+                <tr key={key}>
+                    <td className="key">{key}</td>
+                    <td className="value">
+                        <input
+                            ref={ref => this.newMetaDataFieldRendered(ref, this.state.newMetaDataFieldKey === key)}
+                            type="text" value={searchAttributes[key]}
+                            onChange={this.changeSearchValue(key)}/>
+                    </td>
+                    <td className="trash">
+                        <span onClick={this.deleteSearchField(key)}><i className="fa fa-trash-o"></i></span>
+                    </td>
+                </tr>
+            )}
+            </tbody>
+        </table>;
+
+    renderSearchResultsTable = (searchResults, selectedType, searchAttributes) => {
+        const searchHeaders = ["status", "name", "entityid"].concat(Object.keys(searchAttributes));
+        return (
+            <table className="search-results">
+                <thead>
+                <tr>
+                    {searchHeaders.map((header, index) =>
+                        <th key={header}
+                            className={index < 3 ? header: "extra"}>{index < 3 ? I18n.t(`playground.headers.${header}`) : header}</th>)}
+
+                </tr>
+                </thead>
+                <tbody>
+                {searchResults.map(entity => <tr key={entity.data.entityid}>
+                    <td className="state">{I18n.t(`metadata.${entity.data.state}`)}</td>
+                    <td className="name">{entity.data.metaDataFields["name:en"] || entity.data.metaDataFields["name:nl"]}</td>
+                    <td className="entityId">
+                        <Link to={`/metadata/${selectedType}/${entity["_id"]}`}
+                              target="_blank">{entity.data.entityid}</Link>
+                    </td>
+                    {Object.keys(searchAttributes).map(attr =>
+                        <td key={attr}>{entity.data.metaDataFields[attr]}</td>)}
+
+                </tr>)}
+                </tbody>
+
+            </table>);
+    };
+
+
     renderSearch = () => {
         const {configuration} = this.props;
         const {selectedType, searchAttributes, searchResults} = this.state;
         const conf = configuration.find(conf => conf.title === selectedType);
         const enabled = Object.keys(searchAttributes).length > 0;
-        const searchHeaders = ["status", "name", "entityid"];
         const hasNoResults = searchResults && searchResults.length === 0;
         return (
             <section className="extended-search">
@@ -95,26 +145,7 @@ export default class Playground extends React.PureComponent {
                 <SelectMetaDataType onChange={value => this.setState({selectedType: value})}
                                     configuration={configuration}
                                     state={selectedType}/>
-                {enabled &&
-                <table className="metadata-search-table">
-                    <tbody>
-                    {Object.keys(searchAttributes).map(key =>
-                        <tr key={key}>
-                            <td className="key">{key}</td>
-                            <td className="value">
-                                <input
-                                    ref={ref => this.newMetaDataFieldRendered(ref, this.state.newMetaDataFieldKey === key)}
-                                    type="text" value={searchAttributes[key]}
-                                    onChange={this.changeSearchValue(key)}/>
-                            </td>
-                            <td className="trash">
-                                <span onClick={this.deleteSearchField(key)}><i className="fa fa-trash-o"></i></span>
-                            </td>
-                        </tr>
-                    )}
-                    </tbody>
-                </table>
-                }
+                {enabled && this.renderSearchTable(searchAttributes)}
                 <SelectNewMetaDataField configuration={conf} onChange={this.addSearchKey}
                                         metaDataFields={searchAttributes} placeholder={"Search and add metadata keys"}/>
 
@@ -123,24 +154,7 @@ export default class Playground extends React.PureComponent {
                     className="fa fa-search-plus"></i></a>
 
                 {hasNoResults && <h2>{I18n.t("playground.no_results")}</h2>}
-                {(searchResults && !hasNoResults) && <table className="search-results">
-                    <thead>
-                    {searchHeaders.map(header => <th key={header}
-                                                     className={header}>{I18n.t(`playground.headers.${header}`)}</th>)}
-                    </thead>
-                    <tbody>
-                    {searchResults.map(entity => <tr key={entity.data.entityid}>
-                        <td className="state">{I18n.t(`metadata.${entity.data.state}`)}</td>
-                        <td className="name">{entity.data.metaDataFields["name:en"] || entity.data.metaDataFields["name:nl"]}</td>
-                        <td className="entityId">
-                            <Link to={`/metadata/${selectedType}/${entity["_id"]}`}
-                                  target="_blank">{entity.data.entityid}</Link>
-                        </td>
-
-                    </tr>)}
-                    </tbody>
-
-                </table>}
+                {(searchResults && !hasNoResults) && this.renderSearchResultsTable(searchResults, selectedType, searchAttributes)}
             </section>
         );
     };
@@ -154,7 +168,7 @@ export default class Playground extends React.PureComponent {
     }
 }
 
-Playground.propTypes = {
+API.propTypes = {
     history: PropTypes.object.isRequired,
     configuration: PropTypes.array.isRequired
 };

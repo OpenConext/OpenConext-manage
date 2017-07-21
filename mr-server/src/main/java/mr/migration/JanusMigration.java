@@ -129,10 +129,18 @@ public class JanusMigration implements ApplicationListener<ApplicationReadyEvent
     }
 
     private void saveEntity(Long eid, Long revisionid, String type, boolean isPrimary, String parentId, Map<String, Long> stats, EntityType entityType) {
-        jdbcTemplate.query("SELECT id, eid, entityid, revisionid, state, metadataurl, allowedall, " +
-                "manipulation, user, created, ip, revisionnote, active, arp_attributes, notes FROM janus__connectionRevision " +
-                "WHERE  eid = ? AND revisionid = ?",
-            new Long[]{eid, revisionid},
+        String sql = "SELECT janus__connectionRevision.id, janus__connectionRevision.eid, janus__connectionRevision.entityid, " +
+            "janus__connectionRevision.revisionid, janus__connectionRevision.state, janus__connectionRevision.metadataurl, janus__connectionRevision.allowedall," +
+            "                janus__connectionRevision.manipulation, janus__user.userid, janus__connectionRevision.created, " +
+            "                janus__connectionRevision.ip, janus__connectionRevision.revisionnote, " +
+            "                janus__connectionRevision.active, janus__connectionRevision.arp_attributes, " +
+            "                janus__connectionRevision.notes FROM janus__connectionRevision AS janus__connectionRevision " +
+            "                LEFT outer join janus__user as janus__user on janus__user.uid = janus__connectionRevision.user " +
+            "                WHERE  janus__connectionRevision.eid = ? AND janus__connectionRevision.revisionid = ?";
+//        jdbcTemplate.query("SELECT id, eid, entityid, revisionid, state, metadataurl, allowedall, " +
+//                "manipulation, user, created, ip, revisionnote, active, arp_attributes, notes FROM janus__connectionRevision " +
+//                "WHERE  eid = ? AND revisionid = ?",
+        jdbcTemplate.query(sql, new Long[]{eid, revisionid},
             rs -> {
                 Map<String, Object> entity = new LinkedHashMap<>();
                 entity.put("id", rs.getLong("id"));
@@ -143,7 +151,7 @@ public class JanusMigration implements ApplicationListener<ApplicationReadyEvent
                 entity.put("metadataurl", rs.getString("metadataurl"));
                 entity.put("allowedall", rs.getString("allowedall").equals("yes") ? true : false);
                 entity.put("manipulation", rs.getString("manipulation"));
-                entity.put("user", rs.getString("user"));
+                entity.put("user", rs.getString("userid"));
                 entity.put("created", rs.getString("created"));
                 entity.put("ip", rs.getString("ip"));
                 entity.put("revisionnote", rs.getString("revisionnote"));

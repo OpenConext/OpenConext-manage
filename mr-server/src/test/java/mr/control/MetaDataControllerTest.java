@@ -6,11 +6,13 @@ import mr.model.MetaData;
 import mr.model.Revision;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
+import static mr.control.MetaDataController.REQUESTED_ATTRIBUTES;
 import static org.apache.http.HttpStatus.SC_NOT_FOUND;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.hamcrest.Matchers.equalTo;
@@ -184,6 +186,10 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         searchOptions.put("metaDataFields.contacts:3:contactType", "technical");
         searchOptions.put("metaDataFields.NameIDFormat", "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified");
 
+        searchOptions.put(REQUESTED_ATTRIBUTES, Arrays.asList(
+            "allowedall", "metaDataFields.AssertionConsumerService:0:Location"
+        ));
+
         given()
             .when()
             .body(searchOptions)
@@ -198,7 +204,13 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 "https://profile.test2.surfconext.nl/authentication/metadata"))
             .body("data.metaDataFields.'name:en'", hasItems(
                 "OpenConext Profile",
-                "OpenConext Mujina SP"));
+                "OpenConext Mujina SP"))
+            .body("data.metaDataFields.'AssertionConsumerService:0:Location'", hasItems(
+                "https://profile.test2.surfconext.nl/authentication/consume-assertion",
+                "https://mujina-sp.test2.surfconext.nl/saml/SSO"))
+            .body("data.allowedall", hasItems(
+                true));
+
     }
 
 

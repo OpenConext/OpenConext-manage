@@ -33,6 +33,9 @@
         width: 100%;
         th {
             text-align: left;
+            &.extra {
+                padding-right: 10px;
+            }
         }
         tbody {
             tr:nth-child(odd) {
@@ -67,7 +70,6 @@
                 &.entityId {
                   width: 45%;
                 }
-
                 input[type=text], input[type=email], textarea {
                     width: 100%;
                     font-size: 14px;

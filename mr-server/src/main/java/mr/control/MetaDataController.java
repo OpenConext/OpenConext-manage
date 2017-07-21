@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.time.Clock;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +39,7 @@ import static mr.mongo.MongobeeConfiguration.REVISION_POSTFIX;
 @RestController
 public class MetaDataController {
 
+    public static final String REQUESTED_ATTRIBUTES = "REQUESTED_ATTRIBUTES";
     @Autowired
     private MetaDataRepository metaDataRepository;
 
@@ -114,7 +116,9 @@ public class MetaDataController {
 
     @PostMapping("/client/search/{type}")
     public List<Map> searchEntities(@PathVariable("type") String type, @RequestBody Map<String, Object> properties) {
-        return metaDataRepository.search(type, properties);
+        List requestedAttributes = List.class.cast(properties.getOrDefault(REQUESTED_ATTRIBUTES, new ArrayList<String>()));
+        properties.remove(REQUESTED_ATTRIBUTES);
+        return metaDataRepository.search(type, properties, requestedAttributes);
     }
 
     private void validate(MetaData metaData) throws JsonProcessingException {
