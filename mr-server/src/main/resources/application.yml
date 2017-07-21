@@ -18,6 +18,8 @@ migrate_data_from_janus: false
 security:
   internal_user_name: openconext
   internal_password: secret
+  backdoor_user_name: backdoor
+  backdoor_password: secret
 
 spring:
   data:

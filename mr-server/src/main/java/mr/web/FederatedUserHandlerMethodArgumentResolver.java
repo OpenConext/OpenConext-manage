@@ -2,11 +2,14 @@ package mr.web;
 
 import mr.shibboleth.FederatedUser;
 import org.springframework.core.MethodParameter;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
+
+import java.security.Principal;
 
 public class FederatedUserHandlerMethodArgumentResolver implements
         HandlerMethodArgumentResolver {
@@ -19,7 +22,11 @@ public class FederatedUserHandlerMethodArgumentResolver implements
                                          ModelAndViewContainer mavContainer,
                                          NativeWebRequest webRequest,
                                          WebDataBinderFactory binderFactory) throws Exception {
-        return FederatedUser.class.cast(PreAuthenticatedAuthenticationToken.class.cast(webRequest.getUserPrincipal())
-                .getPrincipal());
+        Principal principal = webRequest.getUserPrincipal();
+        if (principal instanceof PreAuthenticatedAuthenticationToken) {
+            return FederatedUser.class.cast(PreAuthenticatedAuthenticationToken.class.cast(principal).getPrincipal());
+        } else {
+            return FederatedUser.class.cast(UsernamePasswordAuthenticationToken.class.cast(principal).getPrincipal());
+        }
     }
 }

@@ -18,11 +18,13 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
+import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -61,11 +63,21 @@ public class WebSecurityConfigurer {
         @Value("${features}")
         private String features;
 
+        @Value("${security.backdoor_user_name}")
+        private String user;
+
+        @Value("${security.backdoor_password}")
+        private String password;
+
         @Override
         protected void configure(HttpSecurity http) throws Exception {
             List<Features> featuresList = Stream.of(features.split(","))
                 .map(feature -> Features.valueOf(feature.trim().toUpperCase()))
                 .collect(toList());
+
+            BasicAuthenticationEntryPoint authenticationEntryPoint = new BasicAuthenticationEntryPoint();
+            authenticationEntryPoint.setRealmName("metadata-registry");
+
             http
                 .requestMatchers().antMatchers("/client/**")
                 .and()
@@ -75,11 +87,18 @@ public class WebSecurityConfigurer {
                 .csrf()
                 .requireCsrfProtectionMatcher(new CsrfProtectionMatcher())
                 .and()
+                .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint)
+                .and()
                 .addFilterAfter(new CsrfTokenResponseHeaderBindingFilter(), CsrfFilter.class)
                 .addFilterBefore(new SessionAliveFilter(), CsrfFilter.class)
                 .addFilterBefore(
                     new ShibbolethPreAuthenticatedProcessingFilter(authenticationManagerBean(), featuresList),
                     AbstractPreAuthenticatedProcessingFilter.class
+                )
+                .addFilterBefore(
+                    new BasicAuthenticationFilter(
+                        new BasicAuthenticationManager(user, password, featuresList)),
+                    ShibbolethPreAuthenticatedProcessingFilter.class
                 )
                 .authorizeRequests()
                 .antMatchers("/client/**").hasRole("USER");
@@ -120,7 +139,7 @@ public class WebSecurityConfigurer {
                 .disable()
                 .addFilterBefore(
                     new BasicAuthenticationFilter(
-                        new BasicAuthenticationManager(user, password)),
+                        new BasicAuthenticationManager(user, password, new ArrayList<>())),
                     BasicAuthenticationFilter.class
                 )
                 .authorizeRequests()

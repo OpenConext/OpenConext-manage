@@ -1,5 +1,7 @@
 package mr.web;
 
+import mr.conf.Features;
+import mr.shibboleth.FederatedUser;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -7,6 +9,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.util.Assert;
+
+import java.util.List;
 
 import static org.springframework.security.core.authority.AuthorityUtils.createAuthorityList;
 
@@ -17,13 +21,15 @@ public class BasicAuthenticationManager implements AuthenticationManager {
 
     private final String userName;
     private final String password;
+    private final List<Features> featureToggles;
 
-    public BasicAuthenticationManager(String userName, String password) {
+    public BasicAuthenticationManager(String userName, String password, List<Features> featureToggles) {
         Assert.notNull(userName, "userName is required");
         Assert.notNull(password, "password is required");
 
         this.userName = userName;
         this.password = password;
+        this.featureToggles = featureToggles;
     }
 
     @Override
@@ -35,9 +41,14 @@ public class BasicAuthenticationManager implements AuthenticationManager {
         if (!password.equals(authentication.getCredentials())) {
             throw new BadCredentialsException("Bad credentials");
         }
+        String name = String.class.cast(authentication.getPrincipal());
         return new UsernamePasswordAuthenticationToken(
-            authentication.getPrincipal(),
-            authentication.getCredentials(),
-            createAuthorityList("ROLE_USER", "ROLE_ADMIN"));
+            new FederatedUser(
+                name,
+                name,
+                name,
+                createAuthorityList("ROLE_USER", "ROLE_ADMIN"),
+                featureToggles
+            ), authentication.getCredentials(), createAuthorityList("ROLE_USER", "ROLE_ADMIN"));
     }
 }
