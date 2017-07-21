@@ -137,9 +137,6 @@ public class JanusMigration implements ApplicationListener<ApplicationReadyEvent
             "                janus__connectionRevision.notes FROM janus__connectionRevision AS janus__connectionRevision " +
             "                LEFT outer join janus__user as janus__user on janus__user.uid = janus__connectionRevision.user " +
             "                WHERE  janus__connectionRevision.eid = ? AND janus__connectionRevision.revisionid = ?";
-//        jdbcTemplate.query("SELECT id, eid, entityid, revisionid, state, metadataurl, allowedall, " +
-//                "manipulation, user, created, ip, revisionnote, active, arp_attributes, notes FROM janus__connectionRevision " +
-//                "WHERE  eid = ? AND revisionid = ?",
         jdbcTemplate.query(sql, new Long[]{eid, revisionid},
             rs -> {
                 Map<String, Object> entity = new LinkedHashMap<>();
@@ -242,6 +239,9 @@ public class JanusMigration implements ApplicationListener<ApplicationReadyEvent
                 Map<String, Object> patternProperties = Map.class.cast(metaDataSchema.get("patternProperties"));
 
                 if (properties.containsKey(key) || keyIsPatternProperty(key, patternProperties)) {
+                    if (Pattern.compile("^contacts:([0-3]{1}):emailAddress$").matcher(key).matches()) {
+                        value = value.replaceAll(Pattern.quote("mailto:"), "");
+                    }
                     metaDataFields.put(key, value);
                 } else {
                     LOG.info("Not adding unknown property {} for entity {} with type {}",

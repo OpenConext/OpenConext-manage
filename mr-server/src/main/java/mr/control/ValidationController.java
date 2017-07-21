@@ -5,7 +5,6 @@ import mr.validations.BooleanFormatValidator;
 import mr.validations.CertificateFormatValidator;
 import mr.validations.JSONFormatValidator;
 import mr.validations.NumberFormatValidator;
-import mr.validations.SAMLEmailFormatValidator;
 import mr.validations.URLFormatValidator;
 import mr.validations.UUIDFormatValidator;
 import mr.validations.XMLFormatValidator;
@@ -34,7 +33,6 @@ public class ValidationController {
             new CertificateFormatValidator(),
             new DateTimeFormatValidator(),
             new EmailFormatValidator(),
-            new SAMLEmailFormatValidator(),
             new NumberFormatValidator(),
             new URLFormatValidator(),
             new XMLFormatValidator(),

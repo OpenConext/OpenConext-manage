@@ -5,7 +5,6 @@ import mr.migration.EntityType;
 import mr.validations.BooleanFormatValidator;
 import mr.validations.CertificateFormatValidator;
 import mr.validations.NumberFormatValidator;
-import mr.validations.SAMLEmailFormatValidator;
 import org.everit.json.schema.FormatValidator;
 import org.everit.json.schema.Schema;
 import org.everit.json.schema.loader.SchemaLoader;
@@ -51,7 +50,6 @@ public class MetaDataAutoConfiguration {
                                      @Value("${metadata_templates_path}") Resource metadataTemplatesPath) throws IOException {
         this.schemas = parseConfiguration(metadataConfigurationPath, Arrays.asList(
             new CertificateFormatValidator(),
-            new SAMLEmailFormatValidator(),
             new NumberFormatValidator(),
             new BooleanFormatValidator()
         ));

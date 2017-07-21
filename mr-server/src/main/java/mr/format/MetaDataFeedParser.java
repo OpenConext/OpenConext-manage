@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
 import static java.util.Collections.singletonMap;
@@ -205,7 +206,8 @@ public class MetaDataFeedParser {
                             break;
                         case "EmailAddress":
                             if (inCorrectEntityDescriptor && inContact) {
-                                addMultiplicity(metaDataFields, "contacts:%s:emailAddress", 4, reader.getElementText());
+                                addMultiplicity(metaDataFields, "contacts:%s:emailAddress", 4,
+                                    reader.getElementText().replaceAll(Pattern.quote("mailto:"), ""));
                             }
                             break;
                         case "TelephoneNumber":

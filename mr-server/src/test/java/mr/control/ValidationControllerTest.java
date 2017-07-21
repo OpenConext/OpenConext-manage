@@ -32,7 +32,7 @@ public class ValidationControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void validationEmail() throws Exception {
-        doValidation("email", "john.doe@example.org", true);
+        doValidation("email", "conext-beheer@surfnet.nl", true);
         doValidation("email", "nope", false);
     }
 
