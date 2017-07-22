@@ -40,6 +40,7 @@ export default class Detail extends React.PureComponent {
             cancelDialogAction: () => this,
             leavePage: false,
             errors: {},
+            changes: {},
             isNew: true,
             originalEntityId: undefined
         };
@@ -61,6 +62,10 @@ export default class Detail extends React.PureComponent {
                 loaded: true,
                 errors: errorKeys.reduce((acc, tab) => {
                     acc[tab] = {};
+                    return acc;
+                }, {}),
+                changes: errorKeys.reduce((acc, tab) => {
+                    acc[tab] = false;
                     return acc;
                 }, {})
             });
@@ -97,7 +102,7 @@ export default class Detail extends React.PureComponent {
         requiredMetaData.forEach(req => {
             if (!metaDataFields[req]) {
                 metaDataErrors[req] = true;
-                this.onChange(`data.metaDataFields.${req}`, "");
+                this.onChange("metadata", `data.metaDataFields.${req}`, "");
             }
         });
         const connectionErrors = {};
@@ -129,7 +134,7 @@ export default class Detail extends React.PureComponent {
 
     nameOfMetaData = metaData => metaData.data.metaDataFields["name:en"] || metaData.data.metaDataFields["name:nl"] || metaData.data["entityid"];
 
-    onChange = (name, value, replaceAtSignWithDotsInName = false) => {
+    onChange = component => (name, value, replaceAtSignWithDotsInName = false) => {
         const currentState = this.state.metaData;
         const metaData = {
             ...currentState,
@@ -144,7 +149,9 @@ export default class Detail extends React.PureComponent {
         } else {
             this.changeValueReference(metaData, name, value, replaceAtSignWithDotsInName);
         }
-        this.setState({metaData: metaData});
+        const changes = {...this.state.changes};
+        changes[component] = true;
+        this.setState({metaData: metaData, changes: changes});
 
     };
 
@@ -163,16 +170,28 @@ export default class Detail extends React.PureComponent {
     };
 
     applyImportChanges = (results, applyChangesFor) => {
+        const newChanges = {...this.state.changes};
+
         const newData = {...this.state.metaData.data};
         ["allowedEntities", "disableConsent", "arp"].forEach(name => {
             if (applyChangesFor[name] && results[name]) {
                 newData[name] = results[name];
+                if (name === "allowedEntities") {
+                    newChanges.whitelist = true;
+                }
+                if (name === "disableConsent") {
+                    newChanges.consent_disabling = true;
+                }
+                if (name === "arp") {
+                    newChanges.arp = true;
+                }
             }
         });
         if (applyChangesFor["metaDataFields"] && results["metaDataFields"]) {
             Object.keys(results.metaDataFields).forEach(key => {
                 if (results.metaDataFields[key].selected) {
                     newData.metaDataFields[key] = results.metaDataFields[key].value;
+                    newChanges.metadata = true;
                 }
 
             });
@@ -181,6 +200,7 @@ export default class Detail extends React.PureComponent {
             Object.keys(results.connection).forEach(key => {
                 if (results.connection[key].selected) {
                     newData[key] = results.connection[key].value;
+                    newChanges.connection = true;
                 }
             });
         }
@@ -188,7 +208,7 @@ export default class Detail extends React.PureComponent {
         const changes = Object.keys(applyChangesFor).filter(key => applyChangesFor[key]);
         if (changes.length > 0) {
             setFlash(I18n.t("import.applyImportChangesFlash", {changes: changes.join(", ")}), "warning");
-            this.setState({selectedTab: "connection"});
+            this.setState({selectedTab: "connection", changes: newChanges});
         }
     };
 
@@ -248,11 +268,14 @@ export default class Detail extends React.PureComponent {
 
     renderTab = tab => {
         const tabErrors = this.state.errors[tab] || {};
+        const tabChanges = this.state.changes[tab] || false;
+        const hasChanges = tabChanges ? "changes" : "";
         const className = this.state.selectedTab === tab ? "active" : "";
         const hasErrors = Object.keys(tabErrors).find(key => tabErrors[key] === true) !== undefined ? "errors" : "";
-        return <span key={tab} className={`${className} ${hasErrors}`}
+        return <span key={tab} className={`${className} ${hasErrors} ${hasChanges}`}
                      onClick={this.switchTab(tab)}>{I18n.t(`metadata.tabs.${tab}`)}
             {hasErrors && <i className="fa fa-warning"></i>}
+            {(!hasErrors && tabChanges) && <i className="fa fa-asterisk"></i>}
                    </span>;
     };
 
@@ -264,26 +287,28 @@ export default class Detail extends React.PureComponent {
         const name = metaData.data.metaDataFields["name:en"] || metaData.data.metaDataFields["name:nl"] || "this service";
         switch (tab) {
             case "connection" :
-                return <Connection metaData={metaData} onChange={this.onChange} onError={this.onError("connection")}
+                return <Connection metaData={metaData} onChange={this.onChange("connection")} onError={this.onError("connection")}
                                    errors={this.state.errors["connection"]}
                                    guest={guest} isNew={isNew} originalEntityId={originalEntityId}/>;
             case "whitelist" :
                 return <WhiteList whiteListing={whiteListing} name={name}
                                   allowedEntities={metaData.data.allowedEntities}
-                                  allowedAll={metaData.data.allowedall} type={metaData.type} onChange={this.onChange}
+                                  allowedAll={metaData.data.allowedall} type={metaData.type}
+                                  onChange={this.onChange("whitelist")}
                                   entityId={metaData.data.entityid} guest={guest}/>;
             case "metadata":
                 return <MetaData metaDataFields={metaData.data.metaDataFields} configuration={configuration}
-                                 onChange={this.onChange} name={name} onError={this.onError("metadata")}
+                                 onChange={this.onChange("metadata")} name={name} onError={this.onError("metadata")}
                                  errors={this.state.errors["metadata"]} guest={guest}/>;
             case "arp":
                 return <ARP arp={metaData.data.arp} arpConfiguration={configuration.properties.arp}
-                            onChange={this.onChange} guest={guest}/>;
+                            onChange={this.onChange("arp")} guest={guest}/>;
             case "manipulation":
-                return <Manipulation content={metaData.data.manipulation} onChange={this.onChange} guest={guest}/>;
+                return <Manipulation content={metaData.data.manipulation}
+                                     onChange={this.onChange("manipulation")} guest={guest}/>;
             case "consent_disabling":
                 return <ConsentDisabling disableConsent={metaData.data.disableConsent} name={name}
-                                         whiteListing={whiteListing} onChange={this.onChange}
+                                         whiteListing={whiteListing} onChange={this.onChange("consent_disabling")}
                                          guest={guest}/>;
             case "revisions":
                 return <Revisions revisions={revisions} isNew={isNew}/>;
