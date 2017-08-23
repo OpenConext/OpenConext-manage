@@ -31,7 +31,7 @@ spring:
       uri: mongodb://localhost:27017/metadata
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mysql://localhost/metadata_registry_prod?autoReconnect=true&useSSL=false
+    url: jdbc:mysql://localhost/metadata_registry?autoReconnect=true&useSSL=false
     username: root
     password:
     dbcp2:
