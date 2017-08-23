@@ -34,8 +34,12 @@ public class ImporterTest implements TestUtils {
 
     @Test
     public void importSPMetaData() throws IOException, XMLStreamException {
+        doImportSPMetaData(Optional.of(EntityType.SP));
+    }
+
+    private void doImportSPMetaData(Optional<EntityType> optionalEntityType) throws IOException, XMLStreamException {
         String xml = readFile("/xml/metadata_import_saml20_sp.xml");
-        Map<String, Object> result = subject.importXML(EntityType.SP, new ByteArrayResource(xml.getBytes()), Optional.empty());
+        Map<String, Object> result = subject.importXML(optionalEntityType, new ByteArrayResource(xml.getBytes()), Optional.empty());
 
         assertEquals("https://teams.surfconext.nl/shibboleth", result.get("entityid"));
 
@@ -47,8 +51,12 @@ public class ImporterTest implements TestUtils {
 
     @Test
     public void importIdPMetaData() throws IOException, XMLStreamException {
+        doImportIdPMetaData(Optional.of(EntityType.IDP));
+    }
+
+    private void doImportIdPMetaData(Optional<EntityType> optionalEntityType) throws IOException, XMLStreamException {
         String xml = readFile("/xml/metadata_import_saml20_idp.xml");
-        Map<String, Object> result = subject.importXML(EntityType.IDP, new ByteArrayResource(xml.getBytes()), Optional.empty());
+        Map<String, Object> result = subject.importXML(optionalEntityType, new ByteArrayResource(xml.getBytes()), Optional.empty());
 
         assertEquals("https://beta.surfnet.nl/simplesaml/saml2/idp/metadata.php", result.get("entityid"));
 
@@ -61,7 +69,7 @@ public class ImporterTest implements TestUtils {
     @Test
     public void importSpMetaDataWithARP() throws IOException, XMLStreamException {
         Resource resource = new GZIPClassPathResource("/xml/eduGain.xml.gz");
-        Map<String, Object> result = subject.importXML(EntityType.SP, resource, Optional.of("https://wayf.nikhef.nl/wayf/sp"));
+        Map<String, Object> result = subject.importXML(Optional.empty(), resource, Optional.of("https://wayf.nikhef.nl/wayf/sp"));
 
         String json = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(result);
         String expected = readFile("json/expected_imported_metadata_edugain.json");
@@ -74,7 +82,7 @@ public class ImporterTest implements TestUtils {
         String json = this.readFile("/json/metadata_import_saml20_sp_invalid_nested.json");
         Map map = objectMapper.readValue(json, Map.class);
         try {
-            subject.importJSON(EntityType.SP, map);
+            subject.importJSON(Optional.of(EntityType.SP), map);
         } catch (ValidationException e) {
             assertEquals(2, List.class.cast(e.toJSON().toMap().get("causingExceptions")).size());
         }
@@ -84,7 +92,7 @@ public class ImporterTest implements TestUtils {
     public void testImportSpJSON() throws IOException {
         String json = this.readFile("/json/metadata_import_saml20_sp_nested.json");
         Map map = objectMapper.readValue(json, Map.class);
-        Map result = subject.importJSON(EntityType.SP, map);
+        Map result = subject.importJSON(Optional.of(EntityType.SP), map);
 
         assertEquals(9, result.size());
 

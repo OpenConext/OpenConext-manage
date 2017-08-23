@@ -35,17 +35,17 @@
     <md:ContactPerson contactType="support">
         <md:GivenName>SURFconext</md:GivenName>
         <md:SurName>Support</md:SurName>
-        <md:EmailAddress>help@surfconext.nl</md:EmailAddress>
+        <md:EmailAddress>mailto:help@surfconext.nl</md:EmailAddress>
     </md:ContactPerson>
     <md:ContactPerson contactType="administrative">
         <md:GivenName>SURF</md:GivenName>
         <md:SurName>net</md:SurName>
-        <md:EmailAddress>conext-beheer@surfnet.nl</md:EmailAddress>
+        <md:EmailAddress>mailto:conext-beheer@surfnet.nl</md:EmailAddress>
     </md:ContactPerson>
     <md:ContactPerson contactType="technical">
         <md:GivenName>Conext</md:GivenName>
         <md:SurName>Beheer</md:SurName>
-        <md:EmailAddress>conext-beheer@surfnet.nl</md:EmailAddress>
+        <md:EmailAddress>mailto:conext-beheer@surfnet.nl</md:EmailAddress>
     </md:ContactPerson>
     <md:ContactPerson contactType="technical">
     </md:ContactPerson>

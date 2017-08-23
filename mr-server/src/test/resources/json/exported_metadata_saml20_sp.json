@@ -11,6 +11,7 @@
     "eid": 2,
     "entityid": "https://teams.surfconext.nl/shibboleth",
     "revisionid": 72,
+    "type": "saml20-sp",
     "state": "prodaccepted",
     "metadataurl": "https://teams.surfconext.nl/Shibboleth.sso/MetadataChanged",
     "allowedall": false,

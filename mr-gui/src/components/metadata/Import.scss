@@ -10,6 +10,12 @@
         font-weight: normal;
     }
 
+    h3 {
+        font-size: 16px;
+        color: $blue;
+        font-weight: normal;
+    }
+
     section.sub-tabs {
         display: flex;
         padding: 0;
@@ -34,7 +40,7 @@
             }
         }
     }
-    section.import-url, section.import-xml, section.import-json {
+    section.import-url-container, section.import-xml, section.import-json {
         section.import-header, section.import-footer {
             display: flex;
             align-items: center;
@@ -80,7 +86,10 @@
         margin: 20px 0 10px 0;
     }
     section.import-url {
-        margin-bottom: 50px;
+        margin: 25px 0;
+    }
+    section.import-entity-id {
+        margin-bottom: 40px;
     }
     input[type=text], textarea {
         width: 100%;

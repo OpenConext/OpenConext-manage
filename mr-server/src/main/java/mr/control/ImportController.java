@@ -67,17 +67,13 @@ public class ImportController {
         }
     }
 
-    private EntityType getType(String type) {
-        EntityType entityType = EntityType.IDP.getType().equals(type) ? EntityType.IDP : EntityType.SP.getType().equals(type) ? EntityType.SP : null;
+    private Optional<EntityType> getType(String type) {
+        EntityType entityType = EntityType.IDP.getType().equals(type) ?
+            EntityType.IDP : EntityType.SP.getType().equals(type) ? EntityType.SP : null;
         if (entityType == null) {
-            throw new IllegalArgumentException("Unknown entity type: " + type);
+            return Optional.empty();
         }
-        return entityType;
+        return Optional.of(entityType);
     }
 
-    private void removeNulls(Map<String, Object> data) {
-        data.entrySet().removeIf(entry -> entry.getValue() == null);
-        ;
-
-    }
 }

@@ -9,6 +9,7 @@ import Search from "../pages/Search";
 import Detail from "../pages/Detail";
 import Playground from "../pages/Playground";
 import API from "../pages/API";
+import ImportMetaData from "../pages/ImportMetaData";
 import ServerError from "../pages/ServerError";
 import Header from "../components/Header";
 import Navigation from "../components/Navigation";
@@ -108,6 +109,8 @@ class App extends React.PureComponent {
                         <Route path="/metadata/:type/:id"
                                render={props => <Detail currentUser={currentUser}
                                                         configuration={configuration} {...props}/>}/>
+                        <Route path="/import"
+                               render={props => <ImportMetaData configuration={configuration} {...props}/>}/>
                         <Route path="/api"
                                render={props => <API configuration={configuration} {...props}/>}/>
                         <ProtectedRoute path="/system"

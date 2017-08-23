@@ -10,8 +10,8 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -30,8 +30,9 @@ import static mr.format.Importer.META_DATA_FIELDS;
 public class MetaDataFeedParser {
 
     private static final List<String> languages = Arrays.asList("en", "nl");
+    private static final String ATTRIBUTES = "attributes";
 
-    public Map<String, Object> importXML(EntityType type,
+    public Map<String, Object> importXML(Optional<EntityType> type,
                                          Resource xml,
                                          Optional<String> entityIDOptional,
                                          MetaDataAutoConfiguration metaDataAutoConfiguration) throws XMLStreamException, IOException {
@@ -49,16 +50,9 @@ public class MetaDataFeedParser {
         boolean inContact = true;
         boolean inCorrectEntityDescriptor = !entityIDOptional.isPresent();
         boolean inAttributeConsumingService = false;
-        boolean isSp = EntityType.SP.equals(type);
+        boolean isSp = false;
 
-        Map<String, Object> schema = metaDataAutoConfiguration.schemaRepresentation(type);
-        Map<String, Object> arpAttributes = isSp ? Map.class.cast(schema.get("properties")) : new HashMap<>();
-        if (isSp) {
-            for (String s : Arrays.asList("arp", "properties", "attributes", "properties")) {
-                arpAttributes = Map.class.cast(arpAttributes.get(s));
-            }
-        }
-        Set<String> arpKeys = arpAttributes.keySet();
+        Set<String> arpKeys = new HashSet<>();
 
         while (reader.hasNext()) {
             switch (reader.next()) {
@@ -75,6 +69,11 @@ public class MetaDataFeedParser {
                                 }
                             }
                             break;
+                        case "SPSSODescriptor":
+                            if (inCorrectEntityDescriptor) {
+                                isSp = true;
+                                arpKeys = arpKeys(EntityType.SP, metaDataAutoConfiguration, isSp);
+                            }
                         case "KeyDescriptor":
                             if (!inCorrectEntityDescriptor) {
                                 break;
@@ -98,7 +97,7 @@ public class MetaDataFeedParser {
                             if (!inCorrectEntityDescriptor) {
                                 break;
                             }
-                            if (type.equals(EntityType.SP)) {
+                            if (isSp) {
                                 addMetaDataField(metaDataFields, reader, "Binding", "SingleLogoutService_Binding");
                                 addMetaDataField(metaDataFields, reader, "Location", "SingleLogoutService_Location");
                             }
@@ -107,7 +106,7 @@ public class MetaDataFeedParser {
                             if (!inCorrectEntityDescriptor) {
                                 break;
                             }
-                            if (type.equals(EntityType.SP)) {
+                            if (isSp) {
                                 Optional<String> bindingOpt = getAttributeValue(reader, "Binding");
                                 bindingOpt.ifPresent(binding ->
                                     addMultiplicity(metaDataFields, "AssertionConsumerService:%s:Binding",
@@ -126,29 +125,27 @@ public class MetaDataFeedParser {
                             if (!inCorrectEntityDescriptor || isSp) {
                                 break;
                             }
-                                Optional<String> bindingOpt = getAttributeValue(reader, "Binding");
-                                bindingOpt.ifPresent(binding ->
-                                    addMultiplicity(metaDataFields, "SingleSignOnService:%s:Binding",
-                                        10, binding));
-                                Optional<String> locationOpt = getAttributeValue(reader, "Location");
-                                locationOpt.ifPresent(location ->
-                                    addMultiplicity(metaDataFields, "SingleSignOnService:%s:Location",
-                                        10, location));
+                            Optional<String> bindingOpt = getAttributeValue(reader, "Binding");
+                            bindingOpt.ifPresent(binding ->
+                                addMultiplicity(metaDataFields, "SingleSignOnService:%s:Binding",
+                                    10, binding));
+                            Optional<String> locationOpt = getAttributeValue(reader, "Location");
+                            locationOpt.ifPresent(location ->
+                                addMultiplicity(metaDataFields, "SingleSignOnService:%s:Location",
+                                    10, location));
                             break;
                         case "RegistrationInfo": {
-                            if (!inCorrectEntityDescriptor || !isSp) {
-                                break;
-                            }
+                            if (inCorrectEntityDescriptor) {
                                 getAttributeValue(reader, "registrationAuthority").ifPresent(authority -> {
                                     metaDataFields.put("mdrpi:RegistrationInfo", authority);
                                 });
+                            }
                             break;
                         }
                         case "RegistrationPolicy":
-                            if (!inCorrectEntityDescriptor || !isSp) {
-                                break;
-                            }
+                            if (inCorrectEntityDescriptor) {
                                 addLanguageElement(metaDataFields, reader, "mdrpi:RegistrationPolicy");
+                            }
                             break;
                         case "AttributeConsumingService":
                             inAttributeConsumingService = inCorrectEntityDescriptor;
@@ -164,7 +161,7 @@ public class MetaDataFeedParser {
                             }
                             break;
                         case "RequestedAttribute":
-                            if (inAttributeConsumingService && type.equals(EntityType.SP)) {
+                            if (inAttributeConsumingService && isSp) {
                                 addArpAttribute(result, reader, arpKeys);
                             }
                             break;
@@ -237,17 +234,29 @@ public class MetaDataFeedParser {
         return result;
     }
 
+    private Set<String> arpKeys(EntityType type, MetaDataAutoConfiguration metaDataAutoConfiguration, boolean isSp) {
+        Map<String, Object> schema = metaDataAutoConfiguration.schemaRepresentation(type);
+        Map<String, Object> arpAttributes = isSp ? Map.class.cast(schema.get("properties")) : new HashMap<>();
+        if (isSp) {
+            for (String s : Arrays.asList("arp", "properties", "attributes", "properties")) {
+                arpAttributes = Map.class.cast(arpAttributes.get(s));
+            }
+        }
+        return arpAttributes.keySet();
+    }
+
     private void addArpAttribute(Map<String, Object> result, XMLStreamReader reader, Set<String> arpKeys) {
         getAttributeValue(reader, "FriendlyName").ifPresent((String friendlyName) -> {
-            final Map<String, Object> arp = Map.class.cast(result.getOrDefault(ARP, new TreeMap<>()));
+            Map<String, Object> arp = Map.class.cast(result.getOrDefault(ARP, new TreeMap<>()));
             arp.put("enabled", true);
-            result.put(ARP, arp);
-
+            final Map<String, Object> attributes = Map.class.cast(arp.getOrDefault(ATTRIBUTES, new TreeMap<>()));
             arpKeys.stream().filter(arpKey -> arpKey.endsWith(friendlyName)).findFirst().ifPresent(arpKey -> {
-                arp.put(arpKey, Arrays.asList(
+                attributes.put(arpKey, Arrays.asList(
                     singletonMap("source", "idp"),
                     singletonMap("value", "*")));
             });
+            arp.put(ATTRIBUTES, attributes);
+            result.put(ARP, arp);
         });
     }
 

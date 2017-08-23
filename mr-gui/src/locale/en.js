@@ -23,6 +23,7 @@ I18n.translations.en = {
 
     navigation: {
         search: "Search",
+        import: "Import",
         api: "API",
         system: "System"
     },
@@ -161,6 +162,7 @@ I18n.translations.en = {
         import_json: "Import JSON",
         results: "Results",
         url: "Enter a valid SAML metadata endpoint",
+        entityId: "Optionally enter the entityID if the feed contains more entities",
         fetch: "Import",
         xml: "Paste XML metadata",
         json: "Paste JSON metadata",

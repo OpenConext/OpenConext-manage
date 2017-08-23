@@ -41,15 +41,15 @@ public class Importer {
         this.metaDataAutoConfiguration = metaDataAutoConfiguration;
     }
 
-    //TODO remove the type and determine this on the SPSSODescriptor or IDPSSODescriptor
-    public Map<String, Object> importXML(EntityType type, Resource resource, Optional<String> entityId) throws IOException, XMLStreamException {
+    public Map<String, Object> importXML(Optional<EntityType> type, Resource resource, Optional<String> entityId) throws IOException, XMLStreamException {
         return metaDataFeedParser.importXML(type, resource, entityId, metaDataAutoConfiguration);
     }
 
-    public Map<String, Object> importJSON(EntityType entityType, Map<String, Object> data) throws JsonProcessingException {
+    public Map<String, Object> importJSON(Optional<EntityType> optionalEntityType, Map<String, Object> data) throws JsonProcessingException {
         data.entrySet().removeIf(entry-> entry.getValue() == null);
 
         Map<String, Object> json = new ConcurrentHashMap<>(data);
+        EntityType entityType = optionalEntityType.orElseGet(() -> EntityType.fromType(String.class.cast(json.get("type")))) ;
         Object metaDataFieldsMap = json.get(META_DATA_FIELDS);
         if (metaDataFieldsMap == null || !(metaDataFieldsMap instanceof Map)) {
             metaDataAutoConfiguration.validate(metaDataAutoConfiguration.getObjectMapper().writeValueAsString(json),

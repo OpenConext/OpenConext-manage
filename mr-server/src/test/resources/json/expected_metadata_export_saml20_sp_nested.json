@@ -125,5 +125,6 @@
     }
   },
   "metadataurl" : "https://teams.surfconext.nl/Shibboleth.sso/MetadataChanged",
-  "state" : "prodaccepted"
+  "state" : "prodaccepted",
+  "type" : "saml20-sp"
 }

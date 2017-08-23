@@ -1,41 +1,43 @@
 {
   "arp" : {
-    "enabled" : true,
-    "urn:mace:dir:attribute-def:displayName" : [ {
-      "source" : "idp"
-    }, {
-      "value" : "*"
-    } ],
-    "urn:mace:dir:attribute-def:eduPersonPrincipalName" : [ {
-      "source" : "idp"
-    }, {
-      "value" : "*"
-    } ],
-    "urn:mace:dir:attribute-def:eduPersonTargetedID" : [ {
-      "source" : "idp"
-    }, {
-      "value" : "*"
-    } ],
-    "urn:mace:dir:attribute-def:givenName" : [ {
-      "source" : "idp"
-    }, {
-      "value" : "*"
-    } ],
-    "urn:mace:dir:attribute-def:mail" : [ {
-      "source" : "idp"
-    }, {
-      "value" : "*"
-    } ],
-    "urn:mace:dir:attribute-def:sn" : [ {
-      "source" : "idp"
-    }, {
-      "value" : "*"
-    } ],
-    "urn:mace:terena.org:attribute-def:schacHomeOrganization" : [ {
-      "source" : "idp"
-    }, {
-      "value" : "*"
-    } ]
+    "attributes" : {
+      "urn:mace:dir:attribute-def:displayName" : [ {
+        "source" : "idp"
+      }, {
+        "value" : "*"
+      } ],
+      "urn:mace:dir:attribute-def:eduPersonPrincipalName" : [ {
+        "source" : "idp"
+      }, {
+        "value" : "*"
+      } ],
+      "urn:mace:dir:attribute-def:eduPersonTargetedID" : [ {
+        "source" : "idp"
+      }, {
+        "value" : "*"
+      } ],
+      "urn:mace:dir:attribute-def:givenName" : [ {
+        "source" : "idp"
+      }, {
+        "value" : "*"
+      } ],
+      "urn:mace:dir:attribute-def:mail" : [ {
+        "source" : "idp"
+      }, {
+        "value" : "*"
+      } ],
+      "urn:mace:dir:attribute-def:sn" : [ {
+        "source" : "idp"
+      }, {
+        "value" : "*"
+      } ],
+      "urn:mace:terena.org:attribute-def:schacHomeOrganization" : [ {
+        "source" : "idp"
+      }, {
+        "value" : "*"
+      } ]
+    },
+    "enabled" : true
   },
   "entityid" : "https://wayf.nikhef.nl/wayf/sp",
   "metaDataFields" : {

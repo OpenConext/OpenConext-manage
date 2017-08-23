@@ -36,7 +36,7 @@ public class Exporter {
     private final String metadataExportPath;
     private final Clock clock;
 
-    public final static List<String> excludedDataFields = Arrays.asList("id", "eid", "revisionid", "user", "created", "ip", "revisionnote", "notes");
+    final static List<String> excludedDataFields = Arrays.asList("id", "eid", "revisionid", "user", "created", "ip", "revisionnote", "notes");
 
     public Exporter(Clock clock, ResourceLoader resourceLoader, String metadataExportPath) {
         this.clock = clock;
@@ -76,6 +76,7 @@ public class Exporter {
             result.put("metaDataFields",new TreeMap(Map.class.cast(result.get("metaDataFields"))));
         }
         this.excludedDataFields.forEach(result::remove);
+        result.put("type", metaData.getType().replaceAll("_", "-"));
         return result;
     }
 

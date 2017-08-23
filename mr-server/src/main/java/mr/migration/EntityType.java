@@ -1,5 +1,7 @@
 package mr.migration;
 
+import org.springframework.util.Assert;
+
 public enum EntityType {
 
     IDP("saml20_idp"),
@@ -19,5 +21,12 @@ public enum EntityType {
 
     public String getJanusDbValue() {
         return janusDbValue;
+    }
+
+    public static EntityType fromType(String type) {
+        EntityType entityType = EntityType.IDP.getType().equals(type) ?
+            EntityType.IDP : EntityType.SP.getType().equals(type) ? EntityType.SP : null;
+        Assert.notNull(entityType, "Invalid EntityType " + type);
+        return entityType;
     }
 }

@@ -20,6 +20,7 @@ export default class Import extends React.Component {
         super(props);
         this.state = {
             url: "",
+            entityId: "",
             invalidUrl: false,
             xml: "",
             invalidXml: false,
@@ -46,6 +47,7 @@ export default class Import extends React.Component {
     sortArpArrayValues = (a, b) => a.source === b.source ? a.value.localeCompare(b.value) : a.source.localeCompare(b.source);
 
     arpChanged = (current, imported) => {
+        debugger;
         if (!current.enabled && !imported.enabled) {
             return false;
         }
@@ -159,6 +161,7 @@ export default class Import extends React.Component {
                 newState.results = undefined;
                 this.setState({...newState});
             } else {
+                debugger;
                 this.resultsToMap(json);
                 this.setState({
                     results: json,
@@ -180,14 +183,14 @@ export default class Import extends React.Component {
 
     importUrl = e => {
         stop(e);
-        const {url} = this.state;
+        const {url, entityId} = this.state;
         const {type} = this.props.metaData;
         validation("url", url).then(result => {
             this.setState({
                 invalidUrl: !result
             });
             if (result) {
-                this.doImport(importMetaDataUrl(type, url), "errorsUrl");
+                this.doImport(importMetaDataUrl(type, url, entityId), "errorsUrl");
             }
         });
     };
@@ -236,9 +239,11 @@ export default class Import extends React.Component {
         <table>
             <thead>
             <tr>
-                <th className="title" colSpan={4}><CheckBox name={name} value={this.state.applyChangesFor[name]}
-                                                            onChange={this.changeApplyChangesFor(name, true)}
-                                                            info={I18n.t(`import.${name}`)}/></th>
+                <th className="title" colSpan={4}>
+                    <CheckBox name={name}
+                              value={this.state.applyChangesFor[name]}
+                              onChange={this.changeApplyChangesFor(name, true)}
+                              info={I18n.t(`import.${name}`)}/></th>
             </tr>
             <tr>
                 {headers.map(header => <th key={header} className={header}>{I18n.t(`import.headers.${header}`)}</th>)}
@@ -289,7 +294,7 @@ export default class Import extends React.Component {
 
     renderArpAttribute = (key, arpValues) =>
         <tbody key={key}>
-        <tr >
+        <tr>
             <td className="arpKey">{this.nameOfArpKey(key)}</td>
             <td className="arpAttribute">
                 <table className="arpValues">
@@ -415,15 +420,26 @@ export default class Import extends React.Component {
                 {I18n.t("import.fetch")}<i className="fa fa-cloud-download"></i></a>}
         </section>;
 
-    renderImportUrl = () => {
-        return <section className="import-url">
-            {this.renderImportHeader(I18n.t("import.url"), this.importUrl, this.state.errorsUrl)}
-            {this.state.invalidUrl && <p className="invalid">{I18n.t("import.invalid", {type: "URL"})}</p>}
-            <input ref={ref => this.importUrlField = ref} type="text" value={this.state.url}
-                   onChange={e => this.setState({url: e.target.value})}/>
-        </section>;
-    };
-
+    renderImportUrl = () => (
+        <section className="import-url-container">
+            <section className="import-url">
+                <section>
+                    <section className="import-header">
+                        <h2>{I18n.t("import.url")}</h2>
+                    </section>
+                    {this.state.errorsUrl && this.renderErrors(this.state.errorsUrl)}
+                </section>
+                {this.state.invalidUrl && <p className="invalid">{I18n.t("import.invalid", {type: "URL"})}</p>}
+                <input ref={ref => this.importUrlField = ref} type="text" value={this.state.url}
+                       onChange={e => this.setState({url: e.target.value})}/>
+            </section>
+            <section className="import-entity-id">
+                <h3>{I18n.t("import.entityId")}</h3>
+                <input type="text" value={this.state.entityId}
+                       onChange={e => this.setState({entityId: e.target.value})}/>
+            </section>
+            {this.renderImportFooter(this.importUrl)}
+        </section>);
 
     renderImportJson = () => {
         const jsonOptions = {

@@ -48,9 +48,8 @@ public class ExporterTest  implements TestUtils {
         String xml = subject.exportToXml(metaData);
 
         assertNotNull(xml);
-        //TODO
-//        String expected = readFile("/xml/expected_metadata_export_saml20_sp.xml");
-//        assertEquals(expected, xml);
+        String expected = readFile("/xml/expected_metadata_export_saml20_sp.xml");
+        assertEquals(expected, xml);
     }
 
     @Test
@@ -79,16 +78,4 @@ public class ExporterTest  implements TestUtils {
     }
 
 
-    @Test
-    public void testDelMe() throws IOException {
-        ResourceLoader resourceLoader = new DefaultResourceLoader();
-        String s = IOUtils.toString(resourceLoader.getResource("classpath:/metadata_export/saml20_idp.xml")
-            .getInputStream(), Charset.defaultCharset());
-
-        Mustache mustache = new DefaultMustacheFactory().compile(new StringReader(s),"saml20_idp.xml");
-        StringWriter writer = new StringWriter();
-        mustache.execute(writer, new HashMap<>()).flush();
-        String xml = writer.toString();
-        System.out.println(xml);
-    }
 }
