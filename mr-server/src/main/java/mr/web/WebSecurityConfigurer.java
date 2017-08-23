@@ -1,6 +1,7 @@
 package mr.web;
 
 import mr.conf.Features;
+import mr.conf.Product;
 import mr.shibboleth.ShibbolethPreAuthenticatedProcessingFilter;
 import mr.shibboleth.ShibbolethUserDetailService;
 import mr.shibboleth.mock.MockShibbolethFilter;
@@ -63,6 +64,12 @@ public class WebSecurityConfigurer {
         @Value("${features}")
         private String features;
 
+        @Value("${product.organization}")
+        private String productOrganization;
+
+        @Value("${product.name}")
+        private String productName;
+
         @Value("${security.backdoor_user_name}")
         private String user;
 
@@ -74,6 +81,7 @@ public class WebSecurityConfigurer {
             List<Features> featuresList = Stream.of(features.split(","))
                 .map(feature -> Features.valueOf(feature.trim().toUpperCase()))
                 .collect(toList());
+            Product product = new Product(productOrganization, productName);
 
             BasicAuthenticationEntryPoint authenticationEntryPoint = new BasicAuthenticationEntryPoint();
             authenticationEntryPoint.setRealmName("metadata-registry");
@@ -92,12 +100,12 @@ public class WebSecurityConfigurer {
                 .addFilterAfter(new CsrfTokenResponseHeaderBindingFilter(), CsrfFilter.class)
                 .addFilterBefore(new SessionAliveFilter(), CsrfFilter.class)
                 .addFilterBefore(
-                    new ShibbolethPreAuthenticatedProcessingFilter(authenticationManagerBean(), featuresList),
+                    new ShibbolethPreAuthenticatedProcessingFilter(authenticationManagerBean(), featuresList, product),
                     AbstractPreAuthenticatedProcessingFilter.class
                 )
                 .addFilterBefore(
                     new BasicAuthenticationFilter(
-                        new BasicAuthenticationManager(user, password, featuresList)),
+                        new BasicAuthenticationManager(user, password, featuresList, product)),
                     ShibbolethPreAuthenticatedProcessingFilter.class
                 )
                 .authorizeRequests()
@@ -139,7 +147,7 @@ public class WebSecurityConfigurer {
                 .disable()
                 .addFilterBefore(
                     new BasicAuthenticationFilter(
-                        new BasicAuthenticationManager(user, password, new ArrayList<>())),
+                        new BasicAuthenticationManager(user, password, new ArrayList<>(), Product.DEFAULT)),
                     BasicAuthenticationFilter.class
                 )
                 .authorizeRequests()

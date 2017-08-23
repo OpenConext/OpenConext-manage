@@ -51,17 +51,15 @@ When new yarn dependencies are added:
 
 `yarn install`
 
-## [Miscellaneous](#miscellaneous)
+### [Wiki](#wiki)
 
-https://jsonschema.net/#/editor
-https://github.com/everit-org/json-schema
-https://github.com/facebookincubator/create-react-app
-
-### [Testing](#testing)
+See the MetadataRegistry [github wiki](https://github.com/OpenConext/OpenConext-metadata-registry/wiki) for 
+additional documentation. 
 
 ### [New MetaData Type](#new-metadata-type)
 
-New MetaData types must first be described in JSON Schema and the schema must be places in...  
+New MetaData types must first be described in JSON Schema and the schema must be placed in src/main/resources/metadata_configuration. This
+is all that is required for the server. Of course support for CRUD in the GUI needs to be coded.     
 
 ### [Configuration and deployment](#configuration-and-deployment)
 

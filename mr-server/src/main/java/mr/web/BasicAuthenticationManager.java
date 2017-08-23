@@ -1,6 +1,7 @@
 package mr.web;
 
 import mr.conf.Features;
+import mr.conf.Product;
 import mr.shibboleth.FederatedUser;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -22,14 +23,16 @@ public class BasicAuthenticationManager implements AuthenticationManager {
     private final String userName;
     private final String password;
     private final List<Features> featureToggles;
+    private final Product product;
 
-    public BasicAuthenticationManager(String userName, String password, List<Features> featureToggles) {
+    public BasicAuthenticationManager(String userName, String password, List<Features> featureToggles, Product product) {
         Assert.notNull(userName, "userName is required");
         Assert.notNull(password, "password is required");
 
         this.userName = userName;
         this.password = password;
         this.featureToggles = featureToggles;
+        this.product = product;
     }
 
     @Override
@@ -48,7 +51,8 @@ public class BasicAuthenticationManager implements AuthenticationManager {
                 name,
                 name,
                 createAuthorityList("ROLE_USER", "ROLE_ADMIN"),
-                featureToggles
+                featureToggles,
+                product
             ), authentication.getCredentials(), createAuthorityList("ROLE_USER", "ROLE_ADMIN"));
     }
 }

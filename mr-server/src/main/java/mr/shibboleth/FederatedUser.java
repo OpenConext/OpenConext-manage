@@ -2,6 +2,7 @@ package mr.shibboleth;
 
 import lombok.Getter;
 import mr.conf.Features;
+import mr.conf.Product;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
@@ -15,13 +16,15 @@ public class FederatedUser extends User {
     private String displayName;
     private String schacHomeOrganization;
     private List<Features> featureToggles;
+    private Product product;
 
-    public FederatedUser(String uid, String displayName, String schacHomeOrganization, List<GrantedAuthority> authorities, List<Features> featureToggles) {
+    public FederatedUser(String uid, String displayName, String schacHomeOrganization, List<GrantedAuthority> authorities, List<Features> featureToggles, Product product) {
         super(uid, "N/A", authorities);
         this.uid = uid;
         this.displayName = displayName;
         this.schacHomeOrganization = schacHomeOrganization;
         this.featureToggles = featureToggles;
+        this.product = product;
     }
 
     public boolean isGuest() {

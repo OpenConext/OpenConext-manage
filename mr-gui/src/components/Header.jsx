@@ -3,8 +3,8 @@ import I18n from "i18n-js";
 import PropTypes from "prop-types";
 import {unmountComponentAtNode} from "react-dom";
 import {Link} from "react-router-dom";
-import logo from "../images/logo@2x.png";
-//import logo from "../images/openconext_logo.png";
+import logoSurfConext from "../images/logo@2x.png";
+import logoOpenConext from "../images/open-conext-logo.png";
 import {logOut} from "../api";
 import "./Header.css";
 
@@ -40,12 +40,14 @@ export default class Header extends React.PureComponent {
 
     render() {
         const currentUser = this.props.currentUser;
+        const logo = currentUser.product.organization === "OpenConext" ? logoOpenConext : logoSurfConext;
+        debugger;
         return (
             <div className="header-container">
                 <div className="header">
                     <Link to="/" className="logo"><img src={logo} alt=""/></Link>
                     <ul className="links">
-                        <li className="title"><span>Metadata Registry</span></li>
+                        <li className="title"><span>{currentUser.product.name}</span></li>
                         <li className="profile"
                             tabIndex="1" onBlur={() => this.setState({dropDownActive: false})}>
                             {this.renderProfileLink(currentUser)}
