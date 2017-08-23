@@ -7,6 +7,7 @@ import mr.validations.CertificateFormatValidator;
 import mr.validations.NumberFormatValidator;
 import org.everit.json.schema.FormatValidator;
 import org.everit.json.schema.Schema;
+import org.everit.json.schema.ValidationException;
 import org.everit.json.schema.loader.SchemaLoader;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -64,7 +65,12 @@ public class MetaDataAutoConfiguration {
         Schema schema = schemas.computeIfAbsent(type, key -> {
             throw new IllegalArgumentException(String.format("No schema defined for %s", key));
         });
-        schema.validate(jsonObject);
+        try {
+            schema.validate(jsonObject);
+        } catch (ValidationException e) {
+            throw e;
+        }
+
     }
 
     public Set<String> schemaNames() {

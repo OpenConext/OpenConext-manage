@@ -40,8 +40,8 @@ public class ErrorController implements org.springframework.boot.autoconfigure.w
         Throwable error = this.errorAttributes.getError(requestAttributes);
         if (error instanceof ValidationException) {
             ValidationException validationException = ValidationException.class.cast(error);
-            Map<String, Object> causes = validationException.toJSON().toMap();
-            result.put("validations", causes);
+            result.put("validations", String.join(", ", validationException.getAllMessages()));
+            return new ResponseEntity<>(result, HttpStatus.OK);
         }
 
         HttpStatus statusCode;

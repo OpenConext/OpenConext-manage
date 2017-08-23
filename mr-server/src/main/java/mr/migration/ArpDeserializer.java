@@ -25,18 +25,34 @@ public class ArpDeserializer {
         } catch (SerializedPhpParserException e) {
             throw new RuntimeException(e);
         }
-        Map<String, Map<Long, String>> arp = Map.class.cast(parse);
+        Map<String, Map<Long, Object>> arp = Map.class.cast(parse);
         return new ArpAttributes(true, arp.entrySet().stream().map(this::parseEntry).reduce(new HashMap<>(), (acc, map) -> {
             acc.putAll(map);
             return acc;
         }));
     }
 
-    private Map<String, List<ArpValue>> parseEntry(Map.Entry<String, Map<Long, String>> entry) {
+    private Map<String, List<ArpValue>> parseEntry(Map.Entry<String, Map<Long, Object>> entry) {
         Map<String, List<ArpValue>> result = new HashMap<>();
-        //TODO once we have the new SR database we can also extract the correct source
-        result.put(entry.getKey(), entry.getValue().values().stream().map(value -> new ArpValue(value, "idp")).collect(toList()));
+
+            result.put(
+                entry.getKey(),
+                entry.getValue().values().stream()
+                    .map(value -> arpValue(value)).collect(toList()));
         return result;
+    }
+
+    private ArpValue arpValue(Object o) {
+        //Supports old & new style
+        if  (o instanceof String) {
+            return new ArpValue(String.class.cast(o), "idp");
+        } else {
+            Map<String, String> map = (Map<String, String> ) o;
+            String value = map.getOrDefault("value", "*");
+            value = value.trim().length() == 0 ? "*" : value;
+            String source = map.getOrDefault("source", "idp");
+            return new ArpValue(value, source);
+        }
     }
 
 }

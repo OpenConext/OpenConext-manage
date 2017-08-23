@@ -26,7 +26,8 @@ public class CertificateFormatValidator implements FormatValidator {
         try {
             certificateFactory.generateCertificate(new ByteArrayInputStream(wrappedCert.getBytes()));
         } catch (CertificateException e) {
-            return Optional.of("Invalid certificate");
+            return e.getMessage().endsWith("Invalid encoding: redundant leading 0s") ?
+                Optional.empty() : Optional.of("Invalid certificate: " + e.getMessage());
         }
         return Optional.empty();
     }

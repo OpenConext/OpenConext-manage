@@ -218,7 +218,7 @@ export default class Detail extends React.PureComponent {
         }
         const {errors, isNew} = this.state;
         const hasErrors = Object.keys(errors)
-                .find(key => Object.keys(errors[key]).find(subKey => errors[key][subKey])) !== undefined;
+            .find(key => Object.keys(errors[key]).find(subKey => errors[key][subKey])) !== undefined;
         return <section className="actions">
             <section className="notes">
                 <label htmlFor="revisionnote">{I18n.t("metadata.revisionnote")}</label>
@@ -256,11 +256,18 @@ export default class Detail extends React.PureComponent {
                         return false;
                     }
                     const promise = this.state.isNew ? save : update;
-                    promise(this.state.metaData).then(json => {
-                        this.props.history.replace("/search");
-                        const name = json.data.metaDataFields["name:en"] || json.data.metaDataFields["name:nl"] || "this service";
-                        setFlash(I18n.t("metadata.flash.updated", {name: name, revision: json.revision.number}));
-                    });
+                    const metaData = this.state.metaData;
+                    metaData.data.revisionnote = isEmpty(revisionNote) ? "No revision note" : revisionNote;
+                    promise(metaData)
+                        .then(json => {
+                            if (json.exception) {
+                                setFlash(json.validations, "error");
+                            } else {
+                                this.props.history.replace("/search");
+                                const name = json.data.metaDataFields["name:en"] || json.data.metaDataFields["name:nl"] || "this service";
+                                setFlash(I18n.t("metadata.flash.updated", {name: name, revision: json.revision.number}));
+                            }
+                        });
                 }}>{I18n.t("metadata.submit")}</a>
             </section>
         </section>
@@ -287,7 +294,8 @@ export default class Detail extends React.PureComponent {
         const name = metaData.data.metaDataFields["name:en"] || metaData.data.metaDataFields["name:nl"] || "this service";
         switch (tab) {
             case "connection" :
-                return <Connection metaData={metaData} onChange={this.onChange("connection")} onError={this.onError("connection")}
+                return <Connection metaData={metaData} onChange={this.onChange("connection")}
+                                   onError={this.onError("connection")}
                                    errors={this.state.errors["connection"]}
                                    guest={guest} isNew={isNew} originalEntityId={originalEntityId}/>;
             case "whitelist" :

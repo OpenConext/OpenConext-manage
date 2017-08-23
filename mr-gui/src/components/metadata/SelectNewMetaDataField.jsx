@@ -96,7 +96,8 @@ export default class SelectNewMetaDataField extends React.PureComponent {
                        options={this.options(configuration, metaDataFields)}
                        value={null}
                        searchable={true}
-                       placeholder={placeholder || "Select..."}/>;
+                       placeholder={placeholder || "Select..."}
+                       onFocus={() => setTimeout(() => window.scrollTo(0,document.body.scrollHeight), 150)}/>;
     }
 
 }

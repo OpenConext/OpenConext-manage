@@ -59,7 +59,7 @@ public class ExportController {
     public Map<String, Object> export(@RequestBody MetaData metaData) throws IOException {
         Map<String, Object> result = new HashMap<>();
 
-        ((Map<String, Object>) metaData.getData()).entrySet().removeIf(entry-> entry.getValue() == null);
+        metaData.getData().entrySet().removeIf(entry-> entry.getValue() == null);
 
         Map<String, Object> nested = exporter.exportToMap(metaData, true);
         Map<String, Object> flat = exporter.exportToMap(metaData, false);

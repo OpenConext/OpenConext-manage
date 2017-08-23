@@ -55,4 +55,29 @@ public class ArpDeserializerTest {
         assertTrue(arpAttributes.getAttributes().isEmpty());
     }
 
+
+    @Test
+    public void parseArpNewStyle() throws Exception {
+        String input = "a:7:{s:46:\"urn:mace:dir:attribute-def:eduPersonTargetedID\";a:1:{i:0;a:1:{s:5:\"value\";s:1:\"*\";}}s:38:\"urn:mace:dir:attribute-def:displayName\";a:1:{i:0;a:1:{s:5:\"value\";s:1:\"*\";}}s:29:\"urn:mace:dir:attribute-def:cn\";a:1:{i:0;a:1:{s:5:\"value\";s:1:\"*\";}}s:29:\"urn:mace:dir:attribute-def:sn\";a:1:{i:0;a:1:{s:5:\"value\";s:1:\"*\";}}s:31:\"urn:mace:dir:attribute-def:mail\";a:1:{i:0;a:1:{s:5:\"value\";s:1:\"*\";}}s:47:\"urn:mace:dir:attribute-def:eduPersonAffiliation\";a:1:{i:0;a:1:{s:5:\"value\";s:1:\"*\";}}s:30:\"urn:mace:dir:attribute-def:uid\";a:1:{i:0;a:1:{s:5:\"value\";s:1:\"*\";}}}";
+        ArpAttributes arpAttributes = subject.parseArpAttributes(input);
+
+        assertEquals(7, arpAttributes.getAttributes().size());
+    }
+
+    @Test
+    public void parseNewArpIncludingSource() throws Exception {
+        String input = "a:3:{s:46:\"urn:mace:dir:attribute-def:eduPersonTargetedID\";a:1:{i:0;a:1:{s:5:\"value\";s:1:\"*\";}}s:47:\"urn:mace:dir:attribute-def:eduPersonAffiliation\";a:2:{i:0;a:2:{s:5:\"value\";s:0:\"\";s:6:\"source\";s:5:\"orcid\";}i:1;a:2:{s:5:\"value\";s:4:\"test\";s:6:\"source\";s:5:\"orcid\";}}s:53:\"urn:mace:dir:attribute-def:eduPersonScopedAffiliation\";a:1:{i:0;a:2:{s:5:\"value\";s:4:\"reg*\";s:6:\"source\";s:3:\"sab\";}}}";
+        ArpAttributes arpAttributes = subject.parseArpAttributes(input);
+
+        List<ArpValue> arpValues = arpAttributes.getAttributes().get("urn:mace:dir:attribute-def:eduPersonAffiliation");
+        assertEquals(2,arpValues.size());
+
+        ArpValue arpValue = arpValues.get(0);
+        assertEquals("*", arpValue.getValue());
+        assertEquals("orcid", arpValue.getSource());
+
+        arpValue = arpValues.get(1);
+        assertEquals("test", arpValue.getValue());
+        assertEquals("orcid", arpValue.getSource());
+    }
 }

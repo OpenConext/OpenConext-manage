@@ -10,6 +10,10 @@ server:
 
 features: migration, validation, push
 
+product:
+  name: Metadata Registry
+  organization: OpenConext
+
 metadata_configuration_path: classpath:/metadata_configuration
 metadata_templates_path: classpath:/metadata_templates
 metadata_export_path: classpath:/metadata_export
@@ -27,7 +31,7 @@ spring:
       uri: mongodb://localhost:27017/metadata
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mysql://localhost/metadata_registry?autoReconnect=true&useSSL=false
+    url: jdbc:mysql://localhost/metadata_registry_prod?autoReconnect=true&useSSL=false
     username: root
     password:
     dbcp2:

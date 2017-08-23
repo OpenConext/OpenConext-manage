@@ -161,10 +161,10 @@ export default class WhiteList extends React.Component {
                 {entity.status}
             </td>
             <td>
-                {entity.name}
+                <Link to={`/metadata/${type}/${entity.id}`} target="_blank">{entity.name}</Link>
             </td>
             <td>
-                <Link to={`/metadata/${type}/${entity.id}`} target="_blank">{entity.entityid}</Link>
+                {entity.entityid}
             </td>
         </tr>
     };

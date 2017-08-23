@@ -5,8 +5,10 @@ import {DiffPatcher} from 'jsondiffpatch/src/diffpatcher';
 import htmlFormatter from "jsondiffpatch/src/formatters/html";
 
 import PropTypes from "prop-types";
-
+import cloneDeep from "lodash.clonedeep";
 import CheckBox from "../../components/CheckBox";
+
+import {escapeDeep} from "../../utils/Utils";
 
 import "jsondiffpatch/public/formatters-styles/html.css";
 import "./Revisions.css";
@@ -48,13 +50,17 @@ export default class Revisions extends React.Component {
     };
 
     renderDiff = (revision, previous) => {
-        const rev = {...revision.data};
+        const rev = cloneDeep(revision.data);
+        escapeDeep(rev);
         ignoreInDiff.forEach(ignore => delete rev[ignore]);
-        const prev = {...previous.data};
+        const prev = cloneDeep(previous.data);
+        escapeDeep(prev);
+
         ignoreInDiff.forEach(ignore => delete prev[ignore]);
 
         const diffs = this.differ.diff(prev, rev);
         const html = htmlFormatter.format(diffs);
+        //we need dangerouslySetInnerHTML otherwise the diff has to html in it, but the data is cleansed
         return diffs ?  <p dangerouslySetInnerHTML={{__html: html}}/> : <p>{I18n.t("revisions.identical")}</p>
     };
 

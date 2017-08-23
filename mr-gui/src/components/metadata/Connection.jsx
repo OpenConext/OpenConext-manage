@@ -115,6 +115,12 @@ export default class Connection extends React.PureComponent {
                         </td>
                     </tr>}
                     <tr>
+                        <td className="key">{I18n.t("metadata.revisionnote")}</td>
+                        <td className="value">
+                            <span>{data.revisionnote}</span>
+                        </td>
+                    </tr>
+                    <tr>
                         <td className="key">{I18n.t("metadata.notes")}</td>
                         <td className="value">
                             <textarea rows={3}

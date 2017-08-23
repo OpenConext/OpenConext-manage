@@ -1,3 +1,5 @@
+import escape from "lodash.escape";
+
 export function stop(e) {
     if (e !== undefined && e !== null) {
         e.preventDefault();
@@ -19,4 +21,18 @@ export function isEmpty(obj) {
         return Object.keys(obj).length === 0;
     }
     return false;
+}
+
+export function escapeDeep(obj) {
+    if (!isEmpty(obj)) {
+        Object.keys(obj).forEach(key => {
+            const val = obj[key];
+            if (typeof(val) === "string" || val instanceof String) {
+                obj[key] = escape(val);
+            } else if (typeof(val) === "object" || val instanceof Object) {
+                escapeDeep(val);
+            }
+        });
+
+    }
 }

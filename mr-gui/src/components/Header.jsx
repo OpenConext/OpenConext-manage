@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import {unmountComponentAtNode} from "react-dom";
 import {Link} from "react-router-dom";
 import logo from "../images/logo@2x.png";
+//import logo from "../images/openconext_logo.png";
 import {logOut} from "../api";
 import "./Header.css";
 

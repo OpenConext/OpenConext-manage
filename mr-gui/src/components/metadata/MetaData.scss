@@ -89,7 +89,11 @@
     }
     div.select-new-metadata {
         .Select-menu-outer {
-            margin-bottom: 250px;
+            margin-bottom: 50px;
+            max-height: 300px;
+        }
+        .Select-menu {
+            max-height: 298px;
         }
     }
 

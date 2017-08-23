@@ -24,7 +24,7 @@ function validateResponse(showErrorDialog) {
                     const error = new Error(res.statusText);
                     error.response = res;
                     throw error;
-                }, 100);
+                }, 250);
             }
             throw error;
         }

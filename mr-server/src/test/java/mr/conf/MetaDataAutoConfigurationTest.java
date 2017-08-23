@@ -3,18 +3,15 @@ package mr.conf;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import mr.TestUtils;
 import mr.migration.EntityType;
-import org.apache.commons.io.IOUtils;
 import org.everit.json.schema.ValidationException;
 import org.everit.json.schema.internal.URIFormatValidator;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -38,7 +35,7 @@ public class MetaDataAutoConfigurationTest implements TestUtils {
 
     @Test
     public void testSchemaSpInvalid() throws Exception {
-        testErrors("json/invalid_service_provider.json", EntityType.SP, 4);
+        testErrors("json/invalid_service_provider.json", EntityType.SP, 3);
     }
 
     @Test
