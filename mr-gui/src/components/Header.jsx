@@ -41,7 +41,6 @@ export default class Header extends React.PureComponent {
     render() {
         const currentUser = this.props.currentUser;
         const logo = currentUser.product.organization === "OpenConext" ? logoOpenConext : logoSurfConext;
-        debugger;
         return (
             <div className="header-container">
                 <div className="header">

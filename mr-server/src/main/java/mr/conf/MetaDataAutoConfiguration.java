@@ -7,7 +7,6 @@ import mr.validations.CertificateFormatValidator;
 import mr.validations.NumberFormatValidator;
 import org.everit.json.schema.FormatValidator;
 import org.everit.json.schema.Schema;
-import org.everit.json.schema.ValidationException;
 import org.everit.json.schema.loader.SchemaLoader;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -65,12 +64,7 @@ public class MetaDataAutoConfiguration {
         Schema schema = schemas.computeIfAbsent(type, key -> {
             throw new IllegalArgumentException(String.format("No schema defined for %s", key));
         });
-        try {
-            schema.validate(jsonObject);
-        } catch (ValidationException e) {
-            throw e;
-        }
-
+        schema.validate(jsonObject);
     }
 
     public Set<String> schemaNames() {
@@ -80,7 +74,7 @@ public class MetaDataAutoConfiguration {
     public Object metaDataTemplate(String type) {
         return templates.computeIfAbsent(type, key -> {
             throw new IllegalArgumentException(String.format("No template defined for %s", key));
-        } );
+        });
     }
 
     public List<IndexConfiguration> indexConfigurations(String schemaType) {
@@ -90,6 +84,7 @@ public class MetaDataAutoConfiguration {
     public List<Map<String, Object>> schemaRepresentations() {
         return schemaRepresentations;
     }
+
     public Map<String, Object> schemaRepresentation(EntityType entityType) {
         Optional<Map<String, Object>> schemaRepresentationOptional = schemaRepresentations().stream().filter(map -> map.get("title").equals(entityType.getType())).findFirst();
         return schemaRepresentationOptional.orElseThrow(() -> new IllegalArgumentException(String.format("The %s schema does not exists", entityType.getType())));

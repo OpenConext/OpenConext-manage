@@ -5,11 +5,21 @@
 .detail-metadata {
     @include page;
 
-    section.info {
-        margin: 20px 0;
-        font-size: larger;
-        color: $blue;
+    section.top-detail {
+        margin: 15px 0 10px 0;
+        display: flex;
+        align-items: center;
+
+        section.info {
+            font-size: 18px;
+            font-weight: bold;
+            color: $blue;
+        }
+        a.delete-metadata {
+            margin-left: auto;
+        }
     }
+
 
     section.tabs {
         display: flex;

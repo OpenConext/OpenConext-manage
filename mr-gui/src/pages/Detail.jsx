@@ -216,61 +216,51 @@ export default class Detail extends React.PureComponent {
         if (this.props.currentUser.guest) {
             return null;
         }
-        const {errors, isNew} = this.state;
+        const {errors} = this.state;
         const hasErrors = Object.keys(errors)
             .find(key => Object.keys(errors[key]).find(subKey => errors[key][subKey])) !== undefined;
-        return <section className="actions">
-            <section className="notes">
-                <label htmlFor="revisionnote">{I18n.t("metadata.revisionnote")}</label>
-                <input name="revisionnote" type="text" value={revisionNote}
-                       onChange={e => this.setState({revisionNote: e.target.value})}/>
-            </section>
-            <section className="buttons">
-                <a className="button grey" onClick={e => {
-                    stop(e);
-                    this.setState({
-                        cancelDialogAction: () => this.props.history.replace("/search"),
-                        confirmationDialogAction: () => this.setState({confirmationDialogOpen: false}),
-                        confirmationDialogOpen: true,
-                        leavePage: true
-                    });
-                }}>{I18n.t("metadata.cancel")}</a>
-                {!isNew && <a className="button red" onClick={e => {
-                    stop(e);
-                    this.setState({
-                        confirmationDialogAction: () => {
-                            remove(this.state.metaData).then(res => {
-                                this.props.history.replace("/search");
-                                const name = this.nameOfMetaData(this.state.metaData);
-                                setFlash(I18n.t("metadata.flash.deleted", {name: name}));
-                            });
-                        },
-                        cancelDialogAction: () => this.setState({confirmationDialogOpen: false}),
-                        confirmationDialogOpen: true,
-                        leavePage: false
-                    });
-                }}>{I18n.t("metadata.remove")}</a>}
-                <a className={`button ${hasErrors ? "grey disabled" : "blue"}`} onClick={e => {
-                    stop(e);
-                    if (hasErrors) {
-                        return false;
-                    }
-                    const promise = this.state.isNew ? save : update;
-                    const metaData = this.state.metaData;
-                    metaData.data.revisionnote = isEmpty(revisionNote) ? "No revision note" : revisionNote;
-                    promise(metaData)
-                        .then(json => {
-                            if (json.exception) {
-                                setFlash(json.validations, "error");
-                            } else {
-                                this.props.history.replace("/search");
-                                const name = json.data.metaDataFields["name:en"] || json.data.metaDataFields["name:nl"] || "this service";
-                                setFlash(I18n.t("metadata.flash.updated", {name: name, revision: json.revision.number}));
-                            }
+        return (
+            <section className="actions">
+                <section className="notes">
+                    <label htmlFor="revisionnote">{I18n.t("metadata.revisionnote")}</label>
+                    <input name="revisionnote" type="text" value={revisionNote}
+                           onChange={e => this.setState({revisionNote: e.target.value})}/>
+                </section>
+                <section className="buttons">
+                    <a className="button" onClick={e => {
+                        stop(e);
+                        this.setState({
+                            cancelDialogAction: () => this.props.history.replace("/search"),
+                            confirmationDialogAction: () => this.setState({confirmationDialogOpen: false}),
+                            confirmationDialogOpen: true,
+                            leavePage: true
                         });
-                }}>{I18n.t("metadata.submit")}</a>
+                    }}>{I18n.t("metadata.cancel")}</a>
+                    <a className={`button ${hasErrors ? "grey disabled" : "blue"}`} onClick={e => {
+                        stop(e);
+                        if (hasErrors) {
+                            return false;
+                        }
+                        const promise = this.state.isNew ? save : update;
+                        const metaData = this.state.metaData;
+                        metaData.data.revisionnote = isEmpty(revisionNote) ? "No revision note" : revisionNote;
+                        promise(metaData)
+                            .then(json => {
+                                if (json.exception) {
+                                    setFlash(json.validations, "error");
+                                } else {
+                                    this.props.history.replace("/search");
+                                    const name = json.data.metaDataFields["name:en"] || json.data.metaDataFields["name:nl"] || "this service";
+                                    setFlash(I18n.t("metadata.flash.updated", {
+                                        name: name,
+                                        revision: json.revision.number
+                                    }));
+                                }
+                            });
+                    }}>{I18n.t("metadata.submit")}</a>
+                </section>
             </section>
-        </section>
+        );
     };
 
     renderTab = tab => {
@@ -333,7 +323,7 @@ export default class Detail extends React.PureComponent {
     render() {
         const {
             loaded, notFound, metaData, whiteListing, revisions, selectedTab, revisionNote,
-            confirmationDialogOpen, confirmationDialogAction, cancelDialogAction, leavePage
+            confirmationDialogOpen, confirmationDialogAction, cancelDialogAction, leavePage, isNew
         } = this.state;
         const type = metaData.type;
         const tabs = type === "saml20_sp" ? tabsSp : tabsIdP;
@@ -351,7 +341,26 @@ export default class Detail extends React.PureComponent {
                                     confirm={confirmationDialogAction}
                                     question={leavePage ? undefined : I18n.t("metadata.deleteConfirmation", {name: name})}
                                     leavePage={leavePage}/>
-                {renderContent && <section className="info">{`${typeMetaData} - ${name}`}</section>}
+                {renderContent &&
+                <section className="top-detail">
+                    <section className="info">{`${typeMetaData} - ${name}`}</section>
+                    {!isNew && <a className="button red delete-metadata" onClick={e => {
+                        stop(e);
+                        this.setState({
+                            confirmationDialogAction: () => {
+                                remove(this.state.metaData).then(res => {
+                                    this.props.history.replace("/search");
+                                    const name = this.nameOfMetaData(this.state.metaData);
+                                    setFlash(I18n.t("metadata.flash.deleted", {name: name}));
+                                });
+                            },
+                            cancelDialogAction: () => this.setState({confirmationDialogOpen: false}),
+                            confirmationDialogOpen: true,
+                            leavePage: false
+                        });
+                    }}>{I18n.t("metadata.remove")}</a>}
+                </section>
+                }
                 {renderNotFound && <section>{I18n.t("metadata.notFound")}</section>}
                 {!notFound && <section className="tabs">
                     {tabs.map(tab => this.renderTab(tab))}

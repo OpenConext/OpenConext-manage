@@ -115,11 +115,11 @@ export default class API extends React.PureComponent {
                 <tbody>
                 {searchResults.map(entity => <tr key={entity.data.entityid}>
                     <td className="state">{I18n.t(`metadata.${entity.data.state}`)}</td>
-                    <td className="name">{entity.data.metaDataFields["name:en"] || entity.data.metaDataFields["name:nl"]}</td>
-                    <td className="entityId">
+                    <td className="name">
                         <Link to={`/metadata/${selectedType}/${entity["_id"]}`}
-                              target="_blank">{entity.data.entityid}</Link>
-                    </td>
+                              target="_blank">{entity.data.metaDataFields["name:en"] || entity.data.metaDataFields["name:nl"]}</Link>
+                        </td>
+                    <td className="entityId">{entity.data.entityid}</td>
                     {Object.keys(searchAttributes).map(attr =>
                         <td key={attr}>{entity.data.metaDataFields[attr]}</td>)}
 
