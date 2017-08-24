@@ -5,6 +5,7 @@ import mr.validations.BooleanFormatValidator;
 import mr.validations.CertificateFormatValidator;
 import mr.validations.JSONFormatValidator;
 import mr.validations.NumberFormatValidator;
+import mr.validations.PatternFormatValidator;
 import mr.validations.URLFormatValidator;
 import mr.validations.UUIDFormatValidator;
 import mr.validations.XMLFormatValidator;
@@ -37,7 +38,8 @@ public class ValidationController {
             new URLFormatValidator(),
             new XMLFormatValidator(),
             new JSONFormatValidator(),
-            new UUIDFormatValidator()).stream().collect(toMap(FormatValidator::formatName, Function.identity()));
+            new UUIDFormatValidator(),
+            new PatternFormatValidator()).stream().collect(toMap(FormatValidator::formatName, Function.identity()));
     }
 
     @PostMapping("/client/validation")

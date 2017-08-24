@@ -87,7 +87,8 @@ I18n.translations.en = {
             entityid:"Entity ID",
             name: "Name"
         },
-        no_results: "No results"
+        no_results: "No results",
+        error: "Invalid input: dangling meta character '*'"
 
     },
 

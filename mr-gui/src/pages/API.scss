@@ -82,6 +82,11 @@
                         border: solid 1px $red;
                     }
                 }
+                span.error {
+                    display: inline-block;
+                    margin-top: 5px;
+                    color: $red;
+                }
             }
         }
     }
