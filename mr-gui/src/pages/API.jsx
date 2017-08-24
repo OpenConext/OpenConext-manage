@@ -8,6 +8,7 @@ import SelectMetaDataType from "../components/metadata/SelectMetaDataType";
 import "./API.css";
 import "react-pretty-json/assets/json-view.css";
 import SelectNewMetaDataField from "../components/metadata/SelectNewMetaDataField";
+import debounce from "lodash.debounce";
 
 export default class API extends React.PureComponent {
 
@@ -43,19 +44,24 @@ export default class API extends React.PureComponent {
     };
 
     changeSearchValue = key => e => {
+        const previousValue = this.state.searchAttributes[key];
         const newSearchAttributes = {...this.state.searchAttributes};
         const value = e.target.value;
         newSearchAttributes[key] = value;
         this.setState({searchAttributes: newSearchAttributes});
 
-        if (value && value.indexOf("*") > -1) {
-            validation("pattern", value).then(result => {
-                const newErrorAttributes = {...this.state.errorAttributes};
-                newErrorAttributes[key] = !result;
-                this.setState({errorAttributes: newErrorAttributes})
-            });
+        if ((previousValue && previousValue.indexOf("*") > -1) || (value && value.indexOf("*") > -1)) {
+            this.delayedPatternValidation(key, value);
         }
     };
+
+    delayedPatternValidation = debounce((key, value) =>
+        validation("pattern", value).then(result =>{
+            const newErrorAttributes = {...this.state.errorAttributes};
+            newErrorAttributes[key] = !result;
+            this.setState({errorAttributes: newErrorAttributes})
+        }), 250);
+
 
     deleteSearchField = key => e => {
         const newSearchAttributes = {...this.state.searchAttributes};
@@ -177,7 +183,7 @@ export default class API extends React.PureComponent {
                 <SelectNewMetaDataField configuration={conf} onChange={this.addSearchKey}
                                         metaDataFields={searchAttributes} placeholder={"Search and add metadata keys"}/>
 
-                <a className="reset button grey" onClick={this.reset}>Reset<i className="fa fa-times"></i></a>
+                <a className="reset button" onClick={this.reset}>Reset<i className="fa fa-times"></i></a>
                 <a className={`button ${valid ? "green" : "disabled grey"}`} onClick={this.doSearch}>Search<i
                     className="fa fa-search-plus"></i></a>
 
