@@ -85,5 +85,6 @@
     "mdrpi:RegistrationPolicy:en" : "https://wiki.surfnet.nl/display/eduGAIN/EduGAIN",
     "name:en" : "Nikhef Service Proxy",
     "name:nl" : "Nikhef schakelpunt voor diensten"
-  }
+  },
+  "type" : "saml20-sp"
 }

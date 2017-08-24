@@ -32,8 +32,7 @@ public class MetaDataFeedParser {
     private static final List<String> languages = Arrays.asList("en", "nl");
     private static final String ATTRIBUTES = "attributes";
 
-    public Map<String, Object> importXML(Optional<EntityType> type,
-                                         Resource xml,
+    public Map<String, Object> importXML(Resource xml,
                                          Optional<String> entityIDOptional,
                                          MetaDataAutoConfiguration metaDataAutoConfiguration) throws XMLStreamException, IOException {
         //despite it's name, the XMLInputFactoryImpl is not thread safe
@@ -51,6 +50,9 @@ public class MetaDataFeedParser {
         boolean inCorrectEntityDescriptor = !entityIDOptional.isPresent();
         boolean inAttributeConsumingService = false;
         boolean isSp = false;
+
+        String entityType = EntityType.IDP.getJanusDbValue();
+        result.put("type", entityType);
 
         Set<String> arpKeys = new HashSet<>();
 
@@ -73,6 +75,16 @@ public class MetaDataFeedParser {
                             if (inCorrectEntityDescriptor) {
                                 isSp = true;
                                 arpKeys = arpKeys(EntityType.SP, metaDataAutoConfiguration, isSp);
+
+                                Map<String, Object> arp = new TreeMap<>();
+                                arp.put("enabled", false);
+                                Map<String, Object> attributes = new TreeMap<>();
+
+                                arp.put(ATTRIBUTES, attributes);
+                                result.put(ARP, arp);
+
+                                entityType = EntityType.SP.getJanusDbValue();
+                                result.put("type", entityType);
                             }
                         case "KeyDescriptor":
                             if (!inCorrectEntityDescriptor) {

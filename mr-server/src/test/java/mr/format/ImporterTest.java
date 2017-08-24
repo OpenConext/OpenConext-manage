@@ -34,12 +34,12 @@ public class ImporterTest implements TestUtils {
 
     @Test
     public void importSPMetaData() throws IOException, XMLStreamException {
-        doImportSPMetaData(Optional.of(EntityType.SP));
+        doImportSPMetaData();
     }
 
-    private void doImportSPMetaData(Optional<EntityType> optionalEntityType) throws IOException, XMLStreamException {
+    private void doImportSPMetaData() throws IOException, XMLStreamException {
         String xml = readFile("/xml/metadata_import_saml20_sp.xml");
-        Map<String, Object> result = subject.importXML(optionalEntityType, new ByteArrayResource(xml.getBytes()), Optional.empty());
+        Map<String, Object> result = subject.importXML(new ByteArrayResource(xml.getBytes()), Optional.empty());
 
         assertEquals("https://teams.surfconext.nl/shibboleth", result.get("entityid"));
 
@@ -51,12 +51,12 @@ public class ImporterTest implements TestUtils {
 
     @Test
     public void importIdPMetaData() throws IOException, XMLStreamException {
-        doImportIdPMetaData(Optional.of(EntityType.IDP));
+        doImportIdPMetaData();
     }
 
-    private void doImportIdPMetaData(Optional<EntityType> optionalEntityType) throws IOException, XMLStreamException {
+    private void doImportIdPMetaData() throws IOException, XMLStreamException {
         String xml = readFile("/xml/metadata_import_saml20_idp.xml");
-        Map<String, Object> result = subject.importXML(optionalEntityType, new ByteArrayResource(xml.getBytes()), Optional.empty());
+        Map<String, Object> result = subject.importXML(new ByteArrayResource(xml.getBytes()), Optional.empty());
 
         assertEquals("https://beta.surfnet.nl/simplesaml/saml2/idp/metadata.php", result.get("entityid"));
 
@@ -69,7 +69,7 @@ public class ImporterTest implements TestUtils {
     @Test
     public void importSpMetaDataWithARP() throws IOException, XMLStreamException {
         Resource resource = new GZIPClassPathResource("/xml/eduGain.xml.gz");
-        Map<String, Object> result = subject.importXML(Optional.empty(), resource, Optional.of("https://wayf.nikhef.nl/wayf/sp"));
+        Map<String, Object> result = subject.importXML(resource, Optional.of("https://wayf.nikhef.nl/wayf/sp"));
 
         String json = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(result);
         String expected = readFile("json/expected_imported_metadata_edugain.json");

@@ -27,7 +27,7 @@ import static java.util.stream.Collectors.toList;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
-@SuppressWarnings("checked")
+@SuppressWarnings("unchecked")
 public class Importer {
 
     public static final String META_DATA_FIELDS = "metaDataFields";
@@ -41,8 +41,8 @@ public class Importer {
         this.metaDataAutoConfiguration = metaDataAutoConfiguration;
     }
 
-    public Map<String, Object> importXML(Optional<EntityType> type, Resource resource, Optional<String> entityId) throws IOException, XMLStreamException {
-        return metaDataFeedParser.importXML(type, resource, entityId, metaDataAutoConfiguration);
+    public Map<String, Object> importXML(Resource resource, Optional<String> entityId) throws IOException, XMLStreamException {
+        return metaDataFeedParser.importXML(resource, entityId, metaDataAutoConfiguration);
     }
 
     public Map<String, Object> importJSON(Optional<EntityType> optionalEntityType, Map<String, Object> data) throws JsonProcessingException {
@@ -97,13 +97,12 @@ public class Importer {
     }
 
     private void flatten(String keyPrefix, Map<String, Object> value, Map<String, Object> target) {
-        value.entrySet().forEach(entry -> {
-            Object entryValue = entry.getValue();
+        value.forEach((key, entryValue) -> {
             if (entryValue instanceof String) {
-                target.put(keyPrefix + ":" + entry.getKey(), entryValue);
+                target.put(keyPrefix + ":" + key, entryValue);
             }
             if (entryValue instanceof Map) {
-                this.flatten(keyPrefix + ":" + entry.getKey(), (Map<String, Object>) entryValue, target);
+                this.flatten(keyPrefix + ":" + key, (Map<String, Object>) entryValue, target);
             }
         });
     }

@@ -27,6 +27,9 @@ export default class Detail extends React.PureComponent {
 
     constructor(props) {
         super(props);
+        const type = isEmpty(props.newMetaData) ?
+            this.props.match.params.type : props.newMetaData.connection.type.value.replace("-", "_");
+        const id = isEmpty(props.newMetaData) ? this.props.match.params.id : "new";
         this.state = {
             metaData: {},
             whiteListing: [],
@@ -42,24 +45,27 @@ export default class Detail extends React.PureComponent {
             errors: {},
             changes: {},
             isNew: true,
-            originalEntityId: undefined
+            originalEntityId: undefined,
+            type: type,
+            id: id
         };
     }
 
     componentDidMount() {
         window.scrollTo(0, 0);
-        const {type, id} = this.props.match.params;
+        const {newMetaData} = this.props;
+        const {type, id} = this.state;
         const isNew = id === "new";
         const promise = isNew ? template(type) : detail(type, id);
         promise.then(metaData => {
-            const isSp = metaData.type === "saml20_sp";
+            const isSp = (type === "saml20_sp");
             const whiteListingType = isSp ? "saml20_idp" : "saml20_sp";
             const errorKeys = isSp ? tabsSp : tabsIdP;
             this.setState({
                 metaData: metaData,
                 isNew: isNew,
                 originalEntityId: metaData.data.entityid,
-                loaded: true,
+                loaded: isEmpty(newMetaData),
                 errors: errorKeys.reduce((acc, tab) => {
                     acc[tab] = {};
                     return acc;
@@ -69,8 +75,17 @@ export default class Detail extends React.PureComponent {
                     return acc;
                 }, {})
             });
-
-            this.validate(metaData, this.props.configuration, type);
+            if (!isEmpty(newMetaData)) {
+                this.applyImportChanges(newMetaData, {
+                    "connection": true,
+                    "metaDataFields": true,
+                    "allowedEntities": true,
+                    "disableConsent": true,
+                    "arp": true
+                });
+            } else {
+                this.validate(metaData, this.props.configuration, type);
+            }
 
             whiteListing(whiteListingType).then(whiteListing => {
                 this.setState({whiteListing: whiteListing});
@@ -204,11 +219,21 @@ export default class Detail extends React.PureComponent {
                 }
             });
         }
-        this.setState({metaData: {...this.state.metaData, data: newData}});
         const changes = Object.keys(applyChangesFor).filter(key => applyChangesFor[key]);
+        const prefix = isEmpty(this.props.newMetaData) ? "" : "new_";
+
+        const newMetaData = {...this.state.metaData, data: newData};
+        this.setState({
+                selectedTab: "connection",
+                changes: newChanges,
+                metaData: newMetaData,
+                loaded: true
+            },
+            this.validate(newMetaData, this.props.configuration, this.state.type));
+
         if (changes.length > 0) {
-            setFlash(I18n.t("import.applyImportChangesFlash", {changes: changes.join(", ")}), "warning");
-            this.setState({selectedTab: "connection", changes: newChanges});
+            setFlash(I18n.t(`import.${prefix}applyImportChangesFlash`, {changes: changes.join(", ")}), "warning");
+
         }
     };
 
@@ -278,7 +303,7 @@ export default class Detail extends React.PureComponent {
 
 
     renderCurrentTab = (tab, metaData, whiteListing, revisions) => {
-        const configuration = this.props.configuration.find(conf => conf.title === this.props.match.params.type);
+        const configuration = this.props.configuration.find(conf => conf.title === this.state.type);
         const guest = this.props.currentUser.guest;
         const {isNew, originalEntityId} = this.state;
         const name = metaData.data.metaDataFields["name:en"] || metaData.data.metaDataFields["name:nl"] || "this service";
@@ -313,7 +338,9 @@ export default class Detail extends React.PureComponent {
             case "export":
                 return <Export metaData={metaData}/>;
             case "import":
-                return <Import configuration={configuration} metaData={metaData} guest={guest}
+                return <Import metaData={metaData}
+                               guest={guest}
+                               newEntity={false}
                                applyImportChanges={this.applyImportChanges}/>;
             default:
                 throw new Error(`Unknown tab ${tab}`);
@@ -376,5 +403,6 @@ Detail.propTypes = {
     history: PropTypes.object.isRequired,
     currentUser: PropTypes.object.isRequired,
     configuration: PropTypes.array.isRequired,
+    newMetaData: PropTypes.object
 };
 

@@ -9,6 +9,7 @@ import SelectState from "./SelectState";
 import FormatInput from "./../FormatInput";
 
 import "./Connection.css";
+import {isEmpty} from "../../utils/Utils";
 
 export default class Connection extends React.PureComponent {
 
@@ -21,6 +22,11 @@ export default class Connection extends React.PureComponent {
 
     componentDidMount() {
         window.scrollTo(0, 0);
+        const {isNew, metaData} = this.props;
+        const {entityid} = metaData.data;
+        if (isNew && !isEmpty(entityid)) {
+            this.validateEntityId({target: {value: entityid}});
+        }
     }
 
     onError = key => value => this.props.onError(key, value);
@@ -81,7 +87,7 @@ export default class Connection extends React.PureComponent {
                                             onBlur={this.validateEntityId}
                             />
                             {entityIdAlreadyExists &&
-                            <p className="error">{I18n.t("metadata.entityIdAlreadyExists",{entityid: data.entityid})}</p>}
+                            <p className="error">{I18n.t("metadata.entityIdAlreadyExists", {entityid: data.entityid})}</p>}
                         </td>
                     </tr>
                     <tr>

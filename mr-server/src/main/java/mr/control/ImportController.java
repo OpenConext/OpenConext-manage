@@ -39,7 +39,7 @@ public class ImportController {
     public Map<String, Object> importUrl(@Validated @RequestBody Import importRequest) {
         try {
             Resource resource = new UrlResource(new URL(importRequest.getUrl()));
-            Map<String, Object> result = this.importer.importXML(getType(importRequest.getType()), resource, Optional.ofNullable(importRequest.getEntityId()));
+            Map<String, Object> result = this.importer.importXML( resource, Optional.ofNullable(importRequest.getEntityId()));
             result.put("metadataurl", importRequest.getUrl());
             return result;
         } catch (IOException | XMLStreamException e) {
@@ -48,10 +48,10 @@ public class ImportController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping(value = "/client/import/xml/{type}")
-    public Map<String, Object> importXml(@PathVariable("type") String type, @Validated @RequestBody XML container) {
+    @PostMapping(value = "/client/import/xml")
+    public Map<String, Object> importXml(@Validated @RequestBody XML container) {
         try {
-            return this.importer.importXML(getType(type), new ByteArrayResource(container.getXml().getBytes()), Optional.ofNullable(container.getEntityId()));
+            return this.importer.importXML(new ByteArrayResource(container.getXml().getBytes()), Optional.ofNullable(container.getEntityId()));
         } catch (IOException | XMLStreamException e) {
             return Collections.singletonMap("errors", Collections.singletonList(e.toString()));
         }

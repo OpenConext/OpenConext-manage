@@ -110,7 +110,8 @@ class App extends React.PureComponent {
                                render={props => <Detail currentUser={currentUser}
                                                         configuration={configuration} {...props}/>}/>
                         <Route path="/import"
-                               render={props => <ImportMetaData configuration={configuration} {...props}/>}/>
+                               render={props => <ImportMetaData currentUser={currentUser}
+                                                                configuration={configuration} {...props}/>}/>
                         <Route path="/api"
                                render={props => <API configuration={configuration} {...props}/>}/>
                         <ProtectedRoute path="/system"

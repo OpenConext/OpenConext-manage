@@ -171,7 +171,9 @@ I18n.translations.en = {
         validationErrors: "The import validation against the {{type}} schema failed. Correct the errors and import again.",
         nothingChanged: "The imported metadata is exactly the same as the current metadata. Nothing to import...",
         resultsInfo: "Delta of current metadata and the imported metadata",
+        new_resultsInfo: "Overview of the imported metadata",
         resultsSubInfo: "Select the metadata parts to add / replace",
+        new_resultsSubInfo: "Select the metadata parts to add",
         headers: {
             include: "Include",
             name: "Name",
@@ -185,10 +187,18 @@ I18n.translations.en = {
         allowedEntities: "Apply replacement of the Whitelist?",
         disableConsent: "Apply replacement of the Disabled Consent?",
         arp: "Apply replacement of the ARP?",
+        new_connection: "Add Connection attributes?",
+        new_metaDataFields: "Add Metadata fields",
+        new_allowedEntities: "Add Whitelist?",
+        new_disableConsent: "Add Disabled Consent?",
+        new_arp: "Add ARP?",
         arpEnabled: "ARP enabled?",
         applyImportChanges: "Import changes",
         applyImportChangesInfo: "Note that after importing the changes you still need to submit a new revision to persist the changes",
-        applyImportChangesFlash: "{{changes}} were updated. Note that you still need to submit a new revision to persist the changes"
+        applyImportChangesFlash: "{{changes}} were updated. Note that you still need to submit a new revision to persist the changes",
+        new_applyImportChanges: "Import new metadata",
+        new_applyImportChangesInfo: "Note that after importing the new metadata you still need to submit the new metadata to persist the changes",
+        new_applyImportChangesFlash: "{{changes}} were imported. Note that you still need to submit the new metadata to persist the changes"
     },
 
     clipboard: {

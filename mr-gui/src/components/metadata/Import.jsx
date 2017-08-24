@@ -5,7 +5,7 @@ import CodeMirror from "react-codemirror";
 import "codemirror/mode/javascript/javascript";
 import "codemirror/mode/xml/xml";
 
-import {stop} from "../../utils/Utils";
+import {isEmpty, stop} from "../../utils/Utils";
 import {importMetaDataJSON, importMetaDataUrl, importMetaDataXML, validation} from "../../api";
 
 import CheckBox from "../../components/CheckBox";
@@ -47,7 +47,6 @@ export default class Import extends React.Component {
     sortArpArrayValues = (a, b) => a.source === b.source ? a.value.localeCompare(b.value) : a.source.localeCompare(b.source);
 
     arpChanged = (current, imported) => {
-        debugger;
         if (!current.enabled && !imported.enabled) {
             return false;
         }
@@ -161,7 +160,6 @@ export default class Import extends React.Component {
                 newState.results = undefined;
                 this.setState({...newState});
             } else {
-                debugger;
                 this.resultsToMap(json);
                 this.setState({
                     results: json,
@@ -170,11 +168,11 @@ export default class Import extends React.Component {
                     errorsXml: undefined,
                     selectedTab: "results",
                     applyChangesFor: {
-                        "allowedEntities": json.allowedEntities,
-                        "disableConsent": json.disableConsent,
-                        "arp": json.arp,
-                        "metaDataFields": json.metaDataFields,
-                        "connection": json.connection
+                        "allowedEntities": !isEmpty(json.allowedEntities),
+                        "disableConsent": !isEmpty(json.disableConsent),
+                        "arp": !isEmpty(json.arp),
+                        "metaDataFields": !isEmpty(json.metaDataFields),
+                        "connection": !isEmpty(json.connection)
                     }
                 });
             }
@@ -184,13 +182,12 @@ export default class Import extends React.Component {
     importUrl = e => {
         stop(e);
         const {url, entityId} = this.state;
-        const {type} = this.props.metaData;
         validation("url", url).then(result => {
             this.setState({
                 invalidUrl: !result
             });
             if (result) {
-                this.doImport(importMetaDataUrl(type, url, entityId), "errorsUrl");
+                this.doImport(importMetaDataUrl(url, entityId), "errorsUrl");
             }
         });
     };
@@ -212,13 +209,12 @@ export default class Import extends React.Component {
     importXml = e => {
         stop(e);
         const {xml} = this.state;
-        const {type} = this.props.metaData;
         validation("xml", xml).then(result => {
             this.setState({
                 invalidXml: !result
             });
             if (result) {
-                this.doImport(importMetaDataXML(type, xml), "errorsJson");
+                this.doImport(importMetaDataXML(xml), "errorsJson");
             }
         });
 
@@ -235,60 +231,70 @@ export default class Import extends React.Component {
         }
     };
 
-    renderKeyValueTable = (keyValues, headers, name) =>
-        <table>
-            <thead>
-            <tr>
-                <th className="title" colSpan={4}>
-                    <CheckBox name={name}
-                              value={this.state.applyChangesFor[name]}
-                              onChange={this.changeApplyChangesFor(name, true)}
-                              info={I18n.t(`import.${name}`)}/></th>
-            </tr>
-            <tr>
-                {headers.map(header => <th key={header} className={header}>{I18n.t(`import.headers.${header}`)}</th>)}
-            </tr>
-            </thead>
-            <tbody>
-            {Object.keys(keyValues).map(key => {
-                const prop = keyValues[key];
-                return (
-                    <tr key={key}>
-                        <td className="isCheckBox">{<CheckBox name={key} value={prop.selected}
-                                                              onChange={this.changeMetaPropertySelected(name, key)}/>}</td>
-                        <td>{key}</td>
-                        <td>{prop.current ? prop.current.toString() : ""}</td>
-                        <td>{prop.value.toString()}</td>
-                    </tr> )
-            })}
-            </tbody>
-        </table>;
+    renderKeyValueTable = (keyValues, headers, name, newEntity) => {
+        const applyChangesFor = this.state.applyChangesFor[name];
+        const prefix = newEntity ? "new_" : "";
+        return (
+            <table>
+                <thead>
+                <tr>
+                    <th className="title" colSpan={4}>
+                        <CheckBox name={name}
+                                  value={applyChangesFor}
+                                  onChange={this.changeApplyChangesFor(name, true)}
+                                  info={I18n.t(`import.${prefix}${name}`)}/></th>
+                </tr>
+                <tr>
+                    {headers.map(header => <th key={header}
+                                               className={header}>{I18n.t(`import.headers.${header}`)}</th>)}
+                </tr>
+                </thead>
+                <tbody>
+                {Object.keys(keyValues).map(key => {
+                    const prop = keyValues[key];
+                    return (
+                        <tr key={key}>
+                            <td className="isCheckBox">{<CheckBox name={key} value={prop.selected}
+                                                                  onChange={this.changeMetaPropertySelected(name, key)}/>}</td>
+                            <td>{key}</td>
+                            <td>{prop.current ? prop.current.toString() : ""}</td>
+                            <td>{prop.value.toString()}</td>
+                        </tr> )
+                })}
+                </tbody>
+            </table>
+        );
+    }
 
-    renderAllowedEntitiesDisableContentTable = (entities, currentEntities, name, entryName) =>
-        <table>
-            <thead>
-            <tr>
-                <th className="title" colSpan={2}><CheckBox name={name} value={this.state.applyChangesFor[name]}
-                                                            onChange={this.changeApplyChangesFor(name)}
-                                                            info={I18n.t(`import.${name}`)}/></th>
-            </tr>
-            <tr>
-                <th className="left">{I18n.t("import.currentEntries", {name: entryName})}</th>
-                <th className="right">{I18n.t("import.newEntries", {name: entryName})}</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>
-                    <ul className="entities">{currentEntities.map(entity => <li
-                        key={entity.name}>{entity.name}</li>)}</ul>
-                </td>
-                <td>
-                    <ul className="entities">{entities.map(entity => <li key={entity.name}>{entity.name}</li>)}</ul>
-                </td>
-            </tr>
-            </tbody>
-        </table>;
+    renderAllowedEntitiesDisableContentTable = (entities, currentEntities, name, entryName, newEntity) => {
+        const prefix = newEntity ? "new_" : "";
+        return (
+            <table>
+                <thead>
+                <tr>
+                    <th className="title" colSpan={2}><CheckBox name={name} value={this.state.applyChangesFor[name]}
+                                                                onChange={this.changeApplyChangesFor(name)}
+                                                                info={I18n.t(`import.${prefix}${name}`)}/></th>
+                </tr>
+                <tr>
+                    <th className="left">{I18n.t("import.currentEntries", {name: entryName})}</th>
+                    <th className="right">{I18n.t("import.newEntries", {name: entryName})}</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>
+                        <ul className="entities">{currentEntities.map(entity => <li
+                            key={entity.name}>{entity.name}</li>)}</ul>
+                    </td>
+                    <td>
+                        <ul className="entities">{entities.map(entity => <li key={entity.name}>{entity.name}</li>)}</ul>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        );
+    };
 
     nameOfArpKey = key => key.substring(key.lastIndexOf(":") + 1);
 
@@ -298,6 +304,7 @@ export default class Import extends React.Component {
             <td className="arpKey">{this.nameOfArpKey(key)}</td>
             <td className="arpAttribute">
                 <table className="arpValues">
+                    <tbody>
                     {arpValues.map(arpValue =>
                         <tr key={`${arpValue.source}-${arpValue.value}`}>
                             <td>
@@ -306,6 +313,7 @@ export default class Import extends React.Component {
                                 <span className="arpValue">{arpValue.value}</span>
                             </td>
                         </tr>)}
+                    </tbody>
                 </table>
             </td>
         </tr>
@@ -337,12 +345,14 @@ export default class Import extends React.Component {
                 </tr>
                 <tr>
                     <td>
-                        <table
-                            className="arp">{Object.keys(currentArp.attributes).map(key => this.renderArpAttribute(key, currentArp.attributes[key]))}</table>
+                        <table className="arp">
+                            {Object.keys(currentArp.attributes).map(key => this.renderArpAttribute(key, currentArp.attributes[key]))}
+                        </table>
                     </td>
                     <td>
-                        <table
-                            className="arp">{Object.keys(arp.attributes).map(key => this.renderArpAttribute(key, arp.attributes[key]))}</table>
+                        <table className="arp">
+                            {Object.keys(arp.attributes).map(key => this.renderArpAttribute(key, arp.attributes[key]))}
+                        </table>
                     </td>
                 </tr>
                 </tbody>
@@ -353,7 +363,10 @@ export default class Import extends React.Component {
 
     renderResults = () => {
         const {results, errorsXml, errorsUrl, errorsJson, applyChangesFor} = this.state;
+        const {newEntity} = this.props;
+        const prefix = newEntity ? "new_" : "";
         const metaData = this.props.metaData.data;
+
         if (errorsUrl || errorsJson || errorsXml) {
             return this.renderErrors(errorsXml || errorsJson || errorsUrl);
         }
@@ -370,25 +383,24 @@ export default class Import extends React.Component {
         return (
             <section className="import-results">
                 <div className="import-results-info">
-                    <h2>{I18n.t("import.resultsInfo")}</h2>
-                    <p>{I18n.t("import.resultsSubInfo")}</p>
+                    <h2>{I18n.t(`import.${prefix}resultsInfo`)}</h2>
+                    <p>{I18n.t(`import.${prefix}resultsSubInfo`)}</p>
                 </div>
-                {results.metaDataFields && this.renderKeyValueTable(results.metaDataFields, headers, "metaDataFields")}
-                {results.connection && this.renderKeyValueTable(results.connection, headers, "connection")}
+                {results.metaDataFields && this.renderKeyValueTable(results.metaDataFields, headers, "metaDataFields", newEntity)}
+                {results.connection && this.renderKeyValueTable(results.connection, headers, "connection", newEntity)}
                 {results.allowedEntities && this.renderAllowedEntitiesDisableContentTable(
-                    results.allowedEntities, metaData.allowedEntities, "allowedEntities", "whitelist")}
+                    results.allowedEntities, metaData.allowedEntities, "allowedEntities", "whitelist", newEntity)}
                 {results.disableConsent && this.renderAllowedEntitiesDisableContentTable(
-                    results.disableConsent, metaData.disableConsent, "disableConsent", "disabled consennt")}
-                {results.arp && this.renderArpTable(
-                    results.arp, metaData.arp)}
+                    results.disableConsent, metaData.disableConsent, "disableConsent", "disabled consent", newEntity)}
+                {results.arp && this.renderArpTable(results.arp, metaData.arp)}
                 <div className="result-actions">
-                    <span>{I18n.t("import.applyImportChangesInfo")}</span>
+                    <span>{I18n.t(`import.${prefix}applyImportChangesInfo`)}</span>
                     <a className={`button ${enabled ? "green" : "grey disabled"}`} onClick={e => {
                         stop(e);
                         if (enabled) {
                             this.props.applyImportChanges(this.state.results, this.state.applyChangesFor);
                         }
-                    }}>{I18n.t("import.applyImportChanges")}<i className="fa fa-cloud-upload"></i>
+                    }}>{I18n.t(`import.${prefix}applyImportChanges`)}<i className="fa fa-cloud-upload"></i>
                     </a>
                 </div>
             </section>
@@ -517,8 +529,8 @@ export default class Import extends React.Component {
 
 Import.propTypes = {
     metaData: PropTypes.object.isRequired,
-    configuration: PropTypes.object.isRequired,
     guest: PropTypes.bool.isRequired,
+    newEntity: PropTypes.bool.isRequired,
     applyImportChanges: PropTypes.func.isRequired
 };
 
