@@ -26,6 +26,17 @@
         <md:AssertionConsumerService Binding="urn:oasis:names:tc:SAML:2.0:bindings:PAOS"
                                      Location="https://teams.surfconext.nl/Shibboleth.sso/SAML2/ECP"
                                      index="4"/>
+        <md:AttributeConsumingService index="0">
+            <md:ServiceName xml:lang="en">SURFconext Teams | SURFnet</md:ServiceName>
+            <md:ServiceName xml:lang="nl">SURFconext Teams | SURFnet</md:ServiceName>
+            <md:ServiceDescription xml:lang="en">Teams for SURFconext.</md:ServiceDescription>
+            <md:ServiceDescription xml:lang="nl">Teams voor SURFconext.</md:ServiceDescription>
+            <md:RequestedAttribute Name="urn:mace:dir:attribute-def:displayName"/>
+            <md:RequestedAttribute Name="urn:mace:dir:attribute-def:mail"/>
+            <md:RequestedAttribute Name="urn:mace:dir:attribute-def:isMemberOf"/>
+            <md:RequestedAttribute Name="urn:mace:dir:attribute-def:uid"/>
+            <md:RequestedAttribute Name="urn:mace:terena@org:attribute-def:schacHomeOrganization"/>
+        </md:AttributeConsumingService>
     </md:SPSSODescriptor>
     <md:Organization>
         <md:OrganizationName xml:lang="en">SURFnet BV</md:OrganizationName>

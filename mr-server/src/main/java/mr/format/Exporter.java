@@ -20,6 +20,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -56,6 +57,7 @@ public class Exporter {
 
             this.addOrganizationName(data);
             this.addValidUntil(data);
+            this.addAttributeConsumingService(data);
 
             mustache.execute(writer, data).flush();
             String xml = writer.toString();
@@ -136,6 +138,23 @@ public class Exporter {
         if (StringUtils.hasText(url)) {
             metaDataFields.put("OrganizationURL", url);
         }
+    }
+
+    private void addAttributeConsumingService(Map data) {
+        Map metaDataFields = Map.class.cast(data.get("metaDataFields"));
+        String name = String.class.cast(metaDataFields.computeIfAbsent("name:en", key -> metaDataFields.get("name:nl")));
+        String description = String.class.cast(metaDataFields.computeIfAbsent("description:en", key -> metaDataFields.get("description:nl")));
+
+        boolean arpAttributes = false;
+        Map arp = Map.class.cast(data.get("arp"));
+        if (Boolean.class.cast(arp.getOrDefault("enabled", false))) {
+            Map attributes = Map.class.cast(arp.getOrDefault("attributes", new HashMap<>()));
+            arpAttributes = !attributes.isEmpty();
+            if (arpAttributes) {
+                data.put("requestedAttributes", attributes.keySet());
+            }
+        }
+        data.put("AttributeConsumingService", arpAttributes || StringUtils.hasText(name) || StringUtils.hasText(description));
     }
 
 }

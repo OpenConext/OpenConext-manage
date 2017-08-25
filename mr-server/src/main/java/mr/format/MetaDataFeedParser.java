@@ -259,17 +259,24 @@ public class MetaDataFeedParser {
 
     private void addArpAttribute(Map<String, Object> result, XMLStreamReader reader, Set<String> arpKeys) {
         getAttributeValue(reader, "FriendlyName").ifPresent((String friendlyName) -> {
-            Map<String, Object> arp = Map.class.cast(result.getOrDefault(ARP, new TreeMap<>()));
-            arp.put("enabled", true);
-            final Map<String, Object> attributes = Map.class.cast(arp.getOrDefault(ATTRIBUTES, new TreeMap<>()));
-            arpKeys.stream().filter(arpKey -> arpKey.endsWith(friendlyName)).findFirst().ifPresent(arpKey -> {
-                attributes.put(arpKey, Arrays.asList(
-                    singletonMap("source", "idp"),
-                    singletonMap("value", "*")));
-            });
-            arp.put(ATTRIBUTES, attributes);
-            result.put(ARP, arp);
+            doAddArpAttribute(result, arpKeys, friendlyName);
         });
+        getAttributeValue(reader, "Name").ifPresent((String friendlyName) -> {
+            doAddArpAttribute(result, arpKeys, friendlyName);
+        });
+    }
+
+    private void doAddArpAttribute(Map<String, Object> result, Set<String> arpKeys, String friendlyName) {
+        Map<String, Object> arp = Map.class.cast(result.getOrDefault(ARP, new TreeMap<>()));
+        arp.put("enabled", true);
+        final Map<String, Object> attributes = Map.class.cast(arp.getOrDefault(ATTRIBUTES, new TreeMap<>()));
+        arpKeys.stream().filter(arpKey -> arpKey.endsWith(friendlyName)).findFirst().ifPresent(arpKey -> {
+            attributes.put(arpKey, Arrays.asList(
+                singletonMap("source", "idp"),
+                singletonMap("value", "*")));
+        });
+        arp.put(ATTRIBUTES, attributes);
+        result.put(ARP, arp);
     }
 
     private void addMetaDataField(Map<String, String> metaDataFields, XMLStreamReader reader, String attributeName, String metaDataKey) {
