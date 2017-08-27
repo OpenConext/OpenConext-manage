@@ -84,7 +84,7 @@ public class JanusMigration implements ApplicationListener<ApplicationReadyEvent
 
         start = System.currentTimeMillis();
         saveEntities(EntityType.IDP, idpStats);
-        LOG.info("Finished migration of IDPs in {} ms and results {}", System.currentTimeMillis() - start, prettyPrint(spStats));
+        LOG.info("Finished migration of IDPs in {} ms and results {}", System.currentTimeMillis() - start, prettyPrint(idpStats));
         idpStats.put("Finished migration of Identity Providers in ms", System.currentTimeMillis() - start);
 
         return Arrays.asList(spStats, idpStats);

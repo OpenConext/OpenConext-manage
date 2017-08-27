@@ -28,16 +28,16 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
 @RestController
-public class PlayGroundController {
+public class SystemController {
 
     private JanusMigrationValidation janusMigrationValidation;
     private JanusMigration janusMigration;
     private MetaDataRepository metaDataRepository;
 
     @Autowired
-    public PlayGroundController(JanusMigration janusMigration,
-                                JanusMigrationValidation janusMigrationValidation,
-                                MetaDataRepository metaDataRepository) {
+    public SystemController(JanusMigration janusMigration,
+                            JanusMigrationValidation janusMigrationValidation,
+                            MetaDataRepository metaDataRepository) {
         this.janusMigration = janusMigration;
         this.janusMigrationValidation = janusMigrationValidation;
         this.metaDataRepository = metaDataRepository;
@@ -67,14 +67,12 @@ public class PlayGroundController {
         results.put("connections", connections);
 
         List<MetaData> serviceProviders = metaDataRepository.getMongoTemplate().findAll(MetaData.class, "saml20_sp");
-        Map<String, Map<String, Object>> parsedServiceProviders = serviceProviders.stream()
-            .collect(toMap(metaData -> String.valueOf(metaData.getData().get("id")), formatter::parseServiceProvider));
-        connections.putAll(parsedServiceProviders);
+        serviceProviders.forEach(sp ->
+            connections.put(sp.getId(), formatter.parseServiceProvider(sp)));
 
         List<MetaData> identityProviders = metaDataRepository.getMongoTemplate().findAll(MetaData.class, "saml20_idp");
-        Map<String, Map<String, Object>> parsedIdentityProviders = identityProviders.stream()
-            .collect(toMap(metaData -> String.valueOf(metaData.getData().get("id")), formatter::parseIdentityProvider));
-        connections.putAll(parsedIdentityProviders);
+        identityProviders.forEach(idp ->
+            connections.put(idp.getId(), formatter.parseIdentityProvider(idp)));
         return results;
     }
 

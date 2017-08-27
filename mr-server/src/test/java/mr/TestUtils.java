@@ -1,5 +1,6 @@
 package mr;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
 import org.springframework.core.io.ClassPathResource;
 

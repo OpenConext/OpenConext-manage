@@ -1,6 +1,7 @@
 package mr.model;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import mr.mongo.MongobeeConfiguration;
@@ -16,6 +17,7 @@ import static mr.mongo.MongobeeConfiguration.REVISION_POSTFIX;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(of = "id")
 public class MetaData implements Serializable {
 
     @Id
