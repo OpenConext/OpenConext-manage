@@ -1,14 +1,14 @@
 import React from "react";
 import I18n from "i18n-js";
 import PropTypes from "prop-types";
-import {migrate, ping, push, validate} from "../api";
+import {migrate, ping, push, pushPreview, validate} from "../api";
 import {stop} from "../utils/Utils";
 import JsonView from "react-pretty-json";
 import ConfirmationDialog from "../components/ConfirmationDialog";
-import "./Playground.css";
+import "./System.css";
 import "react-pretty-json/assets/json-view.css";
 
-export default class Playground extends React.PureComponent {
+export default class System extends React.PureComponent {
 
     constructor(props) {
         super(props);
@@ -67,7 +67,7 @@ export default class Playground extends React.PureComponent {
             return;
         }
         this.setState({loading: true});
-        push().then(json => this.setState({pushResults: json, loading: false}));
+        pushPreview().then(json => this.setState({pushResults: json, loading: false}));
 
     };
 
@@ -153,7 +153,7 @@ export default class Playground extends React.PureComponent {
     }
 }
 
-Playground.propTypes = {
+System.propTypes = {
     history: PropTypes.object.isRequired,
     configuration: PropTypes.array.isRequired,
     currentUser: PropTypes.object.isRequired

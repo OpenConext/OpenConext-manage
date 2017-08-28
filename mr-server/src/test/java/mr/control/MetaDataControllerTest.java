@@ -109,7 +109,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void post() throws Exception {
-        String json = fileContent("/json/valid_service_provider.json");
+        String json = readFile("/json/valid_service_provider.json");
         Map data = objectMapper.readValue(json, Map.class);
         MetaData metaData = new MetaData(EntityType.SP.getType(), data);
         String id = given()

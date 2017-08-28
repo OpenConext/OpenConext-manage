@@ -60,7 +60,7 @@ public abstract class AbstractIntegrationTest implements TestUtils {
         RestAssured.port = port;
         if (insertSeedData()) {
             if (metaDataList == null) {
-                metaDataList = objectMapper.readValue(fileContent("json/meta_data_seed.json"), new TypeReference<List<MetaData>>() {
+                metaDataList = objectMapper.readValue(readFile("json/meta_data_seed.json"), new TypeReference<List<MetaData>>() {
                 });
             }
             MongoTemplate mongoTemplate = metaDataRepository.getMongoTemplate();
@@ -75,10 +75,6 @@ public abstract class AbstractIntegrationTest implements TestUtils {
             metaDataList.stream().collect(Collectors.groupingBy(MetaData::getType))
                 .forEach((type, metaData) -> await().until(() -> mongoTemplate.count(new Query(), type) == metaData.size()));
         }
-    }
-
-    protected String fileContent(String file) throws IOException {
-        return StreamUtils.copyToString(new ClassPathResource(file).getInputStream(), Charset.forName("UTF-8"));
     }
 
     protected boolean insertSeedData() {

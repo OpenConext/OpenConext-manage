@@ -28,11 +28,12 @@ export default class Flash extends React.PureComponent {
 
     render() {
         const {flash, className} = this.state;
+        const messages = flash.message ? flash.message.split(",") : [];
 
         return (
             <div className={`flash ${className} ${flash.type}`}>
                 <div className="message-container">
-                    <p>{flash.message}</p>
+                    {messages.map((message, index) => <p key={index}>{message}</p>)}
                     <a className="close" onClick={clearFlash}>
                         <i className="fa fa-remove"></i>
                     </a>

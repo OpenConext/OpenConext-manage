@@ -209,10 +209,14 @@ public class EngineBlockFormatter {
 
     private void addAttributeReleasePolicy(Map<String, Object> source, Map<String, Object> result) {
         ArpAttributes arp = (ArpAttributes) source.get("arp");
+        Map<String, List<Map<String, String>>> arpResult = new HashMap<>();
+        result.put("arp_attributes", arpResult);
+
+        if (arp == null) {
+            return;
+        }
         if (arp.isEnabled()) {
             Map<String, List<ArpValue>> attributes = arp.getAttributes();
-
-            Map<String, List<Map<String, String>>> arpResult = new HashMap<>();
             if (!attributes.isEmpty()) {
                 attributes.forEach((key, values) -> arpResult.put(key, values.stream()
                     .map(arpValue -> {
@@ -293,6 +297,9 @@ public class EngineBlockFormatter {
     }
 
     private List<String> convertNameList(List<Map<String, String>> entities) {
+        if (entities == null) {
+            return new ArrayList<>();
+        }
         return entities.stream().map(entry -> entry.get("name")).collect(toList());
     }
 

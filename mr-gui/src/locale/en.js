@@ -77,6 +77,7 @@ I18n.translations.en = {
         validation: "Validate",
         extended_search: "Extended Search",
         push: "Push",
+        push_preview: "Push Preview",
         pushInfo: "Collect all relevant metadata and perform a simulation of the EB push",
         runPush: "Push MetaData",
         runMigration: "RUN MIGRATION",

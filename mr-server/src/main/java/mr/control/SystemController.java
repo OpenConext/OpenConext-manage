@@ -9,12 +9,17 @@ import mr.model.MetaData;
 import mr.repository.MetaDataRepository;
 import mr.shibboleth.FederatedUser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
+import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -30,6 +35,7 @@ import static java.util.stream.Collectors.toMap;
 @RestController
 public class SystemController {
 
+    private URI pushUri;
     private JanusMigrationValidation janusMigrationValidation;
     private JanusMigration janusMigration;
     private MetaDataRepository metaDataRepository;
@@ -37,10 +43,12 @@ public class SystemController {
     @Autowired
     public SystemController(JanusMigration janusMigration,
                             JanusMigrationValidation janusMigrationValidation,
-                            MetaDataRepository metaDataRepository) {
+                            MetaDataRepository metaDataRepository,
+                            @Value("${push.url}") URI pushUri) {
         this.janusMigration = janusMigration;
         this.janusMigrationValidation = janusMigrationValidation;
         this.metaDataRepository = metaDataRepository;
+        this.pushUri = pushUri;
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -53,9 +61,9 @@ public class SystemController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/client/playground/push")
-    public Map<String, Map<String, Map<String, Object>>> push(FederatedUser federatedUser) {
-        if (!federatedUser.featureAllowed(Features.PUSH)) {
+    @GetMapping("/client/playground/pushPreview")
+    public Map<String, Map<String, Map<String, Object>>> pushPreview(FederatedUser federatedUser) {
+        if (!federatedUser.featureAllowed(Features.PUSH_PREVIEW)) {
             throw new EndpointNotAllowed();
         }
 
@@ -74,6 +82,16 @@ public class SystemController {
         identityProviders.forEach(idp ->
             connections.put(idp.getId(), formatter.parseIdentityProvider(idp)));
         return results;
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/client/playground/push")
+    public ResponseEntity<Void> push(FederatedUser federatedUser) {
+        if (!federatedUser.featureAllowed(Features.PUSH)) {
+            throw new EndpointNotAllowed();
+        }
+        Map<String, Map<String, Map<String, Object>>> json = this.pushPreview(federatedUser);
+        return new RestTemplate().postForEntity(pushUri, json, Void.class );
     }
 
     @PreAuthorize("hasRole('ADMIN')")

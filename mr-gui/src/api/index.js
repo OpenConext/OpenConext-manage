@@ -163,6 +163,10 @@ export function push() {
     return fetchJson("playground/push");
 }
 
+export function pushPreview() {
+    return fetchJson("playground/pushPreview");
+}
+
 export function validate() {
     return fetchJson("playground/validate");
 }

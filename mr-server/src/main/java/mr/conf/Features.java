@@ -2,5 +2,5 @@ package mr.conf;
 
 public enum Features {
 
-    MIGRATION, VALIDATION, PUSH
+    MIGRATION, VALIDATION, PUSH_PREVIEW, PUSH
 }
