@@ -10,27 +10,18 @@ import mr.repository.MetaDataRepository;
 import mr.shibboleth.FederatedUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
-import java.util.stream.IntStream;
-
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
 
 @RestController
 public class SystemController {
@@ -86,12 +77,17 @@ public class SystemController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/client/playground/push")
-    public ResponseEntity<Void> push(FederatedUser federatedUser) {
+    public ResponseEntity<Map> push(FederatedUser federatedUser) {
         if (!federatedUser.featureAllowed(Features.PUSH)) {
             throw new EndpointNotAllowed();
         }
+        if (this.pushUri.toString().contains("localhost")) {
+            return new ResponseEntity<>(Collections.singletonMap("status", HttpStatus.BAD_REQUEST), HttpStatus.OK);
+        }
         Map<String, Map<String, Map<String, Object>>> json = this.pushPreview(federatedUser);
-        return new RestTemplate().postForEntity(pushUri, json, Void.class );
+        ResponseEntity<Void> response = new RestTemplate().postForEntity(pushUri, json, Void.class);
+        HttpStatus statusCode = response.getStatusCode();
+        return new ResponseEntity<>(Collections.singletonMap("status", statusCode), HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ADMIN')")

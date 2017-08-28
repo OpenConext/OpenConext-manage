@@ -2,6 +2,7 @@ package mr.shibboleth;
 
 import mr.conf.Features;
 import mr.conf.Product;
+import mr.conf.Push;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
@@ -9,6 +10,7 @@ import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import java.util.List;
 
 import static org.springframework.security.core.authority.AuthorityUtils.createAuthorityList;
@@ -20,12 +22,14 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
     public static final String SCHAC_HOME_HEADER = "schacHomeOrganization";
     private final List<Features> featureToggles;
     private final Product product;
+    private final Push push;
 
-    public ShibbolethPreAuthenticatedProcessingFilter(AuthenticationManager authenticationManager, List<Features> featureToggles, Product product) {
+    public ShibbolethPreAuthenticatedProcessingFilter(AuthenticationManager authenticationManager, List<Features> featureToggles, Product product, Push push) {
         super();
         setAuthenticationManager(authenticationManager);
         this.featureToggles = featureToggles;
         this.product = product;
+        this.push = push;
     }
 
     @Override
@@ -41,7 +45,7 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
         //TODO determine guest membership based on ???
         List<GrantedAuthority> authorityList = createAuthorityList("ROLE_USER", "ROLE_ADMIN"); //createAuthorityList("ROLE_USER");
         return new FederatedUser(uid, displayName, schacHomeOrganization,
-            authorityList, featureToggles, product);
+            authorityList, featureToggles, product, push);
     }
 
     @Override

@@ -2,6 +2,7 @@ package mr.web;
 
 import mr.conf.Features;
 import mr.conf.Product;
+import mr.conf.Push;
 import mr.shibboleth.ShibbolethPreAuthenticatedProcessingFilter;
 import mr.shibboleth.ShibbolethUserDetailService;
 import mr.shibboleth.mock.MockShibbolethFilter;
@@ -25,6 +26,7 @@ import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -76,12 +78,19 @@ public class WebSecurityConfigurer {
         @Value("${security.backdoor_password}")
         private String password;
 
+        @Value("${push.url}")
+        private String pushUrl;
+
+        @Value("${push.name}")
+        private String pushName;
+
         @Override
         protected void configure(HttpSecurity http) throws Exception {
             List<Features> featuresList = Stream.of(features.split(","))
                 .map(feature -> Features.valueOf(feature.trim().toUpperCase()))
                 .collect(toList());
             Product product = new Product(productOrganization, productName);
+            Push push = new Push(pushUrl, pushName);
 
             BasicAuthenticationEntryPoint authenticationEntryPoint = new BasicAuthenticationEntryPoint();
             authenticationEntryPoint.setRealmName("metadata-registry");
@@ -100,12 +109,12 @@ public class WebSecurityConfigurer {
                 .addFilterAfter(new CsrfTokenResponseHeaderBindingFilter(), CsrfFilter.class)
                 .addFilterBefore(new SessionAliveFilter(), CsrfFilter.class)
                 .addFilterBefore(
-                    new ShibbolethPreAuthenticatedProcessingFilter(authenticationManagerBean(), featuresList, product),
+                    new ShibbolethPreAuthenticatedProcessingFilter(authenticationManagerBean(), featuresList, product, push),
                     AbstractPreAuthenticatedProcessingFilter.class
                 )
                 .addFilterBefore(
                     new BasicAuthenticationFilter(
-                        new BasicAuthenticationManager(user, password, featuresList, product)),
+                        new BasicAuthenticationManager(user, password, featuresList, product, push)),
                     ShibbolethPreAuthenticatedProcessingFilter.class
                 )
                 .authorizeRequests()
@@ -131,6 +140,12 @@ public class WebSecurityConfigurer {
         @Value("${security.internal_password}")
         private String password;
 
+        @Value("${push.url}")
+        private String pushUrl;
+
+        @Value("${push.name}")
+        private String pushName;
+
         @Override
         public void configure(WebSecurity web) throws Exception {
             web.ignoring().antMatchers("/health", "/info");
@@ -138,6 +153,8 @@ public class WebSecurityConfigurer {
 
         @Override
         public void configure(HttpSecurity http) throws Exception {
+            Push push = new Push(pushUrl, pushName);
+
             http
                 .antMatcher("/**")
                 .sessionManagement()
@@ -147,7 +164,7 @@ public class WebSecurityConfigurer {
                 .disable()
                 .addFilterBefore(
                     new BasicAuthenticationFilter(
-                        new BasicAuthenticationManager(user, password, new ArrayList<>(), Product.DEFAULT)),
+                        new BasicAuthenticationManager(user, password, new ArrayList<>(), Product.DEFAULT, push)),
                     BasicAuthenticationFilter.class
                 )
                 .authorizeRequests()

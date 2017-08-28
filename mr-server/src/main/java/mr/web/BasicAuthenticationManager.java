@@ -2,6 +2,7 @@ package mr.web;
 
 import mr.conf.Features;
 import mr.conf.Product;
+import mr.conf.Push;
 import mr.shibboleth.FederatedUser;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -11,6 +12,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.util.Assert;
 
+import java.net.URI;
 import java.util.List;
 
 import static org.springframework.security.core.authority.AuthorityUtils.createAuthorityList;
@@ -24,8 +26,10 @@ public class BasicAuthenticationManager implements AuthenticationManager {
     private final String password;
     private final List<Features> featureToggles;
     private final Product product;
+    private final Push push;
 
-    public BasicAuthenticationManager(String userName, String password, List<Features> featureToggles, Product product) {
+
+    public BasicAuthenticationManager(String userName, String password, List<Features> featureToggles, Product product, Push push) {
         Assert.notNull(userName, "userName is required");
         Assert.notNull(password, "password is required");
 
@@ -33,6 +37,7 @@ public class BasicAuthenticationManager implements AuthenticationManager {
         this.password = password;
         this.featureToggles = featureToggles;
         this.product = product;
+        this.push = push;
     }
 
     @Override
@@ -52,7 +57,8 @@ public class BasicAuthenticationManager implements AuthenticationManager {
                 name,
                 createAuthorityList("ROLE_USER", "ROLE_ADMIN"),
                 featureToggles,
-                product
+                product,
+                push
             ), authentication.getCredentials(), createAuthorityList("ROLE_USER", "ROLE_ADMIN"));
     }
 }

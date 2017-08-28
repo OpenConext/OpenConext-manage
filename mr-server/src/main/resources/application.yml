@@ -12,6 +12,7 @@ features: migration, validation, push_preview, push
 
 push:
   url: http://localhost:9898/api/connections
+  name: OpenConext EngineBlock
 
 product:
   name: Metadata Registry

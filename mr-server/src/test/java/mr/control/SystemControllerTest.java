@@ -32,7 +32,7 @@ public class SystemControllerTest extends AbstractIntegrationTest {
             .get("mr/api/client/playground/push")
             .then()
             .statusCode(SC_OK)
-            .body(isEmptyOrNullString());
+            .body("status", equalTo("BAD_REQUEST"));
 
     }
 

@@ -7,6 +7,7 @@ import JsonView from "react-pretty-json";
 import ConfirmationDialog from "../components/ConfirmationDialog";
 import "./System.css";
 import "react-pretty-json/assets/json-view.css";
+import {setFlash} from "../utils/Flash";
 
 export default class System extends React.PureComponent {
 
@@ -21,10 +22,8 @@ export default class System extends React.PureComponent {
             pushResults: undefined,
             loading: false,
             confirmationDialogOpen: false,
-            confirmationDialogAction: () => {
-                this.setState({confirmationDialogOpen: false});
-                this.runMigration();
-            },
+            confirmationQuestion: "",
+            confirmationDialogAction: () => this,
             cancelDialogAction: () => this.setState({confirmationDialogOpen: false})
         };
     }
@@ -67,18 +66,55 @@ export default class System extends React.PureComponent {
             return;
         }
         this.setState({loading: true});
-        pushPreview().then(json => this.setState({pushResults: json, loading: false}));
+        push().then(json => {
+            this.setState({loading: false});
+            const ok = json.status === "OK";
+            const msg = ok ? "playground.pushedOk" : "playground.pushedNotOk";
+            setFlash(I18n.t(msg, {name: this.props.currentUser.push.name}), ok ? "info" : "error");
+        });
+    };
 
+    runPushPreview = e => {
+        stop(e);
+        if (this.state.loading) {
+            return;
+        }
+        this.setState({loading: true});
+        pushPreview().then(json => this.setState({pushResults: json, loading: false}));
     };
 
     renderPush = () => {
-        const {pushResults, loading} = this.state;
+        const {loading} = this.state;
+        const {currentUser} = this.props;
+        const action = () => {
+            this.setState({confirmationDialogOpen: false});
+            this.runPush();
+        };
+
         return (
             <section className="push">
-                <p>{I18n.t("playground.pushInfo")}</p>
+                <p>{I18n.t("playground.pushInfo", {url: currentUser.push.url, name: currentUser.push.name})}</p>
                 <a className={`button ${loading ? "grey disabled" : "green"}`}
-                   onClick={this.runPush}>{I18n.t("playground.runPush")}
-                    <i className="fa fa-refresh" aria-hidden="true"></i></a>
+                   onClick={() => this.setState({
+                       confirmationDialogOpen: true,
+                       confirmationQuestion: I18n.t("playground.pushConfirmation", {url: currentUser.push.url, name: currentUser.push.name}),
+                       confirmationDialogAction: action
+                   })}>{I18n.t("playground.runPush")}
+                    <i className="fa fa-refresh"></i>
+                </a>
+            </section>
+        );
+    };
+
+    renderPushPreview = () => {
+        const {pushResults, loading} = this.state;
+        const {currentUser} = this.props;
+        return (
+            <section className="push">
+                <p>{I18n.t("playground.pushPreviewInfo", {name: currentUser.push.name})}</p>
+                <a className={`button ${loading ? "grey disabled" : "green"}`}
+                   onClick={this.runPushPreview}>{I18n.t("playground.runPushPreview")}
+                    <i className="fa fa-refresh"></i></a>
                 {pushResults &&
                 <section className="results pushResults">
                     {JSON.stringify(pushResults)}
@@ -89,12 +125,20 @@ export default class System extends React.PureComponent {
 
     renderMigrate = () => {
         const {migrationResults, loading} = this.state;
+        const action = () => {
+            this.setState({confirmationDialogOpen: false});
+            this.runMigration();
+        };
         return (
             <section className="migrate">
                 <p>The migration will query the janus database - or a copy based on the server configuration - and
                     migrate all data to MongoDB collections.</p>
                 <a className={`button ${loading ? "grey disabled" : "green"}`}
-                   onClick={() => this.setState({confirmationDialogOpen: true})}>{I18n.t("playground.runMigration")}
+                   onClick={() => this.setState({
+                       confirmationDialogOpen: true,
+                       confirmationQuestion: I18n.t("playground.migrationConfirmation"),
+                       confirmationDialogAction: action
+                   })}>{I18n.t("playground.runMigration")}
                     <i className="fa fa-retweet" aria-hidden="true"></i></a>
                 {migrationResults &&
                 <section className="results">
@@ -130,19 +174,21 @@ export default class System extends React.PureComponent {
                 return this.renderValidate();
             case "push":
                 return this.renderPush();
+            case "push_preview":
+                return this.renderPushPreview();
             default :
                 throw new Error(`Unknown tab: ${selectedTab}`);
         }
     };
 
     render() {
-        const {tabs, selectedTab, confirmationDialogOpen, confirmationDialogAction, cancelDialogAction} = this.state;
+        const {tabs, selectedTab, confirmationDialogOpen, confirmationQuestion, confirmationDialogAction, cancelDialogAction} = this.state;
         return (
             <div className="playground">
                 <ConfirmationDialog isOpen={confirmationDialogOpen}
                                     cancel={cancelDialogAction}
                                     confirm={confirmationDialogAction}
-                                    question={I18n.t("playground.migrationConfirmation")}/>
+                                    question={confirmationQuestion}/>
                 <section className="tabs">
                     {tabs.map(tab => this.renderTab(tab, selectedTab))}
 
