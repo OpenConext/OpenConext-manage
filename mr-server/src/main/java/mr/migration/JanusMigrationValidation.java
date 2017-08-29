@@ -20,11 +20,14 @@ public class JanusMigrationValidation  {
 
     private static final Logger LOG = LoggerFactory.getLogger(JanusMigrationValidation.class);
 
-    @Autowired
     private MetaDataRepository metaDataRepository;
+    private MetaDataAutoConfiguration metaDataAutoConfiguration;
 
     @Autowired
-    private MetaDataAutoConfiguration metaDataAutoConfiguration;
+    public JanusMigrationValidation(MetaDataRepository metaDataRepository, MetaDataAutoConfiguration metaDataAutoConfiguration) {
+        this.metaDataRepository = metaDataRepository;
+        this.metaDataAutoConfiguration = metaDataAutoConfiguration;
+    }
 
     public Map<String, Object> validateMigration() {
         Map<String, Object> results = new HashMap<>();

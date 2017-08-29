@@ -20,8 +20,12 @@ public class MetaDataRepository {
 
     private static final int AUTOCOMPLETE_LIMIT = 15;
 
-    @Autowired
     private MongoTemplate mongoTemplate;
+
+    @Autowired
+    public MetaDataRepository(MongoTemplate mongoTemplate) {
+        this.mongoTemplate = mongoTemplate;
+    }
 
     public MetaData findById(String id, String type) {
         return mongoTemplate.findById(id, MetaData.class, type);

@@ -10,8 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.ApplicationListener;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -35,30 +33,25 @@ import static java.util.stream.Collectors.toList;
 import static mr.mongo.MongobeeConfiguration.REVISION_POSTFIX;
 
 @Component
-public class JanusMigration implements ApplicationListener<ApplicationReadyEvent> {
+@SuppressWarnings("unchecked")
+public class JanusMigration {
 
     private static final Logger LOG = LoggerFactory.getLogger(JanusMigration.class);
+    private String keyColumn;
 
     private JdbcTemplate jdbcTemplate;
     private MongoTemplate mongoTemplate;
     private ArpDeserializer arpDeserializer = new ArpDeserializer();
     private MetaDataAutoConfiguration metaDataAutoConfiguration;
-    private boolean migrate;
 
     @Autowired
-    public JanusMigration(@Value("${migrate_data_from_janus}") boolean migrate, DataSource dataSource,
+    public JanusMigration(@Value("${key_column:key}") String keyColumn,
+                          DataSource dataSource,
                           MongoTemplate mongoTemplate, MetaDataAutoConfiguration metaDataAutoConfiguration) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
         this.mongoTemplate = mongoTemplate;
         this.metaDataAutoConfiguration = metaDataAutoConfiguration;
-        this.migrate = migrate;
-    }
-
-    @Override
-    public void onApplicationEvent(ApplicationReadyEvent event) {
-        if (migrate) {
-            doMigrate();
-        }
+        this.keyColumn = keyColumn;
     }
 
     public List<Map<String, Long>> doMigrate() {
@@ -135,7 +128,7 @@ public class JanusMigration implements ApplicationListener<ApplicationReadyEvent
             "                janus__connectionRevision.ip, janus__connectionRevision.revisionnote, " +
             "                janus__connectionRevision.active, janus__connectionRevision.arp_attributes, " +
             "                janus__connectionRevision.notes FROM janus__connectionRevision AS janus__connectionRevision " +
-            "                LEFT outer join janus__user as janus__user on janus__user.uid = janus__connectionRevision.user " +
+            "                LEFT OUTER JOIN janus__user AS janus__user ON janus__user.uid = janus__connectionRevision.user " +
             "                WHERE  janus__connectionRevision.eid = ? AND janus__connectionRevision.revisionid = ?";
         jdbcTemplate.query(sql, new Long[]{eid, revisionid},
             rs -> {
@@ -183,12 +176,12 @@ public class JanusMigration implements ApplicationListener<ApplicationReadyEvent
     }
 
     private void addMetaData(Map<String, Object> entity, Long eid, Long revisionid, boolean isPrimary, EntityType entityType) {
-        jdbcTemplate.query("SELECT METADATA.`key`, METADATA.`value` FROM janus__connectionRevision AS CONNECTION_REVISION " +
+        jdbcTemplate.query("SELECT METADATA.`" + keyColumn + "`, METADATA.`value` FROM janus__connectionRevision AS CONNECTION_REVISION " +
                 "INNER JOIN janus__metadata AS METADATA ON METADATA.connectionRevisionId = CONNECTION_REVISION.id " +
                 "WHERE CONNECTION_REVISION.eid = ? AND CONNECTION_REVISION.revisionid = ?",
             new Long[]{eid, revisionid},
             (rs) -> {
-                parseMetaData(entity, rs.getString("key"), rs.getString("value"), isPrimary, entityType);
+                parseMetaData(entity, rs.getString(keyColumn), rs.getString("value"), isPrimary, entityType);
             }
         );
     }
