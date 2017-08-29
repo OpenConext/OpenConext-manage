@@ -55,7 +55,7 @@ public class JanusMigrationTest implements TestUtils {
         JanusMigrationValidation validation = new JanusMigrationValidation(metaDataRepository, metaDataAutoConfiguration);
         Map<String, Object> validations = validation.validateMigration();
 
-        assertEquals(3, validations.size());
+        assertEquals(0, validations.size());
     }
 
 }

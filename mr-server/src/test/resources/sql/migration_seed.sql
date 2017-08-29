@@ -68,6 +68,9 @@ CREATE TABLE janus__disableConsent (
   PRIMARY KEY (connectionRevisionId, remoteeid)
 );
 
+INSERT INTO janus__user (uid, userid)
+VALUES
+  (1, 'admin');
 
 INSERT INTO janus__connection (id, revisionNr, name, type, user, created, ip)
 VALUES
@@ -87,17 +90,17 @@ VALUES
    NULL),
   (2, 1, 'https://teams.surfconext.nl/shibboleth', 1, 'prodaccepted', 'saml20-sp', NULL, 'https://teams.surfconext.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp', NULL, NULL, 'no', NULL, 1, '2011-01-31T09:27:39+01:00', '192.87.109.132', 8, 'No revision note', 'yes', 'a:3:{s:47:"urn:mace:dir:attribute-def:eduPersonAffiliation";a:1:{i:0;s:1:"*";}s:31:"urn:mace:dir:attribute-def:mail";a:1:{i:0;s:1:"*";}s:44:"urn:mace:dir:attribute-def:preferredLanguage";a:1:{i:0;s:1:"*";}}', NULL),
   (3, 1, 'https://teams.surfconext.nl/shibboleth', 2, 'prodaccepted', 'saml20-sp', NULL, 'https://teams.surfconext.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp', NULL, NULL, 'no', NULL, 1, '2011-01-31T09:27:39+01:00', '192.87.109.132', 8, 'No revision note', 'yes', 'a:3:{s:47:"urn:mace:dir:attribute-def:eduPersonAffiliation";a:1:{i:0;s:1:"*";}s:31:"urn:mace:dir:attribute-def:mail";a:1:{i:0;s:1:"*";}s:44:"urn:mace:dir:attribute-def:preferredLanguage";a:1:{i:0;s:1:"*";}}', NULL),
-  (4, 2, 'https://serviceregistry.surfconext.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp', 0, 'prodaccepted', 'saml20-sp', NULL, 'https://teams.surfconext.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp', NULL, NULL, 'yes', NULL, 1, '2011-01-31T09:27:39+01:00', '192.87.109.132', 8, 'No revision note', 'yes', 'a:3:{s:47:"urn:mace:dir:attribute-def:eduPersonAffiliation";a:1:{i:0;s:1:"*";}s:31:"urn:mace:dir:attribute-def:mail";a:1:{i:0;s:1:"*";}s:44:"urn:mace:dir:attribute-def:preferredLanguage";a:1:{i:0;s:1:"*";}}', NULL),
-  (5, 2, 'https://serviceregistry.surfconext.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp', 1, 'testaccepted', 'saml20-sp', NULL, 'https://teams.surfconext.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp', NULL, NULL, 'yes', NULL, 1, '2011-01-31T09:27:39+01:00', '192.87.109.132', 8, 'No revision note', 'yes', 'a:3:{s:47:"urn:mace:dir:attribute-def:eduPersonAffiliation";a:1:{i:0;s:1:"*";}s:31:"urn:mace:dir:attribute-def:mail";a:1:{i:0;s:1:"*";}s:44:"urn:mace:dir:attribute-def:preferredLanguage";a:1:{i:0;s:1:"*";}}', NULL),
-  (6, 2, 'https://serviceregistry.surfconext.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp', 2, 'prodaccepted', 'saml20-sp', NULL, 'https://teams.surfconext.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp', NULL, NULL, 'yes', NULL, 1, '2011-01-31T09:27:39+01:00', '192.87.109.132', 8, 'No revision note', 'yes', 'a:3:{s:47:"urn:mace:dir:attribute-def:eduPersonAffiliation";a:1:{i:0;s:1:"*";}s:31:"urn:mace:dir:attribute-def:mail";a:1:{i:0;s:1:"*";}s:44:"urn:mace:dir:attribute-def:preferredLanguage";a:1:{i:0;s:1:"*";}}', NULL),
+  (4, 2, 'https://serviceregistry.surfconext.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp', 0, 'prodaccepted', 'saml20-sp', NULL, 'https://teams.surfconext.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp', NULL, NULL, 'yes', NULL, 1, '2011-01-31T09:27:39+01:00', '192.87.109.132', 1, 'No revision note', 'yes', 'a:3:{s:47:"urn:mace:dir:attribute-def:eduPersonAffiliation";a:1:{i:0;s:1:"*";}s:31:"urn:mace:dir:attribute-def:mail";a:1:{i:0;s:1:"*";}s:44:"urn:mace:dir:attribute-def:preferredLanguage";a:1:{i:0;s:1:"*";}}', NULL),
+  (5, 2, 'https://serviceregistry.surfconext.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp', 1, 'testaccepted', 'saml20-sp', NULL, 'https://teams.surfconext.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp', NULL, NULL, 'yes', NULL, 1, '2011-01-31T09:27:39+01:00', '192.87.109.132', 1, 'No revision note', 'yes', 'a:3:{s:47:"urn:mace:dir:attribute-def:eduPersonAffiliation";a:1:{i:0;s:1:"*";}s:31:"urn:mace:dir:attribute-def:mail";a:1:{i:0;s:1:"*";}s:44:"urn:mace:dir:attribute-def:preferredLanguage";a:1:{i:0;s:1:"*";}}', NULL),
+  (6, 2, 'https://serviceregistry.surfconext.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp', 2, 'prodaccepted', 'saml20-sp', NULL, 'https://teams.surfconext.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp', NULL, NULL, 'yes', NULL, 1, '2011-01-31T09:27:39+01:00', '192.87.109.132', 1, 'No revision note', 'yes', 'a:3:{s:47:"urn:mace:dir:attribute-def:eduPersonAffiliation";a:1:{i:0;s:1:"*";}s:31:"urn:mace:dir:attribute-def:mail";a:1:{i:0;s:1:"*";}s:44:"urn:mace:dir:attribute-def:preferredLanguage";a:1:{i:0;s:1:"*";}}', NULL),
   (7, 3, 'https://sso.eur.nl/opensso', 0, 'prodaccepted', 'saml20-idp', NULL, NULL, NULL, NULL, 'yes', NULL, 21, '2011-04-08T10:47:38+02:00', '127.0.0.255', NULL, 'Entity created.', 'yes', 'N;', NULL),
-  (8, 3, 'https://sso.eur.nl/opensso', 1, 'prodaccepted', 'saml20-idp', NULL, 'https://wayf.surfnet.nl/federate/metadata/saml20/https%253a%252f%252fsso.eur.nl%252fopensso', NULL, NULL, 'yes', NULL, 21, '2011-04-08T10:49:47+02:00', '127.0.0.255', 0, 'No revision note', 'yes', 'N;', NULL),
+  (8, 3, 'https://sso.eur.nl/opensso', 1, 'prodaccepted', 'saml20-idp', NULL, 'https://wayf.surfnet.nl/federate/metadata/saml20/https%253a%252f%252fsso.eur.nl%252fopensso', NULL, NULL, 'yes', NULL, 21, '2011-04-08T10:49:47+02:00', '127.0.0.255', 1, 'No revision note', 'yes', 'N;', NULL),
   (9, 3, 'https://sso.eur.nl/opensso', 2, 'prodaccepted', 'saml20-idp', NULL, 'https://wayf.surfnet.nl/federate/metadata/saml20/https%253a%252f%252fsso.eur.nl%252fopensso', NULL, NULL, 'yes', NULL, 21, '2011-04-08T10:51:30+02:00', '127.0.0.255', 1, 'updated metadata', 'yes', 'N;', NULL),
-  (10, 4, 'https://surfguest.nl', 0, 'prodaccepted', 'saml20-idp', NULL, 'https://espee.surfnet.nl/federate/metadata/saml20', NULL, NULL, 'no', NULL, 9, '2012-11-05T11:10:41+01:00', '127.0.0.255', 52, 'No revision note', 'yes', 'N;', NULL),
-  (11, 4, 'https://surfguest.nl', 1, 'prodaccepted', 'saml20-idp', NULL, 'https://espee.surfnet.nl/federate/metadata/saml20', NULL, NULL, 'no', NULL, 9, '2012-11-05T11:04:43+01:00', '127.0.0.255', 50, 'No revision note', 'yes', 'N;', NULL),
+  (10, 4, 'https://surfguest.nl', 0, 'prodaccepted', 'saml20-idp', NULL, 'https://espee.surfnet.nl/federate/metadata/saml20', NULL, NULL, 'no', NULL, 9, '2012-11-05T11:10:41+01:00', '127.0.0.255', 1, 'No revision note', 'yes', 'N;', NULL),
+  (11, 4, 'https://surfguest.nl', 1, 'prodaccepted', 'saml20-idp', NULL, 'https://espee.surfnet.nl/federate/metadata/saml20', NULL, NULL, 'no', NULL, 9, '2012-11-05T11:04:43+01:00', '127.0.0.255', 1, 'No revision note', 'yes', 'N;', NULL),
   (12, 4, 'https://surfguest.nl', 2, 'testaccepted', 'saml20-idp', NULL,
        'https://espee.surfnet.nl/federate/metadata/saml20', NULL, NULL, 'no', NULL, 9, '2012-11-05T11:10:36+01:00',
-   '127.0.0.255', 51, 'Allowed UMC-ALL as per CXT-653', 'yes', 'N;', NULL);
+   '127.0.0.255', 1, 'Allowed UMC-ALL as per CXT-653', 'yes', 'N;', NULL);
 
 INSERT INTO janus__allowedConnection (connectionRevisionId, remoteeid, created, ip)
 VALUES
@@ -122,6 +125,17 @@ VALUES
   (3, 'displayName:nl', 'serviceregistry', '2011-01-28T11:17:56+01:00', '195.240.2.130'),
   (3, 'name:en', 'serviceregistry', '2011-01-28T11:17:56+01:00', '195.240.2.130'),
   (3, 'name:nl', 'serviceregistry', '2011-01-28T11:17:56+01:00', '195.240.2.130'),
+  (6, 'AssertionConsumerService:0:Location', 'https://sso.eur.nl/opensso/SSORedirect/metaAlias/Erasmus/idp',
+   '2017-08-10T13:31:14+02:00', '145.101.112.195'),
+  (6, 'AssertionConsumerService:0:Binding', 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect', '2017-08-10T13:31:14+02:00', '145.101.112.195'),
+  (6, 'name:en', 'serviceregistry', '2011-01-28T11:17:56+01:00', '195.240.2.130'),
+
+  (9, 'name:en', 'serviceregistry', '2011-01-28T11:17:56+01:00', '195.240.2.130'),
+  (9, 'SingleSignOnService:0:Binding', 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST', '2017-08-10T13:31:14+02:00',
+   '145.101.112.195'),
+  (9, 'SingleSignOnService:0:Location', 'https://sso.eur.nl/opensso/SSORedirect/metaAlias/Erasmus/idp',
+   '2017-08-10T13:31:14+02:00', '145.101.112.195'),
+
   (12, 'certData', 'nope', '2017-08-10T13:31:14+02:00', '145.101.112.195'),
   (12, 'coin:guest_qualifier', 'None', '2017-08-10T13:31:14+02:00', '145.101.112.195'),
   (12, 'coin:institution_guid', 'ae82fa68-0911-e511-80d0-005056956c1a', '2017-08-10T13:31:14+02:00', '145.101.112.195'),

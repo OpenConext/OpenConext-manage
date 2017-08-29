@@ -141,7 +141,8 @@ public class JanusMigration {
                 entity.put("metadataurl", rs.getString("metadataurl"));
                 entity.put("allowedall", rs.getString("allowedall").equals("yes") ? true : false);
                 entity.put("manipulation", rs.getString("manipulation"));
-                entity.put("user", rs.getString("userid"));
+                String userid = rs.getString("userid");
+                entity.put("user", StringUtils.hasText(userid) ? userid : "unknown");
                 entity.put("created", rs.getString("created"));
                 entity.put("ip", rs.getString("ip"));
                 entity.put("revisionnote", rs.getString("revisionnote"));
