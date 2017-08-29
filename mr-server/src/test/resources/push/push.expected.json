@@ -1,0 +1,244 @@
+{
+  "connections": {
+    "1": {
+      "allow_all_entities": false,
+      "allowed_connections": [
+        {
+          "name": "http://allowed1"
+        }
+      ],
+      "arp_attributes": {
+        "urn:mace:dir:attribute-def:displayName": [
+          {
+            "source": "idp",
+            "value": "*"
+          }
+        ],
+        "urn:mace:dir:attribute-def:uid": [
+          {
+            "source": "idp",
+            "value": "*"
+          }
+        ],
+        "urn:mace:dir:attribute-def:mail": [
+          {
+            "source": "idp",
+            "value": "*"
+          }
+        ],
+        "urn:mace:dir:attribute-def:isMemberOf": [
+          {
+            "source": "idp",
+            "value": "urn:collab:org:surf.nl"
+          }
+        ],
+        "urn:mace:terena.org:attribute-def:schacHomeOrganization": [
+          {
+            "source": "idp",
+            "value": "*"
+          }
+        ]
+      },
+      "metadata": {
+        "AssertionConsumerService": [
+          {
+            "Binding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
+            "Index": "0",
+            "Location": "https://acs0"
+          },
+          {
+            "Binding": "urn:oasis:names:tc:SAML:2.0:bindings:URI",
+            "Index": "1",
+            "Location": "https://acs1"
+          }
+        ],
+        "NameIDFormat": "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
+        "NameIDFormats": [
+          "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
+          "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent",
+          "urn:oasis:names:tc:SAML:2.0:nameid-format:transient"
+        ],
+        "OrganizationDisplayName": {
+          "en": "OrganizationDisplayName name en",
+          "nl": "OrganizationDisplayName name nl"
+        },
+        "OrganizationName": {
+          "en": "Organization name en",
+          "nl": "Organization name nl"
+        },
+        "OrganizationURL": {
+          "en": "https://organization-url/en",
+          "nl": "https://organization-url/nl"
+        },
+        "SingleLogoutService": [
+          {
+            "Binding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
+            "Location": "https://sls"
+          }
+        ],
+        "certData": "MIIDEzCCAfugAwIBAgIJAKoK/heBjcOYMA0GCSqGSIb3DQEBBQUAMCAxHjAcBgNVBAoMFU9yZ2FuaXphdGlvbiwgQ049T0lEQzAeFw0xNTExMTExMDEyMTVaFw0yNTExMTAxMDEyMTVaMCAxHjAcBgNVBAoMFU9yZ2FuaXphdGlvbiwgQ049T0lEQzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANBGwJ/qpTQNiSgUglSE2UzEkUow+wS8r67etxoEhlzJZfgK/k5TfG1wICDqapHAxEVgUM10aBHRctNocA5wmlHtxdidhzRZroqHwpKy2BmsKX5Z2oK25RLpsyusB1KroemgA/CjUnI6rIL1xxFn3KyOFh1ZBLUQtKNQeMS7HFGgSDAp+sXuTFujz12LFDugX0T0KB5a1+0l8y0PEa0yGa1oi6seONx849ZHxM0PRvUunWkuTM+foZ0jZpFapXe02yWMqhc/2iYMieE/3GvOguJchJt6R+cut8VBb6ubKUIGK7pmoq/TB6DVXpvsHqsDJXechxcicu4pdKVDHSec850CAwEAAaNQME4wHQYDVR0OBBYEFK7RqjoodSYVXGTVEdLf3kJflP/sMB8GA1UdIwQYMBaAFK7RqjoodSYVXGTVEdLf3kJflP/sMAwGA1UdEwQFMAMBAf8wDQYJKoZIhvcNAQEFBQADggEBADNZkxlFXh4F45muCbnQd+WmaXlGvb9tkUyAIxVL8AIu8J18F420vpnGpoUAE+Hy3evBmp2nkrFAgmr055fAjpHeZFgDZBAPCwYd3TNMDeSyMta3Ka+oS7GRFDePkMEm+kH4/rITNKUF1sOvWBTSowk9TudEDyFqgGntcdu/l/zRxvx33y3LMG5USD0x4X4IKjRrRN1BbcKgi8dq10C3jdqNancTuPoqT3WWzRvVtB/q34B7F74/6JzgEoOCEHufBMp4ZFu54P0yEGtWfTwTzuoZobrChVVBt4w/XZagrRtUCDNwRpHNbpjxYudbqLqpi1MQpV9oht/BpTHVJG2i0ro=",
+        "certData2": "MIIDEzCCAfugAwIBAgIJAKoK/heBjcOYMA0GCSqGSIb3DQEBBQUAMCAxHjAcBgNVBAoMFU9yZ2FuaXphdGlvbiwgQ049T0lEQzAeFw0xNTExMTExMDEyMTVaFw0yNTExMTAxMDEyMTVaMCAxHjAcBgNVBAoMFU9yZ2FuaXphdGlvbiwgQ049T0lEQzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANBGwJ/qpTQNiSgUglSE2UzEkUow+wS8r67etxoEhlzJZfgK/k5TfG1wICDqapHAxEVgUM10aBHRctNocA5wmlHtxdidhzRZroqHwpKy2BmsKX5Z2oK25RLpsyusB1KroemgA/CjUnI6rIL1xxFn3KyOFh1ZBLUQtKNQeMS7HFGgSDAp+sXuTFujz12LFDugX0T0KB5a1+0l8y0PEa0yGa1oi6seONx849ZHxM0PRvUunWkuTM+foZ0jZpFapXe02yWMqhc/2iYMieE/3GvOguJchJt6R+cut8VBb6ubKUIGK7pmoq/TB6DVXpvsHqsDJXechxcicu4pdKVDHSec850CAwEAAaNQME4wHQYDVR0OBBYEFK7RqjoodSYVXGTVEdLf3kJflP/sMB8GA1UdIwQYMBaAFK7RqjoodSYVXGTVEdLf3kJflP/sMAwGA1UdEwQFMAMBAf8wDQYJKoZIhvcNAQEFBQADggEBADNZkxlFXh4F45muCbnQd+WmaXlGvb9tkUyAIxVL8AIu8J18F420vpnGpoUAE+Hy3evBmp2nkrFAgmr055fAjpHeZFgDZBAPCwYd3TNMDeSyMta3Ka+oS7GRFDePkMEm+kH4/rITNKUF1sOvWBTSowk9TudEDyFqgGntcdu/l/zRxvx33y3LMG5USD0x4X4IKjRrRN1BbcKgi8dq10C3jdqNancTuPoqT3WWzRvVtB/q34B7F74/6JzgEoOCEHufBMp4ZFu54P0yEGtWfTwTzuoZobrChVVBt4w/XZagrRtUCDNwRpHNbpjxYudbqLqpi1MQpV9oht/BpTHVJG2i0ro=",
+        "certData3": "MIIDEzCCAfugAwIBAgIJAKoK/heBjcOYMA0GCSqGSIb3DQEBBQUAMCAxHjAcBgNVBAoMFU9yZ2FuaXphdGlvbiwgQ049T0lEQzAeFw0xNTExMTExMDEyMTVaFw0yNTExMTAxMDEyMTVaMCAxHjAcBgNVBAoMFU9yZ2FuaXphdGlvbiwgQ049T0lEQzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANBGwJ/qpTQNiSgUglSE2UzEkUow+wS8r67etxoEhlzJZfgK/k5TfG1wICDqapHAxEVgUM10aBHRctNocA5wmlHtxdidhzRZroqHwpKy2BmsKX5Z2oK25RLpsyusB1KroemgA/CjUnI6rIL1xxFn3KyOFh1ZBLUQtKNQeMS7HFGgSDAp+sXuTFujz12LFDugX0T0KB5a1+0l8y0PEa0yGa1oi6seONx849ZHxM0PRvUunWkuTM+foZ0jZpFapXe02yWMqhc/2iYMieE/3GvOguJchJt6R+cut8VBb6ubKUIGK7pmoq/TB6DVXpvsHqsDJXechxcicu4pdKVDHSec850CAwEAAaNQME4wHQYDVR0OBBYEFK7RqjoodSYVXGTVEdLf3kJflP/sMB8GA1UdIwQYMBaAFK7RqjoodSYVXGTVEdLf3kJflP/sMAwGA1UdEwQFMAMBAf8wDQYJKoZIhvcNAQEFBQADggEBADNZkxlFXh4F45muCbnQd+WmaXlGvb9tkUyAIxVL8AIu8J18F420vpnGpoUAE+Hy3evBmp2nkrFAgmr055fAjpHeZFgDZBAPCwYd3TNMDeSyMta3Ka+oS7GRFDePkMEm+kH4/rITNKUF1sOvWBTSowk9TudEDyFqgGntcdu/l/zRxvx33y3LMG5USD0x4X4IKjRrRN1BbcKgi8dq10C3jdqNancTuPoqT3WWzRvVtB/q34B7F74/6JzgEoOCEHufBMp4ZFu54P0yEGtWfTwTzuoZobrChVVBt4w/XZagrRtUCDNwRpHNbpjxYudbqLqpi1MQpV9oht/BpTHVJG2i0ro=",
+        "coin": {
+          "additional_logging": "1",
+          "attribute_aggregation_required": "1",
+          "display_unconnected_idps_wayf": "1",
+          "do_not_add_attribute_aliases": "1",
+          "eula": "https://eula",
+          "no_consent_required": "1",
+          "policy_enforcement_decision_required": "1",
+          "publish_in_edugain": "1",
+          "transparant_issuer": "1",
+          "trusted_proxy": "1"
+        },
+        "description": {
+          "en": "OpenConext Service Registry, register all SPs and IdPs here",
+          "nl": "OpenConext Service Registry, register all SPs and IdPs here"
+        },
+        "displayName": {
+          "en": "OpenConext ServiceRegistry",
+          "nl": "OpenConext ServiceRegistry"
+        },
+        "logo": [
+          {
+            "width": "96",
+            "url": "https://static.test2.surfconext.nl/media/conext_logo.png",
+            "height": "96"
+          }
+        ],
+        "name": {
+          "en": "OpenConext Valid SP",
+          "nl": "OpenConext Valid SP "
+        },
+        "redirect": {
+          "sign": true
+        }
+      },
+      "name": "Duis ad do",
+      "state": "testaccepted",
+      "type": "saml20-sp"
+    },
+    "6": {
+      "allow_all_entities": false,
+      "allowed_connections": [
+        {
+          "name": "http://allowed1"
+        }
+      ],
+      "disable_consent_connections": [
+        {
+          "name": "http://disableConsent1"
+        }
+      ],
+      "manipulation_code": "PHP code",
+      "metadata": {
+        "NameIDFormat": "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
+        "OrganizationDisplayName": {
+          "en": "OrganizationDisplayName name en",
+          "nl": "OrganizationDisplayName name nl"
+        },
+        "OrganizationName": {
+          "en": "Organization name en",
+          "nl": "Organization name nl"
+        },
+        "OrganizationURL": {
+          "en": "https://organization-url/en",
+          "nl": "https://organization-url/nl"
+        },
+        "SingleSignOnService": [
+          {
+            "Binding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect",
+            "Location": "https://sso0"
+          },
+          {
+            "Binding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect",
+            "Location": "https://sso1"
+          },
+          {
+            "Binding": "urn:oasis:names:tc:SAML:2.0:bindings:SOAP",
+            "Location": "https://sso2"
+          }
+        ],
+        "certData": "MIIDEzCCAfugAwIBAgIJAKoK/heBjcOYMA0GCSqGSIb3DQEBBQUAMCAxHjAcBgNVBAoMFU9yZ2FuaXphdGlvbiwgQ049T0lEQzAeFw0xNTExMTExMDEyMTVaFw0yNTExMTAxMDEyMTVaMCAxHjAcBgNVBAoMFU9yZ2FuaXphdGlvbiwgQ049T0lEQzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANBGwJ/qpTQNiSgUglSE2UzEkUow+wS8r67etxoEhlzJZfgK/k5TfG1wICDqapHAxEVgUM10aBHRctNocA5wmlHtxdidhzRZroqHwpKy2BmsKX5Z2oK25RLpsyusB1KroemgA/CjUnI6rIL1xxFn3KyOFh1ZBLUQtKNQeMS7HFGgSDAp+sXuTFujz12LFDugX0T0KB5a1+0l8y0PEa0yGa1oi6seONx849ZHxM0PRvUunWkuTM+foZ0jZpFapXe02yWMqhc/2iYMieE/3GvOguJchJt6R+cut8VBb6ubKUIGK7pmoq/TB6DVXpvsHqsDJXechxcicu4pdKVDHSec850CAwEAAaNQME4wHQYDVR0OBBYEFK7RqjoodSYVXGTVEdLf3kJflP/sMB8GA1UdIwQYMBaAFK7RqjoodSYVXGTVEdLf3kJflP/sMAwGA1UdEwQFMAMBAf8wDQYJKoZIhvcNAQEFBQADggEBADNZkxlFXh4F45muCbnQd+WmaXlGvb9tkUyAIxVL8AIu8J18F420vpnGpoUAE+Hy3evBmp2nkrFAgmr055fAjpHeZFgDZBAPCwYd3TNMDeSyMta3Ka+oS7GRFDePkMEm+kH4/rITNKUF1sOvWBTSowk9TudEDyFqgGntcdu/l/zRxvx33y3LMG5USD0x4X4IKjRrRN1BbcKgi8dq10C3jdqNancTuPoqT3WWzRvVtB/q34B7F74/6JzgEoOCEHufBMp4ZFu54P0yEGtWfTwTzuoZobrChVVBt4w/XZagrRtUCDNwRpHNbpjxYudbqLqpi1MQpV9oht/BpTHVJG2i0ro=",
+        "certData2": "MIIDEzCCAfugAwIBAgIJAKoK/heBjcOYMA0GCSqGSIb3DQEBBQUAMCAxHjAcBgNVBAoMFU9yZ2FuaXphdGlvbiwgQ049T0lEQzAeFw0xNTExMTExMDEyMTVaFw0yNTExMTAxMDEyMTVaMCAxHjAcBgNVBAoMFU9yZ2FuaXphdGlvbiwgQ049T0lEQzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANBGwJ/qpTQNiSgUglSE2UzEkUow+wS8r67etxoEhlzJZfgK/k5TfG1wICDqapHAxEVgUM10aBHRctNocA5wmlHtxdidhzRZroqHwpKy2BmsKX5Z2oK25RLpsyusB1KroemgA/CjUnI6rIL1xxFn3KyOFh1ZBLUQtKNQeMS7HFGgSDAp+sXuTFujz12LFDugX0T0KB5a1+0l8y0PEa0yGa1oi6seONx849ZHxM0PRvUunWkuTM+foZ0jZpFapXe02yWMqhc/2iYMieE/3GvOguJchJt6R+cut8VBb6ubKUIGK7pmoq/TB6DVXpvsHqsDJXechxcicu4pdKVDHSec850CAwEAAaNQME4wHQYDVR0OBBYEFK7RqjoodSYVXGTVEdLf3kJflP/sMB8GA1UdIwQYMBaAFK7RqjoodSYVXGTVEdLf3kJflP/sMAwGA1UdEwQFMAMBAf8wDQYJKoZIhvcNAQEFBQADggEBADNZkxlFXh4F45muCbnQd+WmaXlGvb9tkUyAIxVL8AIu8J18F420vpnGpoUAE+Hy3evBmp2nkrFAgmr055fAjpHeZFgDZBAPCwYd3TNMDeSyMta3Ka+oS7GRFDePkMEm+kH4/rITNKUF1sOvWBTSowk9TudEDyFqgGntcdu/l/zRxvx33y3LMG5USD0x4X4IKjRrRN1BbcKgi8dq10C3jdqNancTuPoqT3WWzRvVtB/q34B7F74/6JzgEoOCEHufBMp4ZFu54P0yEGtWfTwTzuoZobrChVVBt4w/XZagrRtUCDNwRpHNbpjxYudbqLqpi1MQpV9oht/BpTHVJG2i0ro=",
+        "certData3": "MIIDEzCCAfugAwIBAgIJAKoK/heBjcOYMA0GCSqGSIb3DQEBBQUAMCAxHjAcBgNVBAoMFU9yZ2FuaXphdGlvbiwgQ049T0lEQzAeFw0xNTExMTExMDEyMTVaFw0yNTExMTAxMDEyMTVaMCAxHjAcBgNVBAoMFU9yZ2FuaXphdGlvbiwgQ049T0lEQzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANBGwJ/qpTQNiSgUglSE2UzEkUow+wS8r67etxoEhlzJZfgK/k5TfG1wICDqapHAxEVgUM10aBHRctNocA5wmlHtxdidhzRZroqHwpKy2BmsKX5Z2oK25RLpsyusB1KroemgA/CjUnI6rIL1xxFn3KyOFh1ZBLUQtKNQeMS7HFGgSDAp+sXuTFujz12LFDugX0T0KB5a1+0l8y0PEa0yGa1oi6seONx849ZHxM0PRvUunWkuTM+foZ0jZpFapXe02yWMqhc/2iYMieE/3GvOguJchJt6R+cut8VBb6ubKUIGK7pmoq/TB6DVXpvsHqsDJXechxcicu4pdKVDHSec850CAwEAAaNQME4wHQYDVR0OBBYEFK7RqjoodSYVXGTVEdLf3kJflP/sMB8GA1UdIwQYMBaAFK7RqjoodSYVXGTVEdLf3kJflP/sMAwGA1UdEwQFMAMBAf8wDQYJKoZIhvcNAQEFBQADggEBADNZkxlFXh4F45muCbnQd+WmaXlGvb9tkUyAIxVL8AIu8J18F420vpnGpoUAE+Hy3evBmp2nkrFAgmr055fAjpHeZFgDZBAPCwYd3TNMDeSyMta3Ka+oS7GRFDePkMEm+kH4/rITNKUF1sOvWBTSowk9TudEDyFqgGntcdu/l/zRxvx33y3LMG5USD0x4X4IKjRrRN1BbcKgi8dq10C3jdqNancTuPoqT3WWzRvVtB/q34B7F74/6JzgEoOCEHufBMp4ZFu54P0yEGtWfTwTzuoZobrChVVBt4w/XZagrRtUCDNwRpHNbpjxYudbqLqpi1MQpV9oht/BpTHVJG2i0ro=",
+        "coin": {
+          "additional_logging": "1",
+          "disable_scoping": "1",
+          "guest_qualifier": "All",
+          "hidden": "1",
+          "publish_in_edugain": "1",
+          "schachomeorganization": "schac_home"
+        },
+        "contacts": [
+          {
+            "emailAddress": "support@openconext.org",
+            "surName": "OpenConext",
+            "givenName": "Support",
+            "contactType": "technical"
+          },
+          {
+            "emailAddress": "support@openconext.org",
+            "surName": "OpenConext",
+            "givenName": "Support",
+            "contactType": "support"
+          },
+          {
+            "emailAddress": "support@openconext.org",
+            "surName": "OpenConext",
+            "givenName": "Support",
+            "contactType": "administrative"
+          },
+          {
+            "contactType": "technical"
+          }
+        ],
+        "description": {
+          "en": "OpenConext Service Registry, register all SPs and IdPs here",
+          "nl": "OpenConext Service Registry, register all SPs and IdPs here"
+        },
+        "displayName": {
+          "en": "OpenConext ServiceRegistry",
+          "nl": "OpenConext ServiceRegistry"
+        },
+        "keywords": {
+          "en": "keywords, en",
+          "nl": "keywords, nl"
+        },
+        "logo": [
+          {
+            "width": "96",
+            "url": "https://static.test2.surfconext.nl/media/conext_logo.png",
+            "height": "96"
+          }
+        ],
+        "name": {
+          "en": "OpenConext ServiceRegistry Mock",
+          "nl": "OpenConext ServiceRegistry"
+        },
+        "redirect": {
+          "sign": true
+        },
+        "shibmd": {
+          "scope": [
+            {
+              "regexp": "1",
+              "allowed": ".*"
+            },
+            {
+              "regexp": "0",
+              "allowed": "allowed"
+            },
+            {
+              "regexp": "0",
+              "allowed": "value"
+            }
+          ]
+        }
+      },
+      "name": "https://idp.test2.surfconext.nl",
+      "state": "prodaccepted",
+      "type": "saml20-sp"
+    }
+  }
+}

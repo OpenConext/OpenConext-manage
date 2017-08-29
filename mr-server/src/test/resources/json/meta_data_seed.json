@@ -9,49 +9,88 @@
     "data": {
       "entityid": "Duis ad do",
       "state": "testaccepted",
-      "allowedall": true,
+      "allowedall": false,
+      "allowedEntities": [
+        {
+          "name": "http://allowed1"
+        }
+      ],
       "metaDataFields": {
         "name:en": "OpenConext Valid SP",
+        "name:nl": "OpenConext Valid SP ",
+        "description:en": "OpenConext Service Registry, register all SPs and IdPs here",
+        "description:nl": "OpenConext Service Registry, register all SPs and IdPs here",
+        "displayName:en": "OpenConext ServiceRegistry",
+        "displayName:nl": "OpenConext ServiceRegistry",
+        "OrganizationName:nl": "Organization name nl",
+        "OrganizationName:en": "Organization name en",
+        "OrganizationDisplayName:en": "OrganizationDisplayName name en",
+        "OrganizationDisplayName:nl": "OrganizationDisplayName name nl",
+        "OrganizationURL:en": "https://organization-url/en",
+        "OrganizationURL:nl": "https://organization-url/nl",
+        "coin:publish_in_edugain": "1",
+        "certData": "MIIDEzCCAfugAwIBAgIJAKoK/heBjcOYMA0GCSqGSIb3DQEBBQUAMCAxHjAcBgNVBAoMFU9yZ2FuaXphdGlvbiwgQ049T0lEQzAeFw0xNTExMTExMDEyMTVaFw0yNTExMTAxMDEyMTVaMCAxHjAcBgNVBAoMFU9yZ2FuaXphdGlvbiwgQ049T0lEQzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANBGwJ/qpTQNiSgUglSE2UzEkUow+wS8r67etxoEhlzJZfgK/k5TfG1wICDqapHAxEVgUM10aBHRctNocA5wmlHtxdidhzRZroqHwpKy2BmsKX5Z2oK25RLpsyusB1KroemgA/CjUnI6rIL1xxFn3KyOFh1ZBLUQtKNQeMS7HFGgSDAp+sXuTFujz12LFDugX0T0KB5a1+0l8y0PEa0yGa1oi6seONx849ZHxM0PRvUunWkuTM+foZ0jZpFapXe02yWMqhc/2iYMieE/3GvOguJchJt6R+cut8VBb6ubKUIGK7pmoq/TB6DVXpvsHqsDJXechxcicu4pdKVDHSec850CAwEAAaNQME4wHQYDVR0OBBYEFK7RqjoodSYVXGTVEdLf3kJflP/sMB8GA1UdIwQYMBaAFK7RqjoodSYVXGTVEdLf3kJflP/sMAwGA1UdEwQFMAMBAf8wDQYJKoZIhvcNAQEFBQADggEBADNZkxlFXh4F45muCbnQd+WmaXlGvb9tkUyAIxVL8AIu8J18F420vpnGpoUAE+Hy3evBmp2nkrFAgmr055fAjpHeZFgDZBAPCwYd3TNMDeSyMta3Ka+oS7GRFDePkMEm+kH4/rITNKUF1sOvWBTSowk9TudEDyFqgGntcdu/l/zRxvx33y3LMG5USD0x4X4IKjRrRN1BbcKgi8dq10C3jdqNancTuPoqT3WWzRvVtB/q34B7F74/6JzgEoOCEHufBMp4ZFu54P0yEGtWfTwTzuoZobrChVVBt4w/XZagrRtUCDNwRpHNbpjxYudbqLqpi1MQpV9oht/BpTHVJG2i0ro=",
+        "certData2": "MIIDEzCCAfugAwIBAgIJAKoK/heBjcOYMA0GCSqGSIb3DQEBBQUAMCAxHjAcBgNVBAoMFU9yZ2FuaXphdGlvbiwgQ049T0lEQzAeFw0xNTExMTExMDEyMTVaFw0yNTExMTAxMDEyMTVaMCAxHjAcBgNVBAoMFU9yZ2FuaXphdGlvbiwgQ049T0lEQzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANBGwJ/qpTQNiSgUglSE2UzEkUow+wS8r67etxoEhlzJZfgK/k5TfG1wICDqapHAxEVgUM10aBHRctNocA5wmlHtxdidhzRZroqHwpKy2BmsKX5Z2oK25RLpsyusB1KroemgA/CjUnI6rIL1xxFn3KyOFh1ZBLUQtKNQeMS7HFGgSDAp+sXuTFujz12LFDugX0T0KB5a1+0l8y0PEa0yGa1oi6seONx849ZHxM0PRvUunWkuTM+foZ0jZpFapXe02yWMqhc/2iYMieE/3GvOguJchJt6R+cut8VBb6ubKUIGK7pmoq/TB6DVXpvsHqsDJXechxcicu4pdKVDHSec850CAwEAAaNQME4wHQYDVR0OBBYEFK7RqjoodSYVXGTVEdLf3kJflP/sMB8GA1UdIwQYMBaAFK7RqjoodSYVXGTVEdLf3kJflP/sMAwGA1UdEwQFMAMBAf8wDQYJKoZIhvcNAQEFBQADggEBADNZkxlFXh4F45muCbnQd+WmaXlGvb9tkUyAIxVL8AIu8J18F420vpnGpoUAE+Hy3evBmp2nkrFAgmr055fAjpHeZFgDZBAPCwYd3TNMDeSyMta3Ka+oS7GRFDePkMEm+kH4/rITNKUF1sOvWBTSowk9TudEDyFqgGntcdu/l/zRxvx33y3LMG5USD0x4X4IKjRrRN1BbcKgi8dq10C3jdqNancTuPoqT3WWzRvVtB/q34B7F74/6JzgEoOCEHufBMp4ZFu54P0yEGtWfTwTzuoZobrChVVBt4w/XZagrRtUCDNwRpHNbpjxYudbqLqpi1MQpV9oht/BpTHVJG2i0ro=",
+        "certData3": "MIIDEzCCAfugAwIBAgIJAKoK/heBjcOYMA0GCSqGSIb3DQEBBQUAMCAxHjAcBgNVBAoMFU9yZ2FuaXphdGlvbiwgQ049T0lEQzAeFw0xNTExMTExMDEyMTVaFw0yNTExMTAxMDEyMTVaMCAxHjAcBgNVBAoMFU9yZ2FuaXphdGlvbiwgQ049T0lEQzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANBGwJ/qpTQNiSgUglSE2UzEkUow+wS8r67etxoEhlzJZfgK/k5TfG1wICDqapHAxEVgUM10aBHRctNocA5wmlHtxdidhzRZroqHwpKy2BmsKX5Z2oK25RLpsyusB1KroemgA/CjUnI6rIL1xxFn3KyOFh1ZBLUQtKNQeMS7HFGgSDAp+sXuTFujz12LFDugX0T0KB5a1+0l8y0PEa0yGa1oi6seONx849ZHxM0PRvUunWkuTM+foZ0jZpFapXe02yWMqhc/2iYMieE/3GvOguJchJt6R+cut8VBb6ubKUIGK7pmoq/TB6DVXpvsHqsDJXechxcicu4pdKVDHSec850CAwEAAaNQME4wHQYDVR0OBBYEFK7RqjoodSYVXGTVEdLf3kJflP/sMB8GA1UdIwQYMBaAFK7RqjoodSYVXGTVEdLf3kJflP/sMAwGA1UdEwQFMAMBAf8wDQYJKoZIhvcNAQEFBQADggEBADNZkxlFXh4F45muCbnQd+WmaXlGvb9tkUyAIxVL8AIu8J18F420vpnGpoUAE+Hy3evBmp2nkrFAgmr055fAjpHeZFgDZBAPCwYd3TNMDeSyMta3Ka+oS7GRFDePkMEm+kH4/rITNKUF1sOvWBTSowk9TudEDyFqgGntcdu/l/zRxvx33y3LMG5USD0x4X4IKjRrRN1BbcKgi8dq10C3jdqNancTuPoqT3WWzRvVtB/q34B7F74/6JzgEoOCEHufBMp4ZFu54P0yEGtWfTwTzuoZobrChVVBt4w/XZagrRtUCDNwRpHNbpjxYudbqLqpi1MQpV9oht/BpTHVJG2i0ro=",
+        "coin:additional_logging": "1",
+        "redirect.sign": "1",
+        "coin:transparant_issuer": "1",
+        "coin:trusted_proxy": "1",
+        "coin:display_unconnected_idps_wayf": "1",
+        "coin:eula": "https://eula",
+        "coin:do_not_add_attribute_aliases": "1",
+        "coin:policy_enforcement_decision_required": "1",
+        "coin:attribute_aggregation_required": "1",
+        "coin:no_consent_required": "1",
+        "SingleLogoutService_Location":"https://sls",
+        "SingleLogoutService_Binding":"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
+        "logo:0:height": "96",
+        "logo:0:url": "https://static.test2.surfconext.nl/media/conext_logo.png",
+        "logo:0:width": "96",
+        "NameIDFormat": "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
+        "NameIDFormats:0": "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
+        "NameIDFormats:1": "urn:oasis:names:tc:SAML:2.0:nameid-format:transient",
+        "NameIDFormats:2": "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent",
         "AssertionConsumerService:0:Binding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
-        "AssertionConsumerService:0:Location": "https://acs",
+        "AssertionConsumerService:0:Location": "https://acs0",
         "AssertionConsumerService:1:Binding": "urn:oasis:names:tc:SAML:2.0:bindings:URI",
-        "NameIDFormat": "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"
+        "AssertionConsumerService:1:Location": "https://acs1"
       },
-      "arp" : {
-        "enabled" : true,
-        "attributes" : {
-          "urn:mace:dir:attribute-def:displayName" : [
+      "arp": {
+        "enabled": true,
+        "attributes": {
+          "urn:mace:dir:attribute-def:displayName": [
             {
-              "value" : "*",
-              "source" : "idp"
+              "value": "*",
+              "source": "idp"
             }
           ],
-          "urn:mace:dir:attribute-def:mail" : [
+          "urn:mace:dir:attribute-def:mail": [
             {
-              "value" : "*",
-              "source" : "idp"
+              "value": "*",
+              "source": "idp"
             }
           ],
-          "urn:mace:dir:attribute-def:isMemberOf" : [
+          "urn:mace:dir:attribute-def:isMemberOf": [
             {
-              "value" : "urn:collab:org:surf.nl",
-              "source" : "idp"
+              "value": "urn:collab:org:surf.nl",
+              "source": "idp"
             }
           ],
-          "urn:mace:dir:attribute-def:uid" : [
+          "urn:mace:dir:attribute-def:uid": [
             {
-              "value" : "*",
-              "source" : "idp"
+              "value": "*",
+              "source": "idp"
             }
           ],
-          "urn:mace:terena@org:attribute-def:schacHomeOrganization" : [
+          "urn:mace:terena@org:attribute-def:schacHomeOrganization": [
             {
-              "value" : "*",
-              "source" : "idp"
+              "value": "*",
+              "source": "idp"
             }
           ]
         },
-        "_class" : "mr.migration.ArpAttributes"
+        "_class": "mr.migration.ArpAttributes"
       }
     }
   },
@@ -236,6 +275,81 @@
         "NameIDFormats:2": "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"
       },
       "allowedEntities": []
+    }
+  },
+  {
+    "id": "6",
+    "type": "saml20_idp",
+    "data": {
+      "entityid": "https://idp.test2.surfconext.nl",
+      "state": "prodaccepted",
+      "allowedall": false,
+      "allowedEntities": [
+        {
+          "name": "http://allowed1"
+        }
+      ],
+      "disableConsent": [
+        {
+          "name": "http://disableConsent1"
+        }
+      ],
+      "manipulation": "PHP code",
+      "metaDataFields": {
+        "name:en": "OpenConext ServiceRegistry Mock",
+        "name:nl": "OpenConext ServiceRegistry",
+        "description:en": "OpenConext Service Registry, register all SPs and IdPs here",
+        "description:nl": "OpenConext Service Registry, register all SPs and IdPs here",
+        "displayName:en": "OpenConext ServiceRegistry",
+        "displayName:nl": "OpenConext ServiceRegistry",
+        "OrganizationName:nl": "Organization name nl",
+        "OrganizationName:en": "Organization name en",
+        "OrganizationDisplayName:en": "OrganizationDisplayName name en",
+        "OrganizationDisplayName:nl": "OrganizationDisplayName name nl",
+        "OrganizationURL:en": "https://organization-url/en",
+        "OrganizationURL:nl": "https://organization-url/nl",
+        "keywords:en": "keywords, en",
+        "keywords:nl": "keywords, nl",
+        "NameIDFormat": "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
+        "coin:publish_in_edugain": "1",
+        "certData": "MIIDEzCCAfugAwIBAgIJAKoK/heBjcOYMA0GCSqGSIb3DQEBBQUAMCAxHjAcBgNVBAoMFU9yZ2FuaXphdGlvbiwgQ049T0lEQzAeFw0xNTExMTExMDEyMTVaFw0yNTExMTAxMDEyMTVaMCAxHjAcBgNVBAoMFU9yZ2FuaXphdGlvbiwgQ049T0lEQzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANBGwJ/qpTQNiSgUglSE2UzEkUow+wS8r67etxoEhlzJZfgK/k5TfG1wICDqapHAxEVgUM10aBHRctNocA5wmlHtxdidhzRZroqHwpKy2BmsKX5Z2oK25RLpsyusB1KroemgA/CjUnI6rIL1xxFn3KyOFh1ZBLUQtKNQeMS7HFGgSDAp+sXuTFujz12LFDugX0T0KB5a1+0l8y0PEa0yGa1oi6seONx849ZHxM0PRvUunWkuTM+foZ0jZpFapXe02yWMqhc/2iYMieE/3GvOguJchJt6R+cut8VBb6ubKUIGK7pmoq/TB6DVXpvsHqsDJXechxcicu4pdKVDHSec850CAwEAAaNQME4wHQYDVR0OBBYEFK7RqjoodSYVXGTVEdLf3kJflP/sMB8GA1UdIwQYMBaAFK7RqjoodSYVXGTVEdLf3kJflP/sMAwGA1UdEwQFMAMBAf8wDQYJKoZIhvcNAQEFBQADggEBADNZkxlFXh4F45muCbnQd+WmaXlGvb9tkUyAIxVL8AIu8J18F420vpnGpoUAE+Hy3evBmp2nkrFAgmr055fAjpHeZFgDZBAPCwYd3TNMDeSyMta3Ka+oS7GRFDePkMEm+kH4/rITNKUF1sOvWBTSowk9TudEDyFqgGntcdu/l/zRxvx33y3LMG5USD0x4X4IKjRrRN1BbcKgi8dq10C3jdqNancTuPoqT3WWzRvVtB/q34B7F74/6JzgEoOCEHufBMp4ZFu54P0yEGtWfTwTzuoZobrChVVBt4w/XZagrRtUCDNwRpHNbpjxYudbqLqpi1MQpV9oht/BpTHVJG2i0ro=",
+        "certData2": "MIIDEzCCAfugAwIBAgIJAKoK/heBjcOYMA0GCSqGSIb3DQEBBQUAMCAxHjAcBgNVBAoMFU9yZ2FuaXphdGlvbiwgQ049T0lEQzAeFw0xNTExMTExMDEyMTVaFw0yNTExMTAxMDEyMTVaMCAxHjAcBgNVBAoMFU9yZ2FuaXphdGlvbiwgQ049T0lEQzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANBGwJ/qpTQNiSgUglSE2UzEkUow+wS8r67etxoEhlzJZfgK/k5TfG1wICDqapHAxEVgUM10aBHRctNocA5wmlHtxdidhzRZroqHwpKy2BmsKX5Z2oK25RLpsyusB1KroemgA/CjUnI6rIL1xxFn3KyOFh1ZBLUQtKNQeMS7HFGgSDAp+sXuTFujz12LFDugX0T0KB5a1+0l8y0PEa0yGa1oi6seONx849ZHxM0PRvUunWkuTM+foZ0jZpFapXe02yWMqhc/2iYMieE/3GvOguJchJt6R+cut8VBb6ubKUIGK7pmoq/TB6DVXpvsHqsDJXechxcicu4pdKVDHSec850CAwEAAaNQME4wHQYDVR0OBBYEFK7RqjoodSYVXGTVEdLf3kJflP/sMB8GA1UdIwQYMBaAFK7RqjoodSYVXGTVEdLf3kJflP/sMAwGA1UdEwQFMAMBAf8wDQYJKoZIhvcNAQEFBQADggEBADNZkxlFXh4F45muCbnQd+WmaXlGvb9tkUyAIxVL8AIu8J18F420vpnGpoUAE+Hy3evBmp2nkrFAgmr055fAjpHeZFgDZBAPCwYd3TNMDeSyMta3Ka+oS7GRFDePkMEm+kH4/rITNKUF1sOvWBTSowk9TudEDyFqgGntcdu/l/zRxvx33y3LMG5USD0x4X4IKjRrRN1BbcKgi8dq10C3jdqNancTuPoqT3WWzRvVtB/q34B7F74/6JzgEoOCEHufBMp4ZFu54P0yEGtWfTwTzuoZobrChVVBt4w/XZagrRtUCDNwRpHNbpjxYudbqLqpi1MQpV9oht/BpTHVJG2i0ro=",
+        "certData3": "MIIDEzCCAfugAwIBAgIJAKoK/heBjcOYMA0GCSqGSIb3DQEBBQUAMCAxHjAcBgNVBAoMFU9yZ2FuaXphdGlvbiwgQ049T0lEQzAeFw0xNTExMTExMDEyMTVaFw0yNTExMTAxMDEyMTVaMCAxHjAcBgNVBAoMFU9yZ2FuaXphdGlvbiwgQ049T0lEQzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANBGwJ/qpTQNiSgUglSE2UzEkUow+wS8r67etxoEhlzJZfgK/k5TfG1wICDqapHAxEVgUM10aBHRctNocA5wmlHtxdidhzRZroqHwpKy2BmsKX5Z2oK25RLpsyusB1KroemgA/CjUnI6rIL1xxFn3KyOFh1ZBLUQtKNQeMS7HFGgSDAp+sXuTFujz12LFDugX0T0KB5a1+0l8y0PEa0yGa1oi6seONx849ZHxM0PRvUunWkuTM+foZ0jZpFapXe02yWMqhc/2iYMieE/3GvOguJchJt6R+cut8VBb6ubKUIGK7pmoq/TB6DVXpvsHqsDJXechxcicu4pdKVDHSec850CAwEAAaNQME4wHQYDVR0OBBYEFK7RqjoodSYVXGTVEdLf3kJflP/sMB8GA1UdIwQYMBaAFK7RqjoodSYVXGTVEdLf3kJflP/sMAwGA1UdEwQFMAMBAf8wDQYJKoZIhvcNAQEFBQADggEBADNZkxlFXh4F45muCbnQd+WmaXlGvb9tkUyAIxVL8AIu8J18F420vpnGpoUAE+Hy3evBmp2nkrFAgmr055fAjpHeZFgDZBAPCwYd3TNMDeSyMta3Ka+oS7GRFDePkMEm+kH4/rITNKUF1sOvWBTSowk9TudEDyFqgGntcdu/l/zRxvx33y3LMG5USD0x4X4IKjRrRN1BbcKgi8dq10C3jdqNancTuPoqT3WWzRvVtB/q34B7F74/6JzgEoOCEHufBMp4ZFu54P0yEGtWfTwTzuoZobrChVVBt4w/XZagrRtUCDNwRpHNbpjxYudbqLqpi1MQpV9oht/BpTHVJG2i0ro=",
+        "coin:disable_scoping": "1",
+        "coin:additional_logging": "1",
+        "coin:guest_qualifier": "All",
+        "coin:schachomeorganization": "schac_home",
+        "coin:hidden": "1",
+        "redirect.sign": "1",
+        "SingleSignOnService:0:Binding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect",
+        "SingleSignOnService:0:Location": "https://sso0",
+        "SingleSignOnService:1:Binding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect",
+        "SingleSignOnService:1:Location": "https://sso1",
+        "SingleSignOnService:2:Binding": "urn:oasis:names:tc:SAML:2.0:bindings:SOAP",
+        "SingleSignOnService:2:Location": "https://sso2",
+        "shibmd:scope:0:allowed": ".*",
+        "shibmd:scope:0:regexp": "1",
+        "shibmd:scope:1:allowed": "allowed",
+        "shibmd:scope:1:regexp": "0",
+        "shibmd:scope:2:allowed": "value",
+        "shibmd:scope:2:regexp": "0",
+        "contacts:0:contactType": "technical",
+        "contacts:0:emailAddress": "support@openconext.org",
+        "contacts:0:givenName": "Support",
+        "contacts:0:surName": "OpenConext",
+        "contacts:1:contactType": "support",
+        "contacts:1:emailAddress": "support@openconext.org",
+        "contacts:1:givenName": "Support",
+        "contacts:1:surName": "OpenConext",
+        "contacts:2:contactType": "administrative",
+        "contacts:2:emailAddress": "support@openconext.org",
+        "contacts:2:givenName": "Support",
+        "contacts:2:surName": "OpenConext",
+        "contacts:3:contactType": "technical",
+        "logo:0:height": "96",
+        "logo:0:url": "https://static.test2.surfconext.nl/media/conext_logo.png",
+        "logo:0:width": "96"
+      }
     }
   }
 ]

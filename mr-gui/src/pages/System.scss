@@ -55,5 +55,33 @@
         }
     }
 
+    span.button {
+        margin-left: 40px;
+        display: inline-block;
+
+        i {
+            margin-left: 35px;
+        }
+
+        &.copied {
+            animation: pulse 1s;
+            animation-iteration-count: 1;
+            position: relative;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 white;
+            }
+            70% {
+                box-shadow: 0 0 10px 8px lighten($green, 15%);
+            }
+            100% {
+                box-shadow: 0 0 0 0 white;
+            }
+        }
+
+    }
+
 }
 

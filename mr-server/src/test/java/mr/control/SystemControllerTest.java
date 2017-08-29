@@ -5,15 +5,17 @@ import mr.AbstractIntegrationTest;
 import org.junit.Rule;
 import org.junit.Test;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static io.restassured.RestAssured.given;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.junit.Assert.assertEquals;
 
 public class SystemControllerTest extends AbstractIntegrationTest {
@@ -38,14 +40,20 @@ public class SystemControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void pushPreview() throws Exception {
-        given()
+        Map connections = given()
             .when()
             .get("mr/api/client/playground/pushPreview")
             .then()
             .statusCode(SC_OK)
-            .body("connections.1.arp_attributes.urn:mace:dir:attribute-def:displayName[0].value",
-                equalTo("*"));
+            .extract().as(Map.class);
 
+        Map<String, Object> innerConnections = Map.class.cast(connections.get("connections"));
+
+        List<String> idsToRemove = Arrays.asList("2", "3", "4", "5");
+        innerConnections.entrySet().removeIf(entry -> idsToRemove.contains(entry.getKey()));
+        System.out.println(objectMapper.writeValueAsString(connections));
+        Map expected = objectMapper.readValue(readFile("push/push.expected.json"), Map.class);
+        assertEquals(expected, connections);
     }
 
     @Test

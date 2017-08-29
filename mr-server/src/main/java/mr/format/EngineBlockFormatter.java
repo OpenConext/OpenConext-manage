@@ -7,10 +7,12 @@ import mr.model.MetaData;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.IntStream;
 
@@ -59,12 +61,10 @@ public class EngineBlockFormatter {
         commonAttributes.put("state", empty());
         //contact persons are handled in separate method
         commonAttributes.put("metadata:NameIDFormat", empty());
-        commonAttributes.put("metadata:NameIDFormats", empty());
         //single log outs are handled in separate method
         commonAttributes.put("metadata:coin:publish_in_edugain", empty());
         commonAttributes.put("metadata:coin:disable_scoping", empty());
         commonAttributes.put("metadata:coin:additional_logging", empty());
-        commonAttributes.put("metadata:redirect:sign", empty());
         commonAttributes.put("manipulation", of("manipulation_code"));
 
         spAttributes.put("metadata:coin:transparant_issuer", empty());
@@ -90,6 +90,7 @@ public class EngineBlockFormatter {
         serviceProvider.put("type", "saml20-sp");
 
         addCommonProviderAttributes(source, serviceProvider);
+        addNameIDFormats(source, serviceProvider);
         addAttributeReleasePolicy(source, serviceProvider);
         addAssertionConsumerService(source, serviceProvider);
 
@@ -125,6 +126,7 @@ public class EngineBlockFormatter {
         addLogo(source, result);
         addContactPersons(source, result);
         addSingleLogOutService(source, result);
+        addRedirectSign(source, result);
 
         List<Map<String, String>> allowedEntities = (List<Map<String, String>>) source.get("allowedEntities");
         result.put("allowed_connections", convertNameList(allowedEntities));
@@ -207,6 +209,41 @@ public class EngineBlockFormatter {
         result.put("SingleLogoutService", subList);
     }
 
+    private void addRedirectSign(Map<String, Object> source, Map<String, Object> result) {
+        result = (Map<String, Object>) result.computeIfAbsent("metadata", key -> new TreeMap<>());
+        Map<String, String> metaDataFields = (Map<String, String>) source.get("metaDataFields");
+
+        String redirectSign = metaDataFields.get("redirect.sign");
+        if (hasText(redirectSign)) {
+            Map<String, Boolean> redirect = new HashMap<>();
+            redirect.put("sign", redirectSign.equalsIgnoreCase("1"));
+            result.put("redirect",redirect);
+        }
+    }
+
+    private void addNameIDFormats(Map<String, Object> source, Map<String, Object> result) {
+        final Map<String, Object> metadata = (Map<String, Object>) result.computeIfAbsent("metadata", key -> new TreeMap<>());
+        Map<String, String> metaDataFields = (Map<String, String>) source.get("metaDataFields");
+
+        String nameIDFormat = metaDataFields.get("NameIDFormat");
+        if (hasText(nameIDFormat)) {
+            Set<String> nameIDFormats = (Set<String>) metadata.computeIfAbsent(
+                "NameIDFormats", key -> new HashSet<>());
+            nameIDFormats.add(nameIDFormat);
+        }
+
+        IntStream.range(0, 3).forEach(i -> {
+            String nameIdFormat = metaDataFields.get("NameIDFormats:" + i );
+            if (hasText(nameIdFormat)) {
+                Set<String> nameIDFormats = (Set<String>) metadata.computeIfAbsent(
+                    "NameIDFormats", key -> new HashSet<>());
+                nameIDFormats.add(nameIdFormat);
+            }
+
+        });
+
+        commonAttributes.put("metadata:NameIDFormats", empty());
+    }
     private void addAttributeReleasePolicy(Map<String, Object> source, Map<String, Object> result) {
         ArpAttributes arp = (ArpAttributes) source.get("arp");
         Map<String, List<Map<String, String>>> arpResult = new HashMap<>();
@@ -236,8 +273,8 @@ public class EngineBlockFormatter {
         final Map<String, Object> metadata = (Map<String, Object>) result.computeIfAbsent("metadata", key -> new TreeMap<>());
         Map<String, String> metaDataFields = (Map<String, String>) source.get("metaDataFields");
         IntStream.range(0, 10).forEach(i -> {
-            String binding = metaDataFields.get("SingleSignOnService:" + i + ":Binding$");
-            String location = metaDataFields.get("SingleSignOnService:" + i + ":Binding$");
+            String binding = metaDataFields.get("SingleSignOnService:" + i + ":Binding");
+            String location = metaDataFields.get("SingleSignOnService:" + i + ":Location");
 
             if (hasText(binding) || hasText(location)) {
                 ArrayList<Object> singleSignOnServiceContainer = (ArrayList<Object>) metadata.computeIfAbsent(
@@ -255,10 +292,10 @@ public class EngineBlockFormatter {
         final Map<String, Object> metadata = (Map<String, Object>) result.computeIfAbsent("metadata", key -> new TreeMap<>());
         Map<String, Object> metaDataFields = (Map<String, Object>) source.get("metaDataFields");
         IntStream.range(0, 5).forEach(i -> {
-            String allowed = String.class.cast(metaDataFields.get("shibmd:scope::" + i + ":allowed$"));
-            Boolean regexp = Boolean.class.cast(metaDataFields.get("shibmd:scope::" + i + ":regexp$"));
+            String allowed = String.class.cast(metaDataFields.get("shibmd:scope:" + i + ":allowed"));
+            String regexp = String.class.cast(metaDataFields.get("shibmd:scope:" + i + ":regexp"));
 
-            if (hasText(allowed) || regexp != null) {
+            if (hasText(allowed) || hasText(regexp)) {
                 Map<String, List<Object>> shibmdContainer = (Map<String, List<Object>>) metadata.computeIfAbsent(
                     "shibmd", key -> new HashMap<>());
                 List<Object> scopeContainer = shibmdContainer.computeIfAbsent("scope", key -> new ArrayList<>());
@@ -266,7 +303,7 @@ public class EngineBlockFormatter {
                 if (hasText(allowed)) {
                     scope.put("allowed", allowed);
                 }
-                if (regexp != null) {
+                if (hasText("regexp")) {
                     scope.put("regexp", regexp);
                 }
                 scopeContainer.add(scope);
@@ -279,8 +316,8 @@ public class EngineBlockFormatter {
         final Map<String, Object> metadata = (Map<String, Object>) result.computeIfAbsent("metadata", key -> new TreeMap<>());
         Map<String, String> metaDataFields = (Map<String, String>) source.get("metaDataFields");
         IntStream.range(0, 10).forEach(i -> {
-            String binding = metaDataFields.get("AssertionConsumerService:" + i + ":Binding$");
-            String location = metaDataFields.get("AssertionConsumerService:" + i + ":Binding$");
+            String binding = metaDataFields.get("AssertionConsumerService:" + i + ":Binding");
+            String location = metaDataFields.get("AssertionConsumerService:" + i + ":Location");
 
             if (hasText(binding) || hasText(location)) {
                 ArrayList<Object> assertionConsumerServiceContainer = (ArrayList<Object>) metadata.computeIfAbsent(
@@ -296,11 +333,11 @@ public class EngineBlockFormatter {
         });
     }
 
-    private List<String> convertNameList(List<Map<String, String>> entities) {
+    private List<Map<String, String>> convertNameList(List<Map<String, String>> entities) {
         if (entities == null) {
             return new ArrayList<>();
         }
-        return entities.stream().map(entry -> entry.get("name")).collect(toList());
+        return entities;
     }
 
     protected void addToResult(Map<String, Object> source,

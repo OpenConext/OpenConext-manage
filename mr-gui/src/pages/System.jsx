@@ -1,5 +1,6 @@
 import React from "react";
 import I18n from "i18n-js";
+import CopyToClipboard from "react-copy-to-clipboard";
 import PropTypes from "prop-types";
 import {migrate, ping, push, pushPreview, validate} from "../api";
 import {stop} from "../utils/Utils";
@@ -21,6 +22,7 @@ export default class System extends React.PureComponent {
             validationResults: undefined,
             pushResults: undefined,
             loading: false,
+            copiedToClipboardClassName: "",
             confirmationDialogOpen: false,
             confirmationQuestion: "",
             confirmationDialogAction: () => this,
@@ -53,6 +55,9 @@ export default class System extends React.PureComponent {
     switchTab = tab => e => {
         stop(e);
         this.setState({selectedTab: tab});
+        if (tab !== "push_preview") {
+            this.setState({pushResults: undefined});
+        }
     };
 
     renderTab = (tab, selectedTab) =>
@@ -97,7 +102,10 @@ export default class System extends React.PureComponent {
                 <a className={`button ${loading ? "grey disabled" : "green"}`}
                    onClick={() => this.setState({
                        confirmationDialogOpen: true,
-                       confirmationQuestion: I18n.t("playground.pushConfirmation", {url: currentUser.push.url, name: currentUser.push.name}),
+                       confirmationQuestion: I18n.t("playground.pushConfirmation", {
+                           url: currentUser.push.url,
+                           name: currentUser.push.name
+                       }),
                        confirmationDialogAction: action
                    })}>{I18n.t("playground.runPush")}
                     <i className="fa fa-refresh"></i>
@@ -106,18 +114,33 @@ export default class System extends React.PureComponent {
         );
     };
 
+    copiedToClipboard = () => {
+        this.setState({copiedToClipboardClassName: "copied"});
+        setTimeout(() => this.setState({copiedToClipboardClassName: ""}), 5000);
+    };
+
+
     renderPushPreview = () => {
-        const {pushResults, loading} = this.state;
+        const {pushResults, loading, copiedToClipboardClassName} = this.state;
         const {currentUser} = this.props;
+        const json = pushResults ? JSON.stringify(pushResults) : "";
+        const showCopy = (pushResults && pushResults.length < 250 * 1000);
         return (
             <section className="push">
                 <p>{I18n.t("playground.pushPreviewInfo", {name: currentUser.push.name})}</p>
                 <a className={`button ${loading ? "grey disabled" : "green"}`}
                    onClick={this.runPushPreview}>{I18n.t("playground.runPushPreview")}
                     <i className="fa fa-refresh"></i></a>
+                {showCopy &&
+                <CopyToClipboard text={json} onCopy={this.copiedToClipboard}>
+                    <span className={`button green ${copiedToClipboardClassName}`}>
+                       Copy to clipboard <i className="fa fa-clone"></i>
+                    </span>
+                </CopyToClipboard>
+                }
                 {pushResults &&
                 <section className="results pushResults">
-                    {JSON.stringify(pushResults)}
+                    {json}
                 </section>}
             </section>
         );
