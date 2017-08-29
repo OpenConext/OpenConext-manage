@@ -27,6 +27,7 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import static mr.format.Importer.ARP;
 import static mr.format.Importer.META_DATA_FIELDS;
 
+@SuppressWarnings("unchecked")
 public class MetaDataFeedParser {
 
     private static final List<String> languages = Arrays.asList("en", "nl");
@@ -258,12 +259,10 @@ public class MetaDataFeedParser {
     }
 
     private void addArpAttribute(Map<String, Object> result, XMLStreamReader reader, Set<String> arpKeys) {
-        getAttributeValue(reader, "FriendlyName").ifPresent((String friendlyName) -> {
-            doAddArpAttribute(result, arpKeys, friendlyName);
-        });
-        getAttributeValue(reader, "Name").ifPresent((String friendlyName) -> {
-            doAddArpAttribute(result, arpKeys, friendlyName);
-        });
+        getAttributeValue(reader, "FriendlyName")
+            .ifPresent((String friendlyName) -> doAddArpAttribute(result, arpKeys, friendlyName));
+        getAttributeValue(reader, "Name")
+            .ifPresent((String friendlyName) -> doAddArpAttribute(result, arpKeys, friendlyName));
     }
 
     private void doAddArpAttribute(Map<String, Object> result, Set<String> arpKeys, String friendlyName) {
@@ -303,7 +302,7 @@ public class MetaDataFeedParser {
 
     private void addCert(Map<String, String> result, String cert) {
         List<String> certDataKeys = Arrays.asList("certData", "certData2", "certData3");
-        long count = result.keySet().stream().filter(key -> certDataKeys.contains(key)).count();
+        long count = result.keySet().stream().filter(certDataKeys::contains).count();
         if (count < certDataKeys.size()) {
             result.put(certDataKeys.get((int) count), cert);
         }

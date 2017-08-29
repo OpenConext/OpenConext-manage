@@ -8,6 +8,7 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
@@ -51,7 +52,7 @@ public class SystemControllerTest extends AbstractIntegrationTest {
 
         List<String> idsToRemove = Arrays.asList("2", "3", "4", "5");
         innerConnections.entrySet().removeIf(entry -> idsToRemove.contains(entry.getKey()));
-        System.out.println(objectMapper.writeValueAsString(connections));
+
         Map expected = objectMapper.readValue(readFile("push/push.expected.json"), Map.class);
         assertEquals(expected, connections);
     }

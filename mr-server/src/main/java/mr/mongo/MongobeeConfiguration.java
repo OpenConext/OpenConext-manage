@@ -33,7 +33,6 @@ public class MongobeeConfiguration {
 
     private static MetaDataAutoConfiguration staticMetaDataAutoConfiguration;
 
-
     // Converts . into a mongo friendly char
     @PostConstruct
     public void setUpMongoEscapeCharacterConversion() {
@@ -66,17 +65,6 @@ public class MongobeeConfiguration {
     }
 
     private IndexDefinition indexDefinition(IndexConfiguration indexConfiguration) {
-        switch (indexConfiguration.getType()) {
-            case "text":
-                return textIndex(indexConfiguration);
-            case "field":
-                return fieldIndex(indexConfiguration);
-            default:
-                throw new IllegalArgumentException("Not supported index option");
-        }
-    }
-
-    private IndexDefinition fieldIndex(IndexConfiguration indexConfiguration) {
         Index index = new Index();
         indexConfiguration.getFields().forEach(field -> index.on("data.".concat(field), Sort.Direction.ASC));
         index.named(indexConfiguration.getName());
@@ -86,9 +74,4 @@ public class MongobeeConfiguration {
         return index;
     }
 
-    private IndexDefinition textIndex(IndexConfiguration indexConfiguration) {
-        TextIndexDefinition.TextIndexDefinitionBuilder builder = new TextIndexDefinition.TextIndexDefinitionBuilder();
-        indexConfiguration.getFields().forEach(field -> builder.onField("data.".concat(field)));
-        return builder.named(indexConfiguration.getName()).build();
-    }
 }

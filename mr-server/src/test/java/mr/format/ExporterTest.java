@@ -44,13 +44,16 @@ public class ExporterTest  implements TestUtils {
         new DefaultResourceLoader(), "classpath:/metadata_export");
 
     @Test
-    @Ignore("We are in a different time-zone for travis.")
     public void exportToXml() throws Exception {
         MetaData metaData = this.metaData();
         String xml = subject.exportToXml(metaData);
 
         assertNotNull(xml);
         String expected = readFile("/xml/expected_metadata_export_saml20_sp.xml");
+
+        //We are in a different time-zone for travis
+        expected = expected.replaceFirst("validUntil=\"(.*)\"", "");
+        xml = xml.replaceFirst("validUntil=\"(.*)\"", "");
         assertEquals(expected, xml);
     }
 

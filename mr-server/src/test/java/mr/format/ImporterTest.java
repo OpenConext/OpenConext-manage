@@ -19,6 +19,7 @@ import java.util.Optional;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+@SuppressWarnings("unchecked")
 public class ImporterTest implements TestUtils {
 
     private ObjectMapper objectMapper = new ObjectMapper();
