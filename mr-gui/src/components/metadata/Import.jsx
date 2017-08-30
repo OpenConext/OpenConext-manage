@@ -25,6 +25,7 @@ export default class Import extends React.Component {
             xml: "",
             invalidXml: false,
             json: "",
+            type: undefined,
             invalidJson: false,
             results: undefined,
             resultsMap: undefined,
@@ -157,6 +158,7 @@ export default class Import extends React.Component {
             window.scrollTo(0, 0);
             if (json.errors) {
                 newState[errorsName] = json.errors;
+                newState.type = json.type;
                 newState.results = undefined;
                 this.setState({...newState});
             } else {
@@ -407,14 +409,17 @@ export default class Import extends React.Component {
         );
     };
 
-    renderErrors = errors =>
-        <section className="validation-errors">
-            <p>{I18n.t("import.validationErrors", {type: this.props.metaData.type})}</p>
-            <ul>
-                {errors.map((msg, index) =>
-                    <li key={index}>{msg}</li>)}
-            </ul>
-        </section>;
+    renderErrors = errors => {
+        return (
+            <section className="validation-errors">
+                <p>{I18n.t("import.validationErrors", {type: this.props.metaData.type || this.state.type })}</p>
+                <ul>
+                    {errors.map((msg, index) =>
+                        <li key={index}>{msg}</li>)}
+                </ul>
+            </section>
+        );
+    };
 
     renderImportHeader = (info, action, errors) =>
         <section>

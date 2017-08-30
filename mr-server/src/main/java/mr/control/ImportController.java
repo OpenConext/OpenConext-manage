@@ -21,6 +21,7 @@ import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -60,20 +61,24 @@ public class ImportController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(value = "/client/import/json/{type}")
     public Map<String, Object> importJson(@PathVariable("type") String type, @RequestBody Map<String, Object> json) throws IOException, XMLStreamException {
+        EntityType entityType = getType(type, json);
         try {
-            return this.importer.importJSON(getType(type), json);
+            return this.importer.importJSON(entityType, json);
         } catch (ValidationException e) {
-            return Collections.singletonMap("errors", e.getAllMessages());
+            Map<String, Object> result = new HashMap<>();
+            result.put("errors", e.getAllMessages());
+            result.put("type", entityType.getType());
+            return result;
         }
     }
 
-    private Optional<EntityType> getType(String type) {
+    private EntityType getType(String type, Map<String, Object> json) {
         EntityType entityType = EntityType.IDP.getType().equals(type) ?
             EntityType.IDP : EntityType.SP.getType().equals(type) ? EntityType.SP : null;
         if (entityType == null) {
-            return Optional.empty();
+            return EntityType.fromType(String.class.cast(json.get("type")));
         }
-        return Optional.of(entityType);
+        return entityType;
     }
 
 }

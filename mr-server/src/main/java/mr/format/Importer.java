@@ -45,11 +45,10 @@ public class Importer {
         return metaDataFeedParser.importXML(resource, entityId, metaDataAutoConfiguration);
     }
 
-    public Map<String, Object> importJSON(Optional<EntityType> optionalEntityType, Map<String, Object> data) throws JsonProcessingException {
+    public Map<String, Object> importJSON(EntityType entityType, Map<String, Object> data) throws JsonProcessingException {
         data.entrySet().removeIf(entry-> entry.getValue() == null);
 
         Map<String, Object> json = new ConcurrentHashMap<>(data);
-        EntityType entityType = optionalEntityType.orElseGet(() -> EntityType.fromType(String.class.cast(json.get("type")))) ;
         Object metaDataFieldsMap = json.get(META_DATA_FIELDS);
         if (metaDataFieldsMap == null || !(metaDataFieldsMap instanceof Map)) {
             metaDataAutoConfiguration.validate(metaDataAutoConfiguration.getObjectMapper().writeValueAsString(json),

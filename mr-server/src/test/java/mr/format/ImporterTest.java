@@ -83,7 +83,7 @@ public class ImporterTest implements TestUtils {
         String json = this.readFile("/json/metadata_import_saml20_sp_invalid_nested.json");
         Map map = objectMapper.readValue(json, Map.class);
         try {
-            subject.importJSON(Optional.of(EntityType.SP), map);
+            subject.importJSON(EntityType.SP, map);
         } catch (ValidationException e) {
             assertEquals(2, List.class.cast(e.toJSON().toMap().get("causingExceptions")).size());
         }
@@ -93,7 +93,7 @@ public class ImporterTest implements TestUtils {
     public void testImportSpJSON() throws IOException {
         String json = this.readFile("/json/metadata_import_saml20_sp_nested.json");
         Map map = objectMapper.readValue(json, Map.class);
-        Map result = subject.importJSON(Optional.of(EntityType.SP), map);
+        Map result = subject.importJSON(EntityType.SP, map);
 
         assertEquals(9, result.size());
 

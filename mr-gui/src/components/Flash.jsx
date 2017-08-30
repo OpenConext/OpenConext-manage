@@ -28,7 +28,8 @@ export default class Flash extends React.PureComponent {
 
     render() {
         const {flash, className} = this.state;
-        const messages = flash.message ? flash.message.split(",") : [];
+        const split = flash.message && flash.type === "error";
+        const messages = split ? flash.message.split(",") : [flash.message];
 
         return (
             <div className={`flash ${className} ${flash.type}`}>

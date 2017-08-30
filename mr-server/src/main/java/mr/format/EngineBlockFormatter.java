@@ -1,5 +1,6 @@
 package mr.format;
 
+import mr.migration.EntityType;
 import mr.model.MetaData;
 
 import java.util.ArrayList;
@@ -84,7 +85,7 @@ public class EngineBlockFormatter {
         Map<String, Object> source = metaDataContainer.getData();
 
         Map<String, Object> serviceProvider = new TreeMap<>();
-        serviceProvider.put("type", "saml20-sp");
+        serviceProvider.put("type", EntityType.SP.getJanusDbValue());
 
         addCommonProviderAttributes(source, serviceProvider);
         addNameIDFormats(source, serviceProvider);
@@ -102,7 +103,7 @@ public class EngineBlockFormatter {
         Map<String, Object> source = metaDataContainer.getData();
 
         Map<String, Object> identityProvider = new TreeMap<>();
-        identityProvider.put("type", "saml20-sp");
+        identityProvider.put("type", EntityType.IDP.getJanusDbValue());
 
         List<Map<String, String>> disableConsent = (List<Map<String, String>>) source.get("disableConsent");
         identityProvider.put("disable_consent_connections", this.convertNameList(disableConsent));
