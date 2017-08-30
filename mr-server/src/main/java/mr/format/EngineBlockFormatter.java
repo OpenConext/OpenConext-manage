@@ -1,7 +1,5 @@
 package mr.format;
 
-import mr.migration.ArpAttributes;
-import mr.migration.ArpValue;
 import mr.model.MetaData;
 
 import java.util.ArrayList;
@@ -18,7 +16,6 @@ import java.util.stream.IntStream;
 
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
-import static java.util.stream.Collectors.toList;
 import static org.springframework.util.StringUtils.hasText;
 
 /**
@@ -217,7 +214,7 @@ public class EngineBlockFormatter {
         if (hasText(redirectSign)) {
             Map<String, Boolean> redirect = new HashMap<>();
             redirect.put("sign", redirectSign.equalsIgnoreCase("1"));
-            result.put("redirect",redirect);
+            result.put("redirect", redirect);
         }
     }
 
@@ -233,7 +230,7 @@ public class EngineBlockFormatter {
         }
 
         IntStream.range(0, 3).forEach(i -> {
-            String nameIdFormat = metaDataFields.get("NameIDFormats:" + i );
+            String nameIdFormat = metaDataFields.get("NameIDFormats:" + i);
             if (hasText(nameIdFormat)) {
                 Set<String> nameIDFormats = (Set<String>) metadata.computeIfAbsent(
                     "NameIDFormats", key -> new HashSet<>());
@@ -244,29 +241,20 @@ public class EngineBlockFormatter {
 
         commonAttributes.put("metadata:NameIDFormats", empty());
     }
+
     private void addAttributeReleasePolicy(Map<String, Object> source, Map<String, Object> result) {
-        ArpAttributes arp = (ArpAttributes) source.get("arp");
-        Map<String, List<Map<String, String>>> arpResult = new HashMap<>();
-        result.put("arp_attributes", arpResult);
+        Map<String, Object> arp = (Map<String, Object>) source.get("arp");
 
         if (arp == null) {
+            Map<String, List<Map<String, String>>> arpResult = new HashMap<>();
+            result.put("arp_attributes", arpResult);
             return;
         }
-        if (arp.isEnabled()) {
-            Map<String, List<ArpValue>> attributes = arp.getAttributes();
-            if (!attributes.isEmpty()) {
-                attributes.forEach((key, values) -> arpResult.put(key, values.stream()
-                    .map(arpValue -> {
-                        Map<String, String> map = new HashMap<>();
-                        map.put("value", arpValue.getValue());
-                        map.put("source", arpValue.getSource());
-                        return map;
-                    })
-                    .collect(toList())));
-                result.put("arp_attributes", arpResult);
-            }
+        if (Boolean.class.cast(arp.get("enabled"))) {
+            Map<String, List<Map<String, String>>> attributes =
+                (Map<String, List<Map<String, String>>>) arp.get("attributes");
+            result.put("arp_attributes", attributes);
         }
-
     }
 
     private void addSingleSignOnService(Map<String, Object> source, Map<String, Object> result) {

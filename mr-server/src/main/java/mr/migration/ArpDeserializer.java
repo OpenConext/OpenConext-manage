@@ -4,18 +4,27 @@ import com.github.ooxi.phparser.SerializedPhpParser;
 import com.github.ooxi.phparser.SerializedPhpParserException;
 import org.springframework.util.StringUtils;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static java.util.stream.Collectors.toList;
+import static org.springframework.util.StringUtils.hasText;
 
 public class ArpDeserializer {
 
+    private static final Map<String, Object> NO_ARP = new HashMap<>();
+
+    static {
+        NO_ARP.put("enabled", false);
+        NO_ARP.put("attributes", new HashMap<>());
+    }
+
     @SuppressWarnings("unchecked")
-    public ArpAttributes parseArpAttributes(String input) {
+    public Map<String, Object> parseArpAttributes(String input) {
         if (StringUtils.isEmpty(input) || input.equalsIgnoreCase("N;")) {
-            return ArpAttributes.noArp();
+            return NO_ARP;
         }
         //SerializedPhpParser is not thread-safe
         SerializedPhpParser serializedPhpParser = new SerializedPhpParser(input);
@@ -26,32 +35,32 @@ public class ArpDeserializer {
             throw new RuntimeException(e);
         }
         Map<String, Map<Long, Object>> arp = Map.class.cast(parse);
-        return new ArpAttributes(true, arp.entrySet().stream().map(this::parseEntry).reduce(new HashMap<>(), (acc, map) -> {
-            acc.putAll(map);
-            return acc;
-        }));
-    }
 
-    private Map<String, List<ArpValue>> parseEntry(Map.Entry<String, Map<Long, Object>> entry) {
-        Map<String, List<ArpValue>> result = new HashMap<>();
+        Map<String, Object> result = new HashMap<>();
+        result.put("enabled", true);
 
-            result.put(
-                entry.getKey(),
-                entry.getValue().values().stream()
-                    .map(value -> arpValue(value)).collect(toList()));
+        Map<String, List<Map<String, String>>> attributes = new HashMap<>();
+        result.put("attributes", attributes);
+
+        arp.forEach((key, value) -> {
+            attributes.put(key, value.values().stream().map(this::arpValue).collect(toList()));
+        });
         return result;
     }
 
-    private ArpValue arpValue(Object o) {
+    private Map<String, String> arpValue(Object o) {
         //Supports old & new style
-        if  (o instanceof String) {
-            return new ArpValue(String.class.cast(o), "idp");
+        if (o instanceof String) {
+            String value = String.class.cast(o);
+            Map<String, String> result = new HashMap<>();
+            result.put("source", "idp");
+            result.put("value", hasText(value) ? value : "*" );
+            return result;
         } else {
-            Map<String, String> map = (Map<String, String> ) o;
-            String value = map.getOrDefault("value", "*");
-            value = value.trim().length() == 0 ? "*" : value;
-            String source = map.getOrDefault("source", "idp");
-            return new ArpValue(value, source);
+            Map<String, String> map = (Map<String, String>) o;
+            map.compute("value", (key, oldValue) -> hasText(oldValue) ? oldValue : "*");
+            map.compute("source", (key, oldValue) -> hasText(oldValue) ? oldValue : "idp");
+            return map;
         }
     }
 

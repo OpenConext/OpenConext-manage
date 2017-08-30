@@ -142,7 +142,8 @@ public class JanusMigration {
                 entity.put("allowedall", rs.getString("allowedall").equals("yes") ? true : false);
                 entity.put("manipulation", rs.getString("manipulation"));
                 String userid = rs.getString("userid");
-                entity.put("user", StringUtils.hasText(userid) ? userid : "unknown");
+                String user = StringUtils.hasText(userid) ? userid : "unknown";
+                entity.put("user", user);
                 entity.put("created", rs.getString("created"));
                 entity.put("ip", rs.getString("ip"));
                 entity.put("revisionnote", rs.getString("revisionnote"));
@@ -158,7 +159,7 @@ public class JanusMigration {
                 }
                 Instant instant = Instant.from(DateTimeFormatter.ISO_OFFSET_DATE_TIME.parse((String) entity.get("created")));
                 String id = UUID.randomUUID().toString();
-                MetaData metaData = new MetaData(id, type, new Revision(revisionid.intValue(), instant, parentId, (String) entity.get("user")), entity);
+                MetaData metaData = new MetaData(id, type, new Revision(revisionid.intValue(), instant, parentId, user), entity);
                 mongoTemplate.insert(metaData, type);
                 String key = isPrimary ? entityType.getJanusDbValue() : entityType.getJanusDbValue() + "_revision";
                 Long revisionCount = stats.get(key);
