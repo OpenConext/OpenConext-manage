@@ -4,6 +4,7 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import mr.AbstractIntegrationTest;
 import org.junit.Rule;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.Arrays;
 import java.util.List;
@@ -22,12 +23,18 @@ import static org.junit.Assert.assertEquals;
 @SuppressWarnings("unchecked")
 public class SystemControllerTest extends AbstractIntegrationTest {
 
+    @Value("${push.user}")
+    private String pushUser;
+
+    @Value("${push.password}")
+    private String pushPassword;
+
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(9898);
 
     @Test
     public void push() throws Exception {
-        stubFor(post(urlPathEqualTo("/api/connections"))
+        stubFor(post(urlPathEqualTo("/api/connections")).withBasicAuth(pushUser, pushPassword)
             .willReturn(aResponse().withStatus(200)
                 .withHeader("Content-Type", "application/json")));
 
@@ -36,7 +43,7 @@ public class SystemControllerTest extends AbstractIntegrationTest {
             .get("mr/api/client/playground/push")
             .then()
             .statusCode(SC_OK)
-            .body("status", equalTo("BAD_REQUEST"));
+            .body("status", equalTo("OK"));
 
     }
 
