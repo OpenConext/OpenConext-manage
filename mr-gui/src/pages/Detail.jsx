@@ -29,7 +29,6 @@ export default class Detail extends React.PureComponent {
         super(props);
         const type = isEmpty(props.newMetaData) ?
             this.props.match.params.type : props.newMetaData.connection.type.value.replace("-", "_");
-        debugger;
         const id = isEmpty(props.newMetaData) ? this.props.match.params.id : "new";
         this.state = {
             metaData: {},
@@ -273,6 +272,7 @@ export default class Detail extends React.PureComponent {
                         promise(metaData)
                             .then(json => {
                                 if (json.exception) {
+                                    debugger;
                                     setFlash(json.validations, "error");
                                 } else {
                                     this.props.history.replace("/search");

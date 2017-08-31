@@ -19,10 +19,9 @@ function validateResponse(showErrorDialog) {
             }
             const error = new Error(res.statusText);
             error.response = res;
+
             if (showErrorDialog) {
                 setTimeout(() => {
-                    const error = new Error(res.statusText);
-                    error.response = res;
                     throw error;
                 }, 250);
             }

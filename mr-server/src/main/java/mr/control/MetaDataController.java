@@ -1,20 +1,16 @@
 package mr.control;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import mr.api.APIUser;
 import mr.conf.MetaDataAutoConfiguration;
 import mr.exception.ResourceNotFoundException;
-import mr.format.Exporter;
 import mr.model.MetaData;
+import mr.model.MetaDataUpdate;
 import mr.repository.MetaDataRepository;
 import mr.shibboleth.FederatedUser;
-import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,15 +18,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.time.Clock;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -41,6 +32,7 @@ import static mr.mongo.MongobeeConfiguration.REVISION_POSTFIX;
 public class MetaDataController {
 
     public static final String REQUESTED_ATTRIBUTES = "REQUESTED_ATTRIBUTES";
+
     @Autowired
     private MetaDataRepository metaDataRepository;
 
@@ -56,7 +48,7 @@ public class MetaDataController {
     public MetaData get(@PathVariable("type") String type, @PathVariable("id") String id) {
         MetaData metaData = metaDataRepository.findById(id, type);
         if (metaData == null) {
-            throw new ResourceNotFoundException(String.format("MetaData type %s with id %s does not exist", type, id ));
+            throw new ResourceNotFoundException(String.format("MetaData type %s with id %s does not exist", type, id));
         }
         return metaData;
     }
@@ -100,6 +92,26 @@ public class MetaDataController {
         return metaData;
     }
 
+    @PreAuthorize("hasRole('WRITE')")
+    @PutMapping("internal/metadata")
+    @Transactional
+    public MetaData update(@Validated @RequestBody MetaDataUpdate metaDataUpdate, APIUser apiUser) throws JsonProcessingException {
+        String id = metaDataUpdate.getId();
+        MetaData previous = metaDataRepository.findById(id, metaDataUpdate.getType());
+        previous.revision(UUID.randomUUID().toString());
+
+        MetaData metaData = metaDataRepository.findById(id, metaDataUpdate.getType());
+        metaData.promoteToLatest(apiUser.getName());
+        metaData.merge(metaDataUpdate);
+
+        validate(metaData);
+
+        metaDataRepository.save(previous);
+        metaDataRepository.update(metaData);
+
+        return metaData;
+    }
+
     @GetMapping("/client/revisions/{type}/{parentId}")
     public List<MetaData> revisions(@PathVariable("type") String type, @PathVariable("parentId") String parentId) {
         return metaDataRepository.revisions(type.concat(REVISION_POSTFIX), parentId);
@@ -115,7 +127,7 @@ public class MetaDataController {
         return metaDataRepository.whiteListing(type);
     }
 
-    @PostMapping("/client/search/{type}")
+    @PostMapping({"/client/search/{type}", "/internal/search/{type}"})
     public List<Map> searchEntities(@PathVariable("type") String type, @RequestBody Map<String, Object> properties) {
         List requestedAttributes = List.class.cast(properties.getOrDefault(REQUESTED_ATTRIBUTES, new ArrayList<String>()));
         properties.remove(REQUESTED_ATTRIBUTES);

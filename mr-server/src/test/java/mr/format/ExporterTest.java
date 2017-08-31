@@ -33,13 +33,6 @@ import static org.junit.Assert.*;
 
 public class ExporterTest  implements TestUtils {
 
-    private static final ObjectMapper objectMapper = new ObjectMapper();
-
-    static {
-        objectMapper.registerModule(new Jdk8Module());
-        objectMapper.registerModule(new JavaTimeModule());
-    }
-
     private Exporter subject = new Exporter(Clock.fixed(Instant.from(DateTimeFormatter.ISO_OFFSET_DATE_TIME.parse("2017-07-14T11:15:56.857+02:00")), ZoneId.systemDefault()),
         new DefaultResourceLoader(), "classpath:/metadata_export");
 

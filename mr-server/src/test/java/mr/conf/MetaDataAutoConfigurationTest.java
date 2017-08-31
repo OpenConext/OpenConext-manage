@@ -20,7 +20,7 @@ import static org.junit.Assert.fail;
 public class MetaDataAutoConfigurationTest implements TestUtils {
 
     private MetaDataAutoConfiguration subject = new MetaDataAutoConfiguration(
-        new ObjectMapper(),
+        objectMapper,
         new ClassPathResource("metadata_configuration"),
         new ClassPathResource("metadata_templates"));
 

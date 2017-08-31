@@ -1,6 +1,7 @@
 logging:
   level:
     org.springframework.data.mongodb: INFO
+    org.springframework.security: INFO
 
 server:
   contextPath: /mr/api
@@ -25,10 +26,9 @@ metadata_templates_path: classpath:/metadata_templates
 metadata_export_path: classpath:/metadata_export
 
 security:
-  internal_user_name: openconext
-  internal_password: secret
   backdoor_user_name: backdoor
   backdoor_password: secret
+  api_users_config_path: classpath:/mr-api-users.yml
 
 spring:
   data:

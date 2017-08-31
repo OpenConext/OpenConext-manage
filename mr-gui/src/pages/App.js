@@ -117,7 +117,7 @@ class App extends React.PureComponent {
                         <ProtectedRoute path="/system"
                                         guest={currentUser.guest}
                                         render={props => <System currentUser={currentUser}
-                                                                    configuration={configuration} {...props}/>}/>
+                                                                 configuration={configuration} {...props}/>}/>
                         <Route path="/error"
                                render={props => <ServerError {...props}/>}/>
                         <Route component={NotFound}/>

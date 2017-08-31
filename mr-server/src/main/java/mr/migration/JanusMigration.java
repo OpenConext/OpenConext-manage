@@ -160,7 +160,7 @@ public class JanusMigration {
                 }
                 Instant instant = Instant.from(DateTimeFormatter.ISO_OFFSET_DATE_TIME.parse((String) entity.get("created")));
                 String id = UUID.randomUUID().toString();
-                MetaData metaData = new MetaData(id, type, new Revision(revisionid.intValue(), instant, parentId, user), entity);
+                MetaData metaData = new MetaData(id, 0L, type, new Revision(revisionid.intValue(), instant, parentId, user), entity);
                 mongoTemplate.insert(metaData, type);
                 String key = isPrimary ? entityType.getJanusDbValue() : entityType.getJanusDbValue() + "_revision";
                 Long revisionCount = stats.get(key);
@@ -240,8 +240,8 @@ public class JanusMigration {
                     }
                     metaDataFields.put(key, value);
                 } else {
-                    LOG.info("Not adding unknown property {} for entity {} with type {}",
-                        key, entity.get("entityid"), entityType.getType());
+                    LOG.info("Not adding unknown property {} with value {} for entity {} with type {}",
+                        key, value, entity.get("entityid"), entityType.getType());
                 }
             } else {
                 metaDataFields.put(key, value);

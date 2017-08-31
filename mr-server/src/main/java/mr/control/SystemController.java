@@ -99,9 +99,14 @@ public class SystemController {
             throw new EndpointNotAllowed();
         }
         Map<String, Map<String, Map<String, Object>>> json = this.pushPreview(federatedUser);
-        ResponseEntity<Void> response = this.restTemplate.postForEntity(pushUri, json, Void.class);
+        ResponseEntity<String> response = this.restTemplate.postForEntity(pushUri, json, String.class);
         HttpStatus statusCode = response.getStatusCode();
-        return new ResponseEntity<>(Collections.singletonMap("status", statusCode), HttpStatus.OK);
+
+        Map<String ,Object> result = new HashMap<>();
+        result.put("status", statusCode);
+        result.put("response", response);
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ADMIN')")

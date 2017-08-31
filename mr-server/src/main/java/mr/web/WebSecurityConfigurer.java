@@ -1,5 +1,7 @@
 package mr.web;
 
+import mr.api.APIAuthenticationManager;
+import mr.api.APIUserConfiguration;
 import mr.conf.Features;
 import mr.conf.Product;
 import mr.conf.Push;
@@ -11,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -25,13 +28,11 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.constructor.Constructor;
 
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
+import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
@@ -39,7 +40,7 @@ import static java.util.stream.Collectors.toList;
 /**
  * Protect endpoints for the internal JS API with Shibboleth AbstractPreAuthenticatedProcessingFilter.
  * <p>
- * Protect the internal endpoints for other Server applications with basic authentication.
+ * Protect the internal endpoints for other Server applications with basic authentications.
  * <p>
  * Do not protect public endpoints like /health and /info
  */
@@ -120,11 +121,9 @@ public class WebSecurityConfigurer {
                 .authorizeRequests()
                 .antMatchers("/client/**").hasRole("USER");
 
-            if (environment.acceptsProfiles("no-csrf")) {
-                http.csrf().disable();
-            }
             if (environment.acceptsProfiles("dev", "no-csrf")) {
                 //we can't use @Profile, because we need to add it before the real filter
+                http.csrf().disable();
                 http.addFilterBefore(new MockShibbolethFilter(), ShibbolethPreAuthenticatedProcessingFilter.class);
             }
         }
@@ -132,19 +131,13 @@ public class WebSecurityConfigurer {
 
     @Configuration
     @Order
-    public static class SecurityConfigurationAdapter extends WebSecurityConfigurerAdapter  {
+    public static class SecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
 
-        @Value("${security.internal_user_name}")
-        private String user;
+        @Value("${security.api_users_config_path}")
+        private String configApiUsersFileLocation;
 
-        @Value("${security.internal_password}")
-        private String password;
-
-        @Value("${push.url}")
-        private String pushUrl;
-
-        @Value("${push.name}")
-        private String pushName;
+        @Autowired
+        private ResourceLoader resourceLoader;
 
         @Override
         public void configure(WebSecurity web) throws Exception {
@@ -153,10 +146,10 @@ public class WebSecurityConfigurer {
 
         @Override
         public void configure(HttpSecurity http) throws Exception {
-            Push push = new Push(pushUrl, pushName);
-
+            APIUserConfiguration apiUserConfiguration = new Yaml()
+                .loadAs(resourceLoader.getResource(configApiUsersFileLocation).getInputStream(), APIUserConfiguration.class);
             http
-                .antMatcher("/**")
+                .antMatcher("/internal/**")
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
@@ -164,12 +157,11 @@ public class WebSecurityConfigurer {
                 .disable()
                 .addFilterBefore(
                     new BasicAuthenticationFilter(
-                        new BasicAuthenticationManager(user, password, new ArrayList<>(), Product.DEFAULT, push)),
-                    BasicAuthenticationFilter.class
+                        new APIAuthenticationManager(apiUserConfiguration)
+                    ), BasicAuthenticationFilter.class
                 )
                 .authorizeRequests()
-                .antMatchers("/internal/**").hasRole("ADMIN")
-                .antMatchers("/**").hasRole("USER");
+                .antMatchers("/internal/**").hasRole("READ");
         }
 
     }
@@ -180,6 +172,7 @@ public class WebSecurityConfigurer {
         @Override
         public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
             argumentResolvers.add(new FederatedUserHandlerMethodArgumentResolver());
+            argumentResolvers.add(new APIUserHandlerMethodArgumentResolver());
         }
 
     }

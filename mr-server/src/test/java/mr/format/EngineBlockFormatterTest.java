@@ -20,12 +20,6 @@ public class EngineBlockFormatterTest implements TestUtils {
 
     private EngineBlockFormatter subject = new EngineBlockFormatter();
 
-    private static ObjectMapper objectMapper = new ObjectMapper();
-
-    static {
-        objectMapper.findAndRegisterModules();
-    }
-
     @Test
     public void addToResult() throws Exception {
         MetaData metaData =  objectMapper.readValue(readFile("json/meta_data_detail.json"), MetaData.class);

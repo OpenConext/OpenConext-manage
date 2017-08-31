@@ -17,9 +17,9 @@ export default function ErrorDialog({isOpen = false, close}) {
             <section className="dialog-header error">
                 {I18n.t("error_dialog.title")}
             </section>
-                <section className="dialog-content">
-                    <h2>{I18n.t("error_dialog.body")}</h2>
-                </section>
+            <section className="dialog-content">
+                <h2>{I18n.t("error_dialog.body")}</h2>
+            </section>
             <section className="dialog-buttons">
                 <a className="button blue error" onClick={e => {
                     stop(e);

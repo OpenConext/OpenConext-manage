@@ -37,7 +37,7 @@ public class JanusMigrationTest implements TestUtils {
         metaDataRepository = new MetaDataRepository(mongoTemplate);
 
         this.metaDataAutoConfiguration = new MetaDataAutoConfiguration(
-            new ObjectMapper(), new ClassPathResource("metadata_configuration"), new ClassPathResource("metadata_templates")
+            objectMapper, new ClassPathResource("metadata_configuration"), new ClassPathResource("metadata_templates")
         );
         this.subject = new JanusMigration("key_column", dataSource, mongoTemplate, metaDataAutoConfiguration);
     }

@@ -22,8 +22,6 @@ import static org.junit.Assert.assertTrue;
 @SuppressWarnings("unchecked")
 public class ImporterTest implements TestUtils {
 
-    private ObjectMapper objectMapper = new ObjectMapper();
-
     private Importer subject = new Importer(new MetaDataAutoConfiguration(
         objectMapper,
         new ClassPathResource("metadata_configuration"),

@@ -3,16 +3,19 @@ package mr.control;
 import mr.AbstractIntegrationTest;
 import mr.migration.EntityType;
 import mr.model.MetaData;
+import mr.model.MetaDataUpdate;
 import mr.model.Revision;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 import static mr.control.MetaDataController.REQUESTED_ATTRIBUTES;
+import static org.apache.http.HttpStatus.SC_FORBIDDEN;
 import static org.apache.http.HttpStatus.SC_NOT_FOUND;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.hamcrest.Matchers.equalTo;
@@ -109,10 +112,20 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void post() throws Exception {
+        String id = createServiceProviderMetaData();
+
+        MetaData savedMetaData = metaDataRepository.findById(id, EntityType.SP.getType());
+        Revision revision = savedMetaData.getRevision();
+        assertEquals("saml2_user.com", revision.getUpdatedBy());
+        assertEquals(0, revision.getNumber());
+        assertNotNull(revision.getCreated());
+    }
+
+    private String createServiceProviderMetaData() throws java.io.IOException {
         String json = readFile("/json/valid_service_provider.json");
         Map data = objectMapper.readValue(json, Map.class);
         MetaData metaData = new MetaData(EntityType.SP.getType(), data);
-        String id = given()
+        return given()
             .when()
             .body(metaData)
             .header("Content-type", "application/json")
@@ -120,12 +133,61 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
             .then()
             .statusCode(SC_OK)
             .extract().path("id");
+    }
 
-        MetaData savedMetaData = metaDataRepository.findById(id, EntityType.SP.getType());
-        Revision revision = savedMetaData.getRevision();
-        assertEquals("saml2_user.com", revision.getUpdatedBy());
-        assertEquals(0, revision.getNumber());
-        assertNotNull(revision.getCreated());
+    @Test
+    public void update() throws Exception {
+        String id = createServiceProviderMetaData();
+        Map<String, Object> pathUpdates = new HashMap<>();
+        pathUpdates.put("metaDataFields.description:en", "New description");
+        pathUpdates.put("allowedall", false);
+        pathUpdates.put("allowedEntities", Arrays.asList(Collections.singletonMap("name", "https://allow-me")));
+        MetaDataUpdate metaDataUpdate = new MetaDataUpdate(id, EntityType.SP.getType(), pathUpdates);
+
+        given()
+            .auth()
+            .preemptive()
+            .basic("sp-portal", "secret")
+            .body(metaDataUpdate)
+            .header("Content-type", "application/json")
+            .when()
+            .put("/mr/api/internal/metadata")
+            .then()
+            .statusCode(SC_OK)
+            .body("id", equalTo(id))
+            .body("revision.number", equalTo(1))
+            .body("revision.updatedBy", equalTo("sp-portal"))
+            .body("data.allowedall", equalTo(false))
+            .body("data.metaDataFields.'description:en'", equalTo("New description"))
+            .body("data.allowedEntities[0].name", equalTo("https://allow-me"));
+    }
+
+    @Test
+    public void updateWithoutCorrectScope() throws Exception {
+        given()
+            .auth()
+            .preemptive()
+            .basic("pdp", "secret")
+            .body(new MetaDataUpdate("id", EntityType.SP.getType(), new HashMap<>()))
+            .header("Content-type", "application/json")
+            .when()
+            .put("/mr/api/internal/metadata")
+            .then()
+            .statusCode(SC_FORBIDDEN);
+    }
+
+    @Test
+    public void updateWithoutCorrectUser() throws Exception {
+        given()
+            .auth()
+            .preemptive()
+            .basic("bogus", "nope")
+            .body(new HashMap<>())
+            .header("Content-type", "application/json")
+            .when()
+            .put("/mr/api/internal/metadata")
+            .then()
+            .statusCode(SC_FORBIDDEN);
     }
 
     @Test
