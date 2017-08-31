@@ -1,16 +1,17 @@
+# Valid scopes are mr.api.Scope.values(); =>  ["READ", "WRITE", "PUSH"]
 apiUsers:
   - {
       name: "attribute-aggregator",
       password: "secret",
-      scopes: [READ]
+      scopes: ["READ"]
     }
   - {
       name: "pdp",
       password: "secret",
-      scopes: [READ]
+      scopes: ["READ"]
     }
   - {
       name: "sp-portal",
       password: "secret",
-      scopes: [READ, WRITE, PUSH]
+      scopes: ["READ", "WRITE", "PUSH"]
     }

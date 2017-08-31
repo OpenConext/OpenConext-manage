@@ -29,6 +29,7 @@ install:
 before_script:
 - mysql -e "create database IF NOT EXISTS metadata_registry; grant all on metadata_registry.* to 'root';SET
   GLOBAL TRANSACTION ISOLATION LEVEL SERIALIZABLE;" -uroot
+- mysql -e "create database IF NOT EXISTS sr; grant all on sr.* to 'root';" -uroot
 script:
 - mvn test
 - cd mr-gui && yarn install
