@@ -15,6 +15,7 @@ import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 import static mr.control.MetaDataController.REQUESTED_ATTRIBUTES;
+import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
 import static org.apache.http.HttpStatus.SC_FORBIDDEN;
 import static org.apache.http.HttpStatus.SC_NOT_FOUND;
 import static org.apache.http.HttpStatus.SC_OK;
@@ -160,6 +161,26 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
             .body("data.allowedall", equalTo(false))
             .body("data.metaDataFields.'description:en'", equalTo("New description"))
             .body("data.allowedEntities[0].name", equalTo("https://allow-me"));
+    }
+
+    @Test
+    public void updateWithValidationErrors() throws Exception {
+        String id = createServiceProviderMetaData();
+        Map<String, Object> pathUpdates = new HashMap<>();
+        pathUpdates.put("metaDataFields.NameIDFormats:0", "bogus");
+        MetaDataUpdate metaDataUpdate = new MetaDataUpdate(id, EntityType.SP.getType(), pathUpdates);
+
+        given()
+            .auth()
+            .preemptive()
+            .basic("sp-portal", "secret")
+            .body(metaDataUpdate)
+            .header("Content-type", "application/json")
+            .when()
+            .put("/mr/api/internal/metadata")
+            .then()
+            .statusCode(SC_BAD_REQUEST)
+            .body("validations", notNullValue());
     }
 
     @Test
