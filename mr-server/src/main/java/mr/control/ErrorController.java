@@ -47,13 +47,18 @@ public class ErrorController implements org.springframework.boot.autoconfigure.w
 
         //Bit of a hack to determine which status to return - GUI expects 200 and other client normal behaviour
         boolean isInternalCall = StringUtils.hasText(request.getHeader(HttpHeaders.AUTHORIZATION));
+        HttpStatus status = isInternalCall ? HttpStatus.BAD_REQUEST : HttpStatus.OK;
         if (error instanceof ValidationException) {
             ValidationException validationException = ValidationException.class.cast(error);
             result.put("validations", String.join(", ", validationException.getAllMessages()));
-            return new ResponseEntity<>(result, isInternalCall ? HttpStatus.BAD_REQUEST : HttpStatus.OK);
+            result.put("status", status.value());
+            result.put("error", ValidationException.class.getName());
+            return new ResponseEntity<>(result, status);
         } else if (error instanceof OptimisticLockingFailureException) {
             result.put("validations", "Optimistic locking failure e.g. mid-air collision. Refresh your screen to get the latest version.");
-            return new ResponseEntity<>(result, isInternalCall ? HttpStatus.BAD_REQUEST : HttpStatus.OK);
+            result.put("status", status.value());
+            result.put("error", OptimisticLockingFailureException.class.getName());
+            return new ResponseEntity<>(result, status);
         }
 
         HttpStatus statusCode = result.containsKey("status") ? HttpStatus.valueOf((Integer) result.get("status")) : INTERNAL_SERVER_ERROR;
