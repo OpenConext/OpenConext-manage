@@ -43,9 +43,19 @@ spring:
     dbcp2:
       test-while-idle: true
       validation-query: SELECT 1
-
   main:
     banner-mode: "off"
+
+eb:
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mysql://localhost/eb?autoReconnect=true&useSSL=false
+    username: root
+    password:
+    dbcp2:
+      test-while-idle: true
+      validation-query: SELECT 1
+
 
 # We disable all endpoints except health for the load-balancer and info for git information.
 endpoints:
