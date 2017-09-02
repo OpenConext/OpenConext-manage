@@ -14,26 +14,26 @@ public class PrePostComparator {
 
     public Set<Delta> compare(List<Map<String, Object>> preProvidersData, List<Map<String, Object>> postProvidersData) {
         Set<Delta> deltas = new HashSet<>();
-        doCompare(deltas, preProvidersData, postProvidersData);
-        doCompare(deltas, postProvidersData, preProvidersData);
+        doCompare(deltas, preProvidersData, postProvidersData, false);
+        doCompare(deltas, postProvidersData, preProvidersData, true);
         return deltas;
     }
 
-    private void doCompare(Set<Delta> deltas, List<Map<String, Object>> firstProvidersData, List<Map<String, Object>> secondProvidersData) {
-        firstProvidersData.forEach(provider -> compareProvider(deltas, provider, this.findByEntityId(secondProvidersData, String.class.cast(provider.get("entity_id")))));
+    private void doCompare(Set<Delta> deltas, List<Map<String, Object>> firstProvidersData, List<Map<String, Object>> secondProvidersData, boolean reversed) {
+        firstProvidersData.forEach(provider -> compareProvider(deltas, provider, this.findByEntityId(secondProvidersData, String.class.cast(provider.get("entity_id"))), reversed));
     }
 
-    private void compareProvider(Set<Delta> deltas, Map<String, Object> provider, Optional<Map<String, Object>> optionalProvider) {
+    private void compareProvider(Set<Delta> deltas, Map<String, Object> provider, Optional<Map<String, Object>> optionalProvider, boolean reversed) {
         Map<String, Object> otherProvider = optionalProvider.orElse(new HashMap<>());
-        this.compareProvider(deltas, provider, otherProvider);
+        this.compareProvider(deltas, provider, otherProvider,reversed);
 
     }
 
-    private void compareProvider(Set<Delta> deltas, Map<String, Object> provider, Map<String, Object> otherProvider) {
+    private void compareProvider(Set<Delta> deltas, Map<String, Object> provider, Map<String, Object> otherProvider, boolean reversed) {
         provider.forEach((key, value) -> {
             Object otherValue = otherProvider.get(key);
             if (!Objects.equals(value, otherValue)) {
-                deltas.add(new Delta(String.class.cast(provider.get("entity_id")), key, value, otherValue));
+                deltas.add(new Delta(String.class.cast(provider.get("entity_id")), key , reversed ? otherValue : value , reversed ? value : otherValue));
             }
         });
     }

@@ -1,6 +1,5 @@
 package mr.control;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import mr.conf.Features;
 import mr.exception.EndpointNotAllowed;
@@ -21,6 +20,8 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpRequestFactory;
@@ -31,16 +32,15 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import javax.sql.DataSource;
+import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -55,6 +55,8 @@ public class SystemController {
     private JanusMigration janusMigration;
     private MetaDataRepository metaDataRepository;
     private JdbcTemplate ebJdbcTemplate;
+    private Environment environment;
+    private ObjectMapper objectMapper;
 
     private PrePostComparator prePostComparator = new PrePostComparator();
 
@@ -65,7 +67,9 @@ public class SystemController {
                             @Qualifier("ebDataSource") DataSource ebDataSource,
                             @Value("${push.url}") String pushUri,
                             @Value("${push.user}") String user,
-                            @Value("${push.password}") String password) throws MalformedURLException {
+                            @Value("${push.password}") String password,
+                            Environment environment,
+                            ObjectMapper objectMapper) throws MalformedURLException {
         this.janusMigration = janusMigration;
         this.janusMigrationValidation = janusMigrationValidation;
         this.metaDataRepository = metaDataRepository;
@@ -74,6 +78,8 @@ public class SystemController {
         this.pushPassword = password;
         this.restTemplate = new RestTemplate(getRequestFactory());
         this.ebJdbcTemplate = new JdbcTemplate(ebDataSource);
+        this.environment = environment;
+        this.objectMapper = objectMapper;
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -111,23 +117,28 @@ public class SystemController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/client/playground/push")
-    public ResponseEntity<Map> push(FederatedUser federatedUser) {
+    public ResponseEntity<Map> push(FederatedUser federatedUser) throws IOException {
         if (!federatedUser.featureAllowed(Features.PUSH)) {
             throw new EndpointNotAllowed();
         }
-        List<Map<String, Object>> preProvidersData = ebJdbcTemplate.queryForList("select * from sso_provider_roles_eb5 order by id ASC");
+        if (environment.acceptsProfiles("dev")) {
+            Map map = objectMapper.readValue(new ClassPathResource("mock/mock_eb_push_repsonse.json").getInputStream(), Map.class);
+            return new ResponseEntity<>(map, HttpStatus.OK);
+        }
+        List<Map<String, Object>> preProvidersData = ebJdbcTemplate.queryForList("SELECT * FROM sso_provider_roles_eb5 ORDER BY id ASC");
 
         Map<String, Map<String, Map<String, Object>>> json = this.pushPreview(federatedUser);
         ResponseEntity<String> response = this.restTemplate.postForEntity(pushUri, json, String.class);
         HttpStatus statusCode = response.getStatusCode();
 
-        List<Map<String, Object>> postProvidersData = ebJdbcTemplate.queryForList("select * from sso_provider_roles_eb5 order by id ASC");
+        List<Map<String, Object>> postProvidersData = ebJdbcTemplate.queryForList("SELECT * FROM sso_provider_roles_eb5 ORDER BY id ASC");
         Set<Delta> deltas = prePostComparator.compare(preProvidersData, postProvidersData);
 
-        List<String> knownDeltas = Arrays.asList("name_id_formats", "attribute_release_policy", "allowed_idp_entity_ids");
+        List<String> knownDeltas = Arrays.asList("id", "name_id_formats", "attribute_release_policy", "allowed_idp_entity_ids");
         List<Delta> realDeltas = deltas.stream().filter(delta -> !knownDeltas.contains(delta.getAttribute())).collect(toList());
+        realDeltas.sort(Comparator.comparing(Delta::getEntityId));
 
-        Map<String ,Object> result = new HashMap<>();
+        Map<String, Object> result = new HashMap<>();
         result.put("status", statusCode);
         result.put("response", response);
         result.put("deltas", realDeltas);

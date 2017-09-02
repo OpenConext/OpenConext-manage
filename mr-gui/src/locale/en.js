@@ -94,7 +94,14 @@ I18n.translations.en = {
             name: "Name"
         },
         no_results: "No results",
-        error: "Invalid input: dangling meta character '*'"
+        error: "Invalid input: dangling meta character '*'",
+        pushResults: {
+            deltas: "The following are the delta values between the pre-push and post-push of the EB databse metadata.",
+            postPushValue: "Post-push value",
+            prePushValue: "Pre-push value",
+            attribute: "Attribute",
+            entityId: "Entity-ID"
+        }
 
     },
 

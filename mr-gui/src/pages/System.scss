@@ -50,7 +50,7 @@
         background-color: white;
         border: 1px solid $light-grey;
 
-        &.pushResults {
+        &.pushPreviewResults {
             font-family: "Courier New";
         }
     }
@@ -82,6 +82,44 @@
         }
 
     }
+    section.deltas {
+        p.push-result-info {
+            font-size: 22px;
+            margin: 15px 0;
+        }
+        table.push-results {
+            width: 100%;
+            table-layout: fixed;
+            thead th {
+                text-align: left;
+                padding: 5px;
+                font-size: larger;
+
+                &.entityId {
+                    width: 40%;
+                }
+                &.attribute {
+                    width: 20%;
+                }
+                &.prePushValue {
+                    width: 20%;
+                }
+                &.postPushValue {
+                    width: 20%;
+                }
+            }
+            tbody {
+                tr:nth-child(odd) {
+                    background-color: $lightest-grey;
+                }
+                td {
+                    word-wrap: break-word;
+                    padding: 3px;
+                }
+            }
+        }
+    }
+
 
 }
 

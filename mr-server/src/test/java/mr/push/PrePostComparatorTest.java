@@ -21,6 +21,8 @@ public class PrePostComparatorTest implements TestUtils{
 
         Set<Delta> deltas = subject.compare(prePush, postPush);
         assertEquals(3, deltas.size());
+
+        deltas.forEach(delta -> assertEquals("something_changed", delta.getPostPushValue()));
     }
 
 }

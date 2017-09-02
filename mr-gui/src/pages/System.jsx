@@ -20,6 +20,7 @@ export default class System extends React.PureComponent {
             selectedTab: tabs[0],
             migrationResults: undefined,
             validationResults: undefined,
+            pushPreviewResults: undefined,
             pushResults: undefined,
             loading: false,
             copiedToClipboardClassName: "",
@@ -56,7 +57,7 @@ export default class System extends React.PureComponent {
         stop(e);
         this.setState({selectedTab: tab});
         if (tab !== "push_preview") {
-            this.setState({pushResults: undefined});
+            this.setState({pushPreviewResults: undefined});
         }
     };
 
@@ -72,11 +73,18 @@ export default class System extends React.PureComponent {
         }
         this.setState({loading: true});
         push().then(json => {
-            this.setState({loading: false});
+            this.setState({loading: false, pushResults:json.deltas});
             const ok = json.status === "OK";
             const msg = ok ? "playground.pushedOk" : "playground.pushedNotOk";
             setFlash(I18n.t(msg, {name: this.props.currentUser.push.name}), ok ? "info" : "error");
         });
+    };
+
+    renderDeltaValue = value => {
+        if (value === null) {
+            return "null";
+        }
+        return value.toString();
     };
 
     runPushPreview = e => {
@@ -85,11 +93,11 @@ export default class System extends React.PureComponent {
             return;
         }
         this.setState({loading: true});
-        pushPreview().then(json => this.setState({pushResults: json, loading: false}));
+        pushPreview().then(json => this.setState({pushPreviewResults: json, loading: false}));
     };
 
     renderPush = () => {
-        const {loading} = this.state;
+        const {loading, pushResults} = this.state;
         const {currentUser} = this.props;
         const action = () => {
             this.setState({confirmationDialogOpen: false});
@@ -110,6 +118,29 @@ export default class System extends React.PureComponent {
                    })}>{I18n.t("playground.runPush")}
                     <i className="fa fa-refresh"></i>
                 </a>
+                {pushResults && <section className="deltas">
+                    <p className="push-result-info">{I18n.t("playground.pushResults.deltas")}</p>
+                    <table className="push-results">
+                        <thead>
+                            <tr>
+                                <th className="entityId">{I18n.t("playground.pushResults.entityId")}</th>
+                                <th className="attribute">{I18n.t("playground.pushResults.attribute")}</th>
+                                <th className="prePushValue">{I18n.t("playground.pushResults.prePushValue")}</th>
+                                <th className="postPushValue">{I18n.t("playground.pushResults.postPushValue")}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {pushResults.map((delta, index) =>
+                            <tr key={`${index}`}>
+                                <td>{delta.entityId}</td>
+                                <td>{delta.attribute}</td>
+                                <td>{this.renderDeltaValue(delta.prePushValue)}</td>
+                                <td>{this.renderDeltaValue(delta.postPushValue)}</td>
+                            </tr>
+                        )}
+                        </tbody>
+                    </table>
+                </section>}
             </section>
         );
     };
@@ -121,10 +152,10 @@ export default class System extends React.PureComponent {
 
 
     renderPushPreview = () => {
-        const {pushResults, loading, copiedToClipboardClassName} = this.state;
+        const {pushPreviewResults, loading, copiedToClipboardClassName} = this.state;
         const {currentUser} = this.props;
-        const json = pushResults ? JSON.stringify(pushResults) : "";
-        const showCopy = (pushResults && pushResults.length < 250 * 1000);
+        const json = pushPreviewResults ? JSON.stringify(pushPreviewResults) : "";
+        const showCopy = (pushPreviewResults && pushPreviewResults.length < 250 * 1000);
         return (
             <section className="push">
                 <p>{I18n.t("playground.pushPreviewInfo", {name: currentUser.push.name})}</p>
@@ -138,8 +169,8 @@ export default class System extends React.PureComponent {
                     </span>
                 </CopyToClipboard>
                 }
-                {pushResults &&
-                <section className="results pushResults">
+                {pushPreviewResults &&
+                <section className="results pushPreviewResults">
                     {json}
                 </section>}
             </section>
