@@ -121,7 +121,7 @@ public class WebSecurityConfigurer {
                 .authorizeRequests()
                 .antMatchers("/client/**").hasRole("USER");
 
-            if (environment.acceptsProfiles("dev", "no-csrf")) {
+            if (environment.acceptsProfiles("dev")) {
                 //we can't use @Profile, because we need to add it before the real filter
                 http.csrf().disable();
                 http.addFilterBefore(new MockShibbolethFilter(), ShibbolethPreAuthenticatedProcessingFilter.class);

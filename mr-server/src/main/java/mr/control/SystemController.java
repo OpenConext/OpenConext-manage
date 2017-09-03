@@ -2,8 +2,11 @@ package mr.control;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import mr.conf.Features;
+import mr.conf.Product;
+import mr.conf.Push;
 import mr.exception.EndpointNotAllowed;
 import mr.format.EngineBlockFormatter;
+import mr.mail.MailBox;
 import mr.migration.JanusMigration;
 import mr.migration.JanusMigrationValidation;
 import mr.model.MetaData;
@@ -27,10 +30,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import javax.mail.MessagingException;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -42,10 +47,20 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import static java.util.concurrent.Executors.newScheduledThreadPool;
 import static java.util.stream.Collectors.toList;
 
 @RestController
 public class SystemController {
+
+    private static final FederatedUser FEDERATED_USER = new FederatedUser(
+        "system",
+        "system",
+        "system",
+        AuthorityUtils.createAuthorityList("ROLE_ADMIN"),
+        Arrays.asList(Features.values()),
+        Product.DEFAULT,
+        new Push("https://nope", "push"));
 
     private RestTemplate restTemplate;
     private String pushUser;
@@ -57,6 +72,7 @@ public class SystemController {
     private JdbcTemplate ebJdbcTemplate;
     private Environment environment;
     private ObjectMapper objectMapper;
+    private MailBox mailBox;
 
     private PrePostComparator prePostComparator = new PrePostComparator();
 
@@ -68,8 +84,11 @@ public class SystemController {
                             @Value("${push.url}") String pushUri,
                             @Value("${push.user}") String user,
                             @Value("${push.password}") String password,
+                            @Value("${manage_cronjob_minutes}") int everyMinutes,
+                            @Value("${manage_cronjobmaster}") boolean cronJobResponsible,
                             Environment environment,
-                            ObjectMapper objectMapper) throws MalformedURLException {
+                            ObjectMapper objectMapper,
+                            MailBox mailBox) throws MalformedURLException {
         this.janusMigration = janusMigration;
         this.janusMigrationValidation = janusMigrationValidation;
         this.metaDataRepository = metaDataRepository;
@@ -80,6 +99,25 @@ public class SystemController {
         this.ebJdbcTemplate = new JdbcTemplate(ebDataSource);
         this.environment = environment;
         this.objectMapper = objectMapper;
+        this.mailBox = mailBox;
+
+        if (cronJobResponsible) {
+            newScheduledThreadPool(1)
+                .scheduleAtFixedRate(() -> migrateAndPush(), 0, everyMinutes, TimeUnit.MINUTES);
+        }
+    }
+
+    private void migrateAndPush() {
+        try {
+            janusMigration.doMigrate();
+            ResponseEntity<Map> responseEntity = this.push(FEDERATED_USER);
+            List<Delta> realDeltas = (List<Delta>) responseEntity.getBody().get("deltas");
+            if (!responseEntity.getStatusCode().equals(HttpStatus.OK) || !realDeltas.isEmpty()) {
+                mailBox.sendDeltaPushMail(realDeltas);
+            }
+        } catch (IOException | RuntimeException | MessagingException e) {
+            //don't break the scheduler
+        }
     }
 
     @PreAuthorize("hasRole('ADMIN')")
