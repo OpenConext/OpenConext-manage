@@ -17,7 +17,7 @@ push:
   user: user
   password: password
 
-manage_cronjobmaster: true
+manage_cronjobmaster: false
 manage_cronjob_minutes: 30
 
 email:

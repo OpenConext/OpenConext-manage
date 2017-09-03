@@ -21,10 +21,4 @@ public class ApplicationTest extends AbstractIntegrationTest {
             .body("status", equalTo("UP"));
     }
 
-    @Test
-    public void testMain() {
-        Application application = new Application();
-        application.main(new String[]{});
-    }
-
 }
