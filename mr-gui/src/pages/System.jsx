@@ -3,7 +3,7 @@ import I18n from "i18n-js";
 import CopyToClipboard from "react-copy-to-clipboard";
 import PropTypes from "prop-types";
 import {migrate, ping, push, pushPreview, validate} from "../api";
-import {stop} from "../utils/Utils";
+import {isEmpty, stop} from "../utils/Utils";
 import JsonView from "react-pretty-json";
 import ConfirmationDialog from "../components/ConfirmationDialog";
 import "./System.css";
@@ -118,9 +118,11 @@ export default class System extends React.PureComponent {
                    })}>{I18n.t("playground.runPush")}
                     <i className="fa fa-refresh"></i>
                 </a>
-                {pushResults && <section className="deltas">
-                    <p className="push-result-info">{I18n.t("playground.pushResults.deltas")}</p>
-                    <table className="push-results">
+                <section className="deltas">
+                    {isEmpty(pushResults) && <p>{I18n.t("playground.pushResults.noDeltas")}</p>}
+                    {!isEmpty(pushResults) &&
+                    <p className="push-result-info">{I18n.t("playground.pushResults.deltas")}</p>}
+                    {!isEmpty(pushResults) && <table className="push-results">
                         <thead>
                             <tr>
                                 <th className="entityId">{I18n.t("playground.pushResults.entityId")}</th>
@@ -139,8 +141,8 @@ export default class System extends React.PureComponent {
                             </tr>
                         )}
                         </tbody>
-                    </table>
-                </section>}
+                    </table>}
+                </section>
             </section>
         );
     };

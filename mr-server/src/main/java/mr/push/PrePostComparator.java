@@ -25,15 +25,21 @@ public class PrePostComparator {
 
     private void compareProvider(Set<Delta> deltas, Map<String, Object> provider, Optional<Map<String, Object>> optionalProvider, boolean reversed) {
         Map<String, Object> otherProvider = optionalProvider.orElse(new HashMap<>());
-        this.compareProvider(deltas, provider, otherProvider,reversed);
+        this.compareProvider(deltas, provider, otherProvider, reversed);
 
     }
 
     private void compareProvider(Set<Delta> deltas, Map<String, Object> provider, Map<String, Object> otherProvider, boolean reversed) {
         provider.forEach((key, value) -> {
             Object otherValue = otherProvider.get(key);
-            if (!Objects.equals(value, otherValue)) {
-                deltas.add(new Delta(String.class.cast(provider.get("entity_id")), key , reversed ? otherValue : value , reversed ? value : otherValue));
+            boolean stringNotEquals = value instanceof String && otherValue instanceof String &&
+                !String.class.cast(((String) value).trim()).equals(String.class.cast(((String) otherValue).trim()));
+            if (stringNotEquals || !Objects.equals(value, otherValue)) {
+                deltas.add(new Delta(
+                    String.class.cast(provider.get("entity_id")),
+                    key,
+                    reversed ? otherValue : value,
+                    reversed ? value : otherValue));
             }
         });
     }
