@@ -19,6 +19,7 @@ public class MailConfiguration {
     private String emailTo;
 
     @Bean
+    @Primary
     @Profile({"test", "acc", "prod", "mail"})
     public MailBox mailSenderProd() {
         return new DefaultMailBox(baseUrl, emailTo, emailFrom);
@@ -26,7 +27,6 @@ public class MailConfiguration {
 
     @Bean
     @Profile({"dev"})
-    @Primary
     public MailBox mailSenderDev() {
         return new MockMailBox(baseUrl, emailTo, emailFrom);
     }
