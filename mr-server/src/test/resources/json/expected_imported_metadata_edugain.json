@@ -2,38 +2,31 @@
   "arp" : {
     "attributes" : {
       "urn:mace:dir:attribute-def:displayName" : [ {
-        "source" : "idp"
-      }, {
+        "source" : "idp",
         "value" : "*"
       } ],
       "urn:mace:dir:attribute-def:eduPersonPrincipalName" : [ {
-        "source" : "idp"
-      }, {
+        "source" : "idp",
         "value" : "*"
       } ],
       "urn:mace:dir:attribute-def:eduPersonTargetedID" : [ {
-        "source" : "idp"
-      }, {
+        "source" : "idp",
         "value" : "*"
       } ],
       "urn:mace:dir:attribute-def:givenName" : [ {
-        "source" : "idp"
-      }, {
+        "source" : "idp",
         "value" : "*"
       } ],
       "urn:mace:dir:attribute-def:mail" : [ {
-        "source" : "idp"
-      }, {
+        "source" : "idp",
         "value" : "*"
       } ],
       "urn:mace:dir:attribute-def:sn" : [ {
-        "source" : "idp"
-      }, {
+        "source" : "idp",
         "value" : "*"
       } ],
       "urn:mace:terena.org:attribute-def:schacHomeOrganization" : [ {
-        "source" : "idp"
-      }, {
+        "source" : "idp",
         "value" : "*"
       } ]
     },

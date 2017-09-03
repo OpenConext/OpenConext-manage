@@ -9,6 +9,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -259,10 +260,13 @@ public class MetaDataFeedParser {
     }
 
     private void addArpAttribute(Map<String, Object> result, XMLStreamReader reader, Set<String> arpKeys) {
-        getAttributeValue(reader, "FriendlyName")
-            .ifPresent((String friendlyName) -> doAddArpAttribute(result, arpKeys, friendlyName));
-        getAttributeValue(reader, "Name")
-            .ifPresent((String friendlyName) -> doAddArpAttribute(result, arpKeys, friendlyName));
+        Optional<String> friendlyName = getAttributeValue(reader, "FriendlyName");
+        Optional<String> name = getAttributeValue(reader, "Name");
+        if (friendlyName.isPresent()) {
+            doAddArpAttribute(result, arpKeys, friendlyName.get());
+        } else if (name.isPresent()) {
+            doAddArpAttribute(result, arpKeys, name.get());
+        }
     }
 
     private void doAddArpAttribute(Map<String, Object> result, Set<String> arpKeys, String friendlyName) {
@@ -270,9 +274,12 @@ public class MetaDataFeedParser {
         arp.put("enabled", true);
         final Map<String, Object> attributes = Map.class.cast(arp.getOrDefault(ATTRIBUTES, new TreeMap<>()));
         arpKeys.stream().filter(arpKey -> arpKey.endsWith(friendlyName)).findFirst().ifPresent(arpKey -> {
-            attributes.put(arpKey, Arrays.asList(
-                singletonMap("source", "idp"),
-                singletonMap("value", "*")));
+            List<Map<String, String>> arpEntry = List.class.cast(attributes.getOrDefault(arpKey, new ArrayList<>()));
+            Map<String, String> arpValue = new HashMap<>();
+            arpValue.put("source", "idp");
+            arpValue.put("value", "*");
+            arpEntry.add(arpValue);
+            attributes.put(arpKey, arpEntry);
         });
         arp.put(ATTRIBUTES, attributes);
         result.put(ARP, arp);
