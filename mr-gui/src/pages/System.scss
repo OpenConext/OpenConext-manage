@@ -84,8 +84,12 @@
     }
     section.deltas {
         p.push-result-info {
-            font-size: 22px;
+            font-size: 18px;
+            color: $green;
             margin: 15px 0;
+            &.differences {
+                color: $orange;
+            }
         }
         table.push-results {
             width: 100%;
@@ -119,7 +123,6 @@
             }
         }
     }
-
 
 }
 

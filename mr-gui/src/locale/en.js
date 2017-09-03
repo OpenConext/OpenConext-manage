@@ -96,8 +96,8 @@ I18n.translations.en = {
         no_results: "No results",
         error: "Invalid input: dangling meta character '*'",
         pushResults: {
-            deltas: "The following are the delta values between the pre-push and post-push of the EB database metadata.",
-            noDeltas: "There are no delta values between the pre-push and post-push of the EB database metadata.",
+            deltas: "Differences between the pre-push and the post-push EB sso_provider_roles_eb5 data.",
+            noDeltas: "The post-push EB sso_provider_roles_eb5 data is identical to the pre-push data.",
             postPushValue: "Post-push value",
             prePushValue: "Pre-push value",
             attribute: "Attribute",

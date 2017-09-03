@@ -3,7 +3,7 @@ import I18n from "i18n-js";
 import CopyToClipboard from "react-copy-to-clipboard";
 import PropTypes from "prop-types";
 import {migrate, ping, push, pushPreview, validate} from "../api";
-import {isEmpty, stop} from "../utils/Utils";
+import {stop} from "../utils/Utils";
 import JsonView from "react-pretty-json";
 import ConfirmationDialog from "../components/ConfirmationDialog";
 import "./System.css";
@@ -59,6 +59,9 @@ export default class System extends React.PureComponent {
         if (tab !== "push_preview") {
             this.setState({pushPreviewResults: undefined});
         }
+        if (tab !== "push") {
+            this.setState({pushResults: undefined, pushPreviewResults: undefined});
+        }
     };
 
     renderTab = (tab, selectedTab) =>
@@ -73,7 +76,7 @@ export default class System extends React.PureComponent {
         }
         this.setState({loading: true});
         push().then(json => {
-            this.setState({loading: false, pushResults:json.deltas});
+            this.setState({loading: false, pushResults: json.deltas});
             const ok = json.status === "OK";
             const msg = ok ? "playground.pushedOk" : "playground.pushedNotOk";
             setFlash(I18n.t(msg, {name: this.props.currentUser.push.name}), ok ? "info" : "error");
@@ -103,7 +106,8 @@ export default class System extends React.PureComponent {
             this.setState({confirmationDialogOpen: false});
             this.runPush();
         };
-
+        const showNoDeltas = pushResults !== undefined && pushResults.length === 0;
+        const showDeltas = pushResults !== undefined && pushResults.length > 0;
         return (
             <section className="push">
                 <p>{I18n.t("playground.pushInfo", {url: currentUser.push.url, name: currentUser.push.name})}</p>
@@ -119,17 +123,17 @@ export default class System extends React.PureComponent {
                     <i className="fa fa-refresh"></i>
                 </a>
                 <section className="deltas">
-                    {isEmpty(pushResults) && <p>{I18n.t("playground.pushResults.noDeltas")}</p>}
-                    {!isEmpty(pushResults) &&
-                    <p className="push-result-info">{I18n.t("playground.pushResults.deltas")}</p>}
-                    {!isEmpty(pushResults) && <table className="push-results">
+                    {showNoDeltas && <p className="push-result-info">{I18n.t("playground.pushResults.noDeltas")}</p>}
+                    {showDeltas &&
+                    <p className="push-result-info differences">{I18n.t("playground.pushResults.deltas")}</p>}
+                    {showDeltas && <table className="push-results">
                         <thead>
-                            <tr>
-                                <th className="entityId">{I18n.t("playground.pushResults.entityId")}</th>
-                                <th className="attribute">{I18n.t("playground.pushResults.attribute")}</th>
-                                <th className="prePushValue">{I18n.t("playground.pushResults.prePushValue")}</th>
-                                <th className="postPushValue">{I18n.t("playground.pushResults.postPushValue")}</th>
-                            </tr>
+                        <tr>
+                            <th className="entityId">{I18n.t("playground.pushResults.entityId")}</th>
+                            <th className="attribute">{I18n.t("playground.pushResults.attribute")}</th>
+                            <th className="prePushValue">{I18n.t("playground.pushResults.prePushValue")}</th>
+                            <th className="postPushValue">{I18n.t("playground.pushResults.postPushValue")}</th>
+                        </tr>
                         </thead>
                         <tbody>
                         {pushResults.map((delta, index) =>
