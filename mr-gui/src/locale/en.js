@@ -53,7 +53,7 @@ I18n.translations.en = {
         metaDataUrl: "Metadata URL",
         state: "State",
         prodaccepted: "Production",
-        testaccepted: "Test",
+        testaccepted: "Staging",
         revision: "Revision",
         revisionInfo: "Revision {{number}} last updated by {{updatedBy}} on {{created}}",
         notes: "Notes",
