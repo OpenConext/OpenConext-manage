@@ -5,19 +5,21 @@ node_js:
 - '7'
 services:
 - mysql
-addons:
-  apt:
-    sources:
-      - mongodb-upstart
-      - mongodb-3.2-precise
-    packages:
-      - mongodb-org-server
-      - mongodb-org-shell
+
+env:
+  - MONGODB=3.4.3
+
+matrix:
+  fast_finish: true
+
 cache:
   yarn: true
   directories:
   - node_modules
 before_install:
+- wget http://fastdl.mongodb.org/linux/mongodb-linux-x86_64-${MONGODB}.tgz
+- tar xzf mongodb-linux-x86_64-${MONGODB}.tgz
+- ${PWD}/mongodb-linux-x86_64-${MONGODB}/bin/mongod --version
 - pip install --user codecov
 - nvm install 7
 - npm install -g yarn
@@ -26,12 +28,15 @@ install:
 - cd manage-gui && yarn install && cd ..
 - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 before_script:
-- mysql -e "create database IF NOT EXISTS manage; grant all on manage.* to 'root';SET
-  GLOBAL TRANSACTION ISOLATION LEVEL SERIALIZABLE;" -uroot
+- mkdir ${PWD}/mongodb-linux-x86_64-${MONGODB}/data
+- ${PWD}/mongodb-linux-x86_64-${MONGODB}/bin/mongod --dbpath ${PWD}/mongodb-linux-x86_64-${MONGODB}/data --logpath ${PWD}/mongodb-linux-x86_64-${MONGODB}/mongodb.log --fork
+- mysql -e "create database IF NOT EXISTS manage; grant all on manage.* to 'root';SET GLOBAL TRANSACTION ISOLATION LEVEL SERIALIZABLE;" -uroot
 - mysql -e "create database IF NOT EXISTS sr; grant all on sr.* to 'root';" -uroot
 - mysql -e "create database IF NOT EXISTS eb; grant all on eb.* to 'root';" -uroot
 script:
 - mvn test
 - cd manage && yarn install
+after_script:
+- pkill mongod
 after_success:
 - codecov
