@@ -22,17 +22,16 @@ before_install:
 - nvm install 7
 - npm install -g yarn
 - yarn install
-#- "mongo --eval 'db.runCommand({setParameter: 1, textSearchEnabled: true})' admin"
 install:
-- cd mr-gui && yarn install && cd ..
+- cd manage-gui && yarn install && cd ..
 - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 before_script:
-- mysql -e "create database IF NOT EXISTS metadata_registry; grant all on metadata_registry.* to 'root';SET
+- mysql -e "create database IF NOT EXISTS manage; grant all on manage.* to 'root';SET
   GLOBAL TRANSACTION ISOLATION LEVEL SERIALIZABLE;" -uroot
 - mysql -e "create database IF NOT EXISTS sr; grant all on sr.* to 'root';" -uroot
 - mysql -e "create database IF NOT EXISTS eb; grant all on eb.* to 'root';" -uroot
 script:
 - mvn test
-- cd mr-gui && yarn install
+- cd manage && yarn install
 after_success:
 - codecov

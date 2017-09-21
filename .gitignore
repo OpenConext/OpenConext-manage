@@ -6,8 +6,8 @@ build
 *.iml
 TODO.txt
 target
-mr-gui/dist
-mr-gui/coverage
+manage-gui/dist
+manage-gui/coverage
 *.css
 whitelisting.json
 seeds

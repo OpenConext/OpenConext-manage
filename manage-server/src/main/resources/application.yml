@@ -1,0 +1,88 @@
+logging:
+  level:
+    org.springframework.data.mongodb: INFO
+    org.springframework.security: INFO
+
+server:
+  contextPath: /manage/api
+  server-header:
+  session:
+    timeout: 28800
+
+features: migration, validation, push_preview, push
+
+push:
+  url: http://localhost:9898/api/connections
+  name: OpenConext EngineBlock
+  user: user
+  password: password
+
+manage_cronjobmaster: false
+manage_cronjob_minutes: 30
+
+email:
+  base_url: http://localhost:8001/#delta
+  from: from@test.nl
+  to: to@test.nl
+
+product:
+  name: Manage
+  organization: OpenConext
+
+metadata_configuration_path: classpath:/metadata_configuration
+metadata_templates_path: classpath:/metadata_templates
+metadata_export_path: classpath:/metadata_export
+
+security:
+  backdoor_user_name: backdoor
+  backdoor_password: secret
+  api_users_config_path: classpath:/manage-api-users.yml
+
+spring:
+  mail:
+    host: localhost
+    port: 3025
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/metadata
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+   # url: jdbc:mysql://localhost/metadata_registry?autoReconnect=true&useSSL=false
+    url: jdbc:mysql://localhost/sr?autoReconnect=true&useSSL=false
+    username: root
+    password:
+    dbcp2:
+      test-while-idle: true
+      validation-query: SELECT 1
+  main:
+    banner-mode: "off"
+
+eb:
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mysql://localhost/eb?autoReconnect=true&useSSL=false
+    username: root
+    password:
+    dbcp2:
+      test-while-idle: true
+      validation-query: SELECT 1
+
+management:
+  health:
+    mail:
+      enabled: false
+
+# We disable all endpoints except health for the load-balancer and info for git information.
+endpoints:
+  enabled: false
+  health:
+    enabled: true
+    sensitive: false
+  info:
+    enabled: true
+
+# used by the git plugin
+info:
+  build:
+    artifact: "@project.artifactId@"
+    version: "@project.version@"

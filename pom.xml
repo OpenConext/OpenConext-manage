@@ -4,11 +4,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.openconext</groupId>
-    <artifactId>metadata-registry</artifactId>
+    <artifactId>manage</artifactId>
     <version>1.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>mr</name>
+    <name>manage</name>
     <description>Metadata Repository</description>
 
     <parent>
@@ -19,8 +19,8 @@
     </parent>
 
     <modules>
-        <module>mr-server</module>
-        <module>mr-gui</module>
+        <module>manage-server</module>
+        <module>manage-gui</module>
     </modules>
 
     <scm>

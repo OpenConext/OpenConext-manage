@@ -1,6 +1,6 @@
-# OpenConext-metadata-registry
-[![Build Status](https://travis-ci.org/OpenConext/OpenConext-metadata-registry.svg)](https://travis-ci.org/OpenConext/OpenConext-metadata-registry)
-[![codecov.io](https://codecov.io/github/OpenConext/OpenConext-metadata-registry/coverage.svg)](https://codecov.io/github/OpenConext/OpenConext-metadata-registry)
+# OpenConext-manage
+[![Build Status](https://travis-ci.org/OpenConext/OpenConext-manage.svg)](https://travis-ci.org/OpenConext/OpenConext-manage)
+[![codecov.io](https://codecov.io/github/OpenConext/OpenConext-manage/coverage.svg)](https://codecov.io/github/OpenConext/OpenConext-manage)
 
 Stores and publishes metadata of all entities known to OpenConext
 
@@ -17,15 +17,15 @@ Stores and publishes metadata of all entities known to OpenConext
 
 ## [Building and running](#building-and-running)
 
-### [The mr-server](#mr-server)
+### [The manage-server](#manage-server)
 
 This project uses Spring Boot and Maven. To run locally, type:
 
-`cd mr-server`
+`cd manage-server`
 
 `mvn spring-boot:run -Drun.jvmArguments="-Dspring.profiles.active=dev"`
 
-When developing, it's convenient to just execute the applications main-method, which is in [Application](mr-server/src/main/java/mr/Application.java). Don't forget
+When developing, it's convenient to just execute the applications main-method, which is in [Application](manage-server/src/main/java/mr/Application.java). Don't forget
 to set the active profile to dev.
 
 ### [The mr-gui](#mr-gui)
@@ -53,7 +53,7 @@ When new yarn dependencies are added:
 
 ### [Wiki](#wiki)
 
-See the MetadataRegistry [github wiki](https://github.com/OpenConext/OpenConext-metadata-registry/wiki) for 
+See the Manage [github wiki](https://github.com/OpenConext/OpenConext-manage/wiki) for 
 additional documentation. 
 
 ### [New MetaData Type](#new-metadata-type)
@@ -63,7 +63,7 @@ is all that is required for the server. Of course support for CRUD in the GUI ne
 
 ### [Configuration and deployment](#configuration-and-deployment)
 
-On its classpath, the application has an [application.yml](mr-server/src/main/resources/application.yml) file that
+On its classpath, the application has an [application.yml](manage-server/src/main/resources/application.yml) file that
 contains configuration defaults that are convenient when developing.
 
 When the application actually gets deployed to a meaningful platform, it is pre-provisioned with ansible and the application.yml depends on
