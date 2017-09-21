@@ -30,11 +30,11 @@ to set the active profile to dev.
 
 ### [The mr-gui](#mr-gui)
 
-The client is build with react.js and to get initially started:
+The client is build with react and to get initially started:
 
 `cd aa-gui`
 `brew install yarn;`
-`yarn install -g create-react-app` 
+`yarn install -g create-react-app`
 
 
 To run locally:
@@ -53,8 +53,8 @@ When new yarn dependencies are added:
 
 ### [Wiki](#wiki)
 
-See the Manage [github wiki](https://github.com/OpenConext/OpenConext-manage/wiki) for 
-additional documentation. 
+See the Manage [github wiki](https://github.com/OpenConext/OpenConext-manage/wiki) for
+additional documentation.
 
 ### [New MetaData Type](#new-metadata-type)
 
