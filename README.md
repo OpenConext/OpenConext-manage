@@ -25,7 +25,7 @@ This project uses Spring Boot and Maven. To run locally, type:
 
 `mvn spring-boot:run -Drun.jvmArguments="-Dspring.profiles.active=dev"`
 
-When developing, it's convenient to just execute the applications main-method, which is in [Application](manage-server/src/main/java/mr/Application.java). Don't forget
+When developing, it's convenient to just execute the applications main-method, which is in [Application](manage-server/src/main/java/manage/Application.java). Don't forget
 to set the active profile to dev.
 
 ### [The mr-gui](#mr-gui)
