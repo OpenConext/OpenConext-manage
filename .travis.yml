@@ -35,7 +35,7 @@ before_script:
 - mysql -e "create database IF NOT EXISTS eb; grant all on eb.* to 'root';" -uroot
 script:
 - mvn test
-- cd manage && yarn install
+- cd manage-gui && yarn install
 after_script:
 - pkill mongod
 after_success:
