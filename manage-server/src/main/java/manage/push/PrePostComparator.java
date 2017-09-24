@@ -19,17 +19,21 @@ public class PrePostComparator {
         return deltas;
     }
 
-    private void doCompare(Set<Delta> deltas, List<Map<String, Object>> firstProvidersData, List<Map<String, Object>> secondProvidersData, boolean reversed) {
-        firstProvidersData.forEach(provider -> compareProvider(deltas, provider, this.findByEntityId(secondProvidersData, String.class.cast(provider.get("entity_id"))), reversed));
+    private void doCompare(Set<Delta> deltas, List<Map<String, Object>> firstProvidersData, List<Map<String, Object>>
+        secondProvidersData, boolean reversed) {
+        firstProvidersData.forEach(provider -> compareProvider(deltas, provider, this.findByEntityId
+            (secondProvidersData, String.class.cast(provider.get("entity_id"))), reversed));
     }
 
-    private void compareProvider(Set<Delta> deltas, Map<String, Object> provider, Optional<Map<String, Object>> optionalProvider, boolean reversed) {
+    private void compareProvider(Set<Delta> deltas, Map<String, Object> provider,
+                                 Optional<Map<String, Object>> optionalProvider, boolean reversed) {
         Map<String, Object> otherProvider = optionalProvider.orElse(new HashMap<>());
         this.compareProvider(deltas, provider, otherProvider, reversed);
 
     }
 
-    private void compareProvider(Set<Delta> deltas, Map<String, Object> provider, Map<String, Object> otherProvider, boolean reversed) {
+    private void compareProvider(Set<Delta> deltas, Map<String, Object> provider, Map<String, Object> otherProvider,
+                                 boolean reversed) {
         provider.forEach((key, value) -> {
             Object otherValue = otherProvider.get(key);
             boolean stringNotEquals = value instanceof String && otherValue instanceof String &&
@@ -45,7 +49,8 @@ public class PrePostComparator {
     }
 
     private Optional<Map<String, Object>> findByEntityId(List<Map<String, Object>> providersData, String entityId) {
-        List<Map<String, Object>> providers = providersData.stream().filter(provider -> provider.get("entity_id").equals(entityId)).collect(toList());
+        List<Map<String, Object>> providers = providersData.stream().filter(provider -> provider.get("entity_id")
+            .equals(entityId)).collect(toList());
         return providers.isEmpty() ? Optional.empty() : Optional.of(providers.get(0));
     }
 

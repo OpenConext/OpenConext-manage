@@ -19,11 +19,13 @@ import java.net.URL;
  * Default HttpClient does not support Preemptive authentication. Spring has added a hook to
  * support this: https://jira.spring.io/browse/SPR-8367
  */
-public class PreemptiveAuthenticationHttpComponentsClientHttpRequestFactory extends HttpComponentsClientHttpRequestFactory {
+public class PreemptiveAuthenticationHttpComponentsClientHttpRequestFactory extends
+    HttpComponentsClientHttpRequestFactory {
 
     private HttpContext httpContext;
 
-    public PreemptiveAuthenticationHttpComponentsClientHttpRequestFactory(HttpClient httpClient, String url) throws MalformedURLException {
+    public PreemptiveAuthenticationHttpComponentsClientHttpRequestFactory(HttpClient httpClient, String url) throws
+        MalformedURLException {
         super(httpClient);
         this.httpContext = this.initHttpContext(url);
     }

@@ -23,7 +23,8 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
     private final Product product;
     private final Push push;
 
-    public ShibbolethPreAuthenticatedProcessingFilter(AuthenticationManager authenticationManager, List<Features> featureToggles, Product product, Push push) {
+    public ShibbolethPreAuthenticatedProcessingFilter(AuthenticationManager authenticationManager, List<Features>
+        featureToggles, Product product, Push push) {
         super();
         setAuthenticationManager(authenticationManager);
         this.featureToggles = featureToggles;
@@ -42,7 +43,8 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
             return null;
         }
         //TODO determine guest membership based on ???
-        List<GrantedAuthority> authorityList = createAuthorityList("ROLE_USER", "ROLE_ADMIN"); //createAuthorityList("ROLE_USER");
+        List<GrantedAuthority> authorityList = createAuthorityList("ROLE_USER", "ROLE_ADMIN"); //createAuthorityList
+        // ("ROLE_USER");
         return new FederatedUser(uid, displayName, schacHomeOrganization,
             authorityList, featureToggles, product, push);
     }

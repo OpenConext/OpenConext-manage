@@ -46,7 +46,8 @@ public class UserController {
     }
 
     @PostMapping("/client/users/error")
-    public void error(@RequestBody Map<String, Object> payload, FederatedUser federatedUser) throws JsonProcessingException, UnknownHostException {
+    public void error(@RequestBody Map<String, Object> payload, FederatedUser federatedUser) throws
+        JsonProcessingException, UnknownHostException {
         payload.put("dateTime", new SimpleDateFormat("yyyyy-mm-dd hh:mm:ss").format(new Date()));
         payload.put("machine", InetAddress.getLocalHost().getHostName());
         payload.put("user", federatedUser);

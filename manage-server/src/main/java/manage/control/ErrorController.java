@@ -55,13 +55,15 @@ public class ErrorController implements org.springframework.boot.autoconfigure.w
             result.put("error", ValidationException.class.getName());
             return new ResponseEntity<>(result, status);
         } else if (error instanceof OptimisticLockingFailureException) {
-            result.put("validations", "Optimistic locking failure e.g. mid-air collision. Refresh your screen to get the latest version.");
+            result.put("validations", "Optimistic locking failure e.g. mid-air collision. Refresh your screen to get " +
+                "the latest version.");
             result.put("status", status.value());
             result.put("error", OptimisticLockingFailureException.class.getName());
             return new ResponseEntity<>(result, status);
         }
 
-        HttpStatus statusCode = result.containsKey("status") ? HttpStatus.valueOf((Integer) result.get("status")) : INTERNAL_SERVER_ERROR;
+        HttpStatus statusCode = result.containsKey("status") ? HttpStatus.valueOf((Integer) result.get("status")) :
+            INTERNAL_SERVER_ERROR;
         if (error != null) {
             //https://github.com/spring-projects/spring-boot/issues/3057
             ResponseStatus annotation = AnnotationUtils.getAnnotation(error.getClass(), ResponseStatus.class);

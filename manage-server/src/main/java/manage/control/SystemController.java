@@ -160,20 +160,25 @@ public class SystemController {
             throw new EndpointNotAllowed();
         }
         if (environment.acceptsProfiles("dev")) {
-            Map map = objectMapper.readValue(new ClassPathResource("mock/mock_eb_push_repsonse.json").getInputStream(), Map.class);
+            Map map = objectMapper.readValue(new ClassPathResource("mock/mock_eb_push_repsonse.json").getInputStream
+                (), Map.class);
             return new ResponseEntity<>(map, HttpStatus.OK);
         }
-        List<Map<String, Object>> preProvidersData = ebJdbcTemplate.queryForList("SELECT * FROM sso_provider_roles_eb5 ORDER BY id ASC");
+        List<Map<String, Object>> preProvidersData = ebJdbcTemplate.queryForList("SELECT * FROM " +
+            "sso_provider_roles_eb5 ORDER BY id ASC");
 
         Map<String, Map<String, Map<String, Object>>> json = this.pushPreview(federatedUser);
         ResponseEntity<String> response = this.restTemplate.postForEntity(pushUri, json, String.class);
         HttpStatus statusCode = response.getStatusCode();
 
-        List<Map<String, Object>> postProvidersData = ebJdbcTemplate.queryForList("SELECT * FROM sso_provider_roles_eb5 ORDER BY id ASC");
+        List<Map<String, Object>> postProvidersData = ebJdbcTemplate.queryForList("SELECT * FROM " +
+            "sso_provider_roles_eb5 ORDER BY id ASC");
         Set<Delta> deltas = prePostComparator.compare(preProvidersData, postProvidersData);
 
-        List<String> knownDeltas = Arrays.asList("id", "name_id_formats", "attribute_release_policy", "allowed_idp_entity_ids");
-        List<Delta> realDeltas = deltas.stream().filter(delta -> !knownDeltas.contains(delta.getAttribute())).collect(toList());
+        List<String> knownDeltas = Arrays.asList("id", "name_id_formats", "attribute_release_policy",
+            "allowed_idp_entity_ids");
+        List<Delta> realDeltas = deltas.stream().filter(delta -> !knownDeltas.contains(delta.getAttribute())).collect
+            (toList());
         realDeltas.sort(Comparator.comparing(Delta::getEntityId));
 
         Map<String, Object> result = new HashMap<>();
@@ -194,11 +199,13 @@ public class SystemController {
     }
 
     private ClientHttpRequestFactory getRequestFactory() throws MalformedURLException {
-        HttpClientBuilder httpClientBuilder = HttpClientBuilder.create().evictExpiredConnections().evictIdleConnections(10l, TimeUnit.SECONDS);
+        HttpClientBuilder httpClientBuilder = HttpClientBuilder.create().evictExpiredConnections()
+            .evictIdleConnections(10l, TimeUnit.SECONDS);
         BasicCredentialsProvider basicCredentialsProvider = new BasicCredentialsProvider();
         basicCredentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(pushUser, pushPassword));
         httpClientBuilder.setDefaultCredentialsProvider(basicCredentialsProvider);
-        //httpClientBuilder.setDefaultRequestConfig(RequestConfig.custom().setConnectionRequestTimeout(timeOut).setConnectTimeout(timeOut).setSocketTimeout(timeOut).build());
+        //httpClientBuilder.setDefaultRequestConfig(RequestConfig.custom().setConnectionRequestTimeout(timeOut)
+        // .setConnectTimeout(timeOut).setSocketTimeout(timeOut).build());
 
         CloseableHttpClient httpClient = httpClientBuilder.build();
         return new PreemptiveAuthenticationHttpComponentsClientHttpRequestFactory(httpClient, pushUri);

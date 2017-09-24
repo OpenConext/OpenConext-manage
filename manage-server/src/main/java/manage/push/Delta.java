@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-@EqualsAndHashCode(of = {"entityId","attribute"})
+@EqualsAndHashCode(of = {"entityId", "attribute"})
 public class Delta {
 
     private String entityId;

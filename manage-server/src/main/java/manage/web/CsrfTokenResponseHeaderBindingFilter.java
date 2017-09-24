@@ -11,7 +11,8 @@ import java.io.IOException;
 public class CsrfTokenResponseHeaderBindingFilter extends OncePerRequestFilter {
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, javax.servlet.FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, javax.servlet
+        .FilterChain filterChain) throws ServletException, IOException {
         CsrfToken token = (CsrfToken) request.getAttribute("_csrf");
         if (token != null) {
             response.setHeader("X-CSRF-TOKEN", token.getToken());

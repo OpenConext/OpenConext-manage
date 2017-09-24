@@ -21,7 +21,8 @@ import static org.springframework.util.StringUtils.hasText;
 
 /**
  * Mimics the parsing of metadata from the
- * https://github.com/OpenConext/OpenConext-engineblock-metadata/blob/master/src/Entity/Assembler/JanusPushMetadataAssembler.php
+ * https://github.com/OpenConext/OpenConext-engineblock-metadata/blob/master/src/Entity/Assembler
+ * /JanusPushMetadataAssembler.php
  */
 @SuppressWarnings("unchecked")
 public class EngineBlockFormatter {
@@ -162,7 +163,8 @@ public class EngineBlockFormatter {
     }
 
     private void addContactPersons(Map<String, Object> source, Map<String, Object> result) {
-        final Map<String, Object> metadata = (Map<String, Object>) result.computeIfAbsent("metadata", key -> new TreeMap<>());
+        final Map<String, Object> metadata = (Map<String, Object>) result.computeIfAbsent("metadata", key -> new
+            TreeMap<>());
         Map<String, String> metaDataFields = (Map<String, String>) source.get("metaDataFields");
         IntStream.range(0, 4).forEach(i -> {
             String contactType = metaDataFields.get("contacts:" + i + ":contactType");
@@ -220,7 +222,8 @@ public class EngineBlockFormatter {
     }
 
     private void addNameIDFormats(Map<String, Object> source, Map<String, Object> result) {
-        final Map<String, Object> metadata = (Map<String, Object>) result.computeIfAbsent("metadata", key -> new TreeMap<>());
+        final Map<String, Object> metadata = (Map<String, Object>) result.computeIfAbsent("metadata", key -> new
+            TreeMap<>());
         Map<String, String> metaDataFields = (Map<String, String>) source.get("metaDataFields");
 
         String nameIDFormat = metaDataFields.get("NameIDFormat");
@@ -259,7 +262,8 @@ public class EngineBlockFormatter {
     }
 
     private void addSingleSignOnService(Map<String, Object> source, Map<String, Object> result) {
-        final Map<String, Object> metadata = (Map<String, Object>) result.computeIfAbsent("metadata", key -> new TreeMap<>());
+        final Map<String, Object> metadata = (Map<String, Object>) result.computeIfAbsent("metadata", key -> new
+            TreeMap<>());
         Map<String, String> metaDataFields = (Map<String, String>) source.get("metaDataFields");
         IntStream.range(0, 10).forEach(i -> {
             String binding = metaDataFields.get("SingleSignOnService:" + i + ":Binding");
@@ -278,7 +282,8 @@ public class EngineBlockFormatter {
     }
 
     private void addShibMdScopes(Map<String, Object> source, Map<String, Object> result) {
-        final Map<String, Object> metadata = (Map<String, Object>) result.computeIfAbsent("metadata", key -> new TreeMap<>());
+        final Map<String, Object> metadata = (Map<String, Object>) result.computeIfAbsent("metadata", key -> new
+            TreeMap<>());
         Map<String, Object> metaDataFields = (Map<String, Object>) source.get("metaDataFields");
         IntStream.range(0, 5).forEach(i -> {
             String allowed = String.class.cast(metaDataFields.get("shibmd:scope:" + i + ":allowed"));
@@ -302,7 +307,8 @@ public class EngineBlockFormatter {
     }
 
     private void addAssertionConsumerService(Map<String, Object> source, Map<String, Object> result) {
-        final Map<String, Object> metadata = (Map<String, Object>) result.computeIfAbsent("metadata", key -> new TreeMap<>());
+        final Map<String, Object> metadata = (Map<String, Object>) result.computeIfAbsent("metadata", key -> new
+            TreeMap<>());
         Map<String, String> metaDataFields = (Map<String, String>) source.get("metaDataFields");
         IntStream.range(0, 10).forEach(i -> {
             String binding = metaDataFields.get("AssertionConsumerService:" + i + ":Binding");
@@ -346,11 +352,13 @@ public class EngineBlockFormatter {
         while (iterator.hasNext()) {
             String part = iterator.next();
             if (part.equals("metadata")) {
-                result = (Map<String, Object>) result.computeIfAbsent(part, key -> new TreeMap<String, Map<String, Object>>());
+                result = (Map<String, Object>) result.computeIfAbsent(part, key -> new TreeMap<String, Map<String,
+                    Object>>());
                 value = (String) ((Map) source.get("metaDataFields")).get(compoundName.substring(BEGIN_INDEX));
             } else {
                 if (iterator.hasNext()) {
-                    result = (Map<String, Object>) result.computeIfAbsent(part, key -> new TreeMap<String, Map<String, Object>>());
+                    result = (Map<String, Object>) result.computeIfAbsent(part, key -> new TreeMap<String,
+                        Map<String, Object>>());
                 } else if (value != null) {
                     result.put(convertTo.orElse(part), value);
                 }

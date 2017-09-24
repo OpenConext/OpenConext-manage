@@ -108,7 +108,8 @@ public class WebSecurityConfigurer {
                 .addFilterAfter(new CsrfTokenResponseHeaderBindingFilter(), CsrfFilter.class)
                 .addFilterBefore(new SessionAliveFilter(), CsrfFilter.class)
                 .addFilterBefore(
-                    new ShibbolethPreAuthenticatedProcessingFilter(authenticationManagerBean(), featuresList, product, push),
+                    new ShibbolethPreAuthenticatedProcessingFilter(authenticationManagerBean(), featuresList,
+                        product, push),
                     AbstractPreAuthenticatedProcessingFilter.class
                 )
                 .addFilterBefore(
@@ -145,7 +146,8 @@ public class WebSecurityConfigurer {
         @Override
         public void configure(HttpSecurity http) throws Exception {
             APIUserConfiguration apiUserConfiguration = new Yaml()
-                .loadAs(resourceLoader.getResource(configApiUsersFileLocation).getInputStream(), APIUserConfiguration.class);
+                .loadAs(resourceLoader.getResource(configApiUsersFileLocation).getInputStream(), APIUserConfiguration
+                    .class);
             http
                 .antMatcher("/internal/**")
                 .sessionManagement()

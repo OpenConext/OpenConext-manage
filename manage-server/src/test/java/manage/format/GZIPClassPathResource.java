@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.GZIPInputStream;
 
-public class GZIPClassPathResource extends ClassPathResource{
+public class GZIPClassPathResource extends ClassPathResource {
 
     public GZIPClassPathResource(String path) {
         super(path);

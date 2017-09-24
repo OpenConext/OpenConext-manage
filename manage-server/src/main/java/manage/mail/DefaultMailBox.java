@@ -37,12 +37,14 @@ public class DefaultMailBox implements MailBox {
     public void sendDeltaPushMail(List<Delta> realDeltas) throws IOException, MessagingException {
         Map<String, String> variables = new HashMap<>();
         variables.put("@@to@@", to);
-        variables.put("@@differences@@", "<pre>" + objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(realDeltas) + "</pre>");
+        variables.put("@@differences@@", "<pre>" + objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString
+            (realDeltas) + "</pre>");
         variables.put("@@base_url@@", baseUrl);
         sendMail("mail/push_deltas.html", "Manage Push Delta", variables);
     }
 
-    private void sendMail(String templateName, String subject, Map<String, String> variables) throws MessagingException, IOException {
+    private void sendMail(String templateName, String subject, Map<String, String> variables) throws
+        MessagingException, IOException {
         String html = IOUtils.toString(new ClassPathResource(templateName).getInputStream(), Charset.defaultCharset());
         for (Map.Entry<String, String> var : variables.entrySet()) {
             String value = var.getValue();

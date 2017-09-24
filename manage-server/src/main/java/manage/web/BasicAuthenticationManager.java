@@ -28,7 +28,8 @@ public class BasicAuthenticationManager implements AuthenticationManager {
     private final Push push;
 
 
-    public BasicAuthenticationManager(String userName, String password, List<Features> featureToggles, Product product, Push push) {
+    public BasicAuthenticationManager(String userName, String password, List<Features> featureToggles, Product
+        product, Push push) {
         Assert.notNull(userName, "userName is required");
         Assert.notNull(password, "password is required");
 

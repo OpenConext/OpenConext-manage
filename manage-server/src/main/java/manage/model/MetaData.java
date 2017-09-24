@@ -70,7 +70,8 @@ public class MetaData implements Serializable {
             Object reference = parts.size() == 1 ? this.data : this.data.get(part);
             String property = path;
             while (iterator.hasNext()) {
-                Assert.notNull(reference, String.format("Invalid metadata path %s. %s part does not exists", value, part));
+                Assert.notNull(reference, String.format("Invalid metadata path %s. %s part does not exists", value,
+                    part));
                 part = iterator.next();
                 if (iterator.hasNext()) {
                     reference = Map.class.cast(reference).get(part);

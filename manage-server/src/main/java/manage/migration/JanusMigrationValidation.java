@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 @Component
-public class JanusMigrationValidation  {
+public class JanusMigrationValidation {
 
     private static final Logger LOG = LoggerFactory.getLogger(JanusMigrationValidation.class);
 
@@ -23,7 +23,8 @@ public class JanusMigrationValidation  {
     private MetaDataAutoConfiguration metaDataAutoConfiguration;
 
     @Autowired
-    public JanusMigrationValidation(MetaDataRepository metaDataRepository, MetaDataAutoConfiguration metaDataAutoConfiguration) {
+    public JanusMigrationValidation(MetaDataRepository metaDataRepository, MetaDataAutoConfiguration
+        metaDataAutoConfiguration) {
         this.metaDataRepository = metaDataRepository;
         this.metaDataAutoConfiguration = metaDataAutoConfiguration;
     }

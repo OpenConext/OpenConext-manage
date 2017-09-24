@@ -76,7 +76,8 @@ public class MetaDataAutoConfigurationTest implements TestUtils {
 
     @Test
     public void testRegularExpression() {
-        boolean matches = Pattern.compile("^contacts:([0-3]{1}):emailAddress$").matcher("contacts:0:emailAddress").matches();
+        boolean matches = Pattern.compile("^contacts:([0-3]{1}):emailAddress$").matcher("contacts:0:emailAddress")
+            .matches();
         assertTrue(matches);
     }
 

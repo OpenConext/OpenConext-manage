@@ -19,7 +19,8 @@ public class FederatedUser extends User {
     private Product product;
     private Push push;
 
-    public FederatedUser(String uid, String displayName, String schacHomeOrganization, List<GrantedAuthority> authorities, List<Features> featureToggles, Product product, Push push) {
+    public FederatedUser(String uid, String displayName, String schacHomeOrganization, List<GrantedAuthority>
+        authorities, List<Features> featureToggles, Product product, Push push) {
         super(uid, "N/A", authorities);
         this.uid = uid;
         this.displayName = displayName;

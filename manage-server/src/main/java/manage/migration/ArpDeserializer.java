@@ -53,7 +53,7 @@ public class ArpDeserializer {
             String value = String.class.cast(o);
             Map<String, String> result = new HashMap<>();
             result.put("source", "idp");
-            result.put("value", hasText(value) ? value : "*" );
+            result.put("value", hasText(value) ? value : "*");
             return result;
         } else {
             Map<String, String> map = (Map<String, String>) o;

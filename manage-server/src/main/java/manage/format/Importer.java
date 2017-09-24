@@ -30,12 +30,14 @@ public class Importer {
         this.metaDataAutoConfiguration = metaDataAutoConfiguration;
     }
 
-    public Map<String, Object> importXML(Resource resource, Optional<String> entityId) throws IOException, XMLStreamException {
+    public Map<String, Object> importXML(Resource resource, Optional<String> entityId) throws IOException,
+        XMLStreamException {
         return metaDataFeedParser.importXML(resource, entityId, metaDataAutoConfiguration);
     }
 
-    public Map<String, Object> importJSON(EntityType entityType, Map<String, Object> data) throws JsonProcessingException {
-        data.entrySet().removeIf(entry-> entry.getValue() == null);
+    public Map<String, Object> importJSON(EntityType entityType, Map<String, Object> data) throws
+        JsonProcessingException {
+        data.entrySet().removeIf(entry -> entry.getValue() == null);
 
         Map<String, Object> json = new ConcurrentHashMap<>(data);
         Object metaDataFieldsMap = json.get(META_DATA_FIELDS);

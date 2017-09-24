@@ -14,7 +14,7 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
-public class MetaDataUpdate implements Serializable{
+public class MetaDataUpdate implements Serializable {
 
     @Id
     private String id;

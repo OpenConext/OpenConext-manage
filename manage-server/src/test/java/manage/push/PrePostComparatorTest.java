@@ -10,7 +10,7 @@ import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 
-public class PrePostComparatorTest implements TestUtils{
+public class PrePostComparatorTest implements TestUtils {
 
     private PrePostComparator subject = new PrePostComparator();
 

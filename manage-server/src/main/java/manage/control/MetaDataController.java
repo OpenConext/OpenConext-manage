@@ -60,7 +60,8 @@ public class MetaDataController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/client/metadata")
-    public MetaData post(@Validated @RequestBody MetaData metaData, FederatedUser federatedUser) throws JsonProcessingException {
+    public MetaData post(@Validated @RequestBody MetaData metaData, FederatedUser federatedUser) throws
+        JsonProcessingException {
         validate(metaData);
 
         metaData.initial(UUID.randomUUID().toString(), federatedUser.getUid());
@@ -69,7 +70,8 @@ public class MetaDataController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/client/metadata/{type}/{id}")
-    public boolean remove(@PathVariable("type") String type, @PathVariable("id") String id, FederatedUser federatedUser) throws JsonProcessingException {
+    public boolean remove(@PathVariable("type") String type, @PathVariable("id") String id, FederatedUser
+        federatedUser) throws JsonProcessingException {
         MetaData current = metaDataRepository.findById(id, type);
         metaDataRepository.remove(current);
         return true;
@@ -78,7 +80,8 @@ public class MetaDataController {
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/client/metadata")
     @Transactional
-    public MetaData put(@Validated @RequestBody MetaData metaData, FederatedUser federatedUser) throws JsonProcessingException {
+    public MetaData put(@Validated @RequestBody MetaData metaData, FederatedUser federatedUser) throws
+        JsonProcessingException {
         validate(metaData);
 
         String id = metaData.getId();
@@ -95,7 +98,8 @@ public class MetaDataController {
     @PreAuthorize("hasRole('WRITE')")
     @PutMapping("internal/metadata")
     @Transactional
-    public MetaData update(@Validated @RequestBody MetaDataUpdate metaDataUpdate, APIUser apiUser) throws JsonProcessingException {
+    public MetaData update(@Validated @RequestBody MetaDataUpdate metaDataUpdate, APIUser apiUser) throws
+        JsonProcessingException {
         String id = metaDataUpdate.getId();
         MetaData previous = metaDataRepository.findById(id, metaDataUpdate.getType());
         previous.revision(UUID.randomUUID().toString());
@@ -129,7 +133,8 @@ public class MetaDataController {
 
     @PostMapping({"/client/search/{type}", "/internal/search/{type}"})
     public List<Map> searchEntities(@PathVariable("type") String type, @RequestBody Map<String, Object> properties) {
-        List requestedAttributes = List.class.cast(properties.getOrDefault(REQUESTED_ATTRIBUTES, new ArrayList<String>()));
+        List requestedAttributes = List.class.cast(properties.getOrDefault(REQUESTED_ATTRIBUTES, new
+            ArrayList<String>()));
         properties.remove(REQUESTED_ATTRIBUTES);
         return metaDataRepository.search(type, properties, requestedAttributes);
     }

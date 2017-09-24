@@ -72,12 +72,14 @@ public class JanusMigration {
         emptyExistingCollections();
 
         saveEntities(EntityType.SP, spStats);
-        LOG.info("Finished migration of SPs in {} ms and results {}", System.currentTimeMillis() - start, prettyPrint(spStats));
+        LOG.info("Finished migration of SPs in {} ms and results {}", System.currentTimeMillis() - start, prettyPrint
+            (spStats));
         spStats.put("Finished migration of Service Providers in ms", System.currentTimeMillis() - start);
 
         start = System.currentTimeMillis();
         saveEntities(EntityType.IDP, idpStats);
-        LOG.info("Finished migration of IDPs in {} ms and results {}", System.currentTimeMillis() - start, prettyPrint(idpStats));
+        LOG.info("Finished migration of IDPs in {} ms and results {}", System.currentTimeMillis() - start,
+            prettyPrint(idpStats));
         idpStats.put("Finished migration of Identity Providers in ms", System.currentTimeMillis() - start);
 
         return Arrays.asList(spStats, idpStats);
@@ -85,7 +87,8 @@ public class JanusMigration {
 
     private Long countForEntityType(String table, EntityType entityType) {
         return this.jdbcTemplate.queryForObject(
-            "select count(*) from " + table + " where type = ?", new Object[]{entityType.getJanusDbValue()}, Long.class);
+            "select count(*) from " + table + " where type = ?", new Object[]{entityType.getJanusDbValue()}, Long
+                .class);
     }
 
     private String prettyPrint(Object obj) {
@@ -111,24 +114,32 @@ public class JanusMigration {
     private void saveEntities(EntityType entityType, Map<String, Long> stats) {
         jdbcTemplate.query("SELECT CONNECTION.id, CONNECTION.revisionNr " +
                 "FROM janus__connection AS CONNECTION " +
-                "INNER JOIN janus__connectionRevision AS CONNECTION_REVISION ON CONNECTION_REVISION.eid = CONNECTION.id " +
+                "INNER JOIN janus__connectionRevision AS CONNECTION_REVISION ON CONNECTION_REVISION.eid = CONNECTION" +
+                ".id " +
                 "AND CONNECTION_REVISION.revisionid = CONNECTION.revisionNr WHERE " +
                 "CONNECTION.type=?",
             new String[]{entityType.getJanusDbValue()},
             rs -> {
-                saveEntity(rs.getLong("id"), rs.getLong("revisionNr"), entityType.getType(), true, null, stats, entityType);
+                saveEntity(rs.getLong("id"), rs.getLong("revisionNr"), entityType.getType(), true, null, stats,
+                    entityType);
             });
 
     }
 
-    private void saveEntity(Long eid, Long revisionid, String type, boolean isPrimary, String parentId, Map<String, Long> stats, EntityType entityType) {
-        String sql = "SELECT janus__connectionRevision.id, janus__connectionRevision.eid, janus__connectionRevision.entityid, " +
-            "janus__connectionRevision.revisionid, janus__connectionRevision.state, janus__connectionRevision.metadataurl, janus__connectionRevision.allowedall," +
-            "                janus__connectionRevision.manipulation, janus__user.userid, janus__connectionRevision.created, " +
+    private void saveEntity(Long eid, Long revisionid, String type, boolean isPrimary, String parentId, Map<String,
+        Long> stats, EntityType entityType) {
+        String sql = "SELECT janus__connectionRevision.id, janus__connectionRevision.eid, janus__connectionRevision" +
+            ".entityid, " +
+            "janus__connectionRevision.revisionid, janus__connectionRevision.state, janus__connectionRevision" +
+            ".metadataurl, janus__connectionRevision.allowedall," +
+            "                janus__connectionRevision.manipulation, janus__user.userid, janus__connectionRevision" +
+            ".created, " +
             "                janus__connectionRevision.ip, janus__connectionRevision.revisionnote, " +
             "                janus__connectionRevision.active, janus__connectionRevision.arp_attributes, " +
-            "                janus__connectionRevision.notes FROM janus__connectionRevision AS janus__connectionRevision " +
-            "                LEFT OUTER JOIN janus__user AS janus__user ON janus__user.uid = janus__connectionRevision.user " +
+            "                janus__connectionRevision.notes FROM janus__connectionRevision AS " +
+            "janus__connectionRevision " +
+            "                LEFT OUTER JOIN janus__user AS janus__user ON janus__user.uid = " +
+            "janus__connectionRevision.user " +
             "                WHERE  janus__connectionRevision.eid = ? AND janus__connectionRevision.revisionid = ?";
         jdbcTemplate.query(sql, new Long[]{eid, revisionid},
             rs -> {
@@ -158,16 +169,19 @@ public class JanusMigration {
                 if (entityType.equals(EntityType.IDP)) {
                     addConsentDisabled(entity, eid, revisionid);
                 }
-                Instant instant = Instant.from(DateTimeFormatter.ISO_OFFSET_DATE_TIME.parse((String) entity.get("created")));
+                Instant instant = Instant.from(DateTimeFormatter.ISO_OFFSET_DATE_TIME.parse((String) entity.get
+                    ("created")));
                 String id = UUID.randomUUID().toString();
-                MetaData metaData = new MetaData(id, 0L, type, new Revision(revisionid.intValue(), instant, parentId, user), entity);
+                MetaData metaData = new MetaData(id, 0L, type, new Revision(revisionid.intValue(), instant, parentId,
+                    user), entity);
                 mongoTemplate.insert(metaData, type);
                 String key = isPrimary ? entityType.getJanusDbValue() : entityType.getJanusDbValue() + "_revision";
                 Long revisionCount = stats.get(key);
                 stats.put(key, revisionCount == null ? 1L : revisionCount + 1);
                 //now save all revisions
                 if (isPrimary) {
-                    jdbcTemplate.query("SELECT eid, revisionid FROM janus__connectionRevision WHERE  eid = ? AND revisionid <> ?",
+                    jdbcTemplate.query("SELECT eid, revisionid FROM janus__connectionRevision WHERE  eid = ? AND " +
+                            "revisionid <> ?",
                         new Long[]{eid, revisionid},
                         rs2 -> {
                             long eid1 = rs2.getLong("eid");
@@ -178,8 +192,10 @@ public class JanusMigration {
             });
     }
 
-    private void addMetaData(Map<String, Object> entity, Long eid, Long revisionid, boolean isPrimary, EntityType entityType) {
-        jdbcTemplate.query("SELECT METADATA.`" + keyColumn + "`, METADATA.`value` FROM janus__connectionRevision AS CONNECTION_REVISION " +
+    private void addMetaData(Map<String, Object> entity, Long eid, Long revisionid, boolean isPrimary, EntityType
+        entityType) {
+        jdbcTemplate.query("SELECT METADATA.`" + keyColumn + "`, METADATA.`value` FROM janus__connectionRevision AS " +
+                "CONNECTION_REVISION " +
                 "INNER JOIN janus__metadata AS METADATA ON METADATA.connectionRevisionId = CONNECTION_REVISION.id " +
                 "WHERE CONNECTION_REVISION.eid = ? AND CONNECTION_REVISION.revisionid = ?",
             new Long[]{eid, revisionid},
@@ -192,7 +208,8 @@ public class JanusMigration {
     private void addAllowedEntities(Map<String, Object> entity, Long eid, Long revisionid) {
         List<String> allowedEntities = jdbcTemplate.queryForList("SELECT ALLOWED_CONNECTION.name AS entityid " +
                 "FROM janus__connectionRevision AS CONNECTION_REVISION " +
-                "INNER JOIN `janus__allowedConnection` a ON a.connectionRevisionId = CONNECTION_REVISION.id INNER JOIN " +
+                "INNER JOIN `janus__allowedConnection` a ON a.connectionRevisionId = CONNECTION_REVISION.id INNER " +
+                "JOIN " +
                 "janus__connection AS ALLOWED_CONNECTION ON ALLOWED_CONNECTION.id = a.remoteeid WHERE " +
                 "CONNECTION_REVISION.eid = ? AND CONNECTION_REVISION.revisionid = ?",
             new Long[]{eid, revisionid},
@@ -204,8 +221,10 @@ public class JanusMigration {
     private void addConsentDisabled(Map<String, Object> entity, Long eid, Long revisionid) {
         List<String> disableConsent = jdbcTemplate.queryForList("SELECT ALLOWED_CONNECTION.name AS entityid " +
                 "FROM janus__connectionRevision AS CONNECTION_REVISION " +
-                "INNER JOIN janus__disableConsent disableConsent ON disableConsent.connectionRevisionId = CONNECTION_REVISION.id " +
-                "INNER JOIN janus__connection AS ALLOWED_CONNECTION ON ALLOWED_CONNECTION.id = disableConsent.remoteeid " +
+                "INNER JOIN janus__disableConsent disableConsent ON disableConsent.connectionRevisionId = " +
+                "CONNECTION_REVISION.id " +
+                "INNER JOIN janus__connection AS ALLOWED_CONNECTION ON ALLOWED_CONNECTION.id = disableConsent" +
+                ".remoteeid " +
                 "WHERE CONNECTION_REVISION.eid = ? AND CONNECTION_REVISION.revisionid = ?",
             new Long[]{eid, revisionid},
             String.class
@@ -217,13 +236,15 @@ public class JanusMigration {
         return patternProperties.keySet().stream().anyMatch(pattern -> Pattern.compile(pattern).matcher(key).matches());
     }
 
-    private void parseMetaData(Map<String, Object> entity, String key, String value, boolean isPrimary, EntityType entityType) {
+    private void parseMetaData(Map<String, Object> entity, String key, String value, boolean isPrimary, EntityType
+        entityType) {
         if (StringUtils.hasText(value)) {
             /**
              * Prevent validation exceptions for example URI with trailing spaces
              */
             value = value.trim();
-            Map<String, String> metaDataFields = (Map<String, String>) entity.getOrDefault("metaDataFields", new HashMap<String, String>());
+            Map<String, String> metaDataFields = (Map<String, String>) entity.getOrDefault("metaDataFields", new
+                HashMap<String, String>());
             if (isPrimary) {
                 Map<String, Object> schema = metaDataAutoConfiguration.schemaRepresentation(entityType);
                 /**

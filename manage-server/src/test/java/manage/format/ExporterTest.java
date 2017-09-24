@@ -16,9 +16,10 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class ExporterTest  implements TestUtils {
+public class ExporterTest implements TestUtils {
 
-    private Exporter subject = new Exporter(Clock.fixed(Instant.from(DateTimeFormatter.ISO_OFFSET_DATE_TIME.parse("2017-07-14T11:15:56.857+02:00")), ZoneId.systemDefault()),
+    private Exporter subject = new Exporter(Clock.fixed(Instant.from(DateTimeFormatter.ISO_OFFSET_DATE_TIME.parse
+        ("2017-07-14T11:15:56.857+02:00")), ZoneId.systemDefault()),
         new DefaultResourceLoader(), "classpath:/metadata_export");
 
     @Test
@@ -57,7 +58,8 @@ public class ExporterTest  implements TestUtils {
     }
 
     private MetaData metaData() throws IOException {
-        return objectMapper.readValue(new ClassPathResource("/json/exported_metadata_saml20_sp.json").getInputStream(), MetaData.class);
+        return objectMapper.readValue(new ClassPathResource("/json/exported_metadata_saml20_sp.json").getInputStream
+            (), MetaData.class);
     }
 
 

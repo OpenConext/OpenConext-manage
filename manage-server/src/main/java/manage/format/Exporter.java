@@ -37,7 +37,8 @@ public class Exporter {
     private final String metadataExportPath;
     private final Clock clock;
 
-    final static List<String> excludedDataFields = Arrays.asList("id", "eid", "revisionid", "user", "created", "ip", "revisionnote", "notes");
+    final static List<String> excludedDataFields = Arrays.asList("id", "eid", "revisionid", "user", "created", "ip",
+        "revisionnote", "notes");
 
     public Exporter(Clock clock, ResourceLoader resourceLoader, String metadataExportPath) {
         this.clock = clock;
@@ -50,7 +51,7 @@ public class Exporter {
         Resource resource = resourceLoader.getResource(path);
         String template = IOUtils.toString(resource.getInputStream(), Charset.defaultCharset());
 
-        Mustache mustache = MUSTACHE_FACTORY.compile(new StringReader(template),metaData.getType());
+        Mustache mustache = MUSTACHE_FACTORY.compile(new StringReader(template), metaData.getType());
         StringWriter writer = new StringWriter();
         try {
             Map data = Map.class.cast(metaData.getData());
@@ -75,7 +76,7 @@ public class Exporter {
             data.forEach((key, value) -> this.addKeyValue(key, value, result));
         } else {
             result.putAll(data);
-            result.put("metaDataFields",new TreeMap(Map.class.cast(result.get("metaDataFields"))));
+            result.put("metaDataFields", new TreeMap(Map.class.cast(result.get("metaDataFields"))));
         }
         this.excludedDataFields.forEach(result::remove);
         result.put("type", metaData.getType().replaceAll("_", "-"));
@@ -86,7 +87,8 @@ public class Exporter {
         if (value instanceof Map) {
             Map<String, Object> map = new TreeMap();
             result.put(key, map);
-            Map.class.cast(value).forEach((mapKey, mapValue) -> this.addKeyValue(String.class.cast(mapKey), mapValue, map));
+            Map.class.cast(value).forEach((mapKey, mapValue) -> this.addKeyValue(String.class.cast(mapKey), mapValue,
+                map));
             return;
         }
         if (value instanceof List) {
@@ -114,7 +116,7 @@ public class Exporter {
                 }
                 reference = Map.class.cast(reference.get(subKey));
             }
-            reference.put(parts.get(parts.size()-1), value);
+            reference.put(parts.get(parts.size() - 1), value);
         }
     }
 
@@ -126,15 +128,18 @@ public class Exporter {
 
     private void addOrganizationName(Map data) {
         Map metaDataFields = Map.class.cast(data.get("metaDataFields"));
-        String name = String.class.cast(metaDataFields.computeIfAbsent("OrganizationName:en", key -> metaDataFields.get("OrganizationName:nl")));
+        String name = String.class.cast(metaDataFields.computeIfAbsent("OrganizationName:en", key -> metaDataFields
+            .get("OrganizationName:nl")));
         if (StringUtils.hasText(name)) {
             metaDataFields.put("OrganizationName", name);
         }
-        String displayName = String.class.cast(metaDataFields.computeIfAbsent("OrganizationDisplayName:en", key -> metaDataFields.get("OrganizationDisplayName:nl")));
+        String displayName = String.class.cast(metaDataFields.computeIfAbsent("OrganizationDisplayName:en", key ->
+            metaDataFields.get("OrganizationDisplayName:nl")));
         if (StringUtils.hasText(displayName)) {
             metaDataFields.put("OrganizationDisplayName", displayName);
         }
-        String url = String.class.cast(metaDataFields.computeIfAbsent("OrganizationURL:en", key -> metaDataFields.get("OrganizationURL:nl")));
+        String url = String.class.cast(metaDataFields.computeIfAbsent("OrganizationURL:en", key -> metaDataFields.get
+            ("OrganizationURL:nl")));
         if (StringUtils.hasText(url)) {
             metaDataFields.put("OrganizationURL", url);
         }
@@ -142,8 +147,10 @@ public class Exporter {
 
     private void addAttributeConsumingService(Map data) {
         Map metaDataFields = Map.class.cast(data.get("metaDataFields"));
-        String name = String.class.cast(metaDataFields.computeIfAbsent("name:en", key -> metaDataFields.get("name:nl")));
-        String description = String.class.cast(metaDataFields.computeIfAbsent("description:en", key -> metaDataFields.get("description:nl")));
+        String name = String.class.cast(metaDataFields.computeIfAbsent("name:en", key -> metaDataFields.get
+            ("name:nl")));
+        String description = String.class.cast(metaDataFields.computeIfAbsent("description:en", key -> metaDataFields
+            .get("description:nl")));
 
         boolean arpAttributes = false;
         Map arp = Map.class.cast(data.get("arp"));
@@ -154,7 +161,8 @@ public class Exporter {
                 data.put("requestedAttributes", attributes.keySet());
             }
         }
-        data.put("AttributeConsumingService", arpAttributes || StringUtils.hasText(name) || StringUtils.hasText(description));
+        data.put("AttributeConsumingService", arpAttributes || StringUtils.hasText(name) || StringUtils.hasText
+            (description));
     }
 
 }

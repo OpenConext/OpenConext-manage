@@ -35,7 +35,8 @@ public class MetaDataFeedParser {
 
     public Map<String, Object> importXML(Resource xml,
                                          Optional<String> entityIDOptional,
-                                         MetaDataAutoConfiguration metaDataAutoConfiguration) throws XMLStreamException, IOException {
+                                         MetaDataAutoConfiguration metaDataAutoConfiguration) throws
+        XMLStreamException, IOException {
         //despite it's name, the XMLInputFactoryImpl is not thread safe
         XMLInputFactory factory = XMLInputFactory.newInstance();
 
@@ -222,7 +223,8 @@ public class MetaDataFeedParser {
                             break;
                         case "TelephoneNumber":
                             if (inCorrectEntityDescriptor && inContact) {
-                                addMultiplicity(metaDataFields, "contacts:%s:telephoneNumber", 4, reader.getElementText());
+                                addMultiplicity(metaDataFields, "contacts:%s:telephoneNumber", 4, reader
+                                    .getElementText());
                             }
                             break;
 
@@ -284,12 +286,14 @@ public class MetaDataFeedParser {
         result.put(ARP, arp);
     }
 
-    private void addMetaDataField(Map<String, String> metaDataFields, XMLStreamReader reader, String attributeName, String metaDataKey) {
+    private void addMetaDataField(Map<String, String> metaDataFields, XMLStreamReader reader, String attributeName,
+                                  String metaDataKey) {
         Optional<String> optional = getAttributeValue(reader, attributeName);
         optional.ifPresent(value -> metaDataFields.put(metaDataKey, value));
     }
 
-    private void addLanguageElement(Map<String, String> metaDataFields, XMLStreamReader reader, String elementName) throws XMLStreamException {
+    private void addLanguageElement(Map<String, String> metaDataFields, XMLStreamReader reader, String elementName)
+        throws XMLStreamException {
         String language = getAttributeValue(reader, "lang").orElse("en");
         if (languages.contains(language)) {
             metaDataFields.put(String.format("%s:%s", elementName, language), reader.getElementText());

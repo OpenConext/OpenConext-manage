@@ -6,13 +6,14 @@ import org.junit.Test;
 
 import java.io.IOException;
 
-public class MetaDataTest implements TestUtils{
+public class MetaDataTest implements TestUtils {
 
     private MetaData subject;
 
     @Before
     public void before() throws IOException {
-        subject =   objectMapper.readValue(readFile("json/meta_data_detail.json"), MetaData.class);;
+        subject = objectMapper.readValue(readFile("json/meta_data_detail.json"), MetaData.class);
+        ;
     }
 
     @Test

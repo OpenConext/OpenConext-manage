@@ -47,7 +47,8 @@ public class MetaDataAutoConfiguration {
     @Autowired
     public MetaDataAutoConfiguration(ObjectMapper objectMapper,
                                      @Value("${metadata_configuration_path}") Resource metadataConfigurationPath,
-                                     @Value("${metadata_templates_path}") Resource metadataTemplatesPath) throws IOException {
+                                     @Value("${metadata_templates_path}") Resource metadataTemplatesPath) throws
+        IOException {
         this.schemas = parseConfiguration(metadataConfigurationPath, Arrays.asList(
             new CertificateFormatValidator(),
             new NumberFormatValidator(),
@@ -86,8 +87,10 @@ public class MetaDataAutoConfiguration {
     }
 
     public Map<String, Object> schemaRepresentation(EntityType entityType) {
-        Optional<Map<String, Object>> schemaRepresentationOptional = schemaRepresentations().stream().filter(map -> map.get("title").equals(entityType.getType())).findFirst();
-        return schemaRepresentationOptional.orElseThrow(() -> new IllegalArgumentException(String.format("The %s schema does not exists", entityType.getType())));
+        Optional<Map<String, Object>> schemaRepresentationOptional = schemaRepresentations().stream().filter(map ->
+            map.get("title").equals(entityType.getType())).findFirst();
+        return schemaRepresentationOptional.orElseThrow(() -> new IllegalArgumentException(String.format("The %s " +
+            "schema does not exists", entityType.getType())));
 
     }
 
@@ -95,16 +98,19 @@ public class MetaDataAutoConfiguration {
         return objectMapper;
     }
 
-    private Map<String, Schema> parseConfiguration(Resource metadataConfigurationPath, List<FormatValidator> validators) throws IOException {
+    private Map<String, Schema> parseConfiguration(Resource metadataConfigurationPath, List<FormatValidator>
+        validators) throws IOException {
         File[] schemaFiles = metadataConfigurationPath.getFile().listFiles((dir, name) -> name.endsWith("schema.json"));
-        Assert.notEmpty(schemaFiles, String.format("No schema.json files defined in %s", metadataConfigurationPath.getFilename()));
+        Assert.notEmpty(schemaFiles, String.format("No schema.json files defined in %s", metadataConfigurationPath
+            .getFilename()));
         return Arrays.stream(schemaFiles).map(file -> this.parse(file, validators))
             .collect(toMap(Schema::getTitle, schema -> schema));
     }
 
     private Map<String, Object> parseTemplates(Resource metadataTemplatesPath) throws IOException {
         File[] templates = metadataTemplatesPath.getFile().listFiles((dir, name) -> name.endsWith("template.json"));
-        Assert.notEmpty(templates, String.format("No template.json files defined in %s", metadataTemplatesPath.getFilename()));
+        Assert.notEmpty(templates, String.format("No template.json files defined in %s", metadataTemplatesPath
+            .getFilename()));
         return Arrays.stream(templates).map(this::parseTemplate)
             .collect(toMap(map -> map.keySet().iterator().next(), map -> map.values().iterator().next()));
     }
@@ -142,7 +148,8 @@ public class MetaDataAutoConfiguration {
             List<Object> indexes = json.getJSONArray("indexes").toList();
             List<IndexConfiguration> indexConfigurations = indexes.stream().map(obj -> {
                 Map map = Map.class.cast(obj);
-                return new IndexConfiguration((String) map.get("name"), (String) map.get("type"), (List<String>) map.get("fields"), (Boolean) map.get("unique"));
+                return new IndexConfiguration((String) map.get("name"), (String) map.get("type"), (List<String>) map
+                    .get("fields"), (Boolean) map.get("unique"));
             }).collect(toList());
             this.indexConfigurations.put(schemaType, indexConfigurations);
         }

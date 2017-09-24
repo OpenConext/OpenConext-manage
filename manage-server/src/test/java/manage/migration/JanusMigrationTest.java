@@ -51,7 +51,8 @@ public class JanusMigrationTest implements TestUtils {
         assertEquals(2, identityProviders.size());
         assertEquals(2, serviceProviders.size());
 
-        JanusMigrationValidation validation = new JanusMigrationValidation(metaDataRepository, metaDataAutoConfiguration);
+        JanusMigrationValidation validation = new JanusMigrationValidation(metaDataRepository,
+            metaDataAutoConfiguration);
         Map<String, Object> validations = validation.validateMigration();
 
         assertEquals(0, validations.size());
