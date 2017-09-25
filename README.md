@@ -12,7 +12,7 @@ Stores and publishes metadata of all entities known to OpenConext
 - Maven 3
 - MongoDB 3.4.4
 - yarn
-- NodeJS 7.10.0 (best managed with `nvm`, current version in [.node-version](mr-gui/.node-version) or do `brew switch node 7.10.0`)
+- NodeJS 7.10.0 (best managed with `nvm`, current version in [.node-version](manage-gui/.node-version) or do `brew switch node 7.10.0`)
 - create-react-app
 
 ## [Building and running](#building-and-running)
@@ -28,11 +28,11 @@ This project uses Spring Boot and Maven. To run locally, type:
 When developing, it's convenient to just execute the applications main-method, which is in [Application](manage-server/src/main/java/manage/Application.java). Don't forget
 to set the active profile to dev.
 
-### [The mr-gui](#mr-gui)
+### [The manage-gui](#manage-gui)
 
 The client is build with react and to get initially started:
 
-`cd aa-gui`
+`cd manage-gui`
 `brew install yarn;`
 `yarn install -g create-react-app`
 
@@ -67,6 +67,6 @@ On its classpath, the application has an [application.yml](manage-server/src/mai
 contains configuration defaults that are convenient when developing.
 
 When the application actually gets deployed to a meaningful platform, it is pre-provisioned with ansible and the application.yml depends on
-environment specific properties in the group_vars. See the project OpenConext-deploy and the role mr for more information.
+environment specific properties in the group_vars. See the project OpenConext-deploy and the role `manage` for more information.
 
-For details, see the [Spring Boot manual](http://docs.spring.io/spring-boot/docs/1.2.1.RELEASE/reference/htmlsingle/).
+For details, see the [Spring Boot manual](https://docs.spring.io/spring-boot/docs/1.2.1.RELEASE/reference/htmlsingle/).

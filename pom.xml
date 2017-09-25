@@ -24,7 +24,7 @@
     </modules>
 
     <scm>
-        <connection>scm:git:git@github.com:OpenConext/OpenConext-metadata-registry.git</connection>
+        <connection>scm:git:git@github.com:OpenConext/OpenConext-manage.git</connection>
     </scm>
 
     <build>
