@@ -9,6 +9,7 @@ import manage.model.MetaDataUpdate;
 import manage.repository.MetaDataRepository;
 import manage.shibboleth.FederatedUser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -44,7 +45,7 @@ public class MetaDataController {
         return new MetaData(type, Map.class.cast(metaDataAutoConfiguration.metaDataTemplate(type)));
     }
 
-    @GetMapping("/client/metadata/{type}/{id}")
+    @GetMapping({"/client/metadata/{type}/{id}", "/internal/metadata/{type}/{id}"})
     public MetaData get(@PathVariable("type") String type, @PathVariable("id") String id) {
         MetaData metaData = metaDataRepository.findById(id, type);
         if (metaData == null) {
@@ -62,16 +63,36 @@ public class MetaDataController {
     @PostMapping("/client/metadata")
     public MetaData post(@Validated @RequestBody MetaData metaData, FederatedUser federatedUser) throws
         JsonProcessingException {
+        return doPost(metaData, federatedUser.getUid());
+    }
+
+    @PreAuthorize("hasRole('WRITE')")
+    @PostMapping("/internal/metadata")
+    public MetaData postInternal(@Validated @RequestBody MetaData metaData, APIUser apiUser) throws
+        JsonProcessingException {
+        return doPost(metaData, apiUser.getName());
+    }
+
+    private MetaData doPost(@Validated @RequestBody MetaData metaData, String uid) throws JsonProcessingException {
         validate(metaData);
 
-        metaData.initial(UUID.randomUUID().toString(), federatedUser.getUid());
+        metaData.initial(UUID.randomUUID().toString(), uid);
         return metaDataRepository.save(metaData);
+    }
+
+    @PreAuthorize("hasRole('READ')")
+    @PostMapping("/internal/validate/metadata")
+    public ResponseEntity<Object> validateMetaData(@Validated @RequestBody MetaData metaData) throws
+        JsonProcessingException {
+        validate(metaData);
+
+        return ResponseEntity.ok().build();
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/client/metadata/{type}/{id}")
-    public boolean remove(@PathVariable("type") String type, @PathVariable("id") String id, FederatedUser
-        federatedUser) throws JsonProcessingException {
+    public boolean remove(@PathVariable("type") String type, @PathVariable("id") String id) throws
+        JsonProcessingException {
         MetaData current = metaDataRepository.findById(id, type);
         metaDataRepository.remove(current);
         return true;
@@ -82,6 +103,20 @@ public class MetaDataController {
     @Transactional
     public MetaData put(@Validated @RequestBody MetaData metaData, FederatedUser federatedUser) throws
         JsonProcessingException {
+        doPut(metaData, federatedUser.getUid());
+        return metaData;
+    }
+
+    @PreAuthorize("hasRole('WRITE')")
+    @PutMapping("/internal/metadata")
+    @Transactional
+    public MetaData putInternal(@Validated @RequestBody MetaData metaData, APIUser apiUser) throws
+        JsonProcessingException {
+        doPut(metaData, apiUser.getName());
+        return metaData;
+    }
+
+    private void doPut(@Validated @RequestBody MetaData metaData, String updatedBy) throws JsonProcessingException {
         validate(metaData);
 
         String id = metaData.getId();
@@ -89,14 +124,12 @@ public class MetaDataController {
         previous.revision(UUID.randomUUID().toString());
         metaDataRepository.save(previous);
 
-        metaData.promoteToLatest(federatedUser.getUid());
+        metaData.promoteToLatest(updatedBy);
         metaDataRepository.update(metaData);
-
-        return metaData;
     }
 
     @PreAuthorize("hasRole('WRITE')")
-    @PutMapping("internal/metadata")
+    @PutMapping("internal/merge")
     @Transactional
     public MetaData update(@Validated @RequestBody MetaDataUpdate metaDataUpdate, APIUser apiUser) throws
         JsonProcessingException {

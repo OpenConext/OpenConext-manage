@@ -1,5 +1,6 @@
 package manage.control;
 
+import io.restassured.specification.RequestSpecification;
 import manage.AbstractIntegrationTest;
 import manage.migration.EntityType;
 import manage.model.MetaData;
@@ -113,24 +114,42 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void post() throws Exception {
-        String id = createServiceProviderMetaData();
+        doPost(true, "saml2_user.com");
+    }
+
+    @Test
+    public void postInternal() throws Exception {
+        doPost(false, "sp-portal");
+    }
+
+    private void doPost(boolean client, String expectedUpdatedBy) throws java.io.IOException {
+        String id = createServiceProviderMetaData(client);
 
         MetaData savedMetaData = metaDataRepository.findById(id, EntityType.SP.getType());
         Revision revision = savedMetaData.getRevision();
-        assertEquals("saml2_user.com", revision.getUpdatedBy());
+        assertEquals(expectedUpdatedBy, revision.getUpdatedBy());
         assertEquals(0, revision.getNumber());
         assertNotNull(revision.getCreated());
     }
 
-    private String createServiceProviderMetaData() throws java.io.IOException {
+
+    private String createServiceProviderMetaData(boolean client) throws java.io.IOException {
         String json = readFile("/json/valid_service_provider.json");
         Map data = objectMapper.readValue(json, Map.class);
         MetaData metaData = new MetaData(EntityType.SP.getType(), data);
-        return given()
+        RequestSpecification given = given();
+        System.out.println(objectMapper.writeValueAsString(metaData));
+        if (!client) {
+            given
+                .auth()
+                .preemptive()
+                .basic("sp-portal", "secret");
+        }
+        return given
             .when()
             .body(metaData)
             .header("Content-type", "application/json")
-            .post("manage/api/client/metadata")
+            .post("manage/api/" + (client ? "client" : "internal") + "/metadata")
             .then()
             .statusCode(SC_OK)
             .extract().path("id");
@@ -138,7 +157,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void update() throws Exception {
-        String id = createServiceProviderMetaData();
+        String id = createServiceProviderMetaData(true);
         Map<String, Object> pathUpdates = new HashMap<>();
         pathUpdates.put("metaDataFields.description:en", "New description");
         pathUpdates.put("allowedall", false);
@@ -152,7 +171,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
             .body(metaDataUpdate)
             .header("Content-type", "application/json")
             .when()
-            .put("/manage/api/internal/metadata")
+            .put("/manage/api/internal/merge")
             .then()
             .statusCode(SC_OK)
             .body("id", equalTo(id))
@@ -165,7 +184,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void updateWithValidationErrors() throws Exception {
-        String id = createServiceProviderMetaData();
+        String id = createServiceProviderMetaData(true);
         Map<String, Object> pathUpdates = new HashMap<>();
         pathUpdates.put("metaDataFields.NameIDFormats:0", "bogus");
         MetaDataUpdate metaDataUpdate = new MetaDataUpdate(id, EntityType.SP.getType(), pathUpdates);
@@ -177,7 +196,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
             .body(metaDataUpdate)
             .header("Content-type", "application/json")
             .when()
-            .put("/manage/api/internal/metadata")
+            .put("/manage/api/internal/merge")
             .then()
             .statusCode(SC_BAD_REQUEST)
             .body("validations", notNullValue());
@@ -192,7 +211,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
             .body(new MetaDataUpdate("id", EntityType.SP.getType(), new HashMap<>()))
             .header("Content-type", "application/json")
             .when()
-            .put("/manage/api/internal/metadata")
+            .put("/manage/api/internal/merge")
             .then()
             .statusCode(SC_FORBIDDEN);
     }
@@ -206,26 +225,42 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
             .body(new HashMap<>())
             .header("Content-type", "application/json")
             .when()
-            .put("/manage/api/internal/metadata")
+            .put("/manage/api/internal/merge")
             .then()
             .statusCode(SC_FORBIDDEN);
     }
 
     @Test
+    public void putClient() throws Exception {
+        doPut(true, "saml2_user.com");
+    }
+
+    @Test
+    public void putInternal() throws Exception {
+        doPut(false, "sp-portal");
+    }
+
     @SuppressWarnings("unchecked")
-    public void put() throws Exception {
+    private void doPut(boolean client, String expectedUpdatedBy) {
         MetaData metaData = metaDataRepository.findById("1", EntityType.SP.getType());
         Map.class.cast(metaData.getData()).put("entityid", "changed");
-        given()
+        RequestSpecification given = given();
+        if (!client) {
+            given
+                .auth()
+                .preemptive()
+                .basic("sp-portal", "secret");
+        }
+        given
             .when()
             .body(metaData)
             .header("Content-type", "application/json")
-            .put("manage/api/client/metadata")
+            .put("/manage/api/" + (client ? "client" : "internal") + "/metadata")
             .then()
             .statusCode(SC_OK)
             .body("revision.number", equalTo(1))
             .body("revision.created", notNullValue())
-            .body("revision.updatedBy", equalTo("saml2_user.com"))
+            .body("revision.updatedBy", equalTo(expectedUpdatedBy))
             .body("data.entityid", equalTo("changed"));
 
         List<MetaData> revisions = metaDataRepository.getMongoTemplate().findAll(MetaData.class, "saml20_sp_revision");
@@ -296,7 +331,6 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
 
     }
 
-
     @Test
     public void whiteListing() throws Exception {
         given()
@@ -308,4 +342,41 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
             .body("data.allowedall", hasItems(true, false));
     }
 
+    @Test
+    public void validate() throws java.io.IOException {
+        String json = readFile("/json/valid_service_provider.json");
+        Map data = objectMapper.readValue(json, Map.class);
+        MetaData metaData = new MetaData(EntityType.SP.getType(), data);
+        given()
+            .auth()
+            .preemptive()
+            .basic("sp-portal", "secret")
+            .when()
+            .body(metaData)
+            .header("Content-type", "application/json")
+            .post("manage/api/internal/validate/metadata")
+            .then()
+            .statusCode(SC_OK)
+            .body(isEmptyOrNullString());
+    }
+
+    @Test
+    public void validateWithErrors() throws java.io.IOException {
+        String json = readFile("/json/valid_service_provider.json");
+        Map data = objectMapper.readValue(json, Map.class);
+        Map.class.cast(data.get("metaDataFields")).put("AssertionConsumerService:0:Binding", "bogus");
+        MetaData metaData = new MetaData(EntityType.SP.getType(), data);
+        given()
+            .auth()
+            .preemptive()
+            .basic("sp-portal", "secret")
+            .when()
+            .body(metaData)
+            .header("Content-type", "application/json")
+            .post("manage/api/internal/validate/metadata")
+            .then()
+            .statusCode(SC_BAD_REQUEST)
+            .body("validations", equalTo("#/metaDataFields/AssertionConsumerService:0:Binding: bogus is not a valid " +
+                "enum value"));
+    }
 }

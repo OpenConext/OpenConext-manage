@@ -1,7 +1,9 @@
 package manage.control;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import manage.api.APIUser;
 import manage.conf.Features;
+import manage.conf.MetaDataAutoConfiguration;
 import manage.conf.Product;
 import manage.conf.Push;
 import manage.exception.EndpointNotAllowed;
@@ -20,6 +22,8 @@ import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -52,6 +56,8 @@ import static java.util.stream.Collectors.toList;
 
 @RestController
 public class SystemController {
+
+    private static final Logger LOG = LoggerFactory.getLogger(SystemController.class);
 
     private static final FederatedUser FEDERATED_USER = new FederatedUser(
         "system",
@@ -131,11 +137,7 @@ public class SystemController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/client/playground/pushPreview")
-    public Map<String, Map<String, Map<String, Object>>> pushPreview(FederatedUser federatedUser) {
-        if (!federatedUser.featureAllowed(Features.PUSH_PREVIEW)) {
-            throw new EndpointNotAllowed();
-        }
-
+    public Map<String, Map<String, Map<String, Object>>> pushPreview() {
         EngineBlockFormatter formatter = new EngineBlockFormatter();
 
         Map<String, Map<String, Map<String, Object>>> results =
@@ -159,6 +161,17 @@ public class SystemController {
         if (!federatedUser.featureAllowed(Features.PUSH)) {
             throw new EndpointNotAllowed();
         }
+        return doPush();
+    }
+
+    @PreAuthorize("hasRole('PUSH')")
+    @GetMapping("/internal/push")
+    public ResponseEntity<Map> pushInternal(APIUser apiUser) throws IOException {
+        LOG.info("Push initiated by {}", apiUser.getName());
+        return doPush();
+    }
+
+    private ResponseEntity<Map> doPush() throws IOException {
         if (environment.acceptsProfiles("dev")) {
             Map map = objectMapper.readValue(new ClassPathResource("mock/mock_eb_push_repsonse.json").getInputStream
                 (), Map.class);
@@ -167,7 +180,7 @@ public class SystemController {
         List<Map<String, Object>> preProvidersData = ebJdbcTemplate.queryForList("SELECT * FROM " +
             "sso_provider_roles_eb5 ORDER BY id ASC");
 
-        Map<String, Map<String, Map<String, Object>>> json = this.pushPreview(federatedUser);
+        Map<String, Map<String, Map<String, Object>>> json = this.pushPreview();
         ResponseEntity<String> response = this.restTemplate.postForEntity(pushUri, json, String.class);
         HttpStatus statusCode = response.getStatusCode();
 

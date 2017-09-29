@@ -1,6 +1,7 @@
 package manage.control;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import io.restassured.specification.RequestSpecification;
 import manage.AbstractIntegrationTest;
 import org.junit.Rule;
 import org.junit.Test;
@@ -33,17 +34,32 @@ public class SystemControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void push() throws Exception {
+        doPush(true);
+    }
+
+    @Test
+    public void pushInternal() throws Exception {
+        doPush(false);
+    }
+
+    private void doPush(boolean client) {
         stubFor(post(urlPathEqualTo("/api/connections")).withBasicAuth(pushUser, pushPassword)
             .willReturn(aResponse().withStatus(200)
                 .withHeader("Content-Type", "application/json")));
 
-        given()
+        RequestSpecification given = given();
+        if (!client) {
+            given
+                .auth()
+                .preemptive()
+                .basic("sp-portal", "secret");
+        }
+        given
             .when()
-            .get("manage/api/client/playground/push")
+            .get("manage/api/" + (client ? "client/playground" : "internal") + "/push")
             .then()
             .statusCode(SC_OK)
             .body("status", equalTo("OK"));
-
     }
 
     @Test
