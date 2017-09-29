@@ -50,9 +50,10 @@ spring:
     url: jdbc:mysql://localhost/sr?autoReconnect=true&useSSL=false
     username: root
     password:
-    dbcp2:
-      test-while-idle: true
+    tomcat:
+      test-on-borrow: true
       validation-query: SELECT 1
+      remove-abandoned: true
   main:
     banner-mode: "off"
 
