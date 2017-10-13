@@ -153,7 +153,7 @@ public class EngineBlockFormatter {
 
     private void removeEmptyValues(Map<String, Object> result) {
         result.entrySet().removeIf(entry -> {
-            if (entry.getValue() instanceof Map) {
+            if (entry.getValue() instanceof Map && !entry.getKey().equals("arp_attributes")) {
                 Map<String, Object> map = (Map<String, Object>) entry.getValue();
                 removeEmptyValues(map);
                 return map.isEmpty();
@@ -247,6 +247,9 @@ public class EngineBlockFormatter {
     }
 
     private void addAttributeReleasePolicy(Map<String, Object> source, Map<String, Object> result) {
+        if (String.class.cast(source.get("entityid")).contains("teams")) {
+            System.out.println("");
+        }
         Map<String, Object> arp = (Map<String, Object>) source.get("arp");
 
         if (arp == null) {
