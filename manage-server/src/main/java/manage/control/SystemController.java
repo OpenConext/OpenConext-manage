@@ -172,24 +172,24 @@ public class SystemController {
     }
 
     private ResponseEntity<Map> doPush() throws IOException {
-        if (environment.acceptsProfiles("dev")) {
-            Map map = objectMapper.readValue(new ClassPathResource("mock/mock_eb_push_repsonse.json").getInputStream
-                (), Map.class);
-            return new ResponseEntity<>(map, HttpStatus.OK);
-        }
         List<Map<String, Object>> preProvidersData = ebJdbcTemplate.queryForList("SELECT * FROM " +
             "sso_provider_roles_eb5 ORDER BY id ASC");
 
         Map<String, Map<String, Map<String, Object>>> json = this.pushPreview();
-        ResponseEntity<String> response = this.restTemplate.postForEntity(pushUri, json, String.class);
-        HttpStatus statusCode = response.getStatusCode();
+        ResponseEntity<String> response;
+        HttpStatus statusCode = HttpStatus.OK;
+        if (!environment.acceptsProfiles("dev")) {
+            response = this.restTemplate.postForEntity(pushUri, json, String.class);
+            statusCode = response.getStatusCode();
+        } else {
+            response = new ResponseEntity<String>("No performed push because of dev environment", HttpStatus.OK);
+        }
 
         List<Map<String, Object>> postProvidersData = ebJdbcTemplate.queryForList("SELECT * FROM " +
             "sso_provider_roles_eb5 ORDER BY id ASC");
         Set<Delta> deltas = prePostComparator.compare(preProvidersData, postProvidersData);
 
-        List<String> knownDeltas = Arrays.asList("id", "name_id_formats", "attribute_release_policy",
-            "allowed_idp_entity_ids");
+        List<String> knownDeltas = Arrays.asList("id", "name_id_formats");
         List<Delta> realDeltas = deltas.stream().filter(delta -> !knownDeltas.contains(delta.getAttribute())).collect
             (toList());
         realDeltas.sort(Comparator.comparing(Delta::getEntityId));

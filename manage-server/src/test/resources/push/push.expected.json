@@ -10,31 +10,27 @@
       "arp_attributes": {
         "urn:mace:dir:attribute-def:displayName": [
           {
-            "source": "idp",
             "value": "*"
           }
         ],
         "urn:mace:dir:attribute-def:uid": [
           {
-            "source": "idp",
             "value": "*"
           }
         ],
         "urn:mace:dir:attribute-def:mail": [
           {
-            "source": "idp",
-            "value": "*"
+            "value": "*",
+            "source": "pseudo_email"
           }
         ],
         "urn:mace:dir:attribute-def:isMemberOf": [
           {
-            "source": "idp",
             "value": "urn:collab:org:surf.nl"
           }
         ],
         "urn:mace:terena.org:attribute-def:schacHomeOrganization": [
           {
-            "source": "idp",
             "value": "*"
           }
         ]

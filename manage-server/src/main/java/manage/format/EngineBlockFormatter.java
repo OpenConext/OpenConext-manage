@@ -5,6 +5,7 @@ import manage.model.MetaData;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -247,9 +248,6 @@ public class EngineBlockFormatter {
     }
 
     private void addAttributeReleasePolicy(Map<String, Object> source, Map<String, Object> result) {
-        if (String.class.cast(source.get("entityid")).contains("teams")) {
-            System.out.println("");
-        }
         Map<String, Object> arp = (Map<String, Object>) source.get("arp");
 
         if (arp == null) {
@@ -260,6 +258,12 @@ public class EngineBlockFormatter {
         if (Boolean.class.cast(arp.get("enabled"))) {
             Map<String, List<Map<String, String>>> attributes =
                 (Map<String, List<Map<String, String>>>) arp.get("attributes");
+
+            //bugfix for EB not having the knowledge that 'idp' source is special
+            Collection<List<Map<String, String>>> values = attributes.values();
+            values.forEach(arpValues -> arpValues.forEach(map -> map.entrySet()
+                .removeIf(entry -> entry.getKey().equals("source") && entry.getValue().equals("idp"))));
+
             result.put("arp_attributes", attributes);
         }
     }

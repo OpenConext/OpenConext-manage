@@ -68,7 +68,7 @@
           "urn:mace:dir:attribute-def:mail": [
             {
               "value": "*",
-              "source": "idp"
+              "source": "pseudo_email"
             }
           ],
           "urn:mace:dir:attribute-def:isMemberOf": [
