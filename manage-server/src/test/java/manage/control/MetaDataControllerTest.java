@@ -6,6 +6,7 @@ import manage.migration.EntityType;
 import manage.model.MetaData;
 import manage.model.MetaDataUpdate;
 import manage.model.Revision;
+import manage.model.XML;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -138,7 +139,6 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         Map data = objectMapper.readValue(json, Map.class);
         MetaData metaData = new MetaData(EntityType.SP.getType(), data);
         RequestSpecification given = given();
-        System.out.println(objectMapper.writeValueAsString(metaData));
         if (!client) {
             given
                 .auth()
@@ -379,4 +379,23 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
             .body("validations", equalTo("#/metaDataFields/AssertionConsumerService:0:Binding: bogus is not a valid " +
                 "enum value"));
     }
+
+    @Test
+    public void newSp() throws Exception {
+        String xml = readFile("sp_portal/sp_xml.xml");
+        Map<String, String> body = Collections.singletonMap("xml", xml);
+
+        given()
+            .auth()
+            .preemptive()
+            .basic("sp-portal", "secret")
+            .body(body)
+            .header("Content-type", "application/json")
+            .when()
+            .post("/manage/api/internal/new-sp")
+            .then()
+            .statusCode(SC_OK)
+            .body("data.entityid", equalTo("https://engine.test2.surfconext.nl/authentication/sp/metadata"));
+    }
+
 }

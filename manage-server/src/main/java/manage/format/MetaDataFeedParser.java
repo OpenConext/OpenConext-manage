@@ -103,7 +103,7 @@ public class MetaDataFeedParser {
                             }
                             if (inKeyDescriptor) {
                                 inKeyDescriptor = false;
-                                String cert = reader.getElementText();
+                                String cert = reader.getElementText().replaceAll("[\n\r]", "").trim();
                                 addCert(metaDataFields, cert);
                             }
                             break;

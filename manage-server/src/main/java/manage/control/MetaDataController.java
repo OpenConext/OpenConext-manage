@@ -3,15 +3,21 @@ package manage.control;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import manage.api.APIUser;
 import manage.conf.MetaDataAutoConfiguration;
+import manage.exception.MetaDataAlreadyExists;
 import manage.exception.ResourceNotFoundException;
+import manage.format.Importer;
+import manage.migration.EntityType;
 import manage.model.MetaData;
 import manage.model.MetaDataUpdate;
+import manage.model.XML;
 import manage.repository.MetaDataRepository;
 import manage.shibboleth.FederatedUser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,11 +28,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.xml.stream.XMLStreamException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonMap;
 import static manage.mongo.MongobeeConfiguration.REVISION_POSTFIX;
 
 @RestController
@@ -34,11 +45,17 @@ public class MetaDataController {
 
     public static final String REQUESTED_ATTRIBUTES = "REQUESTED_ATTRIBUTES";
 
-    @Autowired
     private MetaDataRepository metaDataRepository;
+    private MetaDataAutoConfiguration metaDataAutoConfiguration;
+    private Importer importer;
 
     @Autowired
-    private MetaDataAutoConfiguration metaDataAutoConfiguration;
+    public MetaDataController(MetaDataRepository metaDataRepository, MetaDataAutoConfiguration
+        metaDataAutoConfiguration) {
+        this.metaDataRepository = metaDataRepository;
+        this.metaDataAutoConfiguration = metaDataAutoConfiguration;
+        this.importer = new Importer(metaDataAutoConfiguration);
+    }
 
     @GetMapping("/client/template/{type}")
     public MetaData template(@PathVariable("type") String type) {
@@ -71,6 +88,25 @@ public class MetaDataController {
     public MetaData postInternal(@Validated @RequestBody MetaData metaData, APIUser apiUser) throws
         JsonProcessingException {
         return doPost(metaData, apiUser.getName());
+    }
+
+    @PreAuthorize("hasRole('WRITE')")
+    @PostMapping("/internal/new-sp")
+    public MetaData newSP(@Validated @RequestBody XML container, APIUser apiUser) throws
+        IOException, XMLStreamException {
+        Map<String, Object> innerJson = this.importer.importXML(new ByteArrayResource(container.getXml()
+            .getBytes()), Optional.empty());
+        String entityId = String.class.cast(innerJson.get("entityid"));
+        List<Map> result = metaDataRepository.search(EntityType.SP.getType(), singletonMap("entityid",
+            entityId), emptyList());
+        if (!CollectionUtils.isEmpty(result)) {
+            throw new MetaDataAlreadyExists(entityId);
+        }
+        innerJson.put("allowedall", true);
+        innerJson.put("state", "testaccepted");
+        MetaData metaData = new MetaData(EntityType.SP.getType(), innerJson);
+        MetaData saved = doPost(metaData, apiUser.getName());
+        return saved;
     }
 
     private MetaData doPost(@Validated @RequestBody MetaData metaData, String uid) throws JsonProcessingException {
