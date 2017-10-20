@@ -30,6 +30,7 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class MetaDataControllerTest extends AbstractIntegrationTest {
 
@@ -467,7 +468,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
             .basic("sp-portal", "secret")
             .get("/manage/api/internal/sp-metadata/1")
             .asString();
-        System.out.println(xml);
+        assertTrue(xml.contains("entityID=\"Duis ad do\""));
     }
 
     private ValidatableResponse doUpdateSp(Map<String, String> body, MetaData metaData) {
