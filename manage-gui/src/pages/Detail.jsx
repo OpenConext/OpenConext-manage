@@ -272,7 +272,6 @@ export default class Detail extends React.PureComponent {
                         promise(metaData)
                             .then(json => {
                                 if (json.exception) {
-                                    debugger;
                                     setFlash(json.validations, "error");
                                 } else {
                                     this.props.history.replace("/search");

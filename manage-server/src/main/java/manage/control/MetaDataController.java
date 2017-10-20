@@ -3,8 +3,9 @@ package manage.control;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import manage.api.APIUser;
 import manage.conf.MetaDataAutoConfiguration;
-import manage.exception.MetaDataAlreadyExists;
+import manage.exception.DuplicateEntityIdException;
 import manage.exception.ResourceNotFoundException;
+import manage.format.Exporter;
 import manage.format.Importer;
 import manage.migration.EntityType;
 import manage.model.MetaData;
@@ -13,7 +14,9 @@ import manage.model.XML;
 import manage.repository.MetaDataRepository;
 import manage.shibboleth.FederatedUser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,7 +33,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
+import java.time.Clock;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -48,13 +53,18 @@ public class MetaDataController {
     private MetaDataRepository metaDataRepository;
     private MetaDataAutoConfiguration metaDataAutoConfiguration;
     private Importer importer;
+    private Exporter exporter;
 
     @Autowired
-    public MetaDataController(MetaDataRepository metaDataRepository, MetaDataAutoConfiguration
-        metaDataAutoConfiguration) {
+    public MetaDataController(MetaDataRepository metaDataRepository,
+                              MetaDataAutoConfiguration metaDataAutoConfiguration,
+                              ResourceLoader resourceLoader,
+                              @Value("${metadata_export_path}") String metadataExportPath) {
         this.metaDataRepository = metaDataRepository;
         this.metaDataAutoConfiguration = metaDataAutoConfiguration;
         this.importer = new Importer(metaDataAutoConfiguration);
+        this.exporter = new Exporter(Clock.systemDefaultZone(), resourceLoader, metadataExportPath);
+
     }
 
     @GetMapping("/client/template/{type}")
@@ -99,15 +109,46 @@ public class MetaDataController {
         String entityId = String.class.cast(innerJson.get("entityid"));
         List<Map> result = metaDataRepository.search(EntityType.SP.getType(), singletonMap("entityid",
             entityId), emptyList());
+
         if (!CollectionUtils.isEmpty(result)) {
-            throw new MetaDataAlreadyExists(entityId);
+            throw new DuplicateEntityIdException(entityId);
         }
+
+        addDefaultSpData(innerJson);
+        MetaData metaData = new MetaData(EntityType.SP.getType(), innerJson);
+
+        return doPost(metaData, apiUser.getName());
+    }
+
+    private void addDefaultSpData(Map<String, Object> innerJson) {
         innerJson.put("allowedall", true);
         innerJson.put("state", "testaccepted");
-        MetaData metaData = new MetaData(EntityType.SP.getType(), innerJson);
-        MetaData saved = doPost(metaData, apiUser.getName());
-        return saved;
     }
+
+    @PreAuthorize("hasRole('WRITE')")
+    @PostMapping("/internal/update-sp/{id}/{version}")
+    public MetaData updateSP(@PathVariable("id") String id,
+                             @PathVariable("version") Long version,
+                             @Validated @RequestBody XML container,
+                             APIUser apiUser) throws IOException, XMLStreamException {
+        MetaData metaData = this.get(EntityType.SP.getType(), id);
+        Map<String, Object> innerJson = this.importer.importXML(new ByteArrayResource(container.getXml()
+            .getBytes()), Optional.empty());
+
+        addDefaultSpData(innerJson);
+
+        metaData.setData(innerJson);
+        metaData.setVersion(version);
+
+        return doPut(metaData, apiUser.getName());
+    }
+
+    @GetMapping("/internal/sp-metadata/{id}")
+    public String exportXml(@PathVariable("id") String id) throws IOException, XMLStreamException {
+        MetaData metaData = this.get(EntityType.SP.getType(), id);
+        return exporter.exportToXml(metaData);
+    }
+
 
     private MetaData doPost(@Validated @RequestBody MetaData metaData, String uid) throws JsonProcessingException {
         validate(metaData);
@@ -139,8 +180,7 @@ public class MetaDataController {
     @Transactional
     public MetaData put(@Validated @RequestBody MetaData metaData, FederatedUser federatedUser) throws
         JsonProcessingException {
-        doPut(metaData, federatedUser.getUid());
-        return metaData;
+        return doPut(metaData, federatedUser.getUid());
     }
 
     @PreAuthorize("hasRole('WRITE')")
@@ -148,11 +188,10 @@ public class MetaDataController {
     @Transactional
     public MetaData putInternal(@Validated @RequestBody MetaData metaData, APIUser apiUser) throws
         JsonProcessingException {
-        doPut(metaData, apiUser.getName());
-        return metaData;
+        return doPut(metaData, apiUser.getName());
     }
 
-    private void doPut(@Validated @RequestBody MetaData metaData, String updatedBy) throws JsonProcessingException {
+    private MetaData doPut(@Validated @RequestBody MetaData metaData, String updatedBy) throws JsonProcessingException {
         validate(metaData);
 
         String id = metaData.getId();
@@ -162,6 +201,8 @@ public class MetaDataController {
 
         metaData.promoteToLatest(updatedBy);
         metaDataRepository.update(metaData);
+
+        return metaData;
     }
 
     @PreAuthorize("hasRole('WRITE')")

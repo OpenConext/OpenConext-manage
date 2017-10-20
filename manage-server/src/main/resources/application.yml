@@ -1,6 +1,6 @@
 logging:
   level:
-    org.springframework.data.mongodb: INFO
+    org.springframework.data.mongodb: TRACE
     org.springframework.security: INFO
 
 server:

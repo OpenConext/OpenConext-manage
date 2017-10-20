@@ -1,12 +1,12 @@
 package manage.control;
 
+import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 import manage.AbstractIntegrationTest;
 import manage.migration.EntityType;
 import manage.model.MetaData;
 import manage.model.MetaDataUpdate;
 import manage.model.Revision;
-import manage.model.XML;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import static io.restassured.RestAssured.given;
 import static manage.control.MetaDataController.REQUESTED_ATTRIBUTES;
@@ -385,7 +386,42 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         String xml = readFile("sp_portal/sp_xml.xml");
         Map<String, String> body = Collections.singletonMap("xml", xml);
 
-        given()
+        doNewSp(body)
+            .statusCode(SC_OK)
+            .body("data.entityid", equalTo("https://engine.test2.surfconext.nl/authentication/sp/metadata"));
+    }
+
+    @Test
+    public void newSpWithDuplicateEntityId() throws Exception {
+        String xml = readFile("sp_portal/sp_xml.xml");
+        String entityId = "https://profile.test2.surfconext.nl/authentication/metadata";
+        xml = xml.replaceAll(Pattern.quote("https://engine.test2.surfconext.nl/authentication/sp/metadata"),
+            entityId);
+
+        Map<String, String> body = new HashMap<>();
+        body.put("xml", xml);
+
+        doNewSp(body)
+            .statusCode(SC_BAD_REQUEST)
+            .body("message", equalTo(String.format("There already exists a MetaData entry with entityId: %s",
+                entityId)));
+    }
+
+    @Test
+    public void newSpWithMissingRequiredFields() throws Exception {
+        String xml = readFile("sp_portal/sp_xml_missing_required_fields.xml");
+        Map<String, String> body = new HashMap<>();
+        body.put("xml", xml);
+
+        doNewSp(body)
+            .statusCode(SC_BAD_REQUEST)
+            .body("validations", equalTo("#/metaDataFields: required key [name:en] not found, " +
+                "#/metaDataFields: required key [AssertionConsumerService:0:Binding] not found, " +
+                "#/metaDataFields: required key [AssertionConsumerService:0:Location] not found"));
+    }
+
+    private ValidatableResponse doNewSp(Map<String, String> body) {
+        return given()
             .auth()
             .preemptive()
             .basic("sp-portal", "secret")
@@ -393,9 +429,56 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
             .header("Content-type", "application/json")
             .when()
             .post("/manage/api/internal/new-sp")
-            .then()
-            .statusCode(SC_OK)
-            .body("data.entityid", equalTo("https://engine.test2.surfconext.nl/authentication/sp/metadata"));
+            .then();
     }
 
+    @Test
+    public void updateSp() throws Exception {
+        MetaData metaData = metaDataRepository.findById("1", EntityType.SP.getType());
+        String xml = readFile("sp_portal/sp_xml.xml");
+        Map<String, String> body = Collections.singletonMap("xml", xml);
+        doUpdateSp(body, metaData)
+            .statusCode(SC_OK);
+
+        MetaData updated = metaDataRepository.findById("1", EntityType.SP.getType());
+        assertEquals(1L, updated.getVersion().longValue());
+        assertEquals(updated.getData().get("entityid"),
+            "https://engine.test2.surfconext.nl/authentication/sp/metadata");
+    }
+
+    @Test
+    public void updateSpWithWrongValues() throws Exception {
+        MetaData metaData = metaDataRepository.findById("1", EntityType.SP.getType());
+        String xml = readFile("sp_portal/sp_xml.xml");
+        xml = xml.replace("urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST", "bogus");
+        Map<String, String> body = Collections.singletonMap("xml", xml);
+        doUpdateSp(body, metaData)
+            .statusCode(SC_BAD_REQUEST)
+            .body("validations", equalTo("#/metaDataFields/AssertionConsumerService:0:Binding: bogus is not a valid " +
+                "enum value"));
+
+    }
+
+    @Test
+    public void exportToXml() throws Exception {
+        String xml = given()
+            .auth()
+            .preemptive()
+            .basic("sp-portal", "secret")
+            .get("/manage/api/internal/sp-metadata/1")
+            .asString();
+        System.out.println(xml);
+    }
+
+    private ValidatableResponse doUpdateSp(Map<String, String> body, MetaData metaData) {
+        return given()
+            .auth()
+            .preemptive()
+            .basic("sp-portal", "secret")
+            .body(body)
+            .header("Content-type", "application/json")
+            .when()
+            .post("/manage/api/internal/update-sp/" + metaData.getId() + "/" + metaData.getVersion())
+            .then();
+    }
 }

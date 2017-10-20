@@ -62,6 +62,10 @@ public class MetaData implements Serializable {
         this.data = data;
     }
 
+    public void setVersion(Long version) {
+        this.version = version;
+    }
+
     public void merge(MetaDataUpdate metaDataUpdate) {
         metaDataUpdate.getPathUpdates().forEach((path, value) -> {
             List<String> parts = Arrays.asList(path.split("\\."));
