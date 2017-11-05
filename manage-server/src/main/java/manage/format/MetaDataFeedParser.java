@@ -252,6 +252,9 @@ public class MetaDataFeedParser {
                         case "AttributeConsumingService":
                             inAttributeConsumingService = false;
                             break;
+                        case "UIInfo":
+                            inUIInfo = false;
+                            break;
                         case "EntityDescriptor":
                             if (inCorrectEntityDescriptor) {
                                 //we got what we came for
