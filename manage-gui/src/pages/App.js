@@ -36,7 +36,7 @@ class App extends React.PureComponent {
         window.onerror = (msg, url, line, col, err) => {
             this.setState({errorDialogOpen: true});
             const info = err || {};
-            const response = err.response || {};
+            const response = info.response || {};
             const error = {
                 userAgent: navigator.userAgent,
                 message: msg,
