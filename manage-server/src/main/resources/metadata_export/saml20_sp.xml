@@ -2,6 +2,24 @@
 <md:EntityDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
                      entityID="{{entityid}}" validUntil="{{validUntil}}" cacheDuration="PT86400S">
     <md:SPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+        {{#UIInfoExtension}}
+        <md:Extensions>
+            <md:UIInfo>
+                {{#metaDataFields.name:en}}
+                <md:DisplayName xml:lang="en">{{metaDataFields.name:en}}</md:DisplayName>
+                {{/metaDataFields.name:en}}
+                {{#metaDataFields.name:nl}}
+                <md:DisplayName xml:lang="nl">{{metaDataFields.name:nl}}</md:DisplayName>
+                {{/metaDataFields.name:nl}}
+                {{#metaDataFields.description:en}}
+                <md:Description xml:lang="en">{{metaDataFields.description:en}}</md:Description>
+                {{/metaDataFields.description:en}}
+                {{#metaDataFields.description:nl}}
+                <md:Description xml:lang="nl">{{metaDataFields.description:nl}}</md:Description>
+                {{/metaDataFields.description:nl}}
+            </md:UIInfo>
+        </md:Extensions>
+        {{/UIInfoExtension}}
         {{#metaDataFields.certData}}
         <md:KeyDescriptor use="signing">
             <ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">

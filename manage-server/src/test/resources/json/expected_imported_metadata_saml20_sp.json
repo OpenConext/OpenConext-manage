@@ -28,5 +28,9 @@
   "contacts:2:contactType" : "technical",
   "contacts:2:emailAddress" : "conext-beheer@surfnet.nl",
   "contacts:2:givenName" : "Conext",
-  "contacts:2:surName" : "Beheer"
+  "contacts:2:surName" : "Beheer",
+  "description:en" : "description-en",
+  "description:nl" : "description-nl",
+  "name:en" : "name-en",
+  "name:nl" : "name-nl"
 }

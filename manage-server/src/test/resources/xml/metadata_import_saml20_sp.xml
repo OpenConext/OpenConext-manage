@@ -3,6 +3,14 @@
                      entityID="https://teams.surfconext.nl/shibboleth" validUntil="2018-07-14T11:15:56.857+02:00"
                      cacheDuration="PT86400S">
     <md:SPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+        <md:Extensions>
+            <md:UIInfo>
+                <md:DisplayName xml:lang="en">name-en</md:DisplayName>
+                <md:DisplayName xml:lang="nl">name-nl</md:DisplayName>
+                <md:Description xml:lang="en">description-en</md:Description>
+                <md:Description xml:lang="nl">description-nl</md:Description>
+            </md:UIInfo>
+        </md:Extensions>
         <md:KeyDescriptor use="signing">
             <ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
                 <ds:X509Data>

@@ -59,6 +59,7 @@ public class Exporter {
             this.addOrganizationName(data);
             this.addValidUntil(data);
             this.addAttributeConsumingService(data);
+            this.addUIInfoExtension(data);
 
             mustache.execute(writer, data).flush();
             String xml = writer.toString();
@@ -146,12 +147,6 @@ public class Exporter {
     }
 
     private void addAttributeConsumingService(Map data) {
-        Map metaDataFields = Map.class.cast(data.get("metaDataFields"));
-        String name = String.class.cast(metaDataFields.computeIfAbsent("name:en", key -> metaDataFields.get
-            ("name:nl")));
-        String description = String.class.cast(metaDataFields.computeIfAbsent("description:en", key -> metaDataFields
-            .get("description:nl")));
-
         boolean arpAttributes = false;
         Map arp = Map.class.cast(data.get("arp"));
         if (Boolean.class.cast(arp.getOrDefault("enabled", false))) {
@@ -161,8 +156,17 @@ public class Exporter {
                 data.put("requestedAttributes", attributes.keySet());
             }
         }
-        data.put("AttributeConsumingService", arpAttributes || StringUtils.hasText(name) || StringUtils.hasText
-            (description));
+        data.put("AttributeConsumingService", arpAttributes);
+    }
+
+    private void addUIInfoExtension(Map data) {
+        Map metaDataFields = Map.class.cast(data.get("metaDataFields"));
+        String name = String.class.cast(metaDataFields.computeIfAbsent("name:en", key -> metaDataFields.get
+            ("name:nl")));
+        String description = String.class.cast(metaDataFields.computeIfAbsent("description:en", key -> metaDataFields
+            .get("description:nl")));
+
+        data.put("UIInfoExtension", StringUtils.hasText(name) || StringUtils.hasText(description));
     }
 
 }

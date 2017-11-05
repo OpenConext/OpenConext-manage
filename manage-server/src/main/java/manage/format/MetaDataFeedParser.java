@@ -49,6 +49,7 @@ public class MetaDataFeedParser {
 
         boolean inKeyDescriptor = false;
         boolean inContact = true;
+        boolean inUIInfo = true;
         boolean inCorrectEntityDescriptor = !entityIDOptional.isPresent();
         boolean inAttributeConsumingService = false;
         boolean isSp = false;
@@ -163,6 +164,19 @@ public class MetaDataFeedParser {
                             break;
                         case "AttributeConsumingService":
                             inAttributeConsumingService = inCorrectEntityDescriptor;
+                            break;
+                        case "UIInfo":
+                            inUIInfo = inCorrectEntityDescriptor;
+                            break;
+                        case "DisplayName":
+                            if (inUIInfo) {
+                                addLanguageElement(metaDataFields, reader, "name");
+                            }
+                            break;
+                        case "Description":
+                            if (inUIInfo) {
+                                addLanguageElement(metaDataFields, reader, "description");
+                            }
                             break;
                         case "ServiceName":
                             if (inAttributeConsumingService) {

@@ -416,7 +416,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
 
         doNewSp(body)
             .statusCode(SC_BAD_REQUEST)
-            .body("validations", equalTo("#/metaDataFields: required key [name:en] not found, " +
+            .body("validations", equalTo(
                 "#/metaDataFields: required key [AssertionConsumerService:0:Binding] not found, " +
                 "#/metaDataFields: required key [AssertionConsumerService:0:Location] not found"));
     }
