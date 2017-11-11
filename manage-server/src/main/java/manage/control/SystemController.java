@@ -92,6 +92,8 @@ public class SystemController {
                             @Value("${push.password}") String password,
                             @Value("${manage_cronjob_minutes}") int everyMinutes,
                             @Value("${manage_cronjobmaster}") boolean cronJobResponsible,
+                            @Value("${run_migrations}") boolean runMigrations,
+                            @Value("${push_after_migration}") boolean pushAfterMigration,
                             Environment environment,
                             ObjectMapper objectMapper,
                             MailBox mailBox) throws MalformedURLException {
@@ -109,19 +111,23 @@ public class SystemController {
 
         if (cronJobResponsible) {
             newScheduledThreadPool(1)
-                .scheduleAtFixedRate(() -> migrateAndPush(), 0, everyMinutes, TimeUnit.MINUTES);
+                .scheduleAtFixedRate(() -> migrateAndPush(runMigrations, pushAfterMigration), 0, everyMinutes, TimeUnit.MINUTES);
         }
     }
 
-    private void migrateAndPush() {
+    private void migrateAndPush(boolean runMigrations, boolean pushAfterMigration) {
         try {
-            janusMigration.doMigrate();
-            ResponseEntity<Map> responseEntity = this.push(FEDERATED_USER);
-            List<Delta> realDeltas = (List<Delta>) responseEntity.getBody().get("deltas");
-            if (!responseEntity.getStatusCode().equals(HttpStatus.OK) || !realDeltas.isEmpty()) {
-                mailBox.sendDeltaPushMail(realDeltas);
+            if (runMigrations) {
+                janusMigration.doMigrate();
             }
-        } catch (IOException | RuntimeException | MessagingException e) {
+            if (pushAfterMigration) {
+                ResponseEntity<Map> responseEntity = this.push(FEDERATED_USER);
+                List<Delta> realDeltas = (List<Delta>) responseEntity.getBody().get("deltas");
+                if (!responseEntity.getStatusCode().equals(HttpStatus.OK) || !realDeltas.isEmpty()) {
+                    mailBox.sendDeltaPushMail(realDeltas);
+                }
+            }
+        } catch (Throwable e) {
             //don't break the scheduler
         }
     }
@@ -217,9 +223,6 @@ public class SystemController {
         BasicCredentialsProvider basicCredentialsProvider = new BasicCredentialsProvider();
         basicCredentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(pushUser, pushPassword));
         httpClientBuilder.setDefaultCredentialsProvider(basicCredentialsProvider);
-        //httpClientBuilder.setDefaultRequestConfig(RequestConfig.custom().setConnectionRequestTimeout(timeOut)
-        // .setConnectTimeout(timeOut).setSocketTimeout(timeOut).build());
-
         CloseableHttpClient httpClient = httpClientBuilder.build();
         return new PreemptiveAuthenticationHttpComponentsClientHttpRequestFactory(httpClient, pushUri);
     }

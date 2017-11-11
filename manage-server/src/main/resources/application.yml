@@ -19,6 +19,8 @@ push:
 
 manage_cronjobmaster: false
 manage_cronjob_minutes: 30
+run_migrations: false
+push_after_migration: false
 
 email:
   base_url: http://localhost:8001/#delta
