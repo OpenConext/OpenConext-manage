@@ -119,12 +119,12 @@ public class SystemController {
         try {
             if (runMigrations) {
                 janusMigration.doMigrate();
-            }
-            if (pushAfterMigration) {
-                ResponseEntity<Map> responseEntity = this.push(FEDERATED_USER);
-                List<Delta> realDeltas = (List<Delta>) responseEntity.getBody().get("deltas");
-                if (!responseEntity.getStatusCode().equals(HttpStatus.OK) || !realDeltas.isEmpty()) {
-                    mailBox.sendDeltaPushMail(realDeltas);
+                if (pushAfterMigration) {
+                    ResponseEntity<Map> responseEntity = this.push(FEDERATED_USER);
+                    List<Delta> realDeltas = (List<Delta>) responseEntity.getBody().get("deltas");
+                    if (!responseEntity.getStatusCode().equals(HttpStatus.OK) || !realDeltas.isEmpty()) {
+                        mailBox.sendDeltaPushMail(realDeltas);
+                    }
                 }
             }
         } catch (Throwable e) {
