@@ -148,7 +148,7 @@ public class Exporter {
 
     private void addAttributeConsumingService(Map data) {
         boolean arpAttributes = false;
-        Map arp = Map.class.cast(data.get("arp"));
+        Map arp = Map.class.cast(data.getOrDefault("arp", new HashMap<>()));
         if (Boolean.class.cast(arp.getOrDefault("enabled", false))) {
             Map attributes = Map.class.cast(arp.getOrDefault("attributes", new HashMap<>()));
             arpAttributes = !attributes.isEmpty();
