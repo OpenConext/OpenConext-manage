@@ -15,12 +15,29 @@ public class DataSourceConfiguration {
     @Primary
     @ConfigurationProperties(prefix = "spring.datasource")
     public DataSource srDataSource() {
-        return DataSourceBuilder.create().build();
+        DataSource dataSource = DataSourceBuilder.create().build();
+        if (dataSource instanceof org.apache.tomcat.jdbc.pool.DataSource) {
+            return tomcatDataSource(dataSource);
+        }
+        throw new IllegalArgumentException("Expected tomcat DataSource. Got " + dataSource.getClass().getName());
+    }
+
+    private DataSource tomcatDataSource(DataSource dataSource) {
+        org.apache.tomcat.jdbc.pool.DataSource tomcatDataSource = (org.apache.tomcat.jdbc.pool.DataSource) dataSource;
+        tomcatDataSource.setTestOnBorrow(true);
+        tomcatDataSource.setValidationQuery("SELECT 1");
+        tomcatDataSource.setRemoveAbandoned(true);
+        tomcatDataSource.setTestWhileIdle(true);
+        return tomcatDataSource;
     }
 
     @Bean("ebDataSource")
     @ConfigurationProperties(prefix = "eb.datasource")
     public DataSource ebDataSource() {
-        return DataSourceBuilder.create().build();
+        DataSource dataSource = DataSourceBuilder.create().build();
+        if (dataSource instanceof org.apache.tomcat.jdbc.pool.DataSource) {
+            return tomcatDataSource(dataSource);
+        }
+        throw new IllegalArgumentException("Expected tomcat DataSource. Got " + dataSource.getClass().getName());
     }
 }
