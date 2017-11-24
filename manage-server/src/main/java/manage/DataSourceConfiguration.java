@@ -28,6 +28,7 @@ public class DataSourceConfiguration {
         tomcatDataSource.setValidationQuery("SELECT 1");
         tomcatDataSource.setRemoveAbandoned(true);
         tomcatDataSource.setTestWhileIdle(true);
+        tomcatDataSource.setLogValidationErrors(true);
         return tomcatDataSource;
     }
 
