@@ -2,7 +2,6 @@ package manage;
 
 import org.apache.tomcat.jdbc.pool.ConnectionPool;
 import org.apache.tomcat.jdbc.pool.DataSource;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -10,7 +9,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.util.Assert;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 
 
@@ -28,10 +26,7 @@ public class DataSourceConfiguration {
     @Primary
     @ConfigurationProperties(prefix = "spring.datasource")
     public DataSource srDataSource() throws SQLException {
-        DataSource dataSource = (DataSource) srDataSourceProperties().initializeDataSourceBuilder().type(DataSource.class)
-            .build();
-        setTypeSpecificProperties(dataSource);
-        return dataSource;
+        return initDataSource(srDataSourceProperties());
 
     }
 
@@ -44,7 +39,11 @@ public class DataSourceConfiguration {
     @Bean("ebDataSource")
     @ConfigurationProperties(prefix = "eb.datasource")
     public DataSource ebDataSource() {
-        DataSource dataSource = (DataSource) ebDataSourceProperties().initializeDataSourceBuilder().type(DataSource.class)
+        return initDataSource(ebDataSourceProperties());
+    }
+
+    private DataSource initDataSource(DataSourceProperties dataSourceProperties) {
+        DataSource dataSource = (DataSource) dataSourceProperties.initializeDataSourceBuilder().type(DataSource.class)
             .build();
         setTypeSpecificProperties(dataSource);
         return dataSource;
