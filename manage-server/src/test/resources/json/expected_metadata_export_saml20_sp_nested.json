@@ -82,7 +82,8 @@
         "contactType" : "support",
         "emailAddress" : "help@surfconext.nl",
         "givenName" : "SURFconext",
-        "surName" : "Support"
+        "surName" : "Support",
+        "telephoneNumber" : "+316156253625"
       },
       "1" : {
         "contactType" : "administrative",

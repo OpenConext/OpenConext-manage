@@ -25,7 +25,7 @@ export default class WhiteList extends React.Component {
 
     componentDidMount() {
         window.scrollTo(0, 0);
-        const {allowedEntities, entityId, whiteListing} = this.props;
+        const {allowedEntities = [], entityId, whiteListing} = this.props;
         this.enrichAllowedEntries(allowedEntities, entityId, whiteListing);
     }
 
@@ -35,7 +35,7 @@ export default class WhiteList extends React.Component {
         }
     }
 
-    enrichAllowedEntries = (allowedEntities, entityId, whiteListing) => {
+    enrichAllowedEntries = (allowedEntities = [], entityId, whiteListing) => {
         const enrichedAllowedEntries = allowedEntities
             .map(entity => this.enrichAllowedEntry(entity, entityId, whiteListing))
             .filter(enriched => enriched !== null);
@@ -49,7 +49,7 @@ export default class WhiteList extends React.Component {
             return null;
         }
         return {
-            "blocked": !moreInfo.data.allowedall && moreInfo.data.allowedEntities.find(allowed => allowed.name === entityId),
+            "blocked": !moreInfo.data.allowedall && (moreInfo.data.allowedEntities || []).find(allowed => allowed.name === entityId),
             "status": I18n.t(`metadata.${moreInfo.data.state}`),
             "entityid": allowedEntry.name,
             "name": moreInfo.data.metaDataFields["name:en"] || moreInfo.data.metaDataFields["name:nl"] || "",
@@ -78,7 +78,7 @@ export default class WhiteList extends React.Component {
         this.setState({enrichedAllowedEntries: newAllowedEntries.sort(this.sortByAttribute(this.state.sorted, this.state.reverse))});
 
     addAllowedEntry = allowedEntryEntityId => {
-        const {allowedAll, allowedEntities, entityId, whiteListing} = this.props;
+        const {allowedAll, allowedEntities = [], entityId, whiteListing} = this.props;
         const newState = [...allowedEntities].concat({name: allowedEntryEntityId});
         if (allowedAll) {
             this.props.onChange(["data.allowedEntities", "data.allowedall"], [newState, false]);
@@ -92,7 +92,7 @@ export default class WhiteList extends React.Component {
     };
 
     removeAllowedEntry = allowedEntry => {
-        const {allowedEntities} = this.props;
+        const {allowedEntities = []} = this.props;
         const newState = [...allowedEntities].filter(entity => entity.name !== allowedEntry.entityid);
         this.props.onChange("data.allowedEntities", newState);
 
@@ -110,7 +110,7 @@ export default class WhiteList extends React.Component {
     };
 
     allowAllChanged = e => {
-        const {allowedEntities, name, type} = this.props;
+        const {allowedEntities = [], name, type} = this.props;
         const allowedEntitiesLength = allowedEntities.length;
         const typeS = type === "saml20_sp" ? "Identity Providers" : "Service Providers";
         if (e.target.checked) {
@@ -197,7 +197,7 @@ export default class WhiteList extends React.Component {
     };
 
     render() {
-        const {allowedAll, allowedEntities, whiteListing, name, type, guest} = this.props;
+        const {allowedAll, allowedEntities = [], whiteListing, name, type, guest} = this.props;
         const providerType = type === "saml20_sp" ? "Identity Providers" : "Service Providers";
 
         const allowAllCheckBoxInfo = I18n.t("whitelisting.allowAllProviders", {

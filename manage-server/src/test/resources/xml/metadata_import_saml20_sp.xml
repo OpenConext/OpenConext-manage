@@ -9,6 +9,7 @@
                 <md:DisplayName xml:lang="nl">name-nl</md:DisplayName>
                 <md:Description xml:lang="en">description-en</md:Description>
                 <md:Description xml:lang="nl">description-nl</md:Description>
+                <md:Logo width="400" height="500" xml:lang="en">https://url</md:Logo>
             </md:UIInfo>
         </md:Extensions>
         <md:KeyDescriptor use="signing">
@@ -53,6 +54,7 @@
         <md:GivenName>Conext</md:GivenName>
         <md:SurName>Beheer</md:SurName>
         <md:EmailAddress>conext-beheer@surfnet.nl</md:EmailAddress>
+        <md:TelephoneNumber>0611860182</md:TelephoneNumber>
     </md:ContactPerson>
 
 </md:EntityDescriptor>

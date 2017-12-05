@@ -60,6 +60,7 @@ public class Exporter {
             this.addValidUntil(data);
             this.addAttributeConsumingService(data);
             this.addUIInfoExtension(data);
+            this.addUILogo(data);
 
             mustache.execute(writer, data).flush();
             String xml = writer.toString();
@@ -168,5 +169,14 @@ public class Exporter {
 
         data.put("UIInfoExtension", StringUtils.hasText(name) || StringUtils.hasText(description));
     }
+
+    private void addUILogo(Map data) {
+        Map metaDataFields = Map.class.cast(data.get("metaDataFields"));
+        String height = (String) metaDataFields.get("logo:0:height");
+        String width = (String) metaDataFields.get("logo:0:width");
+        String url = (String) metaDataFields.get("logo:0:url");
+        data.put("Logo", StringUtils.hasText(height) && StringUtils.hasText(width) && StringUtils.hasText(url));
+    }
+
 
 }

@@ -173,6 +173,11 @@ public class MetaDataFeedParser {
                                 addLanguageElement(metaDataFields, reader, "name");
                             }
                             break;
+                        case "Logo":
+                            if (inUIInfo) {
+                                addLogo(metaDataFields, reader);
+                            }
+                            break;
                         case "Description":
                             if (inUIInfo) {
                                 addLanguageElement(metaDataFields, reader, "description");
@@ -333,6 +338,14 @@ public class MetaDataFeedParser {
         if (count < certDataKeys.size()) {
             result.put(certDataKeys.get((int) count), cert);
         }
+    }
+
+    private void addLogo(Map<String, String> metaDataFields, XMLStreamReader reader) throws XMLStreamException {
+        getAttributeValue(reader, "width")
+            .ifPresent(width -> metaDataFields.put("logo:0:width", width));
+        getAttributeValue(reader, "height")
+            .ifPresent(height -> metaDataFields.put("logo:0:height", height));
+        metaDataFields.put("logo:0:url", reader.getElementText());
     }
 
     private Optional<String> getAttributeValue(XMLStreamReader reader, String attributeName) {

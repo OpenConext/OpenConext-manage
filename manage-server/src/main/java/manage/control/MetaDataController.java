@@ -123,6 +123,7 @@ public class MetaDataController {
     private void addDefaultSpData(Map<String, Object> innerJson) {
         innerJson.put("allowedall", true);
         innerJson.put("state", "testaccepted");
+        innerJson.put("allowedEntities", new ArrayList<>());
     }
 
     @PreAuthorize("hasRole('WRITE')")

@@ -73,6 +73,7 @@
       "logo:0:width": "500",
       "contacts:0:emailAddress": "help@surfconext.nl",
       "contacts:0:contactType": "support",
+      "contacts:0:telephoneNumber": "+316156253625",
       "AssertionConsumerService:0:index": "1",
       "contacts:2:contactType": "technical",
       "coin:institution_guid": "ad93daef-0911-e511-80d0-005056956c1a",

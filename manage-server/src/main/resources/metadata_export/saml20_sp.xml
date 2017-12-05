@@ -17,6 +17,10 @@
                 {{#metaDataFields.description:nl}}
                 <md:Description xml:lang="nl">{{metaDataFields.description:nl}}</md:Description>
                 {{/metaDataFields.description:nl}}
+                {{#Logo}}
+                <md:Logo width="{{metaDataFields.logo:0:width}}" height="{{metaDataFields.logo:0:height}}"
+                         xml:lang="en">{{metaDataFields.logo:0:url}}</md:Logo>
+                {{/Logo}}
             </md:UIInfo>
         </md:Extensions>
         {{/UIInfoExtension}}
@@ -163,6 +167,9 @@
         {{#metaDataFields.contacts:0:emailAddress}}
         <md:EmailAddress>mailto:{{metaDataFields.contacts:0:emailAddress}}</md:EmailAddress>
         {{/metaDataFields.contacts:0:emailAddress}}
+        {{#metaDataFields.contacts:0:telephoneNumber}}
+        <md:TelephoneNumber>{{metaDataFields.contacts:0:telephoneNumber}}</md:TelephoneNumber>
+        {{/metaDataFields.contacts:0:telephoneNumber}}
     </md:ContactPerson>
     {{/metaDataFields.contacts:0:contactType}}
     {{#metaDataFields.contacts:1:contactType}}
@@ -176,6 +183,9 @@
         {{#metaDataFields.contacts:1:emailAddress}}
         <md:EmailAddress>mailto:{{metaDataFields.contacts:1:emailAddress}}</md:EmailAddress>
         {{/metaDataFields.contacts:1:emailAddress}}
+        {{#metaDataFields.contacts:1:telephoneNumber}}
+        <md:TelephoneNumber>{{metaDataFields.contacts:1:telephoneNumber}}</md:TelephoneNumber>
+        {{/metaDataFields.contacts:1:telephoneNumber}}
     </md:ContactPerson>
     {{/metaDataFields.contacts:1:contactType}}
     {{#metaDataFields.contacts:2:contactType}}
@@ -189,6 +199,9 @@
         {{#metaDataFields.contacts:2:emailAddress}}
         <md:EmailAddress>mailto:{{metaDataFields.contacts:2:emailAddress}}</md:EmailAddress>
         {{/metaDataFields.contacts:2:emailAddress}}
+        {{#metaDataFields.contacts:2:telephoneNumber}}
+        <md:TelephoneNumber>{{metaDataFields.contacts:2:telephoneNumber}}</md:TelephoneNumber>
+        {{/metaDataFields.contacts:2:telephoneNumber}}
     </md:ContactPerson>
     {{/metaDataFields.contacts:2:contactType}}
     {{#metaDataFields.contacts:3:contactType}}
@@ -202,6 +215,9 @@
         {{#metaDataFields.contacts:3:emailAddress}}
         <md:EmailAddress>mailto:{{metaDataFields.contacts:3:emailAddress}}</md:EmailAddress>
         {{/metaDataFields.contacts:3:emailAddress}}
+        {{#metaDataFields.contacts:3:telephoneNumber}}
+        <md:TelephoneNumber>{{metaDataFields.contacts:3:telephoneNumber}}</md:TelephoneNumber>
+        {{/metaDataFields.contacts:3:telephoneNumber}}
     </md:ContactPerson>
     {{/metaDataFields.contacts:3:contactType}}
 

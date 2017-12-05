@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <md:EntityDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
-                     entityID="https://teams.surfconext.nl/shibboleth" validUntil="2018-07-14T11:15:56.857+02:00" cacheDuration="PT86400S">
+                     entityID="https://teams.surfconext.nl/shibboleth" >
     <md:SPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
         <md:Extensions>
             <md:UIInfo>
@@ -8,6 +8,8 @@
                 <md:DisplayName xml:lang="nl">SURFconext Teams | SURFnet</md:DisplayName>
                 <md:Description xml:lang="en">Teams for SURFconext.</md:Description>
                 <md:Description xml:lang="nl">Teams voor SURFconext.</md:Description>
+                <md:Logo width="500" height="300"
+                         xml:lang="en">https://static.surfconext.nl/media/sp/SURFnetdienst.png</md:Logo>
             </md:UIInfo>
         </md:Extensions>
         <md:KeyDescriptor use="signing">
@@ -55,6 +57,7 @@
         <md:GivenName>SURFconext</md:GivenName>
         <md:SurName>Support</md:SurName>
         <md:EmailAddress>mailto:help@surfconext.nl</md:EmailAddress>
+        <md:TelephoneNumber>+316156253625</md:TelephoneNumber>
     </md:ContactPerson>
     <md:ContactPerson contactType="administrative">
         <md:GivenName>SURF</md:GivenName>

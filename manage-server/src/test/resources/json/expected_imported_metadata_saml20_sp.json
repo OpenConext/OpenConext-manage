@@ -21,6 +21,7 @@
   "contacts:0:emailAddress" : "help@surfconext.nl",
   "contacts:0:givenName" : "SURFconext",
   "contacts:0:surName" : "Support",
+  "contacts:0:telephoneNumber" : "0611860182",
   "contacts:1:contactType" : "administrative",
   "contacts:1:emailAddress" : "conext-beheer@surfnet.nl",
   "contacts:1:givenName" : "SURF",
@@ -31,6 +32,9 @@
   "contacts:2:surName" : "Beheer",
   "description:en" : "description-en",
   "description:nl" : "description-nl",
+  "logo:0:height" : "500",
+  "logo:0:url" : "https://url",
+  "logo:0:width" : "400",
   "name:en" : "name-en",
   "name:nl" : "name-nl"
 }
