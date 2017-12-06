@@ -170,15 +170,17 @@ public class EngineBlockFormatter {
         IntStream.range(0, 4).forEach(i -> {
             String contactType = metaDataFields.get("contacts:" + i + ":contactType");
             String emailAddress = metaDataFields.get("contacts:" + i + ":emailAddress");
+            String telephoneNumber = metaDataFields.get("contacts:" + i + ":telephoneNumber");
             String givenName = metaDataFields.get("contacts:" + i + ":givenName");
             String surName = metaDataFields.get("contacts:" + i + ":surName");
 
-            if (hasText(contactType) || hasText(emailAddress) || hasText(givenName) || hasText(surName)) {
+            if (hasText(contactType) || hasText(emailAddress) || hasText(telephoneNumber) || hasText(givenName) || hasText(surName)) {
                 ArrayList<Object> contactsContainer = (ArrayList<Object>) metadata.computeIfAbsent(
                     "contacts", key -> new ArrayList<>());
                 Map<String, String> contact = new HashMap<>();
                 putIfHasText("contactType", contactType, contact);
                 putIfHasText("emailAddress", emailAddress, contact);
+                putIfHasText("telephoneNumber", telephoneNumber, contact);
                 putIfHasText("givenName", givenName, contact);
                 putIfHasText("surName", surName, contact);
                 contactsContainer.add(contact);
