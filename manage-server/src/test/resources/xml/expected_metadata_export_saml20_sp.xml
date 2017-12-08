@@ -1,16 +1,18 @@
 <?xml version="1.0"?>
-<md:EntityDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
+<md:EntityDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata"
+                     xmlns:mdui="urn:oasis:names:tc:SAML:metadata:ui"
+                     xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
                      entityID="https://teams.surfconext.nl/shibboleth" >
     <md:SPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
         <md:Extensions>
-            <md:UIInfo>
-                <md:DisplayName xml:lang="en">SURFconext Teams | SURFnet</md:DisplayName>
-                <md:DisplayName xml:lang="nl">SURFconext Teams | SURFnet</md:DisplayName>
-                <md:Description xml:lang="en">Teams for SURFconext.</md:Description>
-                <md:Description xml:lang="nl">Teams voor SURFconext.</md:Description>
-                <md:Logo width="500" height="300"
-                         xml:lang="en">https://static.surfconext.nl/media/sp/SURFnetdienst.png</md:Logo>
-            </md:UIInfo>
+            <mdui:UIInfo>
+                <mdui:DisplayName xml:lang="en">SURFconext Teams | SURFnet</mdui:DisplayName>
+                <mdui:DisplayName xml:lang="nl">SURFconext Teams | SURFnet</mdui:DisplayName>
+                <mdui:Description xml:lang="en">Teams for SURFconext.</mdui:Description>
+                <mdui:Description xml:lang="nl">Teams voor SURFconext.</mdui:Description>
+                <mdui:Logo width="500" height="300"
+                         xml:lang="en">https://static.surfconext.nl/media/sp/SURFnetdienst.png</mdui:Logo>
+            </mdui:UIInfo>
         </md:Extensions>
         <md:KeyDescriptor use="signing">
             <ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
