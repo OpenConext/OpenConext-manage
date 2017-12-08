@@ -1,27 +1,29 @@
 <?xml version="1.0"?>
-<md:EntityDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
+<md:EntityDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata"
+                     xmlns:mdui="urn:oasis:names:tc:SAML:metadata:ui"
+                     xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
                      entityID="{{entityid}}" validUntil="{{validUntil}}" cacheDuration="PT86400S">
     <md:SPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
         {{#UIInfoExtension}}
         <md:Extensions>
-            <md:UIInfo>
+            <mdui:UIInfo>
                 {{#metaDataFields.name:en}}
-                <md:DisplayName xml:lang="en">{{metaDataFields.name:en}}</md:DisplayName>
+                <mdui:DisplayName xml:lang="en">{{metaDataFields.name:en}}</mdui:DisplayName>
                 {{/metaDataFields.name:en}}
                 {{#metaDataFields.name:nl}}
-                <md:DisplayName xml:lang="nl">{{metaDataFields.name:nl}}</md:DisplayName>
+                <mdui:DisplayName xml:lang="nl">{{metaDataFields.name:nl}}</mdui:DisplayName>
                 {{/metaDataFields.name:nl}}
                 {{#metaDataFields.description:en}}
-                <md:Description xml:lang="en">{{metaDataFields.description:en}}</md:Description>
+                <mdui:Description xml:lang="en">{{metaDataFields.description:en}}</mdui:Description>
                 {{/metaDataFields.description:en}}
                 {{#metaDataFields.description:nl}}
-                <md:Description xml:lang="nl">{{metaDataFields.description:nl}}</md:Description>
+                <mdui:Description xml:lang="nl">{{metaDataFields.description:nl}}</mdui:Description>
                 {{/metaDataFields.description:nl}}
                 {{#Logo}}
-                <md:Logo width="{{metaDataFields.logo:0:width}}" height="{{metaDataFields.logo:0:height}}"
-                         xml:lang="en">{{metaDataFields.logo:0:url}}</md:Logo>
+                <mdui:Logo width="{{metaDataFields.logo:0:width}}" height="{{metaDataFields.logo:0:height}}"
+                         xml:lang="en">{{metaDataFields.logo:0:url}}</mdui:Logo>
                 {{/Logo}}
-            </md:UIInfo>
+            </mdui:UIInfo>
         </md:Extensions>
         {{/UIInfoExtension}}
         {{#metaDataFields.certData}}
