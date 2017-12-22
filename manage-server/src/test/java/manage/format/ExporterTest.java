@@ -11,6 +11,8 @@ import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
@@ -24,16 +26,7 @@ public class ExporterTest implements TestUtils {
 
     @Test
     public void exportToXml() throws Exception {
-        MetaData metaData = this.metaData();
-        String xml = subject.exportToXml(metaData);
-
-        assertNotNull(xml);
-        String expected = readFile("/xml/expected_metadata_export_saml20_sp.xml");
-
-        //We are in a different time-zone for travis
-        expected = expected.replaceFirst("validUntil=\"(.*)\"", "");
-        xml = xml.replaceFirst("validUntil=\"(.*)\"", "");
-        assertEquals(expected, xml);
+        doExportToXml(this.metaData(), "/xml/expected_metadata_export_saml20_sp.xml");
     }
 
     @Test
@@ -56,6 +49,29 @@ public class ExporterTest implements TestUtils {
 
         assertEquals(result, metaData.getData());
     }
+
+    @Test
+    public void exportToXmlWithOnlyNlOrganization() throws Exception {
+        MetaData metaData = this.metaData();
+        Map<String, Object> metaDataFields = (Map<String, Object>) metaData.getData().get("metaDataFields");
+        Arrays.asList(new String[]{"OrganizationName:en", "OrganizationURL:en", "OrganizationDisplayName:en"})
+            .forEach(s -> metaDataFields.remove(s));
+
+        doExportToXml(metaData, "/xml/expected_metadata_export_saml20_sp_org_nl.xml");
+    }
+
+    private void doExportToXml(MetaData metaData, String path) throws IOException {
+        String xml = subject.exportToXml(metaData);
+
+        assertNotNull(xml);
+        String expected = readFile(path);
+
+        //We are in a different time-zone for travis
+        expected = expected.replaceFirst("validUntil=\"(.*)\"", "");
+        xml = xml.replaceFirst("validUntil=\"(.*)\"", "");
+        assertEquals(expected, xml);
+    }
+
 
     private MetaData metaData() throws IOException {
         return objectMapper.readValue(new ClassPathResource("/json/exported_metadata_saml20_sp.json").getInputStream

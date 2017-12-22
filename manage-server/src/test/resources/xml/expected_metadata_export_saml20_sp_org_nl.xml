@@ -54,7 +54,7 @@
         <md:OrganizationName xml:lang="nl">SURFnet BV</md:OrganizationName>
         <md:OrganizationDisplayName xml:lang="en">SURFnet</md:OrganizationDisplayName>
         <md:OrganizationDisplayName xml:lang="nl">SURFnet</md:OrganizationDisplayName>
-        <md:OrganizationURL xml:lang="en">https://www.surfnet.nl/en/</md:OrganizationURL>
+        <md:OrganizationURL xml:lang="en">https://www.surfnet.nl/</md:OrganizationURL>
         <md:OrganizationURL xml:lang="nl">https://www.surfnet.nl/</md:OrganizationURL>
     </md:Organization>
     <md:ContactPerson contactType="support">

@@ -31,14 +31,12 @@ import java.util.TreeMap;
 @SuppressWarnings("unchecked")
 public class Exporter {
 
+    final static List<String> excludedDataFields = Arrays.asList("id", "eid", "revisionid", "user", "created", "ip",
+        "revisionnote", "notes");
     private final static MustacheFactory MUSTACHE_FACTORY = new DefaultMustacheFactory();
-
     private final ResourceLoader resourceLoader;
     private final String metadataExportPath;
     private final Clock clock;
-
-    final static List<String> excludedDataFields = Arrays.asList("id", "eid", "revisionid", "user", "created", "ip",
-        "revisionnote", "notes");
 
     public Exporter(Clock clock, ResourceLoader resourceLoader, String metadataExportPath) {
         this.clock = clock;
@@ -132,19 +130,12 @@ public class Exporter {
         Map metaDataFields = Map.class.cast(data.get("metaDataFields"));
         String name = String.class.cast(metaDataFields.computeIfAbsent("OrganizationName:en", key -> metaDataFields
             .get("OrganizationName:nl")));
-        if (StringUtils.hasText(name)) {
-            metaDataFields.put("OrganizationName", name);
-        }
         String displayName = String.class.cast(metaDataFields.computeIfAbsent("OrganizationDisplayName:en", key ->
             metaDataFields.get("OrganizationDisplayName:nl")));
-        if (StringUtils.hasText(displayName)) {
-            metaDataFields.put("OrganizationDisplayName", displayName);
-        }
         String url = String.class.cast(metaDataFields.computeIfAbsent("OrganizationURL:en", key -> metaDataFields.get
             ("OrganizationURL:nl")));
-        if (StringUtils.hasText(url)) {
-            metaDataFields.put("OrganizationURL", url);
-        }
+        metaDataFields.put("OrganizationInfo", StringUtils.hasText(name) || StringUtils.hasText(displayName) ||
+            StringUtils.hasText(url));
     }
 
     private void addAttributeConsumingService(Map data) {
