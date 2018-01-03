@@ -171,6 +171,10 @@ export default class Detail extends React.PureComponent {
     };
 
     changeValueReference = (metaData, name, value, replaceAtSignWithDotsInName) => {
+        if (name.endsWith("redirect.sign")) {
+            name = name.replace(/redirect\.sign/, "redirect@sign");
+            replaceAtSignWithDotsInName = true;
+        }
         const parts = name.split(".");
         let last = parts.pop();
 
