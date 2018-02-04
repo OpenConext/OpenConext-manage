@@ -257,6 +257,14 @@ I18n.translations.en = {
         exact: "Exact",
         prefix: "Prefix",
         new_attribute_value: "Enter the new ARP value for {{key}}"
+    },
+    not_found: {
+        title: "404",
+        description_html: "The requested page could not be found"
+    },
+    server_error: {
+        title: "500 Unexpected error",
+        description_html: "This is embarrassing; an unexpected error has occurred. It has been logged and reported. Please try again. Still doesn't work? Please click 'Help'.",
     }
 };
 

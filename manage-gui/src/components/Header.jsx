@@ -7,6 +7,7 @@ import logoSurfConext from "../images/logo@2x.png";
 import logoOpenConext from "../images/open-conext-logo.png";
 import {logOut} from "../api";
 import "./Header.css";
+import {isEmpty} from "../utils/Utils";
 
 export default class Header extends React.PureComponent {
 
@@ -39,7 +40,10 @@ export default class Header extends React.PureComponent {
     };
 
     render() {
-        const currentUser = this.props.currentUser;
+        let currentUser = this.props.currentUser;
+        if (isEmpty(currentUser)) {
+            currentUser = {product: {}}
+        }
         const logo = currentUser.product.organization === "OpenConext" ? logoOpenConext : logoSurfConext;
         return (
             <div className="header-container">

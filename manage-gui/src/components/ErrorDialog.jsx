@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Modal from "react-modal";
-import "./ConfirmationDialog.scss";
+import "./ConfirmationDialog.css";
 import I18n from "i18n-js";
 import {stop} from "../utils/Utils";
 

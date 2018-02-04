@@ -234,6 +234,9 @@ public class MetaDataController {
 
     @GetMapping("/client/autocomplete/{type}")
     public List<Map> autoCompleteEntities(@PathVariable("type") String type, @RequestParam("query") String query) {
+        if (query.equals("afreet")) {
+            throw new RuntimeException("oeps");
+        }
         return metaDataRepository.autoComplete(type, query);
     }
 
