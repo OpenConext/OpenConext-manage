@@ -70,27 +70,29 @@ export default class SelectNewMetaDataField extends React.PureComponent {
             }
         } else {
             //find the highest cardinal
-            if (patternProperty.multiplicity && existingMetaDataKeys.length < patternProperty.multiplicity) {
-                if (patternProperty.sibblingIndependent) {
-                    for (let count = (patternProperty.startIndex || 0); count < patternProperty.multiplicity; count++) {
-                        const newKey = patternPropertyKey.replace(patternPropertyRegex, `$1${count}$3`);
-                        if (existingMetaDataKeys.indexOf(newKey) === -1) {
-                            accumulator.push(newKey);
+            if (patternProperty.multiplicity) {
+                if (existingMetaDataKeys.length < patternProperty.multiplicity) {
+                    if (patternProperty.sibblingIndependent) {
+                        for (let count = (patternProperty.startIndex || 0); count < patternProperty.multiplicity; count++) {
+                            const newKey = patternPropertyKey.replace(patternPropertyRegex, `$1${count}$3`);
+                            if (existingMetaDataKeys.indexOf(newKey) === -1) {
+                                accumulator.push(newKey);
+                            }
                         }
-                    }
-                } else {
-                    //add the missing in-between one's and the highest new one - 'Raoul's theorem'
-                    const highestMetaDataKey = existingMetaDataKeys.sort()[existingMetaDataKeys.length - 1];
-                    const multiplicityParsed = multiplicityRegex.exec(highestMetaDataKey);
-                    const currentlyHighest = parseInt(multiplicityParsed[1], 10);
+                    } else {
+                        //add the missing in-between one's and the highest new one - 'Raoul's theorem'
+                        const highestMetaDataKey = existingMetaDataKeys.sort()[existingMetaDataKeys.length - 1];
+                        const multiplicityParsed = multiplicityRegex.exec(highestMetaDataKey);
+                        const currentlyHighest = parseInt(multiplicityParsed[1], 10);
 
-                    const highestMultiplicity = (patternProperty.multiplicity - 1 + (patternProperty.startIndex || 0));
-                    const highestAllowed = Math.min(highestMultiplicity, (currentlyHighest + 1 + (patternProperty.startIndex || 0)));
+                        const highestMultiplicity = (patternProperty.multiplicity - 1 + (patternProperty.startIndex || 0));
+                        const highestAllowed = Math.min(highestMultiplicity, (currentlyHighest + 1 + (patternProperty.startIndex || 0)));
 
-                    for (let count = (patternProperty.startIndex || 0); count <= highestAllowed; count++) {
-                        const newKey = patternPropertyKey.replace(patternPropertyRegex, `$1${count}$3`);
-                        if (existingMetaDataKeys.indexOf(newKey) === -1) {
-                            accumulator.push(newKey);
+                        for (let count = (patternProperty.startIndex || 0); count <= highestAllowed; count++) {
+                            const newKey = patternPropertyKey.replace(patternPropertyRegex, `$1${count}$3`);
+                            if (existingMetaDataKeys.indexOf(newKey) === -1) {
+                                accumulator.push(newKey);
+                            }
                         }
                     }
                 }
@@ -114,7 +116,7 @@ export default class SelectNewMetaDataField extends React.PureComponent {
                        value={null}
                        searchable={true}
                        placeholder={placeholder || "Select..."}
-                       onFocus={() => setTimeout(() => window.scrollTo(0,document.body.scrollHeight), 150)}/>;
+                       onFocus={() => setTimeout(() => window.scrollTo(0, document.body.scrollHeight), 150)}/>;
     }
 
 }
