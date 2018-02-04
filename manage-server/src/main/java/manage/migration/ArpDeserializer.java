@@ -11,6 +11,7 @@ import java.util.Map;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.util.StringUtils.hasText;
 
+@SuppressWarnings("unchecked")
 public class ArpDeserializer {
 
     private static final Map<String, Object> NO_ARP = new HashMap<>();
@@ -20,7 +21,6 @@ public class ArpDeserializer {
         NO_ARP.put("attributes", new HashMap<>());
     }
 
-    @SuppressWarnings("unchecked")
     public Map<String, Object> parseArpAttributes(String input) {
         if (StringUtils.isEmpty(input) || input.equalsIgnoreCase("N;")) {
             return NO_ARP;
