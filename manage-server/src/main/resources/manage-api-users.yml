@@ -1,4 +1,4 @@
-# Valid scopes are mr.api.Scope.values(); =>  ["READ", "WRITE", "PUSH"]
+# Valid scopes are manage.api.Scope.values(); =>  ["READ", "WRITE", "PUSH"]
 apiUsers:
   - {
       name: "attribute-aggregator",

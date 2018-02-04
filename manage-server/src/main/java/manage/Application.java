@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 
 @SpringBootApplication(exclude = {TraceWebFilterAutoConfiguration.class, MetricFilterAutoConfiguration.class})
-@EnableMongoRepositories(basePackages = "mr.repository")
+@EnableMongoRepositories(basePackages = "manage.repository")
 public class Application {
 
     public static void main(String[] args) {

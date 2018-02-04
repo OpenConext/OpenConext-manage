@@ -41,7 +41,7 @@ public class MongobeeConfiguration {
     @Bean
     public Mongobee mongobee(@Value("${spring.data.mongodb.uri}") String uri) {
         Mongobee runner = new Mongobee(uri);
-        runner.setChangeLogsScanPackage("mr.mongo");
+        runner.setChangeLogsScanPackage("manage.mongo");
         MongobeeConfiguration.staticMetaDataAutoConfiguration = metaDataAutoConfiguration;
         return runner;
     }

@@ -50,8 +50,18 @@ export default class SelectNewMetaDataField extends React.PureComponent {
         if (existingMetaDataKeys.length === 0) {
             //translate the patternPropertyKey to a metaDataKey and add it to the accumulator
             if (patternProperty.multiplicity) {
-                const newMetaDataKey = patternPropertyKey.replace(patternPropertyRegex, `$1${patternProperty.startIndex || 0}$3`);
-                accumulator.push(newMetaDataKey);
+                //for some we want to add only one - acs locations 0 - and for some we need to add them all - contacts telephone
+                if (patternProperty.sibblingIndependent && patternProperty.multiplicity) {
+                    for (let count = (patternProperty.startIndex || 0); count < patternProperty.multiplicity; count++) {
+                        const newKey = patternPropertyKey.replace(patternPropertyRegex, `$1${count}$3`);
+                        if (existingMetaDataKeys.indexOf(newKey) === -1) {
+                            accumulator.push(newKey);
+                        }
+                    }
+                } else {
+                    const newMetaDataKey = patternPropertyKey.replace(patternPropertyRegex, `$1${patternProperty.startIndex || 0}$3`);
+                    accumulator.push(newMetaDataKey);
+                }
             } else if (enumExec) {
                 accumulator.push(`${enumExec[1]}nl`);
                 accumulator.push(`${enumExec[1]}en`);
@@ -60,9 +70,16 @@ export default class SelectNewMetaDataField extends React.PureComponent {
             }
         } else {
             //find the highest cardinal
-            if (patternProperty.multiplicity) {
-                if (existingMetaDataKeys.length < patternProperty.multiplicity) {
-                    //add the missing in-between one's and the highest new one - 'Raoul theorem'
+            if (patternProperty.multiplicity && existingMetaDataKeys.length < patternProperty.multiplicity) {
+                if (patternProperty.sibblingIndependent) {
+                    for (let count = (patternProperty.startIndex || 0); count < patternProperty.multiplicity; count++) {
+                        const newKey = patternPropertyKey.replace(patternPropertyRegex, `$1${count}$3`);
+                        if (existingMetaDataKeys.indexOf(newKey) === -1) {
+                            accumulator.push(newKey);
+                        }
+                    }
+                } else {
+                    //add the missing in-between one's and the highest new one - 'Raoul's theorem'
                     const highestMetaDataKey = existingMetaDataKeys.sort()[existingMetaDataKeys.length - 1];
                     const multiplicityParsed = multiplicityRegex.exec(highestMetaDataKey);
                     const currentlyHighest = parseInt(multiplicityParsed[1], 10);
