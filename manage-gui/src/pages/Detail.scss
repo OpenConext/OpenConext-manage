@@ -58,10 +58,12 @@
     .actions {
         display: flex;
         margin-top: 25px;
+        .notes-container {
+            flex-grow: 2;
+        }
         .notes {
             display: flex;
             align-items: center;
-            flex-grow: 2;
         }
         label {
             margin-right: 10px;
@@ -78,6 +80,11 @@
         }
         .buttons {
             margin-left:auto;
+        }
+        em.error {
+            display: inline-block;
+            margin-top: 10px;
+            color: $red;
         }
     }
 

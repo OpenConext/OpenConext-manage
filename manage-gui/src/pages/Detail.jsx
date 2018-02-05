@@ -47,7 +47,8 @@ export default class Detail extends React.PureComponent {
             isNew: true,
             originalEntityId: undefined,
             type: type,
-            id: id
+            id: id,
+            revisionNoteError: false
         };
     }
 
@@ -245,15 +246,19 @@ export default class Detail extends React.PureComponent {
         if (this.props.currentUser.guest) {
             return null;
         }
-        const {errors} = this.state;
+        const {errors, revisionNoteError} = this.state;
         const hasErrors = Object.keys(errors)
             .find(key => Object.keys(errors[key]).find(subKey => errors[key][subKey])) !== undefined;
+        const revisionNoteRequired = revisionNoteError && isEmpty(revisionNote);
         return (
             <section className="actions">
-                <section className="notes">
-                    <label htmlFor="revisionnote">{I18n.t("metadata.revisionnote")}</label>
-                    <input name="revisionnote" type="text" value={revisionNote}
-                           onChange={e => this.setState({revisionNote: e.target.value})}/>
+                <section className="notes-container">
+                    <section className="notes">
+                        <label htmlFor="revisionnote">{I18n.t("metadata.revisionnote")}</label>
+                        <input name="revisionnote" type="text" value={revisionNote}
+                               onChange={e => this.setState({revisionNote: e.target.value})}/>
+                    </section>
+                    {revisionNoteRequired && <em className="error">{I18n.t("metadata.revisionnoteRequired")}</em>}
                 </section>
                 <section className="buttons">
                     <a className="button" onClick={e => {
@@ -267,12 +272,17 @@ export default class Detail extends React.PureComponent {
                     }}>{I18n.t("metadata.cancel")}</a>
                     <a className={`button ${hasErrors ? "grey disabled" : "blue"}`} onClick={e => {
                         stop(e);
+                        if (isEmpty(revisionNote)) {
+                            this.setState({revisionNoteError: true});
+                            return false;
+                        }
                         if (hasErrors) {
                             return false;
                         }
+                        this.setState({revisionNoteError: false});
                         const promise = this.state.isNew ? save : update;
                         const metaData = this.state.metaData;
-                        metaData.data.revisionnote = isEmpty(revisionNote) ? "No revision note" : revisionNote;
+                        metaData.data.revisionnote = revisionNote;
                         promise(metaData)
                             .then(json => {
                                 if (json.exception) {
