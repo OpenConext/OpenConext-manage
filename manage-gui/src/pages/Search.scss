@@ -3,6 +3,13 @@
 .search-metadata {
     @include page;
 
+    a.push {
+        float: right;
+        i.fa-refresh {
+            margin-left: 35px;
+        }
+    }
+
     section.tabs {
         display: flex;
         margin-top: 25px;
@@ -39,7 +46,7 @@
             position: relative;
         }
         .search-input {
-            padding: 8px;
+            padding: 10px;
             font-size: larger;
             width: 100%;
         }
@@ -51,7 +58,7 @@
             color: $blue;
         }
         a.new {
-            margin-left: 25px;
+            padding-left: 30px;
             i.fa-plus {
                 margin-left: 35px;
             }
