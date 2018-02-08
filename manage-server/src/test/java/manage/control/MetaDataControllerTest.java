@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import static io.restassured.RestAssured.given;
+import static manage.control.MetaDataController.ALL_ATTRIBUTES;
 import static manage.control.MetaDataController.REQUESTED_ATTRIBUTES;
 import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
 import static org.apache.http.HttpStatus.SC_FORBIDDEN;
@@ -330,7 +331,23 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 "https://mujina-sp.test2.surfconext.nl/saml/SSO"))
             .body("data.allowedall", hasItems(
                 true));
+    }
 
+    @Test
+    public void searchWithAllAttributes() throws Exception {
+        Map<String, Object> searchOptions = new HashMap<>();
+        searchOptions.put(ALL_ATTRIBUTES, true);
+
+        given()
+            .when()
+            .body(searchOptions)
+            .header("Content-type", "application/json")
+            .post("manage/api/client/search/saml20_sp")
+            .then()
+            .statusCode(SC_OK)
+            .body("size()", is(5))
+            .body("data.metaDataFields.'SingleLogoutService_Location'", hasItems(
+                "https://sls", null, null, null, null));
     }
 
     @Test

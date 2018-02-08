@@ -35,7 +35,6 @@ import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.time.Clock;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -49,6 +48,7 @@ import static manage.mongo.MongobeeConfiguration.REVISION_POSTFIX;
 public class MetaDataController {
 
     public static final String REQUESTED_ATTRIBUTES = "REQUESTED_ATTRIBUTES";
+    public static final String ALL_ATTRIBUTES = "ALL_ATTRIBUTES";
 
     private MetaDataRepository metaDataRepository;
     private MetaDataAutoConfiguration metaDataAutoConfiguration;
@@ -108,7 +108,7 @@ public class MetaDataController {
             .getBytes()), Optional.empty());
         String entityId = String.class.cast(innerJson.get("entityid"));
         List<Map> result = metaDataRepository.search(EntityType.SP.getType(), singletonMap("entityid",
-            entityId), emptyList());
+            entityId), emptyList(), false);
 
         if (!CollectionUtils.isEmpty(result)) {
             throw new DuplicateEntityIdException(entityId);
@@ -249,8 +249,10 @@ public class MetaDataController {
     public List<Map> searchEntities(@PathVariable("type") String type, @RequestBody Map<String, Object> properties) {
         List requestedAttributes = List.class.cast(properties.getOrDefault(REQUESTED_ATTRIBUTES, new
             ArrayList<String>()));
+        Boolean allAttributes = Boolean.class.cast(properties.getOrDefault(ALL_ATTRIBUTES, false));
         properties.remove(REQUESTED_ATTRIBUTES);
-        return metaDataRepository.search(type, properties, requestedAttributes);
+        properties.remove(ALL_ATTRIBUTES);
+        return metaDataRepository.search(type, properties, requestedAttributes, allAttributes);
     }
 
     private void validate(MetaData metaData) throws JsonProcessingException {

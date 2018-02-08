@@ -68,11 +68,14 @@ public class MetaDataRepository {
         return Criteria.where(key).regex(".*" + search + ".*", "i");
     }
 
-    public List<Map> search(String type, Map<String, Object> properties, List<String> requestedAttributes) {
-        Query query = queryWithSamlFields();
-        requestedAttributes.forEach(requestedAttribute -> {
-            query.fields().include("data.".concat(requestedAttribute));
-        });
+    public List<Map> search(String type, Map<String, Object> properties, List<String> requestedAttributes, Boolean
+        allAttributes) {
+        Query query = allAttributes ? new Query() : queryWithSamlFields();
+        if (!allAttributes) {
+            requestedAttributes.forEach(requestedAttribute -> {
+                query.fields().include("data.".concat(requestedAttribute));
+            });
+        }
         properties.forEach((key, value) -> {
             if (value instanceof String && !StringUtils.hasText(String.class.cast(value))) {
                 query.addCriteria(Criteria.where("data.".concat(key)).exists(false));
