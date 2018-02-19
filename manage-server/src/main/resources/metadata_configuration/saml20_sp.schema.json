@@ -295,7 +295,7 @@
         },
         "coin:institution_guid": {
           "type": "string",
-          "format" : "uuid"
+          "format": "uuid"
         },
         "coin:trusted_proxy": {
           "type": "string",
@@ -360,33 +360,33 @@
         },
         "coin:privacy:certification": {
           "type": "string",
-	  "format": "boolean"
+          "format": "boolean"
         },
         "coin:privacy:certification_location": {
           "type": "string"
         },
         "coin:privacy:certification_valid_from": {
           "type": "string",
-	  "format": "number"
+          "format": "number"
         },
         "coin:privacy:certification_valid_to": {
           "type": "string",
-	  "format": "number"
+          "format": "number"
         },
         "coin:privacy:surfmarket_dpa_agreement": {
           "type": "string",
-	  "format": "boolean"
+          "format": "boolean"
         },
         "coin:privacy:surfnet_dpa_agreement": {
           "type": "string",
-	  "format": "boolean"
+          "format": "boolean"
         },
         "coin:privacy:sn_dpa_why_not": {
           "type": "string"
         },
         "coin:privacy:privacy_policy": {
           "type": "string",
-	  "format": "boolean"
+          "format": "boolean"
         },
         "coin:privacy:privacy_policy_url": {
           "type": "string",
@@ -453,6 +453,10 @@
         },
         "^displayName:(en|nl)$": {
           "type": "string"
+        },
+        "^coin:wiki_url:(en|nl)$": {
+          "type": "string",
+          "format": "url"
         },
         "^description:(en|nl)$": {
           "type": "string"

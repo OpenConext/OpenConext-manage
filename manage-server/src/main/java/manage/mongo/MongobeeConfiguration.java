@@ -18,6 +18,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.index.IndexDefinition;
+import org.springframework.data.mongodb.core.query.Query;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
@@ -80,15 +81,23 @@ public class MongobeeConfiguration {
 
     }
 
+    @ChangeSet(order = "003", id = "reCreateSingleTenantTemplates", author = "Okke Harsta")
+    public void reCreateSingleTenantTemplates(MongoTemplate mongoTemplate) throws IOException {
+        mongoTemplate.findAllAndRemove(new Query(),"single_tenant_template");
+        mongoTemplate.findAllAndRemove(new Query(),"single_tenant_template_revision");
+        createSingleTenantTemplates(mongoTemplate);
+    }
+
     @SuppressWarnings("unchecked")
     private void createSingleTenantTemplate(MongoTemplate mongoTemplate, Resource resource, ObjectMapper objectMapper) {
         final Map<String, Object> template = readTemplate(resource, objectMapper);
         Map<String, Object> data = new HashMap<>();
         data.put("entityid", template.get("entityid"));
         data.put("state", template.get("workflowState"));
-        data.put("arp", new HashMap<String, Object>());
+        HashMap<String, Object> arp = new HashMap<>();
+        data.put("arp", arp);
         boolean enabled = template.containsKey("attributes");
-        data.put("enabled", new HashMap<String, Object>());
+        arp.put("enabled", enabled);
         Map<String, List<Map<String, Object>>> attributes = new HashMap<>();
         if (enabled) {
             Map<String, Object> source = new HashMap<>();
@@ -99,7 +108,7 @@ public class MongobeeConfiguration {
                 .replaceAll("\\.", "@"), values));
 
         }
-        data.put("attributes", attributes);
+        arp.put("attributes", attributes);
 
         Arrays.asList(new String[]{"entityid", "workflowState", "attributes"}).forEach(none -> template.remove(none));
         template.keySet().forEach(key -> {
