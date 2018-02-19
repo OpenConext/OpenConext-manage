@@ -112,8 +112,8 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
             .get("manage/api/client/metadata/configuration")
             .then()
             .statusCode(SC_OK)
-            .body("size()", is(2))
-            .body("title", hasItems("saml20_sp", "saml20_idp"));
+            .body("size()", is(3))
+            .body("title", hasItems("saml20_sp", "saml20_idp", "single_tenant_template"));
     }
 
     @Test

@@ -468,7 +468,7 @@
       "fields": [
         "entityid"
       ],
-      "unique": true
+      "unique": false
     }
   ]
 }

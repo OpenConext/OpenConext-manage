@@ -7,7 +7,6 @@ import com.github.mongobee.changeset.ChangeSet;
 import manage.conf.IndexConfiguration;
 import manage.conf.MetaDataAutoConfiguration;
 import manage.model.MetaData;
-import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -22,8 +21,6 @@ import org.springframework.data.mongodb.core.index.IndexDefinition;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -37,17 +34,11 @@ import java.util.UUID;
 public class MongobeeConfiguration {
 
     public static final String REVISION_POSTFIX = "_revision";
-
+    private static MetaDataAutoConfiguration staticMetaDataAutoConfiguration;
     @Autowired
     private MetaDataAutoConfiguration metaDataAutoConfiguration;
-
     @Autowired
     private MappingMongoConverter mongoConverter;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    private static MetaDataAutoConfiguration staticMetaDataAutoConfiguration;
 
     // Converts . into a mongo friendly char
     @PostConstruct
@@ -80,22 +71,18 @@ public class MongobeeConfiguration {
         });
     }
 
-    @ChangeSet(order = "002", id = "createSingleTenantTemplates", author = "Okke Harsta", runAlways = true)
+    @ChangeSet(order = "002", id = "createSingleTenantTemplates", author = "Okke Harsta")
     public void createSingleTenantTemplates(MongoTemplate mongoTemplate) throws IOException {
-        PathMatchingResourcePatternResolver resolver =new PathMatchingResourcePatternResolver();
+        ObjectMapper objectMapper = new ObjectMapper();
+        PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
         Resource[] resources = resolver.getResources("classpath:single_tenant_templates/*.json");
-        Arrays.asList(resources).forEach(res -> this.createSingleTenantTemplate(mongoTemplate, res));
+        Arrays.asList(resources).forEach(res -> this.createSingleTenantTemplate(mongoTemplate, res, objectMapper));
 
     }
 
     @SuppressWarnings("unchecked")
-    private void createSingleTenantTemplate(MongoTemplate mongoTemplate, Resource resource)  {
-        Map<String, Object> template = null;
-        try {
-            template = objectMapper.readValue(resource.getInputStream(), Map.class);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    private void createSingleTenantTemplate(MongoTemplate mongoTemplate, Resource resource, ObjectMapper objectMapper) {
+        final Map<String, Object> template = readTemplate(resource, objectMapper);
         Map<String, Object> data = new HashMap<>();
         data.put("entityid", template.get("entityid"));
         data.put("state", template.get("workflowState"));
@@ -108,14 +95,34 @@ public class MongobeeConfiguration {
             source.put("source", "idp");
             source.put("value", "*");
             List<Map<String, Object>> values = Collections.singletonList(source);
-            List.class.cast(template.get("attributes")).forEach(attr -> attributes.put((String)attr, values));
+            List.class.cast(template.get("attributes")).forEach(attr -> attributes.put(((String) attr)
+                .replaceAll("\\.", "@"), values));
 
         }
         data.put("attributes", attributes);
-        List noneMetadataFields = Arrays.asList(new String[]{"entityid", "workflowState", "attributes"})
+
+        Arrays.asList(new String[]{"entityid", "workflowState", "attributes"}).forEach(none -> template.remove(none));
+        template.keySet().forEach(key -> {
+            if (key.contains(".")) {
+                template.put(key.replaceAll("\\.", "@"), template.get(key));
+                template.remove(key);
+            }
+        });
+        data.put("metaDataFields", template);
+
         MetaData metaData = new MetaData("single_tenant_template", data);
         metaData.initial(UUID.randomUUID().toString(), "auto-generated");
         mongoTemplate.insert(metaData, metaData.getType());
+    }
+
+    private Map<String, Object> readTemplate(Resource resource, ObjectMapper objectMapper) {
+        Map<String, Object> template;
+        try {
+            template = objectMapper.readValue(resource.getInputStream(), Map.class);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return template;
     }
 
     private IndexDefinition indexDefinition(IndexConfiguration indexConfiguration) {
