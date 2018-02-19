@@ -1,0 +1,23 @@
+{
+  "entityid": "https://dummy.mentorix.dk/Single-tenant-service_op-aanvraag",
+  "description:en": "Blended Learning platform",
+  "description:nl": "Blended Learning platform",
+  "displayName:en": "Blended Learning platform",
+  "displayName:nl": "Blended Learning platform",
+  "logo:0:url": "https://static.surfconext.nl/media/sp/mentorix.png",
+  "name:en": "Blended Learning | Mentorix",
+  "name:nl": "Blended Learning | Mentorix",
+  "contacts:0:contactType": "technical",
+  "contacts:0:emailAddress": "nee@mentorix.dk",
+  "contacts:1:contactType": "administrative",
+  "contacts:1:emailAddress": "nma@mentorix.dk",
+  "contacts:2:contactType": "support",
+  "contacts:2:emailAddress": "nee@mentorix.dk",
+  "workflowState": "prodaccepted",
+  "attributes": [
+    "urn:mace:dir:attribute-def:eduPersonTargetedID",
+    "urn:mace:dir:attribute-def:givenName",
+    "urn:mace:dir:attribute-def:sn",
+    "urn:mace:dir:attribute-def:mail"
+  ]
+}

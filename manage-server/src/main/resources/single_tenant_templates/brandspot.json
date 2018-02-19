@@ -1,0 +1,20 @@
+{
+  "entityid": "https://dummy.brand-spot.net/Single-tenant-service_op-aanvraag",
+  "description:en": "BrandSpot Publishing Platform [single-tenant] | Cordeo",
+  "description:nl": "BrandSpot Publishing Platform [single-tenant] | Cordeo",
+  "displayName:en": "BrandSpot Publishing Platform [single-tenant]",
+  "displayName:nl": "BrandSpot Publishing Platform [single-tenant]",
+  "logo:0:url": "https://static.surfconext.nl/media/sp/cordeo.png",
+  "name:en": "BrandSpot Publishing Platform | Cordeo",
+  "name:nl": "BrandSpot Publishing Platform | Cordeo",
+  "contacts:0:contactType": "technical",
+  "contacts:0:emailAddress": "hosting@cordeo.com",
+  "contacts:1:contactType": "administrative",
+  "contacts:1:emailAddress": "support@cordeo.com",
+  "contacts:2:contactType": "support",
+  "contacts:2:emailAddress": "support@cordeo.com",
+  "workflowState": "prodaccepted",
+  "attributes": [
+    "urn:mace:dir:attribute-def:eduPersonTargetedID"
+  ]
+}

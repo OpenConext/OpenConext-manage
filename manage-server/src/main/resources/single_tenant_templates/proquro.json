@@ -1,0 +1,21 @@
+{
+  "entityid": "https://dummy.proquro.nl/Single-tenant-service_op-aanvraag",
+  "description:en": "Proquro 2 Pay",
+  "description:nl": "Proquro 2 Pay",
+  "displayName:en": "Proquro 2 Pay",
+  "displayName:nl": "Proquro 2 Pay",
+  "logo:0:url": "https://static.surfconext.nl/media/sp/Proquro.png",
+  "name:en": "Proquro 2 Pay | Proquro",
+  "name:nl": "Proquro 2 Pay | Proquro",
+  "contacts:0:contactType": "technical",
+  "contacts:0:emailAddress": "support@surfnet.nl",
+  "contacts:1:contactType": "administrative",
+  "contacts:1:emailAddress": "info@surfnet.nl",
+  "contacts:2:contactType": "support",
+  "contacts:2:emailAddress": "support@surfnet.nl",
+  "workflowState": "prodaccepted",
+  "attributes": [
+    "urn:mace:terena.org:attribute-def:schacHomeOrganization",
+    "urn:mace:dir:attribute-def:uid"
+  ]
+}

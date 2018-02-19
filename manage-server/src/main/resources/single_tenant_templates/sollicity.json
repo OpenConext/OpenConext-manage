@@ -1,0 +1,25 @@
+{
+  "entityid": "https://dummy.loopbaanportaal.nl/Single-tenant-service_op-aanvraag",
+  "description:en": "Loopbaan en employability portaal",
+  "description:nl": "Loopbaan en employability portaal",
+  "displayName:en": "Loopbaanportaal",
+  "displayName:nl": "Loopbaanportaal",
+  "logo:0:url": "https://static.surfconext.nl/media/sp/loopbaanportaal.png",
+  "name:en": "Loopbaanportaal | Sollicity",
+  "name:nl": "Loopbaanportaal | Sollicity",
+  "contacts:0:contactType": "technical",
+  "contacts:0:emailAddress": "support@surfnet.nl",
+  "contacts:1:contactType": "administrative",
+  "contacts:1:emailAddress": "info@surfnet.nl",
+  "contacts:2:contactType": "support",
+  "contacts:2:emailAddress": "support@surfnet.nl",
+  "workflowState": "prodaccepted",
+  "attributes": [
+    "urn:mace:dir:attribute-def:eduPersonTargetedID",
+    "urn:mace:dir:attribute-def:eduPersonAffiliation",
+    "urn:mace:dir:attribute-def:givenName",
+    "urn:mace:dir:attribute-def:sn",
+    "urn:mace:dir:attribute-def:mail",
+    "urn:mace:dir:attribute-def:preferredLanguage"
+  ]
+}

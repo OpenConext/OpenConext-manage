@@ -1,0 +1,27 @@
+{
+  "entityid": "https://dummy.osiris.nl/Single-tenant-service_op-aanvraag",
+  "description:en": "osiris",
+  "description:nl": "osiris",
+  "displayName:en": "osiris",
+  "displayName:nl": "osiris",
+  "logo:0:url": "https://static.surfconext.nl/media/sp/caci.png",
+  "name:en": "Osiris | CACI",
+  "name:nl": "Osiris | CACI",
+  "contacts:0:contactType": "technical",
+  "contacts:0:emailAddress": "jonas.de.graaff@caci.nl",
+  "contacts:0:givenName": "Jonas",
+  "contacts:0:surName": "de Graaff",
+  "contacts:1:contactType": "administrative",
+  "contacts:1:emailAddress": "Coos.van.der.Wolf@caci.nl",
+  "contacts:1:givenName": "Coos",
+  "contacts:1:surName": "van der Wolf",
+  "contacts:2:contactType": "support",
+  "contacts:2:emailAddress": "jonas.de.graaff@caci.nl",
+  "contacts:2:givenName": "Jonas",
+  "contacts:2:surName": "de Graaff",
+  "workflowState": "prodaccepted",
+  "attributes": [
+    "urn:schac:attribute-def:schacPersonalUniqueCoden",
+    "urn:mace:dir:attribute-def:uid"
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "entityid": "https://dummy.testvision.nl/Single-tenant-service_op-aanvraag",
+  "description:en": "TestVision Online suppports fully web-based developing and taking tests, including statistical analysis of questions and tests.",
+  "description:nl": "TestVision Online ondersteunt u volledig webbased bij de ontwikkeling, afname en statistische analyse van vragen en toetsen.",
+  "displayName:en": "TestVision Online",
+  "displayName:nl": "TestVision Online",
+  "logo:0:url": "https://static.surfconext.nl/media/sp/testvision.png",
+  "name:en": "TestVision Online | Teelen",
+  "name:nl": "TestVision Online | Teelen",
+  "contacts:0:contactType": "technical",
+  "contacts:0:emailAddress": "support@teelen.nl",
+  "contacts:0:givenName": "Service",
+  "contacts:0:surName": "Support",
+  "contacts:1:contactType": "administrative",
+  "contacts:1:emailAddress": "info@teelen.nl",
+  "contacts:1:givenName": "Service",
+  "contacts:1:surName": "Support",
+  "contacts:2:contactType": "support",
+  "contacts:2:emailAddress": "helpdesk@testvision.nl",
+  "contacts:2:givenName": "Service",
+  "contacts:2:surName": "Support",
+  "workflowState": "prodaccepted",
+  "attributes": [
+    "urn:mace:dir:attribute-def:displayName",
+    "urn:mace:dir:attribute-def:mail",
+    "urn:mace:dir:attribute-def:eduPersonAffiliation",
+    "urn:mace:dir:attribute-def:eduPersonScopedAffiliation",
+    "urn:mace:dir:attribute-def:eduPersonEntitlement",
+    "urn:mace:terena.org:attribute-def:schacHomeOrganization",
+    "urn:mace:dir:attribute-def:uid"
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "entityid": "https://dummy.planonsoftware.com/Single-tenant-service_op-aanvraag",
+  "description:en": "Planon Self Service",
+  "description:nl": "Planon Self Service",
+  "displayName:en": "Planon Self Service",
+  "displayName:nl": "Planon Self Service",
+  "logo:0:url": "https://static.surfconext.nl/media/sp/Planon_Accelerator.png",
+  "name:en": "Planon Self Service | Planon",
+  "name:nl": "Planon Self Service | Planon",
+  "contacts:0:contactType": "technical",
+  "contacts:0:emailAddress": "support@surfnet.nl",
+  "contacts:1:contactType": "administrative",
+  "contacts:1:emailAddress": "info@surfnet.nl",
+  "contacts:2:contactType": "support",
+  "contacts:2:emailAddress": "support@surfnet.nl",
+  "workflowState": "prodaccepted",
+  "attributes": [
+    "urn:mace:dir:attribute-def:uid"
+  ]
+}

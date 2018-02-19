@@ -1,0 +1,23 @@
+{
+  "entityid": "https://dummy.parsys.nl/Single-tenant-service_op-aanvraag",
+  "description:en": "Digital internship information system.",
+  "description:nl": "Online stage informatie systeem.",
+  "displayName:en": "Parsys",
+  "displayName:nl": "Parsys",
+  "logo:0:url": "https://static.surfconext.nl/media/sp/parsys_detail.png",
+  "name:en": "Parsys | Parview",
+  "name:nl": "Parsys | Parview",
+  "contacts:0:contactType": "technical",
+  "contacts:0:emailAddress": "support@surfnet.nl",
+  "contacts:1:contactType": "administrative",
+  "contacts:1:emailAddress": "info@surfnet.nl",
+  "contacts:2:contactType": "support",
+  "contacts:2:emailAddress": "support@surfnet.nl",
+  "workflowState": "prodaccepted",
+  "attributes": [
+    "urn:mace:dir:attribute-def:eduPersonPrincipalName",
+    "urn:mace:dir:attribute-def:cn",
+    "urn:mace:dir:attribute-def:mail",
+    "urn:mace:dir:attribute-def:uid"
+  ]
+}

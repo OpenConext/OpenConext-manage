@@ -21,6 +21,7 @@ import {setFlash} from "../utils/Flash";
 import "./Detail.css";
 
 const tabsSp = ["connection", "whitelist", "metadata", "arp", "manipulation", "revisions", "import", "export"];
+const tabsSingleTenant = ["connection", "metadata", "arp", "revisions", "import", "export"];
 const tabsIdP = ["connection", "whitelist", "consent_disabling", "metadata", "manipulation", "revisions", "import", "export"];
 
 export default class Detail extends React.PureComponent {
@@ -328,7 +329,8 @@ export default class Detail extends React.PureComponent {
                 return <Connection metaData={metaData} onChange={this.onChange("connection")}
                                    onError={this.onError("connection")}
                                    errors={this.state.errors["connection"]}
-                                   guest={guest} isNew={isNew} originalEntityId={originalEntityId}/>;
+                                   guest={guest} isNew={isNew} originalEntityId={originalEntityId}
+                                   configuration={configuration}/>;
             case "whitelist" :
                 return <WhiteList whiteListing={whiteListing} name={name}
                                   allowedEntities={metaData.data.allowedEntities}
@@ -386,7 +388,7 @@ export default class Detail extends React.PureComponent {
             confirmationDialogOpen, confirmationDialogAction, cancelDialogAction, leavePage, isNew, errors
         } = this.state;
         const type = metaData.type;
-        const tabs = type === "saml20_sp" ? tabsSp : tabsIdP;
+        const tabs = type === "saml20_sp" ? tabsSp : type === "saml20_idp" ? tabsIdP : tabsSingleTenant;
 
         const renderNotFound = loaded && notFound;
         const renderContent = loaded && !notFound;
