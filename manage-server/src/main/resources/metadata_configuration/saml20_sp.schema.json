@@ -1,6 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
   "title": "saml20_sp",
+  "order": 1,
   "definitions": {
     "AssertionConsumerServiceBinding": {
       "type": "string",
