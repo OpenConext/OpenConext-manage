@@ -76,6 +76,7 @@ public class EngineBlockFormatter {
         spAttributes.put("metadata:coin:policy_enforcement_decision_required", empty());
         spAttributes.put("metadata:coin:attribute_aggregation_required", empty());
         spAttributes.put("metadata:coin:no_consent_required", empty());
+        spAttributes.put("metadata:coin:signature_method", empty());
 
         idpAttributes.put("metadata:coin:guest_qualifier", empty());
         idpAttributes.put("metadata:coin:schachomeorganization", empty());
