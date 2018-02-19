@@ -69,7 +69,8 @@ I18n.translations.en = {
             deleted: "{{name}} was successfully deleted"
         },
         required: "{{name}} is required",
-        deleteConfirmation: "Are you sure you want to delete {{name}}?"
+        deleteConfirmation: "Are you sure you want to delete {{name}}?",
+        errors: "There are validation errors:"
 
     },
 

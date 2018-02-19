@@ -247,8 +247,7 @@ export default class Detail extends React.PureComponent {
             return null;
         }
         const {errors, revisionNoteError} = this.state;
-        const hasErrors = Object.keys(errors)
-            .find(key => Object.keys(errors[key]).find(subKey => errors[key][subKey])) !== undefined;
+        const hasErrors = this.hasGlobalErrors(errors);
         const revisionNoteRequired = revisionNoteError && isEmpty(revisionNote);
         return (
             <section className="actions">
@@ -301,6 +300,9 @@ export default class Detail extends React.PureComponent {
             </section>
         );
     };
+
+    hasGlobalErrors = errors => Object.keys(errors)
+        .find(key => Object.keys(errors[key]).find(subKey => errors[key][subKey])) !== undefined;
 
     renderTab = tab => {
         const tabErrors = this.state.errors[tab] || {};
@@ -361,10 +363,27 @@ export default class Detail extends React.PureComponent {
         }
     };
 
+    renderErrors = errors => {
+        const allErrors = {...errors};
+        const errorKeys = Object.keys(allErrors).filter(err => !isEmpty(allErrors[err]));
+        return <section className="errors">
+            <h2>{I18n.t("metadata.errors")}</h2>
+            {errorKeys.map(err =>
+                <div key={err}>
+                    <p>{err}</p>
+                    <ul>
+                        {Object.keys(allErrors[err]).filter(name => allErrors[err][name]).map((name, index) =>
+                            <li key={index}>{name}</li>
+                        )}
+                    </ul>
+                </div>
+            )}</section>
+    };
+
     render() {
         const {
             loaded, notFound, metaData, whiteListing, revisions, selectedTab, revisionNote,
-            confirmationDialogOpen, confirmationDialogAction, cancelDialogAction, leavePage, isNew
+            confirmationDialogOpen, confirmationDialogAction, cancelDialogAction, leavePage, isNew, errors
         } = this.state;
         const type = metaData.type;
         const tabs = type === "saml20_sp" ? tabsSp : tabsIdP;
@@ -374,6 +393,7 @@ export default class Detail extends React.PureComponent {
 
         const name = renderContent ? this.nameOfMetaData(metaData) : "";
         const typeMetaData = I18n.t(`metadata.${type}_single`);
+        const hasErrors = this.hasGlobalErrors(errors);
 
         return (
             <div className="detail-metadata">
@@ -385,6 +405,7 @@ export default class Detail extends React.PureComponent {
                 {renderContent &&
                 <section className="top-detail">
                     <section className="info">{`${typeMetaData} - ${name}`}</section>
+                    {hasErrors && this.renderErrors(errors)}
                     {!isNew && <a className="button red delete-metadata" onClick={e => {
                         stop(e);
                         this.setState({
