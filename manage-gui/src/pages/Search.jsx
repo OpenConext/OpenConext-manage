@@ -51,8 +51,11 @@ export default class Search extends React.PureComponent {
     };
 
     renderPushButton = () => {
-        const {loading} = this.state;
         const {currentUser} = this.props;
+        if (currentUser.featureToggles.indexOf("push") < 0) {
+            return null;
+        }
+        const {loading} = this.state;
         const action = () => {
             this.setState({confirmationDialogOpen: false});
             this.runPush();
