@@ -60,12 +60,14 @@ export default class Connection extends React.PureComponent {
     };
 
     render() {
+        const {configuration} = this.props;
         const {type, revision, data, id} = this.props.metaData;
         const logo = data.metaDataFields["logo:0:url"];
         const name = data.metaDataFields["name:en"] || data.metaDataFields["name:nl"] || "";
         const fullName = I18n.t(`metadata.${type}_single`) + " - " + name;
         const {guest} = this.props;
         const {entityIdAlreadyExists} = this.state;
+        const entityIdRequired = configuration.required.indexOf("entityid") > 0;
         return (
             <div className="metadata-connection">
 
@@ -82,7 +84,7 @@ export default class Connection extends React.PureComponent {
                             <InlineEditable name="EntityId" mayEdit={!guest}
                                             value={data.entityid || ""}
                                             onChange={this.onChange("data.entityid")}
-                                            required={true}
+                                            required={entityIdRequired}
                                             onError={this.onError("entityid")}
                                             onBlur={this.validateEntityId}
                             />
@@ -149,6 +151,7 @@ Connection.propTypes = {
     errors: PropTypes.object.isRequired,
     guest: PropTypes.bool.isRequired,
     isNew: PropTypes.bool.isRequired,
+    configuration: PropTypes.object.isRequired,
     originalEntityId: PropTypes.string.isRequired
 };
 

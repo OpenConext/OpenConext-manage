@@ -1,0 +1,23 @@
+{
+  "entityid": "https://dummy.labservant.nl/Single-tenant-service_op-aanvraag",
+  "description:en": "The Lab Servant",
+  "description:nl": "The Lab Servant",
+  "displayName:en": "The Lab Servant",
+  "displayName:nl": "The Lab Servant",
+  "logo:0:url": "https://static.surfconext.nl/media/sp/Labservant.png",
+  "name:en": "The Lab Servant | Lab Servant",
+  "name:nl": "The Lab Servant | Lab Servant",
+  "contacts:0:contactType": "technical",
+  "contacts:0:emailAddress": "support@surfnet.nl",
+  "contacts:1:contactType": "administrative",
+  "contacts:1:emailAddress": "j.p.bakker@labservant.nl",
+  "contacts:2:contactType": "support",
+  "contacts:2:emailAddress": "k.van.leeuwe@labservant.nl",
+  "workflowState": "prodaccepted",
+  "attributes": [
+    "urn:mace:dir:attribute-def:displayName",
+    "urn:mace:dir:attribute-def:cn",
+    "urn:mace:dir:attribute-def:mail",
+    "urn:mace:dir:attribute-def:uid"
+  ]
+}

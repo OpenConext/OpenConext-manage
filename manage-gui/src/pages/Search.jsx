@@ -16,7 +16,7 @@ export default class Search extends React.PureComponent {
     constructor(props) {
         super(props);
         const configuration = props.configuration;
-        const tabs = configuration.map(metaData => metaData.title).reverse();
+        const tabs = configuration.sort((a, b) => a.order > b.order ? 1 : -1).map(metaData => metaData.title);
         this.state = {
             selected: -1,
             suggestions: [],

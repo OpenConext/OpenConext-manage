@@ -1,0 +1,26 @@
+{
+  "entityid": "https://dummy.presentations2go.eu/Single-tenant-service_op-aanvraag",
+  "description:en": "Presentations2Go",
+  "description:nl": "Presentations2Go",
+  "displayName:en": "Presentations2Go",
+  "displayName:nl": "Presentations2Go",
+  "logo:0:url": "https://static.surfconext.nl/media/sp/p2go.png",
+  "name:en": "Presentations2Go | Learningvalley",
+  "name:nl": "Presentations2Go | Learningvalley",
+  "contacts:0:contactType": "technical",
+  "contacts:0:emailAddress": "HKlompmaker@learningvalley.nl",
+  "contacts:1:contactType": "administrative",
+  "contacts:1:emailAddress": "HKlompmaker@learningvalley.nl",
+  "contacts:2:contactType": "support",
+  "contacts:2:emailAddress": "HKlompmaker@learningvalley.nl",
+  "workflowState": "prodaccepted",
+  "attributes": [
+    "urn:mace:dir:attribute-def:eduPersonTargetedID",
+    "urn:mace:dir:attribute-def:displayName",
+    "urn:mace:dir:attribute-def:eduPersonAffiliation",
+    "urn:mace:dir:attribute-def:mail",
+    "urn:mace:dir:attribute-def:cn",
+    "urn:mace:dir:attribute-def:sn",
+    "urn:mace:dir:attribute-def:uid"
+  ]
+}

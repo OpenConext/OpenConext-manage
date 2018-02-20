@@ -62,7 +62,6 @@ public class EngineBlockFormatter {
         //contact persons are handled in separate method
         commonAttributes.put("metadata:NameIDFormat", empty());
         //single log outs are handled in separate method
-        commonAttributes.put("metadata:coin:publish_in_edugain", empty());
         commonAttributes.put("metadata:coin:disable_scoping", empty());
         commonAttributes.put("metadata:coin:additional_logging", empty());
         commonAttributes.put("manipulation", of("manipulation_code"));

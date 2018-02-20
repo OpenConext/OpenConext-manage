@@ -1,0 +1,31 @@
+{
+  "entityid": "https://dummy.ricoh.nl/Single-tenant-service_op-aanvraag",
+  "description:en": "BPS Printshop",
+  "description:nl": "BPS Printshop",
+  "displayName:en": "BPS Printshop",
+  "displayName:nl": "BPS Printshop",
+  "logo:0:url": "https://static.surfconext.nl/media/sp/Ricoh_logo.png",
+  "name:en": "BPS Printshop | Ricoh",
+  "name:nl": "BPS Printshop | Ricoh",
+  "contacts:0:contactType": "technical",
+  "contacts:0:emailAddress": "support@surfnet.nl",
+  "contacts:1:contactType": "administrative",
+  "contacts:1:emailAddress": "info@surfnet.nl",
+  "contacts:2:contactType": "support",
+  "contacts:2:emailAddress": "support@surfnet.nl",
+  "workflowState": "prodaccepted",
+  "attributes": [
+    "urn:mace:dir:attribute-def:eduPersonTargetedID",
+    "urn:mace:dir:attribute-def:eduPersonPrincipalName",
+    "urn:mace:dir:attribute-def:eduPersonAffiliation",
+    "urn:mace:dir:attribute-def:displayName",
+    "urn:mace:dir:attribute-def:givenName",
+    "urn:mace:dir:attribute-def:cn",
+    "urn:mace:dir:attribute-def:sn",
+    "urn:mace:dir:attribute-def:mail",
+    "urn:mace:terena.org:attribute-def:schacHomeOrganization",
+    "urn:mace:dir:attribute-def:eduPersonScopedAffiliation",
+    "urn:mace:dir:attribute-def:isMemberOf",
+    "urn:mace:dir:attribute-def:uid"
+  ]
+}

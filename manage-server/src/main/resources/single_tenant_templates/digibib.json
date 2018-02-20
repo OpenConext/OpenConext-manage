@@ -1,0 +1,33 @@
+{
+  "entityid": "https://digibib.consortiumbo.nl",
+  "description:en": "Digibib gives you access to all your study of Vocational Education Consortium. Both students and teachers.",
+  "description:nl": "Digibib geeft je toegang tot al je studiemateriaal van Consortium Beroepsonderwijs. Zowel voor leerlingen als docenten.",
+  "displayName:en": "Digibib | Kennisnet",
+  "displayName:nl": "Digibib | Kennisnet",
+  "logo:0:url": "https://static.surfconext.nl/media/sp/digibib.png",
+  "name:en": "Digibib | Kennisnet",
+  "name:nl": "Digibib | Kennisnet",
+  "contacts:0:contactType": "technical",
+  "contacts:0:emailAddress": "C.Tanahatoe@kennisnet.nl",
+  "contacts:0:givenName": "Chris",
+  "contacts:0:surName": "Tanahatoe",
+  "contacts:2:contactType": "support",
+  "contacts:2:emailAddress": "support@surfnet.nl",
+  "contacts:2:emailAddress": "C.Tanahatoe@kennisnet.nl",
+  "contacts:2:givenName": "Chris",
+  "contacts:2:surName": "Tanahatoe",
+  "workflowState": "prodaccepted",
+  "coin:application_url": "http://www.wikiwijsleermiddelenplein.nl/start/",
+  "coin:emula": "http://www.wikiwijsleermiddelenplein.nl/disclaimer/",
+  "url:en": "http://www.wikiwijsleermiddelenplein.nl/ondersteuning/",
+  "url:nl": "http://www.wikiwijsleermiddelenplein.nl/ondersteuning/",
+  "attributes": [
+    "urn:mace:dir:attribute-def:givenName",
+    "urn:mace:dir:attribute-def:sn",
+    "urn:mace:dir:attribute-def:displayName",
+    "urn:mace:dir:attribute-def:mail",
+    "urn:mace:dir:attribute-def:uid",
+    "urn:mace:dir:attribute-def:eduPersonAffiliation",
+    "urn:mace:terena.org:attribute-def:schacHomeOrganization"
+  ]
+}

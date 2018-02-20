@@ -1,0 +1,20 @@
+{
+  "entityid": "https://dummy.educator.eu/Single-tenant-service_op-aanvraag",
+  "description:en": "Student volg systeem",
+  "description:nl": "Student volg systeem",
+  "displayName:en": "Student volg systeem",
+  "displayName:nl": "Student volg systeem",
+  "logo:0:url": "https://static.surfconext.nl/media/sp/EducatorLogo.png",
+  "name:en": "Student volg systeem | Educator",
+  "name:nl": "Student volg systeem | Educator",
+  "contacts:0:contactType": "technical",
+  "contacts:0:emailAddress": "support@surfnet.nl",
+  "contacts:1:contactType": "administrative",
+  "contacts:1:emailAddress": "info@surfnet.nl",
+  "contacts:2:contactType": "support",
+  "contacts:2:emailAddress": "support@surfnet.nl",
+  "workflowState": "prodaccepted",
+  "attributes": [
+    "urn:mace:dir:attribute-def:uid"
+  ]
+}

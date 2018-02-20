@@ -1,0 +1,23 @@
+{
+  "entityid": "https://dummy.crosscampus.canon.nl/Single-tenant-service_op-aanvraag",
+  "description:en": "New Way To Print is a cloud-printmanagement solution for organisations in which users can print, scan, copy and buy credits from anywhere. The self-service portal provides functionality for users to control their account.",
+  "description:nl": "New Way To Print is a cloud-printmanagement solution for organisations in which users can print, scan, copy and buy credits from anywhere. The self-service portal provides functionality for users to control their account.",
+  "displayName:en": "New Way To Print",
+  "displayName:nl": "New Way To Print",
+  "logo:0:url": "https://static.surfconext.nl/media/sp/crosscampus.png",
+  "name:en": "New Way To Print | Canon",
+  "name:nl": "New Way To Print | Canon",
+  "contacts:0:contactType": "technical",
+  "contacts:0:emailAddress": "support@surfnet.nl",
+  "contacts:1:contactType": "administrative",
+  "contacts:1:emailAddress": "info@surfnet.nl",
+  "contacts:2:contactType": "support",
+  "contacts:2:emailAddress": "support@surfnet.nl",
+  "workflowState": "prodaccepted",
+  "attributes": [
+    "urn:mace:dir:attribute-def:eduPersonAffiliation",
+    "urn:mace:dir:attribute-def:displayName",
+    "urn:mace:dir:attribute-def:mail",
+    "urn:mace:dir:attribute-def:uid"
+  ]
+}

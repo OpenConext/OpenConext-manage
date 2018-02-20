@@ -1,0 +1,20 @@
+{
+  "entityid": "https://dummy.mendixcloud.com/Single-tenant-service_op-aanvraag",
+  "description:en": "Rapid Application Development platform",
+  "description:nl": "Rapid Application Development platform",
+  "displayName:en": "Rapid Application Development platform",
+  "displayName:nl": "Rapid Application Development platform",
+  "logo:0:url": "https://static.surfconext.nl/media/sp/mendix.png",
+  "name:en": "Mendix - ORBIS | Bureau van Dijk",
+  "name:nl": "Mendix - ORBIS | Bureau van Dijk",
+  "contacts:0:contactType": "technical",
+  "contacts:0:emailAddress": "support@surfnet.nl",
+  "contacts:1:contactType": "administrative",
+  "contacts:1:emailAddress": "info@surfnet.nl",
+  "contacts:2:contactType": "support",
+  "contacts:2:emailAddress": "support@surfnet.nl",
+  "workflowState": "prodaccepted",
+  "attributes": [
+    "urn:mace:dir:attribute-def:eduPersonTargetedID"
+  ]
+}

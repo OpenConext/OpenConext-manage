@@ -1,0 +1,23 @@
+{
+  "entityid": "https://dummy.eu.qualtrics.com/Single-tenant-service_op-aanvraag",
+  "description:en": "Qualtrics Survey Software",
+  "description:nl": "Qualtrics Survey Software",
+  "displayName:en": "Qualtrics Survey Software",
+  "displayName:nl": "Qualtrics Survey Software",
+  "logo:0:url": "https://static.surfconext.nl/media/sp/qualtrics.png",
+  "name:en": "Qualtrics Survey Software | Qualtrics",
+  "name:nl": "Qualtrics Survey Software | Qualtrics",
+  "contacts:0:contactType": "technical",
+  "contacts:0:emailAddress": "support@surfnet.nl",
+  "contacts:1:contactType": "administrative",
+  "contacts:1:emailAddress": "info@surfnet.nl",
+  "contacts:2:contactType": "support",
+  "contacts:2:emailAddress": "support@surfnet.nl",
+  "workflowState": "prodaccepted",
+  "attributes": [
+    "urn:mace:dir:attribute-def:eduPersonTargetedID",
+    "urn:mace:dir:attribute-def:givenName",
+    "urn:mace:dir:attribute-def:sn",
+    "urn:mace:dir:attribute-def:mail"
+  ]
+}
