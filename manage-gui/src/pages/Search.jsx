@@ -52,7 +52,7 @@ export default class Search extends React.PureComponent {
 
     renderPushButton = () => {
         const {currentUser} = this.props;
-        if (currentUser.featureToggles.indexOf("push") < 0) {
+        if (currentUser.featureToggles.indexOf("push") < 0 && currentUser.featureToggles.indexOf("PUSH") < 0) {
             return null;
         }
         const {loading} = this.state;
