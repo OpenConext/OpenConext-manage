@@ -61,4 +61,5 @@ public class BasicAuthenticationManager implements AuthenticationManager {
                 push
             ), authentication.getCredentials(), createAuthorityList("ROLE_USER", "ROLE_ADMIN"));
     }
+
 }

@@ -84,6 +84,11 @@ public class WebSecurityConfigurer {
         private String pushName;
 
         @Override
+        public void configure(WebSecurity web) throws Exception {
+            web.ignoring().antMatchers("/client/users/disclaimer");
+        }
+
+        @Override
         protected void configure(HttpSecurity http) throws Exception {
             List<Features> featuresList = Stream.of(features.split(","))
                 .map(feature -> Features.valueOf(feature.trim().toUpperCase()))

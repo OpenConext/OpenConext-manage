@@ -6,6 +6,7 @@ import manage.shibboleth.FederatedUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
@@ -28,6 +31,12 @@ public class UserController {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Value("${gui.disclaimer.background-color}")
+    private String disclaimerBackgroundColor;
+
+    @Value("${gui.disclaimer.content}")
+    private String disclaimerContent;
 
     @GetMapping("/client/users/me")
     public FederatedUser me(FederatedUser federatedUser) {
@@ -53,6 +62,15 @@ public class UserController {
         payload.put("user", federatedUser);
         String msg = objectMapper.writeValueAsString(payload);
         LOG.error(msg, new IllegalArgumentException(msg));
+    }
+
+    @GetMapping("/client/users/disclaimer")
+    public void disclaimer(HttpServletResponse response) throws IOException {
+        response.setContentType("text/css");
+        response.getWriter().write("body::after {background: " + disclaimerBackgroundColor + ";content: \"" +
+            disclaimerContent + "\";}");
+        response.getWriter().flush();
+
     }
 
 }

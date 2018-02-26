@@ -86,6 +86,12 @@ endpoints:
   info:
     enabled: true
 
+gui:
+  disclaimer:
+    background-color: red
+    content: LOCAL
+
+
 # used by the git plugin
 info:
   build:
