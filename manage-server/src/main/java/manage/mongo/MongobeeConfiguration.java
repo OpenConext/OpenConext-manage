@@ -106,6 +106,15 @@ public class MongobeeConfiguration {
 
     @ChangeSet(order = "004", id= "importCSA", author = "Okke Harsta")
     public void inportCsaSettings(MongoTemplate mongoTemplate) throws Exception {
+        doImportCsaSettings(mongoTemplate);
+    }
+
+    @ChangeSet(order = "005", id= "importCSA", author = "Okke Harsta")
+    public void reImportCsaSettings(MongoTemplate mongoTemplate) throws Exception {
+        doImportCsaSettings(mongoTemplate);
+    }
+
+    private void doImportCsaSettings(MongoTemplate mongoTemplate) throws IOException {
         String type = EntityType.SP.getType();
         String content = IOUtils.toString(new ClassPathResource("csa_export/csp.csv").getInputStream(), Charset.defaultCharset());
         List<String> lines = Arrays.asList(content.split("\n"));
@@ -114,7 +123,7 @@ public class MongobeeConfiguration {
         mappedLicenseStatus.put("HAS_LICENSE_SP", "license_required_by_service_provider");
         mappedLicenseStatus.put("NOT_NEEDED", "license_not_required");
         mappedLicenseStatus.put("HAS_LICENSE_SURFMARKET", "license_available_through_surfmarket");
-        mappedLicenseStatus.put("UNKNOWN", "license_unknown");
+        mappedLicenseStatus.put("UNKNOWN", "license_required_by_service_provider");
 
         lines.forEach(l -> {
             List<String> columns = Arrays.asList(l.split(","));
