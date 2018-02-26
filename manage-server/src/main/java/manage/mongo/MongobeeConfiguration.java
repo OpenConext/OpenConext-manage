@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -112,6 +113,27 @@ public class MongobeeConfiguration {
     @ChangeSet(order = "005", id= "reImportCSA", author = "Okke Harsta")
     public void reImportCsaSettings(MongoTemplate mongoTemplate) throws Exception {
         doImportCsaSettings(mongoTemplate);
+    }
+
+    @ChangeSet(order = "006", id= "addValueToDisableConsent", author = "Okke Harsta")
+    public void addValueToDisableConsent(MongoTemplate mongoTemplate) throws Exception {
+        List<MetaData> allIdPs = mongoTemplate.findAll(MetaData.class, EntityType.IDP.getType());
+        allIdPs.forEach(idp -> ((ArrayList<Map<String, String>>) idp.getData()
+            .getOrDefault("disableConsent", new ArrayList<Map<String, String>>()))
+            .forEach(dc -> {
+                dc.put("type", "no_consent");
+                dc.put("explanation", "");
+            }));
+        allIdPs.stream()
+            .filter(idp -> !List.class.cast(idp.getData().getOrDefault("disableConsent", new ArrayList<Map<String, String>>())).isEmpty())
+            .forEach(idp -> {
+                MetaData previous = mongoTemplate.findById(idp.getId(), MetaData.class, EntityType.IDP.getType());
+                previous.revision(UUID.randomUUID().toString());
+                mongoTemplate.insert(previous, previous.getType());
+                idp.promoteToLatest("Add type / explanation to disableConsent entries");
+                mongoTemplate.save(idp, idp.getType());
+                LOG.info("Migrated {} to new revision in CSA import", idp.getData().get("entityid"));
+            });
     }
 
     private void doImportCsaSettings(MongoTemplate mongoTemplate) throws IOException {

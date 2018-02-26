@@ -134,7 +134,11 @@ I18n.translations.en = {
         entries: {
             status: "Status",
             entityid:"Entity ID",
-            name: "Name"
+            name: "Name",
+            no_consent: "No consent is required",
+            minimal_consent: "Minimal consent is required",
+            consent_value: "Type of consent required",
+            explanation: "Explanation"
         }
     },
 

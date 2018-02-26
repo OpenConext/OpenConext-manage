@@ -1,4 +1,4 @@
-@import "../../stylesheets/vars.scss";
+@import "../../stylesheets/mixins.scss";
 
 .metadata-consent-disabling {
     background-color: white;
@@ -26,17 +26,26 @@
                         color: $blue;
                     }
                 }
-                &.select {
-                    min-width: 35px;
+                &.remove {
+                    min-width: 25px;
                 }
                 &.status {
-                    width: 20%;
+                    min-width: 50px;
                 }
                 &.name {
-                    width: 40%;
+                    width: 15%;
                 }
-                &.entityId {
+                &.entityid {
+                    width: 15%;
+                }
+                &.explanation {
                     width: 35%;
+                }
+                &.consent_value {
+                    width: 15%;
+                }
+                &.link {
+                    width: 20%;
                 }
             }
             tbody {
@@ -52,6 +61,15 @@
                             color: $red;
                             font-size: 20px;
                         }
+                    }
+                    &.explanation {
+                        input {
+                            @include inputField;
+                            width: 95%;
+                        }
+                    }
+                    div.select-consent-value {
+                        margin-right: 10px;
                     }
                 }
 

@@ -3,8 +3,10 @@ import I18n from "i18n-js";
 import PropTypes from "prop-types";
 import {Link} from "react-router-dom";
 import SelectEntities from "./../SelectEntities";
-
+import Select from "react-select";
 import {stop} from "../../utils/Utils";
+
+import "react-select/dist/react-select.css";
 import "./ConsentDisabling.css";
 
 export default class ConsentDisabling extends React.Component {
@@ -41,7 +43,9 @@ export default class ConsentDisabling extends React.Component {
             "status": I18n.t(`metadata.${moreInfo.data.state}`),
             "entityid": disableConsent.name,
             "name": moreInfo.data.metaDataFields["name:en"] || moreInfo.data.metaDataFields["name:nl"] || "",
-            "id": moreInfo["_id"]
+            "id": moreInfo["_id"],
+            "type": disableConsent.type,
+            "explanation": disableConsent.explanation
         };
     };
 
@@ -49,12 +53,17 @@ export default class ConsentDisabling extends React.Component {
         this.setState({enrichedDisableConsent: newDisableConsent.sort(this.sortByAttribute(this.state.sorted, this.state.reverse))});
 
     addDisableConsent = entityid => {
+        const entity = {
+            name: entityid,
+            type: "no_consent",
+            explanation: ""
+        };
         const {disableConsent, whiteListing} = this.props;
-        const newState = [...disableConsent].concat({name: entityid});
+        const newState = [...disableConsent].concat(entity);
         this.props.onChange("data.disableConsent", newState);
 
         const newDisableConsent = [...this.state.enrichedDisableConsent]
-            .concat(this.enrichSingleDisableConsent({name: entityid}, whiteListing));
+            .concat(this.enrichSingleDisableConsent(entity, whiteListing));
         this.setDisableConsentState(newDisableConsent);
     };
 
@@ -69,12 +78,20 @@ export default class ConsentDisabling extends React.Component {
 
     };
 
-    onChange = name => value => {
-        if (value.target) {
-            this.props.onChange(name, value.target.checked);
-        } else {
-            this.props.onChange(name, value);
-        }
+    onChangeSelectConsentValue = (entry, type) => {
+        entry.type = type;
+        const newState = [...this.props.disableConsent];
+        const pos = newState.map(e => e.name).indexOf(entry.entityid);
+        newState[pos] = {name: entry.entityid, type: type, explanation: entry.explanation};
+        this.props.onChange("data.disableConsent", newState);
+    };
+
+    onChangeExplanation = (entry, explanation) => {
+        entry.explanation = explanation;
+        const newState = [...this.props.disableConsent];
+        const pos = newState.map(e => e.name).indexOf(entry.entityid);
+        newState[pos] = {name: entry.entityid, type: entry.type, explanation: explanation};
+        this.props.onChange("data.disableConsent", newState);
     };
 
     sortByAttribute = (name, reverse = false) => (a, b) => {
@@ -97,12 +114,22 @@ export default class ConsentDisabling extends React.Component {
                     this.removeDisableConsent(entity)
                 }}><i className="fa fa-trash-o"></i></a></span>    }
             </td>
-
             <td>
                 {entity.status}
             </td>
             <td>
                 {entity.name}
+            </td>
+            <td>
+                <Select className="select-consent-value"
+                         onChange={option => this.onChangeSelectConsentValue(entity, option.value)}
+                         options={[{label: I18n.t("consentDisabling.entries.no_consent"), value: "no_consent"},
+                             {label: I18n.t("consentDisabling.entries.minimal_consent"), value: "minimal_consent"}]}
+                         value={entity.type}
+                         searchable={false}/>
+            </td>
+            <td className="explanation">
+                <input type="text" value={entity.explanation} onChange={e => this.onChangeExplanation(entity, e.target.value)}/>
             </td>
             <td>
                 <Link to={`/metadata/${type}/${entity.id}`} target="_blank">{entity.entityid}</Link>
@@ -120,12 +147,12 @@ export default class ConsentDisabling extends React.Component {
         const th = name =>
             <th key={name} className={name}
                 onClick={this.sortTable(enrichedDisableConsent, name)}>{I18n.t(`consentDisabling.entries.${name}`)}{icon(name)}</th>
-        const names = ["status", "name", "entityid"];
+        const names = ["status", "name", "consent_value", "explanation" ,"entityid" ];
         return <section className="consent-disabling">
             <table>
                 <thead>
                 <tr>
-                    <th className="select"></th>
+                    <th className="remove"></th>
                     {names.map(th)}
                 </tr>
                 </thead>
