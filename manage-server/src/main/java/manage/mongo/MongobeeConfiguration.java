@@ -6,11 +6,17 @@ import com.github.mongobee.changeset.ChangeLog;
 import com.github.mongobee.changeset.ChangeSet;
 import manage.conf.IndexConfiguration;
 import manage.conf.MetaDataAutoConfiguration;
+import manage.migration.EntityType;
+import manage.migration.JanusMigration;
 import manage.model.MetaData;
+import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.data.domain.Sort;
@@ -18,10 +24,14 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.index.IndexDefinition;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -29,15 +39,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 @Configuration
 @ChangeLog
 public class MongobeeConfiguration {
 
     public static final String REVISION_POSTFIX = "_revision";
+
+    private static final Logger LOG = LoggerFactory.getLogger(MongobeeConfiguration.class);
+
     private static MetaDataAutoConfiguration staticMetaDataAutoConfiguration;
+
     @Autowired
     private MetaDataAutoConfiguration metaDataAutoConfiguration;
+
     @Autowired
     private MappingMongoConverter mongoConverter;
 
@@ -86,6 +102,47 @@ public class MongobeeConfiguration {
         mongoTemplate.findAllAndRemove(new Query(),"single_tenant_template");
         mongoTemplate.findAllAndRemove(new Query(),"single_tenant_template_revision");
         createSingleTenantTemplates(mongoTemplate);
+    }
+
+    @ChangeSet(order = "004", id= "importCSA", author = "Okke Harsta")
+    public void inportCsaSettings(MongoTemplate mongoTemplate) throws Exception {
+        String type = EntityType.SP.getType();
+        String content = IOUtils.toString(new ClassPathResource("csa_export/csp.csv").getInputStream(), Charset.defaultCharset());
+        List<String> lines = Arrays.asList(content.split("\n"));
+
+        Map<String, String> mappedLicenseStatus = new HashMap<>();
+        mappedLicenseStatus.put("HAS_LICENSE_SP", "license_required_by_service_provider");
+        mappedLicenseStatus.put("NOT_NEEDED", "license_not_required");
+        mappedLicenseStatus.put("HAS_LICENSE_SURFMARKET", "license_available_through_surfmarket");
+        mappedLicenseStatus.put("UNKNOWN", "license_unknown");
+
+        lines.forEach(l -> {
+            List<String> columns = Arrays.asList(l.split(","));
+            //service_provider_entity_id, normenkader_present, license_status, strong_authentication
+            String entityId = columns.get(0);
+            Query query = new Query();
+            query.addCriteria(Criteria.where("data.entityid").is(entityId));
+            List<MetaData> metaDatas = mongoTemplate.find(query, MetaData.class, type);
+            if (metaDatas != null && metaDatas.size() > 0) {
+                MetaData metaData = metaDatas.get(0);
+                Map<String, Object> metaDataFields = (Map<String, Object>) metaData.getData().get("metaDataFields");
+                boolean normenKaderPresent = columns.get(1).equals("1");
+                metaDataFields.put("coin:privacy:gdpr_is_in_wiki", normenKaderPresent);
+
+                String licenseStatus = mappedLicenseStatus.getOrDefault(columns.get(2), "license_required_by_service_provider");
+                metaDataFields.put("coin:license_status", licenseStatus);
+
+                boolean strongAuthentication = columns.get(3).equals("1");
+                metaDataFields.put("coin:requires_strong_authentication", strongAuthentication);
+
+                MetaData previous = mongoTemplate.findById(metaData.getId(), MetaData.class, type);
+                previous.revision(UUID.randomUUID().toString());
+                mongoTemplate.insert(previous, previous.getType());
+                metaData.promoteToLatest("CSA import migration");
+                mongoTemplate.save(metaData, metaData.getType());
+                LOG.info("Migrated {} to new revision in CSA import", entityId);
+            }
+        });
     }
 
     @SuppressWarnings("unchecked")

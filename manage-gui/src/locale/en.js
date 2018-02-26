@@ -33,6 +33,8 @@ I18n.translations.en = {
         saml20_idp: "Identity Providers",
         saml20_sp_single: "Service Provider",
         saml20_idp_single: "Identity Provider",
+        saml20_sp_revision_single: "Service Provider",
+        saml20_idp_revision_single: "Identity Provider",
         single_tenant_template: "Single Tenant Templates",
         single_tenant_template_single: "Single Tenant Template",
         searchPlaceHolder: "Search for metadata",
