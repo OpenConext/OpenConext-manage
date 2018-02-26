@@ -109,7 +109,7 @@ public class MongobeeConfiguration {
         doImportCsaSettings(mongoTemplate);
     }
 
-    @ChangeSet(order = "005", id= "importCSA", author = "Okke Harsta")
+    @ChangeSet(order = "005", id= "reImportCSA", author = "Okke Harsta")
     public void reImportCsaSettings(MongoTemplate mongoTemplate) throws Exception {
         doImportCsaSettings(mongoTemplate);
     }
