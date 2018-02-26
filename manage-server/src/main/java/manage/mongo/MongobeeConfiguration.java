@@ -115,27 +115,6 @@ public class MongobeeConfiguration {
         doImportCsaSettings(mongoTemplate);
     }
 
-    @ChangeSet(order = "006", id= "addValueToDisableConsent", author = "Okke Harsta")
-    public void addValueToDisableConsent(MongoTemplate mongoTemplate) throws Exception {
-        List<MetaData> allIdPs = mongoTemplate.findAll(MetaData.class, EntityType.IDP.getType());
-        allIdPs.forEach(idp -> ((ArrayList<Map<String, String>>) idp.getData()
-            .getOrDefault("disableConsent", new ArrayList<Map<String, String>>()))
-            .forEach(dc -> {
-                dc.put("type", "no_consent");
-                dc.put("explanation", "");
-            }));
-        allIdPs.stream()
-            .filter(idp -> !List.class.cast(idp.getData().getOrDefault("disableConsent", new ArrayList<Map<String, String>>())).isEmpty())
-            .forEach(idp -> {
-                MetaData previous = mongoTemplate.findById(idp.getId(), MetaData.class, EntityType.IDP.getType());
-                previous.revision(UUID.randomUUID().toString());
-                mongoTemplate.insert(previous, previous.getType());
-                idp.promoteToLatest("Add type / explanation to disableConsent entries");
-                mongoTemplate.save(idp, idp.getType());
-                LOG.info("Migrated {} to new revision in CSA import", idp.getData().get("entityid"));
-            });
-    }
-
     private void doImportCsaSettings(MongoTemplate mongoTemplate) throws IOException {
         String type = EntityType.SP.getType();
         String content = IOUtils.toString(new ClassPathResource("csa_export/csp.csv").getInputStream(), Charset.defaultCharset());
@@ -176,6 +155,26 @@ public class MongobeeConfiguration {
         });
     }
 
+    @ChangeSet(order = "006", id= "addValueToDisableConsent", author = "Okke Harsta")
+    public void addValueToDisableConsent(MongoTemplate mongoTemplate) throws Exception {
+        List<MetaData> allIdPs = mongoTemplate.findAll(MetaData.class, EntityType.IDP.getType());
+        allIdPs.forEach(idp -> ((ArrayList<Map<String, String>>) idp.getData()
+            .getOrDefault("disableConsent", new ArrayList<Map<String, String>>()))
+            .forEach(dc -> {
+                dc.put("type", "no_consent");
+                dc.put("explanation", "");
+            }));
+        allIdPs.stream()
+            .filter(idp -> !List.class.cast(idp.getData().getOrDefault("disableConsent", new ArrayList<Map<String, String>>())).isEmpty())
+            .forEach(idp -> {
+                MetaData previous = mongoTemplate.findById(idp.getId(), MetaData.class, EntityType.IDP.getType());
+                previous.revision(UUID.randomUUID().toString());
+                mongoTemplate.insert(previous, previous.getType());
+                idp.promoteToLatest("Add type / explanation to disableConsent entries");
+                mongoTemplate.save(idp, idp.getType());
+                LOG.info("Migrated {} to new revision in CSA import", idp.getData().get("entityid"));
+            });
+    }
     @SuppressWarnings("unchecked")
     private void createSingleTenantTemplate(MongoTemplate mongoTemplate, Resource resource, ObjectMapper objectMapper) {
         final Map<String, Object> template = readTemplate(resource, objectMapper);

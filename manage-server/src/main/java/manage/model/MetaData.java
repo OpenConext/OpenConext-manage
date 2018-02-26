@@ -50,6 +50,10 @@ public class MetaData implements Serializable {
 
     public void revision(String newId) {
         this.type = this.type.concat(REVISION_POSTFIX);
+        if (this.revision == null) {
+            //can only happen when MetaData is inserted not by API code, but by scripts like testing
+            this.revision = new Revision(0, Instant.now(), null, "system");
+        }
         this.revision.setParentId(this.id);
         this.id = newId;
     }
