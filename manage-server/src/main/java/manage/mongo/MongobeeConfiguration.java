@@ -7,7 +7,6 @@ import com.github.mongobee.changeset.ChangeSet;
 import manage.conf.IndexConfiguration;
 import manage.conf.MetaDataAutoConfiguration;
 import manage.migration.EntityType;
-import manage.migration.JanusMigration;
 import manage.model.MetaData;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -30,8 +29,6 @@ import org.springframework.data.mongodb.core.query.Query;
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -40,7 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Stream;
+import java.util.stream.Collectors;
 
 @Configuration
 @ChangeLog
@@ -100,24 +97,25 @@ public class MongobeeConfiguration {
 
     @ChangeSet(order = "003", id = "reCreateSingleTenantTemplates", author = "Okke Harsta")
     public void reCreateSingleTenantTemplates(MongoTemplate mongoTemplate) throws IOException {
-        mongoTemplate.findAllAndRemove(new Query(),"single_tenant_template");
-        mongoTemplate.findAllAndRemove(new Query(),"single_tenant_template_revision");
+        mongoTemplate.findAllAndRemove(new Query(), "single_tenant_template");
+        mongoTemplate.findAllAndRemove(new Query(), "single_tenant_template_revision");
         createSingleTenantTemplates(mongoTemplate);
     }
 
-    @ChangeSet(order = "004", id= "importCSA", author = "Okke Harsta")
+    @ChangeSet(order = "004", id = "importCSA", author = "Okke Harsta")
     public void inportCsaSettings(MongoTemplate mongoTemplate) throws Exception {
         doImportCsaSettings(mongoTemplate);
     }
 
-    @ChangeSet(order = "005", id= "reImportCSA", author = "Okke Harsta")
+    @ChangeSet(order = "005", id = "reImportCSA", author = "Okke Harsta", runAlways = true)
     public void reImportCsaSettings(MongoTemplate mongoTemplate) throws Exception {
         doImportCsaSettings(mongoTemplate);
     }
 
     private void doImportCsaSettings(MongoTemplate mongoTemplate) throws IOException {
         String type = EntityType.SP.getType();
-        String content = IOUtils.toString(new ClassPathResource("csa_export/csp.csv").getInputStream(), Charset.defaultCharset());
+        String content = IOUtils.toString(new ClassPathResource("csa_export/csp.csv").getInputStream(), Charset
+            .defaultCharset());
         List<String> lines = Arrays.asList(content.split("\n"));
 
         Map<String, String> mappedLicenseStatus = new HashMap<>();
@@ -136,14 +134,13 @@ public class MongobeeConfiguration {
             if (metaDatas != null && metaDatas.size() > 0) {
                 MetaData metaData = metaDatas.get(0);
                 Map<String, Object> metaDataFields = (Map<String, Object>) metaData.getData().get("metaDataFields");
-                boolean normenKaderPresent = columns.get(1).equals("1");
-                metaDataFields.put("coin:privacy:gdpr_is_in_wiki", normenKaderPresent);
+                metaDataFields.put("coin:privacy:gdpr_is_in_wiki", columns.get(1));
 
-                String licenseStatus = mappedLicenseStatus.getOrDefault(columns.get(2), "license_required_by_service_provider");
+                String licenseStatus = mappedLicenseStatus.getOrDefault(columns.get(2),
+                    "license_required_by_service_provider");
                 metaDataFields.put("coin:license_status", licenseStatus);
 
-                boolean strongAuthentication = columns.get(3).equals("1");
-                metaDataFields.put("coin:requires_strong_authentication", strongAuthentication);
+                metaDataFields.put("coin:requires_strong_authentication", columns.get(3));
 
                 MetaData previous = mongoTemplate.findById(metaData.getId(), MetaData.class, type);
                 previous.revision(UUID.randomUUID().toString());
@@ -155,7 +152,7 @@ public class MongobeeConfiguration {
         });
     }
 
-    @ChangeSet(order = "006", id= "addValueToDisableConsent", author = "Okke Harsta")
+    @ChangeSet(order = "006", id = "addValueToDisableConsent", author = "Okke Harsta")
     public void addValueToDisableConsent(MongoTemplate mongoTemplate) throws Exception {
         List<MetaData> allIdPs = mongoTemplate.findAll(MetaData.class, EntityType.IDP.getType());
         allIdPs.forEach(idp -> ((ArrayList<Map<String, String>>) idp.getData()
@@ -165,7 +162,8 @@ public class MongobeeConfiguration {
                 dc.put("explanation", "");
             }));
         allIdPs.stream()
-            .filter(idp -> !List.class.cast(idp.getData().getOrDefault("disableConsent", new ArrayList<Map<String, String>>())).isEmpty())
+            .filter(idp -> !List.class.cast(idp.getData().getOrDefault("disableConsent", new ArrayList<Map<String,
+                String>>())).isEmpty())
             .forEach(idp -> {
                 MetaData previous = mongoTemplate.findById(idp.getId(), MetaData.class, EntityType.IDP.getType());
                 previous.revision(UUID.randomUUID().toString());
@@ -175,6 +173,49 @@ public class MongobeeConfiguration {
                 LOG.info("Migrated {} to new revision in CSA import", idp.getData().get("entityid"));
             });
     }
+
+    @ChangeSet(order = "007", id = "importFacetsInformation", author = "Okke Harsta")
+    public void importFacetsInformation(MongoTemplate mongoTemplate) throws IOException {
+        String type = EntityType.SP.getType();
+        String content = IOUtils.toString(new ClassPathResource("csa_export/facets.csv").getInputStream(), Charset
+            .defaultCharset());
+        List<String> lines = Arrays.asList(content.split("\n"));
+
+        Map<String, List<TypeOfService>> typeOfServices = lines.stream().map(s -> {
+            //entity_id, type_of_service, language
+            List<String> columns = Arrays.asList(s.split(","));
+            return new TypeOfService(columns.get(0), columns.get(1), columns.get(2));
+        }).collect(Collectors.groupingBy(TypeOfService::getLang));
+        Map<String, List<TypeOfService>> nl = typeOfServices.get("nl").stream().collect(Collectors.groupingBy
+            (TypeOfService::getEntityId));
+        Map<String, List<TypeOfService>> en = typeOfServices.get("en").stream().collect(Collectors.groupingBy
+            (TypeOfService::getEntityId));
+        addTypeOfService(mongoTemplate, type, nl, "nl");
+        addTypeOfService(mongoTemplate, type, en, "en");
+    }
+
+    private void addTypeOfService(MongoTemplate mongoTemplate, String type, Map<String, List<TypeOfService>> nl,
+                                  String lang) {
+        nl.keySet().forEach(entityId -> {
+            Query query = new Query();
+            query.addCriteria(Criteria.where("data.entityid").is(entityId));
+            List<MetaData> metaDatas = mongoTemplate.find(query, MetaData.class, type);
+            if (metaDatas != null && metaDatas.size() > 0) {
+                MetaData metaData = metaDatas.get(0);
+                Map<String, Object> metaDataFields = (Map<String, Object>) metaData.getData().get("metaDataFields");
+                metaDataFields.put("coin:type_of_service:" + lang, nl.get(entityId).stream().map
+                    (TypeOfService::getValue).collect(Collectors.toSet()).stream().collect(Collectors.joining(",")));
+
+                MetaData previous = mongoTemplate.findById(metaData.getId(), MetaData.class, type);
+                previous.revision(UUID.randomUUID().toString());
+                mongoTemplate.insert(previous, previous.getType());
+                metaData.promoteToLatest("CSA facet import migration");
+                mongoTemplate.save(metaData, metaData.getType());
+                LOG.info("Migrated {} to new revision in CSA import", entityId);
+            }
+        });
+    }
+
     @SuppressWarnings("unchecked")
     private void createSingleTenantTemplate(MongoTemplate mongoTemplate, Resource resource, ObjectMapper objectMapper) {
         final Map<String, Object> template = readTemplate(resource, objectMapper);
