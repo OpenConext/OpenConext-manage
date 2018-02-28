@@ -5,7 +5,8 @@ import manage.TestUtils;
 import manage.conf.MetaDataAutoConfiguration;
 import manage.model.MetaData;
 import manage.repository.MetaDataRepository;
-import org.apache.commons.dbcp.BasicDataSource;
+
+import org.apache.commons.dbcp2.BasicDataSource;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
