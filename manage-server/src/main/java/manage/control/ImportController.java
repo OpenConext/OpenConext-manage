@@ -79,7 +79,11 @@ public class ImportController {
         EntityType entityType = EntityType.IDP.getType().equals(type) ?
             EntityType.IDP : EntityType.SP.getType().equals(type) ? EntityType.SP : null;
         if (entityType == null) {
-            return EntityType.fromType(String.class.cast(json.get("type")));
+            Object jsonType = json.get("type");
+            if (jsonType == null) {
+                throw new IllegalArgumentException("Expected a 'type' attribute in the JSON with value 'saml20-idp' or 'saml20-sp'");
+            }
+            return EntityType.fromType(String.class.cast(jsonType));
         }
         return entityType;
     }
