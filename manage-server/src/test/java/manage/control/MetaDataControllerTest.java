@@ -18,6 +18,7 @@ import java.util.regex.Pattern;
 
 import static io.restassured.RestAssured.given;
 import static manage.control.MetaDataController.ALL_ATTRIBUTES;
+import static manage.control.MetaDataController.LOGICAL_OPERATOR_IS_AND;
 import static manage.control.MetaDataController.REQUESTED_ATTRIBUTES;
 import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
 import static org.apache.http.HttpStatus.SC_FORBIDDEN;
@@ -334,6 +335,45 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void searchWithLogicalAnd() throws Exception {
+        Map<String, Object> searchOptions = new HashMap<>();
+        searchOptions.put("entityid", "Duis ad do");
+        searchOptions.put("metaDataFields.AssertionConsumerService:0:Location",
+            "https://profile.test2.surfconext.nl/authentication/consume-assertion");
+
+        given()
+            .when()
+            .body(searchOptions)
+            .header("Content-type", "application/json")
+            .post("manage/api/client/search/saml20_sp")
+            .then()
+            .statusCode(SC_OK)
+            .body("size()", is(0));
+    }
+
+    @Test
+    public void searchWithLogicalOr() throws Exception {
+        Map<String, Object> searchOptions = new HashMap<>();
+        searchOptions.put("entityid", "Duis ad do");
+        searchOptions.put("metaDataFields.AssertionConsumerService:0:Location",
+            "https://profile.test2.surfconext.nl/authentication/consume-assertion");
+
+        searchOptions.put(LOGICAL_OPERATOR_IS_AND, false);
+
+        given()
+            .when()
+            .body(searchOptions)
+            .header("Content-type", "application/json")
+            .post("manage/api/client/search/saml20_sp")
+            .then()
+            .statusCode(SC_OK)
+            .body("size()", is(2))
+            .body("data.entityid", hasItems(
+                "Duis ad do",
+                "https://profile.test2.surfconext.nl/authentication/metadata"));
+    }
+
+    @Test
     public void searchWithAllAttributes() throws Exception {
         Map<String, Object> searchOptions = new HashMap<>();
         searchOptions.put(ALL_ATTRIBUTES, true);
@@ -435,7 +475,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
             .statusCode(SC_BAD_REQUEST)
             .body("validations", equalTo(
                 "#/metaDataFields: required key [AssertionConsumerService:0:Binding] not found, " +
-                "#/metaDataFields: required key [AssertionConsumerService:0:Location] not found"));
+                    "#/metaDataFields: required key [AssertionConsumerService:0:Location] not found"));
     }
 
     private ValidatableResponse doNewSp(Map<String, String> body) {

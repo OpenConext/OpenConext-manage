@@ -4,10 +4,12 @@ import manage.model.MetaData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.CriteriaDefinition;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -69,25 +71,36 @@ public class MetaDataRepository {
     }
 
     public List<Map> search(String type, Map<String, Object> properties, List<String> requestedAttributes, Boolean
-        allAttributes) {
+        allAttributes, Boolean logicalOperatorIsAnd) {
         Query query = allAttributes ? new Query() : queryWithSamlFields();
         if (!allAttributes) {
             requestedAttributes.forEach(requestedAttribute -> {
                 query.fields().include("data.".concat(requestedAttribute));
             });
         }
+        List<CriteriaDefinition> criteriaDefinitions = new ArrayList<>();
+
         properties.forEach((key, value) -> {
             if (value instanceof String && !StringUtils.hasText(String.class.cast(value))) {
-                query.addCriteria(Criteria.where("data.".concat(key)).exists(false));
+                criteriaDefinitions.add(Criteria.where("data.".concat(key)).exists(false));
             } else if ("*".equals(value)) {
-                query.addCriteria(Criteria.where("data.".concat(key)).regex(".*", "i"));
+                criteriaDefinitions.add(Criteria.where("data.".concat(key)).regex(".*", "i"));
             } else if (value instanceof String && String.class.cast(value).contains("*")) {
                 String queryString = String.class.cast(value);
-                query.addCriteria(Criteria.where("data.".concat(key)).regex(queryString, "i"));
+                criteriaDefinitions.add(Criteria.where("data.".concat(key)).regex(queryString, "i"));
             } else {
-                query.addCriteria(Criteria.where("data.".concat(key)).is(value));
+                criteriaDefinitions.add(Criteria.where("data.".concat(key)).is(value));
             }
         });
+        if (criteriaDefinitions.isEmpty()) {
+            criteriaDefinitions.add(Criteria.where("data").exists(true));
+        }
+        Criteria[] criteria = criteriaDefinitions.toArray(new Criteria[]{});
+        if (logicalOperatorIsAnd) {
+            query.addCriteria(new Criteria().andOperator(criteria));
+        } else {
+            query.addCriteria(new Criteria().orOperator(criteria));
+        }
         return mongoTemplate.find(query, Map.class, type);
     }
 

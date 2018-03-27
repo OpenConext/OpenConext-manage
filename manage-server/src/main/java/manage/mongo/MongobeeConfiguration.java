@@ -41,6 +41,7 @@ import java.util.stream.Collectors;
 
 @Configuration
 @ChangeLog
+@SuppressWarnings("unchecked")
 public class MongobeeConfiguration {
 
     public static final String REVISION_POSTFIX = "_revision";

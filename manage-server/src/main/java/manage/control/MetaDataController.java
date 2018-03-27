@@ -49,6 +49,7 @@ public class MetaDataController {
 
     public static final String REQUESTED_ATTRIBUTES = "REQUESTED_ATTRIBUTES";
     public static final String ALL_ATTRIBUTES = "ALL_ATTRIBUTES";
+    public static final String LOGICAL_OPERATOR_IS_AND = "LOGICAL_OPERATOR_IS_AND";
 
     private MetaDataRepository metaDataRepository;
     private MetaDataAutoConfiguration metaDataAutoConfiguration;
@@ -108,7 +109,7 @@ public class MetaDataController {
             .getBytes()), Optional.empty());
         String entityId = String.class.cast(innerJson.get("entityid"));
         List<Map> result = metaDataRepository.search(EntityType.SP.getType(), singletonMap("entityid",
-            entityId), emptyList(), false);
+            entityId), emptyList(), false, true);
 
         if (!CollectionUtils.isEmpty(result)) {
             throw new DuplicateEntityIdException(entityId);
@@ -250,9 +251,11 @@ public class MetaDataController {
         List requestedAttributes = List.class.cast(properties.getOrDefault(REQUESTED_ATTRIBUTES, new
             ArrayList<String>()));
         Boolean allAttributes = Boolean.class.cast(properties.getOrDefault(ALL_ATTRIBUTES, false));
+        Boolean logicalOperatorIsAnd = Boolean.class.cast(properties.getOrDefault(LOGICAL_OPERATOR_IS_AND, true));
         properties.remove(REQUESTED_ATTRIBUTES);
         properties.remove(ALL_ATTRIBUTES);
-        return metaDataRepository.search(type, properties, requestedAttributes, allAttributes);
+        properties.remove(LOGICAL_OPERATOR_IS_AND);
+        return metaDataRepository.search(type, properties, requestedAttributes, allAttributes, logicalOperatorIsAnd);
     }
 
     private void validate(MetaData metaData) throws JsonProcessingException {
