@@ -247,6 +247,7 @@ export default class ARP extends React.Component {
 
     render() {
         const {arp, onChange, arpConfiguration, guest} = this.props;
+        const sanitizedArp = isEmpty(arp) ? {attributes:{}} : arp;
         return (
             <div className="metadata-arp">
                 <section className="arp-info">
@@ -258,13 +259,13 @@ export default class ARP extends React.Component {
                     </h2>
                 </section>
                 <section className="enabled">
-                    <CheckBox name="arp-enabled" value={!arp.enabled}
+                    <CheckBox name="arp-enabled" value={!sanitizedArp.enabled}
                               onChange={this.arpEnabled} readOnly={guest}
                               info={I18n.t("arp.arp_enabled")}/>
                 </section>
                 <section className="attributes">
                     <h2>{I18n.t("arp.attributes")}</h2>
-                    {this.renderArpAttributesTable(arp, onChange, arpConfiguration, guest)}
+                    {this.renderArpAttributesTable(sanitizedArp, onChange, arpConfiguration, guest)}
                 </section>
             </div>
         );

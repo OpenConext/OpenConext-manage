@@ -208,7 +208,11 @@
             }
           }
         }
-      }
+      },
+      "required": [
+        "enabled",
+        "attributes"
+      ]
     },
     "notes": {
       "type": [

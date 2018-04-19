@@ -250,14 +250,16 @@ public class EngineBlockFormatter {
     }
 
     private void addAttributeReleasePolicy(Map<String, Object> source, Map<String, Object> result) {
-        Map<String, Object> arp = (Map<String, Object>) source.get("arp");
+        Object possibleArp = source.get("arp");
 
-        if (arp == null) {
+        if (possibleArp == null || possibleArp instanceof List) {
             Map<String, List<Map<String, String>>> arpResult = new HashMap<>();
             result.put("arp_attributes", arpResult);
             return;
         }
-        if (Boolean.class.cast(arp.get("enabled"))) {
+        Map<String, Object> arp = (Map<String, Object>) possibleArp;
+        Object enabled = arp.get("enabled");
+        if (enabled != null && Boolean.class.cast(enabled)) {
             Map<String, List<Map<String, String>>> attributes =
                 (Map<String, List<Map<String, String>>>) arp.get("attributes");
 
