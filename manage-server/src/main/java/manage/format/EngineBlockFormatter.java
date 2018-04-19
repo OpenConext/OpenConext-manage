@@ -260,15 +260,22 @@ public class EngineBlockFormatter {
         Map<String, Object> arp = (Map<String, Object>) possibleArp;
         Object enabled = arp.get("enabled");
         if (enabled != null && Boolean.class.cast(enabled)) {
-            Map<String, List<Map<String, String>>> attributes =
-                (Map<String, List<Map<String, String>>>) arp.get("attributes");
+            Object possibleAttributes = arp.get("attributes");
+            if (possibleAttributes != null && possibleAttributes instanceof List) {
+                List<String> listAttributes = (List<String>) possibleAttributes;
+                result.put("arp_attributes", listAttributes);
 
-            //bugfix for EB not having the knowledge that 'idp' source is special
-            Collection<List<Map<String, String>>> values = attributes.values();
-            values.forEach(arpValues -> arpValues.forEach(map -> map.entrySet()
-                .removeIf(entry -> entry.getKey().equals("source") && entry.getValue().equals("idp"))));
+            } else if (possibleAttributes != null && possibleAttributes instanceof Map) {
+                Map<String, List<Map<String, String>>> attributes = (Map<String, List<Map<String, String>>>) possibleAttributes;
 
-            result.put("arp_attributes", attributes);
+                //bugfix for EB not having the knowledge that 'idp' source is special
+                Collection<List<Map<String, String>>> values = attributes.values();
+                values.forEach(arpValues -> arpValues.forEach(map -> map.entrySet()
+                    .removeIf(entry -> entry.getKey().equals("source") && entry.getValue().equals("idp"))));
+
+                result.put("arp_attributes", attributes);
+
+            }
         }
     }
 
