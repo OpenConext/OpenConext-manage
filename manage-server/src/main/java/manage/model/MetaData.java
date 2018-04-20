@@ -43,18 +43,24 @@ public class MetaData implements Serializable {
         this.data = data;
     }
 
-    public void initial(String id, String createdBy) {
+    public void initial(String id, String createdBy, Long eid) {
         this.id = id;
         this.revision = new Revision(0, Instant.now(), null, createdBy);
+        this.data.put("eid", eid);
     }
 
     public void revision(String newId) {
         this.type = this.type.concat(REVISION_POSTFIX);
-        this.safeRevision().setParentId(this.id);
+        this.getNonNullRevision().setParentId(this.id);
         this.id = newId;
     }
 
-    private Revision safeRevision() {
+    public void terminate(String newId, String terminatedBy) {
+        this.revision(newId);
+        this.revision.terminate(terminatedBy);
+    }
+
+    private Revision getNonNullRevision() {
         if (this.revision == null) {
             //can only happen when MetaData is inserted not by API code, but by scripts like testing
             this.revision = new Revision(0, Instant.now(), null, "system");
@@ -63,7 +69,7 @@ public class MetaData implements Serializable {
     }
 
     public void promoteToLatest(String updatedBy) {
-        this.revision = new Revision(this.safeRevision().getNumber() + 1, Instant.now(), null, updatedBy);
+        this.revision = new Revision(this.getNonNullRevision().getNumber() + 1, Instant.now(), null, updatedBy);
     }
 
     public void setData(Map<String, Object> data) {

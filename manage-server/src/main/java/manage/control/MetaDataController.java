@@ -154,8 +154,8 @@ public class MetaDataController {
 
     private MetaData doPost(@Validated @RequestBody MetaData metaData, String uid) throws JsonProcessingException {
         validate(metaData);
-
-        metaData.initial(UUID.randomUUID().toString(), uid);
+        Long eid = metaDataRepository.highestEid(metaData.getType());
+        metaData.initial(UUID.randomUUID().toString(), uid, eid + 1);
         return metaDataRepository.save(metaData);
     }
 
@@ -170,10 +170,12 @@ public class MetaDataController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/client/metadata/{type}/{id}")
-    public boolean remove(@PathVariable("type") String type, @PathVariable("id") String id) throws
-        JsonProcessingException {
+    public boolean remove(@PathVariable("type") String type, @PathVariable("id") String id, FederatedUser federatedUser) {
         MetaData current = metaDataRepository.findById(id, type);
         metaDataRepository.remove(current);
+
+        current.terminate(UUID.randomUUID().toString(), federatedUser.getUid());
+        metaDataRepository.save(current);
         return true;
     }
 
@@ -195,7 +197,6 @@ public class MetaDataController {
 
     private MetaData doPut(@Validated @RequestBody MetaData metaData, String updatedBy) throws JsonProcessingException {
         validate(metaData);
-
         String id = metaData.getId();
         MetaData previous = metaDataRepository.findById(id, metaData.getType());
         previous.revision(UUID.randomUUID().toString());

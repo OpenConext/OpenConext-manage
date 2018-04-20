@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 @Configuration
@@ -92,7 +93,9 @@ public class MongobeeConfiguration {
         ObjectMapper objectMapper = new ObjectMapper();
         PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
         Resource[] resources = resolver.getResources("classpath:single_tenant_templates/*.json");
-        Arrays.asList(resources).forEach(res -> this.createSingleTenantTemplate(mongoTemplate, res, objectMapper));
+        final AtomicLong id = new AtomicLong();
+        Arrays.asList(resources).forEach(res -> this.createSingleTenantTemplate(mongoTemplate, res, objectMapper,
+            id.incrementAndGet()));
 
     }
 
@@ -104,7 +107,7 @@ public class MongobeeConfiguration {
     }
 
     @ChangeSet(order = "004", id = "importCSA", author = "Okke Harsta")
-    public void inportCsaSettings(MongoTemplate mongoTemplate) throws Exception {
+    public void importCsaSettings(MongoTemplate mongoTemplate) throws Exception {
         doImportCsaSettings(mongoTemplate);
     }
 
@@ -218,7 +221,7 @@ public class MongobeeConfiguration {
     }
 
     @SuppressWarnings("unchecked")
-    private void createSingleTenantTemplate(MongoTemplate mongoTemplate, Resource resource, ObjectMapper objectMapper) {
+    private void createSingleTenantTemplate(MongoTemplate mongoTemplate, Resource resource, ObjectMapper objectMapper, Long currentEid) {
         final Map<String, Object> template = readTemplate(resource, objectMapper);
         Map<String, Object> data = new HashMap<>();
         data.put("entityid", template.get("entityid"));
@@ -249,7 +252,8 @@ public class MongobeeConfiguration {
         data.put("metaDataFields", template);
 
         MetaData metaData = new MetaData("single_tenant_template", data);
-        metaData.initial(UUID.randomUUID().toString(), "auto-generated");
+
+        metaData.initial(UUID.randomUUID().toString(), "auto-generated", currentEid);
         mongoTemplate.insert(metaData, metaData.getType());
     }
 

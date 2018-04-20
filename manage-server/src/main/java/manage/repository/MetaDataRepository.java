@@ -2,6 +2,7 @@ package manage.repository;
 
 import manage.model.MetaData;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.CriteriaDefinition;
@@ -111,6 +112,13 @@ public class MetaDataRepository {
             .include("data.state")
             .include("data.allowedEntities");
         return mongoTemplate.find(query, Map.class, type);
+    }
+
+    public Long highestEid(String type) {
+        Query query = new Query().limit(1).with(new Sort(Sort.Direction.DESC, "data.eid"));
+        query.fields().include("data.eid");
+        Map res = mongoTemplate.findOne(query, Map.class, type);
+        return Long.valueOf(Map.class.cast(res.get("data")).get("eid").toString());
     }
 
     private Query queryWithSamlFields() {
