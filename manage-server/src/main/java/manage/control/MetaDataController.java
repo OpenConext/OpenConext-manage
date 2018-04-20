@@ -170,11 +170,11 @@ public class MetaDataController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/client/metadata/{type}/{id}")
-    public boolean remove(@PathVariable("type") String type, @PathVariable("id") String id, FederatedUser federatedUser) {
+    public boolean remove(@PathVariable("type") String type, @PathVariable("id") String id) {
         MetaData current = metaDataRepository.findById(id, type);
         metaDataRepository.remove(current);
 
-        current.terminate(UUID.randomUUID().toString(), federatedUser.getUid());
+        current.terminate(UUID.randomUUID().toString());
         metaDataRepository.save(current);
         return true;
     }

@@ -229,13 +229,6 @@ public class EngineBlockFormatter {
             TreeMap<>());
         Map<String, String> metaDataFields = (Map<String, String>) source.get("metaDataFields");
 
-        String nameIDFormat = metaDataFields.get("NameIDFormat");
-        if (hasText(nameIDFormat)) {
-            Set<String> nameIDFormats = (Set<String>) metadata.computeIfAbsent(
-                "NameIDFormats", key -> new HashSet<>());
-            nameIDFormats.add(nameIDFormat);
-        }
-
         IntStream.range(0, 3).forEach(i -> {
             String nameIdFormat = metaDataFields.get("NameIDFormats:" + i);
             if (hasText(nameIdFormat)) {
@@ -245,8 +238,6 @@ public class EngineBlockFormatter {
             }
 
         });
-
-        commonAttributes.put("metadata:NameIDFormats", empty());
     }
 
     private void addAttributeReleasePolicy(Map<String, Object> source, Map<String, Object> result) {

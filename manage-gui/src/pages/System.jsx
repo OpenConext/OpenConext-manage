@@ -161,7 +161,8 @@ export default class System extends React.PureComponent {
         const {pushPreviewResults, loading, copiedToClipboardClassName} = this.state;
         const {currentUser} = this.props;
         const json = pushPreviewResults ? JSON.stringify(pushPreviewResults) : "";
-        const showCopy = (pushPreviewResults && pushPreviewResults.length < 250 * 1000);
+        const showCopy = (pushPreviewResults && json.length > 0 && json.length < 250 * 1000);
+        const showSelectText = !showCopy && json.length > 0;
         return (
             <section className="push">
                 <p>{I18n.t("playground.pushPreviewInfo", {name: currentUser.push.name})}</p>
@@ -171,12 +172,23 @@ export default class System extends React.PureComponent {
                 {showCopy &&
                 <CopyToClipboard text={json} onCopy={this.copiedToClipboard}>
                     <span className={`button green ${copiedToClipboardClassName}`}>
-                       Copy to clipboard <i className="fa fa-clone"></i>
+                       Copy JSON to clipboard <i className="fa fa-clone"></i>
                     </span>
                 </CopyToClipboard>
                 }
+                {showSelectText &&
+                    <span className="button green" onClick={() =>{
+                        const range = document.createRange();
+                        const sel = window.getSelection();
+                        range.selectNodeContents(this.pushPreviewResults);
+                        sel.removeAllRanges();
+                        sel.addRange(range);
+                    }}>
+                       Select all JSON <i className="fa fa-clone"></i>
+                    </span>
+                }
                 {pushPreviewResults &&
-                <section className="results pushPreviewResults">
+                <section className="results pushPreviewResults" ref={ref => this.pushPreviewResults = ref}>
                     {json}
                 </section>}
             </section>
