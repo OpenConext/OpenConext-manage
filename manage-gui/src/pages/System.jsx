@@ -161,7 +161,7 @@ export default class System extends React.PureComponent {
         const {pushPreviewResults, loading, copiedToClipboardClassName} = this.state;
         const {currentUser} = this.props;
         const json = pushPreviewResults ? JSON.stringify(pushPreviewResults) : "";
-        const showCopy = (pushPreviewResults && json.length > 0 && json.length < 250 * 1000);
+        const showCopy = (pushPreviewResults && json.length > 0 && json.length < 150 * 1000);
         const showSelectText = !showCopy && json.length > 0;
         return (
             <section className="push">
