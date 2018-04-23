@@ -13,13 +13,11 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -47,11 +45,10 @@ public class StatsController {
         Query query = getQueryWithDefaultFields(new Query());
 
         List<Map> providers = new ArrayList<>();
-        Arrays.asList(EntityType.values()).forEach(type -> {
-            Arrays.asList(new String[]{type.getType(), type.getType().concat(REVISION_POSTFIX)}).forEach
-                (collectionName -> providers.addAll(metaDataRepository.getMongoTemplate().find(query, Map.class,
-                    collectionName)));
-        });
+        Arrays.asList(EntityType.values()).forEach(type -> Arrays.asList(new String[]{type.getType(), type.getType()
+            .concat(REVISION_POSTFIX)}).forEach
+            (collectionName -> providers.addAll(metaDataRepository.getMongoTemplate().find(query, Map.class,
+                collectionName))));
         this.sortProvidersByEidRevisionNumber(providers);
 
         LOG.info("Revisions request by {} returning {} providers", apiUser.getName(), providers.size());
@@ -106,26 +103,42 @@ public class StatsController {
     public List<Map> connections(APIUser apiUser) {
         LOG.info("Connections request for by {}", apiUser.getName());
         List<Map> result = new ArrayList<>();
-        Date date = new Date();
-//        Arrays.asList(EntityType.values()).forEach(type -> {
-//            Arrays.asList(new String[]{type.getType(), type.getType().concat(REVISION_POSTFIX)}).forEach
-//                (collectionName -> result.addAll(metaDataRepository.getMongoTemplate().find(query, Map.class,
-//                    collectionName)));
-//        });
+        List<Map> uniqueIdentityProviders = this.uniques(EntityType.IDP.getType(), apiUser);
 
-        LOG.info("Connections request for date {} returning {} connections", date, result.size());
+//        uniqueIdentityProviders.forEach();
+
+//        LOG.info("Connections request for date {} returning {} connections", date, result.size());
         return result;
     }
+
+    @GetMapping("/internal/stats/new_providers")
+    public List<Map> newProviders(APIUser apiUser) {
+        LOG.info("Providers without eid request by {}", apiUser.getName());
+        Query query = new Query();
+        query.addCriteria(Criteria.where("data.eid").exists(false));
+        query.fields().include("_id").include("revision.parentId");
+
+        List<Map> providers = new ArrayList<>();
+        Arrays.asList(EntityType.values()).forEach(type -> Arrays.asList(new String[]{type.getType(), type.getType()
+            .concat(REVISION_POSTFIX)}).forEach
+            (collectionName -> providers.addAll(metaDataRepository.getMongoTemplate().find(query, Map.class,
+                collectionName))));
+
+        LOG.info("Providers without eid request by {} returning {} providers", apiUser.getName(), providers.size());
+        return providers;
+    }
+
 
     private Map revision(Map provider) {
         return Map.class.cast(provider.get("revision"));
     }
 
     private Query getQueryWithDefaultFields(Query query) {
-        query.with(new Sort(Sort.Direction.ASC, "data.eid", "revision.number"))
+        query
             .fields()
             .include("data.eid")
             .include("revision.number")
+            .include("revision.parentId")
             .include("data.state")
             .include("type")
             .include("revision.created")

@@ -111,7 +111,7 @@ public class MongobeeConfiguration {
         doImportCsaSettings(mongoTemplate);
     }
 
-    @ChangeSet(order = "005", id = "reImportCSA", author = "Okke Harsta", runAlways = true)
+    @ChangeSet(order = "005", id = "reImportCSA", author = "Okke Harsta", runAlways = false)
     public void reImportCsaSettings(MongoTemplate mongoTemplate) throws Exception {
         doImportCsaSettings(mongoTemplate);
     }
@@ -198,6 +198,57 @@ public class MongobeeConfiguration {
         addTypeOfService(mongoTemplate, type, en, "en");
     }
 
+    @ChangeSet(order = "008", id = "addEIDToNewEntities", author = "Okke Harsta", runAlways = true)
+    public void addEIDToNewEntitiesToParents(MongoTemplate mongoTemplate) throws IOException {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("data.eid").exists(false));
+
+        Arrays.asList(EntityType.values()).forEach(type -> {
+            String collectionName = type.getType();
+            List<Map> parentProviders = mongoTemplate.find(query, Map.class, collectionName);
+            parentProviders.forEach(provider -> {
+                long eid = this.highestEid(mongoTemplate, collectionName) + 1;
+                Map.class.cast(provider.get("data")).put("eid", eid);
+                mongoTemplate.save(provider, collectionName);
+                LOG.info("Add eid {} to parent provider {}", eid, provider.get("_id"));
+            });
+        });
+    }
+
+    @ChangeSet(order = "009", id = "addEIDToNewEntitiesToRevisions", author = "Okke Harsta", runAlways = true)
+    public void addEIDToNewEntitiesToChildren(MongoTemplate mongoTemplate) throws IOException {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("data.eid").exists(false));
+
+        //All parent providers have a valid eid due to change set 008 and we can process the revisions
+        Arrays.asList(EntityType.values()).forEach(type -> {
+            String collectionName = type.getType().concat(REVISION_POSTFIX);
+            List<Map> childProviders = mongoTemplate.find(query, Map.class, collectionName);
+            childProviders.forEach(childProvider -> {
+                Map revision = Map.class.cast(childProvider.get("revision"));
+                Object parentId = revision.get("parentId");
+                Map parent = mongoTemplate.findById(parentId, Map.class, type.getType());
+                if (parent != null) {
+                    Map data = Map.class.cast(childProvider.get("data"));
+                    Object eid = Map.class.cast(parent.get("data")).get("eid");
+                    data.put("eid", eid);
+                    mongoTemplate.save(childProvider, collectionName);
+                    LOG.info("Add eid {} to child provider {}", eid, childProvider.get("_id"));
+                } else {
+                    LOG.info("Skipping setting eid to child provider {} because parent {} is deleted", childProvider
+                        .get("_id"), parentId);
+                }
+            });
+        });
+    }
+
+    private Long highestEid(MongoTemplate mongoTemplate, String type) {
+        Query query = new Query().limit(1).with(new Sort(Sort.Direction.DESC, "data.eid"));
+        query.fields().include("data.eid");
+        Map res = mongoTemplate.findOne(query, Map.class, type);
+        return Long.valueOf(Map.class.cast(res.get("data")).get("eid").toString());
+    }
+
     private void addTypeOfService(MongoTemplate mongoTemplate, String type, Map<String, List<TypeOfService>> nl,
                                   String lang) {
         nl.keySet().forEach(entityId -> {
@@ -221,7 +272,8 @@ public class MongobeeConfiguration {
     }
 
     @SuppressWarnings("unchecked")
-    private void createSingleTenantTemplate(MongoTemplate mongoTemplate, Resource resource, ObjectMapper objectMapper, Long currentEid) {
+    private void createSingleTenantTemplate(MongoTemplate mongoTemplate, Resource resource, ObjectMapper
+        objectMapper, Long currentEid) {
         final Map<String, Object> template = readTemplate(resource, objectMapper);
         Map<String, Object> data = new HashMap<>();
         data.put("entityid", template.get("entityid"));
