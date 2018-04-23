@@ -3,6 +3,7 @@ package manage.control;
 import lombok.EqualsAndHashCode;
 import manage.api.APIUser;
 import manage.migration.EntityType;
+import manage.model.ProviderIdentifier;
 import manage.repository.MetaDataRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,13 +16,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import static java.util.stream.Collectors.toList;
@@ -101,14 +105,62 @@ public class StatsController {
 
     @GetMapping("/internal/stats/connections")
     public List<Map> connections(APIUser apiUser) {
+        String today = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
         LOG.info("Connections request for by {}", apiUser.getName());
         List<Map> result = new ArrayList<>();
         List<Map> uniqueIdentityProviders = this.uniques(EntityType.IDP.getType(), apiUser);
+        List<Map> serviceProviders = this.uniques(EntityType.SP.getType(), apiUser);
 
-//        uniqueIdentityProviders.forEach();
+        uniqueIdentityProviders.forEach(idp -> {
+            Map idpRevision = Map.class.cast(idp.get("revision"));
+            Long idpCreated = Date.class.cast(idpRevision.get("created")).getTime();
+            Long idpTerminated = this.getTime(idpRevision, "terminated");
+            Long idpEnded = this.getTime(idpRevision, "ended");
 
-//        LOG.info("Connections request for date {} returning {} connections", date, result.size());
+            Map idpData = Map.class.cast(idp.get("data"));
+            Boolean allowedAll = Boolean.class.cast(idpData.get("allowedall"));
+            List<Map> spCandidates;
+            if (allowedAll) {
+                spCandidates = serviceProviders;
+            } else {
+                List<String> allowedEntities = List.class.cast(idpData.get("allowedEntities"));
+                spCandidates = serviceProviders.stream().filter(sp -> allowedEntities.contains(Map.class.cast(sp.get
+                    ("data")).get("entityid"))).collect(toList());
+            }
+            List<Map> connectedServiceProviders = spCandidates.stream().filter(sp -> {
+                /**
+                 * The SP may not be ended / terminated before the create date of the IdP and if the IdP is ended or
+                 * terminated then the SP may noy be created afterwards
+                 */
+                Map spRevision = Map.class.cast(sp.get("revision"));
+                Long spCreated = Date.class.cast(spRevision.get("created")).getTime();
+                Long spTerminated = this.getTime(idpRevision, "terminated");
+                Long spEnded = this.getTime(idpRevision, "ended");
+                Map spData = Map.class.cast(sp.get("data"));
+                Boolean spAllowedAll = Boolean.class.cast(spData.get("allowedall"));
+                boolean whiteListed = List.class.cast(spData.get("allowedEntities")).contains(idpData.get("entityid"));
+                return (spAllowedAll || whiteListed) &&
+                    (spData.get("state").equals(idpData.get("state"))) &&
+                    (spTerminated == null || spTerminated > idpCreated) &&
+                    (spEnded == null || spEnded > idpCreated) &&
+                    (idpEnded == null || idpEnded > spCreated) &&
+                    (idpTerminated == null || idpTerminated > spCreated);
+            }).map(sp -> {
+                Map<String, String> subResult = new ProviderIdentifier(idp).toMap(EntityType.IDP, Optional.empty());
+                Map entry = new ProviderIdentifier(sp).toMap(EntityType.SP, Optional.of(subResult));
+                entry.put("date", today);
+                return entry;
+            }).collect(toList());
+            result.addAll(connectedServiceProviders);
+        });
+
+        LOG.info("Connections request returning {} connections", result.size());
         return result;
+    }
+
+    private Long getTime(Map revision, String name) {
+        Date date = Date.class.cast(revision.get(name));
+        return date != null ? date.getTime() : null;
     }
 
     @GetMapping("/internal/stats/new_providers")
@@ -136,14 +188,16 @@ public class StatsController {
     private Query getQueryWithDefaultFields(Query query) {
         query
             .fields()
-            .include("data.eid")
+            .include("type")
             .include("revision.number")
             .include("revision.parentId")
-            .include("data.state")
-            .include("type")
             .include("revision.created")
             .include("revision.terminated")
+            .include("data.eid")
+            .include("data.state")
             .include("data.entityid")
+            .include("data.allowedall")
+            .include("data.allowedEntities")
             .include("data.metaDataFields.name:en")
             .include("data.metaDataFields.name:nl")
             .include("data.metaDataFields.coin:institution_id");
@@ -178,20 +232,4 @@ public class StatsController {
             id.getClass().getName()));
     }
 
-    @EqualsAndHashCode
-    private static class ProviderIdentifier {
-        //Every revision that has a different entityID, state or institution_id is considered a different entity
-        public String entityId;
-        public String state;
-        public String institutionId;
-
-        ProviderIdentifier(Map provider) {
-            Map data = Map.class.cast(provider.get("data"));
-            this.entityId = String.class.cast(data.get("entityid"));
-            this.institutionId = (String) Map.class.cast(data.getOrDefault("metaDataFields", new HashMap<>())).get
-                ("coin:institution_id");
-            this.state = String.class.cast(data.get("state"));
-        }
-
-    }
 }

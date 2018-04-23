@@ -221,6 +221,7 @@ public class MongobeeConfiguration {
         query.addCriteria(Criteria.where("data.eid").exists(false));
 
         //All parent providers have a valid eid due to change set 008 and we can process the revisions
+        Map<Object, Long> parentIdToEidMap = new HashMap<>();
         Arrays.asList(EntityType.values()).forEach(type -> {
             String collectionName = type.getType().concat(REVISION_POSTFIX);
             List<Map> childProviders = mongoTemplate.find(query, Map.class, collectionName);
@@ -229,14 +230,28 @@ public class MongobeeConfiguration {
                 Object parentId = revision.get("parentId");
                 Map parent = mongoTemplate.findById(parentId, Map.class, type.getType());
                 if (parent != null) {
-                    Map data = Map.class.cast(childProvider.get("data"));
                     Object eid = Map.class.cast(parent.get("data")).get("eid");
-                    data.put("eid", eid);
+
+                    Map childData = Map.class.cast(childProvider.get("data"));
+                    childData.put("eid", eid);
                     mongoTemplate.save(childProvider, collectionName);
                     LOG.info("Add eid {} to child provider {}", eid, childProvider.get("_id"));
                 } else {
-                    LOG.info("Skipping setting eid to child provider {} because parent {} is deleted", childProvider
-                        .get("_id"), parentId);
+                    long eid;
+                    if (parentIdToEidMap.containsKey(parentId)) {
+                        LOG.info("Re-using new eid for child provider {} because parent {} is deleted", childProvider
+                            .get("_id"), parentId);
+                        eid = parentIdToEidMap.get(parentId);
+                    } else {
+                        eid = this.highestEid(mongoTemplate, collectionName) + 1;
+                        LOG.info("Calculating new eid for child provider {} because parent {} is deleted", childProvider
+                            .get("_id"), parentId);
+                        parentIdToEidMap.put(parentId, eid);
+                    }
+                    Map childData = Map.class.cast(childProvider.get("data"));
+                    childData.put("eid", eid);
+                    mongoTemplate.save(childProvider, collectionName);
+                    LOG.info("Add new eid {} to child provider {}", eid, childProvider.get("_id"));
                 }
             });
         });
