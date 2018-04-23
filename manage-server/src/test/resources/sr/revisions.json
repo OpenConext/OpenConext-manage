@@ -1,0 +1,6448 @@
+[
+    {
+        "_id": "299b2e24-fa90-4cac-93bd-2b39dfa0f6bd",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 0,
+            "created": 1339490298000
+        },
+        "data": {
+            "eid": 1,
+            "entityid": "https://engine.test2.surfconext.nl/authentication/sp/metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:en": "OpenConext Engine",
+                "name:nl": "OpenConext Engine"
+            }
+        }
+    },
+    {
+        "_id": "b90ae328-3b0a-410f-8c00-57eb7b6cc114",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 1,
+            "created": 1433242986000
+        },
+        "data": {
+            "eid": 1,
+            "entityid": "https://engine.test2.surfconext.nl/authentication/sp/metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:en": "OpenConext Engine",
+                "name:nl": "OpenConext Engine"
+            }
+        }
+    },
+    {
+        "_id": "e9073c55-0f9b-4fd0-9b1e-b1a9757da798",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 2,
+            "created": 1445256110000
+        },
+        "data": {
+            "eid": 1,
+            "entityid": "https://engine.test.surfconext.nl/authentication/sp/metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:en": "OpenConext Engine",
+                "name:nl": "OpenConext Engine"
+            }
+        }
+    },
+    {
+        "_id": "651a2b47-fc43-4c98-8197-aa7b1b8d86c6",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 3,
+            "created": 1447245472000
+        },
+        "data": {
+            "eid": 1,
+            "entityid": "https://engine.test.surfconext.nl/authentication/sp/metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:en": "OpenConext Engine",
+                "name:nl": "OpenConext Engine"
+            }
+        }
+    },
+    {
+        "_id": "51ab2242-b7f3-44f3-8223-e209092ad82a",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 4,
+            "created": 1447245497000
+        },
+        "data": {
+            "eid": 1,
+            "entityid": "https://engine.test.surfconext.nl/authentication/sp/metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:en": "OpenConext Engine",
+                "name:nl": "OpenConext Engine"
+            }
+        }
+    },
+    {
+        "_id": "0741fab7-229a-49e3-a68b-7a8a4f5a9034",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 5,
+            "created": 1447245504000
+        },
+        "data": {
+            "eid": 1,
+            "entityid": "https://engine.test.surfconext.nl/authentication/sp/metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:en": "OpenConext Engine",
+                "name:nl": "OpenConext Engine"
+            }
+        }
+    },
+    {
+        "_id": "b34cafb4-e0c9-435b-9a24-82adf1e45ca9",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 6,
+            "created": 1447245538000
+        },
+        "data": {
+            "eid": 1,
+            "entityid": "https://engine.test.surfconext.nl/authentication/sp/metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:en": "OpenConext Engine",
+                "name:nl": "OpenConext Engine"
+            }
+        }
+    },
+    {
+        "_id": "0f651b29-0278-4e6a-a407-54f91629095d",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 7,
+            "created": 1447245568000
+        },
+        "data": {
+            "eid": 1,
+            "entityid": "https://engine.test.surfconext.nl/authentication/sp/metadata",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:en": "OpenConext Engine",
+                "name:nl": "OpenConext Engine"
+            }
+        }
+    },
+    {
+        "_id": "5aa655ef-b4a2-4265-bde1-6268e01d9d30",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 8,
+            "created": 1447245586000
+        },
+        "data": {
+            "eid": 1,
+            "entityid": "https://engine.test.surfconext.nl/authentication/sp/metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:en": "OpenConext Engine",
+                "name:nl": "OpenConext Engine"
+            }
+        }
+    },
+    {
+        "_id": "4d6eb168-c272-4f7e-a5ab-8a516b5793b0",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 9,
+            "created": 1447245709000
+        },
+        "data": {
+            "eid": 1,
+            "entityid": "https://engine.test.surfconext.nl/authentication/sp/metadata2",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:en": "OpenConext Engine",
+                "name:nl": "OpenConext Engine"
+            }
+        }
+    },
+    {
+        "_id": "567162f9-ae6c-4bc6-8543-7853c5f69e57",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 10,
+            "created": 1447245775000
+        },
+        "data": {
+            "eid": 1,
+            "entityid": "https://onzin.test.surfconext.nl/authentication/sp/metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:en": "OpenConext Engine",
+                "name:nl": "OpenConext Engine"
+            }
+        }
+    },
+    {
+        "_id": "134565d7-6dd4-4738-ac5c-22985fbb3652",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 11,
+            "created": 1447245843000
+        },
+        "data": {
+            "eid": 1,
+            "entityid": "https://engine.test.surfconext.nl/authentication/sp/metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:en": "OpenConext Engine",
+                "name:nl": "OpenConext Engine"
+            }
+        }
+    },
+    {
+        "_id": "fc55be6f-ba8c-4363-804c-29e447eea5e9",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 12,
+            "created": 1447245930000
+        },
+        "data": {
+            "eid": 1,
+            "entityid": "https://engine.test.surfconext.nl/authentication/sp/metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:en": "OpenConext Engine",
+                "name:nl": "OpenConext Engine"
+            }
+        }
+    },
+    {
+        "_id": "786afed6-2d89-46c5-a2b9-a988ee6a75fe",
+        "type": "saml20_sp",
+        "revision": {
+            "number": 13,
+            "created": 1450282277000
+        },
+        "data": {
+            "eid": 1,
+            "entityid": "https://engine.test.surfconext.nl/authentication/sp/metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:en": "OpenConext Engine",
+                "name:nl": "OpenConext Engine"
+            }
+        }
+    },
+    {
+        "_id": "7ad248b0-d1f4-4ef5-bb27-0b9616228ef3",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 0,
+            "created": 1339490312000
+        },
+        "data": {
+            "eid": 2,
+            "entityid": "https://engine.test2.surfconext.nl/authentication/idp/metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:en": "OpenConext Engine",
+                "name:nl": "OpenConext Engine"
+            }
+        }
+    },
+    {
+        "_id": "cc3b629c-7cbc-487a-9b97-194413a8d14e",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 1,
+            "created": 1445256145000
+        },
+        "data": {
+            "eid": 2,
+            "entityid": "https://engine.test.surfconext.nl/authentication/idp/metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:en": "OpenConext Engine",
+                "name:nl": "OpenConext Engine"
+            }
+        }
+    },
+    {
+        "_id": "243dc490-d603-45d9-8fc8-fb6386d17026",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 2,
+            "created": 1450281388000
+        },
+        "data": {
+            "eid": 2,
+            "entityid": "https://engine.test.surfconext.nl/authentication/idp/metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:en": "OpenConext Engine",
+                "name:nl": "OpenConext Engine"
+            }
+        }
+    },
+    {
+        "_id": "a31fb05d-d2cb-4877-8d76-5137e47d8da4",
+        "type": "saml20_idp",
+        "revision": {
+            "number": 3,
+            "created": 1450281392000
+        },
+        "data": {
+            "eid": 2,
+            "entityid": "https://engine.test.surfconext.nl/authentication/idp/metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:en": "OpenConext Engine",
+                "name:nl": "OpenConext Engine"
+            }
+        }
+    },
+    {
+        "_id": "57b626f9-7410-49fe-8165-7e7ce7e9b256",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 0,
+            "created": 1339492188000
+        },
+        "data": {
+            "eid": 4,
+            "entityid": "https://manage.test2.surfconext.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:en": "OpenConext Manage",
+                "name:nl": "OpenConext Manage"
+            }
+        }
+    },
+    {
+        "_id": "abc0429e-6e98-42d9-83af-23ac550eab98",
+        "type": "saml20_sp",
+        "revision": {
+            "number": 1,
+            "created": 1445256375000
+        },
+        "data": {
+            "eid": 4,
+            "entityid": "https://manage.test.surfconext.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:en": "OpenConext Manage",
+                "name:nl": "OpenConext Manage"
+            }
+        }
+    },
+    {
+        "_id": "b1b5cd96-3937-408a-8f85-71594416a009",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 0,
+            "created": 1339499237000
+        },
+        "data": {
+            "eid": 6,
+            "entityid": "http://mock-idp",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:en": "OpenConext Mujina IDP",
+                "name:nl": "OpenConext Mujina IDP"
+            }
+        }
+    },
+    {
+        "_id": "9a60f9e3-be3a-45f1-a1f7-21d5743eebf1",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 1,
+            "created": 1428409598000
+        },
+        "data": {
+            "eid": 6,
+            "entityid": "http://mock-idp",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:en": "OpenConext Mujina IDP",
+                "name:nl": "OpenConext Mujina IDP"
+            }
+        }
+    },
+    {
+        "_id": "1713145a-c2e5-4bdf-8851-1273a336cee3",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 2,
+            "created": 1445256590000
+        },
+        "data": {
+            "eid": 6,
+            "entityid": "http://mock-idp",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:en": "OpenConext Mujina IDP",
+                "name:nl": "OpenConext Mujina IDP"
+            }
+        }
+    },
+    {
+        "_id": "e16c9536-aa14-4a87-b055-4e4d3d26508d",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 3,
+            "created": 1447165007000
+        },
+        "data": {
+            "eid": 6,
+            "entityid": "http://mock-idp",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:en": "OpenConext Mujina IDP",
+                "name:nl": "OpenConext Mujina IDP"
+            }
+        }
+    },
+    {
+        "_id": "99bf614a-1e22-4ae2-b1bc-012fd0076fe9",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 4,
+            "created": 1447165011000
+        },
+        "data": {
+            "eid": 6,
+            "entityid": "http://mock-idp",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:en": "OpenConext Mujina IDP",
+                "name:nl": "OpenConext Mujina IDP"
+            }
+        }
+    },
+    {
+        "_id": "837693d6-0e0c-469f-b4f9-d89298dc707a",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 5,
+            "created": 1447165242000
+        },
+        "data": {
+            "eid": 6,
+            "entityid": "http://mock-idp",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:en": "OpenConext Mujina IDP",
+                "name:nl": "OpenConext Mujina IDP"
+            }
+        }
+    },
+    {
+        "_id": "cfd1b4f2-2ac8-42d3-b36d-a16b829ace2b",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 6,
+            "created": 1447165260000
+        },
+        "data": {
+            "eid": 6,
+            "entityid": "http://mock-idp",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:en": "OpenConext Mujina IDP",
+                "name:nl": "OpenConext Mujina IDP"
+            }
+        }
+    },
+    {
+        "_id": "fc9e6c4b-4181-44df-875a-b43cdc65cb17",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 7,
+            "created": 1447165560000
+        },
+        "data": {
+            "eid": 6,
+            "entityid": "http://mock-idp",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:en": "OpenConext Mujina IDP",
+                "name:nl": "OpenConext Mujina IDP"
+            }
+        }
+    },
+    {
+        "_id": "3f4e6184-08dd-4ee2-9587-e3da284b65fd",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 8,
+            "created": 1447165614000
+        },
+        "data": {
+            "eid": 6,
+            "entityid": "http://mock-idp",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:en": "OpenConext Mujina IDP",
+                "name:nl": "OpenConext Mujina IDP"
+            }
+        }
+    },
+    {
+        "_id": "537f7f0e-6111-494d-8c0b-246e569d9cec",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 9,
+            "created": 1447165639000
+        },
+        "data": {
+            "eid": 6,
+            "entityid": "http://mock-idp",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:en": "OpenConext Mujina IDP",
+                "name:nl": "OpenConext Mujina IDP"
+            }
+        }
+    },
+    {
+        "_id": "71968c83-ddc2-49a4-8136-7ea17876e314",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 10,
+            "created": 1449758656000
+        },
+        "data": {
+            "eid": 6,
+            "entityid": "http://mock-idp",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:en": "OpenConext Mujina IDP",
+                "name:nl": "OpenConext Mujina IDP"
+            }
+        }
+    },
+    {
+        "_id": "886fab08-cd5b-4046-819c-fa267d4a2d63",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 11,
+            "created": 1449758865000
+        },
+        "data": {
+            "eid": 6,
+            "entityid": "http://mock-idp",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:en": "OpenConext Mujina IDP",
+                "name:nl": "OpenConext Mujina IDP"
+            }
+        }
+    },
+    {
+        "_id": "be38614e-0c1f-4466-8134-f51b578ee732",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 12,
+            "created": 1449759009000
+        },
+        "data": {
+            "eid": 6,
+            "entityid": "http://mock-idp",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:en": "OpenConext Mujina IDP",
+                "name:nl": "OpenConext Mujina IDP"
+            }
+        }
+    },
+    {
+        "_id": "e05881df-6f32-401f-ace8-371a1ebd6c81",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 13,
+            "created": 1449759012000
+        },
+        "data": {
+            "eid": 6,
+            "entityid": "http://mock-idp",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:en": "OpenConext Mujina IDP",
+                "name:nl": "OpenConext Mujina IDP"
+            }
+        }
+    },
+    {
+        "_id": "814b52c2-5205-44de-a24c-32ecc57d7a05",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 14,
+            "created": 1449759018000
+        },
+        "data": {
+            "eid": 6,
+            "entityid": "http://mock-idp",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:en": "OpenConext Mujina IDP",
+                "name:nl": "OpenConext Mujina IDP"
+            }
+        }
+    },
+    {
+        "_id": "137c9cce-5c66-47f2-8244-9c7ec8d12116",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 15,
+            "created": 1449759961000
+        },
+        "data": {
+            "eid": 6,
+            "entityid": "http://mock-idp",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:en": "OpenConext Mujina IDP",
+                "name:nl": "OpenConext Mujina IDP"
+            }
+        }
+    },
+    {
+        "_id": "05dbe20f-a2cf-4d2a-b95e-5a58a68edded",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 16,
+            "created": 1449760057000
+        },
+        "data": {
+            "eid": 6,
+            "entityid": "http://mock-idp",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:en": "OpenConext Mujina IDP",
+                "name:nl": "OpenConext Mujina IDP"
+            }
+        }
+    },
+    {
+        "_id": "6e55d498-ecda-4e25-ba06-9f0cfb11b3ee",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 17,
+            "created": 1449760278000
+        },
+        "data": {
+            "eid": 6,
+            "entityid": "http://mock-idp",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:en": "OpenConext Mujina IDP",
+                "name:nl": "OpenConext Mujina IDP"
+            }
+        }
+    },
+    {
+        "_id": "4a0fd5d7-43fc-4e3d-88fc-11701e8680f0",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 18,
+            "created": 1449760289000
+        },
+        "data": {
+            "eid": 6,
+            "entityid": "http://mock-idp",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:en": "OpenConext Mujina IDP",
+                "name:nl": "OpenConext Mujina IDP"
+            }
+        }
+    },
+    {
+        "_id": "7863383a-9bee-4df6-b4cd-fe7a0e72399e",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 19,
+            "created": 1450349871000
+        },
+        "data": {
+            "eid": 6,
+            "entityid": "http://mock-idp",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:en": "OpenConext Mujina IDP",
+                "name:nl": "OpenConext Mujina IDP"
+            }
+        }
+    },
+    {
+        "_id": "395ad1b1-fe2c-4473-9fbe-a1241eab010c",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 20,
+            "created": 1450349934000
+        },
+        "data": {
+            "eid": 6,
+            "entityid": "http://mock-idp",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:en": "OpenConext Mujina IDP",
+                "name:nl": "OpenConext Mujina IDP"
+            }
+        }
+    },
+    {
+        "_id": "d544441f-8311-41f1-b011-0dc473b9b7f5",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 21,
+            "created": 1450358264000
+        },
+        "data": {
+            "eid": 6,
+            "entityid": "http://mock-idp",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:en": "OpenConext Mujina IDP",
+                "name:nl": "OpenConext Mujina IDP"
+            }
+        }
+    },
+    {
+        "_id": "9bb56618-7d7e-42f2-b95f-57e07efb07b8",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 22,
+            "created": 1450358328000
+        },
+        "data": {
+            "eid": 6,
+            "entityid": "http://mock-idp",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:en": "OpenConext Mujina IDP",
+                "name:nl": "OpenConext Mujina IDP"
+            }
+        }
+    },
+    {
+        "_id": "89323b4d-b741-42d5-ad3a-d329e0cdcd7f",
+        "type": "saml20_idp",
+        "revision": {
+            "number": 23,
+            "created": 1450358341000
+        },
+        "data": {
+            "eid": 6,
+            "entityid": "http://mock-idp",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:en": "OpenConext Mujina IDP",
+                "name:nl": "OpenConext Mujina IDP"
+            }
+        }
+    },
+    {
+        "_id": "9e60dea3-da1a-4345-b4b7-ae0448608e14",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 0,
+            "created": 1339499246000
+        },
+        "data": {
+            "eid": 7,
+            "entityid": "http://mock-sp",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:en": "OpenConext Mujina SP",
+                "name:nl": "OpenConext Mujina SP"
+            }
+        }
+    },
+    {
+        "_id": "c14f8a62-0f2e-4eb4-b18a-cb2e62f6509d",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 1,
+            "created": 1445256406000
+        },
+        "data": {
+            "eid": 7,
+            "entityid": "http://mock-sp",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:en": "OpenConext Mujina SP",
+                "name:nl": "OpenConext Mujina SP"
+            }
+        }
+    },
+    {
+        "_id": "87447639-8d50-48a1-bcc0-4339b5481203",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 2,
+            "created": 1445957124000
+        },
+        "data": {
+            "eid": 7,
+            "entityid": "http://mock-sp",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:en": "OpenConext Mujina SP",
+                "name:nl": "OpenConext Mujina SP"
+            }
+        }
+    },
+    {
+        "_id": "3a57741a-8dd0-4241-8905-39c332f36ce4",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 3,
+            "created": 1446034522000
+        },
+        "data": {
+            "eid": 7,
+            "entityid": "http://mock-sp",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:en": "OpenConext Mujina SP",
+                "name:nl": "OpenConext Mujina SP"
+            }
+        }
+    },
+    {
+        "_id": "cbbfe7c5-3c52-4eff-81b8-b4522e31519e",
+        "type": "saml20_sp",
+        "revision": {
+            "number": 4,
+            "created": 1448010034000
+        },
+        "data": {
+            "eid": 7,
+            "entityid": "http://mock-sp",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:en": "OpenConext Mujina SP",
+                "name:nl": "OpenConext Mujina SP"
+            }
+        }
+    },
+    {
+        "_id": "5bdc6438-930b-42d0-8394-378883b74341",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 0,
+            "created": 1339567255000
+        },
+        "data": {
+            "eid": 9,
+            "entityid": "https://serviceregistry.test2.surfconext.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:en": "OpenConext ServiceRegistry",
+                "name:nl": "OpenConext ServiceRegistry"
+            }
+        }
+    },
+    {
+        "_id": "d76437ab-e8aa-43bc-99ee-9ca7768e60a7",
+        "type": "saml20_sp",
+        "revision": {
+            "number": 1,
+            "created": 1445256481000
+        },
+        "data": {
+            "eid": 9,
+            "entityid": "https://serviceregistry.test.surfconext.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:en": "OpenConext ServiceRegistry",
+                "name:nl": "OpenConext ServiceRegistry"
+            }
+        }
+    },
+    {
+        "_id": "227664fb-7597-4fe6-8a0d-54fc16a05ecf",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 0,
+            "created": 1340091828000
+        },
+        "data": {
+            "eid": 10,
+            "entityid": "https://grouper.test2.surfconext.nl/grouper/shibboleth",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext Grouper",
+                "name:en": "OpenConext Grouper"
+            }
+        }
+    },
+    {
+        "_id": "a60ac026-e1b3-483c-a613-7d81296f5575",
+        "type": "saml20_sp",
+        "revision": {
+            "number": 1,
+            "created": 1445256348000
+        },
+        "data": {
+            "eid": 10,
+            "entityid": "https://grouper.test.surfconext.nl/grouper/shibboleth",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext Grouper",
+                "name:en": "OpenConext Grouper"
+            }
+        }
+    },
+    {
+        "_id": "caf56817-a17d-4bd3-8af5-59a772193e57",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 0,
+            "created": 1340634869000
+        },
+        "data": {
+            "eid": 11,
+            "entityid": "https://teams.test2.surfconext.nl/shibboleth",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext Teams",
+                "name:en": "OpenConext Teams"
+            }
+        }
+    },
+    {
+        "_id": "9bb1a81f-517f-41e1-b15c-0b498be72c8d",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 1,
+            "created": 1442326106000
+        },
+        "data": {
+            "eid": 11,
+            "entityid": "https://teams.test2.surfconext.nl/shibboleth",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext Teams",
+                "name:en": "OpenConext Teams"
+            }
+        }
+    },
+    {
+        "_id": "316c639b-b1a6-46ec-a7ba-7d6f42b8b583",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 2,
+            "created": 1445256510000
+        },
+        "data": {
+            "eid": 11,
+            "entityid": "https://teams.test.surfconext.nl/shibboleth",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext Teams",
+                "name:en": "OpenConext Teams"
+            }
+        }
+    },
+    {
+        "_id": "e5462142-3d20-4348-9048-1d752ba2762b",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 3,
+            "created": 1452002099000
+        },
+        "data": {
+            "eid": 11,
+            "entityid": "https://teams.test.surfconext.nl/shibboleth",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext Teams",
+                "name:en": "OpenConext Teams"
+            }
+        }
+    },
+    {
+        "_id": "91e7614c-6246-4624-a804-95326f2462f7",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 4,
+            "created": 1452002167000
+        },
+        "data": {
+            "eid": 11,
+            "entityid": "https://teams.test.surfconext.nl/shibboleth",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext Teams",
+                "name:en": "OpenConext Teams"
+            }
+        }
+    },
+    {
+        "_id": "09b2e83e-43fb-49c7-a3e1-2fe4f8258dbe",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 5,
+            "created": 1524227962374
+        },
+        "data": {
+            "eid": 11,
+            "entityid": "https://teams.test.surfconext.nl/shibboleth",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext Teams",
+                "name:en": "OpenConext Teams"
+            }
+        }
+    },
+    {
+        "_id": "cd1efddc-2381-494d-a3e5-1b04da2385d8",
+        "type": "saml20_sp",
+        "revision": {
+            "number": 6,
+            "created": 1524234611390
+        },
+        "data": {
+            "eid": 11,
+            "entityid": "https://teams.test.surfconext.nl/shibboleth-changed",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext Teams",
+                "name:en": "OpenConext Teams"
+            }
+        }
+    },
+    {
+        "_id": "fcd4812b-e580-48dc-b28c-b4edc17a5037",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 0,
+            "created": 1340796155000
+        },
+        "data": {
+            "eid": 12,
+            "entityid": "https://api.test2.surfconext.nl/",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext API",
+                "name:en": "OpenConext API"
+            }
+        }
+    },
+    {
+        "_id": "cec79dc3-f982-45b0-8af7-50be1bbc9ea8",
+        "type": "saml20_sp",
+        "revision": {
+            "number": 1,
+            "created": 1445256198000
+        },
+        "data": {
+            "eid": 12,
+            "entityid": "https://api.test.surfconext.nl/",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext API",
+                "name:en": "OpenConext API"
+            }
+        }
+    },
+    {
+        "_id": "328dfa9d-d0c3-424e-a928-ef8d8e55df69",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 0,
+            "created": 1340796155000
+        },
+        "data": {
+            "eid": 13,
+            "entityid": "https://apis.test2.surfconext.nl/",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext APIS",
+                "name:en": "OpenConext APIS"
+            }
+        }
+    },
+    {
+        "_id": "8a709ea8-fc3d-4ccd-bdf7-6c3b8ce2d443",
+        "type": "saml20_sp",
+        "revision": {
+            "number": 1,
+            "created": 1445256223000
+        },
+        "data": {
+            "eid": 13,
+            "entityid": "https://apis.test.surfconext.nl/",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext APIS",
+                "name:en": "OpenConext APIS"
+            }
+        }
+    },
+    {
+        "_id": "68b6098b-0e8b-4a80-8d22-727ff5211a5a",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 0,
+            "created": 1340796155000
+        },
+        "data": {
+            "eid": 14,
+            "entityid": "https://apis.test2.surfconext.nl/client/client.html",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext APIS admin client",
+                "name:en": "OpenConext APIS admin client"
+            }
+        }
+    },
+    {
+        "_id": "99da5f13-eb98-44eb-89c0-eff5f220f4fe",
+        "type": "saml20_sp",
+        "revision": {
+            "number": 1,
+            "created": 1445256249000
+        },
+        "data": {
+            "eid": 14,
+            "entityid": "https://apis.test.surfconext.nl/client/client.html",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext APIS admin client",
+                "name:en": "OpenConext APIS admin client"
+            }
+        }
+    },
+    {
+        "_id": "766ebd24-82b2-4f7a-aa5d-48b55575ce83",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 0,
+            "created": 1340634869000
+        },
+        "data": {
+            "eid": 15,
+            "entityid": "https://authz.test2.surfconext.nl/shibboleth",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext Authz Server",
+                "name:en": "OpenConext Authz Server"
+            }
+        }
+    },
+    {
+        "_id": "24f4f069-59c5-4a13-a0ca-2377277e67fa",
+        "type": "saml20_sp",
+        "revision": {
+            "number": 1,
+            "created": 1445256315000
+        },
+        "data": {
+            "eid": 15,
+            "entityid": "https://authz.test.surfconext.nl/shibboleth",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext Authz Server",
+                "name:en": "OpenConext Authz Server"
+            }
+        }
+    },
+    {
+        "_id": "259726ec-47bf-4d49-8b04-d3bf1e3dd906",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 0,
+            "created": 1340634869000
+        },
+        "data": {
+            "eid": 16,
+            "entityid": "https://authz-admin.test2.surfconext.nl/shibboleth",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext Authz Admin",
+                "name:en": "OpenConext Authz Admin"
+            }
+        }
+    },
+    {
+        "_id": "9109bab0-92c5-4fcd-a849-7444d6624880",
+        "type": "saml20_sp",
+        "revision": {
+            "number": 1,
+            "created": 1445256285000
+        },
+        "data": {
+            "eid": 16,
+            "entityid": "https://authz-admin.test.surfconext.nl/shibboleth",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext Authz Admin",
+                "name:en": "OpenConext Authz Admin"
+            }
+        }
+    },
+    {
+        "_id": "6cce36d7-7fb7-4c66-95bd-08ddc108282b",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 0,
+            "created": 1429200124000
+        },
+        "data": {
+            "eid": 17,
+            "entityid": "https://idp-acc.surfnet.nl/",
+            "state": "testaccepted"
+        }
+    },
+    {
+        "_id": "85ef8bab-c2a0-4246-9ec1-72469f146b21",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 1,
+            "created": 1429200124000
+        },
+        "data": {
+            "eid": 17,
+            "entityid": "https://idp-acc.surfnet.nl/",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "d75c64e9-39ae-45c6-a07a-13016e366e0f",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 2,
+            "created": 1429200130000
+        },
+        "data": {
+            "eid": 17,
+            "entityid": "https://idp-acc.surfnet.nl/",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "4e747f6c-e5ec-4fdc-ac0b-d58be6de94d8",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 3,
+            "created": 1429200134000
+        },
+        "data": {
+            "eid": 17,
+            "entityid": "https://idp-acc.surfnet.nl/",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:en": "SURFnet B.V. (TEST)"
+            }
+        }
+    },
+    {
+        "_id": "ba35e5ec-59a2-48b7-beb9-fe66ad809155",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 4,
+            "created": 1429200140000
+        },
+        "data": {
+            "eid": 17,
+            "entityid": "https://idp-acc.surfnet.nl/",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:en": "SURFnet B.V. (TEST)"
+            }
+        }
+    },
+    {
+        "_id": "e44a9af3-b8cd-46f0-9e4c-e0abbb80ff46",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 5,
+            "created": 1442330645000
+        },
+        "data": {
+            "eid": 17,
+            "entityid": "https://idp-acc.surfnet.nl/",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:en": "43"
+            }
+        }
+    },
+    {
+        "_id": "1ea3111a-7fd6-455f-9c41-c5d1044cc5aa",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 6,
+            "created": 1445340434000
+        },
+        "data": {
+            "eid": 17,
+            "entityid": "https://idp-acc.surfnet.nl/",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "SURFnet bv | Acceptatie",
+                "name:en": "SURFnet bv | Acceptatie"
+            }
+        }
+    },
+    {
+        "_id": "aa64c0d9-39ae-41b6-8d13-345ec1151322",
+        "type": "saml20_idp",
+        "revision": {
+            "number": 7,
+            "created": 1445340440000
+        },
+        "data": {
+            "eid": 17,
+            "entityid": "https://idp-acc.surfnet.nl/",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:nl": "SURFnet bv | Acceptatie",
+                "name:en": "SURFnet bv | Acceptatie"
+            }
+        }
+    },
+    {
+        "_id": "398aedf1-3cd8-4a35-8309-68e0920bfa3d",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 0,
+            "created": 1431419087000
+        },
+        "data": {
+            "eid": 21,
+            "entityid": "https://imogen.surfnet.nl/testsp/module.php/saml/sp/metadata.php/test-sp",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:en": "Bas Test SP | SURFnet",
+                "name:nl": "Bas Test SP | SURFnet"
+            }
+        }
+    },
+    {
+        "_id": "c13e1386-074b-41c8-85b5-c032b3d7bf97",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 1,
+            "created": 1431419246000
+        },
+        "data": {
+            "eid": 21,
+            "entityid": "https://imogen.surfnet.nl/testsp/module.php/saml/sp/metadata.php/test-sp",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:en": "Bas Test SP | SURFnet",
+                "name:nl": "Bas Test SP | SURFnet"
+            }
+        }
+    },
+    {
+        "_id": "1d681129-a2b2-49cc-9606-6c92ec9f14fd",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 2,
+            "created": 1431419251000
+        },
+        "data": {
+            "eid": 21,
+            "entityid": "https://imogen.surfnet.nl/testsp/module.php/saml/sp/metadata.php/test-sp",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:en": "Bas Test SP | SURFnet",
+                "name:nl": "Bas Test SP | SURFnet"
+            }
+        }
+    },
+    {
+        "_id": "38085a8f-5ab7-4177-bbe9-8304866fab6f",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 3,
+            "created": 1431419304000
+        },
+        "data": {
+            "eid": 21,
+            "entityid": "https://imogen.surfnet.nl/testsp/module.php/saml/sp/metadata.php/test-sp",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:en": "Bas Test SP | SURFnet",
+                "name:nl": "Bas Test SP | SURFnet"
+            }
+        }
+    },
+    {
+        "_id": "235da584-7696-4fbf-96ba-a9ceee43cf76",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 4,
+            "created": 1431419331000
+        },
+        "data": {
+            "eid": 21,
+            "entityid": "https://imogen.surfnet.nl/testsp/module.php/saml/sp/metadata.php/test-sp",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:en": "Bas Test SP | SURFnet",
+                "name:nl": "Bas Test SP | SURFnet"
+            }
+        }
+    },
+    {
+        "_id": "8c933939-4e5a-43b4-8586-a264cf15ce5e",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 5,
+            "created": 1431419389000
+        },
+        "data": {
+            "eid": 21,
+            "entityid": "https://imogen.surfnet.nl/testsp/module.php/saml/sp/metadata.php/test-sp",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:en": "Bas Test SP | SURFnet",
+                "name:nl": "Bas Test SP | SURFnet"
+            }
+        }
+    },
+    {
+        "_id": "7557a3e7-ee8e-4740-87ae-1c53ed473e4a",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 6,
+            "created": 1431419415000
+        },
+        "data": {
+            "eid": 21,
+            "entityid": "https://imogen.surfnet.nl/testsp/module.php/saml/sp/metadata.php/test-sp",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:en": "Bas Test SP | SURFnet",
+                "name:nl": "Bas Test SP | SURFnet"
+            }
+        }
+    },
+    {
+        "_id": "395cd12e-808b-4ca1-922c-10652514bdf8",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 7,
+            "created": 1431419435000
+        },
+        "data": {
+            "eid": 21,
+            "entityid": "https://imogen.surfnet.nl/testsp/module.php/saml/sp/metadata.php/test-sp",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:en": "Bas Test SP | SURFnet",
+                "name:nl": "Bas Test SP | SURFnet"
+            }
+        }
+    },
+    {
+        "_id": "997b0cb3-65e9-4b25-b560-49f5d4127bef",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 8,
+            "created": 1431419949000
+        },
+        "data": {
+            "eid": 21,
+            "entityid": "https://imogen.surfnet.nl/testsp/module.php/saml/sp/metadata.php/test-sp",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:en": "Bas Test SP | SURFnet",
+                "name:nl": "Bas Test SP | SURFnet"
+            }
+        }
+    },
+    {
+        "_id": "b80e0d12-a74a-4681-8147-2a6c984df77f",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 9,
+            "created": 1431419973000
+        },
+        "data": {
+            "eid": 21,
+            "entityid": "https://imogen.surfnet.nl/testsp/module.php/saml/sp/metadata.php/test-sp",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:en": "Bas Test SP | SURFnet",
+                "name:nl": "Bas Test SP | SURFnet"
+            }
+        }
+    },
+    {
+        "_id": "2efa400b-3050-48d0-b9b9-3dd34932e4f3",
+        "type": "saml20_sp",
+        "revision": {
+            "number": 10,
+            "created": 1447164114000
+        },
+        "data": {
+            "eid": 21,
+            "entityid": "https://imogen.surfnet.nl/testsp/module.php/saml/sp/metadata.php/test-sp",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:en": "Bas Test SP | SURFnet",
+                "name:nl": "Bas Test SP | SURFnet"
+            }
+        }
+    },
+    {
+        "_id": "b55b0d7a-a87d-4782-a2b0-95c75960e7e0",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 0,
+            "created": 1433244922000
+        },
+        "data": {
+            "eid": 22,
+            "entityid": "https://dmsonline.uvt.nl/nl/home",
+            "state": "testaccepted"
+        }
+    },
+    {
+        "_id": "932e61f8-3eb4-40c1-b32d-4bfe3389a54a",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 1,
+            "created": 1433244922000
+        },
+        "data": {
+            "eid": 22,
+            "entityid": "https://dmsonline.uvt.nl/nl/home",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "4d3537bb-0ae3-416e-bbf5-26c01192371a",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 2,
+            "created": 1433244973000
+        },
+        "data": {
+            "eid": 22,
+            "entityid": "https://dmsonline.uvt.nl/nl/home",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "3664569f-e7f3-473c-a441-ef9f343f2e09",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 3,
+            "created": 1433245074000
+        },
+        "data": {
+            "eid": 22,
+            "entityid": "https://dmsonline.uvt.nl/nl/home",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:en": "DMS | Delcom",
+                "name:nl": "DMS | Delcom"
+            }
+        }
+    },
+    {
+        "_id": "59a6aa24-9bc4-4f3e-a063-81327235844d",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 4,
+            "created": 1433245112000
+        },
+        "data": {
+            "eid": 22,
+            "entityid": "https://dmsonline.uvt.nl/nl/home",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:en": "DMS | Delcom",
+                "name:nl": "DMS | Delcom"
+            }
+        }
+    },
+    {
+        "_id": "b29111b8-b003-47f6-bace-5b34bb9f2e8a",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 5,
+            "created": 1433245139000
+        },
+        "data": {
+            "eid": 22,
+            "entityid": "https://dmsonline.uvt.nl/nl/home",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:en": "DMS | Delcom",
+                "name:nl": "DMS | Delcom"
+            }
+        }
+    },
+    {
+        "_id": "ae9316dc-5a97-4289-9382-05d6649d2e0c",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 6,
+            "created": 1437404069000
+        },
+        "data": {
+            "eid": 22,
+            "entityid": "https://dmsonline.uvt.nl/nl/home",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:en": "DMS | Delcom",
+                "name:nl": "DMS | Delcom"
+            }
+        }
+    },
+    {
+        "_id": "e78c2aae-421f-4c95-b28e-2b51eabc57bb",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 7,
+            "created": 1447944018000
+        },
+        "data": {
+            "eid": 22,
+            "entityid": "https://dmsonline.uvt.nl/nl/home",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:en": "DMS | Delcomkje",
+                "name:nl": "DMS | Delcomkje"
+            }
+        }
+    },
+    {
+        "_id": "28286d12-a4ae-4f4b-bc83-fd59029cf6bd",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 8,
+            "created": 1447944021000
+        },
+        "data": {
+            "eid": 22,
+            "entityid": "https://dmsonline.uvt.nl/nl/home",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:en": "DMS | Delcomkje",
+                "name:nl": "DMS | Delcomkje"
+            }
+        }
+    },
+    {
+        "_id": "1555cb41-4d97-4d04-a133-61fc3fa8eec2",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 9,
+            "created": 1448007484000
+        },
+        "data": {
+            "eid": 22,
+            "entityid": "https://dmsonline.uvt.nl/nl/home",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:en": "DMS | Delcomkje",
+                "name:nl": "DMS | Delcomkje"
+            }
+        }
+    },
+    {
+        "_id": "423135a1-2198-4c83-ac88-8045ddc48716",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 10,
+            "created": 1448007664000
+        },
+        "data": {
+            "eid": 22,
+            "entityid": "https://dmsonline.uvt.nl/nl/home",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:en": "DMS | Delcomkje",
+                "name:nl": "DMS | Delcomkje"
+            }
+        }
+    },
+    {
+        "_id": "ef12092a-67c5-4022-af09-5748e2b2dc77",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 11,
+            "created": 1448008137000
+        },
+        "data": {
+            "eid": 22,
+            "entityid": "https://dmsonline.uvt.nl/nl/home",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:en": "DMS | Delcomkje",
+                "name:nl": "DMS | Delcomkje"
+            }
+        }
+    },
+    {
+        "_id": "cf644e61-e4d3-4f92-a438-3e6eb12e3afd",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 12,
+            "created": 1448008138000
+        },
+        "data": {
+            "eid": 22,
+            "entityid": "https://dmsonline.uvt.nl/nl/home",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:en": "DMS | Delcomkje",
+                "name:nl": "DMS | Delcomkje"
+            }
+        }
+    },
+    {
+        "_id": "9167bd7c-2ce2-42b0-8547-8cb8832474d6",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 13,
+            "created": 1524226668062
+        },
+        "data": {
+            "eid": 22,
+            "entityid": "https://dmsonline.uvt.nl/nl/home",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:en": "DMS | Delcomkje",
+                "name:nl": "DMS | Delcomkje"
+            }
+        }
+    },
+    {
+        "_id": "dfc2f83a-3f26-4da9-96d5-67a29a7c8f49",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 14,
+            "created": 1524227881001
+        },
+        "data": {
+            "eid": 22,
+            "entityid": "https://dmsonline.uvt.nl/nl/home",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:en": "DMS | Delcomkje",
+                "name:nl": "DMS | Delcomkje"
+            }
+        }
+    },
+    {
+        "_id": "cda094ba-f9af-45f5-a14e-16b8a324caf0",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 15,
+            "created": 1524229983618
+        },
+        "data": {
+            "eid": 22,
+            "entityid": "https://dmsonline.uvt.nl/nl/home",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:en": "DMS | Delcomkje",
+                "name:nl": "DMS | Delcomkje"
+            }
+        }
+    },
+    {
+        "_id": "41530035-7e27-4a76-a9df-965e040eca2b",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 16,
+            "created": 1524230039106
+        },
+        "data": {
+            "eid": 22,
+            "entityid": "https://dmsonline.uvt.nl/nl/home",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:en": "DMS | Delcomkje",
+                "name:nl": "DMS | Delcomkje"
+            }
+        }
+    },
+    {
+        "_id": "3a12b722-9e43-48a0-85e7-6effccbd9d04",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 17,
+            "created": 1524230063475
+        },
+        "data": {
+            "eid": 22,
+            "entityid": "https://dmsonline.uvt.nl/nl/home",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:en": "DMS | Delcomkje",
+                "name:nl": "DMS | Delcomkje"
+            }
+        }
+    },
+    {
+        "_id": "f58791f5-4e7f-4057-abe7-ab29a7ef9714",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 18,
+            "created": 1524230118570
+        },
+        "data": {
+            "eid": 22,
+            "entityid": "https://dmsonline.uvt.nl/nl/home",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:en": "DMS | Delcomkje",
+                "name:nl": "DMS | Delcomkje"
+            }
+        }
+    },
+    {
+        "_id": "7bd39377-3e35-467b-ab3e-9b7c1534fc4c",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 19,
+            "created": 1524232985876
+        },
+        "data": {
+            "eid": 22,
+            "entityid": "https://dmsonline.uvt.nl/nl/home",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:en": "DMS | Delcomkje",
+                "name:nl": "DMS | Delcomkje"
+            }
+        }
+    },
+    {
+        "_id": "3c380b57-b063-4e85-850e-312c0b8041fc",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 20,
+            "created": 1524233396155
+        },
+        "data": {
+            "eid": 22,
+            "entityid": "https://dmsonline.uvt.nl/nl/home",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:en": "DMS | Delcomkje",
+                "name:nl": "DMS | Delcomkje"
+            }
+        }
+    },
+    {
+        "_id": "d5e5b028-1679-4d2c-8398-69e94ebe425c",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 21,
+            "created": 1524234418560
+        },
+        "data": {
+            "eid": 22,
+            "entityid": "https://dmsonline.uvt.nl/nl/home",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:en": "DMS | Delcomkje",
+                "name:nl": "DMS | Delcomkje"
+            }
+        }
+    },
+    {
+        "_id": "4428ab81-9169-49a7-9c86-733b9fc5a867",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 22,
+            "created": 1524234460043
+        },
+        "data": {
+            "eid": 22,
+            "entityid": "https://dmsonline.uvt.nl/nl/home",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:en": "DMS | Delcomkje",
+                "name:nl": "DMS | Delcomkje"
+            }
+        }
+    },
+    {
+        "_id": "c02499e1-8e62-40b7-a556-36bcded21b28",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 23,
+            "created": 1524234474871
+        },
+        "data": {
+            "eid": 22,
+            "entityid": "https://dmsonline.uvt.nl/nl/home",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:en": "DMS | Delcomkje",
+                "name:nl": "DMS | Delcomkje"
+            }
+        }
+    },
+    {
+        "_id": "9f2dadcf-7578-4979-95c9-04c193f90a33",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 24,
+            "created": 1524234693855
+        },
+        "data": {
+            "eid": 22,
+            "entityid": "https://dmsonline.uvt.nl/nl/home",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:en": "DMS | Delcomkje",
+                "name:nl": "DMS | Delcomkje"
+            }
+        }
+    },
+    {
+        "_id": "83e00642-c750-47cf-939b-d3f495a9dc79",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 25,
+            "created": 1524234765908
+        },
+        "data": {
+            "eid": 22,
+            "entityid": "https://dmsonline.uvt.nl/nl/home",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:en": "DMS | Delcomkje",
+                "name:nl": "DMS | Delcomkje"
+            }
+        }
+    },
+    {
+        "_id": "d9194377-6357-491f-9fed-741e5fccee20",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 26,
+            "created": 1524234959004
+        },
+        "data": {
+            "eid": 22,
+            "entityid": "https://dmsonline.uvt.nl/nl/home",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:en": "DMS | Delcomkje",
+                "name:nl": "DMS | Delcomkje"
+            }
+        }
+    },
+    {
+        "_id": "3bf8e8c6-a70a-4501-9ec7-3827d8b81a8d",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 27,
+            "created": 1524235378324
+        },
+        "data": {
+            "eid": 22,
+            "entityid": "https://dmsonline.uvt.nl/nl/home",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:en": "DMS | Delcomkje",
+                "name:nl": "DMS | Delcomkje"
+            }
+        }
+    },
+    {
+        "_id": "13d5f6f7-68d4-4d8d-9225-26c9a42eb099",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 28,
+            "created": 1524235552562
+        },
+        "data": {
+            "eid": 22,
+            "entityid": "https://dmsonline.uvt.nl/nl/home",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:en": "DMS | Delcomkje",
+                "name:nl": "DMS | Delcomkje"
+            }
+        }
+    },
+    {
+        "_id": "9cdee862-8dbc-4b5c-b7bb-8f4164ddb999",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 29,
+            "created": 1524235605111
+        },
+        "data": {
+            "eid": 22,
+            "entityid": "https://dmsonline.uvt.nl/nl/home",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:en": "DMS | Delcomkje",
+                "name:nl": "DMS | Delcomkje"
+            }
+        }
+    },
+    {
+        "_id": "553cdd11-639a-4685-9ff5-02649836a47a",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 30,
+            "created": 1524378981883
+        },
+        "data": {
+            "eid": 22,
+            "entityid": "https://dmsonline.uvt.nl/nl/home",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:en": "DMS | Delcomkje",
+                "name:nl": "DMS | Delcomkje"
+            }
+        }
+    },
+    {
+        "_id": "ebdbf2a8-afc4-425e-8556-1599f3753e3e",
+        "type": "saml20_sp",
+        "revision": {
+            "number": 31,
+            "created": 1524379212943
+        },
+        "data": {
+            "eid": 22,
+            "entityid": "https://dmsonline.uvt.nl/nl/home",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:en": "DMS | Delcomkje",
+                "name:nl": "DMS | Delcomkje"
+            }
+        }
+    },
+    {
+        "_id": "c3d3345b-2260-4f13-ad71-0a06f7d416d5",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 0,
+            "created": 1438173947000
+        },
+        "data": {
+            "eid": 23,
+            "entityid": "https://sp.testshib.org/shibboleth-sp",
+            "state": "testaccepted"
+        }
+    },
+    {
+        "_id": "65a7bcd8-169a-4b17-ae17-4ba6f27bc837",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 1,
+            "created": 1438173947000
+        },
+        "data": {
+            "eid": 23,
+            "entityid": "https://sp.testshib.org/shibboleth-sp",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "2a872941-9da1-47e3-80dd-cc4f27edf526",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 2,
+            "created": 1438173962000
+        },
+        "data": {
+            "eid": 23,
+            "entityid": "https://sp.testshib.org/shibboleth-sp",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "586c4a76-a624-4acf-b8a6-3cd3462a50b8",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 3,
+            "created": 1438173986000
+        },
+        "data": {
+            "eid": 23,
+            "entityid": "https://sp.testshib.org/shibboleth-sp",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:en": "TestShib Test SP"
+            }
+        }
+    },
+    {
+        "_id": "c0eef9ac-8f13-4880-92fd-10f7d6a3c7a3",
+        "type": "saml20_sp",
+        "revision": {
+            "number": 4,
+            "created": 1452001952000
+        },
+        "data": {
+            "eid": 23,
+            "entityid": "https://sp.testshib.org/shibboleth-sp",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:en": "TestShib Test SP"
+            }
+        }
+    },
+    {
+        "_id": "ea6c126c-c6ec-4cc1-a078-bd6b62f931c6",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 0,
+            "created": 1441095035000
+        },
+        "data": {
+            "eid": 24,
+            "entityid": "surfnet:test:idp:import",
+            "state": "testaccepted"
+        }
+    },
+    {
+        "_id": "bde5dc8b-2f36-48b7-a071-74bcb48f5237",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 1,
+            "created": 1441095035000
+        },
+        "data": {
+            "eid": 24,
+            "entityid": "surfnet:test:idp:import",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "7ddf4dc2-34bf-40a7-801a-6c98ff5abf56",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 2,
+            "created": 1441095043000
+        },
+        "data": {
+            "eid": 24,
+            "entityid": "surfnet:test:idp:import",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "0cfba119-824e-4317-9e7d-bd85e0022227",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 3,
+            "created": 1441095107000
+        },
+        "data": {
+            "eid": 24,
+            "entityid": "https://idp.surfnet.nl",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "9903fd57-218d-4de4-bfce-09465fa403a2",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 4,
+            "created": 1441095114000
+        },
+        "data": {
+            "eid": 24,
+            "entityid": "https://idp.surfnet.nl",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "91d1fd16-e14a-4b0c-8cfd-74fcfd50caad",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 5,
+            "created": 1441095187000
+        },
+        "data": {
+            "eid": 24,
+            "entityid": "https://idp.surfnet.nl",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "ecd9c3b2-26f1-4d52-ad1c-f373083fb59f",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 6,
+            "created": 1445340503000
+        },
+        "data": {
+            "eid": 24,
+            "entityid": "https://idp.surfnet.nl",
+            "state": "prodaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "d79e24ad-5cb5-4495-8078-9bacad4f9421",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 7,
+            "created": 1445340506000
+        },
+        "data": {
+            "eid": 24,
+            "entityid": "https://idp.surfnet.nl",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:en": "SURFnet B.V."
+            }
+        }
+    },
+    {
+        "_id": "5efbb4ce-4ebd-4018-aec2-673e73c28fcf",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 8,
+            "created": 1445340560000
+        },
+        "data": {
+            "eid": 24,
+            "entityid": "https://idp.surfnet.nl",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "coin:institution_id": "SURFNET",
+                "name:nl": "SURFnet B.V.",
+                "name:en": "SURFnet B.V."
+            }
+        }
+    },
+    {
+        "_id": "d4823953-5934-40df-92f1-1b2c71ea6c95",
+        "type": "saml20_idp",
+        "revision": {
+            "number": 9,
+            "created": 1452702746000
+        },
+        "data": {
+            "eid": 24,
+            "entityid": "https://idp.surfnet.nl",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "coin:institution_id": "SURFNET",
+                "name:nl": "SURFnet B.V.",
+                "name:en": "SURFnet B.V."
+            }
+        }
+    },
+    {
+        "_id": "da6c95f2-b9ed-4f93-90c2-8dded5b1754b",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 0,
+            "created": 1444639442000
+        },
+        "data": {
+            "eid": 25,
+            "entityid": "https://pdp.test2.surfconext.nl/shibboleth",
+            "state": "testaccepted"
+        }
+    },
+    {
+        "_id": "d3eb394e-4ae8-4752-880e-e8fbd856d886",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 1,
+            "created": 1444639442000
+        },
+        "data": {
+            "eid": 25,
+            "entityid": "https://pdp.test2.surfconext.nl/shibboleth",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "ef66e5f1-29ff-4f5f-9269-842f513467a7",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 2,
+            "created": 1444639594000
+        },
+        "data": {
+            "eid": 25,
+            "entityid": "https://pdp.test2.surfconext.nl/shibboleth",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext PDP",
+                "name:en": "OpenConext PDP"
+            }
+        }
+    },
+    {
+        "_id": "c0293ce6-ad1c-49e5-85b1-df188de82d3a",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 3,
+            "created": 1444639626000
+        },
+        "data": {
+            "eid": 25,
+            "entityid": "https://pdp.test2.surfconext.nl/shibboleth",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext PDP",
+                "name:en": "OpenConext PDP"
+            }
+        }
+    },
+    {
+        "_id": "c14a012a-d6ca-4e76-9dcb-083d5613f07d",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 4,
+            "created": 1445256427000
+        },
+        "data": {
+            "eid": 25,
+            "entityid": "https://pdp.test.surfconext.nl/shibboleth",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext PDP",
+                "name:en": "OpenConext PDP"
+            }
+        }
+    },
+    {
+        "_id": "24eb45d8-372c-4e9f-bed0-a8eb7f95aa5d",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 5,
+            "created": 1447239826000
+        },
+        "data": {
+            "eid": 25,
+            "entityid": "https://pdp.test.surfconext.nl/shibboleth",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext PDP",
+                "name:en": "OpenConext PDP"
+            }
+        }
+    },
+    {
+        "_id": "771c5f14-2055-4631-b4f9-e314f66b1476",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 6,
+            "created": 1447244942000
+        },
+        "data": {
+            "eid": 25,
+            "entityid": "https://pdp.test.surfconext.nl/shibboleth",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext PDP",
+                "name:en": "OpenConext PDP"
+            }
+        }
+    },
+    {
+        "_id": "d198d4fe-db3c-4153-a464-062ac50e4cb8",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 7,
+            "created": 1447251306000
+        },
+        "data": {
+            "eid": 25,
+            "entityid": "https://pdp.test.surfconext.nl/shibboleth",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext PDP",
+                "name:en": "OpenConext PDP"
+            }
+        }
+    },
+    {
+        "_id": "f93796ad-2a8c-4e7d-8e6e-6dc702ff1f88",
+        "type": "saml20_sp",
+        "revision": {
+            "number": 8,
+            "created": 1447665364000
+        },
+        "data": {
+            "eid": 25,
+            "entityid": "https://pdp.test.surfconext.nl/shibboleth",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext PDP",
+                "name:en": "OpenConext PDP"
+            }
+        }
+    },
+    {
+        "_id": "02fb0fb1-c4f7-497b-9c05-e8c99b20a25c",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 0,
+            "created": 1445341623000
+        },
+        "data": {
+            "eid": 26,
+            "entityid": "https://thki-sid.pt-48.utr.surfcloud.nl/mellon/metadata",
+            "state": "testaccepted"
+        }
+    },
+    {
+        "_id": "8baf8e47-c7a2-486a-b7a2-652bf94de6c4",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 1,
+            "created": 1445341623000
+        },
+        "data": {
+            "eid": 26,
+            "entityid": "https://thki-sid.pt-48.utr.surfcloud.nl/mellon/metadata",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "c83c1dbf-ff26-401b-b25a-b654430ce22a",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 2,
+            "created": 1445341634000
+        },
+        "data": {
+            "eid": 26,
+            "entityid": "https://thki-sid.pt-48.utr.surfcloud.nl/mellon/metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "9f3c1e0b-104b-4891-91a6-3c0003eecf4f",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 3,
+            "created": 1445341638000
+        },
+        "data": {
+            "eid": 26,
+            "entityid": "https://thki-sid.pt-48.utr.surfcloud.nl/mellon/metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "53bbdebf-7dd6-4fb2-ac3b-da8d0df5ec9c",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 4,
+            "created": 1445341702000
+        },
+        "data": {
+            "eid": 26,
+            "entityid": "https://thki-sid.pt-48.utr.surfcloud.nl/mellon/metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "thkisid meloen",
+                "name:en": "thkisid meloen"
+            }
+        }
+    },
+    {
+        "_id": "ecb66f42-5cc7-4c29-9aad-ff036b063b97",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 5,
+            "created": 1450273449000
+        },
+        "data": {
+            "eid": 26,
+            "entityid": "https://thki-sid.pt-48.utr.surfcloud.nl/mellon/metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "thkisid meloen",
+                "name:en": "thkisid meloen"
+            }
+        }
+    },
+    {
+        "_id": "a0e29e8d-e282-4a1d-9cc4-a9db6e05990c",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 6,
+            "created": 1450273501000
+        },
+        "data": {
+            "eid": 26,
+            "entityid": "https://thki-sid.pt-48.utr.surfcloud.nl/mellon/metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "thkisid meloen",
+                "name:en": "thkisid meloen"
+            }
+        }
+    },
+    {
+        "_id": "7ba47497-dfc1-4455-b6bd-958102befafb",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 7,
+            "created": 1450276992000
+        },
+        "data": {
+            "eid": 26,
+            "entityid": "https://thki-sid.pt-48.utr.surfcloud.nl/mellon/metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "thkisid meloen",
+                "name:en": "thkisid meloen"
+            }
+        }
+    },
+    {
+        "_id": "b52f3957-0792-4ac5-b808-b198d089c050",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 8,
+            "created": 1451999541000
+        },
+        "data": {
+            "eid": 26,
+            "entityid": "https://thki-sid.pt-48.utr.surfcloud.nl/mellon/metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:en": "thkisid meloen",
+                "name:nl": "thkisid meloen"
+            }
+        }
+    },
+    {
+        "_id": "ec18e5b4-9662-4e28-a3de-96261ca06de3",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 9,
+            "created": 1452092557000
+        },
+        "data": {
+            "eid": 26,
+            "entityid": "https://thki-sid.pt-48.utr.surfcloud.nl/mellon/metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:en": "thkisid meloen",
+                "name:nl": "thkisid meloen"
+            }
+        }
+    },
+    {
+        "_id": "fcc300d6-b04a-40f4-b531-cea5aaa72c97",
+        "type": "saml20_sp",
+        "revision": {
+            "number": 10,
+            "created": 1452092587000
+        },
+        "data": {
+            "eid": 26,
+            "entityid": "https://thki-sid.pt-48.utr.surfcloud.nl/mellon/metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:en": "thkisid meloen",
+                "name:nl": "thkisid meloen"
+            }
+        }
+    },
+    {
+        "_id": "b2b1acb6-a9cd-4990-9de7-f23f511fff52",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 0,
+            "created": 1445342248000
+        },
+        "data": {
+            "eid": 27,
+            "entityid": "https://thki-sid.pt-48.utr.surfcloud.nl/ssp/module.php/saml/sp/metadata.php/default-sp",
+            "state": "testaccepted"
+        }
+    },
+    {
+        "_id": "1041ea63-e2de-4269-8274-ddee29b712e3",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 1,
+            "created": 1445342248000
+        },
+        "data": {
+            "eid": 27,
+            "entityid": "https://thki-sid.pt-48.utr.surfcloud.nl/ssp/module.php/saml/sp/metadata.php/default-sp",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "7cfcbd89-fdb4-4bbb-88b4-0edf12d762a8",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 2,
+            "created": 1445342260000
+        },
+        "data": {
+            "eid": 27,
+            "entityid": "https://thki-sid.pt-48.utr.surfcloud.nl/ssp/module.php/saml/sp/metadata.php/default-sp",
+            "state": "prodaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "9e311834-7aa0-45c2-a154-600b8604f5f4",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 3,
+            "created": 1445342288000
+        },
+        "data": {
+            "eid": 27,
+            "entityid": "https://thki-sid.pt-48.utr.surfcloud.nl/ssp/module.php/saml/sp/metadata.php/default-sp",
+            "state": "prodaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "a1195a21-0eb6-41e1-a1ce-719bded6638f",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 4,
+            "created": 1445342382000
+        },
+        "data": {
+            "eid": 27,
+            "entityid": "https://thki-sid.pt-48.utr.surfcloud.nl/ssp/module.php/saml/sp/metadata.php/default-sp",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "thki-sid sp",
+                "name:en": "thki-sid sp"
+            }
+        }
+    },
+    {
+        "_id": "9f692f3e-1c36-42a3-8b09-42dd95316a2f",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 5,
+            "created": 1450273527000
+        },
+        "data": {
+            "eid": 27,
+            "entityid": "https://thki-sid.pt-48.utr.surfcloud.nl/ssp/module.php/saml/sp/metadata.php/default-sp",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "thki-sid sp",
+                "name:en": "thki-sid sp"
+            }
+        }
+    },
+    {
+        "_id": "38d9d125-1eed-45c4-a2cb-03a92c796cc1",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 6,
+            "created": 1450273638000
+        },
+        "data": {
+            "eid": 27,
+            "entityid": "https://thki-sid.pt-48.utr.surfcloud.nl/ssp/module.php/saml/sp/metadata.php/default-sp",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "thki-sid sp",
+                "name:en": "thki-sid sp"
+            }
+        }
+    },
+    {
+        "_id": "0e7df951-77ba-4b4d-98ea-327125a07ae1",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 7,
+            "created": 1450273814000
+        },
+        "data": {
+            "eid": 27,
+            "entityid": "https://thki-sid.pt-48.utr.surfcloud.nl/ssp/module.php/saml/sp/metadata.php/default-sp",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "thki-sid sp",
+                "name:en": "thki-sid sp"
+            }
+        }
+    },
+    {
+        "_id": "a1e7804a-eb59-42ba-9588-874b70bcd7e6",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 8,
+            "created": 1524226668169
+        },
+        "data": {
+            "eid": 27,
+            "entityid": "https://thki-sid.pt-48.utr.surfcloud.nl/ssp/module.php/saml/sp/metadata.php/default-sp",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "thki-sid sp",
+                "name:en": "thki-sid sp"
+            }
+        }
+    },
+    {
+        "_id": "bfe28f6f-fdee-4644-b71e-800039521442",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 9,
+            "created": 1524227881076
+        },
+        "data": {
+            "eid": 27,
+            "entityid": "https://thki-sid.pt-48.utr.surfcloud.nl/ssp/module.php/saml/sp/metadata.php/default-sp",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "thki-sid sp",
+                "name:en": "thki-sid sp"
+            }
+        }
+    },
+    {
+        "_id": "18d2031b-5de2-4027-a00a-48cc9e93a96b",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 10,
+            "created": 1524229983705
+        },
+        "data": {
+            "eid": 27,
+            "entityid": "https://thki-sid.pt-48.utr.surfcloud.nl/ssp/module.php/saml/sp/metadata.php/default-sp",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "thki-sid sp",
+                "name:en": "thki-sid sp"
+            }
+        }
+    },
+    {
+        "_id": "c40b8b7b-a5fd-4395-9279-20f4a6fed4c0",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 11,
+            "created": 1524230039182
+        },
+        "data": {
+            "eid": 27,
+            "entityid": "https://thki-sid.pt-48.utr.surfcloud.nl/ssp/module.php/saml/sp/metadata.php/default-sp",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "thki-sid sp",
+                "name:en": "thki-sid sp"
+            }
+        }
+    },
+    {
+        "_id": "0730cb58-546c-4dc9-b689-5eeee2b85a52",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 12,
+            "created": 1524230063550
+        },
+        "data": {
+            "eid": 27,
+            "entityid": "https://thki-sid.pt-48.utr.surfcloud.nl/ssp/module.php/saml/sp/metadata.php/default-sp",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "thki-sid sp",
+                "name:en": "thki-sid sp"
+            }
+        }
+    },
+    {
+        "_id": "9e872cb2-af34-42d4-8b5f-0e6e37228ea5",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 13,
+            "created": 1524230118662
+        },
+        "data": {
+            "eid": 27,
+            "entityid": "https://thki-sid.pt-48.utr.surfcloud.nl/ssp/module.php/saml/sp/metadata.php/default-sp",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "thki-sid sp",
+                "name:en": "thki-sid sp"
+            }
+        }
+    },
+    {
+        "_id": "7f1f2a6c-ce8a-43d9-b7fb-b0301602986e",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 14,
+            "created": 1524232985956
+        },
+        "data": {
+            "eid": 27,
+            "entityid": "https://thki-sid.pt-48.utr.surfcloud.nl/ssp/module.php/saml/sp/metadata.php/default-sp",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "thki-sid sp",
+                "name:en": "thki-sid sp"
+            }
+        }
+    },
+    {
+        "_id": "edb2ddd4-4cc7-45d1-bcd1-46daf256eb1c",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 15,
+            "created": 1524233396228
+        },
+        "data": {
+            "eid": 27,
+            "entityid": "https://thki-sid.pt-48.utr.surfcloud.nl/ssp/module.php/saml/sp/metadata.php/default-sp",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "thki-sid sp",
+                "name:en": "thki-sid sp"
+            }
+        }
+    },
+    {
+        "_id": "e8012ffd-464a-4ac6-a055-ff620f8fe78e",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 16,
+            "created": 1524234418633
+        },
+        "data": {
+            "eid": 27,
+            "entityid": "https://thki-sid.pt-48.utr.surfcloud.nl/ssp/module.php/saml/sp/metadata.php/default-sp",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "thki-sid sp",
+                "name:en": "thki-sid sp"
+            }
+        }
+    },
+    {
+        "_id": "95e82a95-6c6b-4b45-bf40-726b1a26ad79",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 17,
+            "created": 1524234460149
+        },
+        "data": {
+            "eid": 27,
+            "entityid": "https://thki-sid.pt-48.utr.surfcloud.nl/ssp/module.php/saml/sp/metadata.php/default-sp",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "thki-sid sp",
+                "name:en": "thki-sid sp"
+            }
+        }
+    },
+    {
+        "_id": "88de9f29-6597-4565-97b9-b1515e8aed47",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 18,
+            "created": 1524234474965
+        },
+        "data": {
+            "eid": 27,
+            "entityid": "https://thki-sid.pt-48.utr.surfcloud.nl/ssp/module.php/saml/sp/metadata.php/default-sp",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "thki-sid sp",
+                "name:en": "thki-sid sp"
+            }
+        }
+    },
+    {
+        "_id": "55e2bba7-d951-4a1c-a516-f7603d2ff46f",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 19,
+            "created": 1524234693936
+        },
+        "data": {
+            "eid": 27,
+            "entityid": "https://thki-sid.pt-48.utr.surfcloud.nl/ssp/module.php/saml/sp/metadata.php/default-sp",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "thki-sid sp",
+                "name:en": "thki-sid sp"
+            }
+        }
+    },
+    {
+        "_id": "7bc17223-1f62-4190-9a69-5481d956ac99",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 20,
+            "created": 1524234765995
+        },
+        "data": {
+            "eid": 27,
+            "entityid": "https://thki-sid.pt-48.utr.surfcloud.nl/ssp/module.php/saml/sp/metadata.php/default-sp",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "thki-sid sp",
+                "name:en": "thki-sid sp"
+            }
+        }
+    },
+    {
+        "_id": "d976b132-2454-4228-bba8-d5eb178469d9",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 21,
+            "created": 1524234959107
+        },
+        "data": {
+            "eid": 27,
+            "entityid": "https://thki-sid.pt-48.utr.surfcloud.nl/ssp/module.php/saml/sp/metadata.php/default-sp",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "thki-sid sp",
+                "name:en": "thki-sid sp"
+            }
+        }
+    },
+    {
+        "_id": "431a3856-56d5-4f74-a40d-f9f9f7b57605",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 22,
+            "created": 1524235378400
+        },
+        "data": {
+            "eid": 27,
+            "entityid": "https://thki-sid.pt-48.utr.surfcloud.nl/ssp/module.php/saml/sp/metadata.php/default-sp",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "thki-sid sp",
+                "name:en": "thki-sid sp"
+            }
+        }
+    },
+    {
+        "_id": "3846855c-b5bc-4d31-91cf-c33b0105ccb4",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 23,
+            "created": 1524235552641
+        },
+        "data": {
+            "eid": 27,
+            "entityid": "https://thki-sid.pt-48.utr.surfcloud.nl/ssp/module.php/saml/sp/metadata.php/default-sp",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "thki-sid sp",
+                "name:en": "thki-sid sp"
+            }
+        }
+    },
+    {
+        "_id": "5467b497-ca96-4b1d-a1e5-a7356aad41ba",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 24,
+            "created": 1524235605213
+        },
+        "data": {
+            "eid": 27,
+            "entityid": "https://thki-sid.pt-48.utr.surfcloud.nl/ssp/module.php/saml/sp/metadata.php/default-sp",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "thki-sid sp",
+                "name:en": "thki-sid sp"
+            }
+        }
+    },
+    {
+        "_id": "19108bd9-41bb-4abe-befe-4cd7f4655fd7",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 25,
+            "created": 1524378981982
+        },
+        "data": {
+            "eid": 27,
+            "entityid": "https://thki-sid.pt-48.utr.surfcloud.nl/ssp/module.php/saml/sp/metadata.php/default-sp",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "thki-sid sp",
+                "name:en": "thki-sid sp"
+            }
+        }
+    },
+    {
+        "_id": "7a8dc3cb-3251-44bc-9da4-12029bcfb22a",
+        "type": "saml20_sp",
+        "revision": {
+            "number": 26,
+            "created": 1524379213031
+        },
+        "data": {
+            "eid": 27,
+            "entityid": "https://thki-sid.pt-48.utr.surfcloud.nl/ssp/module.php/saml/sp/metadata.php/default-sp",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "thki-sid sp",
+                "name:en": "thki-sid sp"
+            }
+        }
+    },
+    {
+        "_id": "933a94a6-53a1-4567-80ae-2262c519b792",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 0,
+            "created": 1445342805000
+        },
+        "data": {
+            "eid": 28,
+            "entityid": "https://thki-sid.pt-48.utr.surfcloud.nl/ssp/saml2/idp/metadata.php",
+            "state": "testaccepted"
+        }
+    },
+    {
+        "_id": "b1414613-176e-45c3-85a9-02e00745dce9",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 1,
+            "created": 1445342806000
+        },
+        "data": {
+            "eid": 28,
+            "entityid": "https://thki-sid.pt-48.utr.surfcloud.nl/ssp/saml2/idp/metadata.php",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "029009d7-8d83-4c40-9798-22129796b88a",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 2,
+            "created": 1445342830000
+        },
+        "data": {
+            "eid": 28,
+            "entityid": "https://thki-sid.pt-48.utr.surfcloud.nl/ssp/saml2/idp/metadata.php",
+            "state": "prodaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "f29b0aa3-ad55-4716-bfa9-d48aff59cf7a",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 3,
+            "created": 1445342865000
+        },
+        "data": {
+            "eid": 28,
+            "entityid": "https://thki-sid.pt-48.utr.surfcloud.nl/ssp/saml2/idp/metadata.php",
+            "state": "prodaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "413a98ac-1cd2-47c3-92b5-4ff724ffee25",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 4,
+            "created": 1445342868000
+        },
+        "data": {
+            "eid": 28,
+            "entityid": "https://thki-sid.pt-48.utr.surfcloud.nl/ssp/saml2/idp/metadata.php",
+            "state": "prodaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "955cbd16-3835-4ec2-9076-a3a2e1421f26",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 5,
+            "created": 1445342919000
+        },
+        "data": {
+            "eid": 28,
+            "entityid": "https://thki-sid.pt-48.utr.surfcloud.nl/ssp/saml2/idp/metadata.php",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "thkidp",
+                "name:en": "thkidp"
+            }
+        }
+    },
+    {
+        "_id": "f5b24a0f-2e71-4b9e-9ba2-d07461a9f4b5",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 6,
+            "created": 1446736223000
+        },
+        "data": {
+            "eid": 28,
+            "entityid": "https://thki-sid.pt-48.utr.surfcloud.nl/ssp/saml2/idp/metadata.php",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "thkidp",
+                "name:en": "thkidp"
+            }
+        }
+    },
+    {
+        "_id": "8b9b2028-71f1-4c39-8e05-20dc0e2d0f34",
+        "type": "saml20_idp",
+        "revision": {
+            "number": 7,
+            "created": 1451563091000
+        },
+        "data": {
+            "eid": 28,
+            "entityid": "https://thki-sid.pt-48.utr.surfcloud.nl/ssp/saml2/idp/metadata.php",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "thkidp",
+                "name:en": "thkidp"
+            }
+        }
+    },
+    {
+        "_id": "b911b655-2efb-41c5-a848-35e9735c7ad0",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 0,
+            "created": 1445421160000
+        },
+        "data": {
+            "eid": 29,
+            "entityid": "http://login.aai.braindrops.org/adfs/services/trust",
+            "state": "testaccepted"
+        }
+    },
+    {
+        "_id": "1cb15966-d39a-4f16-8613-9f3d5d5119fe",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 1,
+            "created": 1445421160000
+        },
+        "data": {
+            "eid": 29,
+            "entityid": "http://login.aai.braindrops.org/adfs/services/trust",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "0349cafa-815c-4896-a001-fd3817d1e08c",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 2,
+            "created": 1445421160000
+        },
+        "data": {
+            "eid": 29,
+            "entityid": "http://login.aai.braindrops.org/adfs/services/trust",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "c86f0dd3-7b39-4707-849d-3604738628a9",
+        "type": "saml20_idp",
+        "revision": {
+            "number": 3,
+            "created": 1445421420000
+        },
+        "data": {
+            "eid": 29,
+            "entityid": "http://login.aai.braindrops.org/adfs/services/trust",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "coin:institution_id": "BRAINDROPS",
+                "name:en": "SURFdrops ADFS IdP",
+                "name:nl": "SURFdrops ADFS IdP"
+            }
+        }
+    },
+    {
+        "_id": "5efb6a23-dcb0-4280-b882-3e2916e7e1e8",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 0,
+            "created": 1445502007000
+        },
+        "data": {
+            "eid": 30,
+            "entityid": "https://beta.surfnet.nl/simplesaml/module.php/saml/sp/metadata.php/surfconextTest",
+            "state": "testaccepted"
+        }
+    },
+    {
+        "_id": "57556412-5b99-4d54-9197-40f874578608",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 1,
+            "created": 1445502007000
+        },
+        "data": {
+            "eid": 30,
+            "entityid": "https://beta.surfnet.nl/simplesaml/module.php/saml/sp/metadata.php/surfconextTest",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "31d53cf8-b74f-4265-8d2b-d2a18a832116",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 2,
+            "created": 1445502007000
+        },
+        "data": {
+            "eid": 30,
+            "entityid": "https://beta.surfnet.nl/simplesaml/module.php/saml/sp/metadata.php/surfconextTest",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "06ed46d9-f5bf-454a-bad4-682d4bc30868",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 3,
+            "created": 1445502117000
+        },
+        "data": {
+            "eid": 30,
+            "entityid": "https://beta.surfnet.nl/simplesaml/module.php/saml/sp/metadata.php/surfconextTest",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:en": "Henny's test SP | Braindrops",
+                "name:nl": "Henny's test SP | Braindrops"
+            }
+        }
+    },
+    {
+        "_id": "b51906c3-1da8-4d2f-9711-ec80bf730a74",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 4,
+            "created": 1445502247000
+        },
+        "data": {
+            "eid": 30,
+            "entityid": "https://beta.surfnet.nl/simplesaml/module.php/saml/sp/metadata.php/surfconextTest",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:en": "Henny's test SP | Braindrops",
+                "name:nl": "Henny's test SP | Braindrops"
+            }
+        }
+    },
+    {
+        "_id": "100bd7a5-af05-4bd8-99da-d0c44e6dd586",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 5,
+            "created": 1445502328000
+        },
+        "data": {
+            "eid": 30,
+            "entityid": "https://beta.surfnet.nl/simplesaml/module.php/saml/sp/metadata.php/surfconextTest",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:en": "Henny's test SP | Braindrops",
+                "name:nl": "Henny's test SP | Braindrops"
+            }
+        }
+    },
+    {
+        "_id": "d870ef72-603c-48fc-b4d7-62ed0898aa4c",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 6,
+            "created": 1446827355000
+        },
+        "data": {
+            "eid": 30,
+            "entityid": "https://beta.surfnet.nl/simplesaml/module.php/saml/sp/metadata.php/surfconextTest",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:en": "Henny's test SP | Braindrops",
+                "name:nl": "Henny's test SP | Braindrops"
+            }
+        }
+    },
+    {
+        "_id": "569323c1-160a-4507-886c-ef317ffea32f",
+        "type": "saml20_sp",
+        "revision": {
+            "number": 7,
+            "created": 1447165681000
+        },
+        "data": {
+            "eid": 30,
+            "entityid": "https://beta.surfnet.nl/simplesaml/module.php/saml/sp/metadata.php/surfconextTest",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:en": "Henny's test SP | Braindrops",
+                "name:nl": "Henny's test SP | Braindrops"
+            }
+        }
+    },
+    {
+        "_id": "098697dc-b1cf-46d3-8a3c-a9d0fbd4c87d",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 0,
+            "created": 1446132409000
+        },
+        "data": {
+            "eid": 31,
+            "entityid": "dashboard.test.surfconext.nl",
+            "state": "testaccepted"
+        }
+    },
+    {
+        "_id": "4fb4116e-b731-4f64-be26-e598f31f8914",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 1,
+            "created": 1446132410000
+        },
+        "data": {
+            "eid": 31,
+            "entityid": "dashboard.test.surfconext.nl",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "b43c3c9e-c818-44b8-8ed3-35365a5d8568",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 2,
+            "created": 1446132466000
+        },
+        "data": {
+            "eid": 31,
+            "entityid": "dashboard.test.surfconext.nl/shibboleth",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:nl": "Dashboard",
+                "name:en": "Dashboard"
+            }
+        }
+    },
+    {
+        "_id": "e408d614-ad5f-489b-876c-c086e3a23fff",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 3,
+            "created": 1446132643000
+        },
+        "data": {
+            "eid": 31,
+            "entityid": "https://dashboard.test.surfconext.nl",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:nl": "Dashboard",
+                "name:en": "Dashboard"
+            }
+        }
+    },
+    {
+        "_id": "77f2e3b3-513f-42f8-945c-a0c85806b34e",
+        "type": "saml20_sp",
+        "revision": {
+            "number": 4,
+            "created": 1446132711000
+        },
+        "data": {
+            "eid": 31,
+            "entityid": "https://dashboard.test.surfconext.nl",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "Dashboard",
+                "name:en": "Dashboard"
+            }
+        }
+    },
+    {
+        "_id": "4fcf8203-ef39-4542-a651-700a290fcd61",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 0,
+            "created": 1446132548000
+        },
+        "data": {
+            "eid": 32,
+            "entityid": "https://csa.test.surfconext.nl/shibboleth",
+            "state": "testaccepted"
+        }
+    },
+    {
+        "_id": "608698f2-1523-4776-bcd7-4d07cbf53e46",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 1,
+            "created": 1446132548000
+        },
+        "data": {
+            "eid": 32,
+            "entityid": "https://csa.test.surfconext.nl/shibboleth",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "f0a39847-6b92-44bb-a00c-c03328397dc5",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 2,
+            "created": 1446132584000
+        },
+        "data": {
+            "eid": 32,
+            "entityid": "https://csa.test.surfconext.nl/shibboleth",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:nl": "CSA",
+                "name:en": "CSA"
+            }
+        }
+    },
+    {
+        "_id": "5dba2307-5388-419b-bdbe-eaccf81f69cf",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 3,
+            "created": 1446132663000
+        },
+        "data": {
+            "eid": 32,
+            "entityid": "https://csa.test.surfconext.nl",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:nl": "CSA",
+                "name:en": "CSA"
+            }
+        }
+    },
+    {
+        "_id": "98169905-9033-4d1c-b01a-98f3fa006c8b",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 4,
+            "created": 1446132703000
+        },
+        "data": {
+            "eid": 32,
+            "entityid": "https://csa.test.surfconext.nl",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "CSA",
+                "name:en": "CSA"
+            }
+        }
+    },
+    {
+        "_id": "f79b7752-78f4-4405-a72f-5f9140afd7a8",
+        "type": "saml20_sp",
+        "revision": {
+            "number": 5,
+            "created": 1446523231000
+        },
+        "data": {
+            "eid": 32,
+            "entityid": "https://csa.test.surfconext.nl",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "CSA",
+                "name:en": "CSA"
+            }
+        }
+    },
+    {
+        "_id": "0aa3b3e3-6097-4ebf-bc75-5f51b736fecf",
+        "type": "saml20_sp",
+        "revision": {
+            "number": 0,
+            "created": 1446549243000
+        },
+        "data": {
+            "eid": 33,
+            "entityid": "http://careergate.nyenrode.nl/simplesaml/module.php/saml/sp/metadata.php/gl_gateway",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "ea44559b-d2a4-40ac-b87e-77222e9c6777",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 0,
+            "created": 1446586216000
+        },
+        "data": {
+            "eid": 34,
+            "entityid": "test",
+            "state": "testaccepted"
+        }
+    },
+    {
+        "_id": "11e8ce80-cd32-4b4c-bd71-d6c0ab982a21",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 1,
+            "created": 1446586216000
+        },
+        "data": {
+            "eid": 34,
+            "entityid": "test",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "686fd15f-3c3b-4b36-bdd3-660a3a6cb02a",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 2,
+            "created": 1446586486000
+        },
+        "data": {
+            "eid": 34,
+            "entityid": "test",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:nl": "6",
+                "name:en": "5"
+            }
+        }
+    },
+    {
+        "_id": "754391ba-26e7-414a-8863-332c7d73cd3a",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 3,
+            "created": 1446586571000
+        },
+        "data": {
+            "eid": 34,
+            "entityid": "test",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:en": "5",
+                "name:nl": "6"
+            }
+        }
+    },
+    {
+        "_id": "b735b480-2c06-4a5c-82ca-2d0b6909d579",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 4,
+            "created": 1446586583000
+        },
+        "data": {
+            "eid": 34,
+            "entityid": "test",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:en": "5",
+                "name:nl": "6"
+            }
+        }
+    },
+    {
+        "_id": "e9d15180-49f8-44f1-b1a1-bd86b658dfce",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 5,
+            "created": 1446730847000
+        },
+        "data": {
+            "eid": 34,
+            "entityid": "test",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:en": "5",
+                "name:nl": "6"
+            }
+        }
+    },
+    {
+        "_id": "c0a69352-3d49-4629-911e-09c3c9c4d95b",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 6,
+            "created": 1447163412000
+        },
+        "data": {
+            "eid": 34,
+            "entityid": "test",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:en": "5",
+                "name:nl": "6"
+            }
+        }
+    },
+    {
+        "_id": "dd44b232-cd86-4ee6-8214-136ae73f63ba",
+        "type": "saml20_idp",
+        "revision": {
+            "number": 7,
+            "created": 1447164108000
+        },
+        "data": {
+            "eid": 34,
+            "entityid": "test",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:en": "5",
+                "name:nl": "6"
+            }
+        }
+    },
+    {
+        "_id": "6f0a1567-b1d1-44cf-b0c8-a25ff4e0ab13",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 0,
+            "created": 1446824679000
+        },
+        "data": {
+            "eid": 36,
+            "entityid": "https://beta.surfnet.nl/simplesaml/saml2/idp/metadata.php",
+            "state": "testaccepted"
+        }
+    },
+    {
+        "_id": "a5ae3c5d-12d5-45fd-adba-859065859abf",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 1,
+            "created": 1446824679000
+        },
+        "data": {
+            "eid": 36,
+            "entityid": "https://beta.surfnet.nl/simplesaml/saml2/idp/metadata.php",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "14330204-a735-4558-8a61-30f7a9acbfbe",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 2,
+            "created": 1446824679000
+        },
+        "data": {
+            "eid": 36,
+            "entityid": "https://beta.surfnet.nl/simplesaml/saml2/idp/metadata.php",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:nl": "SURFdrops beta IdP",
+                "name:en": "SURFdrops beta IdP"
+            }
+        }
+    },
+    {
+        "_id": "00154fbf-7401-484e-9150-f87de0e8295b",
+        "type": "saml20_idp",
+        "revision": {
+            "number": 3,
+            "created": 1446824728000
+        },
+        "data": {
+            "eid": 36,
+            "entityid": "https://beta.surfnet.nl/simplesaml/saml2/idp/metadata.php",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:en": "SURFdrops beta IdP",
+                "name:nl": "SURFdrops beta IdP"
+            }
+        }
+    },
+    {
+        "_id": "983b3f09-d575-4269-90bb-442e153b8cec",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 0,
+            "created": 1447163381000
+        },
+        "data": {
+            "eid": 38,
+            "entityid": "urn:test:bas",
+            "state": "testaccepted"
+        }
+    },
+    {
+        "_id": "2daf8f4a-6ea3-462f-9985-eaa81a54c080",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 1,
+            "created": 1447163381000
+        },
+        "data": {
+            "eid": 38,
+            "entityid": "urn:test:bas",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "13b8ea87-8f2d-43a2-a082-92d13814d3f3",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 2,
+            "created": 1447163426000
+        },
+        "data": {
+            "eid": 38,
+            "entityid": "urn:test:bas",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "7d003d0b-9a27-4eec-a3c5-e6f9ea3af277",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 3,
+            "created": 1447164128000
+        },
+        "data": {
+            "eid": 38,
+            "entityid": "urn:test:bas",
+            "state": "prodaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "e7160c21-3253-45fb-9deb-e4675f742bee",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 4,
+            "created": 1447164186000
+        },
+        "data": {
+            "eid": 38,
+            "entityid": "urn:test:bas",
+            "state": "prodaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "6a844584-1a14-4656-8fc2-ce4b2a65054d",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 5,
+            "created": 1447164220000
+        },
+        "data": {
+            "eid": 38,
+            "entityid": "xxxxx",
+            "state": "prodaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "9e69c65d-5643-42ab-9d84-e1ab19d139e3",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 6,
+            "created": 1447164250000
+        },
+        "data": {
+            "eid": 38,
+            "entityid": "http://bas/test",
+            "state": "prodaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "0dab5f56-c65f-416e-987f-fd8e5723c311",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 7,
+            "created": 1447165054000
+        },
+        "data": {
+            "eid": 38,
+            "entityid": "http://bas/test",
+            "state": "prodaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "9ddd9466-0fd0-403a-b1ff-768054ec7728",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 8,
+            "created": 1447165093000
+        },
+        "data": {
+            "eid": 38,
+            "entityid": "http://bas/test",
+            "state": "prodaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "340e816a-d43e-4891-b166-8a165e1df4a5",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 9,
+            "created": 1447165122000
+        },
+        "data": {
+            "eid": 38,
+            "entityid": "http://bas/test",
+            "state": "prodaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "1353e209-a1d2-4e4d-bd08-ba2d856778d8",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 10,
+            "created": 1447165313000
+        },
+        "data": {
+            "eid": 38,
+            "entityid": "http://bas/test",
+            "state": "prodaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "2b6d9182-d055-4db7-ab51-d6911ec40ad7",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 11,
+            "created": 1447165340000
+        },
+        "data": {
+            "eid": 38,
+            "entityid": "http://bas/test",
+            "state": "prodaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "580b9033-4262-4d49-a5b7-f2a6dedbe40c",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 12,
+            "created": 1447165361000
+        },
+        "data": {
+            "eid": 38,
+            "entityid": "http://bas/test",
+            "state": "prodaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "0315f668-b2a0-4212-9b73-08264a6f4cea",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 13,
+            "created": 1447165830000
+        },
+        "data": {
+            "eid": 38,
+            "entityid": "http://bas/test",
+            "state": "prodaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "06a76c93-f013-4756-9652-cdab15ead752",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 14,
+            "created": 1447165860000
+        },
+        "data": {
+            "eid": 38,
+            "entityid": "http://bas/test",
+            "state": "prodaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "9bcc1ddc-bd96-42c8-b13c-90e3883155cf",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 15,
+            "created": 1447165908000
+        },
+        "data": {
+            "eid": 38,
+            "entityid": "http://bas/test",
+            "state": "prodaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "caec27db-9353-4d04-aaee-b175ee2adf69",
+        "type": "saml20_sp",
+        "revision": {
+            "number": 16,
+            "created": 1447166114000
+        },
+        "data": {
+            "eid": 38,
+            "entityid": "http://bas/test",
+            "state": "prodaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "f17d975e-0d94-4b1a-a80f-c26334f43983",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 0,
+            "created": 1447164142000
+        },
+        "data": {
+            "eid": 39,
+            "entityid": "urn:test:idp:bas",
+            "state": "testaccepted"
+        }
+    },
+    {
+        "_id": "e9189d2d-1347-451b-8395-dfe22bc02306",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 1,
+            "created": 1447164142000
+        },
+        "data": {
+            "eid": 39,
+            "entityid": "urn:test:idp:bas",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "5812aa1b-dfe1-44db-8890-8da369fe74b1",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 2,
+            "created": 1447164157000
+        },
+        "data": {
+            "eid": 39,
+            "entityid": "urn:test:idp:bas",
+            "state": "prodaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "6de64c5e-41f7-4a71-8e33-16c1b612508e",
+        "type": "saml20_idp",
+        "revision": {
+            "number": 3,
+            "created": 1450364210000
+        },
+        "data": {
+            "eid": 39,
+            "entityid": "urn:test:idp:bas",
+            "state": "prodaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "6af84847-fb79-470c-bc0b-d04cebf5797d",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 0,
+            "created": 1447315598000
+        },
+        "data": {
+            "eid": 40,
+            "entityid": "https://oidc.localhost.surfconext.nl",
+            "state": "testaccepted"
+        }
+    },
+    {
+        "_id": "e5c037aa-d40a-4509-b584-632d3e91b521",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 1,
+            "created": 1447315598000
+        },
+        "data": {
+            "eid": 40,
+            "entityid": "https://oidc.localhost.surfconext.nl",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "920220d3-10a4-4c03-af6a-c8a6b1f56ed0",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 2,
+            "created": 1447315763000
+        },
+        "data": {
+            "eid": 40,
+            "entityid": "https://oidc.localhost.surfconext.nl",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:nl": "OIDC localhost",
+                "name:en": "OIDC localhost"
+            }
+        }
+    },
+    {
+        "_id": "81e0ee13-ab46-4420-a10a-95419d9aca8c",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 3,
+            "created": 1447315770000
+        },
+        "data": {
+            "eid": 40,
+            "entityid": "https://oidc.localhost.surfconext.nl",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OIDC localhost",
+                "name:en": "OIDC localhost"
+            }
+        }
+    },
+    {
+        "_id": "da6a11e0-343e-401a-a00b-dd1c3ae0bc5c",
+        "type": "saml20_sp",
+        "revision": {
+            "number": 4,
+            "created": 1448009695000
+        },
+        "data": {
+            "eid": 40,
+            "entityid": "https://oidc.localhost.surfconext.nl",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OIDC localhost",
+                "name:en": "OIDC localhost"
+            }
+        }
+    },
+    {
+        "_id": "5e6f979c-1c97-455f-9d17-ac80ec91f750",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 0,
+            "created": 1447684308000
+        },
+        "data": {
+            "eid": 41,
+            "entityid": "https://oidc.test.surfconext.nl",
+            "state": "testaccepted"
+        }
+    },
+    {
+        "_id": "3dc61492-7ff1-4ccb-b845-8e2366fea732",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 1,
+            "created": 1447684308000
+        },
+        "data": {
+            "eid": 41,
+            "entityid": "https://oidc.test.surfconext.nl",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "ef877ada-8ce7-4771-b97a-2100c153a2b8",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 2,
+            "created": 1447684421000
+        },
+        "data": {
+            "eid": 41,
+            "entityid": "https://oidc.test.surfconext.nl",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:nl": "OIDC test",
+                "name:en": "OIDC test"
+            }
+        }
+    },
+    {
+        "_id": "a8b3586f-3ab0-41a5-95dd-b4a0cb5fe42b",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 3,
+            "created": 1447688299000
+        },
+        "data": {
+            "eid": 41,
+            "entityid": "https://oidc.test.surfconext.nl",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext OIDC Test",
+                "name:en": "OpenConext OIDC Test"
+            }
+        }
+    },
+    {
+        "_id": "ab70de09-a50b-46c8-a479-eb9f5ee55cdd",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 4,
+            "created": 1447688321000
+        },
+        "data": {
+            "eid": 41,
+            "entityid": "https://oidc.test.surfconext.nl",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext OIDC Test",
+                "name:en": "OpenConext OIDC Test"
+            }
+        }
+    },
+    {
+        "_id": "8d2d116b-b67f-4c76-b993-f564a3491ace",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 5,
+            "created": 1447754182000
+        },
+        "data": {
+            "eid": 41,
+            "entityid": "https://oidc.test.surfconext.nl",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext OIDC Test",
+                "name:en": "OpenConext OIDC Test"
+            }
+        }
+    },
+    {
+        "_id": "343e29c0-d4f4-458d-8ec1-87fa07d34e4c",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 6,
+            "created": 1447754196000
+        },
+        "data": {
+            "eid": 41,
+            "entityid": "https://oidc.test.surfconext.nl",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext OIDC Test",
+                "name:en": "OpenConext OIDC Test"
+            }
+        }
+    },
+    {
+        "_id": "b3262b96-7024-4c2e-98ed-0c78cfa71861",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 7,
+            "created": 1448021483000
+        },
+        "data": {
+            "eid": 41,
+            "entityid": "https://oidc.test.surfconext.nl",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext OIDC Test",
+                "name:en": "OpenConext OIDC Test"
+            }
+        }
+    },
+    {
+        "_id": "9a81027c-0e22-4aff-a3b3-4625e6006e28",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 8,
+            "created": 1448978676000
+        },
+        "data": {
+            "eid": 41,
+            "entityid": "https://oidc.test.surfconext.nl",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext OIDC Test",
+                "name:en": "OpenConext OIDC Test"
+            }
+        }
+    },
+    {
+        "_id": "2bd6adea-7ad9-4ea9-9c8c-a7ddeab6e7a3",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 9,
+            "created": 1449836388000
+        },
+        "data": {
+            "eid": 41,
+            "entityid": "https://oidc.test.surfconext.nl",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext OIDC Test",
+                "name:en": "OpenConext OIDC Test"
+            }
+        }
+    },
+    {
+        "_id": "01162f79-07c7-49fa-9d86-77b4c67a0036",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 10,
+            "created": 1449836602000
+        },
+        "data": {
+            "eid": 41,
+            "entityid": "https://oidc.test.surfconext.nl",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext OIDC Test",
+                "name:en": "OpenConext OIDC Test"
+            }
+        }
+    },
+    {
+        "_id": "d961fbcb-1c34-4539-831f-0c9810bef3b1",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 11,
+            "created": 1449836652000
+        },
+        "data": {
+            "eid": 41,
+            "entityid": "https://oidc.test.surfconext.nl",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext OIDC Test",
+                "name:en": "OpenConext OIDC Test"
+            }
+        }
+    },
+    {
+        "_id": "cc8f8660-ffbb-4c2e-800f-3e2b0d4628ae",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 12,
+            "created": 1449836872000
+        },
+        "data": {
+            "eid": 41,
+            "entityid": "https://oidc.test.surfconext.nl",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext OIDC Test",
+                "name:en": "OpenConext OIDC Test"
+            }
+        }
+    },
+    {
+        "_id": "fd0659d7-6545-4f74-bfd0-a025c073444e",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 13,
+            "created": 1449840996000
+        },
+        "data": {
+            "eid": 41,
+            "entityid": "https://oidc.test.surfconext.nl",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext OIDC Test",
+                "name:en": "OpenConext OIDC Test"
+            }
+        }
+    },
+    {
+        "_id": "84fab138-cf83-4cf5-931a-c465c29a4665",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 14,
+            "created": 1449841755000
+        },
+        "data": {
+            "eid": 41,
+            "entityid": "https://oidc.test.surfconext.nl",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext OIDC Test",
+                "name:en": "OpenConext OIDC Test"
+            }
+        }
+    },
+    {
+        "_id": "3bf189d5-22c2-49ae-b77d-cf9f72bd6c84",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 15,
+            "created": 1449841844000
+        },
+        "data": {
+            "eid": 41,
+            "entityid": "https://oidc.test.surfconext.nl",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext OIDC Test",
+                "name:en": "OpenConext OIDC Test"
+            }
+        }
+    },
+    {
+        "_id": "0e4911db-b858-4b7f-9993-a26d3a7f8786",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 16,
+            "created": 1449842184000
+        },
+        "data": {
+            "eid": 41,
+            "entityid": "https://oidc.test.surfconext.nl",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext OIDC Test",
+                "name:en": "OpenConext OIDC Test"
+            }
+        }
+    },
+    {
+        "_id": "0dd9631f-8c7f-45dc-87d0-eccc02a978aa",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 17,
+            "created": 1449842519000
+        },
+        "data": {
+            "eid": 41,
+            "entityid": "https://oidc.test.surfconext.nl",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext OIDC Test",
+                "name:en": "OpenConext OIDC Test"
+            }
+        }
+    },
+    {
+        "_id": "959e933f-c246-4b27-992d-1622a6ffeb13",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 18,
+            "created": 1449842810000
+        },
+        "data": {
+            "eid": 41,
+            "entityid": "https://oidc.test.surfconext.nl",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext OIDC Test",
+                "name:en": "OpenConext OIDC Test"
+            }
+        }
+    },
+    {
+        "_id": "fa47cf39-9526-4e15-a217-67e0bf9a2faf",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 19,
+            "created": 1449843113000
+        },
+        "data": {
+            "eid": 41,
+            "entityid": "https://oidc.test.surfconext.nl",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext OIDC Test",
+                "name:en": "OpenConext OIDC Test"
+            }
+        }
+    },
+    {
+        "_id": "78104667-98f9-4d7b-b80f-98b9ae48da65",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 20,
+            "created": 1449843185000
+        },
+        "data": {
+            "eid": 41,
+            "entityid": "https://oidc.test.surfconext.nl",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext OIDC Test",
+                "name:en": "OpenConext OIDC Test"
+            }
+        }
+    },
+    {
+        "_id": "7462b838-e18a-4cb3-90c4-a24a1051a048",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 21,
+            "created": 1449843214000
+        },
+        "data": {
+            "eid": 41,
+            "entityid": "https://oidc.test.surfconext.nl",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext OIDC Test",
+                "name:en": "OpenConext OIDC Test"
+            }
+        }
+    },
+    {
+        "_id": "74dfd8b4-2a39-425c-9b20-574014203e0e",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 22,
+            "created": 1449843262000
+        },
+        "data": {
+            "eid": 41,
+            "entityid": "https://oidc.test.surfconext.nl",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext OIDC Test",
+                "name:en": "OpenConext OIDC Test"
+            }
+        }
+    },
+    {
+        "_id": "e0c7db4e-6fd6-4c17-9540-11144e18bea9",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 23,
+            "created": 1449843276000
+        },
+        "data": {
+            "eid": 41,
+            "entityid": "https://oidc.test.surfconext.nl",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext OIDC Test",
+                "name:en": "OpenConext OIDC Test"
+            }
+        }
+    },
+    {
+        "_id": "e9e43803-186f-430f-8b97-bcfe6e4beaf3",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 24,
+            "created": 1449844379000
+        },
+        "data": {
+            "eid": 41,
+            "entityid": "https://oidc.test.surfconext.nl",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext OIDC Test",
+                "name:en": "OpenConext OIDC Test"
+            }
+        }
+    },
+    {
+        "_id": "e0667a7f-b03b-4c14-831c-016e01960b0a",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 25,
+            "created": 1449844445000
+        },
+        "data": {
+            "eid": 41,
+            "entityid": "https://oidc.test.surfconext.nl",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext OIDC Test",
+                "name:en": "OpenConext OIDC Test"
+            }
+        }
+    },
+    {
+        "_id": "6bd1352d-ed25-411a-af1e-2c946544dd4d",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 26,
+            "created": 1450349324000
+        },
+        "data": {
+            "eid": 41,
+            "entityid": "https://oidc.test.surfconext.nl",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext OIDC Test",
+                "name:en": "OpenConext OIDC Test"
+            }
+        }
+    },
+    {
+        "_id": "0d4d526b-be4c-4ea5-b0b0-93e5de547551",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 27,
+            "created": 1450349386000
+        },
+        "data": {
+            "eid": 41,
+            "entityid": "https://oidc.test.surfconext.nl",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext OIDC Test",
+                "name:en": "OpenConext OIDC Test"
+            }
+        }
+    },
+    {
+        "_id": "2c154b36-6f0f-492d-8b9e-31098a415df6",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 28,
+            "created": 1450349405000
+        },
+        "data": {
+            "eid": 41,
+            "entityid": "https://oidc.test.surfconext.nl",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext OIDC Test",
+                "name:en": "OpenConext OIDC Test"
+            }
+        }
+    },
+    {
+        "_id": "4232d1f2-9e91-4f2e-9f34-9c9daa93f706",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 29,
+            "created": 1450349700000
+        },
+        "data": {
+            "eid": 41,
+            "entityid": "https://oidc.test.surfconext.nl",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext OIDC Test",
+                "name:en": "OpenConext OIDC Test"
+            }
+        }
+    },
+    {
+        "_id": "b0a7912f-b251-466f-aa8d-d9cd6dbf2621",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 30,
+            "created": 1450349763000
+        },
+        "data": {
+            "eid": 41,
+            "entityid": "https://oidc.test.surfconext.nl",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext OIDC Test",
+                "name:en": "OpenConext OIDC Test"
+            }
+        }
+    },
+    {
+        "_id": "501e2137-60f1-4d07-86aa-6ffe75ff210a",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 31,
+            "created": 1450350106000
+        },
+        "data": {
+            "eid": 41,
+            "entityid": "https://oidc.test.surfconext.nl",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext OIDC Test",
+                "name:en": "OpenConext OIDC Test"
+            }
+        }
+    },
+    {
+        "_id": "5c45de6a-4cf3-4c5f-a2ab-383932d3233b",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 32,
+            "created": 1450356570000
+        },
+        "data": {
+            "eid": 41,
+            "entityid": "https://oidc.test.surfconext.nl",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext OIDC Test",
+                "name:en": "OpenConext OIDC Test"
+            }
+        }
+    },
+    {
+        "_id": "6462bc0f-7faa-40a7-9ca7-27ea4e570e4a",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 33,
+            "created": 1450358386000
+        },
+        "data": {
+            "eid": 41,
+            "entityid": "https://oidc.test.surfconext.nl",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext OIDC Test",
+                "name:en": "OpenConext OIDC Test"
+            }
+        }
+    },
+    {
+        "_id": "22f37328-5acf-433f-8c56-aa64379605a7",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 34,
+            "created": 1450358419000
+        },
+        "data": {
+            "eid": 41,
+            "entityid": "https://oidc.test.surfconext.nl",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext OIDC Test",
+                "name:en": "OpenConext OIDC Test"
+            }
+        }
+    },
+    {
+        "_id": "fd542a6e-8ecd-47bd-9672-3d80aab5ae64",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 35,
+            "created": 1450358437000
+        },
+        "data": {
+            "eid": 41,
+            "entityid": "https://oidc.test.surfconext.nl",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext OIDC Test",
+                "name:en": "OpenConext OIDC Test"
+            }
+        }
+    },
+    {
+        "_id": "a3931fa4-40ae-4a2e-9bac-f88f1365f392",
+        "type": "saml20_sp",
+        "revision": {
+            "number": 36,
+            "created": 1450358482000
+        },
+        "data": {
+            "eid": 41,
+            "entityid": "https://oidc.test.surfconext.nl",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext OIDC Test",
+                "name:en": "OpenConext OIDC Test"
+            }
+        }
+    },
+    {
+        "_id": "bc5bdfb5-e97e-4812-b783-09eeecd22ef4",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 0,
+            "created": 1448016506000
+        },
+        "data": {
+            "eid": 42,
+            "entityid": "https://bod.surfnet.nl/shibboleth",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "744d5b79-1e79-4dc9-96d1-11d24c56fcb1",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 1,
+            "created": 1524226667836
+        },
+        "data": {
+            "eid": 42,
+            "entityid": "https://bod.surfnet.nl/shibboleth",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "e196d850-38eb-412d-8d1c-001b1217a2fa",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 2,
+            "created": 1524227880816
+        },
+        "data": {
+            "eid": 42,
+            "entityid": "https://bod.surfnet.nl/shibboleth",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "85973015-3882-48f8-b98c-cb3d9d994304",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 3,
+            "created": 1524229983412
+        },
+        "data": {
+            "eid": 42,
+            "entityid": "https://bod.surfnet.nl/shibboleth",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "c15a9fde-8e2f-494b-85c9-5f6e764218ec",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 4,
+            "created": 1524230038919
+        },
+        "data": {
+            "eid": 42,
+            "entityid": "https://bod.surfnet.nl/shibboleth",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "50e111e2-6086-436f-bbee-9998b2568aa5",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 5,
+            "created": 1524230063291
+        },
+        "data": {
+            "eid": 42,
+            "entityid": "https://bod.surfnet.nl/shibboleth",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "ba2c2a0a-18bf-469a-b91e-dbe52f178708",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 6,
+            "created": 1524230118364
+        },
+        "data": {
+            "eid": 42,
+            "entityid": "https://bod.surfnet.nl/shibboleth",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "1ac38a82-40aa-4367-beda-f4229304d754",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 7,
+            "created": 1524232985683
+        },
+        "data": {
+            "eid": 42,
+            "entityid": "https://bod.surfnet.nl/shibboleth",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "9789956d-3b66-4c9a-a2cf-aab6408cf8e9",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 8,
+            "created": 1524233395960
+        },
+        "data": {
+            "eid": 42,
+            "entityid": "https://bod.surfnet.nl/shibboleth",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "a2ad6a43-7ae5-467e-8243-8e9535a8f3c9",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 9,
+            "created": 1524234418373
+        },
+        "data": {
+            "eid": 42,
+            "entityid": "https://bod.surfnet.nl/shibboleth",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "292b3f6f-8eee-4e7f-9b84-56b79da82875",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 10,
+            "created": 1524234459822
+        },
+        "data": {
+            "eid": 42,
+            "entityid": "https://bod.surfnet.nl/shibboleth",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "7010bc8b-5574-4618-bb82-064fa0d59d17",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 11,
+            "created": 1524234474666
+        },
+        "data": {
+            "eid": 42,
+            "entityid": "https://bod.surfnet.nl/shibboleth",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "8a8160f3-07c7-4767-ba1f-10c2b36b7db6",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 12,
+            "created": 1524234693660
+        },
+        "data": {
+            "eid": 42,
+            "entityid": "https://bod.surfnet.nl/shibboleth",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "bf4f57d7-c366-4e60-bc60-6037c451fd1e",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 13,
+            "created": 1524234765704
+        },
+        "data": {
+            "eid": 42,
+            "entityid": "https://bod.surfnet.nl/shibboleth",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "d2e61033-da13-4571-b78c-7f2f300ca85d",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 14,
+            "created": 1524234958783
+        },
+        "data": {
+            "eid": 42,
+            "entityid": "https://bod.surfnet.nl/shibboleth",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "843955a2-cc05-4e70-aba7-2a8b15a3d26e",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 15,
+            "created": 1524235378144
+        },
+        "data": {
+            "eid": 42,
+            "entityid": "https://bod.surfnet.nl/shibboleth",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "12faee2f-c7d0-4a61-ab18-effc4626ed16",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 16,
+            "created": 1524235552365
+        },
+        "data": {
+            "eid": 42,
+            "entityid": "https://bod.surfnet.nl/shibboleth",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "0e1b86e2-2de6-4227-ab01-2180e1970c82",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 17,
+            "created": 1524235604891
+        },
+        "data": {
+            "eid": 42,
+            "entityid": "https://bod.surfnet.nl/shibboleth",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "3a4c9428-1f2f-495d-b5c2-44595b7584c4",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 18,
+            "created": 1524378981648
+        },
+        "data": {
+            "eid": 42,
+            "entityid": "https://bod.surfnet.nl/shibboleth",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "0a7d2f25-578c-44fb-9e15-a0b0b86e7f7c",
+        "type": "saml20_sp",
+        "revision": {
+            "number": 19,
+            "created": 1524379212740
+        },
+        "data": {
+            "eid": 42,
+            "entityid": "https://bod.surfnet.nl/shibboleth",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "625e5729-62f6-46e1-b54c-ad1d200d058f",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 0,
+            "created": 1448973781000
+        },
+        "data": {
+            "eid": 43,
+            "entityid": "wordpresstest",
+            "state": "testaccepted"
+        }
+    },
+    {
+        "_id": "c6f1e45e-9cd7-468a-873f-4a1b400210e2",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 1,
+            "created": 1448973781000
+        },
+        "data": {
+            "eid": 43,
+            "entityid": "wordpresstest",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "a0d12f37-9a71-449d-8da6-d412f4e59b2a",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 2,
+            "created": 1448973827000
+        },
+        "data": {
+            "eid": 43,
+            "entityid": "wordpresstest",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "b2203098-8754-42d9-b250-264e930f154c",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 3,
+            "created": 1448974084000
+        },
+        "data": {
+            "eid": 43,
+            "entityid": "wordpresstest",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "8a6600fe-d08c-434e-95da-6c8ee94ed5d4",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 4,
+            "created": 1448974300000
+        },
+        "data": {
+            "eid": 43,
+            "entityid": "wordpresstest",
+            "state": "prodaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "7e3f1a4b-bbbb-4a32-95fc-d19e0d3d38d1",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 5,
+            "created": 1448974448000
+        },
+        "data": {
+            "eid": 43,
+            "entityid": "http://orcid-dev.pt-75.utr.surfcloud.nl/",
+            "state": "prodaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "f109355b-1f8e-4f7f-b496-d1245f8bbc15",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 6,
+            "created": 1448975350000
+        },
+        "data": {
+            "eid": 43,
+            "entityid": "http://orcid-dev.pt-75.utr.surfcloud.nl/",
+            "state": "prodaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "bbb146d3-eed6-489e-bbde-19808391137e",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 7,
+            "created": 1448975629000
+        },
+        "data": {
+            "eid": 43,
+            "entityid": "http://orcid-dev.pt-75.utr.surfcloud.nl/",
+            "state": "prodaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "14f13a0e-c810-4ea9-a1bd-8f828e9531c4",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 8,
+            "created": 1448975666000
+        },
+        "data": {
+            "eid": 43,
+            "entityid": "http://orcid-dev.pt-75.utr.surfcloud.nl/",
+            "state": "prodaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "805944b6-e9bb-4566-9147-3841d5053142",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 9,
+            "created": 1448975674000
+        },
+        "data": {
+            "eid": 43,
+            "entityid": "http://orcid-dev.pt-75.utr.surfcloud.nl/",
+            "state": "prodaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "658a8199-845f-4b1a-945d-cfa66a1b7723",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 10,
+            "created": 1448975683000
+        },
+        "data": {
+            "eid": 43,
+            "entityid": "http://orcid-dev.pt-75.utr.surfcloud.nl/",
+            "state": "prodaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "7a7c82c5-d3fc-400f-87b3-3b4834fa3617",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 11,
+            "created": 1448976363000
+        },
+        "data": {
+            "eid": 43,
+            "entityid": "http://orcid-dev.pt-75.utr.surfcloud.nl",
+            "state": "prodaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "3c0cb3b2-5d68-4535-8732-01963bff0877",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 12,
+            "created": 1449579210000
+        },
+        "data": {
+            "eid": 43,
+            "entityid": "http://orcid-dev.pt-75.utr.surfcloud.nl",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "1dc0c1da-faad-48a0-803b-5d137b491e2c",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 13,
+            "created": 1449579232000
+        },
+        "data": {
+            "eid": 43,
+            "entityid": "http://orcid-dev.pt-75.utr.surfcloud.nl",
+            "state": "prodaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "4940976d-6750-41e9-9c48-7ce55be7e070",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 14,
+            "created": 1449840633000
+        },
+        "data": {
+            "eid": 43,
+            "entityid": "http://orcid-dev.pt-75.utr.surfcloud.nl",
+            "state": "prodaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "174548c4-25f0-40e8-af0d-800d2b4f9fcc",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 15,
+            "created": 1449840652000
+        },
+        "data": {
+            "eid": 43,
+            "entityid": "http://orcid-dev.pt-75.utr.surfcloud.nl",
+            "state": "prodaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "c6745d73-0901-4e86-ac2c-bc5c0fde2247",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 16,
+            "created": 1449840743000
+        },
+        "data": {
+            "eid": 43,
+            "entityid": "http://orcid-dev.pt-75.utr.surfcloud.nl",
+            "state": "prodaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "2527a452-679b-4447-a7d7-1713dcaef52e",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 17,
+            "created": 1449842119000
+        },
+        "data": {
+            "eid": 43,
+            "entityid": "http://orcid-dev.pt-75.utr.surfcloud.nl",
+            "state": "prodaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "f100a3cd-61e0-4bdc-b837-ed92c0240d69",
+        "type": "saml20_sp",
+        "revision": {
+            "number": 18,
+            "created": 1449842564000
+        },
+        "data": {
+            "eid": 43,
+            "entityid": "http://orcid-dev.pt-75.utr.surfcloud.nl",
+            "state": "prodaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "4c68bf7d-b8d8-4f98-abad-99d3e1348a9f",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 0,
+            "created": 1451402590000
+        },
+        "data": {
+            "eid": 45,
+            "entityid": "tst2",
+            "state": "testaccepted"
+        }
+    },
+    {
+        "_id": "f02fc5f1-d1f0-433a-ab25-1c70052066e1",
+        "type": "saml20_sp",
+        "revision": {
+            "number": 1,
+            "created": 1451402590000
+        },
+        "data": {
+            "eid": 45,
+            "entityid": "tst2",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "a8c3493a-a636-456b-880a-7f3bb2570e46",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 0,
+            "created": 1451402605000
+        },
+        "data": {
+            "eid": 46,
+            "entityid": "tst3",
+            "state": "testaccepted"
+        }
+    },
+    {
+        "_id": "89aca680-fd6c-4efe-aa7a-a01170bcf8ed",
+        "type": "saml20_idp",
+        "revision": {
+            "number": 1,
+            "created": 1451402605000
+        },
+        "data": {
+            "eid": 46,
+            "entityid": "tst3",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "2e2d486b-8864-4f12-b402-bd9b57be5068",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 0,
+            "created": 1451402724000
+        },
+        "data": {
+            "eid": 47,
+            "entityid": "tst4",
+            "state": "testaccepted"
+        }
+    },
+    {
+        "_id": "d7cd1ddb-910d-4bd3-a16c-52914425c0ae",
+        "type": "saml20_sp",
+        "revision": {
+            "number": 1,
+            "created": 1451402724000
+        },
+        "data": {
+            "eid": 47,
+            "entityid": "tst4",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "a6d8143d-dabb-4e36-b1e1-071db7421b42",
+        "type": "saml20_idp_revision",
+        "revision": {
+            "number": 0,
+            "created": 1451402737000
+        },
+        "data": {
+            "eid": 48,
+            "entityid": "tst5",
+            "state": "testaccepted"
+        }
+    },
+    {
+        "_id": "31fad22b-5784-440a-b307-6647ffea89bb",
+        "type": "saml20_idp",
+        "revision": {
+            "number": 1,
+            "created": 1451402737000
+        },
+        "data": {
+            "eid": 48,
+            "entityid": "tst5",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "bf6f3ea7-0daf-419a-bd54-b35790889310",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 0,
+            "created": 1452700783000
+        },
+        "data": {
+            "eid": 49,
+            "entityid": "https://espee-test.surfnet.nl/saml2/sp",
+            "state": "testaccepted"
+        }
+    },
+    {
+        "_id": "39e34202-93f2-4650-8e5c-e01bbf0fab34",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 1,
+            "created": 1452700783000
+        },
+        "data": {
+            "eid": 49,
+            "entityid": "https://espee-test.surfnet.nl/saml2/sp",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "313abdff-7b54-4365-88e0-a246082c08b4",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 2,
+            "created": 1452700794000
+        },
+        "data": {
+            "eid": 49,
+            "entityid": "https://espee-test.surfnet.nl/saml2/sp",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "96a37130-43a9-440b-a15e-91eb855826bb",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 3,
+            "created": 1452701012000
+        },
+        "data": {
+            "eid": 49,
+            "entityid": "https://espee-test.surfnet.nl/saml2/sp",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "7a8fa50d-c80e-4381-8c1e-49d15a67809d",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 4,
+            "created": 1452701076000
+        },
+        "data": {
+            "eid": 49,
+            "entityid": "https://espee-test.surfnet.nl/saml2/sp",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "dc9abffb-0c93-40e9-9572-14aec7bec43f",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 5,
+            "created": 1452701104000
+        },
+        "data": {
+            "eid": 49,
+            "entityid": "https://espee-test.surfnet.nl/saml2/sp",
+            "state": "prodaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "79e56863-ec3d-4b27-97bf-dfdeab7c239d",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 6,
+            "created": 1452701832000
+        },
+        "data": {
+            "eid": 49,
+            "entityid": "https://espee-test.surfnet.nl/saml2/sp",
+            "state": "prodaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "e9c190f6-cb2c-4dc5-b0ce-bf46abbca47e",
+        "type": "saml20_sp",
+        "revision": {
+            "number": 7,
+            "created": 1452865944000
+        },
+        "data": {
+            "eid": 49,
+            "entityid": "https://espee-test.surfnet.nl/saml2/sp",
+            "state": "prodaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "430fb0bd-8a3b-458b-90ba-e963bf45b33b",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 0,
+            "created": 1452701970000
+        },
+        "data": {
+            "eid": 50,
+            "entityid": "http://localhost:8080/simplesaml/module.php/saml/sp/metadata.php/default-sp",
+            "state": "testaccepted"
+        }
+    },
+    {
+        "_id": "b31b23c3-40fd-4d0f-8c99-f68ed39c570f",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 1,
+            "created": 1452701970000
+        },
+        "data": {
+            "eid": 50,
+            "entityid": "http://localhost:8080/simplesaml/module.php/saml/sp/metadata.php/default-sp",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "c2a7b7a6-8243-4d54-8f89-0eac5b7ff5b1",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 2,
+            "created": 1452701990000
+        },
+        "data": {
+            "eid": 50,
+            "entityid": "http://localhost:8080/simplesaml/module.php/saml/sp/metadata.php/default-sp",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "9d0fefd1-d5f4-45ac-85e1-5384f973cb96",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 3,
+            "created": 1452702008000
+        },
+        "data": {
+            "eid": 50,
+            "entityid": "http://localhost:8080/simplesaml/module.php/saml/sp/metadata.php/default-sp",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "6df60f27-97ef-4904-942d-11bf7ad388aa",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 4,
+            "created": 1452702044000
+        },
+        "data": {
+            "eid": 50,
+            "entityid": "http://localhost:8080/simplesaml/module.php/saml/sp/metadata.php/default-sp",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "7f2c6404-f31b-4211-a0ab-7ceb3f71446a",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 5,
+            "created": 1452702072000
+        },
+        "data": {
+            "eid": 50,
+            "entityid": "http://localhost:8080/simplesaml/module.php/saml/sp/metadata.php/default-sp",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "ebba01d7-de22-4d33-a1f9-17acd00962a9",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 6,
+            "created": 1452702141000
+        },
+        "data": {
+            "eid": 50,
+            "entityid": "http://localhost:8080/simplesaml/module.php/saml/sp/metadata.php/default-sp",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:nl": "localhost test sp",
+                "name:en": "localhost test sp"
+            }
+        }
+    },
+    {
+        "_id": "cd7b6ac7-ce0f-41c7-97fe-5de4dd0eebde",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 7,
+            "created": 1452702148000
+        },
+        "data": {
+            "eid": 50,
+            "entityid": "http://localhost:8080/simplesaml/module.php/saml/sp/metadata.php/default-sp",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "localhost test sp",
+                "name:en": "localhost test sp"
+            }
+        }
+    },
+    {
+        "_id": "0f9d148d-4ade-4811-9d6f-b16700892cfa",
+        "type": "saml20_sp",
+        "revision": {
+            "number": 8,
+            "created": 1452872122000
+        },
+        "data": {
+            "eid": 50,
+            "entityid": "http://localhost:8080/simplesaml/module.php/saml/sp/metadata.php/default-sp",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "localhost test sp",
+                "name:en": "localhost test sp"
+            }
+        }
+    },
+    {
+        "_id": "95e6ae28-f1e4-46d9-87c7-351f03fb0806",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 0,
+            "created": 1452864741000
+        },
+        "data": {
+            "eid": 51,
+            "entityid": "https://serviceregistry.demo.openconext.org/simplesaml/module.php/saml/sp/metadata.php/default-sp",
+            "state": "testaccepted"
+        }
+    },
+    {
+        "_id": "58a35bd1-6412-4927-b908-a28ebf2bced6",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 1,
+            "created": 1452864741000
+        },
+        "data": {
+            "eid": 51,
+            "entityid": "https://serviceregistry.demo.openconext.org/simplesaml/module.php/saml/sp/metadata.php/default-sp",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "8a669bb1-7151-4cf2-ba07-e073b11809c1",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 2,
+            "created": 1452864763000
+        },
+        "data": {
+            "eid": 51,
+            "entityid": "https://serviceregistry.demo.openconext.org/simplesaml/module.php/saml/sp/metadata.php/default-sp",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "062735ce-4bca-4f15-a38c-2de9eab37c7e",
+        "type": "saml20_sp",
+        "revision": {
+            "number": 3,
+            "created": 1452865266000
+        },
+        "data": {
+            "eid": 51,
+            "entityid": "https://serviceregistry.demo.openconext.org/simplesaml/module.php/saml/sp/metadata.php/default-sp",
+            "state": "prodaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "d90b46cf-8006-47b0-a730-2dc387784b15",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 0,
+            "created": 1453201183000
+        },
+        "data": {
+            "eid": 52,
+            "entityid": "https://aa.test.surfconext.nl/shibboleth",
+            "state": "testaccepted"
+        }
+    },
+    {
+        "_id": "6bb61d4b-ab91-456c-a40c-53d0d7730f36",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 1,
+            "created": 1453201183000
+        },
+        "data": {
+            "eid": 52,
+            "entityid": "https://aa.test.surfconext.nl/shibboleth",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "c4bafa74-65a8-4c47-985f-abdd08a03095",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 2,
+            "created": 1453201252000
+        },
+        "data": {
+            "eid": 52,
+            "entityid": "https://aa.test.surfconext.nl/shibboleth",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext AA",
+                "name:en": "OpenConext AA"
+            }
+        }
+    },
+    {
+        "_id": "59615789-e909-4f9e-b022-c420150394d2",
+        "type": "saml20_sp",
+        "revision": {
+            "number": 3,
+            "created": 1453201264000
+        },
+        "data": {
+            "eid": 52,
+            "entityid": "https://aa.test.surfconext.nl/shibboleth",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext AA",
+                "name:en": "OpenConext AA"
+            }
+        }
+    },
+    {
+        "_id": "e7f6d0a4-7695-4f85-b35c-8012da9ae6bd",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 0,
+            "created": 1453821632000
+        },
+        "data": {
+            "eid": 53,
+            "entityid": "https://acc.iavans.nl/Shibboleth.sso/Metadata",
+            "state": "testaccepted"
+        }
+    },
+    {
+        "_id": "d6697561-b6b9-42bf-9d2a-fb38e0eea42a",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 1,
+            "created": 1453821632000
+        },
+        "data": {
+            "eid": 53,
+            "entityid": "https://acc.iavans.nl/Shibboleth.sso/Metadata",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "87ddf866-c99b-4eae-a0af-151f8dd6b054",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 2,
+            "created": 1453821666000
+        },
+        "data": {
+            "eid": 53,
+            "entityid": "https://acc.iavans.nl/Shibboleth.sso/Metadata",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "e1bc67ff-9e66-4ed6-bb72-d75070b075cc",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 3,
+            "created": 1453821766000
+        },
+        "data": {
+            "eid": 53,
+            "entityid": "https://acc.iavans.nl/Shibboleth.sso/Metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "d0e7169b-bd6e-4954-a2fe-9dae7da7d745",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 4,
+            "created": 1524226667926
+        },
+        "data": {
+            "eid": 53,
+            "entityid": "https://acc.iavans.nl/Shibboleth.sso/Metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "5830ef65-d7cc-4f8c-a643-400bda09e380",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 5,
+            "created": 1524227880895
+        },
+        "data": {
+            "eid": 53,
+            "entityid": "https://acc.iavans.nl/Shibboleth.sso/Metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "7d171916-b797-478a-905a-16b2495fa067",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 6,
+            "created": 1524229983493
+        },
+        "data": {
+            "eid": 53,
+            "entityid": "https://acc.iavans.nl/Shibboleth.sso/Metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "398fce23-8a33-4282-a7dc-077ad245396c",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 7,
+            "created": 1524230038992
+        },
+        "data": {
+            "eid": 53,
+            "entityid": "https://acc.iavans.nl/Shibboleth.sso/Metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "eeaad73a-d347-4df8-a9ae-435f597e4871",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 8,
+            "created": 1524230063364
+        },
+        "data": {
+            "eid": 53,
+            "entityid": "https://acc.iavans.nl/Shibboleth.sso/Metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "3b92b1a4-5024-48df-8ce7-6b5ee83cceff",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 9,
+            "created": 1524230118446
+        },
+        "data": {
+            "eid": 53,
+            "entityid": "https://acc.iavans.nl/Shibboleth.sso/Metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "30e357f8-cfbc-4d26-810a-a261c15196a2",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 10,
+            "created": 1524232985759
+        },
+        "data": {
+            "eid": 53,
+            "entityid": "https://acc.iavans.nl/Shibboleth.sso/Metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "b117521f-7679-458e-b564-59d85e3621f8",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 11,
+            "created": 1524233396036
+        },
+        "data": {
+            "eid": 53,
+            "entityid": "https://acc.iavans.nl/Shibboleth.sso/Metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "211b3bc8-1ccd-4a01-a01b-3273ea8ace19",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 12,
+            "created": 1524234418453
+        },
+        "data": {
+            "eid": 53,
+            "entityid": "https://acc.iavans.nl/Shibboleth.sso/Metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "2456e708-c06b-4406-8600-6fe728bb8979",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 13,
+            "created": 1524234459909
+        },
+        "data": {
+            "eid": 53,
+            "entityid": "https://acc.iavans.nl/Shibboleth.sso/Metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "96725158-0218-474a-8922-96657fd3f122",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 14,
+            "created": 1524234474749
+        },
+        "data": {
+            "eid": 53,
+            "entityid": "https://acc.iavans.nl/Shibboleth.sso/Metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "bd03051c-ff25-4d55-90c6-2f0b3613307a",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 15,
+            "created": 1524234693735
+        },
+        "data": {
+            "eid": 53,
+            "entityid": "https://acc.iavans.nl/Shibboleth.sso/Metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "e3792f38-464f-4b72-bc66-4c1b4a05ef9e",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 16,
+            "created": 1524234765782
+        },
+        "data": {
+            "eid": 53,
+            "entityid": "https://acc.iavans.nl/Shibboleth.sso/Metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "0347f266-d276-4507-b60a-c14e9adff2d4",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 17,
+            "created": 1524234958871
+        },
+        "data": {
+            "eid": 53,
+            "entityid": "https://acc.iavans.nl/Shibboleth.sso/Metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "0b9cc510-640e-4628-be03-f3d70689ecc0",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 18,
+            "created": 1524235378218
+        },
+        "data": {
+            "eid": 53,
+            "entityid": "https://acc.iavans.nl/Shibboleth.sso/Metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "6de755a1-c696-4deb-a5ef-acd3ac097aab",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 19,
+            "created": 1524235552444
+        },
+        "data": {
+            "eid": 53,
+            "entityid": "https://acc.iavans.nl/Shibboleth.sso/Metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "3d17e2fd-3cae-4385-9495-ad253bc1e083",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 20,
+            "created": 1524235604978
+        },
+        "data": {
+            "eid": 53,
+            "entityid": "https://acc.iavans.nl/Shibboleth.sso/Metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "e9ff4874-2b3b-4cd2-ae1b-68cd7e8468b9",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 21,
+            "created": 1524378981754
+        },
+        "data": {
+            "eid": 53,
+            "entityid": "https://acc.iavans.nl/Shibboleth.sso/Metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "c61db592-136a-4d79-96ef-75883e24e649",
+        "type": "saml20_sp",
+        "revision": {
+            "number": 22,
+            "created": 1524379212819
+        },
+        "data": {
+            "eid": 53,
+            "entityid": "https://acc.iavans.nl/Shibboleth.sso/Metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "1cd4303a-f2da-468b-8c33-31dfefd4f393",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 0,
+            "created": 1453990733000
+        },
+        "data": {
+            "eid": 54,
+            "entityid": "http://orcid.test.surfconext.nl/authentication/metadata",
+            "state": "testaccepted"
+        }
+    },
+    {
+        "_id": "75f3735c-ce4e-44bc-bfd8-c19525b61b02",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 1,
+            "created": 1453990733000
+        },
+        "data": {
+            "eid": 54,
+            "entityid": "http://orcid.test.surfconext.nl/authentication/metadata",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "848e1e4e-068f-49e1-a075-e0bf9cf0456e",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 2,
+            "created": 1453990733000
+        },
+        "data": {
+            "eid": 54,
+            "entityid": "http://orcid.test.surfconext.nl/authentication/metadata",
+            "state": "testaccepted",
+            "metaDataFields": {}
+        }
+    },
+    {
+        "_id": "71715360-fbd0-44df-bd43-96b574624027",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 3,
+            "created": 1453990907000
+        },
+        "data": {
+            "eid": 54,
+            "entityid": "http://orcid.test.surfconext.nl/authentication/metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext connection server",
+                "name:en": "OpenConext connection server"
+            }
+        }
+    },
+    {
+        "_id": "9d16b043-5714-465c-aace-c9d70ca961d3",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 4,
+            "created": 1453990922000
+        },
+        "data": {
+            "eid": 54,
+            "entityid": "http://orcid.test.surfconext.nl/authentication/metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext connection server",
+                "name:en": "OpenConext connection server"
+            }
+        }
+    },
+    {
+        "_id": "0171e299-0c1c-40d9-9a15-b028b1b3f8ec",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 5,
+            "created": 1524226668215
+        },
+        "data": {
+            "eid": 54,
+            "entityid": "http://orcid.test.surfconext.nl/authentication/metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext connection server",
+                "name:en": "OpenConext connection server"
+            }
+        }
+    },
+    {
+        "_id": "f64bb9d8-349d-43ea-ac5b-0d6da0db5df5",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 6,
+            "created": 1524227881106
+        },
+        "data": {
+            "eid": 54,
+            "entityid": "http://orcid.test.surfconext.nl/authentication/metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext connection server",
+                "name:en": "OpenConext connection server"
+            }
+        }
+    },
+    {
+        "_id": "1f6848ec-a0a6-4a4a-987c-0fc3ddb7eee7",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 7,
+            "created": 1524229983742
+        },
+        "data": {
+            "eid": 54,
+            "entityid": "http://orcid.test.surfconext.nl/authentication/metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext connection server",
+                "name:en": "OpenConext connection server"
+            }
+        }
+    },
+    {
+        "_id": "43fe663a-b923-4c1c-aa72-aa3419ae62e6",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 8,
+            "created": 1524230039213
+        },
+        "data": {
+            "eid": 54,
+            "entityid": "http://orcid.test.surfconext.nl/authentication/metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext connection server",
+                "name:en": "OpenConext connection server"
+            }
+        }
+    },
+    {
+        "_id": "aa01dd5e-392e-4adf-89fc-9f5737771624",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 9,
+            "created": 1524230063580
+        },
+        "data": {
+            "eid": 54,
+            "entityid": "http://orcid.test.surfconext.nl/authentication/metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext connection server",
+                "name:en": "OpenConext connection server"
+            }
+        }
+    },
+    {
+        "_id": "1cce1fc0-99d5-4e13-b8f2-40f02c1776cd",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 10,
+            "created": 1524230118697
+        },
+        "data": {
+            "eid": 54,
+            "entityid": "http://orcid.test.surfconext.nl/authentication/metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext connection server",
+                "name:en": "OpenConext connection server"
+            }
+        }
+    },
+    {
+        "_id": "dccb7d6b-656c-448c-9bda-57ad3fae7c33",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 11,
+            "created": 1524232986004
+        },
+        "data": {
+            "eid": 54,
+            "entityid": "http://orcid.test.surfconext.nl/authentication/metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext connection server",
+                "name:en": "OpenConext connection server"
+            }
+        }
+    },
+    {
+        "_id": "b2b2551c-b51a-4f4e-ab6e-64cd858d9247",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 12,
+            "created": 1524233396259
+        },
+        "data": {
+            "eid": 54,
+            "entityid": "http://orcid.test.surfconext.nl/authentication/metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext connection server",
+                "name:en": "OpenConext connection server"
+            }
+        }
+    },
+    {
+        "_id": "1017f082-11c6-4050-8df1-4af1c34fb0da",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 13,
+            "created": 1524234418663
+        },
+        "data": {
+            "eid": 54,
+            "entityid": "http://orcid.test.surfconext.nl/authentication/metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext connection server",
+                "name:en": "OpenConext connection server"
+            }
+        }
+    },
+    {
+        "_id": "6644c23d-d58f-4c6f-9c3a-2a81ee370824",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 14,
+            "created": 1524234460196
+        },
+        "data": {
+            "eid": 54,
+            "entityid": "http://orcid.test.surfconext.nl/authentication/metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext connection server",
+                "name:en": "OpenConext connection server"
+            }
+        }
+    },
+    {
+        "_id": "41b9a315-f06b-4e63-b630-da3fed8bd758",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 15,
+            "created": 1524234475001
+        },
+        "data": {
+            "eid": 54,
+            "entityid": "http://orcid.test.surfconext.nl/authentication/metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext connection server",
+                "name:en": "OpenConext connection server"
+            }
+        }
+    },
+    {
+        "_id": "2e2ca093-691d-4d50-81fb-336f838fa323",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 16,
+            "created": 1524234693970
+        },
+        "data": {
+            "eid": 54,
+            "entityid": "http://orcid.test.surfconext.nl/authentication/metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext connection server",
+                "name:en": "OpenConext connection server"
+            }
+        }
+    },
+    {
+        "_id": "330662e8-1c9f-48bc-b354-ed5190b81617",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 17,
+            "created": 1524234766038
+        },
+        "data": {
+            "eid": 54,
+            "entityid": "http://orcid.test.surfconext.nl/authentication/metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext connection server",
+                "name:en": "OpenConext connection server"
+            }
+        }
+    },
+    {
+        "_id": "2deccfa8-2c03-4cb4-bbc2-3d00ba5166f1",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 18,
+            "created": 1524234959147
+        },
+        "data": {
+            "eid": 54,
+            "entityid": "http://orcid.test.surfconext.nl/authentication/metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext connection server",
+                "name:en": "OpenConext connection server"
+            }
+        }
+    },
+    {
+        "_id": "a8e0ec3a-2d7d-447b-9e4c-dd2097f1ff7f",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 19,
+            "created": 1524235378431
+        },
+        "data": {
+            "eid": 54,
+            "entityid": "http://orcid.test.surfconext.nl/authentication/metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext connection server",
+                "name:en": "OpenConext connection server"
+            }
+        }
+    },
+    {
+        "_id": "6b14df38-24dc-498f-a8de-00510f552672",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 20,
+            "created": 1524235552678
+        },
+        "data": {
+            "eid": 54,
+            "entityid": "http://orcid.test.surfconext.nl/authentication/metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext connection server",
+                "name:en": "OpenConext connection server"
+            }
+        }
+    },
+    {
+        "_id": "dec7bb63-4b71-4677-a4d4-0695ab4ecd5a",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 21,
+            "created": 1524235605253
+        },
+        "data": {
+            "eid": 54,
+            "entityid": "http://orcid.test.surfconext.nl/authentication/metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext connection server",
+                "name:en": "OpenConext connection server"
+            }
+        }
+    },
+    {
+        "_id": "258df572-5a7d-48bd-ba3b-a91ef7e6d620",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 22,
+            "created": 1524378982019
+        },
+        "data": {
+            "eid": 54,
+            "entityid": "http://orcid.test.surfconext.nl/authentication/metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext connection server",
+                "name:en": "OpenConext connection server"
+            }
+        }
+    },
+    {
+        "_id": "291fa549-34a6-4997-aeb6-0b2d2f5afa3d",
+        "type": "saml20_sp",
+        "revision": {
+            "number": 23,
+            "created": 1524379213066
+        },
+        "data": {
+            "eid": 54,
+            "entityid": "http://orcid.test.surfconext.nl/authentication/metadata",
+            "state": "prodaccepted",
+            "metaDataFields": {
+                "name:nl": "OpenConext connection server",
+                "name:en": "OpenConext connection server"
+            }
+        }
+    },
+    {
+        "_id": "f5c2113d-9cde-46ba-a630-785886dbb397",
+        "type": "saml20_sp_revision",
+        "revision": {
+            "number": 0,
+            "created": 1524226440806,
+            "terminated": 1524226514630
+        },
+        "data": {
+            "entityid": "http://delme",
+            "state": "testaccepted",
+            "metaDataFields": {
+                "name:en": "delme"
+            },
+            "eid": 55
+        }
+    }
+]

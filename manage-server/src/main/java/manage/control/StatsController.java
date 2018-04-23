@@ -13,10 +13,13 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -49,6 +52,7 @@ public class StatsController {
                 (collectionName -> providers.addAll(metaDataRepository.getMongoTemplate().find(query, Map.class,
                     collectionName)));
         });
+        this.sortProvidersByEidRevisionNumber(providers);
 
         LOG.info("Revisions request by {} returning {} providers", apiUser.getName(), providers.size());
         return providers;
@@ -76,7 +80,8 @@ public class StatsController {
             String parentId = String.class.cast(provider.get("_id"));
             Query query = getQueryWithDefaultFields(new Query(Criteria.where("revision.parentId").is(parentId)).with
                 (new Sort(Sort.Direction.ASC, "revision.number")));
-            List<Map> revisions = metaDataRepository.getMongoTemplate().find(query, Map.class, type.concat(REVISION_POSTFIX));
+            List<Map> revisions = metaDataRepository.getMongoTemplate().find(query, Map.class, type.concat
+                (REVISION_POSTFIX));
 
             //Traditional for loop to set the end date
             for (int i = 0; i < revisions.size(); i++) {
@@ -91,7 +96,24 @@ public class StatsController {
                 }
             }
         });
+        this.sortProvidersByEidRevisionNumber(result);
 
+        LOG.info("Uniques request for type {} returning {} providers", type, result.size());
+        return result;
+    }
+
+    @GetMapping("/internal/stats/connections")
+    public List<Map> connections(APIUser apiUser) {
+        LOG.info("Connections request for by {}", apiUser.getName());
+        List<Map> result = new ArrayList<>();
+        Date date = new Date();
+//        Arrays.asList(EntityType.values()).forEach(type -> {
+//            Arrays.asList(new String[]{type.getType(), type.getType().concat(REVISION_POSTFIX)}).forEach
+//                (collectionName -> result.addAll(metaDataRepository.getMongoTemplate().find(query, Map.class,
+//                    collectionName)));
+//        });
+
+        LOG.info("Connections request for date {} returning {} connections", date, result.size());
         return result;
     }
 
@@ -113,6 +135,19 @@ public class StatsController {
             .include("data.metaDataFields.name:nl")
             .include("data.metaDataFields.coin:institution_id");
         return query;
+    }
+
+    private void sortProvidersByEidRevisionNumber(List<Map> providers) {
+        Collections.sort(providers, (Map m1, Map m2) -> {
+            Long eid1 = metadataId(m1, "data", "eid");
+            Long eid2 = metadataId(m2, "data", "eid");
+            if (!eid1.equals(eid2)) {
+                return eid1.compareTo(eid2);
+            }
+            Long number1 = metadataId(m1, "revision", "number");
+            Long number2 = metadataId(m2, "revision", "number");
+            return number1.compareTo(number2);
+        });
     }
 
     private Long metadataId(Map map, String parent, String identifier) {
@@ -137,12 +172,12 @@ public class StatsController {
         public String state;
         public String institutionId;
 
-        public ProviderIdentifier(Map provider) {
+        ProviderIdentifier(Map provider) {
             Map data = Map.class.cast(provider.get("data"));
             this.entityId = String.class.cast(data.get("entityid"));
             this.institutionId = (String) Map.class.cast(data.getOrDefault("metaDataFields", new HashMap<>())).get
                 ("coin:institution_id");
-            this.state = String.class.cast(data.get("entityid"));
+            this.state = String.class.cast(data.get("state"));
         }
 
     }

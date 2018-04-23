@@ -1,6 +1,5 @@
 #!/usr/bin/env php
 <?php
-
 require('config.php');
 
 date_default_timezone_set('UTC');
