@@ -138,7 +138,7 @@ public class StatsController {
                 Long spEnded = this.getTime(idpRevision, "ended");
                 Map spData = Map.class.cast(sp.get("data"));
                 Boolean spAllowedAll = Boolean.class.cast(spData.get("allowedall"));
-                boolean whiteListed = List.class.cast(spData.get("allowedEntities")).contains(idpData.get("entityid"));
+                boolean whiteListed = List.class.cast(spData.getOrDefault("allowedEntities", new ArrayList())).contains(idpData.get("entityid"));
                 return (spAllowedAll || whiteListed) &&
                     (spData.get("state").equals(idpData.get("state"))) &&
                     (spTerminated == null || spTerminated > idpCreated) &&
@@ -168,7 +168,7 @@ public class StatsController {
         LOG.info("Providers without eid request by {}", apiUser.getName());
         Query query = new Query();
         query.addCriteria(Criteria.where("data.eid").exists(false));
-        query.fields().include("_id").include("revision.parentId");
+        query.fields().include("_id").include("revision.parentId").include("type").include("data.entityid");
 
         List<Map> providers = new ArrayList<>();
         Arrays.asList(EntityType.values()).forEach(type -> Arrays.asList(new String[]{type.getType(), type.getType()
@@ -180,6 +180,29 @@ public class StatsController {
         return providers;
     }
 
+    @GetMapping("/internal/stats/none_allowed")
+    public List<Map> noneAllowed(APIUser apiUser) {
+        LOG.info("Providers without any connections request by {}", apiUser.getName());
+        Query query = new Query();
+        query.addCriteria(Criteria.where("data.allowedall").is(false));
+        query.addCriteria((new Criteria().orOperator(Criteria.where("data.allowedEntities").exists(false), Criteria.where("data.allowedEntities").size(0))));
+        query.fields()
+            .include("_id")
+            .include("revision.parentId")
+            .include("type")
+            .include("data.entityid")
+            .include("data.allowedall")
+            .include("data.allowedEntities");
+
+        List<Map> providers = new ArrayList<>();
+        Arrays.asList(EntityType.values()).forEach(type -> Arrays.asList(new String[]{type.getType(), type.getType()
+            .concat(REVISION_POSTFIX)}).forEach
+            (collectionName -> providers.addAll(metaDataRepository.getMongoTemplate().find(query, Map.class,
+                collectionName))));
+
+        LOG.info("Providers without any connections request by {} returning {} providers", apiUser.getName(), providers.size());
+        return providers;
+    }
 
     private Map revision(Map provider) {
         return Map.class.cast(provider.get("revision"));
