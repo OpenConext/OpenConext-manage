@@ -1,6 +1,5 @@
 package manage.control;
 
-import lombok.EqualsAndHashCode;
 import manage.api.APIUser;
 import manage.migration.EntityType;
 import manage.model.ProviderIdentifier;
@@ -14,14 +13,15 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -104,12 +104,23 @@ public class StatsController {
     }
 
     @GetMapping("/internal/stats/connections")
-    public List<Map> connections(APIUser apiUser) {
-        String today = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-        LOG.info("Connections request for by {}", apiUser.getName());
+    public List<Map> connections(APIUser apiUser, @RequestParam("from") Optional<String> from) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = from.map(fromDateString -> {
+            try {
+                return simpleDateFormat.parse(fromDateString);
+            } catch (ParseException e) {
+                throw new IllegalArgumentException(String.format("Illegal date format %s, required format %s",
+                    fromDateString, "yyyy-MM-dd"));
+            }
+        }).orElse(new Date());
+        String dateString = simpleDateFormat.format(date);
+
+        LOG.info("Connections request for {} by {}", dateString, apiUser.getName());
+
         List<Map> result = new ArrayList<>();
-        List<Map> uniqueIdentityProviders = this.uniques(EntityType.IDP.getType(), apiUser);
-        List<Map> serviceProviders = this.uniques(EntityType.SP.getType(), apiUser);
+        List<Map> uniqueIdentityProviders = this.filterByCreate(date, this.uniques(EntityType.IDP.getType(), apiUser));
+        List<Map> serviceProviders = this.filterByCreate(date, this.uniques(EntityType.SP.getType(), apiUser));
 
         uniqueIdentityProviders.forEach(idp -> {
             Map idpRevision = Map.class.cast(idp.get("revision"));
@@ -138,7 +149,8 @@ public class StatsController {
                 Long spEnded = this.getTime(idpRevision, "ended");
                 Map spData = Map.class.cast(sp.get("data"));
                 Boolean spAllowedAll = Boolean.class.cast(spData.get("allowedall"));
-                boolean whiteListed = List.class.cast(spData.getOrDefault("allowedEntities", new ArrayList())).contains(idpData.get("entityid"));
+                boolean whiteListed = List.class.cast(spData.getOrDefault("allowedEntities", new ArrayList()))
+                    .contains(idpData.get("entityid"));
                 return (spAllowedAll || whiteListed) &&
                     (spData.get("state").equals(idpData.get("state"))) &&
                     (spTerminated == null || spTerminated > idpCreated) &&
@@ -148,14 +160,22 @@ public class StatsController {
             }).map(sp -> {
                 Map<String, String> subResult = new ProviderIdentifier(idp).toMap(EntityType.IDP, Optional.empty());
                 Map entry = new ProviderIdentifier(sp).toMap(EntityType.SP, Optional.of(subResult));
-                entry.put("date", today);
+                entry.put("date", dateString);
                 return entry;
             }).collect(toList());
             result.addAll(connectedServiceProviders);
         });
 
-        LOG.info("Connections request returning {} connections", result.size());
+        LOG.info("Connections request for {} by {} returning {} connections", dateString, apiUser.getName(), result
+            .size());
         return result;
+    }
+
+    private List<Map> filterByCreate(Date date, List<Map> providers) {
+        long millis = date.getTime();
+        return providers.stream().filter(provider -> Date.class.cast(Map.class.cast(provider.get("revision")).get
+            ("created")).getTime() < millis)
+            .collect(toList());
     }
 
     private Long getTime(Map revision, String name) {
@@ -185,7 +205,8 @@ public class StatsController {
         LOG.info("Providers without any connections request by {}", apiUser.getName());
         Query query = new Query();
         query.addCriteria(Criteria.where("data.allowedall").is(false));
-        query.addCriteria((new Criteria().orOperator(Criteria.where("data.allowedEntities").exists(false), Criteria.where("data.allowedEntities").size(0))));
+        query.addCriteria((new Criteria().orOperator(Criteria.where("data.allowedEntities").exists(false), Criteria
+            .where("data.allowedEntities").size(0))));
         query.fields()
             .include("_id")
             .include("revision.parentId")
@@ -200,7 +221,8 @@ public class StatsController {
             (collectionName -> providers.addAll(metaDataRepository.getMongoTemplate().find(query, Map.class,
                 collectionName))));
 
-        LOG.info("Providers without any connections request by {} returning {} providers", apiUser.getName(), providers.size());
+        LOG.info("Providers without any connections request by {} returning {} providers", apiUser.getName(),
+            providers.size());
         return providers;
     }
 
