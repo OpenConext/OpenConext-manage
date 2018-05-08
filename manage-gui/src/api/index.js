@@ -75,7 +75,8 @@ function fetchDelete(path) {
 
 //API
 export function autocomplete(type, query) {
-    return isEmpty(query) || query.length < 3 ? Promise.resolve([]) : fetchJson(`autocomplete/${type}?query=${encodeURIComponent(query.trim())}`);
+    return ((isEmpty(query) || query.length < 3) && "*" !== query.trim()) ?
+        Promise.resolve([]) : fetchJson(`autocomplete/${type}?query=${encodeURIComponent(query.trim())}`);
 }
 
 export function detail(type, id) {

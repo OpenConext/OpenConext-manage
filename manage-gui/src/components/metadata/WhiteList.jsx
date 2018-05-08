@@ -49,7 +49,8 @@ export default class WhiteList extends React.Component {
             return null;
         }
         return {
-            "blocked": !moreInfo.data.allowedall && (moreInfo.data.allowedEntities || []).find(allowed => allowed.name === entityId),
+            "blocked": !moreInfo.data.allowedall && !(moreInfo.data.allowedEntities || [])
+                .some(allowed => allowed.name === entityId),
             "status": I18n.t(`metadata.${moreInfo.data.state}`),
             "entityid": allowedEntry.name,
             "name": moreInfo.data.metaDataFields["name:en"] || moreInfo.data.metaDataFields["name:nl"] || "",

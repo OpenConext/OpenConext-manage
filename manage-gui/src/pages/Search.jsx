@@ -97,7 +97,7 @@ export default class Search extends React.PureComponent {
     search = selectedTab => e => {
         const query = e.target.value;
         this.setState({query: query, selected: -1});
-        if (!isEmpty(query) && query.trim().length > 2) {
+        if ((!isEmpty(query) && query.trim().length > 2) || "*" === query.trim()) {
             this.setState({loadingAutoComplete: true});
             this.delayedAutocomplete();
         }
@@ -139,7 +139,7 @@ export default class Search extends React.PureComponent {
     render() {
         const {selected, suggestions, query, loadingAutoComplete, selectedTab, tabs,
             confirmationDialogOpen, cancelDialogAction, confirmationDialogAction, confirmationQuestion} = this.state;
-        const showAutoCompletes = query.length > 1 && !loadingAutoComplete;
+        const showAutoCompletes = (query.length > 1 || "*" === query.trim()) && !loadingAutoComplete;
         return (
             <div className="search-metadata">
                 {this.renderPushButton()}

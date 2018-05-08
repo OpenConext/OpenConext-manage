@@ -19,8 +19,10 @@ import {isEmpty, stop} from "../utils/Utils";
 import {setFlash} from "../utils/Flash";
 
 import "./Detail.css";
+import ConnectedIdps from "../components/metadata/ConnectedIdps";
 
-const tabsSp = ["connection", "whitelist", "metadata", "arp", "manipulation", "revisions", "import", "export"];
+const tabsSp = ["connection", "connected_idps", "metadata", "arp", "whitelist",
+    "manipulation", "revisions", "import", "export"];
 const tabsSingleTenant = ["connection", "metadata", "arp", "revisions", "import", "export"];
 const tabsIdP = ["connection", "whitelist", "consent_disabling", "metadata", "manipulation", "revisions", "import", "export"];
 
@@ -344,6 +346,10 @@ export default class Detail extends React.PureComponent {
             case "arp":
                 return <ARP arp={metaData.data.arp} arpConfiguration={configuration.properties.arp}
                             onChange={this.onChange("arp")} guest={guest}/>;
+            case "connected_idps":
+                return <ConnectedIdps whiteListing={whiteListing} allowedAll={metaData.data.allowedall}
+                                      allowedEntities={metaData.data.allowedEntities}
+                                      name={name} entityId={metaData.data.entityid}/>;
             case "manipulation":
                 return <Manipulation content={metaData.data.manipulation}
                                      onChange={this.onChange("manipulation")} guest={guest}/>;

@@ -46,7 +46,8 @@ I18n.translations.en = {
             metaDataFields: "Metadata fields",
             arp: "ARP",
             manipulation: "Manipulation",
-            consent_disabling: "Consent Disabling",
+            consent_disabling: "Consent Management",
+            connected_idps: "Connected IdP's",
             revisions: "Revisions",
             import: "Import",
             export: "Export"

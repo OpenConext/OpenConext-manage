@@ -58,6 +58,9 @@ public class MetaDataRepository {
 
     public List<Map> autoComplete(String type, String search) {
         Query query = queryWithSamlFields();
+        if ("*".equals(search)) {
+            return mongoTemplate.find(query, Map.class, type);
+        }
         query.limit(AUTOCOMPLETE_LIMIT);
         Criteria criteria = new Criteria();
         query.addCriteria(criteria.orOperator(
