@@ -34,6 +34,7 @@ public class MetaDataFeedParser {
     private static final String ATTRIBUTES = "attributes";
 
     public Map<String, Object> importXML(Resource xml,
+                                         EntityType entityType,
                                          Optional<String> entityIDOptional,
                                          MetaDataAutoConfiguration metaDataAutoConfiguration) throws
         XMLStreamException, IOException {
@@ -52,10 +53,9 @@ public class MetaDataFeedParser {
         boolean inUIInfo = true;
         boolean inCorrectEntityDescriptor = !entityIDOptional.isPresent();
         boolean inAttributeConsumingService = false;
-        boolean isSp = false;
 
-        String entityType = EntityType.IDP.getJanusDbValue();
-        result.put("type", entityType);
+        result.put("type", entityType.getJanusDbValue());
+        boolean isSp = entityType.equals(EntityType.SP);
 
         Set<String> arpKeys = new HashSet<>();
 
@@ -75,8 +75,7 @@ public class MetaDataFeedParser {
                             }
                             break;
                         case "SPSSODescriptor":
-                            if (inCorrectEntityDescriptor) {
-                                isSp = true;
+                            if (inCorrectEntityDescriptor && isSp) {
                                 arpKeys = arpKeys(EntityType.SP, metaDataAutoConfiguration, isSp);
 
                                 Map<String, Object> arp = new TreeMap<>();
@@ -85,9 +84,6 @@ public class MetaDataFeedParser {
 
                                 arp.put(ATTRIBUTES, attributes);
                                 result.put(ARP, arp);
-
-                                entityType = EntityType.SP.getJanusDbValue();
-                                result.put("type", entityType);
                             }
                         case "KeyDescriptor":
                             if (!inCorrectEntityDescriptor) {

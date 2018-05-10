@@ -4,7 +4,6 @@ import PropTypes from "prop-types";
 import CodeMirror from "react-codemirror";
 import "codemirror/mode/javascript/javascript";
 import "codemirror/mode/xml/xml";
-
 import {isEmpty, stop} from "../../utils/Utils";
 import {importMetaDataJSON, importMetaDataUrl, importMetaDataXML, validation} from "../../api";
 
@@ -12,12 +11,15 @@ import CheckBox from "../../components/CheckBox";
 
 import "codemirror/lib/codemirror.css";
 import "./Import.css";
+import Select from "react-select";
+import "react-select/dist/react-select.css";
 
 
 export default class Import extends React.Component {
 
     constructor(props) {
         super(props);
+        console.log("Import.jsx");
         this.state = {
             url: "",
             entityId: "",
@@ -25,7 +27,7 @@ export default class Import extends React.Component {
             xml: "",
             invalidXml: false,
             json: "",
-            type: undefined,
+            entityType: props.entityType,
             invalidJson: false,
             results: undefined,
             resultsMap: undefined,
@@ -158,7 +160,7 @@ export default class Import extends React.Component {
             window.scrollTo(0, 0);
             if (json.errors) {
                 newState[errorsName] = json.errors;
-                newState.type = json.type;
+                newState.entityType = json.entityType;
                 newState.results = undefined;
                 this.setState({...newState});
             } else {
@@ -183,40 +185,39 @@ export default class Import extends React.Component {
 
     importUrl = e => {
         stop(e);
-        const {url, entityId} = this.state;
+        const {url, entityId, entityType} = this.state;
         validation("url", url).then(result => {
             this.setState({
                 invalidUrl: !result
             });
             if (result) {
-                this.doImport(importMetaDataUrl(url, entityId), "errorsUrl");
+                this.doImport(importMetaDataUrl(url, entityType, entityId), "errorsUrl");
             }
         });
     };
 
     importJson = e => {
         stop(e);
-        const {json} = this.state;
-        const {type} = this.props.metaData;
+        const {json, entityType} = this.state;
         validation("json", json).then(result => {
             this.setState({
                 invalidJson: !result
             });
             if (result) {
-                this.doImport(importMetaDataJSON(type, json), "errorsJson");
+                this.doImport(importMetaDataJSON(this.props.metaData.type || entityType, json), "errorsJson");
             }
         });
     };
 
     importXml = e => {
         stop(e);
-        const {xml} = this.state;
+        const {xml, entityType} = this.state;
         validation("xml", xml).then(result => {
             this.setState({
                 invalidXml: !result
             });
             if (result) {
-                this.doImport(importMetaDataXML(xml), "errorsJson");
+                this.doImport(importMetaDataXML(xml, entityType), "errorsJson");
             }
         });
 
@@ -261,7 +262,7 @@ export default class Import extends React.Component {
                             <td>{key}</td>
                             <td>{prop.current ? prop.current.toString() : ""}</td>
                             <td>{prop.value.toString()}</td>
-                        </tr> )
+                        </tr>)
                 })}
                 </tbody>
             </table>
@@ -300,28 +301,41 @@ export default class Import extends React.Component {
 
     nameOfArpKey = key => key.substring(key.lastIndexOf(":") + 1);
 
-    renderArpAttribute = (key, arpValues) =>
-        <tbody key={key}>
-        <tr>
-            <td className="arpKey">{this.nameOfArpKey(key)}</td>
-            <td className="arpAttribute">
-                <table className="arpValues">
-                    <tbody>
-                    {arpValues.map(arpValue =>
-                        <tr key={`${arpValue.source}-${arpValue.value}`}>
-                            <td>
-                                <span className="arpSource">{arpValue.source}</span>
-                                <i className="fa fa-arrow-right"></i>
-                                <span className="arpValue">{arpValue.value}</span>
-                            </td>
-                        </tr>)}
-                    </tbody>
-                </table>
-            </td>
-        </tr>
-        </tbody>;
+    renderArpAttribute = (key, arpValues, currentValue = false) => {
+        if (isEmpty(arpValues)) {
+            return <tbody key={key}>
+            <tr>
+                <td className="arpKey" colSpan="2"><i className={`fa fa-trash-o ${currentValue ? "old" : ""}`}></i></td>
+            </tr>
+            </tbody>
+        }
+        return (
+            <tbody key={key}>
+            <tr>
+                <td className="arpKey">{this.nameOfArpKey(key)}</td>
+                <td className="arpAttribute">
+                    <table className="arpValues">
+                        <tbody>
+                        {arpValues.map(arpValue =>
+                            <tr key={`${arpValue.source}-${arpValue.value}`}>
+                                <td>
+                                    <span className="arpSource">{arpValue.source}</span>
+                                    <i className="fa fa-arrow-right"></i>
+                                    <span className="arpValue">{arpValue.value}</span>
+                                </td>
+                            </tr>)}
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            </tbody>
+        );
+    };
 
     renderArpTable = (arp, currentArp) => {
+        const arpKeys = Object.keys(arp.attributes);
+        const currentArpKeys = Object.keys(currentArp.attributes);
+        const uniqueKeys = Array.from(new Set([...arpKeys, ...currentArpKeys])).sort();
         return (
             <table>
                 <thead>
@@ -348,12 +362,12 @@ export default class Import extends React.Component {
                 <tr>
                     <td>
                         <table className="arp">
-                            {Object.keys(currentArp.attributes).map(key => this.renderArpAttribute(key, currentArp.attributes[key]))}
+                            {uniqueKeys.map(key => this.renderArpAttribute(key, currentArp.attributes[key], true))}
                         </table>
                     </td>
                     <td>
                         <table className="arp">
-                            {Object.keys(arp.attributes).map(key => this.renderArpAttribute(key, arp.attributes[key]))}
+                            {uniqueKeys.map(key => this.renderArpAttribute(key, arp.attributes[key]))}
                         </table>
                     </td>
                 </tr>
@@ -412,7 +426,7 @@ export default class Import extends React.Component {
     renderErrors = errors => {
         return (
             <section className="validation-errors">
-                <p>{I18n.t("import.validationErrors", {type: this.props.metaData.type || this.state.type })}</p>
+                <p>{I18n.t("import.validationErrors", {type: this.props.metaData.type || this.state.entityType})}</p>
                 <ul>
                     {errors.map((msg, index) =>
                         <li key={index}>{msg}</li>)}
@@ -421,10 +435,18 @@ export default class Import extends React.Component {
         );
     };
 
+    changeType = option => {
+        this.setState({entityType: option ? option.value : null});
+    };
+
     renderImportHeader = (info, action, errors) =>
         <section>
             <section className="import-header">
                 <h2>{info}</h2>
+                <Select onChange={this.changeType}
+                        options={["saml20_idp", "saml20_sp"].map(s => ({value: s, label: s}))}
+                        value={this.state.entityType}
+                        disabled={this.props.guest || !this.props.newEntity}/>
                 {!this.props.guest && <a onClick={action} className="button green large">
                     {I18n.t("import.fetch")}<i className="fa fa-cloud-download"></i></a>}
             </section>
@@ -433,6 +455,10 @@ export default class Import extends React.Component {
 
     renderImportFooter = (action) =>
         <section className="import-footer">
+            <Select onChange={this.changeType}
+                    options={["saml20_idp", "saml20_sp"].map(s => ({value: s, label: s}))}
+                    value={this.state.entityType}
+                    disabled={this.props.guest || !this.props.newEntity}/>
             {!this.props.guest && <a onClick={action} className="button green footer">
                 {I18n.t("import.fetch")}<i className="fa fa-cloud-download"></i></a>}
         </section>;
@@ -535,6 +561,7 @@ export default class Import extends React.Component {
 Import.propTypes = {
     metaData: PropTypes.object.isRequired,
     guest: PropTypes.bool.isRequired,
+    entityType: PropTypes.string.isRequired,
     newEntity: PropTypes.bool.isRequired,
     applyImportChanges: PropTypes.func.isRequired
 };

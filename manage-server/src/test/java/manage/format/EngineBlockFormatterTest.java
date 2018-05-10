@@ -13,6 +13,7 @@ import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static org.junit.Assert.assertEquals;
 
+@SuppressWarnings("unchecked")
 public class EngineBlockFormatterTest implements TestUtils {
 
     private EngineBlockFormatter subject = new EngineBlockFormatter();

@@ -151,7 +151,7 @@ export default class Search extends React.PureComponent {
                     {tabs.map(tab => this.renderTab(tab, selectedTab))}
                 </section>
                 <section className="search"
-                         tabIndex="1" onBlur={this.onBlurSearch(suggestions)}>
+                         tabIndex="1">
                     <div className="search-input-container">
                         <input className="search-input"
                                ref={ref => this.searchInput = ref}
@@ -165,6 +165,7 @@ export default class Search extends React.PureComponent {
                                                             query={query}
                                                             selected={selected}
                                                             itemSelected={this.itemSelected}
+                                                            type={selectedTab}
                         />}
                     </div>
                     {!this.props.currentUser.guest && <a className="new button green" onClick={this.newMetaData}>

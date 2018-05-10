@@ -55,6 +55,7 @@ export default class ImportMetaData extends React.PureComponent {
                 <Import metaData={metaData}
                         guest={false}
                         newEntity={true}
+                        entityType="saml20_idp"
                         applyImportChanges={this.applyImportChanges}/>
             </div>
         );

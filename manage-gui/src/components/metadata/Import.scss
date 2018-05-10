@@ -49,6 +49,22 @@
             h2 {
                 margin-right: auto;
             }
+            .Select {
+                width: 20%;
+                margin-right: 30px;
+            }
+            &.import-footer {
+                .Select {
+                    width: 20%;
+                    margin-right: 30px;
+                    margin-left: auto;
+                    margin-bottom: 25px;
+                }
+
+            }
+            div.Select-control {
+                margin-top: 0;
+            }
             a.button {
                 &.green {
                     i.fa-cloud-download {
@@ -56,7 +72,7 @@
                     }
                 }
                 &.footer {
-                    margin-left: auto;
+                    margin-bottom: 25px;
                 }
             }
         }
@@ -85,6 +101,7 @@
     }
     h2.no_results {
         margin: 20px 0 10px 0;
+        padding-bottom: 25px;
     }
     section.import-url {
         margin: 25px 0;
@@ -178,6 +195,17 @@
                 i.fa-arrow-right {
                     margin: 3px 25px 3px 25px;
                 }
+                td.arpKey {
+                    i.fa-trash-o {
+                        color: $red;
+                        font-size: 16px;
+                        padding: 5px;
+                        &.old {
+                            color: $lightest-grey;
+                        }
+                    }
+                }
+
             }
         }
 

@@ -30,9 +30,9 @@ public class Importer {
         this.metaDataAutoConfiguration = metaDataAutoConfiguration;
     }
 
-    public Map<String, Object> importXML(Resource resource, Optional<String> entityId) throws IOException,
+    public Map<String, Object> importXML(Resource resource, EntityType entityType, Optional<String> entityId) throws IOException,
         XMLStreamException {
-        return metaDataFeedParser.importXML(resource, entityId, metaDataAutoConfiguration);
+        return metaDataFeedParser.importXML(resource, entityType, entityId, metaDataAutoConfiguration);
     }
 
     public Map<String, Object> importJSON(EntityType entityType, Map<String, Object> data) throws

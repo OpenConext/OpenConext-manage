@@ -144,7 +144,8 @@ public class MongobeeConfiguration {
                     "license_required_by_service_provider");
                 metaDataFields.put("coin:license_status", licenseStatus);
 
-                metaDataFields.put("coin:requires_strong_authentication", columns.get(3));
+                metaDataFields.put("coin:supports_strong_authentication", columns.get(3));
+                metaDataFields.remove("coin:requires_strong_authentication");
 
                 MetaData previous = mongoTemplate.findById(metaData.getId(), MetaData.class, type);
                 previous.revision(UUID.randomUUID().toString());

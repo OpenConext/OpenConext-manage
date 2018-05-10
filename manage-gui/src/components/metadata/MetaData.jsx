@@ -121,7 +121,7 @@ export default class MetaData extends React.Component {
                 {required && <div className="error">{I18n.t("metadata.required", {name: key})}</div>}
             </td>
             {(!guest && configuration.properties.metaDataFields.required.indexOf(key) < 0)
-                && <td className="trash">
+            && <td className="trash">
                 <span onClick={this.deleteMetaDataField(key)}><i className="fa fa-trash-o"></i></span>
             </td>}
         </tr>);
@@ -193,7 +193,7 @@ export default class MetaData extends React.Component {
     render() {
         const {metaDataFields, configuration, name, guest} = this.props;
         const {newAddedMetaData} = this.state;
-        const keys = Object.keys(metaDataFields).sort();
+        const keys = Object.keys(metaDataFields).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
         return (
             <div className="metadata-metadata">
                 <div className="metadata-info">

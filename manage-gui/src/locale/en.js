@@ -57,8 +57,8 @@ I18n.translations.en = {
         entityIdAlreadyExists: "Entity ID {{entityid}} is already taken.",
         metaDataUrl: "Metadata URL",
         state: "State",
-        prodaccepted: "Production",
-        testaccepted: "Staging",
+        prodaccepted: "prodaccepted",
+        testaccepted: "testaccepted",
         revision: "Revision",
         revisionInfo: "Revision {{number}} last updated by {{updatedBy}} on {{created}}",
         notes: "Notes",
@@ -98,7 +98,8 @@ I18n.translations.en = {
         headers: {
             status: "Status",
             entityid:"Entity ID",
-            name: "Name"
+            name: "Name",
+            notes: "Notes"
         },
         no_results: "No results",
         error: "Invalid input: dangling meta character '*'",
@@ -124,10 +125,17 @@ I18n.translations.en = {
             blocked: "Blocked",
             status: "Status",
             entityid:"Entity ID",
-            name: "Name"
+            name: "Name",
+            notes: "Notes"
         }
     },
+    connectedIdps: {
+        title: "{{type}} connected to {{name}}",
+        description: "All {{type}} that are confiured to allow access to {{name}}. If {{name}} is configured to not allow all {{type}} then only those {{type}} that are whitelisted are shown.",
+        searchPlaceHolder: "Search for connected Identity Providers...",
+        noConnections: "No {{type}} are connected. Most likely {{name}} is configured to whitelist none."
 
+    },
     consentDisabling: {
         title: "Consent disabling",
         description: "Search and add Service Providers that will skip consent for '{{name}}'.",
@@ -252,6 +260,8 @@ I18n.translations.en = {
         entity_id: "Entity ID",
         name: "Name",
         state: "Production",
+        notes: "Notes",
+        link: "Link",
         no_results: "No results"
     },
 

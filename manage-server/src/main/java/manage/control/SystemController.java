@@ -55,6 +55,7 @@ import static java.util.concurrent.Executors.newScheduledThreadPool;
 import static java.util.stream.Collectors.toList;
 
 @RestController
+@SuppressWarnings("unchecked")
 public class SystemController {
 
     private static final Logger LOG = LoggerFactory.getLogger(SystemController.class);

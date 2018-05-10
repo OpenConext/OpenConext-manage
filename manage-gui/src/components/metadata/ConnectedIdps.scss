@@ -1,10 +1,10 @@
 @import "../../stylesheets/vars.scss";
 
-.metadata-whitelist {
+.metadata-connected-idps {
     background-color: white;
     padding: 20px;
 
-    .whitelist-info {
+    .connected-idps-info {
         margin: 15px 0;
         h2 {
             font-size: 18px;
@@ -12,13 +12,35 @@
         }
 
     }
-    section.allowed-entities {
+    section.search {
+        display: flex;
+        padding: 10px 0;
+        background-color: white;
+        .search-input-container {
+            flex-grow: 2;
+            position: relative;
+        }
+        .search-input {
+            padding: 10px;
+            font-size: 14px;
+            width: 100%;
+        }
+        .fa-search {
+            position: absolute;
+            right: 15px;
+            top: 10px;
+            font-size: 20px;
+            color: $blue;
+        }
+    }
+    section.entities {
         margin-top: 15px;
         table {
             width: 100%;
             th {
                 text-align: left;
                 cursor: pointer;
+                padding: 3px;
                 i {
                     margin-left: 15px;
                     color: $lighter-grey;
@@ -26,25 +48,17 @@
                         color: $blue;
                     }
                 }
-                &.select {
-                    width: 1%;
-                }
-                &.blocked {
-                    min-width: 90px;
-                    text-align: center;
-                }
                 &.status {
-                    width: 15%;
+                    width: 25%;
                 }
                 &.name {
-                    width: 40%;
+                    width: 30%;
                 }
                 &.entityId {
                     width: 35%;
                 }
-                &.info {
-                    min-width: 60px;
-                    text-align: center;
+                &.notes {
+                    width: 10%;
                 }
             }
             tbody tr:nth-child(odd) {
@@ -52,19 +66,16 @@
             }
             td {
                 vertical-align: middle;
-                &.blocked, &.remove, &.info {
+                padding: 3px;
+                &.info {
                     padding: 5px;
-                    text-align: center;
-                    i.fa {
-                        color: $red;
+                    i.fa-info {
                         font-size: 20px;
-                        &.fa-info {
-                            color: $blue;
-                        }
+                        color: $blue;
+                        margin-left: 20px;
                     }
                 }
             }
         }
     }
-
 }

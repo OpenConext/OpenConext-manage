@@ -56,7 +56,7 @@ export default class API extends React.PureComponent {
     };
 
     delayedPatternValidation = debounce((key, value) =>
-        validation("pattern", value).then(result =>{
+        validation("pattern", value).then(result => {
             const newErrorAttributes = {...this.state.errorAttributes};
             newErrorAttributes[key] = !result;
             this.setState({errorAttributes: newErrorAttributes})
@@ -70,23 +70,24 @@ export default class API extends React.PureComponent {
 
     };
 
-    isValidInput = (searchAttributes, errorAttributes) => {
-        const hasKeys = Object.keys(searchAttributes).length > 0;
+    isValidInput = (errorAttributes) => {
         const keys = Object.keys(errorAttributes);
-        const invalid = keys.length > 0 && keys.some(key => errorAttributes[key])
-        return hasKeys && !invalid;
+        const invalid = keys.length > 0 && keys.some(key => errorAttributes[key]);
+        return !invalid;
     };
 
     doSearch = e => {
         stop(e);
         const {selectedType, searchAttributes, errorAttributes} = this.state;
-        const keys = Object.keys(searchAttributes);
-        if (this.isValidInput(searchAttributes, errorAttributes)) {
+        if (this.isValidInput(errorAttributes)) {
             const metaDataSearch = {};
+            const keys = Object.keys(searchAttributes);
             keys.forEach(key => {
                 metaDataSearch[`metaDataFields.${key}`] = searchAttributes[key];
             });
-            metaDataSearch.REQUESTED_ATTRIBUTES = Object.keys(metaDataSearch);
+            if (!isEmpty(searchAttributes)) {
+                metaDataSearch.REQUESTED_ATTRIBUTES = Object.keys(metaDataSearch);
+            }
             search(metaDataSearch, selectedType)
                 .then(json => this.setState({searchResults: json}));
         }
@@ -133,14 +134,14 @@ export default class API extends React.PureComponent {
     };
 
     renderSearchResultsTable = (searchResults, selectedType, searchAttributes) => {
-        const searchHeaders = ["status", "name", "entityid"].concat(Object.keys(searchAttributes));
+        const searchHeaders = ["status", "name", "entityid", "notes"].concat(Object.keys(searchAttributes));
         return (
             <table className="search-results">
                 <thead>
                 <tr>
                     {searchHeaders.map((header, index) =>
                         <th key={header}
-                            className={index < 3 ? header : "extra"}>{index < 3 ? I18n.t(`playground.headers.${header}`) : header}</th>)}
+                            className={index < 4 ? header : "extra"}>{index < 4 ? I18n.t(`playground.headers.${header}`) : header}</th>)}
 
                 </tr>
                 </thead>
@@ -152,6 +153,9 @@ export default class API extends React.PureComponent {
                               target="_blank">{entity.data.metaDataFields["name:en"] || entity.data.metaDataFields["name:nl"]}</Link>
                     </td>
                     <td className="entityId">{entity.data.entityid}</td>
+                    <td className="notes">
+                        {isEmpty(entity.data.notes) ? <span></span> : <i className="fa fa-info"></i>}
+                    </td>
                     {Object.keys(searchAttributes).map(attr =>
                         <td key={attr}>{entity.data.metaDataFields[attr]}</td>)}
 
@@ -166,8 +170,8 @@ export default class API extends React.PureComponent {
         const {configuration} = this.props;
         const {selectedType, searchAttributes, errorAttributes, searchResults} = this.state;
         const conf = configuration.find(conf => conf.title === selectedType);
-        const hasSearchAttributes = Object.keys(searchAttributes).length > 0 ;
-        const valid = this.isValidInput(searchAttributes, errorAttributes);
+        const hasSearchAttributes = Object.keys(searchAttributes).length > 0;
+        const valid = this.isValidInput(errorAttributes);
 
         const hasNoResults = searchResults && searchResults.length === 0;
         return (

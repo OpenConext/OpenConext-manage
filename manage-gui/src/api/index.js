@@ -123,17 +123,18 @@ export function exportMetaData(metaData) {
     return postPutJson("export", metaData, "post");
 }
 
-export function importMetaDataUrl(url, entityId) {
+export function importMetaDataUrl(url, type, entityId) {
     const body = {url: url};
     if (!isEmpty(entityId)) {
         body.entityId = entityId;
     }
-    return postPutJson("import/endpoint", body, "post");
+    return postPutJson(`import/endpoint/${type}`, body, "post");
 }
 
-export function importMetaDataXML(xml) {
-    return postPutJson("import/xml", {xml: xml}, "post");
+export function importMetaDataXML(xml, type) {
+    return postPutJson(`import/xml/${type}`, {xml: xml}, "post");
 }
+
 
 export function importMetaDataJSON(type, metaData) {
     return postPutJson(`import/json/${type}`, JSON.parse(metaData), "post");

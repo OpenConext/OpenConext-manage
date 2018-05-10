@@ -5,7 +5,7 @@ import {Link} from "react-router-dom";
 import ConfirmationDialog from "../../components/ConfirmationDialog";
 import CheckBox from "./../CheckBox";
 import SelectEntities from "./../SelectEntities";
-import {stop} from "../../utils/Utils";
+import {isEmpty, stop} from "../../utils/Utils";
 
 import "./WhiteList.css";
 
@@ -54,7 +54,8 @@ export default class WhiteList extends React.Component {
             "status": I18n.t(`metadata.${moreInfo.data.state}`),
             "entityid": allowedEntry.name,
             "name": moreInfo.data.metaDataFields["name:en"] || moreInfo.data.metaDataFields["name:nl"] || "",
-            "id": moreInfo["_id"]
+            "id": moreInfo["_id"],
+            "notes": moreInfo.data.notes
         };
     };
 
@@ -167,6 +168,9 @@ export default class WhiteList extends React.Component {
             <td>
                 {entity.entityid}
             </td>
+            <td className="info">
+                {isEmpty(entity.notes) ? <span></span> : <i className="fa fa-info"></i>}
+            </td>
         </tr>
     };
 
@@ -180,7 +184,7 @@ export default class WhiteList extends React.Component {
         const th = name =>
             <th key={name} className={name}
                 onClick={this.sortTable(enrichedAllowedEntries, name)}>{I18n.t(`whitelisting.allowedEntries.${name}`)}{icon(name)}</th>
-        const names = ["blocked", "status", "name", "entityid"];
+        const names = ["blocked", "status", "name", "entityid", "notes"];
         return <section className="allowed-entities">
             <table>
                 <thead>

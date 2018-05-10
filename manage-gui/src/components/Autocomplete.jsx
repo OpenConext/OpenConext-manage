@@ -31,7 +31,7 @@ export default class Autocomplete extends React.PureComponent {
     };
 
     render() {
-        const {suggestions, query, selected, itemSelected} = this.props;
+        const {suggestions, query, selected, itemSelected, type} = this.props;
         const showSuggestions = (suggestions && suggestions.length > 0);
         return (
             <section className="metadata-autocomplete">
@@ -44,6 +44,8 @@ export default class Autocomplete extends React.PureComponent {
                         <th className="name">{I18n.t("metadata_autocomplete.name")}</th>
                         <th className="state">{I18n.t("metadata_autocomplete.state")}</th>
                         <th className="entity_id">{I18n.t("metadata_autocomplete.entity_id")}</th>
+                        <th className="info">{I18n.t("metadata_autocomplete.notes")}</th>
+                        <th className="link">{I18n.t("metadata_autocomplete.link")}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -62,6 +64,13 @@ export default class Autocomplete extends React.PureComponent {
                                         <CheckBox name="state" value={item.data.state === "prodaccepted"} onChange={() => this} readOnly={true}/>
                                     </td>
                                     <td>{this.item(item.data.entityid, query)}</td>
+                                    <td className="info">
+                                        {isEmpty(item.data.notes) ? <span></span> : <i className="fa fa-info"></i>}
+                                    </td>
+                                    <td className="link"><a href={`/metadata/${type}/${item["_id"]}`} target="_blank"
+                                           onClick={e => e.stopPropagation()}>
+                                        <i className="fa fa-external-link"></i>
+                                    </a></td>
                                 </tr>
                             )
                         )}
@@ -77,7 +86,8 @@ Autocomplete.propTypes = {
     suggestions: PropTypes.array.isRequired,
     query: PropTypes.string.isRequired,
     selected: PropTypes.number.isRequired,
-    itemSelected: PropTypes.func.isRequired
+    itemSelected: PropTypes.func.isRequired,
+    type: PropTypes.string.isRequired,
 };
 
 

@@ -106,7 +106,7 @@ public class MetaDataController {
     public MetaData newSP(@Validated @RequestBody XML container, APIUser apiUser) throws
         IOException, XMLStreamException {
         Map<String, Object> innerJson = this.importer.importXML(new ByteArrayResource(container.getXml()
-            .getBytes()), Optional.empty());
+            .getBytes()), EntityType.SP, Optional.empty());
         String entityId = String.class.cast(innerJson.get("entityid"));
         List<Map> result = metaDataRepository.search(EntityType.SP.getType(), singletonMap("entityid",
             entityId), emptyList(), false, true);
@@ -135,7 +135,7 @@ public class MetaDataController {
                              APIUser apiUser) throws IOException, XMLStreamException {
         MetaData metaData = this.get(EntityType.SP.getType(), id);
         Map<String, Object> innerJson = this.importer.importXML(new ByteArrayResource(container.getXml()
-            .getBytes()), Optional.empty());
+            .getBytes()), EntityType.SP, Optional.empty());
 
         addDefaultSpData(innerJson);
 

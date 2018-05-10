@@ -22,8 +22,9 @@ public class ProviderIdentifier {
         this.state = String.class.cast(data.get("state"));
     }
 
+    @SuppressWarnings("unchecked")
     public Map toMap(EntityType entityType, Optional<Map<String, String>> optionalMap) {
-        Map<String, String> result = optionalMap.orElseGet(() -> new HashMap());
+        Map<String, String> result = optionalMap.orElseGet(HashMap::new);
         result.put(entityType.getType() + "_entityid", entityId);
         result.put(entityType.getType() + "_state", state);
         result.put(entityType.getType() + "_coin:institution_id", institutionId);

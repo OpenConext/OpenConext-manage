@@ -36,11 +36,11 @@ public class ImportController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping(value = "/client/import/endpoint")
-    public Map<String, Object> importUrl(@Validated @RequestBody Import importRequest) {
+    @PostMapping(value = "/client/import/endpoint/{type}")
+    public Map<String, Object> importUrl(@PathVariable("type") String type, @Validated @RequestBody Import importRequest) {
         try {
             Resource resource = new UrlResource(new URL(importRequest.getUrl()));
-            Map<String, Object> result = this.importer.importXML(resource, Optional.ofNullable(importRequest
+            Map<String, Object> result = this.importer.importXML(resource, EntityType.fromType(type), Optional.ofNullable(importRequest
                 .getEntityId()));
             result.put("metadataurl", importRequest.getUrl());
             return result;
@@ -50,10 +50,10 @@ public class ImportController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping(value = "/client/import/xml")
-    public Map<String, Object> importXml(@Validated @RequestBody XML container) {
+    @PostMapping(value = "/client/import/xml/{type}")
+    public Map<String, Object> importXml(@PathVariable("type") String type, @Validated @RequestBody XML container) {
         try {
-            return this.importer.importXML(new ByteArrayResource(container.getXml().getBytes()), Optional.ofNullable
+            return this.importer.importXML(new ByteArrayResource(container.getXml().getBytes()), EntityType.fromType(type), Optional.ofNullable
                 (container.getEntityId()));
         } catch (IOException | XMLStreamException e) {
             return Collections.singletonMap("errors", Collections.singletonList(e.toString()));

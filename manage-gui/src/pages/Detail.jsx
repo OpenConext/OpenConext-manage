@@ -324,7 +324,7 @@ export default class Detail extends React.PureComponent {
     renderCurrentTab = (tab, metaData, whiteListing, revisions) => {
         const configuration = this.props.configuration.find(conf => conf.title === this.state.type);
         const guest = this.props.currentUser.guest;
-        const {isNew, originalEntityId} = this.state;
+        const {isNew, originalEntityId, type} = this.state;
         const name = metaData.data.metaDataFields["name:en"] || metaData.data.metaDataFields["name:nl"] || "this service";
         switch (tab) {
             case "connection" :
@@ -365,6 +365,7 @@ export default class Detail extends React.PureComponent {
                 return <Import metaData={metaData}
                                guest={guest}
                                newEntity={false}
+                               entityType={type}
                                applyImportChanges={this.applyImportChanges}/>;
             default:
                 throw new Error(`Unknown tab ${tab}`);
@@ -401,7 +402,7 @@ export default class Detail extends React.PureComponent {
 
         const name = renderContent ? this.nameOfMetaData(metaData) : "";
         const typeMetaData = I18n.t(`metadata.${type}_single`);
-        const hasErrors = this.hasGlobalErrors(errors);
+        const hasErrors = this.hasGlobalErrors(errors) && !isEmpty(metaData.id);
 
         return (
             <div className="detail-metadata">

@@ -14,15 +14,18 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.nio.charset.Charset;
 import java.time.Clock;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.TreeMap;
 
 /*
@@ -121,8 +124,8 @@ public class Exporter {
     }
 
     private void addValidUntil(Map data) {
-        ZonedDateTime now = ZonedDateTime.of(LocalDateTime.now(clock), ZoneId.systemDefault());
-        String validUntil = DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(now.plusYears(1L));
+        ZonedDateTime zonedDateTime = ZonedDateTime.of(LocalDateTime.now(clock), TimeZone.getTimeZone("UTC").toZoneId());
+        String validUntil = DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(zonedDateTime.plusYears(1L));
         data.put("validUntil", validUntil);
     }
 

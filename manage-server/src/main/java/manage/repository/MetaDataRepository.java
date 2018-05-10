@@ -13,6 +13,7 @@ import org.springframework.util.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.PatternSyntaxException;
 
 /**
  * We can't use the Spring JPA repositories as we at runtime need to decide which collection to use. We only have one
@@ -66,12 +67,20 @@ public class MetaDataRepository {
         query.addCriteria(criteria.orOperator(
             regex("data.entityid", search),
             regex("data.metaDataFields.name:en", search),
-            regex("data.metaDataFields.name:nl", search)));
+            regex("data.metaDataFields.name:nl", search),
+            regex("data.metaDataFields.keywords:en", search),
+            regex("data.metaDataFields.keywords:en", search)));
         return mongoTemplate.find(query, Map.class, type);
     }
 
     private Criteria regex(String key, String search) {
-        return Criteria.where(key).regex(".*" + search + ".*", "i");
+        try {
+            return Criteria.where(key).regex(".*" + search + ".*", "i");
+        }
+        catch (IllegalArgumentException e) {
+            //ignore
+            return Criteria.where("nope").exists(true);
+        }
     }
 
     public List<Map> search(String type, Map<String, Object> properties, List<String> requestedAttributes, Boolean
@@ -112,7 +121,6 @@ public class MetaDataRepository {
         Query query = queryWithSamlFields();
         query.fields()
             .include("data.allowedall")
-            .include("data.state")
             .include("data.allowedEntities");
         return mongoTemplate.find(query, Map.class, type);
     }
@@ -132,6 +140,7 @@ public class MetaDataRepository {
             .include("version")
             .include("data.state")
             .include("data.entityid")
+            .include("data.notes")
             .include("data.metaDataFields.name:en")
             .include("data.metaDataFields.name:nl");
         return query;

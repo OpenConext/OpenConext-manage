@@ -32,6 +32,9 @@
             &.extra {
                 padding-right: 10px;
             }
+            &.notes {
+                text-align: center;
+            }
         }
         tbody {
             tr:nth-child(odd) {
@@ -58,13 +61,21 @@
                     }
                 }
                 &.state {
-                    width: 15%;
+                    width: 10%;
+                }
+                &.notes {
+                    width: 10%;
+                    text-align: center;
+                    i.fa-info {
+                        color: $blue;
+                        font-size: 20px;
+                    }
                 }
                 &.name {
-                    width: 40%;
+                    width: 20%;
                 }
                 &.entityId {
-                  width: 45%;
+                  width: 25%;
                 }
                 input[type=text], input[type=email], textarea {
                     width: 100%;

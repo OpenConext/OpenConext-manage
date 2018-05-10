@@ -3,15 +3,32 @@ import I18n from "i18n-js";
 import PropTypes from "prop-types";
 import {Link} from "react-router-dom";
 
-import "./WhiteList.css";
+import "./ConnectedIdps.css";
+import {isEmpty} from "../../utils/Utils";
 
 export default class ConnectedIdps extends React.Component {
 
     constructor(props) {
         super(props);
+        const {allowedAll, allowedEntities = [], whiteListing, entityId} = this.props;
+        const connectedEntities = whiteListing
+            .filter(idp => idp.data.allowedall || idp.data.allowedEntities.some(entity => entity.name === entityId))
+            .filter(idp => allowedAll || allowedEntities.some(entity => entity.name === idp.data.entityid))
+            .map(idp => ({
+                id: idp._id,
+                name: idp.data.metaDataFields["name:en"] || idp.data.metaDataFields["name:nl"] || idp.data.entityid,
+                status: idp.data.state,
+                entityid: idp.data.entityid,
+                notes: idp.data.notes
+            }));
+        const sorted = connectedEntities.sort(this.sortByAttribute("name", false));
         this.state = {
-            sorted: "blocked",
-            reverse: true
+            providerType: "Identity Providers",
+            sorted: "name",
+            reverse: false,
+            connectedEntities: connectedEntities,
+            filteredConnectedEntities: sorted,
+            query: ""
         };
     }
 
@@ -25,24 +42,36 @@ export default class ConnectedIdps extends React.Component {
         return aSafe.toString().localeCompare(bSafe.toString()) * (reverse ? -1 : 1);
     };
 
-    sortTable = (enrichedAllowedEntries, name) => () => {
-        const reverse = this.state.sorted === name ? !this.state.reverse : false;
-        const sorted = [...enrichedAllowedEntries].sort(this.sortByAttribute(name, reverse));
-        this.setState({enrichedAllowedEntries: sorted, sorted: name, reverse: reverse});
+    sortTable = (filteredConnectedEntities, name, reversed) => () => {
+        const reverse = reversed || (this.state.sorted === name ? !this.state.reverse : false);
+        const sorted = [...filteredConnectedEntities].sort(this.sortByAttribute(name, reverse));
+        this.setState({filteredConnectedEntities: sorted, sorted: name, reverse: reverse});
+    };
+
+    search = e => {
+        const query = e.target.value ? e.target.value.toLowerCase() : "";
+        const {sorted, reverse, connectedEntities} = this.state;
+        const names = ["name", "status", "entityid"];
+        const result = isEmpty(query) ? connectedEntities : connectedEntities.filter(idp => names.some(name =>
+            idp[name].toLowerCase().indexOf(query) > -1));
+        this.setState({query: query, filteredConnectedEntities: result.sort(this.sortByAttribute(sorted, reverse))});
     };
 
     renderIdP = (entity, type) => {
-        return <tr key={entity.data.entityid}>
+        return <tr key={entity.id}>
             <td>
                 <Link to={`/metadata/${type}/${entity.id}`} target="_blank">
-                    {entity.data.metaDataFields["name:en"] || entity.data.metaDataFields["name:nl"] || entity.data.entityid}
+                    {entity.name}
                 </Link>
             </td>
             <td>
-                {entity.data.state}
+                {entity.status}
             </td>
             <td>
-                {entity.data.entityid}
+                {entity.entityid}
+            </td>
+            <td className="info">
+                {isEmpty(entity.notes) ? <span></span> : <i className="fa fa-info"></i>}
             </td>
         </tr>
     };
@@ -57,8 +86,8 @@ export default class ConnectedIdps extends React.Component {
         const th = name =>
             <th key={name} className={name}
                 onClick={this.sortTable(entries, name)}>{I18n.t(`whitelisting.allowedEntries.${name}`)}{icon(name)}</th>
-        const names = ["name", "status", "entityid"];
-        return <section className="allowed-entities">
+        const names = ["name", "status", "entityid", "notes"];
+        return <section className="entities">
             <table>
                 <thead>
                 <tr>
@@ -74,21 +103,27 @@ export default class ConnectedIdps extends React.Component {
     };
 
     render() {
-        const {allowedAll, allowedEntities = [], whiteListing, name, entityId} = this.props;
-        const providerType = "Identity Providers";
-        const connectedEntities = whiteListing.filter(idp => idp.data.allowedall ||
-            idp.data.allowedEntities.some(entity =>  entity.name === entityId))
-            .filter(idp => allowedAll || allowedEntities.some(entity => entity.name === idp.data.entityid));
-
-
+        const {providerType, filteredConnectedEntities, query, connectedEntities} = this.state;
+        const {name} = this.props;
         return (
-            <div className="metadata-whitelist">
-                <div className="whitelist-info">
-                    <h2>{I18n.t("whitelisting.title", {type: providerType})}</h2>
-                    <p>{I18n.t("whitelisting.description", {type: providerType, name: name})}</p>
+            <div className="metadata-connected-idps">
+                <div className="connected-idps-info">
+                    <h2>{I18n.t("connectedIdps.title", {type: providerType, name: name})}</h2>
+                    <p>{I18n.t("connectedIdps.description", {type: providerType, name: name})}</p>
                 </div>
-                {connectedEntities.length > 0 && this.renderConnectedIdpTable(connectedEntities)}
-
+                {connectedEntities.length > 0 && <section className="search">
+                    <div className="search-input-container">
+                        <input className="search-input"
+                               placeholder={I18n.t("connectedIdps.searchPlaceHolder")}
+                               type="text"
+                               onChange={this.search}
+                               value={query}/>
+                        <i className="fa fa-search"></i>
+                    </div>
+                </section>}
+                {connectedEntities.length > 0 && this.renderConnectedIdpTable(filteredConnectedEntities)}
+                {connectedEntities.length === 0 &&
+                <h3>{I18n.t("connectedIdps.noConnections", {type: providerType, name: name})}</h3>}
             </div>
         );
     }

@@ -28,14 +28,22 @@ section.metadata-autocomplete {
             text-align: left;
 
             &.name {
-                width: 35%;
+                width: 30%;
             }
             &.state {
                 text-align: center;
                 width: 15%;
             }
             &.entity_id {
-                width: 50%;
+                width: 40%;
+            }
+            &.info {
+                text-align: center;
+                width: 8%;
+            }
+            &.link {
+                text-align: center;
+                width: 7%;
             }
         }
         tbody tr {
@@ -49,8 +57,16 @@ section.metadata-autocomplete {
                 padding: 5px 10px;
                 vertical-align: middle;
 
-                &.state {
+                &.state, &.info, &.link {
                     text-align: center;
+                }
+                i.fa-external-link {
+                    padding: 5px 10px;
+                    font-size: 16px;
+                }
+                i.fa-info {
+                    color: $blue;
+                    font-size: 16px;
                 }
             }
 
