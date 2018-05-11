@@ -5,6 +5,7 @@ import {Link} from "react-router-dom";
 
 import "./ConnectedIdps.css";
 import {copyToClip, isEmpty} from "../../utils/Utils";
+import NotesTooltip from "../NotesTooltip";
 
 export default class ConnectedIdps extends React.Component {
 
@@ -78,7 +79,7 @@ export default class ConnectedIdps extends React.Component {
                 {entity.entityid}
             </td>
             <td className="info">
-                {isEmpty(entity.notes) ? <span></span> : <i className="fa fa-info"></i>}
+                {isEmpty(entity.notes) ? <span></span> : <NotesTooltip identifier={entity.entityid} notes={entity.notes}/>}
             </td>
         </tr>
     };
@@ -89,7 +90,7 @@ export default class ConnectedIdps extends React.Component {
                 <thead>
                 </thead>
                 <tbody>
-                {entries.map(entity => <tr>
+                {entries.map(entity => <tr key={entity.entityid}>
                     <td>{entity.entityid}</td>
                     <td>{entity.name}</td>
                 </tr>)}

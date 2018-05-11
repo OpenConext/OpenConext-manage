@@ -26,7 +26,7 @@ export default class SelectEnum extends React.PureComponent {
                        optionRenderer={this.renderOption}
                        options={options}
                        value={state}
-                       autofocus={autofocus}
+                       autoFocus={autofocus}
                        searchable={false}
                        valueRenderer={this.renderOption}
                        disabled={disabled || false}/>;

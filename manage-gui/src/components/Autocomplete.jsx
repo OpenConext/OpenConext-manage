@@ -6,6 +6,7 @@ import {isEmpty} from "../utils/Utils";
 
 import CheckBox from "./CheckBox";
 import "./Autocomplete.css";
+import NotesTooltip from "./NotesTooltip";
 
 export default class Autocomplete extends React.PureComponent {
 
@@ -65,7 +66,8 @@ export default class Autocomplete extends React.PureComponent {
                                     </td>
                                     <td>{this.item(item.data.entityid, query)}</td>
                                     <td className="info">
-                                        {isEmpty(item.data.notes) ? <span></span> : <i className="fa fa-info"></i>}
+                                        {isEmpty(item.data.notes) ? <span></span> :
+                                            <NotesTooltip identifier={item.data.entityid} notes={item.data.notes}/>}
                                     </td>
                                     <td className="link"><a href={`/metadata/${type}/${item["_id"]}`} target="_blank"
                                            onClick={e => e.stopPropagation()}>

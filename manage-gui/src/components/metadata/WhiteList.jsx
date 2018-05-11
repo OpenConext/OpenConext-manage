@@ -8,6 +8,7 @@ import SelectEntities from "./../SelectEntities";
 import {copyToClip, isEmpty, stop} from "../../utils/Utils";
 
 import "./WhiteList.css";
+import NotesTooltip from "../NotesTooltip";
 
 export default class WhiteList extends React.Component {
 
@@ -173,7 +174,7 @@ export default class WhiteList extends React.Component {
     sortTable = (enrichedAllowedEntries, name) => () => {
         const reverse = this.state.sorted === name ? !this.state.reverse : false;
         const sorted = [...enrichedAllowedEntries].sort(this.sortByAttribute(name, reverse));
-        this.setState({enrichedAllowedEntries: sorted, sorted: name, reverse: reverse});
+        this.setState({enrichedAllowedEntriesFiltered: sorted, sorted: name, reverse: reverse});
     };
 
     renderAllowedEntity = (entity, type, guest) => {
@@ -197,7 +198,8 @@ export default class WhiteList extends React.Component {
                 {entity.entityid}
             </td>
             <td className="info">
-                {isEmpty(entity.notes) ? <span></span> : <i className="fa fa-info"></i>}
+                {isEmpty(entity.notes) ? <span></span> :
+                    <NotesTooltip identifier={entity.entityid} notes={entity.notes}/>}
             </td>
         </tr>
     };
@@ -235,7 +237,7 @@ export default class WhiteList extends React.Component {
                 <thead>
                 </thead>
                 <tbody>
-                {enrichedAllowedEntries.map(entity => <tr>
+                {enrichedAllowedEntries.map(entity => <tr key={entity.entityid}>
                     <td>{entity.name}</td>
                     <td>{entity.entityid}</td>
                 </tr>)}

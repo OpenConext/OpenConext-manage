@@ -11,6 +11,7 @@ import SelectNewMetaDataField from "../components/metadata/SelectNewMetaDataFiel
 import debounce from "lodash.debounce";
 import Select from "react-select";
 import "react-select/dist/react-select.css";
+import NotesTooltip from "../components/NotesTooltip";
 
 export default class API extends React.PureComponent {
 
@@ -171,7 +172,8 @@ export default class API extends React.PureComponent {
                         </td>
                         <td className="entityId">{entity.data.entityid}</td>
                         <td className="notes">
-                            {isEmpty(entity.data.notes) ? <span></span> : <i className="fa fa-info"></i>}
+                            {isEmpty(entity.data.notes) ? <span></span> :
+                                <NotesTooltip identifier={entity.data.entityid} notes={entity.data.notes}/>}
                         </td>
                         {Object.keys(searchAttributes).map(attr =>
                             <td key={attr}>{entity.data.metaDataFields[attr]}</td>)}
