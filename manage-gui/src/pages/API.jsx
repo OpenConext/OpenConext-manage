@@ -3,7 +3,7 @@ import I18n from "i18n-js";
 import PropTypes from "prop-types";
 import {Link} from "react-router-dom";
 import {ping, search, validation} from "../api";
-import {isEmpty, stop} from "../utils/Utils";
+import {copyToClip, isEmpty, stop} from "../utils/Utils";
 import SelectMetaDataType from "../components/metadata/SelectMetaDataType";
 import "./API.css";
 import "react-pretty-json/assets/json-view.css";
@@ -22,7 +22,8 @@ export default class API extends React.PureComponent {
             errorAttributes: {},
             searchResults: undefined,
             newMetaDataFieldKey: null,
-            status: "all"
+            status: "all",
+            copiedToClipboardClassName: ""
         };
     }
 
@@ -104,6 +105,15 @@ export default class API extends React.PureComponent {
         this.setState({searchAttributes: {}, errorAttributes: {}, searchResults: undefined});
     };
 
+    copyToClipboard = e => {
+        stop(e);
+        if (!isEmpty(this.state.searchResults)) {
+            copyToClip("search-results-printable");
+            this.setState({copiedToClipboardClassName: "copied"});
+            setTimeout(() => this.setState({copiedToClipboardClassName: ""}), 5000);
+        }
+    };
+
     newMetaDataFieldRendered = (ref, autoFocus) => {
         if (autoFocus) {
             this.newMetaDataField = ref;
@@ -142,39 +152,41 @@ export default class API extends React.PureComponent {
         const searchHeaders = ["status", "name", "entityid", "notes"].concat(Object.keys(searchAttributes));
         searchResults = status === "all" ? searchResults : searchResults.filter(entity => entity.data.state === status);
         return (
-            <table className="search-results">
-                <thead>
-                <tr>
-                    {searchHeaders.map((header, index) =>
-                        <th key={header}
-                            className={index < 4 ? header : "extra"}>{index < 4 ? I18n.t(`playground.headers.${header}`) : header}</th>)}
+            <section id={"search-results-printable"}>
+                <table className="search-results">
+                    <thead>
+                    <tr>
+                        {searchHeaders.map((header, index) =>
+                            <th key={header}
+                                className={index < 4 ? header : "extra"}>{index < 4 ? I18n.t(`playground.headers.${header}`) : header}</th>)}
 
-                </tr>
-                </thead>
-                <tbody>
-                {searchResults.map(entity => <tr key={entity.data.entityid}>
-                    <td className="state">{I18n.t(`metadata.${entity.data.state}`)}</td>
-                    <td className="name">
-                        <Link to={`/metadata/${selectedType}/${entity["_id"]}`}
-                              target="_blank">{entity.data.metaDataFields["name:en"] || entity.data.metaDataFields["name:nl"]}</Link>
-                    </td>
-                    <td className="entityId">{entity.data.entityid}</td>
-                    <td className="notes">
-                        {isEmpty(entity.data.notes) ? <span></span> : <i className="fa fa-info"></i>}
-                    </td>
-                    {Object.keys(searchAttributes).map(attr =>
-                        <td key={attr}>{entity.data.metaDataFields[attr]}</td>)}
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {searchResults.map(entity => <tr key={entity.data.entityid}>
+                        <td className="state">{I18n.t(`metadata.${entity.data.state}`)}</td>
+                        <td className="name">
+                            <Link to={`/metadata/${selectedType}/${entity["_id"]}`}
+                                  target="_blank">{entity.data.metaDataFields["name:en"] || entity.data.metaDataFields["name:nl"]}</Link>
+                        </td>
+                        <td className="entityId">{entity.data.entityid}</td>
+                        <td className="notes">
+                            {isEmpty(entity.data.notes) ? <span></span> : <i className="fa fa-info"></i>}
+                        </td>
+                        {Object.keys(searchAttributes).map(attr =>
+                            <td key={attr}>{entity.data.metaDataFields[attr]}</td>)}
 
-                </tr>)}
-                </tbody>
+                    </tr>)}
+                    </tbody>
 
-            </table>);
+                </table>
+            </section>);
     };
 
 
     renderSearch = () => {
         const {configuration} = this.props;
-        const {selectedType, searchAttributes, errorAttributes, searchResults, status} = this.state;
+        const {selectedType, searchAttributes, errorAttributes, searchResults, status, copiedToClipboardClassName} = this.state;
         const conf = configuration.find(conf => conf.title === selectedType);
         const hasSearchAttributes = Object.keys(searchAttributes).length > 0;
         const valid = this.isValidInput(errorAttributes);
@@ -193,16 +205,20 @@ export default class API extends React.PureComponent {
                 {hasSearchAttributes && this.renderSearchTable(searchAttributes, errorAttributes)}
                 <SelectNewMetaDataField configuration={conf} onChange={this.addSearchKey}
                                         metaDataFields={searchAttributes} placeholder={"Search and add metadata keys"}/>
-
-                <a className="reset button" onClick={this.reset}>Reset<i className="fa fa-times"></i></a>
-                <a className={`button ${valid ? "green" : "disabled grey"}`} onClick={this.doSearch}>Search<i
-                    className="fa fa-search-plus"></i></a>
-
+                <section className="options">
+                    <a className="reset button" onClick={this.reset}>Reset<i className="fa fa-times"></i></a>
+                    <a className={`button ${valid ? "green" : "disabled grey"}`} onClick={this.doSearch}>Search<i
+                        className="fa fa-search-plus"></i></a>
+                    <a className={`clipboard-copy button ${showResults ? "green" : "disabled grey"} ${copiedToClipboardClassName}`}
+                          onClick={this.copyToClipboard}>
+                        {I18n.t("clipboard.copy")}<i className="fa fa-clone"></i>
+                    </a>
+                </section>
                 {hasNoResults && <h2>{I18n.t("playground.no_results")}</h2>}
-                {showResults &&  <Select onChange={this.changeStatus}
-                                         options={["all", "prodaccepted", "testaccepted"]
-                                             .map(s => ({value: s, label: I18n.t(`metadata.${s}`)}))}
-                                         value={status}
+                {showResults && <Select onChange={this.changeStatus}
+                                        options={["all", "prodaccepted", "testaccepted"]
+                                            .map(s => ({value: s, label: I18n.t(`metadata.${s}`)}))}
+                                        value={status}
                                         className="status-select"/>}
                 {showResults && this.renderSearchResultsTable(searchResults, selectedType, searchAttributes, status)}
 
