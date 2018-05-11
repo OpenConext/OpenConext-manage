@@ -69,7 +69,7 @@ public class MetaDataRepository {
             regex("data.metaDataFields.name:en", search),
             regex("data.metaDataFields.name:nl", search),
             regex("data.metaDataFields.keywords:en", search),
-            regex("data.metaDataFields.keywords:en", search)));
+            regex("data.metaDataFields.keywords:nl", search)));
         return mongoTemplate.find(query, Map.class, type);
     }
 
