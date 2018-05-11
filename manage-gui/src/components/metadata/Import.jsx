@@ -436,6 +436,7 @@ export default class Import extends React.Component {
     };
 
     changeType = option => {
+        console.log("change entity type " + option ? option.value : "null");
         this.setState({entityType: option ? option.value : null});
     };
 
@@ -444,7 +445,7 @@ export default class Import extends React.Component {
             <section className="import-header">
                 <h2>{info}</h2>
                 <Select onChange={this.changeType}
-                        options={["saml20_idp", "saml20_sp"].map(s => ({value: s, label: s}))}
+                        options={["saml20_idp", "saml20_sp"].map(s => ({value: s, label: I18n.t(`metadata.${s}_single`)}))}
                         value={this.state.entityType}
                         disabled={this.props.guest || !this.props.newEntity}/>
                 {!this.props.guest && <a onClick={action} className="button green large">
@@ -456,7 +457,7 @@ export default class Import extends React.Component {
     renderImportFooter = (action) =>
         <section className="import-footer">
             <Select onChange={this.changeType}
-                    options={["saml20_idp", "saml20_sp"].map(s => ({value: s, label: s}))}
+                    options={["saml20_idp", "saml20_sp"].map(s => ({value: s, label: I18n.t(`metadata.${s}_single`)}))}
                     value={this.state.entityType}
                     disabled={this.props.guest || !this.props.newEntity}/>
             {!this.props.guest && <a onClick={action} className="button green footer">
