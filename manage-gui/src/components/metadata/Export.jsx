@@ -17,7 +17,7 @@ export default class Export extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            showJsonFlat: false,
+            showJsonFlat: true,
             showJson: true,
             showJsonMetaDataOnly: false,
             showXml: true,

@@ -258,6 +258,22 @@ public class MongobeeConfiguration {
         });
     }
 
+
+    @ChangeSet(order = "010", id = "renameRequiresToSupportsStepUp", author = "Okke Harsta")
+    public void renameRequiresToSupportsStepUp(MongoTemplate mongoTemplate) throws IOException {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("data.metaDataFields.coin:requires_strong_authentication").exists(true));
+        List<MetaData> entities = mongoTemplate.find(query, MetaData.class, EntityType.SP.getType());
+        entities.forEach(entity -> {
+            Map<String, Object> metaDataFields = (Map<String, Object>) entity.getData().get("metaDataFields");
+            Object supportsStrongAuthentication = metaDataFields.get("coin:requires_strong_authentication");
+            metaDataFields.put("coin:supports_strong_authentication", supportsStrongAuthentication);
+            metaDataFields.remove("coin:requires_strong_authentication");
+            LOG.info("Saving metadata {} with supports_strong_authentication", entity.getId());
+            mongoTemplate.save(entity, EntityType.SP.getType());
+        });
+    }
+
     private Long highestEid(MongoTemplate mongoTemplate, String type) {
         Query query = new Query().limit(1).with(new Sort(Sort.Direction.DESC, "data.eid"));
         query.fields().include("data.eid");

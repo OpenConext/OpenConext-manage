@@ -82,6 +82,9 @@
         margin-top: 25px;
         .notes-container {
             flex-grow: 2;
+            em.error {
+                padding-bottom: 20px;
+            }
         }
         .notes {
             display: flex;

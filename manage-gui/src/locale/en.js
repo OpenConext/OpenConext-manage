@@ -187,8 +187,8 @@ I18n.translations.en = {
         description: "The metadata export is available in JSON - flat or structured - and SAML format.",
         showXml: "Show the SAML / XML exported MetaData",
         showJson: "Show the JSON exported MetaData",
-        showJsonFlat: "Flatten the MetaData fields. This is the repository format, but not backward compatible with legacy ServiceRegistry exports",
-        showMetaDataOnly: "Show only the connection and metadata. This JSON format causes less complex imports"
+        showJsonFlat: "Flatten the MetaData fields. This is the internal repository format",
+        showMetaDataOnly: "Show only the connection and metadata."
     },
 
     import: {
