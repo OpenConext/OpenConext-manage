@@ -9,6 +9,8 @@ import "./API.css";
 import "react-pretty-json/assets/json-view.css";
 import SelectNewMetaDataField from "../components/metadata/SelectNewMetaDataField";
 import debounce from "lodash.debounce";
+import Select from "react-select";
+import "react-select/dist/react-select.css";
 
 export default class API extends React.PureComponent {
 
@@ -19,7 +21,8 @@ export default class API extends React.PureComponent {
             searchAttributes: {},
             errorAttributes: {},
             searchResults: undefined,
-            newMetaDataFieldKey: null
+            newMetaDataFieldKey: null,
+            status: "all"
         };
     }
 
@@ -69,6 +72,8 @@ export default class API extends React.PureComponent {
         this.setState({searchAttributes: newSearchAttributes});
 
     };
+
+    changeStatus = option => this.setState({status: option ? option.value : null});
 
     isValidInput = (errorAttributes) => {
         const keys = Object.keys(errorAttributes);
@@ -133,8 +138,9 @@ export default class API extends React.PureComponent {
         );
     };
 
-    renderSearchResultsTable = (searchResults, selectedType, searchAttributes) => {
+    renderSearchResultsTable = (searchResults, selectedType, searchAttributes, status) => {
         const searchHeaders = ["status", "name", "entityid", "notes"].concat(Object.keys(searchAttributes));
+        searchResults = status === "all" ? searchResults : searchResults.filter(entity => entity.data.state === status);
         return (
             <table className="search-results">
                 <thead>
@@ -168,12 +174,13 @@ export default class API extends React.PureComponent {
 
     renderSearch = () => {
         const {configuration} = this.props;
-        const {selectedType, searchAttributes, errorAttributes, searchResults} = this.state;
+        const {selectedType, searchAttributes, errorAttributes, searchResults, status} = this.state;
         const conf = configuration.find(conf => conf.title === selectedType);
         const hasSearchAttributes = Object.keys(searchAttributes).length > 0;
         const valid = this.isValidInput(errorAttributes);
 
         const hasNoResults = searchResults && searchResults.length === 0;
+        const showResults = searchResults && !hasNoResults;
         return (
             <section className="extended-search">
                 <p>Select a Metadata type and metadata fields. The query will AND the different inputs.
@@ -192,7 +199,13 @@ export default class API extends React.PureComponent {
                     className="fa fa-search-plus"></i></a>
 
                 {hasNoResults && <h2>{I18n.t("playground.no_results")}</h2>}
-                {(searchResults && !hasNoResults) && this.renderSearchResultsTable(searchResults, selectedType, searchAttributes)}
+                {showResults &&  <Select onChange={this.changeStatus}
+                                         options={["all", "prodaccepted", "testaccepted"]
+                                             .map(s => ({value: s, label: I18n.t(`metadata.${s}`)}))}
+                                         value={status}
+                                        className="status-select"/>}
+                {showResults && this.renderSearchResultsTable(searchResults, selectedType, searchAttributes, status)}
+
             </section>
         );
     };

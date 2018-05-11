@@ -59,6 +59,7 @@ I18n.translations.en = {
         state: "State",
         prodaccepted: "prodaccepted",
         testaccepted: "testaccepted",
+        all: "All",
         revision: "Revision",
         revisionInfo: "Revision {{number}} last updated by {{updatedBy}} on {{created}}",
         notes: "Notes",

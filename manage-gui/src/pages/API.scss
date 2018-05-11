@@ -19,6 +19,13 @@
 
     }
 
+    div.status-select {
+        margin-bottom: 20px;
+        div.Select-control {
+            margin-top: 0;
+        }
+    }
+
     section.results {
         padding: 30px;
         background-color: white;

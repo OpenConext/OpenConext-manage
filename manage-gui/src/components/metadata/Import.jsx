@@ -19,7 +19,6 @@ export default class Import extends React.Component {
 
     constructor(props) {
         super(props);
-        console.log("Import.jsx");
         this.state = {
             url: "",
             entityId: "",
@@ -435,10 +434,7 @@ export default class Import extends React.Component {
         );
     };
 
-    changeType = option => {
-        console.log("change entity type " + option ? option.value : "null");
-        this.setState({entityType: option ? option.value : null});
-    };
+    changeType = option => this.setState({entityType: option ? option.value : null});
 
     renderImportHeader = (info, action, errors) =>
         <section>
