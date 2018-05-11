@@ -114,7 +114,6 @@ I18n.translations.en = {
         }
 
     },
-
     whitelisting: {
         confirmationAllowAll:"Are you sure you want to allow all {{type}} access to '{{name}}'? You will have to add {{type}} one-by-one to selectively deny them again.",
         confirmationAllowNone:"Are you sure you want to deny all {{type}} access to '{{name}}'? You will have to add {{type}} one-by-one or allow them all again.",

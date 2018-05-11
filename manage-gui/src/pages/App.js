@@ -16,6 +16,7 @@ import Navigation from "../components/Navigation";
 import {configuration, me, reportError} from "../api";
 import "../locale/en";
 import "../locale/nl";
+import Dummy from "./Dummy";
 
 const S4 = () => (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
 
@@ -120,6 +121,8 @@ class App extends React.PureComponent {
                                                                  configuration={configuration} {...props}/>}/>
                         <Route path="/error"
                                render={props => <ServerError {...props}/>}/>
+                        <Route path="/dummy"
+                               render={props => <Dummy {...props}/>}/>
                         <Route component={NotFound}/>
                     </Switch>
                 </div>

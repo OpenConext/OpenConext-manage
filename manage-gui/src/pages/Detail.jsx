@@ -290,12 +290,13 @@ export default class Detail extends React.PureComponent {
                                 if (json.exception) {
                                     setFlash(json.validations, "error");
                                 } else {
-                                    this.props.history.replace("/search");
                                     const name = json.data.metaDataFields["name:en"] || json.data.metaDataFields["name:nl"] || "this service";
                                     setFlash(I18n.t("metadata.flash.updated", {
                                         name: name,
                                         revision: json.revision.number
                                     }));
+                                    this.props.history.replace(`/dummy`);
+                                    setTimeout(() => this.props.history.replace(`/metadata/${json.type}/${json.id}`), 5);
                                 }
                             });
                     }}>{I18n.t("metadata.submit")}</a>
