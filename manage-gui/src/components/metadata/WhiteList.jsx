@@ -5,7 +5,7 @@ import {Link} from "react-router-dom";
 import ConfirmationDialog from "../../components/ConfirmationDialog";
 import CheckBox from "./../CheckBox";
 import SelectEntities from "./../SelectEntities";
-import {isEmpty, stop} from "../../utils/Utils";
+import {copyToClip, isEmpty, stop} from "../../utils/Utils";
 
 import "./WhiteList.css";
 
@@ -19,7 +19,10 @@ export default class WhiteList extends React.Component {
             confirmationValue: false,
             sorted: "blocked",
             reverse: true,
-            enrichedAllowedEntries: []
+            enrichedAllowedEntries: [],
+            enrichedAllowedEntriesFiltered: [],
+            copiedToClipboardClassName: "",
+            query: ""
         };
     }
 
@@ -59,6 +62,12 @@ export default class WhiteList extends React.Component {
         };
     };
 
+    copyToClipboard = () => {
+        copyToClip("allowed-entities-printable");
+        this.setState({copiedToClipboardClassName: "copied"});
+        setTimeout(() => this.setState({copiedToClipboardClassName: ""}), 5000);
+    };
+
     confirmationDialogAction = e => {
         stop(e);
         this.setState({confirmationDialogOpen: false});
@@ -76,8 +85,27 @@ export default class WhiteList extends React.Component {
         this.setState({confirmationDialogOpen: false});
     };
 
-    setAllowedEntryState = newAllowedEntries =>
-        this.setState({enrichedAllowedEntries: newAllowedEntries.sort(this.sortByAttribute(this.state.sorted, this.state.reverse))});
+    setAllowedEntryState = newAllowedEntries => {
+        const enrichedAllowedEntries = newAllowedEntries.sort(this.sortByAttribute(this.state.sorted, this.state.reverse));
+        this.setState({enrichedAllowedEntries: enrichedAllowedEntries,
+            enrichedAllowedEntriesFiltered: this.doSearch(this.state.query, enrichedAllowedEntries)});
+    };
+
+    doSearch = (query, enrichedAllowedEntries) => {
+        if (isEmpty(query)) {
+            return enrichedAllowedEntries;
+        }
+        const attributes = ["entityid", "name"];
+        const lowerQuery = query.toLowerCase();
+        return enrichedAllowedEntries.filter(entry =>
+            attributes.some(attr => (entry[attr] || "").toLowerCase().indexOf(lowerQuery) > -1 ));
+    };
+
+    search = e => {
+        const query = e.target.value;
+        const {enrichedAllowedEntries} = this.state;
+        this.setState({query: query, enrichedAllowedEntriesFiltered: this.doSearch(query, enrichedAllowedEntries)});
+    };
 
     addAllowedEntry = allowedEntryEntityId => {
         const {allowedAll, allowedEntities = [], entityId, whiteListing} = this.props;
@@ -154,7 +182,7 @@ export default class WhiteList extends React.Component {
                 {!guest && <span><a onClick={e => {
                     stop(e);
                     this.removeAllowedEntry(entity)
-                }}><i className="fa fa-trash-o"></i></a></span>    }
+                }}><i className="fa fa-trash-o"></i></a></span>}
             </td>
             <td className="blocked">
                 {entity.blocked ? <i className="fa fa-window-close"></i> : <span></span>}
@@ -201,18 +229,32 @@ export default class WhiteList extends React.Component {
         </section>
     };
 
+    renderAllowedEntitiesTablePrintable = (enrichedAllowedEntries) => {
+        return <section id="allowed-entities-printable" className="allowed-entities-printable">
+            <table>
+                <thead>
+                </thead>
+                <tbody>
+                {enrichedAllowedEntries.map(entity => <tr>
+                    <td>{entity.name}</td>
+                    <td>{entity.entityid}</td>
+                </tr>)}
+                </tbody>
+            </table>
+
+        </section>
+    };
+
     render() {
         const {allowedAll, allowedEntities = [], whiteListing, name, type, guest} = this.props;
         const providerType = type === "saml20_sp" ? "Identity Providers" : "Service Providers";
-
+        const {confirmationDialogOpen, confirmationDialogQuestion, enrichedAllowedEntriesFiltered ,
+            copiedToClipboardClassName, query} = this.state;
         const allowAllCheckBoxInfo = I18n.t("whitelisting.allowAllProviders", {
             type: providerType,
             name: name || "this service"
         });
         const placeholder = I18n.t("whitelisting.placeholder", {type: providerType});
-
-        const {confirmationDialogOpen, confirmationDialogQuestion, enrichedAllowedEntries} = this.state;
-
         return (
             <div className="metadata-whitelist">
                 <ConfirmationDialog isOpen={confirmationDialogOpen}
@@ -220,16 +262,29 @@ export default class WhiteList extends React.Component {
                                     confirm={this.confirmationDialogAction}
                                     leavePage={false}
                                     question={confirmationDialogQuestion}/>
-                <CheckBox info={allowAllCheckBoxInfo} name="allow-all" value={allowedAll}
-                          onChange={this.allowAllChanged} readOnly={guest}/>
+                <section className="options">
+                    <CheckBox info={allowAllCheckBoxInfo} name="allow-all" value={allowedAll}
+                              onChange={this.allowAllChanged} readOnly={guest}/>
+                    <span className={`button green ${copiedToClipboardClassName}`} onClick={this.copyToClipboard}>
+                        {I18n.t("clipboard.copy")}<i className="fa fa-clone"></i>
+                    </span>
+                </section>
                 <div className="whitelist-info">
                     <h2>{I18n.t("whitelisting.title", {type: providerType})}</h2>
                     {!guest && <p>{I18n.t("whitelisting.description", {type: providerType, name: name})}</p>}
                 </div>
                 {!guest && <SelectEntities whiteListing={whiteListing} allowedEntities={allowedEntities}
                                            onChange={this.addAllowedEntry} placeholder={placeholder}/>}
-                {enrichedAllowedEntries.length > 0 && this.renderAllowedEntitiesTable(enrichedAllowedEntries, type, guest)}
-
+                <div className="search-input-container">
+                    <input className="search-input"
+                           placeholder={I18n.t(`whitelisting.searchPlaceHolder_${type}`)}
+                           type="text"
+                           onChange={this.search}
+                           value={query}/>
+                    <i className="fa fa-search"></i>
+                </div>
+                {enrichedAllowedEntriesFiltered.length > 0 && this.renderAllowedEntitiesTable(enrichedAllowedEntriesFiltered, type, guest)}
+                {this.renderAllowedEntitiesTablePrintable(enrichedAllowedEntriesFiltered)}
             </div>
         );
     }

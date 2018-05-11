@@ -122,6 +122,8 @@ I18n.translations.en = {
         allowAllProviders: "Allow all {{type}} access to {{name}}",
         title: "{{type}} Whitelist",
         description: "Add only those {{type}} which are allowed to access {{name}}.",
+        searchPlaceHolder_saml20_idp: "Search for whitelisted Service Providers...",
+        searchPlaceHolder_saml20_sp: "Search for whitelisted Identity Providers...",
         allowedEntries: {
             blocked: "Blocked",
             status: "Status",
@@ -132,7 +134,7 @@ I18n.translations.en = {
     },
     connectedIdps: {
         title: "{{type}} connected to {{name}}",
-        description: "All {{type}} that are confiured to allow access to {{name}}. If {{name}} is configured to not allow all {{type}} then only those {{type}} that are whitelisted are shown.",
+        description: "All {{type}} that are configured to allow access to {{name}}. If {{name}} is configured to not allow all {{type}} then only those {{type}} that are whitelisted are shown.",
         searchPlaceHolder: "Search for connected Identity Providers...",
         noConnections: "No {{type}} are connected. Most likely {{name}} is configured to whitelist none."
 

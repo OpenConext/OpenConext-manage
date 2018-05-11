@@ -5,7 +5,7 @@ import ReactTooltip from "react-tooltip";
 
 import CheckBox from "./../../components/CheckBox";
 import SelectSource from "./SelectSource";
-import {isEmpty} from "../../utils/Utils";
+import {copyToClip, isEmpty} from "../../utils/Utils";
 
 import "./ARP.css";
 
@@ -18,7 +18,8 @@ export default class ARP extends React.Component {
             addInput: false,
             keyForNewInput: undefined,
             value: "",
-            newArpAttributeAddedKey: undefined
+            newArpAttributeAddedKey: undefined,
+            copiedToClipboardClassName: ""
         };
     }
 
@@ -39,7 +40,7 @@ export default class ARP extends React.Component {
     onChange = (name, value) => {
         const cleansedName = `data.arp.attributes.${name.replace(/\./g, "@")}`;
         if (Array.isArray(value) && value.length > 0) {
-            this.props.onChange(["data.arp.enabled",cleansedName], [true, value], true);
+            this.props.onChange(["data.arp.enabled", cleansedName], [true, value], true);
         } else {
             this.props.onChange(cleansedName, value, true);
         }
@@ -47,6 +48,12 @@ export default class ARP extends React.Component {
     };
 
     nameOfKey = key => key.substring(key.lastIndexOf(":") + 1);
+
+    copyToClipboard = () => {
+        copyToClip("arp-attributes-printable");
+        this.setState({copiedToClipboardClassName: "copied"});
+        setTimeout(() => this.setState({copiedToClipboardClassName: ""}), 5000);
+    };
 
     arpEnabled = e => {
         const noArp = e.target.checked;
@@ -108,7 +115,6 @@ export default class ARP extends React.Component {
     renderEnabledCell = (sources, attributeKey, attributeValues, guest) => {
         const {addInput, keyForNewInput} = this.state;
         const doAddInput = (addInput && keyForNewInput === attributeKey);
-        // const key = attributeKey;//
         return (
             <ul className="values">
                 {attributeValues.map((attributeValue, index) =>
@@ -245,27 +251,41 @@ export default class ARP extends React.Component {
         </table>
     };
 
+    renderArpAttributesTablePrintable = (arp) => {
+        return (
+            <section id="arp-attributes-printable" className="arp-attributes-printable">
+                <table>
+                    <thead>
+                    </thead>
+                    <tbody>
+                    {Object.keys(arp.attributes).map(attr => <tr>
+                        <td>{attr}</td>
+                        <td>{arp.attributes[attr].filter(val => val.value !== "*").map(val => val.value).join(", ")}</td>
+                    </tr>)}
+                    </tbody>
+                </table>
+            </section>
+        );
+    };
+
     render() {
         const {arp, onChange, arpConfiguration, guest} = this.props;
-        const sanitizedArp = isEmpty(arp) ? {attributes:{}} : arp;
+        const {copiedToClipboardClassName} = this.state;
+        const sanitizedArp = isEmpty(arp) ? {attributes: {}} : arp;
         return (
             <div className="metadata-arp">
-                <section className="arp-info">
-                    <h2>
-                        <a href="https://github.com/OpenConext/OpenConext-engineblock/wiki/Attribute-Release-Policy"
-                           target="_blank" rel="noopener noreferrer">
-                            {I18n.t("arp.description")}
-                        </a>
-                    </h2>
-                </section>
-                <section className="enabled">
+                <section className="options">
                     <CheckBox name="arp-enabled" value={!sanitizedArp.enabled}
                               onChange={this.arpEnabled} readOnly={guest}
                               info={I18n.t("arp.arp_enabled")}/>
+                    <span className={`button green ${copiedToClipboardClassName}`} onClick={this.copyToClipboard}>
+                        {I18n.t("clipboard.copy")}<i className="fa fa-clone"></i>
+                    </span>
                 </section>
                 <section className="attributes">
                     <h2>{I18n.t("arp.attributes")}</h2>
                     {this.renderArpAttributesTable(sanitizedArp, onChange, arpConfiguration, guest)}
+                    {this.renderArpAttributesTablePrintable(sanitizedArp)}
                 </section>
             </div>
         );

@@ -15,7 +15,7 @@ export default class SelectSource extends React.PureComponent {
                        onChange={option => onChange(option.value)}
                        options={options}
                        value={source}
-                       autofocus={autofocus}
+                       autoFocus={autofocus}
                        searchable={false}
                        disabled={disabled || false}/>;
     }

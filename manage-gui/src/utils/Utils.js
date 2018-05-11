@@ -36,3 +36,15 @@ export function escapeDeep(obj) {
 
     }
 }
+
+export function copyToClip(elementId) {
+    const listener = e => {
+        const str = document.getElementById(elementId).innerHTML;
+        e.clipboardData.setData("text/html", str);
+        e.clipboardData.setData("text/plain", str);
+        e.preventDefault();
+    };
+    document.addEventListener("copy", listener);
+    document.execCommand("copy");
+    document.removeEventListener("copy", listener);
+}

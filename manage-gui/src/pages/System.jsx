@@ -156,7 +156,6 @@ export default class System extends React.PureComponent {
         setTimeout(() => this.setState({copiedToClipboardClassName: ""}), 5000);
     };
 
-
     renderPushPreview = () => {
         const {pushPreviewResults, loading, copiedToClipboardClassName} = this.state;
         const {currentUser} = this.props;

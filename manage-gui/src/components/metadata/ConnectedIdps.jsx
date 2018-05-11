@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import {Link} from "react-router-dom";
 
 import "./ConnectedIdps.css";
-import {isEmpty} from "../../utils/Utils";
+import {copyToClip, isEmpty} from "../../utils/Utils";
 
 export default class ConnectedIdps extends React.Component {
 
@@ -28,7 +28,8 @@ export default class ConnectedIdps extends React.Component {
             reverse: false,
             connectedEntities: connectedEntities,
             filteredConnectedEntities: sorted,
-            query: ""
+            query: "",
+            copiedToClipboardClassName: ""
         };
     }
 
@@ -57,6 +58,12 @@ export default class ConnectedIdps extends React.Component {
         this.setState({query: query, filteredConnectedEntities: result.sort(this.sortByAttribute(sorted, reverse))});
     };
 
+    copyToClipboard = () => {
+        copyToClip("entities-printable");
+        this.setState({copiedToClipboardClassName: "copied"});
+        setTimeout(() => this.setState({copiedToClipboardClassName: ""}), 5000);
+    };
+
     renderIdP = (entity, type) => {
         return <tr key={entity.id}>
             <td>
@@ -75,6 +82,21 @@ export default class ConnectedIdps extends React.Component {
             </td>
         </tr>
     };
+
+    renderConnectedIdpTablePrintable = (entries) =>
+        <section id="entities-printable" className="entities-printable">
+            <table>
+                <thead>
+                </thead>
+                <tbody>
+                {entries.map(entity => <tr>
+                    <td>{entity.entityid}</td>
+                    <td>{entity.name}</td>
+                </tr>)}
+                </tbody>
+            </table>
+        </section>;
+
 
     renderConnectedIdpTable = (entries) => {
         const {sorted, reverse} = this.state;
@@ -103,14 +125,14 @@ export default class ConnectedIdps extends React.Component {
     };
 
     render() {
-        const {providerType, filteredConnectedEntities, query, connectedEntities} = this.state;
+        const {providerType, filteredConnectedEntities, query, connectedEntities, copiedToClipboardClassName} = this.state;
         const {name} = this.props;
         return (
             <div className="metadata-connected-idps">
-                <div className="connected-idps-info">
-                    <h2>{I18n.t("connectedIdps.title", {type: providerType, name: name})}</h2>
-                    <p>{I18n.t("connectedIdps.description", {type: providerType, name: name})}</p>
-                </div>
+                {/*<div className="connected-idps-info">*/}
+                    {/*<h2>{I18n.t("connectedIdps.title", {type: providerType, name: name})}</h2>*/}
+                    {/*<p>{I18n.t("connectedIdps.description", {type: providerType, name: name})}</p>*/}
+                {/*</div>*/}
                 {connectedEntities.length > 0 && <section className="search">
                     <div className="search-input-container">
                         <input className="search-input"
@@ -120,8 +142,12 @@ export default class ConnectedIdps extends React.Component {
                                value={query}/>
                         <i className="fa fa-search"></i>
                     </div>
+                    <span className={`button green ${copiedToClipboardClassName}`} onClick={this.copyToClipboard}>
+                            {I18n.t("clipboard.copy")}<i className="fa fa-clone"></i>
+                        </span>
                 </section>}
                 {connectedEntities.length > 0 && this.renderConnectedIdpTable(filteredConnectedEntities)}
+                {this.renderConnectedIdpTablePrintable(filteredConnectedEntities)}
                 {connectedEntities.length === 0 &&
                 <h3>{I18n.t("connectedIdps.noConnections", {type: providerType, name: name})}</h3>}
             </div>
