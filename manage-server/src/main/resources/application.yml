@@ -82,7 +82,7 @@ endpoints:
   enabled: false
   health:
     enabled: true
-    sensitive: false
+    sensitive: true
   info:
     enabled: true
 
