@@ -20,16 +20,5 @@ public class Application {
         SpringApplication.run(Application.class, args);
     }
 
-    @Bean
-    public HealthMvcEndpoint exposeDetailsHealthMvcEndpoint(HealthEndpoint delegate) {
-        return new HealthMvcEndpoint(delegate) {
-
-            @Override
-            protected boolean exposeHealthDetails(HttpServletRequest request, Principal principal) {
-                return true;
-            }
-
-        };
-    }
 }
 
