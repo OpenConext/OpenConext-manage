@@ -302,6 +302,19 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void autoCompleteEscaping() throws Exception {
+        given()
+            .when()
+            .queryParam("query", "(test)")
+            .get("manage/api/client/autocomplete/saml20_idp")
+            .then()
+            .statusCode(SC_OK)
+            .body("size()", is(1))
+            .body("data.entityid", hasItems(
+                "https://idp.test2.surfconext.nl"));
+    }
+
+    @Test
     public void search() throws Exception {
         Map<String, Object> searchOptions = new HashMap<>();
         searchOptions.put("metaDataFields.coin:do_not_add_attribute_aliases", "1");

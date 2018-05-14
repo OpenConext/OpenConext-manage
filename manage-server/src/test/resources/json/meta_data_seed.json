@@ -313,7 +313,7 @@
         "OrganizationDisplayName:nl": "OrganizationDisplayName name nl",
         "OrganizationURL:en": "https://organization-url/en",
         "OrganizationURL:nl": "https://organization-url/nl",
-        "keywords:en": "keywords, en",
+        "keywords:en": "keywords, (test)",
         "keywords:nl": "keywords, nl",
         "NameIDFormat": "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
         "coin:publish_in_edugain": "1",

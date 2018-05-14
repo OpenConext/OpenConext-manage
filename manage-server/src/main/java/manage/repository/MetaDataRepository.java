@@ -62,6 +62,12 @@ public class MetaDataRepository {
         if ("*".equals(search)) {
             return mongoTemplate.find(query, Map.class, type);
         }
+        if (search.indexOf("(") > -1) {
+            search = search.replace("(", "\\(");
+        }
+        if (search.indexOf(")") > -1) {
+            search = search.replace(")", "\\)");
+        }
         query.limit(AUTOCOMPLETE_LIMIT);
         Criteria criteria = new Criteria();
         query.addCriteria(criteria.orOperator(
