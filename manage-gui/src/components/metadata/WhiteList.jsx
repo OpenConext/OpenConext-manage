@@ -231,21 +231,12 @@ export default class WhiteList extends React.Component {
         </section>
     };
 
-    renderAllowedEntitiesTablePrintable = (enrichedAllowedEntries) => {
-        return <section id="allowed-entities-printable" className="allowed-entities-printable">
-            <table>
-                <thead>
-                </thead>
-                <tbody>
-                {enrichedAllowedEntries.map(entity => <tr key={entity.entityid}>
-                    <td>{entity.name}</td>
-                    <td>{entity.entityid}</td>
-                </tr>)}
-                </tbody>
-            </table>
-
-        </section>
-    };
+    renderAllowedEntitiesTablePrintable = enrichedAllowedEntries =>
+            <section id="allowed-entities-printable"
+                     className="allowed-entities-printable"
+                     dangerouslySetInnerHTML={{__html: enrichedAllowedEntries
+                             .map(entity => `${entity.name ? entity.name + '	' : ''}${entity.entityid}`)
+                             .join("\n")}}/>;
 
     render() {
         const {allowedAll, allowedEntities = [], whiteListing, name, type, guest} = this.props;

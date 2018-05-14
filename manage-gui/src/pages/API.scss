@@ -58,6 +58,10 @@
         border: 1px solid $light-grey;
     }
 
+    section#search-results-printable {
+        display: none;
+    }
+
     table.metadata-search-table , table.search-results {
         width: 100%;
         th {

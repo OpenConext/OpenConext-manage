@@ -153,7 +153,7 @@ export default class API extends React.PureComponent {
         const searchHeaders = ["status", "name", "entityid", "notes"].concat(Object.keys(searchAttributes));
         searchResults = status === "all" ? searchResults : searchResults.filter(entity => entity.data.state === status);
         return (
-            <section id={"search-results-printable"}>
+            <section>
                 <table className="search-results">
                     <thead>
                     <tr>
@@ -186,6 +186,14 @@ export default class API extends React.PureComponent {
     };
 
 
+    renderSearchResultsTablePrintable = (searchResults) =>
+            <section id={"search-results-printable"}
+                     dangerouslySetInnerHTML={{
+                         __html: searchResults
+                             .map(entity => `${entity.data.state},${entity.data.entityid},${entity.data.metaDataFields["name:en"] || entity.data.metaDataFields["name:nl"]}`)
+                             .join("\n")
+                     }}/>;
+
     renderSearch = () => {
         const {configuration} = this.props;
         const {selectedType, searchAttributes, errorAttributes, searchResults, status, copiedToClipboardClassName} = this.state;
@@ -212,7 +220,7 @@ export default class API extends React.PureComponent {
                     <a className={`button ${valid ? "green" : "disabled grey"}`} onClick={this.doSearch}>Search<i
                         className="fa fa-search-plus"></i></a>
                     <a className={`clipboard-copy button ${showResults ? "green" : "disabled grey"} ${copiedToClipboardClassName}`}
-                          onClick={this.copyToClipboard}>
+                       onClick={this.copyToClipboard}>
                         {I18n.t("clipboard.copy")}<i className="fa fa-clone"></i>
                     </a>
                 </section>
@@ -223,7 +231,7 @@ export default class API extends React.PureComponent {
                                         value={status}
                                         className="status-select"/>}
                 {showResults && this.renderSearchResultsTable(searchResults, selectedType, searchAttributes, status)}
-
+                {showResults && this.renderSearchResultsTablePrintable(searchResults)}
             </section>
         );
     };

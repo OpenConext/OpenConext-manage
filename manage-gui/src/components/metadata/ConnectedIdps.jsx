@@ -84,20 +84,10 @@ export default class ConnectedIdps extends React.Component {
         </tr>
     };
 
-    renderConnectedIdpTablePrintable = (entries) =>
-        <section id="entities-printable" className="entities-printable">
-            <table>
-                <thead>
-                </thead>
-                <tbody>
-                {entries.map(entity => <tr key={entity.entityid}>
-                    <td>{entity.entityid}</td>
-                    <td>{entity.name}</td>
-                </tr>)}
-                </tbody>
-            </table>
-        </section>;
-
+    renderConnectedIdpTablePrintable = entries =>
+        <section id="entities-printable"
+                 className="entities-printable"
+                 dangerouslySetInnerHTML={{__html: entries.map(entity => `${entity.name ? entity.name + '\t' : ''}${entity.entityid}`).join("\n")}}/>
 
     renderConnectedIdpTable = (entries) => {
         const {sorted, reverse} = this.state;
