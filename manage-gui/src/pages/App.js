@@ -107,8 +107,11 @@ class App extends React.PureComponent {
                         <Route path="/search"
                                render={props => <Search currentUser={currentUser}
                                                         configuration={configuration} {...props}/>}/>
-                        <Route path="/metadata/:type/:id"
+                        <Route path="/metadata/:type/:id/:tab?"
                                render={props => <Detail currentUser={currentUser}
+                                                        configuration={configuration} {...props}/>}/>
+                        <Route path="/clone/:type/:id/:tab"
+                               render={props => <Detail currentUser={currentUser} clone={true}
                                                         configuration={configuration} {...props}/>}/>
                         <Route path="/import"
                                render={props => <ImportMetaData currentUser={currentUser}

@@ -274,6 +274,24 @@ public class MongobeeConfiguration {
         });
     }
 
+    @ChangeSet(order = "010", id = "splitConsentDisablingIntoMultiLanguage", author = "Okke Harsta")
+    public void splitConsentDisablingIntoMultiLanguage(MongoTemplate mongoTemplate) throws IOException {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("data.disableConsent").exists(true).not().size(0));
+        List<MetaData> entities = mongoTemplate.find(query, MetaData.class, EntityType.IDP.getType());
+        entities.forEach(entity -> {
+            List<Map<String, Object>> disableConsents = (List<Map<String, Object>>) entity.getData().get("disableConsent");
+            disableConsents.forEach(disableConsent -> {
+                Object explanation = disableConsent.get("explanation");
+                disableConsent.put("explanation:en", explanation);
+                disableConsent.put("explanation:nl", explanation);
+                disableConsent.remove("explanation");
+            });
+            LOG.info("Saving metadata {} with multi language", entity.getId());
+            mongoTemplate.save(entity, EntityType.IDP.getType());
+        });
+    }
+
     private Long highestEid(MongoTemplate mongoTemplate, String type) {
         Query query = new Query().limit(1).with(new Sort(Sort.Direction.DESC, "data.eid"));
         query.fields().include("data.eid");

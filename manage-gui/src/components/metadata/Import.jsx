@@ -266,7 +266,7 @@ export default class Import extends React.Component {
                 </tbody>
             </table>
         );
-    }
+    };
 
     renderAllowedEntitiesDisableContentTable = (entities, currentEntities, name, entryName, newEntity) => {
         const prefix = newEntity ? "new_" : "";
@@ -549,7 +549,10 @@ export default class Import extends React.Component {
                 <section className="sub-tabs">
                     {tabs.map(tab => this.renderTab(tab, selectedTab))}
                 </section>
-                {this.renderSelectedTab(selectedTab)}
+                <section className="content">
+                    {this.renderSelectedTab(selectedTab)}
+                </section>
+
             </div>
         );
     }

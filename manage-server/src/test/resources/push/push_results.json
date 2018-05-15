@@ -1,0 +1,108 @@
+{
+  "allow_all_entities" : true,
+  "allowed_connections" : [ ],
+  "arp_attributes" : {
+    "urn:mace:dir:attribute-def:displayName" : [ {
+      "value" : "*"
+    } ],
+    "urn:mace:dir:attribute-def:mail" : [ {
+      "value" : "*"
+    } ],
+    "urn:mace:dir:attribute-def:isMemberOf" : [ {
+      "value" : "*"
+    }, {
+      "value" : "urn:collab:org:surf.nl*",
+      "source" : "voot"
+    }, {
+      "value" : "*",
+      "source" : "sab"
+    } ],
+    "urn:mace:dir:attribute-def:uid" : [ {
+      "value" : "*"
+    } ],
+    "urn:mace:terena.org:attribute-def:schacHomeOrganization" : [ {
+      "value" : "*"
+    } ]
+  },
+  "manipulation_code" : "",
+  "metadata" : {
+    "AssertionConsumerService" : [ {
+      "Binding" : "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
+      "Index" : "0",
+      "Location" : "https://teams.surfconext.nl/Shibboleth.sso/SAML2/POST"
+    }, {
+      "Binding" : "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Artifact",
+      "Index" : "1",
+      "Location" : "https://teams.surfconext.nl/Shibboleth.sso/SAML2/Artifact"
+    }, {
+      "Binding" : "urn:oasis:names:tc:SAML:2.0:bindings:PAOS",
+      "Index" : "2",
+      "Location" : "https://teams.surfconext.nl/Shibboleth.sso/SAML2/ECP"
+    } ],
+    "NameIDFormat" : "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
+    "NameIDFormats" : [ "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified", "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent", "urn:oasis:names:tc:SAML:2.0:nameid-format:transient" ],
+    "OrganizationDisplayName" : {
+      "en" : "SURFnet",
+      "nl" : "SURFnet"
+    },
+    "OrganizationName" : {
+      "en" : "SURFnet BV",
+      "nl" : "SURFnet BV"
+    },
+    "OrganizationURL" : {
+      "en" : "https://www.surfnet.nl/en/",
+      "nl" : "https://www.surfnet.nl/"
+    },
+    "certData" : "MIIDEzCCAfugAwIBAgIJAKoK/heBjcOYMA0GCSqGSIb3DQEBBQUAMCAxHjAcBgNVBAoMFU9yZ2FuaXphdGlvbiwgQ049T0lEQzAeFw0xNTExMTExMDEyMTVaFw0yNTExMTAxMDEyMTVaMCAxHjAcBgNVBAoMFU9yZ2FuaXphdGlvbiwgQ049T0lEQzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANBGwJ/qpTQNiSgUglSE2UzEkUow+wS8r67etxoEhlzJZfgK/k5TfG1wICDqapHAxEVgUM10aBHRctNocA5wmlHtxdidhzRZroqHwpKy2BmsKX5Z2oK25RLpsyusB1KroemgA/CjUnI6rIL1xxFn3KyOFh1ZBLUQtKNQeMS7HFGgSDAp+sXuTFujz12LFDugX0T0KB5a1+0l8y0PEa0yGa1oi6seONx849ZHxM0PRvUunWkuTM+foZ0jZpFapXe02yWMqhc/2iYMieE/3GvOguJchJt6R+cut8VBb6ubKUIGK7pmoq/TB6DVXpvsHqsDJXechxcicu4pdKVDHSec850CAwEAAaNQME4wHQYDVR0OBBYEFK7RqjoodSYVXGTVEdLf3kJflP/sMB8GA1UdIwQYMBaAFK7RqjoodSYVXGTVEdLf3kJflP/sMAwGA1UdEwQFMAMBAf8wDQYJKoZIhvcNAQEFBQADggEBADNZkxlFXh4F45muCbnQd+WmaXlGvb9tkUyAIxVL8AIu8J18F420vpnGpoUAE+Hy3evBmp2nkrFAgmr055fAjpHeZFgDZBAPCwYd3TNMDeSyMta3Ka+oS7GRFDePkMEm+kH4/rITNKUF1sOvWBTSowk9TudEDyFqgGntcdu/l/zRxvx33y3LMG5USD0x4X4IKjRrRN1BbcKgi8dq10C3jdqNancTuPoqT3WWzRvVtB/q34B7F74/6JzgEoOCEHufBMp4ZFu54P0yEGtWfTwTzuoZobrChVVBt4w/XZagrRtUCDNwRpHNbpjxYudbqLqpi1MQpV9oht/BpTHVJG2i0ro=",
+    "coin" : {
+      "eula" : "https://wiki.surfnetlabs.nl/display/conextsupport/Terms+of+Service+%28EN%29",
+      "no_consent_required" : "1",
+      "wiki_url" : {
+        "en" : "https://wiki.url.en",
+        "nl" : "https://wiki.url.nl"
+      }
+    },
+    "contacts" : [ {
+      "emailAddress" : "help@surfconext.nl",
+      "surName" : "Support",
+      "givenName" : "SURFconext",
+      "contactType" : "support"
+    }, {
+      "emailAddress" : "conext-beheer@surfnet.nl",
+      "surName" : "net",
+      "givenName" : "SURF",
+      "contactType" : "administrative"
+    }, {
+      "emailAddress" : "conext-beheer@surfnet.nl",
+      "surName" : "Beheer",
+      "givenName" : "Conext",
+      "contactType" : "technical"
+    }, {
+      "contactType" : "technical"
+    } ],
+    "description" : {
+      "en" : "Teams for SURFconext.",
+      "nl" : "Teams voor SURFconext."
+    },
+    "displayName" : {
+      "en" : "SURFconext Teams | SURFnet",
+      "nl" : "SURFconext Teams | SURFnet"
+    },
+    "logo" : [ {
+      "width" : "500",
+      "url" : "https://static.surfconext.nl/media/sp/SURFnetdienst.png",
+      "height" : "300"
+    } ],
+    "name" : {
+      "en" : "SURFconext Teams | SURFnet",
+      "nl" : "SURFconext Teams | SURFnet"
+    },
+    "url" : {
+      "en" : "https://www.surfnet.nl/",
+      "nl" : "https://www.surfnet.nl/"
+    }
+  },
+  "name" : "https://teams.surfconext.nl/shibboleth",
+  "state" : "prodaccepted",
+  "type" : "saml20-sp"
+}

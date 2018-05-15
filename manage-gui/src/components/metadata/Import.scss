@@ -2,7 +2,6 @@
 
 .metadata-import {
     background-color: white;
-    padding: 0 20px;
 
     h2 {
         font-size: 18px;
@@ -17,7 +16,8 @@
     }
 
     section.sub-tabs {
-        margin-top: 25px;
+        margin-top: 15px;
+        background: $background;
         display: flex;
         padding: 0;
         span {
@@ -40,6 +40,9 @@
                 border-right: none;
             }
         }
+    }
+    section.content {
+        padding: 0 20px;
     }
     section.import-url-container, section.import-xml, section.import-json {
         section.import-header, section.import-footer {

@@ -5,6 +5,7 @@ import manage.model.MetaData;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
@@ -17,6 +18,15 @@ import static org.junit.Assert.assertEquals;
 public class EngineBlockFormatterTest implements TestUtils {
 
     private EngineBlockFormatter subject = new EngineBlockFormatter();
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testParse() throws Exception {
+        MetaData metaData = objectMapper.readValue(readFile("json/meta_data_detail.json"), MetaData.class);
+        Map<String, Object> result = subject.parseServiceProvider(metaData);
+        Map<String, Object> expected = objectMapper.readValue(readFile("push/push_results.json"), Map.class);
+        assertEquals(new HashMap<>(expected).toString(), new HashMap<>(result).toString());
+    }
 
     @Test
     public void addToResult() throws Exception {

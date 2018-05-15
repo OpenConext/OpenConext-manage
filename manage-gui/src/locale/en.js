@@ -68,10 +68,12 @@ I18n.translations.en = {
         submit: "Submit",
         cancel: "Cancel",
         remove: "Delete",
+        clone: "Clone",
         revisionnote: "Revision notes",
         revisionnoteRequired: "Revision notes are required.",
         flash: {
             updated: "{{name}} was successfully updated to revision {{revision}}",
+            cloned: "{{name}} was successfully cloned. Submit to save the changes.",
             deleted: "{{name}} was successfully deleted"
         },
         required: "{{name}} is required",
@@ -149,12 +151,16 @@ I18n.translations.en = {
             no_consent: "No consent is required",
             minimal_consent: "Minimal consent is required",
             consent_value: "Type of consent required",
-            explanation: "Explanation"
+            explanationNl: "Explanation EN",
+            explanationEn: "Explanation NL"
         }
     },
 
     manipulation : {
-        description: "Documentation on attribute manipulations"
+        manipulationInfo: "Documentation on attribute manipulations",
+        notesInfo: "Documentation on attribute manipulations notes",
+        manipulation: "PHP Code",
+        notes: "Notes"
     },
 
     metaDataFields: {

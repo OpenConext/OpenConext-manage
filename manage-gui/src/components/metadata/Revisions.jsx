@@ -13,7 +13,7 @@ import {escapeDeep} from "../../utils/Utils";
 import "jsondiffpatch/public/formatters-styles/html.css";
 import "./Revisions.css";
 
-const ignoreInDiff = ["id", "eid", "revisionid", "user", "created", "ip", "revisionnote", "notes"];
+const ignoreInDiff = ["id", "eid", "revisionid", "user", "created", "ip", "revisionnote"];
 
 export default class Revisions extends React.Component {
 

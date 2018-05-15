@@ -58,16 +58,25 @@ export default class Detail extends React.PureComponent {
     componentDidMount() {
         window.scrollTo(0, 0);
         const {newMetaData} = this.props;
-        const {type, id} = this.state;
+        let {type, id} = this.state;
         const isNew = id === "new";
         const promise = isNew ? template(type) : detail(type, id);
         promise.then(metaData => {
             const isSp = (type === "saml20_sp");
             const whiteListingType = isSp ? "saml20_idp" : "saml20_sp";
             const errorKeys = isSp ? tabsSp : tabsIdP;
+            if (this.props.clone) {
+                //Clean all
+                const clonedClearFields = ["entityid", "revision", "created", "eid", "id", "ip", "notes",
+                    "revisionid", "revisionnote", "user"];
+                metaData.id = undefined;
+                metaData.revision = undefined;
+                clonedClearFields.forEach(attr => delete metaData.data[attr]);
+                id = undefined;
+            }
             this.setState({
                 metaData: metaData,
-                isNew: isNew,
+                isNew: isNew || !isEmpty(this.props.clone),
                 originalEntityId: metaData.data.entityid,
                 loaded: isEmpty(newMetaData),
                 errors: errorKeys.reduce((acc, tab) => {
@@ -77,7 +86,8 @@ export default class Detail extends React.PureComponent {
                 changes: errorKeys.reduce((acc, tab) => {
                     acc[tab] = false;
                     return acc;
-                }, {})
+                }, {}),
+                selectedTab: this.props.match.params.tab || "connection"
             });
             if (!isEmpty(newMetaData)) {
                 this.applyImportChanges(newMetaData, {
@@ -90,7 +100,6 @@ export default class Detail extends React.PureComponent {
             } else {
                 this.validate(metaData, this.props.configuration, type);
             }
-
             whiteListing(whiteListingType).then(whiteListing => {
                 this.setState({whiteListing: whiteListing});
                 revisions(type, id).then(revisions => {
@@ -143,6 +152,8 @@ export default class Detail extends React.PureComponent {
     switchTab = tab => e => {
         stop(e);
         this.setState({selectedTab: tab});
+        const {type, id} = this.state;
+        this.props.history.push(`/metadata/${type}/${id}/${tab}`);
     };
 
     onError = name => (key, isError) => {
@@ -296,7 +307,7 @@ export default class Detail extends React.PureComponent {
                                         revision: json.revision.number
                                     }));
                                     this.props.history.replace(`/dummy`);
-                                    setTimeout(() => this.props.history.replace(`/metadata/${json.type}/${json.id}`), 5);
+                                    setTimeout(() => this.props.history.replace(`/metadata/${json.type}/${json.id}/${this.state.selectedTab}`), 5);
                                 }
                             });
                     }}>{I18n.t("metadata.submit")}</a>
@@ -350,10 +361,13 @@ export default class Detail extends React.PureComponent {
             case "connected_idps":
                 return <ConnectedIdps whiteListing={whiteListing} allowedAll={metaData.data.allowedall}
                                       allowedEntities={metaData.data.allowedEntities}
-                                      name={name} entityId={metaData.data.entityid}/>;
+                                      name={name} entityId={metaData.data.entityid}
+                                      state={metaData.data.state}/>;
             case "manipulation":
-                return <Manipulation content={metaData.data.manipulation}
-                                     onChange={this.onChange("manipulation")} guest={guest}/>;
+                return <Manipulation content={metaData.data.manipulation || ""}
+                                     notes={metaData.data.manipulationNotes || ""}
+                                     onChange={this.onChange("manipulation")}
+                                     guest={guest}/>;
             case "consent_disabling":
                 return <ConsentDisabling disableConsent={metaData.data.disableConsent} name={name}
                                          whiteListing={whiteListing} onChange={this.onChange("consent_disabling")}
@@ -431,6 +445,15 @@ export default class Detail extends React.PureComponent {
                             leavePage: false
                         });
                     }}>{I18n.t("metadata.remove")}</a>}
+                    {!isNew && <a className="button green clone-metadata" onClick={e => {
+                        stop(e);
+                        this.props.history.replace(`/dummy`);
+                        setTimeout(() => {
+                            const name = metaData.data.metaDataFields["name:en"] || metaData.data.metaDataFields["name:nl"] || "this service";
+                            setFlash(I18n.t("metadata.flash.cloned", {name: name}));
+                            this.props.history.replace(`/clone/${type}/${metaData.id}`);
+                        }, 5);
+                    }}>{I18n.t("metadata.clone")}</a>}
                 </section>
                 }
                 {renderNotFound && <section>{I18n.t("metadata.notFound")}</section>}
@@ -448,6 +471,7 @@ Detail.propTypes = {
     history: PropTypes.object.isRequired,
     currentUser: PropTypes.object.isRequired,
     configuration: PropTypes.array.isRequired,
+    clone: PropTypes.bool,
     newMetaData: PropTypes.object
 };
 

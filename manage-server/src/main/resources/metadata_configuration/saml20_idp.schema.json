@@ -64,6 +64,9 @@
     "manipulation": {
       "type": ["string", "null"]
     },
+    "manipulationNotes": {
+      "type": ["string", "null"]
+    },
     "user": {
       "type": "string"
     },
@@ -106,7 +109,10 @@
             ],
             "default": "no_consent"
           },
-          "explanation": {
+          "explanation:en": {
+            "type": "string"
+          },
+          "explanation:nl": {
             "type": "string"
           }
         }

@@ -28,14 +28,22 @@ export default class WhiteList extends React.Component {
     }
 
     componentDidMount() {
+        this.initialiseAllowedEntities(this.props.whiteListing);
+    }
+
+    initialiseAllowedEntities(whiteListing) {
         window.scrollTo(0, 0);
-        const {allowedEntities = [], entityId, whiteListing} = this.props;
+        const {allowedEntities = [], entityId} = this.props;
         this.enrichAllowedEntries(allowedEntities, entityId, whiteListing);
     }
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.allowedAll) {
             this.setState({enrichedAllowedEntries: []})
+        }
+        if (nextProps.whiteListing && this.props.whiteListing &&
+            nextProps.whiteListing.length !== this.props.whiteListing.length) {
+            this.initialiseAllowedEntities(nextProps.whiteListing);
         }
     }
 
@@ -88,8 +96,10 @@ export default class WhiteList extends React.Component {
 
     setAllowedEntryState = newAllowedEntries => {
         const enrichedAllowedEntries = newAllowedEntries.sort(this.sortByAttribute(this.state.sorted, this.state.reverse));
-        this.setState({enrichedAllowedEntries: enrichedAllowedEntries,
-            enrichedAllowedEntriesFiltered: this.doSearch(this.state.query, enrichedAllowedEntries)});
+        this.setState({
+            enrichedAllowedEntries: enrichedAllowedEntries,
+            enrichedAllowedEntriesFiltered: this.doSearch(this.state.query, enrichedAllowedEntries)
+        });
     };
 
     doSearch = (query, enrichedAllowedEntries) => {
@@ -99,7 +109,7 @@ export default class WhiteList extends React.Component {
         const attributes = ["entityid", "name"];
         const lowerQuery = query.toLowerCase();
         return enrichedAllowedEntries.filter(entry =>
-            attributes.some(attr => (entry[attr] || "").toLowerCase().indexOf(lowerQuery) > -1 ));
+            attributes.some(attr => (entry[attr] || "").toLowerCase().indexOf(lowerQuery) > -1));
     };
 
     search = e => {
@@ -232,17 +242,21 @@ export default class WhiteList extends React.Component {
     };
 
     renderAllowedEntitiesTablePrintable = enrichedAllowedEntries =>
-            <section id="allowed-entities-printable"
-                     className="allowed-entities-printable"
-                     dangerouslySetInnerHTML={{__html: enrichedAllowedEntries
-                             .map(entity => `${entity.name ? entity.name + '	' : ''}${entity.entityid}`)
-                             .join("\n")}}/>;
+        <section id="allowed-entities-printable"
+                 className="allowed-entities-printable"
+                 dangerouslySetInnerHTML={{
+                     __html: enrichedAllowedEntries
+                         .map(entity => `${entity.name ? entity.name + '	' : ''}${entity.entityid}`)
+                         .join("\n")
+                 }}/>;
 
     render() {
         const {allowedAll, allowedEntities = [], whiteListing, name, type, guest} = this.props;
         const providerType = type === "saml20_sp" ? "Identity Providers" : "Service Providers";
-        const {confirmationDialogOpen, confirmationDialogQuestion, enrichedAllowedEntriesFiltered ,
-            copiedToClipboardClassName, query} = this.state;
+        const {
+            confirmationDialogOpen, confirmationDialogQuestion, enrichedAllowedEntriesFiltered,
+            copiedToClipboardClassName, query
+        } = this.state;
         const allowAllCheckBoxInfo = I18n.t("whitelisting.allowAllProviders", {
             type: providerType,
             name: name || "this service"

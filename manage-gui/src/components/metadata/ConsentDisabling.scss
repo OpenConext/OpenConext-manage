@@ -30,21 +30,18 @@
                     min-width: 25px;
                 }
                 &.status {
-                    min-width: 50px;
+                    min-width: 100px;
                 }
                 &.name {
                     width: 15%;
                 }
                 &.entityid {
-                    width: 15%;
+                    width: 25%;
                 }
-                &.explanation {
-                    width: 35%;
+                &.explanationNl, &.explanationEn {
+                    width: 20%;
                 }
                 &.consent_value {
-                    width: 15%;
-                }
-                &.link {
                     width: 20%;
                 }
             }
@@ -53,6 +50,7 @@
                     background-color: $lightest-grey;
                 }
                 td {
+                    word-break: break-all;
                     vertical-align: middle;
                     &.remove {
                         padding: 5px 10px 5px 0;
@@ -63,7 +61,7 @@
                         }
                     }
                     &.explanation {
-                        input {
+                        input, textarea {
                             @include inputField;
                             width: 95%;
                         }

@@ -52,6 +52,8 @@ public class EngineBlockFormatter {
 
         commonAttributes.put("metadata:keywords:en", empty());
         commonAttributes.put("metadata:keywords:nl", empty());
+        commonAttributes.put("metadata:url:en", empty());
+        commonAttributes.put("metadata:url:nl", empty());
         commonAttributes.put("metadata:coin:publish_in_edugain", empty());
 
         commonAttributes.put("metadata:certData", empty());

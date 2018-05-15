@@ -11,9 +11,27 @@ export default class ConnectedIdps extends React.Component {
 
     constructor(props) {
         super(props);
-        const {allowedAll, allowedEntities = [], whiteListing, entityId} = this.props;
+        this.state = {
+            providerType: "Identity Providers",
+            sorted: "name",
+            reverse: false,
+            connectedEntities: [],
+            filteredConnectedEntities: [],
+            query: "",
+            copiedToClipboardClassName: ""
+        };
+    }
+
+    componentDidMount() {
+        this.initialiseConnectedIdps(this.props.whiteListing);
+    }
+
+    initialiseConnectedIdps(whiteListing) {
+        window.scrollTo(0, 0);
+        const {allowedAll, allowedEntities = [], entityId, state} = this.props;
         const connectedEntities = whiteListing
             .filter(idp => idp.data.allowedall || idp.data.allowedEntities.some(entity => entity.name === entityId))
+            .filter(idp => idp.data.state === state)
             .filter(idp => allowedAll || allowedEntities.some(entity => entity.name === idp.data.entityid))
             .map(idp => ({
                 id: idp._id,
@@ -23,19 +41,14 @@ export default class ConnectedIdps extends React.Component {
                 notes: idp.data.notes
             }));
         const sorted = connectedEntities.sort(this.sortByAttribute("name", false));
-        this.state = {
-            providerType: "Identity Providers",
-            sorted: "name",
-            reverse: false,
-            connectedEntities: connectedEntities,
-            filteredConnectedEntities: sorted,
-            query: "",
-            copiedToClipboardClassName: ""
-        };
+        this.setState({connectedEntities: connectedEntities, filteredConnectedEntities: sorted});
     }
 
-    componentDidMount() {
-        window.scrollTo(0, 0);
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.whiteListing && this.props.whiteListing &&
+            nextProps.whiteListing.length !== this.props.whiteListing.length) {
+            this.initialiseConnectedIdps(nextProps.whiteListing);
+        }
     }
 
     sortByAttribute = (name, reverse = false) => (a, b) => {
@@ -79,7 +92,8 @@ export default class ConnectedIdps extends React.Component {
                 {entity.entityid}
             </td>
             <td className="info">
-                {isEmpty(entity.notes) ? <span></span> : <NotesTooltip identifier={entity.entityid} notes={entity.notes}/>}
+                {isEmpty(entity.notes) ? <span></span> :
+                    <NotesTooltip identifier={entity.entityid} notes={entity.notes}/>}
             </td>
         </tr>
     };
@@ -121,8 +135,8 @@ export default class ConnectedIdps extends React.Component {
         return (
             <div className="metadata-connected-idps">
                 {/*<div className="connected-idps-info">*/}
-                    {/*<h2>{I18n.t("connectedIdps.title", {type: providerType, name: name})}</h2>*/}
-                    {/*<p>{I18n.t("connectedIdps.description", {type: providerType, name: name})}</p>*/}
+                {/*<h2>{I18n.t("connectedIdps.title", {type: providerType, name: name})}</h2>*/}
+                {/*<p>{I18n.t("connectedIdps.description", {type: providerType, name: name})}</p>*/}
                 {/*</div>*/}
                 {connectedEntities.length > 0 && <section className="search">
                     <div className="search-input-container">
@@ -151,6 +165,7 @@ ConnectedIdps.propTypes = {
     allowedEntities: PropTypes.array.isRequired,
     allowedAll: PropTypes.bool.isRequired,
     entityId: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired
+    name: PropTypes.string.isRequired,
+    state: PropTypes.string.isRequired
 };
 

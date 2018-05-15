@@ -4128,6 +4128,10 @@ map-stream@~0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/map-stream/-/map-stream-0.1.0.tgz#e56aa94c4c8055a16404a0674b78f215f7c8e194"
 
+marked@^0.3.19:
+  version "0.3.19"
+  resolved "https://registry.yarnpkg.com/marked/-/marked-0.3.19.tgz#5d47f709c4c9fc3c216b6d46127280f40b39d790"
+
 math-expression-evaluator@^1.2.14:
   version "1.2.17"
   resolved "https://registry.yarnpkg.com/math-expression-evaluator/-/math-expression-evaluator-1.2.17.tgz#de819fdbcd84dccd8fae59c6aeb79615b9d266ac"
@@ -5375,6 +5379,13 @@ react-input-autosize@^2.1.2:
   resolved "https://registry.yarnpkg.com/react-input-autosize/-/react-input-autosize-2.2.1.tgz#ec428fa15b1592994fb5f9aa15bb1eb6baf420f8"
   dependencies:
     prop-types "^15.5.8"
+
+react-md-editor@^0.2.2:
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/react-md-editor/-/react-md-editor-0.2.2.tgz#fb7a5261c29516f303a6c01bdbaf24956f35a5b3"
+  dependencies:
+    classnames "^2.2.5"
+    codemirror "^5.18.2"
 
 react-modal@^2.2.0:
   version "2.3.2"

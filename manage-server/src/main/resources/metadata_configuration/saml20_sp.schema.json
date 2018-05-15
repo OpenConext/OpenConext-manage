@@ -86,6 +86,12 @@
         "null"
       ]
     },
+    "manipulationNotes": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
     "user": {
       "type": "string"
     },
@@ -297,16 +303,14 @@
           "type": "string",
           "format": "date-time",
           "info": "When to add metadata to the eduGAIN feed. Usually the current time."
-
         },
         "coin:interfed_source": {
           "type": "string",
           "enum": [
             "Entree",
             "eduGAIN"
-                  ],
+          ],
           "info": "Must be set if the federation source is either eduGAIN or Entree."
-
         },
         "coin:additional_logging": {
           "type": "string",
@@ -316,7 +320,6 @@
         "coin:institution_id": {
           "type": "string",
           "info": "The defined client code."
-
         },
         "coin:institution_guid": {
           "type": "string",
@@ -378,7 +381,6 @@
           "type": "string",
           "format": "url",
           "info": "The provided URL to the metadata of the service."
-
         },
         "coin:service_team_id": {
           "type": "string",
