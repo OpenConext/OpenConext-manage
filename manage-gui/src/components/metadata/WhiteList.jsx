@@ -39,9 +39,8 @@ export default class WhiteList extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.allowedAll) {
-            this.setState({enrichedAllowedEntries: []})
-        }
-        if (nextProps.whiteListing && this.props.whiteListing &&
+            this.setState({enrichedAllowedEntries: [], enrichedAllowedEntriesFiltered: []});
+        } else if (nextProps.whiteListing && this.props.whiteListing &&
             nextProps.whiteListing.length !== this.props.whiteListing.length) {
             this.initialiseAllowedEntities(nextProps.whiteListing);
         }

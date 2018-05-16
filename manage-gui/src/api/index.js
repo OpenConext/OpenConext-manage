@@ -103,6 +103,11 @@ export function update(metaData) {
     return postPutJson("metadata", metaData, "put");
 }
 
+export function restoreRevision(id, type, parentType) {
+    return postPutJson("restoreRevision", {id: id, type: type, parentType: parentType}, "put");
+}
+
+
 export function configuration() {
     return fetchJson("metadata/configuration");
 }

@@ -10,6 +10,7 @@ import manage.format.Importer;
 import manage.migration.EntityType;
 import manage.model.MetaData;
 import manage.model.MetaDataUpdate;
+import manage.model.RevisionRestore;
 import manage.model.XML;
 import manage.repository.MetaDataRepository;
 import manage.shibboleth.FederatedUser;
@@ -227,6 +228,28 @@ public class MetaDataController {
         metaDataRepository.update(metaData);
 
         return metaData;
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/client/restoreRevision")
+    @Transactional
+    public MetaData restoreRevision(@Validated @RequestBody RevisionRestore revisionRestore,
+                                    FederatedUser federatedUser) throws JsonProcessingException {
+        MetaData revision = metaDataRepository.findById(revisionRestore.getId(), revisionRestore.getType());
+
+        MetaData parent = metaDataRepository.findById(revision.getRevision().getParentId(),
+            revisionRestore.getParentType());
+
+        revision.restoreToLatest(parent.getId(), parent.getVersion(), federatedUser.getUid(),
+            parent.getRevision().getNumber(), revisionRestore.getParentType());
+        //It might be that the revision is no longer valid as metaData configuration has changed
+        validate(revision);
+        metaDataRepository.update(revision);
+
+        parent.revision(UUID.randomUUID().toString());
+        metaDataRepository.save(parent);
+
+        return revision;
     }
 
     @GetMapping("/client/revisions/{type}/{parentId}")

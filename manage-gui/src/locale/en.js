@@ -74,7 +74,8 @@ I18n.translations.en = {
         flash: {
             updated: "{{name}} was successfully updated to revision {{revision}}",
             cloned: "{{name}} was successfully cloned. Submit to save the changes.",
-            deleted: "{{name}} was successfully deleted"
+            deleted: "{{name}} was successfully deleted",
+            restored: "{{name}} revision {{revision}} was successfully restored to new revision {{newRevision}}",
         },
         required: "{{name}} is required",
         deleteConfirmation: "Are you sure you want to delete {{name}}?",
@@ -185,7 +186,10 @@ I18n.translations.en = {
         notes: "Notes",
         toggleAllDetails: "Show diffs for all revisions",
         toggleDetails: "Show diff with previous revision",
-        identical: "This revision is identical to the previous revision"
+        identical: "This revision is identical to the previous revision",
+        nope: "",
+        restore: "Restore",
+        restoreConfirmation: "Are you sure you want to restore revision {{number}} to the latest revision?"
     },
 
     export: {

@@ -43,20 +43,23 @@ export default class Connection extends React.PureComponent {
     validateEntityId = e => {
         const entityid = e.target.value;
         const {type} = this.props.metaData;
-        const {originalEntityId} = this.props;
-        const entityIdChanged = (originalEntityId !== entityid);
-        if (entityIdChanged) {
-            search({"entityid": entityid}, type).then(json => {
-                const {isNew} = this.props;
-                const entityIdAlreadyExists =
-                    (entityIdChanged && json.length > 0 && !isNew) ||
-                    (!entityIdChanged && json.length > 1 && !isNew) ||
-                    (json.length > 0 && isNew);
-                this.setState({entityIdAlreadyExists: entityIdAlreadyExists});
-                this.props.onError("entityid", entityIdAlreadyExists);
-            });
+        if (isEmpty(entityid)) {
+            this.props.onError("entityid", true);
+        } else {
+            const {originalEntityId} = this.props;
+            const entityIdChanged = (originalEntityId !== entityid);
+            if (entityIdChanged) {
+                search({"entityid": entityid}, type).then(json => {
+                    const {isNew} = this.props;
+                    const entityIdAlreadyExists =
+                        (entityIdChanged && json.length > 0 && !isNew) ||
+                        (!entityIdChanged && json.length > 1 && !isNew) ||
+                        (json.length > 0 && isNew);
+                    this.setState({entityIdAlreadyExists: entityIdAlreadyExists});
+                    this.props.onError("entityid", entityIdAlreadyExists);
+                });
+            }
         }
-
     };
 
     render() {

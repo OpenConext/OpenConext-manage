@@ -7,11 +7,13 @@ import htmlFormatter from "jsondiffpatch/src/formatters/html";
 import PropTypes from "prop-types";
 import cloneDeep from "lodash.clonedeep";
 import CheckBox from "../../components/CheckBox";
-
-import {escapeDeep} from "../../utils/Utils";
+import ConfirmationDialog from "../../components/ConfirmationDialog";
+import {escapeDeep, stop} from "../../utils/Utils";
 
 import "jsondiffpatch/public/formatters-styles/html.css";
 import "./Revisions.css";
+import {restoreRevision} from "../../api";
+import {setFlash} from "../../utils/Flash";
 
 const ignoreInDiff = ["id", "eid", "revisionid", "user", "created", "ip", "revisionnote"];
 
@@ -25,7 +27,11 @@ export default class Revisions extends React.Component {
                 acc[revision.id] = false;
                 return acc;
             }, {}),
-            showAllDetails: false
+            showAllDetails: false,
+            confirmationDialogOpen: false,
+            confirmationDialogAction: () => this,
+            cancelDialogAction: () => this.setState({confirmationDialogOpen: false}),
+            confirmationQuestion: ""
         };
         this.differ = new DiffPatcher();
     }
@@ -49,6 +55,35 @@ export default class Revisions extends React.Component {
         this.setState({showRevisionDetails: newShowRevisionDetails});
     };
 
+    doRestore = (id, revisionType, parentType, number) => () => {
+        this.setState({confirmationDialogOpen: false});
+        restoreRevision(id, revisionType, parentType).then(json => {
+            if (json.exception) {
+                setFlash(json.validations, "error");
+            } else {
+                const name = json.data.metaDataFields["name:en"] || json.data.metaDataFields["name:nl"] || "this service";
+                setFlash(I18n.t("metadata.flash.restored", {
+                    name: name,
+                    revision: number,
+                    newRevision: json.revision.number
+                }));
+                this.props.history.replace(`/dummy`);
+                setTimeout(() => this.props.history.replace(`/metadata/${json.type}/${json.id}/revisions`), 50);
+            }
+        });
+    };
+
+    restore = (id, number, revisionType, parentType, isLatest) => e => {
+        stop(e);
+        if (!isLatest) {
+            this.setState({
+                confirmationDialogOpen: true,
+                confirmationQuestion: I18n.t("revisions.restoreConfirmation", {number: number}),
+                confirmationDialogAction: this.doRestore(id, revisionType, parentType, number)
+            });
+        }
+    };
+
     renderDiff = (revision, previous) => {
         const rev = cloneDeep(revision.data);
         escapeDeep(rev);
@@ -61,13 +96,14 @@ export default class Revisions extends React.Component {
         const diffs = this.differ.diff(prev, rev);
         const html = htmlFormatter.format(diffs);
         //we need dangerouslySetInnerHTML otherwise the diff has to html in it, but the data is cleansed
-        return diffs ?  <p dangerouslySetInnerHTML={{__html: html}}/> : <p>{I18n.t("revisions.identical")}</p>
+        return diffs ? <p dangerouslySetInnerHTML={{__html: html}}/> : <p>{I18n.t("revisions.identical")}</p>
     };
 
-    renderRevisionTable = (revision) => {
+    renderRevisionTable = (revision, isLatest, entityType) => {
         const showDetail = this.state.showRevisionDetails[revision.id];
-        const headers = ["number", "created", "updatedBy", "status", "notes"];
+        const headers = ["number", "created", "updatedBy", "status", "notes", "nope"];
         const isFirstRevision = revision.revision.number === 0;
+        const restoreClassName = `button blue ${isLatest ? "grey" : ""}`;
         return (
             <table className="revision-table" key={revision.revision.number}>
                 <thead>
@@ -83,10 +119,15 @@ export default class Revisions extends React.Component {
                     <td>{revision.revision.updatedBy}</td>
                     <td>{I18n.t(`metadata.${revision.data.state}`)}</td>
                     <td>{revision.data.revisionnote || ""}</td>
+                    <td><a className={restoreClassName} href={`/restore/${revision.id}`}
+                           onClick={this.restore(revision.id, revision.revision.number, revision.type, entityType, isLatest)}
+                           disabled={isLatest}>
+                        {I18n.t("revisions.restore")}</a>
+                    </td>
                 </tr>
                 {!isFirstRevision &&
                 <tr>
-                    <td colSpan={headers.length}><CheckBox name={revision.id} value={showDetail}
+                    <td colSpan={headers.length}><CheckBox name={revision.id} value={showDetail || false}
                                                            info={I18n.t("revisions.toggleDetails")}
                                                            onChange={() => this.toggleShowDetail(revision)}/></td>
                 </tr>}
@@ -101,23 +142,30 @@ export default class Revisions extends React.Component {
     };
 
     render() {
-        const {revisions, isNew} = this.props;
-        const {showAllDetails} = this.state;
+        const {revisions, isNew, entityType} = this.props;
+        const {
+            showAllDetails, cancelDialogAction, confirmationDialogAction, confirmationDialogOpen,
+            confirmationQuestion
+        } = this.state;
 
         return (
             <div className="metadata-revisions">
+                <ConfirmationDialog isOpen={confirmationDialogOpen}
+                                    cancel={cancelDialogAction}
+                                    confirm={confirmationDialogAction}
+                                    question={confirmationQuestion}/>
                 {isNew && <div className="revisions-info">
                     <h2>{I18n.t("revisions.noRevisions")}</h2>
                 </div>}
                 {!isNew && <div className="revisions-info">
                     <h2>{I18n.t("revisions.info")}</h2>
-                    {revisions.length > 1 && <CheckBox name="toggleDiffs" value={showAllDetails}
-                              info={I18n.t("revisions.toggleAllDetails")}
-                              onChange={this.toggleAllShowDetail}/>}
+                    {revisions.length > 1 && <CheckBox name="toggleDiffs" value={showAllDetails || false}
+                                                       info={I18n.t("revisions.toggleAllDetails")}
+                                                       onChange={this.toggleAllShowDetail}/>}
                 </div>}
                 {!isNew && <div className="revisions">
 
-                    {revisions.map(rev => this.renderRevisionTable(rev))}
+                    {revisions.map((rev, index) => this.renderRevisionTable(rev, index === 0, entityType))}
                 </div>}
             </div>
         );
@@ -125,7 +173,9 @@ export default class Revisions extends React.Component {
 }
 
 Revisions.propTypes = {
+    history: PropTypes.object.isRequired,
     revisions: PropTypes.array.isRequired,
+    entityType: PropTypes.string.isRequired,
     isNew: PropTypes.bool.isRequired
 };
 

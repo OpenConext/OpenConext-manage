@@ -74,10 +74,12 @@ export default class Detail extends React.PureComponent {
                 clonedClearFields.forEach(attr => delete metaData.data[attr]);
                 id = undefined;
             }
+            const selectedTab = this.props.match && this.props.match.params && this.props.match.params.tab ?
+                this.props.match.params.tab : "connection";
             this.setState({
                 metaData: metaData,
                 isNew: isNew || !isEmpty(this.props.clone),
-                originalEntityId: metaData.data.entityid,
+                originalEntityId: metaData.data.entityid || "",
                 loaded: isEmpty(newMetaData),
                 errors: errorKeys.reduce((acc, tab) => {
                     acc[tab] = {};
@@ -87,7 +89,7 @@ export default class Detail extends React.PureComponent {
                     acc[tab] = false;
                     return acc;
                 }, {}),
-                selectedTab: this.props.match.params.tab || "connection"
+                selectedTab: selectedTab
             });
             if (!isEmpty(newMetaData)) {
                 this.applyImportChanges(newMetaData, {
@@ -153,7 +155,9 @@ export default class Detail extends React.PureComponent {
         stop(e);
         this.setState({selectedTab: tab});
         const {type, id} = this.state;
-        this.props.history.push(`/metadata/${type}/${id}/${tab}`);
+        if (!this.props.fromImport) {
+            this.props.history.push(`/metadata/${type}/${id}/${tab}`);
+        }
     };
 
     onError = name => (key, isError) => {
@@ -307,7 +311,7 @@ export default class Detail extends React.PureComponent {
                                         revision: json.revision.number
                                     }));
                                     this.props.history.replace(`/dummy`);
-                                    setTimeout(() => this.props.history.replace(`/metadata/${json.type}/${json.id}/${this.state.selectedTab}`), 5);
+                                    setTimeout(() => this.props.history.replace(`/metadata/${json.type}/${json.id}/${this.state.selectedTab}`), 50);
                                 }
                             });
                     }}>{I18n.t("metadata.submit")}</a>
@@ -373,7 +377,7 @@ export default class Detail extends React.PureComponent {
                                          whiteListing={whiteListing} onChange={this.onChange("consent_disabling")}
                                          guest={guest}/>;
             case "revisions":
-                return <Revisions revisions={revisions} isNew={isNew}/>;
+                return <Revisions revisions={revisions} isNew={isNew} entityType={type} history={this.props.history}/>;
             case "export":
                 return <Export metaData={metaData}/>;
             case "import":
@@ -452,7 +456,7 @@ export default class Detail extends React.PureComponent {
                             const name = metaData.data.metaDataFields["name:en"] || metaData.data.metaDataFields["name:nl"] || "this service";
                             setFlash(I18n.t("metadata.flash.cloned", {name: name}));
                             this.props.history.replace(`/clone/${type}/${metaData.id}`);
-                        }, 5);
+                        }, 50);
                     }}>{I18n.t("metadata.clone")}</a>}
                 </section>
                 }
@@ -472,6 +476,7 @@ Detail.propTypes = {
     currentUser: PropTypes.object.isRequired,
     configuration: PropTypes.array.isRequired,
     clone: PropTypes.bool,
+    fromImport: PropTypes.bool.isRequired,
     newMetaData: PropTypes.object
 };
 

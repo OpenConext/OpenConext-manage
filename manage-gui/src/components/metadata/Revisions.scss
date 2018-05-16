@@ -25,10 +25,10 @@
             background-color: $lightest-grey;
 
             &.number {
-                width: 15%;
+                width: 10%;
             }
             &.created {
-                width: 25%;
+                width: 20%;
             }
             &.updatedBy {
                 width: 20%;
@@ -38,6 +38,9 @@
             }
             &.notes {
                 width: 25%;
+            }
+            &.nope {
+                width: 10%;
             }
         }
         tbody {

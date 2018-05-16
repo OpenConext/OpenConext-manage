@@ -35,6 +35,7 @@ export default class ImportMetaData extends React.PureComponent {
             return (
                 <Detail history={history}
                         currentUser={currentUser}
+                        fromImport={true}
                         configuration={configuration}
                         newMetaData={results}/>
             );

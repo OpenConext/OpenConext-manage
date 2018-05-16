@@ -30,9 +30,7 @@ class App extends React.PureComponent {
             configuration: {},
             error: false,
             errorDialogOpen: false,
-            errorDialogAction: () => {
-                this.setState({errorDialogOpen: false});
-            }
+            errorDialogAction: () => this.setState({errorDialogOpen: false})
         };
         window.onerror = (msg, url, line, col, err) => {
             this.setState({errorDialogOpen: true});
@@ -108,10 +106,10 @@ class App extends React.PureComponent {
                                render={props => <Search currentUser={currentUser}
                                                         configuration={configuration} {...props}/>}/>
                         <Route path="/metadata/:type/:id/:tab?"
-                               render={props => <Detail currentUser={currentUser}
+                               render={props => <Detail currentUser={currentUser} fromImport={false}
                                                         configuration={configuration} {...props}/>}/>
-                        <Route path="/clone/:type/:id/:tab"
-                               render={props => <Detail currentUser={currentUser} clone={true}
+                        <Route path="/clone/:type/:id/:tab?"
+                               render={props => <Detail currentUser={currentUser} clone={true} fromImport={false}
                                                         configuration={configuration} {...props}/>}/>
                         <Route path="/import"
                                render={props => <ImportMetaData currentUser={currentUser}

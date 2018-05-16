@@ -50,7 +50,7 @@ public class MetaDataFeedParser {
 
         boolean inKeyDescriptor = false;
         boolean inContact = true;
-        boolean inUIInfo = true;
+        boolean inUIInfo = false;
         boolean inCorrectEntityDescriptor = !entityIDOptional.isPresent();
         boolean inAttributeConsumingService = false;
 
