@@ -332,7 +332,11 @@ public class MetaDataFeedParser {
         List<String> certDataKeys = Arrays.asList("certData", "certData2", "certData3");
         long count = result.keySet().stream().filter(certDataKeys::contains).count();
         if (count < certDataKeys.size()) {
-            result.put(certDataKeys.get((int) count), cert);
+            // we don't want duplicates
+            if (!certDataKeys.stream().map(key -> cert.equals(result.get(key))).anyMatch(b -> b)) {
+                result.put(certDataKeys.get((int) count), cert);
+            }
+
         }
     }
 
