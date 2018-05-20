@@ -23,6 +23,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
@@ -143,12 +144,27 @@ public class Exporter {
 
     private void addAttributeConsumingService(Map data) {
         boolean arpAttributes = false;
-        Map arp = Map.class.cast(data.getOrDefault("arp", new HashMap<>()));
-        if (Boolean.class.cast(arp.getOrDefault("enabled", false))) {
-            Map attributes = Map.class.cast(arp.getOrDefault("attributes", new HashMap<>()));
-            arpAttributes = !attributes.isEmpty();
-            if (arpAttributes) {
-                data.put("requestedAttributes", attributes.keySet());
+        Object possibleArp = data.get("arp");
+        if (possibleArp != null && possibleArp instanceof Map) {
+            Map arp = Map.class.cast(possibleArp);
+            if (Boolean.class.cast(arp.getOrDefault("enabled", false))) {
+                Object attributesObject = arp.get("attributes");
+                if (attributesObject != null ) {
+                    if (attributesObject instanceof Map) {
+                        Map attributes = Map.class.cast(attributesObject);
+                        arpAttributes = !attributes.isEmpty();
+                        if (arpAttributes) {
+                            data.put("requestedAttributes", attributes.keySet());
+                        }
+                    } else if (attributesObject instanceof List) {
+                        List attributes = List.class.cast(attributesObject);
+                        arpAttributes = !attributes.isEmpty();
+                        if (arpAttributes) {
+                            data.put("requestedAttributes", new HashSet<>(attributes));
+                        }
+
+                    }
+                }
             }
         }
         data.put("AttributeConsumingService", arpAttributes);

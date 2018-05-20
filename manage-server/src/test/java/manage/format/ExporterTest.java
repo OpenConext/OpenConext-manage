@@ -17,6 +17,7 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 @SuppressWarnings("unchecked")
 public class ExporterTest implements TestUtils {
@@ -59,6 +60,13 @@ public class ExporterTest implements TestUtils {
             .forEach(s -> metaDataFields.remove(s));
 
         doExportToXml(metaData, "/xml/expected_metadata_export_saml20_sp_org_nl.xml");
+    }
+
+    @Test
+    public void exportToXmlWithClassCastExceptionAttributeConsumingService() throws IOException {
+        MetaData metaData = objectMapper.readValue(readFile("/json/export_attribute_consumer.json"), MetaData.class);
+        String xml = subject.exportToXml(metaData);
+        assertTrue(xml.contains("<md:RequestedAttribute Name=\"attribute\"/>"));
     }
 
     private void doExportToXml(MetaData metaData, String path) throws IOException {
