@@ -135,6 +135,9 @@ public class MetaDataRepository {
         Query query = new Query().limit(1).with(new Sort(Sort.Direction.DESC, "data.eid"));
         query.fields().include("data.eid");
         Map res = mongoTemplate.findOne(query, Map.class, type);
+        if (res == null) {
+            return new Long(1);
+        }
         return Long.valueOf(Map.class.cast(res.get("data")).get("eid").toString());
     }
 
