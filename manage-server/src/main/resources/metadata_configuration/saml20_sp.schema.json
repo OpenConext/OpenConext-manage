@@ -537,7 +537,7 @@
           "format": "boolean",
           "info": "Set if the 'General Data Protection Regulation' (GDPR) is available on the SURF wiki. In Dutch known as 'Algemene Verordening Gegevensbescherming' (AVG). "
         },
-        "coin:license_status": {
+        "coin:ss:license_status": {
           "type": "string",
           "enum": [
             "license_required_by_service_provider",
@@ -566,8 +566,9 @@
           "type": "string",
           "info": "The description of the service."
         },
-        "^coin:type_of_service:(en|nl)$": {
-          "type": "string"
+        "^coin:ss:type_of_service:(en|nl)$": {
+          "type": "string",
+          "info": "The type of service used in the facet search in dashboard."
         },
         "^AssertionConsumerService:([0-9]{1}):Binding$": {
           "$ref": "#/definitions/AssertionConsumerServiceBinding",

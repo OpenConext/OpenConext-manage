@@ -47,7 +47,6 @@
     "revisionid": {
       "type": "number"
     },
-
     "state": {
       "type": "string",
       "enum": [
@@ -56,16 +55,25 @@
       ]
     },
     "metadataurl": {
-      "type": ["string", "null"]
+      "type": [
+        "string",
+        "null"
+      ]
     },
     "allowedall": {
       "type": "boolean"
     },
     "manipulation": {
-      "type": ["string", "null"]
+      "type": [
+        "string",
+        "null"
+      ]
     },
     "manipulationNotes": {
-      "type": ["string", "null"]
+      "type": [
+        "string",
+        "null"
+      ]
     },
     "user": {
       "type": "string"
@@ -124,7 +132,10 @@
       "additionalProperties": false
     },
     "notes": {
-      "type": ["string", "null"]
+      "type": [
+        "string",
+        "null"
+      ]
     },
     "metaDataFields": {
       "type": "object",
@@ -207,7 +218,7 @@
         },
         "coin:institution_guid": {
           "type": "string",
-          "format" : "uuid",
+          "format": "uuid",
           "info": "This is a 128 bit number also known as a globally unique identifier (GUID or UUID) for this Identity Provider."
         },
         "coin:guest_qualifier": {

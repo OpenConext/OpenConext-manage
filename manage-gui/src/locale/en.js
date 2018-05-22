@@ -203,11 +203,13 @@ I18n.translations.en = {
 
     import: {
         title: "Metadata import",
-        import_url: "Import URL",
+        import_xml_url: "Import XML URL",
         import_xml: "Import XML",
+        import_json_url: "Import JSON URL",
         import_json: "Import JSON",
         results: "Results",
         url: "Enter a valid SAML metadata endpoint",
+        jsonUrl: "Enter a valid JSON metadata endpoint",
         entityId: "Optionally enter the entityID if the feed contains more entities",
         fetch: "Import",
         xml: "Paste XML metadata",

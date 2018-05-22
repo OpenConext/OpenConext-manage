@@ -5,7 +5,13 @@ import CodeMirror from "react-codemirror";
 import "codemirror/mode/javascript/javascript";
 import "codemirror/mode/xml/xml";
 import {isEmpty, stop} from "../../utils/Utils";
-import {importMetaDataJSON, importMetaDataUrl, importMetaDataXML, validation} from "../../api";
+import {
+    importMetaDataJSON,
+    importMetaDataJsonUrl,
+    importMetaDataXML,
+    importMetaDataXmlUrl,
+    validation
+} from "../../api";
 
 import CheckBox from "../../components/CheckBox";
 
@@ -21,8 +27,10 @@ export default class Import extends React.Component {
         super(props);
         this.state = {
             url: "",
+            jsonUrl: "",
             entityId: "",
             invalidUrl: false,
+            invalidJsonUrl: false,
             xml: "",
             invalidXml: false,
             json: "",
@@ -31,10 +39,11 @@ export default class Import extends React.Component {
             results: undefined,
             resultsMap: undefined,
             errorsUrl: undefined,
+            errorsJsonUrl: false,
             errorsJson: undefined,
             errorsXml: undefined,
-            tabs: ["import_url", "import_xml", "import_json", "results"],
-            selectedTab: "import_url",
+            tabs: ["import_xml_url", "import_xml", "import_json_url", "import_json", "results"],
+            selectedTab: "import_xml_url",
             applyChangesFor: {}
         };
     }
@@ -190,7 +199,20 @@ export default class Import extends React.Component {
                 invalidUrl: !result
             });
             if (result) {
-                this.doImport(importMetaDataUrl(url, entityType, entityId), "errorsUrl");
+                this.doImport(importMetaDataXmlUrl(url, entityType, entityId), "errorsUrl");
+            }
+        });
+    };
+
+    importJsonUrl = e => {
+        stop(e);
+        const {jsonUrl, entityId, entityType} = this.state;
+        validation("url", jsonUrl).then(result => {
+            this.setState({
+                invalidJsonUrl: !result
+            });
+            if (result) {
+                this.doImport(importMetaDataJsonUrl(jsonUrl, entityType, entityId), "errorsJsonUrl");
             }
         });
     };
@@ -441,7 +463,10 @@ export default class Import extends React.Component {
             <section className="import-header">
                 <h2>{info}</h2>
                 <Select onChange={this.changeType}
-                        options={["saml20_idp", "saml20_sp"].map(s => ({value: s, label: I18n.t(`metadata.${s}_single`)}))}
+                        options={["saml20_idp", "saml20_sp"].map(s => ({
+                            value: s,
+                            label: I18n.t(`metadata.${s}_single`)
+                        }))}
                         value={this.state.entityType}
                         disabled={this.props.guest || !this.props.newEntity}/>
                 {!this.props.guest && <a onClick={action} className="button green large">
@@ -479,6 +504,22 @@ export default class Import extends React.Component {
                        onChange={e => this.setState({entityId: e.target.value})}/>
             </section>
             {this.renderImportFooter(this.importUrl)}
+        </section>);
+
+    renderImportJsonUrl = () => (
+        <section className="import-url-container">
+            <section className="import-url">
+                <section>
+                    <section className="import-header">
+                        <h2>{I18n.t("import.jsonUrl")}</h2>
+                    </section>
+                    {this.state.errorsJsonUrl && this.renderErrors(this.state.errorsJsonUrl)}
+                </section>
+                {this.state.invalidJsonUrl && <p className="invalid">{I18n.t("import.invalid", {type: "URL"})}</p>}
+                <input type="text" value={this.state.jsonUrl}
+                       onChange={e => this.setState({jsonUrl: e.target.value})}/>
+            </section>
+            {this.renderImportFooter(this.importJsonUrl)}
         </section>);
 
     renderImportJson = () => {
@@ -519,16 +560,18 @@ export default class Import extends React.Component {
 
     renderSelectedTab = selectedTab => {
         switch (selectedTab) {
-            case "import_url":
+            case "import_xml_url":
                 return this.renderImportUrl();
             case "import_xml":
                 return this.renderImportXml();
+            case "import_json_url":
+                return this.renderImportJsonUrl();
             case "import_json":
                 return this.renderImportJson();
             case "results":
                 return this.renderResults();
             default:
-                throw new Error("unknown tab");
+                throw new Error("unknown tab: " + selectedTab);
         }
     };
 

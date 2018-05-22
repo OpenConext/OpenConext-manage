@@ -1,10 +1,12 @@
 package manage.control;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import manage.conf.MetaDataAutoConfiguration;
 import manage.format.Importer;
 import manage.migration.EntityType;
 import manage.model.Import;
 import manage.model.XML;
+import org.apache.commons.io.IOUtils;
 import org.everit.json.schema.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,15 +32,17 @@ import java.util.Optional;
 public class ImportController {
 
     private Importer importer;
+    private ObjectMapper objectMapper;
 
     @Autowired
-    public ImportController(MetaDataAutoConfiguration metaDataAutoConfiguration) {
+    public ImportController(MetaDataAutoConfiguration metaDataAutoConfiguration, ObjectMapper objectMapper) {
         this.importer = new Importer(metaDataAutoConfiguration);
+        this.objectMapper = objectMapper;
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping(value = "/client/import/endpoint/{type}")
-    public Map<String, Object> importUrl(@PathVariable("type") String type, @Validated @RequestBody Import importRequest) {
+    @PostMapping(value = "/client/import/endpoint/xml/{type}")
+    public Map<String, Object> importXMLUrl(@PathVariable("type") String type, @Validated @RequestBody Import importRequest) {
         try {
             Resource resource = new UrlResource(new URL(importRequest.getUrl()));
             Map<String, Object> result = this.importer.importXML(resource, EntityType.fromType(type), Optional.ofNullable(importRequest
@@ -63,7 +68,7 @@ public class ImportController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(value = "/client/import/json/{type}")
     public Map<String, Object> importJson(@PathVariable("type") String type, @RequestBody Map<String, Object> json)
-        throws IOException, XMLStreamException {
+        throws IOException {
         EntityType entityType = getType(type, json);
         try {
             return this.importer.importJSON(entityType, json);
@@ -72,6 +77,19 @@ public class ImportController {
             result.put("errors", e.getAllMessages());
             result.put("type", entityType.getType());
             return result;
+        }
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping(value = "/client/import/endpoint/json/{type}")
+    public Map<String, Object> importJsonUrl(@PathVariable("type") String type, @Validated @RequestBody Import importRequest) {
+        try {
+            Resource resource = new UrlResource(new URL(importRequest.getUrl()));
+            String json = IOUtils.toString(resource.getInputStream(), Charset.defaultCharset());
+            Map map = objectMapper.readValue(json, Map.class);
+            return this.importJson(type, map);
+        } catch (IOException e) {
+            return Collections.singletonMap("errors", Collections.singletonList(e.toString()));
         }
     }
 

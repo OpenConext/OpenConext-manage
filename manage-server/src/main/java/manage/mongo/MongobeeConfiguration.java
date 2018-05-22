@@ -71,7 +71,7 @@ public class MongobeeConfiguration {
         return runner;
     }
 
-    @ChangeSet(order = "001", id = "createCollections", author = "Okke Harsta", runAlways = true)
+    @ChangeSet(order = "001", id = "createCollections", author = "Okke Harsta")
     public void createCollections(MongoTemplate mongoTemplate) {
         Set<String> schemaNames = staticMetaDataAutoConfiguration.schemaNames();
         schemaNames.forEach(schema -> {
@@ -111,7 +111,7 @@ public class MongobeeConfiguration {
         doImportCsaSettings(mongoTemplate);
     }
 
-    @ChangeSet(order = "005", id = "reImportCSA", author = "Okke Harsta", runAlways = false)
+    @ChangeSet(order = "005", id = "reImportCSA", author = "Okke Harsta")
     public void reImportCsaSettings(MongoTemplate mongoTemplate) throws Exception {
         doImportCsaSettings(mongoTemplate);
     }
@@ -142,10 +142,11 @@ public class MongobeeConfiguration {
 
                 String licenseStatus = mappedLicenseStatus.getOrDefault(columns.get(2),
                     "license_required_by_service_provider");
-                metaDataFields.put("coin:license_status", licenseStatus);
+                metaDataFields.put("coin:ss:license_status", licenseStatus);
 
-                metaDataFields.put("coin:supports_strong_authentication", columns.get(3));
+                metaDataFields.put("coin:ss:supports_strong_authentication", columns.get(3));
                 metaDataFields.remove("coin:requires_strong_authentication");
+                metaDataFields.remove("coin:supports_strong_authentication");
 
                 MetaData previous = mongoTemplate.findById(metaData.getId(), MetaData.class, type);
                 previous.revision(UUID.randomUUID().toString());
@@ -199,7 +200,7 @@ public class MongobeeConfiguration {
         addTypeOfService(mongoTemplate, type, en, "en");
     }
 
-    @ChangeSet(order = "008", id = "addEIDToNewEntities", author = "Okke Harsta", runAlways = true)
+    @ChangeSet(order = "008", id = "addEIDToNewEntities", author = "Okke Harsta")
     public void addEIDToNewEntitiesToParents(MongoTemplate mongoTemplate) throws IOException {
         Query query = new Query();
         query.addCriteria(Criteria.where("data.eid").exists(false));
@@ -216,7 +217,7 @@ public class MongobeeConfiguration {
         });
     }
 
-    @ChangeSet(order = "009", id = "addEIDToNewEntitiesToRevisions", author = "Okke Harsta", runAlways = true)
+    @ChangeSet(order = "009", id = "addEIDToNewEntitiesToRevisions", author = "Okke Harsta")
     public void addEIDToNewEntitiesToChildren(MongoTemplate mongoTemplate) throws IOException {
         Query query = new Query();
         query.addCriteria(Criteria.where("data.eid").exists(false));
@@ -274,7 +275,7 @@ public class MongobeeConfiguration {
         });
     }
 
-    @ChangeSet(order = "010", id = "splitConsentDisablingIntoMultiLanguage", author = "Okke Harsta")
+    @ChangeSet(order = "011", id = "splitConsentDisablingIntoMultiLanguage", author = "Okke Harsta")
     public void splitConsentDisablingIntoMultiLanguage(MongoTemplate mongoTemplate) throws IOException {
         Query query = new Query();
         query.addCriteria(Criteria.where("data.disableConsent").exists(true).not().size(0));
@@ -292,6 +293,24 @@ public class MongobeeConfiguration {
         });
     }
 
+    @ChangeSet(order = "012", id = "finalImportSingleTenantTemplates", author = "Okke Harsta")
+    public void importSingleTenantTemplates(MongoTemplate mongoTemplate) throws IOException {
+        mongoTemplate.findAllAndRemove(new Query(), "single_tenant_template");
+        mongoTemplate.findAllAndRemove(new Query(), "single_tenant_template_revision");
+        createSingleTenantTemplates(mongoTemplate);
+    }
+
+    @ChangeSet(order = "013", id = "finalImportCsaSettings", author = "Okke Harsta")
+    public void finalImportCsaSettings(MongoTemplate mongoTemplate) throws Exception {
+        doImportCsaSettings(mongoTemplate);
+    }
+
+    @ChangeSet(order = "014", id = "finalImportFacetsInformation", author = "Okke Harsta")
+    public void finalImportFacetsInformation(MongoTemplate mongoTemplate) throws IOException {
+        this.importFacetsInformation(mongoTemplate);
+    }
+
+
     private Long highestEid(MongoTemplate mongoTemplate, String type) {
         Query query = new Query().limit(1).with(new Sort(Sort.Direction.DESC, "data.eid"));
         query.fields().include("data.eid");
@@ -308,7 +327,7 @@ public class MongobeeConfiguration {
             if (metaDatas != null && metaDatas.size() > 0) {
                 MetaData metaData = metaDatas.get(0);
                 Map<String, Object> metaDataFields = (Map<String, Object>) metaData.getData().get("metaDataFields");
-                metaDataFields.put("coin:type_of_service:" + lang, nl.get(entityId).stream().map
+                metaDataFields.put("coin:ss:type_of_service:" + lang, nl.get(entityId).stream().map
                     (TypeOfService::getValue).collect(Collectors.toSet()).stream().collect(Collectors.joining(",")));
 
                 MetaData previous = mongoTemplate.findById(metaData.getId(), MetaData.class, type);

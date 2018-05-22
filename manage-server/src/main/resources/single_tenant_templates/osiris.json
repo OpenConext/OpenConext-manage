@@ -21,7 +21,7 @@
   "contacts:2:surName": "de Graaff",
   "workflowState": "prodaccepted",
   "attributes": [
-    "urn:schac:attribute-def:schacPersonalUniqueCoden",
+    "urn:schac:attribute-def:schacPersonalUniqueCode",
     "urn:mace:dir:attribute-def:uid"
   ]
 }

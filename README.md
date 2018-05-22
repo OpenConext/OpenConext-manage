@@ -12,7 +12,7 @@ Stores and publishes metadata of all entities known to OpenConext
 - Maven 3
 - MongoDB 3.4.4
 - yarn 1.2.1
-- NodeJS v8.9.0 (best managed with `nvm`, current version in [.node-version](manage-gui/.node-version) or do `brew switch node 7.10.0`)
+- NodeJS v8.9.0 (best managed with `nvm`, current version in [.nvmrc](manage-gui/.nvmrc) or do `brew switch node 8.9.0`)
 - ansible 2.3.2.0
 - create-react-app
 
