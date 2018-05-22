@@ -102,6 +102,7 @@ https://fontys.shop.canon.nl,Business Processing,en,Type of Service,en
 https://onderwijsgroeptilburg.topdesk.net/tas/public/login/verify,Business Processing,en,Type of Service,en
 https://aventus.shop.canon.nl/,Business Processing,en,Type of Service,en
 http://sso.connexys.nl/saml2/erasmusmc,Business Processing,en,Type of Service,en
+https://kpz.trajectplanner.nl/saml/module.php/saml/sp/metadata.php/surfconext2048,Business Processing,en,Type of Service,en
 https://teamwerk.umc-all.nl/adfs/services/trust,Bedrijfsvoering,nl,Type of Service,nl
 https://uva-hva.topdesk.com/tas/secure/,Bedrijfsvoering,nl,Type of Service,nl
 https://uva-hvatest.topdesk.com/tas/secure/,Bedrijfsvoering,nl,Type of Service,nl
@@ -206,6 +207,7 @@ https://fontys.shop.canon.nl,Bedrijfsvoering,nl,Type of Service,nl
 https://onderwijsgroeptilburg.topdesk.net/tas/public/login/verify,Bedrijfsvoering,nl,Type of Service,nl
 https://aventus.shop.canon.nl/,Bedrijfsvoering,nl,Type of Service,nl
 http://sso.connexys.nl/saml2/erasmusmc,Bedrijfsvoering,nl,Type of Service,nl
+https://kpz.trajectplanner.nl/saml/module.php/saml/sp/metadata.php/surfconext2048,Bedrijfsvoering,nl,Type of Service,nl
 https://beehub.nl/system/simplesaml/module.php/saml/sp/metadata.php/BeeHub,Data Storage,en,Type of Service,en
 https://beehub-test.grid.sara.nl/system/simplesaml/module.php/saml/sp/metadata.php/BeeHub,Data Storage,en,Type of Service,en
 https://drive.surfcloud.nl/simplesaml/module.php/saml/sp/metadata.php/SURFconext,Data Storage,en,Type of Service,en
@@ -227,9 +229,9 @@ https://surfdrive-acc.surf.nl/simplesaml/module.php/saml/sp/metadata.php/SURFcon
 https://uba-primo.hosted.exlibrisgroup.com/shib,Digital Content,en,Type of Service,en
 https://fsso.springer.com,Digital Content,en,Type of Service,en
 https://www.filosofiebank.nl,Digital Content,en,Type of Service,en
-https://www.surfspace.nl/auth/simplesaml/module.php/saml/sp/metadata.php/default-sp,Digital Content,en,Type of Service,en
-https://sp.lux17.mpi.nl,Digital Content,en,Type of Service,en
+https://www.academia.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp,Digital Content,en,Type of Service,en
 https://muse.jhu.edu/shibboleth,Digital Content,en,Type of Service,en
+https://www.refworks.com/shibboleth/sp,Digital Content,en,Type of Service,en
 https://www.bioone.org/shibboleth,Digital Content,en,Type of Service,en
 https://sp.eblib.com/shibboleth,Digital Content,en,Type of Service,en
 https://login.rechtsorde.nl/,Digital Content,en,Type of Service,en
@@ -237,35 +239,39 @@ http://shibboleth.ebscohost.com,Digital Content,en,Type of Service,en
 https://atlases.muni.cz/shibboleth,Digital Content,en,Type of Service,en
 https://sdauth.sciencedirect.com/,Digital Content,en,Type of Service,en
 https://pf.legalintelligence.com,Digital Content,en,Type of Service,en
-https://sp.corpus1.mpi.nl,Digital Content,en,Type of Service,en
-https://portal.clarin.inl.nl/,Digital Content,en,Type of Service,en
 https://ufal-point.mff.cuni.cz/shibboleth/eduid/sp,Digital Content,en,Type of Service,en
 https://emea-auth1.oclcpica.org/shib/secure,Digital Content,en,Type of Service,en
-https://www.meertens.knaw.nl/Shibboleth.sso/Metadata,Digital Content,en,Type of Service,en
+https://saml.schrijfwijzer.nl,Digital Content,en,Type of Service,en
 https://primo.library.wur.nl/shib,Digital Content,en,Type of Service,en
 https://www.karger.com/shibboleth,Digital Content,en,Type of Service,en
 https://test-etalage.rug.nl/admin,Digital Content,en,Type of Service,en
 https://pure.rug.nl/admin,Digital Content,en,Type of Service,en
-https://surfdrive.surf.nl/,Digital Content,en,Type of Service,en
 https://dataverse.nl/shibboleth,Digital Content,en,Type of Service,en
+https://saml.www.vandale.nl,Digital Content,en,Type of Service,en
 https://pad-shib.hosted.exlibrisgroup.com/shib,Digital Content,en,Type of Service,en
 https://www.coachlinkhogeronderwijs.nl,Digital Content,en,Type of Service,en
 https://pureacc.knaw.nl/admin,Digital Content,en,Type of Service,en
 https://pure.knaw.nl/admin,Digital Content,en,Type of Service,en
 urn:nl:eherkenning:HM:00000003380132260000:entities:0006,Digital Content,en,Type of Service,en
-https://www.nederlab.nl/shibboleth,Digital Content,en,Type of Service,en
 urn:nl:eherkenning:HM:00000003380132260000:entities:7006,Digital Content,en,Type of Service,en
 urn:dummy:kb.nl,Digital Content,en,Type of Service,en
 https://ukb-shib.hosted.exlibrisgroup.com/shib,Digital Content,en,Type of Service,en
 https://wagn-shib.hosted.exlibrisgroup.com/shib,Digital Content,en,Type of Service,en
 https://act.dataverse.nl/shibboleth,Digital Content,en,Type of Service,en
 https://www.edudocs.eu/simplesaml/module.php/saml/sp/metadata.php/default-sp,Digital Content,en,Type of Service,en
+https://saml.mediaweb.eu/simplesaml/module.php/saml/sp/metadata.php/default-sp,Digital Content,en,Type of Service,en
+https://dummy.hosted.exlibrisgroup.com/Single-tenant-service_op-aanvraag,Digital Content,en,Type of Service,en
+https://database.retriever.nl,Digital Content,en,Type of Service,en
+https://www.degruyter.com/shibboleth,Digital Content,en,Type of Service,en
+https://www.schrijfwijzer.nl/scripts/saml/metadata.php,Digital Content,en,Type of Service,en
+https://authentication.thiememeulenhoff.nl/am,Digital Content,en,Type of Service,en
+https://www.karger.com/oa/entity,Digital Content,en,Type of Service,en
 https://uba-primo.hosted.exlibrisgroup.com/shib,Content,nl,Type of Service,nl
 https://fsso.springer.com,Content,nl,Type of Service,nl
 https://www.filosofiebank.nl,Content,nl,Type of Service,nl
-https://www.surfspace.nl/auth/simplesaml/module.php/saml/sp/metadata.php/default-sp,Content,nl,Type of Service,nl
-https://sp.lux17.mpi.nl,Content,nl,Type of Service,nl
+https://www.academia.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp,Content,nl,Type of Service,nl
 https://muse.jhu.edu/shibboleth,Content,nl,Type of Service,nl
+https://www.refworks.com/shibboleth/sp,Content,nl,Type of Service,nl
 https://www.bioone.org/shibboleth,Content,nl,Type of Service,nl
 https://sp.eblib.com/shibboleth,Content,nl,Type of Service,nl
 https://login.rechtsorde.nl/,Content,nl,Type of Service,nl
@@ -273,29 +279,33 @@ http://shibboleth.ebscohost.com,Content,nl,Type of Service,nl
 https://atlases.muni.cz/shibboleth,Content,nl,Type of Service,nl
 https://sdauth.sciencedirect.com/,Content,nl,Type of Service,nl
 https://pf.legalintelligence.com,Content,nl,Type of Service,nl
-https://sp.corpus1.mpi.nl,Content,nl,Type of Service,nl
-https://portal.clarin.inl.nl/,Content,nl,Type of Service,nl
 https://ufal-point.mff.cuni.cz/shibboleth/eduid/sp,Content,nl,Type of Service,nl
 https://emea-auth1.oclcpica.org/shib/secure,Content,nl,Type of Service,nl
-https://www.meertens.knaw.nl/Shibboleth.sso/Metadata,Content,nl,Type of Service,nl
+https://saml.schrijfwijzer.nl,Content,nl,Type of Service,nl
 https://primo.library.wur.nl/shib,Content,nl,Type of Service,nl
 https://www.karger.com/shibboleth,Content,nl,Type of Service,nl
 https://test-etalage.rug.nl/admin,Content,nl,Type of Service,nl
 https://pure.rug.nl/admin,Content,nl,Type of Service,nl
-https://surfdrive.surf.nl/,Content,nl,Type of Service,nl
 https://dataverse.nl/shibboleth,Content,nl,Type of Service,nl
+https://saml.www.vandale.nl,Content,nl,Type of Service,nl
 https://pad-shib.hosted.exlibrisgroup.com/shib,Content,nl,Type of Service,nl
 https://www.coachlinkhogeronderwijs.nl,Content,nl,Type of Service,nl
 https://pureacc.knaw.nl/admin,Content,nl,Type of Service,nl
 https://pure.knaw.nl/admin,Content,nl,Type of Service,nl
 urn:nl:eherkenning:HM:00000003380132260000:entities:0006,Content,nl,Type of Service,nl
-https://www.nederlab.nl/shibboleth,Content,nl,Type of Service,nl
 urn:nl:eherkenning:HM:00000003380132260000:entities:7006,Content,nl,Type of Service,nl
 urn:dummy:kb.nl,Content,nl,Type of Service,nl
 https://ukb-shib.hosted.exlibrisgroup.com/shib,Content,nl,Type of Service,nl
 https://wagn-shib.hosted.exlibrisgroup.com/shib,Content,nl,Type of Service,nl
 https://act.dataverse.nl/shibboleth,Content,nl,Type of Service,nl
 https://www.edudocs.eu/simplesaml/module.php/saml/sp/metadata.php/default-sp,Content,nl,Type of Service,nl
+https://saml.mediaweb.eu/simplesaml/module.php/saml/sp/metadata.php/default-sp,Content,nl,Type of Service,nl
+https://dummy.hosted.exlibrisgroup.com/Single-tenant-service_op-aanvraag,Content,nl,Type of Service,nl
+https://database.retriever.nl,Content,nl,Type of Service,nl
+https://www.degruyter.com/shibboleth,Content,nl,Type of Service,nl
+https://www.schrijfwijzer.nl/scripts/saml/metadata.php,Content,nl,Type of Service,nl
+https://authentication.thiememeulenhoff.nl/am,Content,nl,Type of Service,nl
+https://www.karger.com/oa/entity,Content,nl,Type of Service,nl
 urn:mace:pedit.no:services:no.pedit,Education Services,en,Type of Service,en
 https://stagedbsv.hva.nl/,Education Services,en,Type of Service,en
 https://bb01t.windesheim.nl/shibboleth,Education Services,en,Type of Service,en
@@ -1420,6 +1430,7 @@ https://fontys.shop.canon.nl,Business Processing,en,Type Service,en
 https://onderwijsgroeptilburg.topdesk.net/tas/public/login/verify,Business Processing,en,Type Service,en
 https://aventus.shop.canon.nl/,Business Processing,en,Type Service,en
 http://sso.connexys.nl/saml2/erasmusmc,Business Processing,en,Type Service,en
+https://kpz.trajectplanner.nl/saml/module.php/saml/sp/metadata.php/surfconext2048,Business Processing,en,Type Service,en
 https://teamwerk.umc-all.nl/adfs/services/trust,Bedrijfsvoering,nl,Type Service,nl
 https://uva-hva.topdesk.com/tas/secure/,Bedrijfsvoering,nl,Type Service,nl
 https://uva-hvatest.topdesk.com/tas/secure/,Bedrijfsvoering,nl,Type Service,nl
@@ -1524,6 +1535,7 @@ https://fontys.shop.canon.nl,Bedrijfsvoering,nl,Type Service,nl
 https://onderwijsgroeptilburg.topdesk.net/tas/public/login/verify,Bedrijfsvoering,nl,Type Service,nl
 https://aventus.shop.canon.nl/,Bedrijfsvoering,nl,Type Service,nl
 http://sso.connexys.nl/saml2/erasmusmc,Bedrijfsvoering,nl,Type Service,nl
+https://kpz.trajectplanner.nl/saml/module.php/saml/sp/metadata.php/surfconext2048,Bedrijfsvoering,nl,Type Service,nl
 https://beehub.nl/system/simplesaml/module.php/saml/sp/metadata.php/BeeHub,Data Storage,en,Type Service,en
 https://beehub-test.grid.sara.nl/system/simplesaml/module.php/saml/sp/metadata.php/BeeHub,Data Storage,en,Type Service,en
 https://drive.surfcloud.nl/simplesaml/module.php/saml/sp/metadata.php/SURFconext,Data Storage,en,Type Service,en
@@ -1545,9 +1557,9 @@ https://surfdrive-acc.surf.nl/simplesaml/module.php/saml/sp/metadata.php/SURFcon
 https://uba-primo.hosted.exlibrisgroup.com/shib,Digital Content,en,Type Service,en
 https://fsso.springer.com,Digital Content,en,Type Service,en
 https://www.filosofiebank.nl,Digital Content,en,Type Service,en
-https://www.surfspace.nl/auth/simplesaml/module.php/saml/sp/metadata.php/default-sp,Digital Content,en,Type Service,en
-https://sp.lux17.mpi.nl,Digital Content,en,Type Service,en
+https://www.academia.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp,Digital Content,en,Type Service,en
 https://muse.jhu.edu/shibboleth,Digital Content,en,Type Service,en
+https://www.refworks.com/shibboleth/sp,Digital Content,en,Type Service,en
 https://www.bioone.org/shibboleth,Digital Content,en,Type Service,en
 https://sp.eblib.com/shibboleth,Digital Content,en,Type Service,en
 https://login.rechtsorde.nl/,Digital Content,en,Type Service,en
@@ -1555,35 +1567,39 @@ http://shibboleth.ebscohost.com,Digital Content,en,Type Service,en
 https://atlases.muni.cz/shibboleth,Digital Content,en,Type Service,en
 https://sdauth.sciencedirect.com/,Digital Content,en,Type Service,en
 https://pf.legalintelligence.com,Digital Content,en,Type Service,en
-https://sp.corpus1.mpi.nl,Digital Content,en,Type Service,en
-https://portal.clarin.inl.nl/,Digital Content,en,Type Service,en
 https://ufal-point.mff.cuni.cz/shibboleth/eduid/sp,Digital Content,en,Type Service,en
 https://emea-auth1.oclcpica.org/shib/secure,Digital Content,en,Type Service,en
-https://www.meertens.knaw.nl/Shibboleth.sso/Metadata,Digital Content,en,Type Service,en
+https://saml.schrijfwijzer.nl,Digital Content,en,Type Service,en
 https://primo.library.wur.nl/shib,Digital Content,en,Type Service,en
 https://www.karger.com/shibboleth,Digital Content,en,Type Service,en
 https://test-etalage.rug.nl/admin,Digital Content,en,Type Service,en
 https://pure.rug.nl/admin,Digital Content,en,Type Service,en
-https://surfdrive.surf.nl/,Digital Content,en,Type Service,en
 https://dataverse.nl/shibboleth,Digital Content,en,Type Service,en
+https://saml.www.vandale.nl,Digital Content,en,Type Service,en
 https://pad-shib.hosted.exlibrisgroup.com/shib,Digital Content,en,Type Service,en
 https://www.coachlinkhogeronderwijs.nl,Digital Content,en,Type Service,en
 https://pureacc.knaw.nl/admin,Digital Content,en,Type Service,en
 https://pure.knaw.nl/admin,Digital Content,en,Type Service,en
 urn:nl:eherkenning:HM:00000003380132260000:entities:0006,Digital Content,en,Type Service,en
-https://www.nederlab.nl/shibboleth,Digital Content,en,Type Service,en
 urn:nl:eherkenning:HM:00000003380132260000:entities:7006,Digital Content,en,Type Service,en
 urn:dummy:kb.nl,Digital Content,en,Type Service,en
 https://ukb-shib.hosted.exlibrisgroup.com/shib,Digital Content,en,Type Service,en
 https://wagn-shib.hosted.exlibrisgroup.com/shib,Digital Content,en,Type Service,en
 https://act.dataverse.nl/shibboleth,Digital Content,en,Type Service,en
 https://www.edudocs.eu/simplesaml/module.php/saml/sp/metadata.php/default-sp,Digital Content,en,Type Service,en
+https://saml.mediaweb.eu/simplesaml/module.php/saml/sp/metadata.php/default-sp,Digital Content,en,Type Service,en
+https://dummy.hosted.exlibrisgroup.com/Single-tenant-service_op-aanvraag,Digital Content,en,Type Service,en
+https://database.retriever.nl,Digital Content,en,Type Service,en
+https://www.degruyter.com/shibboleth,Digital Content,en,Type Service,en
+https://www.schrijfwijzer.nl/scripts/saml/metadata.php,Digital Content,en,Type Service,en
+https://authentication.thiememeulenhoff.nl/am,Digital Content,en,Type Service,en
+https://www.karger.com/oa/entity,Digital Content,en,Type Service,en
 https://uba-primo.hosted.exlibrisgroup.com/shib,Content,nl,Type Service,nl
 https://fsso.springer.com,Content,nl,Type Service,nl
 https://www.filosofiebank.nl,Content,nl,Type Service,nl
-https://www.surfspace.nl/auth/simplesaml/module.php/saml/sp/metadata.php/default-sp,Content,nl,Type Service,nl
-https://sp.lux17.mpi.nl,Content,nl,Type Service,nl
+https://www.academia.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp,Content,nl,Type Service,nl
 https://muse.jhu.edu/shibboleth,Content,nl,Type Service,nl
+https://www.refworks.com/shibboleth/sp,Content,nl,Type Service,nl
 https://www.bioone.org/shibboleth,Content,nl,Type Service,nl
 https://sp.eblib.com/shibboleth,Content,nl,Type Service,nl
 https://login.rechtsorde.nl/,Content,nl,Type Service,nl
@@ -1591,29 +1607,33 @@ http://shibboleth.ebscohost.com,Content,nl,Type Service,nl
 https://atlases.muni.cz/shibboleth,Content,nl,Type Service,nl
 https://sdauth.sciencedirect.com/,Content,nl,Type Service,nl
 https://pf.legalintelligence.com,Content,nl,Type Service,nl
-https://sp.corpus1.mpi.nl,Content,nl,Type Service,nl
-https://portal.clarin.inl.nl/,Content,nl,Type Service,nl
 https://ufal-point.mff.cuni.cz/shibboleth/eduid/sp,Content,nl,Type Service,nl
 https://emea-auth1.oclcpica.org/shib/secure,Content,nl,Type Service,nl
-https://www.meertens.knaw.nl/Shibboleth.sso/Metadata,Content,nl,Type Service,nl
+https://saml.schrijfwijzer.nl,Content,nl,Type Service,nl
 https://primo.library.wur.nl/shib,Content,nl,Type Service,nl
 https://www.karger.com/shibboleth,Content,nl,Type Service,nl
 https://test-etalage.rug.nl/admin,Content,nl,Type Service,nl
 https://pure.rug.nl/admin,Content,nl,Type Service,nl
-https://surfdrive.surf.nl/,Content,nl,Type Service,nl
 https://dataverse.nl/shibboleth,Content,nl,Type Service,nl
+https://saml.www.vandale.nl,Content,nl,Type Service,nl
 https://pad-shib.hosted.exlibrisgroup.com/shib,Content,nl,Type Service,nl
 https://www.coachlinkhogeronderwijs.nl,Content,nl,Type Service,nl
 https://pureacc.knaw.nl/admin,Content,nl,Type Service,nl
 https://pure.knaw.nl/admin,Content,nl,Type Service,nl
 urn:nl:eherkenning:HM:00000003380132260000:entities:0006,Content,nl,Type Service,nl
-https://www.nederlab.nl/shibboleth,Content,nl,Type Service,nl
 urn:nl:eherkenning:HM:00000003380132260000:entities:7006,Content,nl,Type Service,nl
 urn:dummy:kb.nl,Content,nl,Type Service,nl
 https://ukb-shib.hosted.exlibrisgroup.com/shib,Content,nl,Type Service,nl
 https://wagn-shib.hosted.exlibrisgroup.com/shib,Content,nl,Type Service,nl
 https://act.dataverse.nl/shibboleth,Content,nl,Type Service,nl
 https://www.edudocs.eu/simplesaml/module.php/saml/sp/metadata.php/default-sp,Content,nl,Type Service,nl
+https://saml.mediaweb.eu/simplesaml/module.php/saml/sp/metadata.php/default-sp,Content,nl,Type Service,nl
+https://dummy.hosted.exlibrisgroup.com/Single-tenant-service_op-aanvraag,Content,nl,Type Service,nl
+https://database.retriever.nl,Content,nl,Type Service,nl
+https://www.degruyter.com/shibboleth,Content,nl,Type Service,nl
+https://www.schrijfwijzer.nl/scripts/saml/metadata.php,Content,nl,Type Service,nl
+https://authentication.thiememeulenhoff.nl/am,Content,nl,Type Service,nl
+https://www.karger.com/oa/entity,Content,nl,Type Service,nl
 urn:mace:pedit.no:services:no.pedit,Education Services,en,Type Service,en
 https://stagedbsv.hva.nl/,Education Services,en,Type Service,en
 https://bb01t.windesheim.nl/shibboleth,Education Services,en,Type Service,en

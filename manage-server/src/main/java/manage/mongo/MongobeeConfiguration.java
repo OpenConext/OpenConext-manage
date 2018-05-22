@@ -118,7 +118,7 @@ public class MongobeeConfiguration {
 
     private void doImportCsaSettings(MongoTemplate mongoTemplate) throws IOException {
         String type = EntityType.SP.getType();
-        String content = IOUtils.toString(new ClassPathResource("csa_export/csp.csv").getInputStream(), Charset
+        String content = IOUtils.toString(new ClassPathResource("csa_export/compound_service_provider.csv").getInputStream(), Charset
             .defaultCharset());
         List<String> lines = Arrays.asList(content.split("\n"));
 
@@ -143,6 +143,7 @@ public class MongobeeConfiguration {
                 String licenseStatus = mappedLicenseStatus.getOrDefault(columns.get(2),
                     "license_required_by_service_provider");
                 metaDataFields.put("coin:ss:license_status", licenseStatus);
+                metaDataFields.remove("coin:license_status");
 
                 metaDataFields.put("coin:ss:supports_strong_authentication", columns.get(3));
                 metaDataFields.remove("coin:requires_strong_authentication");
@@ -310,6 +311,42 @@ public class MongobeeConfiguration {
         this.importFacetsInformation(mongoTemplate);
     }
 
+    @ChangeSet(order = "015", id = "importWikiURLs", author = "Okke Harsta")
+    public void importWikiUrls(MongoTemplate mongoTemplate) throws IOException {
+        String type = EntityType.SP.getType();
+        String content = IOUtils.toString(new ClassPathResource("csa_export/wiki_url.csv").getInputStream(), Charset
+            .defaultCharset());
+        List<String> lines = Arrays.asList(content.split("\n"));
+        Map<String, List<WikiUrlService>> wikiUrlServices = lines.stream().map(s -> {
+            //entity_id, ordinal_lang, key, wiki_url
+            List<String> columns = Arrays.asList(s.split(","));
+            return new WikiUrlService(columns.get(0), columns.get(3), columns.get(1).equals("18") ? "en" : "nl");
+        }).collect(Collectors.groupingBy(WikiUrlService::getEntityId));
+
+        wikiUrlServices.forEach((entityId, urls)-> {
+            Query query = new Query();
+            query.addCriteria(Criteria.where("data.entityid").is(entityId));
+            List<MetaData> metaDatas = mongoTemplate.find(query, MetaData.class, type);
+            if (metaDatas != null && metaDatas.size() > 0) {
+                MetaData metaData = metaDatas.get(0);
+                Map<String, Object> metaDataFields = (Map<String, Object>) metaData.getData().get("metaDataFields");
+                urls.forEach(wikiUrlService -> {
+                    metaDataFields.put("coin:ss:wiki_url:" + wikiUrlService.getLang(), wikiUrlService.getValue());
+                });
+                metaDataFields.remove("coin:wiki_url:en");
+                metaDataFields.remove("coin:wiki_url:nl");
+                MetaData previous = mongoTemplate.findById(metaData.getId(), MetaData.class, type);
+                previous.revision(UUID.randomUUID().toString());
+                mongoTemplate.insert(previous, previous.getType());
+                metaData.promoteToLatest("CSA wiki URL import migration");
+                mongoTemplate.save(metaData, metaData.getType());
+                LOG.info("Migrated {} to new revision in CSA import", entityId);
+            }
+
+        });
+    }
+
+
 
     private Long highestEid(MongoTemplate mongoTemplate, String type) {
         Query query = new Query().limit(1).with(new Sort(Sort.Direction.DESC, "data.eid"));
@@ -329,7 +366,8 @@ public class MongobeeConfiguration {
                 Map<String, Object> metaDataFields = (Map<String, Object>) metaData.getData().get("metaDataFields");
                 metaDataFields.put("coin:ss:type_of_service:" + lang, nl.get(entityId).stream().map
                     (TypeOfService::getValue).collect(Collectors.toSet()).stream().collect(Collectors.joining(",")));
-
+                metaDataFields.remove("coin:type_of_service:en");
+                metaDataFields.remove("coin:type_of_service:nl");
                 MetaData previous = mongoTemplate.findById(metaData.getId(), MetaData.class, type);
                 previous.revision(UUID.randomUUID().toString());
                 mongoTemplate.insert(previous, previous.getType());
