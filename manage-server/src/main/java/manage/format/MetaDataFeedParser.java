@@ -279,13 +279,17 @@ public class MetaDataFeedParser {
     }
 
     private void addArpAttribute(Map<String, Object> result, XMLStreamReader reader, Set<String> arpKeys) {
-        Optional<String> friendlyName = getAttributeValue(reader, "FriendlyName");
         Optional<String> name = getAttributeValue(reader, "Name");
-        if (friendlyName.isPresent()) {
-            doAddArpAttribute(result, arpKeys, friendlyName.get());
-        } else if (name.isPresent()) {
+        Optional<String> friendlyName = getAttributeValue(reader, "FriendlyName");
+        if (this.shouldAddAttributeToArp(name, arpKeys)) {
             doAddArpAttribute(result, arpKeys, name.get());
+        } else if (this.shouldAddAttributeToArp(friendlyName, arpKeys)) {
+            doAddArpAttribute(result, arpKeys, friendlyName.get());
         }
+    }
+
+    private boolean shouldAddAttributeToArp(Optional<String> name, Set<String> allowedArpKeys) {
+        return name.isPresent() && allowedArpKeys.stream().anyMatch(arpKey -> arpKey.endsWith(name.get()));
     }
 
     private void doAddArpAttribute(Map<String, Object> result, Set<String> arpKeys, String friendlyName) {

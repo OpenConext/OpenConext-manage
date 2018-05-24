@@ -322,12 +322,16 @@ export default class Import extends React.Component {
 
     nameOfArpKey = key => key.substring(key.lastIndexOf(":") + 1);
 
-    renderArpAttribute = (key, arpValues, currentValue = false) => {
+    renderArpAttribute = (key, arpValues, counterPart, currentValue) => {
+        const emptyRows = isEmpty(counterPart) ? [] : [...Array(counterPart.length - 1).keys()];
         if (isEmpty(arpValues)) {
             return <tbody key={key}>
             <tr>
                 <td className="arpKey" colSpan="2"><i className={`fa fa-trash-o ${currentValue ? "old" : ""}`}></i></td>
             </tr>
+            {emptyRows.map((val, index) => <tr key={index} className="spacer">
+                <td className="arpKey" colSpan="2"><i className="fa fa-trash-o old"></i></td>
+            </tr>)}
             </tbody>
         }
         return (
@@ -383,12 +387,12 @@ export default class Import extends React.Component {
                 <tr>
                     <td>
                         <table className="arp">
-                            {uniqueKeys.map(key => this.renderArpAttribute(key, currentArp.attributes[key], true))}
+                            {uniqueKeys.map(key => this.renderArpAttribute(key, currentArp.attributes[key], arp.attributes[key], true))}
                         </table>
                     </td>
                     <td>
                         <table className="arp">
-                            {uniqueKeys.map(key => this.renderArpAttribute(key, arp.attributes[key]))}
+                            {uniqueKeys.map(key => this.renderArpAttribute(key, arp.attributes[key], currentArp.attributes[key], false))}
                         </table>
                     </td>
                 </tr>
