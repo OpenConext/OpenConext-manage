@@ -27,6 +27,11 @@ public class MetaDataAutoConfigurationTest implements TestUtils {
     }
 
     @Test
+    public void testSpDashBaord() throws Exception {
+        testErrors("json/validation_error_dashboard_sp.json", EntityType.SP, 2);
+    }
+
+    @Test
     public void testSpSchema() throws Exception {
         String json = readFile("json/valid_service_provider.json");
         subject.validate(json, EntityType.SP.getType());
@@ -54,7 +59,7 @@ public class MetaDataAutoConfigurationTest implements TestUtils {
         testErrors("json/invalid_identity_provider.json", EntityType.IDP, 13);
     }
 
-    private void testErrors(String path, EntityType type, int errorsExpected) throws IOException {
+    private void testErrors(String path, EntityType type, int errorsExpected)  {
         String json = readFile(path);
         try {
             subject.validate(json, type.getType());

@@ -1,0 +1,54 @@
+{
+  "arp": {
+    "attributes": {
+      "urn:mace:dir:attribute-def:givenName": [
+        {
+          "source": "idp",
+          "value": "*"
+        }
+      ]
+    },
+    "enabled": true
+  },
+  "entityid": "https:\/\/teams.surfconext.nl\/shibboleth",
+  "metadataurl": "https:\/\/teams.surfconext.nl\/Shibboleth.sso\/Metadata",
+  "active": true,
+  "allowedEntities": [],
+  "allowedall": true,
+  "state": "testaccepted",
+  "type": "saml20-sp",
+  "metaDataFields": {
+    "AssertionConsumerService:0:Binding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
+    "AssertionConsumerService:0:Location": "https:\/\/teams.surfconext.nl\/Shibboleth.sso\/SAML2\/POST",
+    "NameIDFormat": "urn:oasis:names:tc:SAML:2.0:nameid-format:transient",
+    "description:en": "test",
+    "description:nl": "test",
+    "name:en": "testbart2",
+    "name:nl": "Testbart 2",
+    "contacts:0:contactType": "technical",
+    "contacts:0:givenName": "bart",
+    "contacts:0:surName": "Geesik",
+    "contacts:0:emailAddress": "Bart@bart.nl",
+    "coin:privacy:what_data": "Van alles en nog wat en nog meer",
+    "coin:privacy:access_data": "veel",
+    "coin:privacy:country": "nederland",
+    "coin:privacy:security_measures": "Helemaal niks",
+    "coin:privacy:certification": "1",
+    "coin:privacy:certification_location": "gewoon, waar je wil",
+    "coin:privacy:certification_valid_from": "1446418800",
+    "coin:privacy:certification_valid_to": "1541113200",
+    "coin:privacy:surfmarket_dpa_agreement": "1",
+    "coin:privacy:surfnet_dpa_agreement": "1",
+    "coin:privacy:sn_dpa_why_not": "Geen enkele",
+    "coin:privacy:privacy_policy": "1",
+    "coin:privacy:privacy_policy_url": "https:\/\/www.nu.nl",
+    "coin:privacy:other_info": "geen commentaar",
+    "coin:service_team_id": "urn:collab:group:test.surfteams.nl:nl:surfnet:diensten:spdashboard_barttest",
+    "coin:original_metadata_url": "https:\/\/teams.surfconext.nl\/Shibboleth.sso\/Metadata",
+    "certData": "MIIEGDCCAoCgAwIBAgIJANDjHIuieXMWMA0GCSqGSIb3DQEBCwUAMCYxJDAiBgNV\r\nBAMTG2phcHA1LnByZC51dHIuc3VyZmNvbmV4dC5ubDAeFw0xNjA5MjIwODIwNDVa\r\nFw0yNjA5MjAwODIwNDVaMCYxJDAiBgNVBAMTG2phcHA1LnByZC51dHIuc3VyZmNv\r\nbmV4dC5ubDCCAaIwDQYJKoZIhvcNAQEBBQADggGPADCCAYoCggGBANfPobLNY3Gj\r\nvZq6LO7FHPG1G1yXKXCaxMDm6UFauKGtaPKloludPj\/ptosCba\/t9IKeror5HhVt\r\ndVabeTo0rNpyo4d8YX2MMatRvyKG6B\/R3kY6H0j7LyZRtrX6QjvVrjd7OjIIAL8w\r\nJAMwglOhnheKT7fxdYGzSLd+202\/sm78cI6l4UwtH47Ra0DCMEA4hJOzu\/JREppK\r\nw6GsTIL4ioZOTgiVR0NU2LCz00kNThWVmV711aOMGumjwszBTuUDHE65K6SZG9oH\r\netJgJCINQk556DzgbN1WFWIJs0DjSwekCHHAM3eql1W7ypBAy4p0koKMBAIUxL2Z\r\n5rxPyXAbY+7hhKNOdS7nJV52AhNqc5qEczmpqEjYmFnrnzG9+1oMl9Wn\/VgmniM6\r\nnUaU6er8TSd0LIq2mDiSMUj9p9q3lHoV5Il1\/q15SbKG5tFDXAG1BGI1CiKz1FBj\r\n\/aeOBTTUNn1RoFtlnc6V+0gCR+XDYZxFouSHZVowiEa9b\/+\/qh0lmQIDAQABo0kw\r\nRzAmBgNVHREEHzAdghtqYXBwNS5wcmQudXRyLnN1cmZjb25leHQubmwwHQYDVR0O\r\nBBYEFNYqqqO73W5Y9XkPvMsvklogJQN9MA0GCSqGSIb3DQEBCwUAA4IBgQCNrc5Q\r\npVtiuQ31Vqvos9MxH5ssR7o\/nXu4qfzpV4ANXrq83bXgBJGxlrrbtFS\/0I3ZwQNB\r\npkwV9edsjhQGu0+lkQmixEafy99ThUvvzSHDGv7zyntfchVeBrxgNA6gOFmCU+fz\r\nLl7lEdp+fm9KUwlwe7wgyq55h8wmnsQWylofm81OaW30PGKFOKtDdI2XLFAAhEW0\r\nl1ZDf39e+q8nxA\/EBPz1Bh\/rQB9cI12TAstuuAHq1w0MbH3mb39Df83i0rGWbegS\r\nxvbBYcGGVR3WgQttRicVT4LbQg36AlTxOf5lK\/R6ejN9kCl4Mj8pkhvFu+0ZA++a\r\n1dHiQZKwhsPoO+WZ+E0XtEe3sBpUebKi45Bt1z2pphS3O88rS6iKYua\/9S9gbN2r\r\nR0Kg1+2X1yY+4o6vo3wZ4zneaGTp7FWyJofUxz32jdLPdPPT8mD+LCgulRW7BXIY\r\nn4uyNFV3+\/R2k9EqlgbsjxjP3vv\/+FtIoggT4sfm13YeCmKIlBrLE\/A2kU8=",
+    "logo:0:url": "https:\/\/static.surfconext.nl\/logos\/sp\/surf_network-automation.png",
+    "logo:0:width": "200",
+    "logo:0:height": "160"
+  },
+  "revisionnote": "123"
+}
