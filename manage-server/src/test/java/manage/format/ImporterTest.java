@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 @SuppressWarnings("unchecked")
@@ -98,6 +99,16 @@ public class ImporterTest implements TestUtils {
         assertEquals(50, metaDataFields.size());
         assertTrue(metaDataFields.values().stream().allMatch(value -> value instanceof String));
 
+    }
+
+    @Test
+    public void importNoEncryptionCerts() throws IOException, XMLStreamException {
+        Map<String, Object> results = this.subject.importXML(new ClassPathResource
+                ("xml/FederationMetadataCertificate.xml"), EntityType.IDP,
+            Optional.of("http://adfs2.noorderpoort.nl/adfs/services/trust"));
+        Map<String, String> metadataFields = (Map<String, String>) results.get("metaDataFields");
+        assertTrue(metadataFields.containsKey("certData"));
+        assertFalse(metadataFields.containsKey("certData2"));
     }
 
 }

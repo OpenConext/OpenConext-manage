@@ -85,12 +85,13 @@ public class MetaDataFeedParser {
                                 arp.put(ATTRIBUTES, attributes);
                                 result.put(ARP, arp);
                             }
+                            break;
                         case "KeyDescriptor":
                             if (!inCorrectEntityDescriptor) {
                                 break;
                             }
-                            if (attributeValueMatches(reader, "use", "signing") ||
-                                !getAttributeValue(reader, "use").isPresent()) {
+                            Optional<String> use = getAttributeValue(reader, "use");
+                            if (!use.isPresent() || use.get().equals("signing")) {
                                 inKeyDescriptor = true;
                             }
                             break;
