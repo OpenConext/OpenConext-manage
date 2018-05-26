@@ -78,6 +78,7 @@ I18n.translations.en = {
             restored: "{{name}} revision {{revision}} was successfully restored to new revision {{newRevision}}",
         },
         required: "{{name}} is required",
+        extraneous: "{{name}} is an unknown / extraneous key. Remove it as this can not be saved.",
         deleteConfirmation: "Are you sure you want to delete {{name}}?",
         errors: "There are validation errors:"
 

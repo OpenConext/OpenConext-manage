@@ -45,7 +45,9 @@
                         font-size: 18px;
                     }
                 }
-
+                &.extraneous {
+                    color: $red;
+                }
                 input[type=text], input[type=email], textarea {
                     width: 100%;
                     font-size: 14px;

@@ -81,7 +81,8 @@ export default class MetaData extends React.Component {
             return <CheckBox autofocus={autoFocus} onChange={this.onChangeCheckEvent(key)}
                              value={value === "1" ? true : false} name={key} readOnly={guest}/>
         }
-        throw new Error("Unsupported metaData key configuration " + JSON.stringify(keyConfiguration));
+        return <input ref={ref => this.newMetaDataFieldRendered(ref, false)} type="text" name={key}
+                      value={value} onChange={this.onChangeInputEvent(key)} disabled={guest}/>
     };
 
     metaDataFieldConfiguration = (key, configuration) => {
@@ -92,7 +93,7 @@ export default class MetaData extends React.Component {
             keyConf = configuration.properties.metaDataFields.patternProperties[patternKey];
         }
         if (!keyConf) {
-            throw new Error("Unsupported metaData key " + key);
+            return "unknown_key_conf";
         }
         const ref = keyConf["$ref"];
         if (ref) {
@@ -104,11 +105,12 @@ export default class MetaData extends React.Component {
 
     renderMetaDataRow = (key, metaDataFields, configuration, guest) => {
         const keyConfiguration = this.metaDataFieldConfiguration(key, configuration);
+        const extraneous = keyConfiguration === "unknown_key_conf";
         const toolTip = keyConfiguration.info;
         const value = metaDataFields[key];
         const required = this.isRequired(key, value);
         return (<tr key={key}>
-            <td className="key">{key}
+            <td className={`key ${extraneous ? "extraneous" : ""}`}>{key}
                 {toolTip && <span>
                             <i className="fa fa-info-circle" data-for={key} data-tip></i>
                                 <ReactTooltip id={key} type="info" class="tool-tip" effect="solid">
@@ -119,6 +121,7 @@ export default class MetaData extends React.Component {
             <td colSpan={guest ? 2 : 1} className="value">
                 {this.renderMetaDataValue(key, value, keyConfiguration, guest)}
                 {required && <div className="error">{I18n.t("metadata.required", {name: key})}</div>}
+                {extraneous && <div className="error">{I18n.t("metadata.extraneous", {name: key})}</div>}
             </td>
             {(!guest && configuration.properties.metaDataFields.required.indexOf(key) < 0)
             && <td className="trash">
