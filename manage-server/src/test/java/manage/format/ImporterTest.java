@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -109,6 +110,15 @@ public class ImporterTest implements TestUtils {
         Map<String, String> metadataFields = (Map<String, String>) results.get("metaDataFields");
         assertTrue(metadataFields.containsKey("certData"));
         assertFalse(metadataFields.containsKey("certData2"));
+    }
+
+    @Test
+    public void aliases() throws IOException, XMLStreamException {
+        Map<String, Object> metaData = this.subject.importXML(new ClassPathResource("/sp_portal/sp_xml.xml"),
+            EntityType.SP, Optional.empty());
+        Set<String> arpAttributes = Map.class.cast(Map.class.cast(metaData.get("arp")).get("attributes")).keySet();
+        //urn:mace:dir:attribute-def:eduPersonTargetedID is alias for urn:oid:1.3.6.1.4.1.5923.1.1.1.10
+        assertTrue(arpAttributes.contains("urn:mace:dir:attribute-def:eduPersonTargetedID"));
     }
 
 }

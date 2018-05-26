@@ -68,6 +68,9 @@ public class MetaDataRepository {
         if (search.indexOf(")") > -1) {
             search = search.replace(")", "\\)");
         }
+        if (search.indexOf("|") > -1) {
+            search = search.replace("|", "\\|");
+        }
         query.limit(AUTOCOMPLETE_LIMIT);
         Criteria criteria = new Criteria();
         query.addCriteria(criteria.orOperator(

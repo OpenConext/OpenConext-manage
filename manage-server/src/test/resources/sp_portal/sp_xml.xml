@@ -41,9 +41,8 @@
             <md:RequestedAttribute Name="urn:mace:dir:attribute-def:uid"
                                    NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri" isRequired="true"
                                    FriendlyName="uid"/>
-            <md:RequestedAttribute Name="urn:mace:terena.org:attribute-def:schacHomeOrganization"
-                                   NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri" isRequired="true"
-                                   FriendlyName="Organization"/>
+            <md:RequestedAttribute Name="urn:oid:1.3.6.1.4.1.5923.1.1.1.10"
+                                   NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri" isRequired="true"/>
         </md:AttributeConsumingService>
     </md:SPSSODescriptor>
     <md:ContactPerson contactType="technical">

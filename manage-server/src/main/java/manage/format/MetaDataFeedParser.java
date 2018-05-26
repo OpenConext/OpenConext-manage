@@ -22,6 +22,7 @@ import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import static manage.format.Importer.ARP;
@@ -58,6 +59,7 @@ public class MetaDataFeedParser {
         boolean isSp = entityType.equals(EntityType.SP);
 
         Set<String> arpKeys = new HashSet<>();
+        Map<String, String> arpAliases = new HashMap<>();
 
         while (reader.hasNext()) {
             switch (reader.next()) {
@@ -77,6 +79,7 @@ public class MetaDataFeedParser {
                         case "SPSSODescriptor":
                             if (inCorrectEntityDescriptor && isSp) {
                                 arpKeys = arpKeys(EntityType.SP, metaDataAutoConfiguration, isSp);
+                                arpAliases = arpAliases(EntityType.SP, metaDataAutoConfiguration, isSp);
 
                                 Map<String, Object> arp = new TreeMap<>();
                                 arp.put("enabled", false);
@@ -192,7 +195,7 @@ public class MetaDataFeedParser {
                             break;
                         case "RequestedAttribute":
                             if (inAttributeConsumingService && isSp) {
-                                addArpAttribute(result, reader, arpKeys);
+                                addArpAttribute(result, reader, arpKeys, arpAliases);
                             }
                             break;
                         case "OrganizationName":
@@ -269,6 +272,20 @@ public class MetaDataFeedParser {
     }
 
     private Set<String> arpKeys(EntityType type, MetaDataAutoConfiguration metaDataAutoConfiguration, boolean isSp) {
+        return arpAttributes(type, metaDataAutoConfiguration, isSp).keySet();
+    }
+
+    private Map<String, String> arpAliases(EntityType type, MetaDataAutoConfiguration metaDataAutoConfiguration,
+                                           boolean isSp) {
+        Map<String, Object> arp = arpAttributes(type, metaDataAutoConfiguration, isSp);
+        return arp.entrySet().stream()
+            .collect(toMap(
+                entry -> (String) Map.class.cast(entry.getValue()).getOrDefault("alias", "nope"),
+                entry -> entry.getKey()));
+    }
+
+    private Map<String, Object> arpAttributes(EntityType type, MetaDataAutoConfiguration metaDataAutoConfiguration,
+                                              boolean isSp) {
         Map<String, Object> schema = metaDataAutoConfiguration.schemaRepresentation(type);
         Map<String, Object> arpAttributes = isSp ? Map.class.cast(schema.get("properties")) : new HashMap<>();
         if (isSp) {
@@ -276,16 +293,20 @@ public class MetaDataFeedParser {
                 arpAttributes = Map.class.cast(arpAttributes.get(s));
             }
         }
-        return arpAttributes.keySet();
+        return arpAttributes;
+
     }
 
-    private void addArpAttribute(Map<String, Object> result, XMLStreamReader reader, Set<String> arpKeys) {
+    private void addArpAttribute(Map<String, Object> result, XMLStreamReader reader, Set<String> arpKeys,
+                                 Map<String, String> arpAliases) {
         Optional<String> name = getAttributeValue(reader, "Name");
         Optional<String> friendlyName = getAttributeValue(reader, "FriendlyName");
         if (this.shouldAddAttributeToArp(name, arpKeys)) {
             doAddArpAttribute(result, arpKeys, name.get());
         } else if (this.shouldAddAttributeToArp(friendlyName, arpKeys)) {
             doAddArpAttribute(result, arpKeys, friendlyName.get());
+        } else if (name.isPresent() && arpAliases.containsKey(name.get())) {
+            doAddArpAttribute(result, arpKeys, arpAliases.get(name.get()));
         }
     }
 
