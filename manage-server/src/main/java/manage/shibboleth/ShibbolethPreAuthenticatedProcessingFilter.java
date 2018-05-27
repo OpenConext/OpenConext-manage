@@ -25,7 +25,7 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
     private final List<Features> featureToggles;
     private final Product product;
     private final Push push;
-    private static final Logger log = LoggerFactory.getLogger(ShibbolethPreAuthenticatedProcessingFilter.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ShibbolethPreAuthenticatedProcessingFilter.class);
 
     public ShibbolethPreAuthenticatedProcessingFilter(AuthenticationManager authenticationManager, List<Features>
         featureToggles, Product product, Push push) {
@@ -44,12 +44,10 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
 
         if (StringUtils.isEmpty(uid) || StringUtils.isEmpty(displayName)) {
             //this is the contract. See AbstractPreAuthenticatedProcessingFilter#doAuthenticate
-            log.error("Missing required attributes.");
+            LOG.error("Missing required attribute(s): uid {} displayName {}", uid, displayName);
             return null;
         }
-        //TODO determine guest membership based on ???
-        List<GrantedAuthority> authorityList = createAuthorityList("ROLE_USER", "ROLE_ADMIN"); //createAuthorityList
-        // ("ROLE_USER");
+        List<GrantedAuthority> authorityList = createAuthorityList("ROLE_USER", "ROLE_ADMIN");
         return new FederatedUser(uid, displayName, schacHomeOrganization,
             authorityList, featureToggles, product, push);
     }
