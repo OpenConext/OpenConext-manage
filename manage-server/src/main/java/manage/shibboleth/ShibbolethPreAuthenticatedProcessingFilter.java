@@ -12,6 +12,9 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import static org.springframework.security.core.authority.AuthorityUtils.createAuthorityList;
 
 public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthenticatedProcessingFilter {
@@ -22,6 +25,7 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
     private final List<Features> featureToggles;
     private final Product product;
     private final Push push;
+    private static final Logger log = LoggerFactory.getLogger(ShibbolethPreAuthenticatedProcessingFilter.class);
 
     public ShibbolethPreAuthenticatedProcessingFilter(AuthenticationManager authenticationManager, List<Features>
         featureToggles, Product product, Push push) {
@@ -40,6 +44,7 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
 
         if (StringUtils.isEmpty(uid) || StringUtils.isEmpty(displayName)) {
             //this is the contract. See AbstractPreAuthenticatedProcessingFilter#doAuthenticate
+            log.error("Missing required attributes.");
             return null;
         }
         //TODO determine guest membership based on ???
