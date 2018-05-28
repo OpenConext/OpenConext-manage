@@ -107,6 +107,9 @@ public class MetaDataRepository {
             } else if (value instanceof String && String.class.cast(value).contains("*")) {
                 String queryString = String.class.cast(value);
                 criteriaDefinitions.add(Criteria.where("data.".concat(key)).regex(queryString, "i"));
+            } else if (value instanceof List && !List.class.cast(value).isEmpty()) {
+                List l = List.class.cast(value);
+                criteriaDefinitions.add(Criteria.where("data.".concat(key)).in(l));
             } else {
                 criteriaDefinitions.add(Criteria.where("data.".concat(key)).is(value));
             }

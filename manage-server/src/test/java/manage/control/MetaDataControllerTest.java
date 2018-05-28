@@ -387,6 +387,23 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void searchWithListIn() throws Exception {
+        Map<String, Object> searchOptions = new HashMap<>();
+        searchOptions.put("entityid", Arrays.asList(
+            "Duis ad do",
+            "https://profile.test2.surfconext.nl/authentication/metadata",
+            "http://mock-sp"));
+        given()
+            .when()
+            .body(searchOptions)
+            .header("Content-type", "application/json")
+            .post("manage/api/client/search/saml20_sp")
+            .then()
+            .statusCode(SC_OK)
+            .body("size()", is(3));
+    }
+
+    @Test
     public void searchWithAllAttributes() throws Exception {
         Map<String, Object> searchOptions = new HashMap<>();
         searchOptions.put(ALL_ATTRIBUTES, true);
