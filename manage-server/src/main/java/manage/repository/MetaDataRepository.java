@@ -13,6 +13,7 @@ import org.springframework.util.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 /**
@@ -62,15 +63,7 @@ public class MetaDataRepository {
         if ("*".equals(search)) {
             return mongoTemplate.find(query, Map.class, type);
         }
-        if (search.indexOf("(") > -1) {
-            search = search.replace("(", "\\(");
-        }
-        if (search.indexOf(")") > -1) {
-            search = search.replace(")", "\\)");
-        }
-        if (search.indexOf("|") > -1) {
-            search = search.replace("|", "\\|");
-        }
+        search = escapeSpecialChars(search);
         query.limit(AUTOCOMPLETE_LIMIT);
         Criteria criteria = new Criteria();
         query.addCriteria(criteria.orOperator(
@@ -80,6 +73,10 @@ public class MetaDataRepository {
             regex("data.metaDataFields.keywords:en", search),
             regex("data.metaDataFields.keywords:nl", search)));
         return mongoTemplate.find(query, Map.class, type);
+    }
+
+    protected String escapeSpecialChars(String query) {
+        return query.replaceAll("([\\Q\\/$^.?*+{}()|[]\\E]+)", "\\\\$1");
     }
 
     private Criteria regex(String key, String search) {
