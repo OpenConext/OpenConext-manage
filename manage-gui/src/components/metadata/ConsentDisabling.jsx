@@ -68,7 +68,8 @@ export default class ConsentDisabling extends React.Component {
         const entity = {
             name: entityid,
             type: "no_consent",
-            explanation: ""
+            "explanation:nl": "",
+            "explanation:en": ""
         };
         const {disableConsent, whiteListing} = this.props;
         const newState = [...disableConsent].concat(entity);
