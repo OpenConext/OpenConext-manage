@@ -100,7 +100,9 @@ public class MetaDataRepository {
         List<CriteriaDefinition> criteriaDefinitions = new ArrayList<>();
 
         properties.forEach((key, value) -> {
-            if (value instanceof String && !StringUtils.hasText(String.class.cast(value))) {
+            if (value instanceof Boolean && Boolean.class.cast(value) && key.contains("attributes")) {
+                criteriaDefinitions.add(Criteria.where("data.".concat(key)).exists(true));
+            } else if (value instanceof String && !StringUtils.hasText(String.class.cast(value))) {
                 criteriaDefinitions.add(Criteria.where("data.".concat(key)).exists(false));
             } else if ("*".equals(value)) {
                 criteriaDefinitions.add(Criteria.where("data.".concat(key)).regex(".*", "i"));
