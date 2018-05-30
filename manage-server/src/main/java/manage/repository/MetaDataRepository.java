@@ -1,9 +1,11 @@
 package manage.repository;
 
+import com.mongodb.util.JSON;
 import manage.model.MetaData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.BasicQuery;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.CriteriaDefinition;
 import org.springframework.data.mongodb.core.query.Query;
@@ -50,8 +52,8 @@ public class MetaDataRepository {
         return mongoTemplate.find(query, MetaData.class, type);
     }
 
-    public void update(MetaData metaDate) {
-        mongoTemplate.save(metaDate, metaDate.getType());
+    public void update(MetaData metaData) {
+        mongoTemplate.save(metaData, metaData.getType());
     }
 
     public MongoTemplate getMongoTemplate() {
@@ -126,6 +128,10 @@ public class MetaDataRepository {
             query.addCriteria(new Criteria().orOperator(criteria));
         }
         return mongoTemplate.find(query, Map.class, type);
+    }
+
+    public List<MetaData> findRaw(String type, String query) {
+        return mongoTemplate.find(new BasicQuery(query),MetaData.class, type);
     }
 
     public List<Map> whiteListing(String type) {

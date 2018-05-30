@@ -235,6 +235,25 @@
       "name": "https://idp.test2.surfconext.nl",
       "state": "prodaccepted",
       "type": "saml20-idp"
+    },
+    "7": {
+      "allow_all_entities": true,
+      "allowed_connections": [],
+      "disable_consent_connections": [],
+      "metadata": {
+        "SingleSignOnService": [
+          {
+            "Binding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect",
+            "Location": "https://sso0"
+          }
+        ],
+        "name": {
+          "en": "OpenConext ServiceRegistry Mock"
+        }
+      },
+      "name": "http://mock-idp",
+      "state": "prodaccepted",
+      "type": "saml20-idp"
     }
   }
 }

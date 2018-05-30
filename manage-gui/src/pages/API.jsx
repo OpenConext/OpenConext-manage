@@ -12,6 +12,7 @@ import debounce from "lodash.debounce";
 import Select from "react-select";
 import "react-select/dist/react-select.css";
 import NotesTooltip from "../components/NotesTooltip";
+import SelectNewEntityAttribute from "../components/metadata/SelectNewEntityAttribute";
 
 export default class API extends React.PureComponent {
 
@@ -20,9 +21,12 @@ export default class API extends React.PureComponent {
         this.state = {
             selectedType: "saml20_sp",
             searchAttributes: {},
+            globalSearchAttributes: {},
             errorAttributes: {},
+            globalErrorAttributes: {},
             searchResults: undefined,
             newMetaDataFieldKey: null,
+            newGlobalAttributeKey: null,
             status: "all",
             copiedToClipboardClassName: ""
         };
@@ -33,11 +37,16 @@ export default class API extends React.PureComponent {
     }
 
     componentDidUpdate = () => {
-        const newMetaDataFieldKey = this.state.newMetaDataFieldKey;
+        const {newMetaDataFieldKey, newGlobalAttributeKey} = this.state;
         if (!isEmpty(newMetaDataFieldKey) && !isEmpty(this.newMetaDataField)) {
             this.newMetaDataField.focus();
             this.newMetaDataField = null;
             this.setState({newMetaDataFieldKey: null})
+        }
+        if (!isEmpty(newGlobalAttributeKey) && !isEmpty(this.newGlobalAttributeField)) {
+            this.newGlobalAttributeField.focus();
+            this.newGlobalAttributeField = null;
+            this.setState({newGlobalAttributeKey: null})
         }
     };
 
@@ -45,7 +54,21 @@ export default class API extends React.PureComponent {
     addSearchKey = key => {
         const newSearchAttributes = {...this.state.searchAttributes};
         newSearchAttributes[key] = "";
-        this.setState({searchAttributes: newSearchAttributes, newMetaDataFieldKey: key});
+        this.setState({
+            searchAttributes: newSearchAttributes,
+            newMetaDataFieldKey: key,
+            newGlobalAttributeKey: undefined
+        });
+    };
+
+    addGlobalSearchKey = key => {
+        const newGlobalSearchAttributes = {...this.state.globalSearchAttributes};
+        newGlobalSearchAttributes[key] = "";
+        this.setState({
+            globalSearchAttributes: newGlobalSearchAttributes,
+            newMetaDataFieldKey: undefined,
+            newGlobalAttributeKey: key
+        });
     };
 
     changeSearchValue = key => e => {
@@ -56,23 +79,42 @@ export default class API extends React.PureComponent {
         this.setState({searchAttributes: newSearchAttributes});
 
         if ((previousValue && previousValue.indexOf("*") > -1) || (value && value.indexOf("*") > -1)) {
-            this.delayedPatternValidation(key, value);
+            this.delayedPatternValidation(key, value, "errorAttributes");
         }
     };
 
-    delayedPatternValidation = debounce((key, value) =>
+    changeGlobalSearchValue = key => e => {
+        const previousValue = this.state.globalSearchAttributes[key];
+        const newGlobalSearchAttributes = {...this.state.globalSearchAttributes};
+        const value = e.target.value;
+        newGlobalSearchAttributes[key] = value;
+        this.setState({globalSearchAttributes: newGlobalSearchAttributes});
+
+        if ((previousValue && previousValue.indexOf("*") > -1) || (value && value.indexOf("*") > -1)) {
+            this.delayedPatternValidation(key, value, "globalErrorAttributes");
+        }
+    };
+
+    delayedPatternValidation = debounce((key, value, name) =>
         validation("pattern", value).then(result => {
-            const newErrorAttributes = {...this.state.errorAttributes};
+            const newErrorAttributes = {...this.state[name]};
             newErrorAttributes[key] = !result;
-            this.setState({errorAttributes: newErrorAttributes})
+            const newState = {};
+            newState[name] = newErrorAttributes;
+            this.setState(newState);
         }), 250);
 
 
     deleteSearchField = key => e => {
         const newSearchAttributes = {...this.state.searchAttributes};
         delete newSearchAttributes[key];
-        this.setState({searchAttributes: newSearchAttributes});
+        this.setState({searchAttributes: newSearchAttributes, searchResults: undefined});
+    };
 
+    deleteGlobalSearchField = key => e => {
+        const newGlobalSearchAttributes = {...this.state.globalSearchAttributes};
+        delete newGlobalSearchAttributes[key];
+        this.setState({globalSearchAttributes: newGlobalSearchAttributes, searchResults: undefined});
     };
 
     changeStatus = option => this.setState({status: option ? option.value : null});
@@ -85,14 +127,24 @@ export default class API extends React.PureComponent {
 
     doSearch = e => {
         stop(e);
-        const {selectedType, searchAttributes, errorAttributes} = this.state;
+        const {selectedType, searchAttributes, globalSearchAttributes, errorAttributes} = this.state;
         if (this.isValidInput(errorAttributes)) {
             const metaDataSearch = {};
             const keys = Object.keys(searchAttributes);
-            keys.forEach(key => {
-                metaDataSearch[`metaDataFields.${key}`] = searchAttributes[key];
+            keys.forEach(key => metaDataSearch[`metaDataFields.${key}`] = searchAttributes[key]);
+
+            const globalKeys = Object.keys(globalSearchAttributes);
+            globalKeys.forEach(key => {
+                let val = globalSearchAttributes[key];
+                if (val.toLowerCase() === "true") {
+                    val = true;
+                } else if (val.toLowerCase() === "false") {
+                    val = false;
+                }
+                metaDataSearch[`${key}`] = val;
             });
-            if (!isEmpty(searchAttributes)) {
+
+            if (!isEmpty(searchAttributes) || !isEmpty(globalSearchAttributes)) {
                 metaDataSearch.REQUESTED_ATTRIBUTES = Object.keys(metaDataSearch);
             }
             search(metaDataSearch, selectedType)
@@ -103,7 +155,10 @@ export default class API extends React.PureComponent {
 
     reset = e => {
         stop(e);
-        this.setState({searchAttributes: {}, errorAttributes: {}, searchResults: undefined});
+        this.setState({
+            searchAttributes: {}, globalSearchAttributes: {}, errorAttributes: {}, globalErrorAttributes: {}
+            , searchResults: undefined, newMetaDataFieldKey: null, newGlobalAttributeKey: null, status: "all"
+        });
     };
 
     copyToClipboard = e => {
@@ -118,6 +173,12 @@ export default class API extends React.PureComponent {
     newMetaDataFieldRendered = (ref, autoFocus) => {
         if (autoFocus) {
             this.newMetaDataField = ref;
+        }
+    };
+
+    newGlobalFieldRendered = (ref, autoFocus) => {
+        if (autoFocus) {
+            this.newGlobalAttributeField = ref;
         }
     };
 
@@ -149,8 +210,37 @@ export default class API extends React.PureComponent {
         );
     };
 
-    renderSearchResultsTable = (searchResults, selectedType, searchAttributes, status) => {
-        const searchHeaders = ["status", "name", "entityid", "notes"].concat(Object.keys(searchAttributes));
+    renderGlobalSearchTable = (globalSearchAttributes, globalErrorAttributes) => {
+        return (
+            <table className="metadata-search-table">
+                <tbody>
+                {Object.keys(globalSearchAttributes).map(key => {
+                        const error = globalErrorAttributes[key];
+                        return (
+                            <tr key={key}>
+                                <td className="key">{key}</td>
+                                <td className="value">
+                                    <input
+                                        ref={ref => this.newGlobalFieldRendered(ref, this.state.newGlobalAttributeKey === key)}
+                                        type="text" value={globalSearchAttributes[key]}
+                                        onChange={this.changeGlobalSearchValue(key)}/>
+                                    {error && <span className="error">{I18n.t("playground.error")}</span>}
+                                </td>
+                                <td className="trash">
+                                    <span onClick={this.deleteGlobalSearchField(key)}><i
+                                        className="fa fa-trash-o"></i></span>
+                                </td>
+                            </tr>
+                        );
+                    }
+                )}
+                </tbody>
+            </table>
+        );
+    };
+
+    renderSearchResultsTable = (searchResults, selectedType, searchAttributes, globalSearchAttributes, status) => {
+        const searchHeaders = ["status", "name", "entityid", "notes"].concat(Object.keys(searchAttributes)).concat(Object.keys(globalSearchAttributes));
         searchResults = status === "all" ? searchResults : searchResults.filter(entity => entity.data.state === status);
         return (
             <section>
@@ -158,13 +248,12 @@ export default class API extends React.PureComponent {
                     <thead>
                     <tr>
                         {searchHeaders.map((header, index) =>
-                            <th key={header}
+                            <th key={`${header}_${index}`}
                                 className={index < 4 ? header : "extra"}>{index < 4 ? I18n.t(`playground.headers.${header}`) : header}</th>)}
-
                     </tr>
                     </thead>
                     <tbody>
-                    {searchResults.map(entity => <tr key={entity.data.entityid}>
+                    {searchResults.map((entity, index) => <tr key={`${entity.data.entityid}_${index}`}>
                         <td className="state">{I18n.t(`metadata.${entity.data.state}`)}</td>
                         <td className="name">
                             <Link to={`/metadata/${selectedType}/${entity["_id"]}`}
@@ -177,7 +266,15 @@ export default class API extends React.PureComponent {
                         </td>
                         {Object.keys(searchAttributes).map(attr =>
                             <td key={attr}>{entity.data.metaDataFields[attr]}</td>)}
-
+                        {Object.keys(globalSearchAttributes).map(attr => {
+                                const parts = attr.split(".");
+                                let last = parts.pop();
+                                let ref = entity.data;
+                                parts.forEach(part => ref = ref ? ref[part] : {});
+                                const val = Array.isArray(ref) ? ref.map(x => x[last]) : ref[last];
+                                return <td key={attr}>{JSON.stringify(val)}</td>
+                            }
+                        )}
                     </tr>)}
                     </tbody>
 
@@ -187,18 +284,22 @@ export default class API extends React.PureComponent {
 
 
     renderSearchResultsTablePrintable = (searchResults) =>
-            <section id={"search-results-printable"}
-                     dangerouslySetInnerHTML={{
-                         __html: searchResults
-                             .map(entity => `${entity.data.state},${entity.data.entityid},${entity.data.metaDataFields["name:en"] || entity.data.metaDataFields["name:nl"]}`)
-                             .join("\n")
-                     }}/>;
+        <section id={"search-results-printable"}
+                 dangerouslySetInnerHTML={{
+                     __html: searchResults
+                         .map(entity => `${entity.data.state},${entity.data.entityid},${entity.data.metaDataFields["name:en"] || entity.data.metaDataFields["name:nl"]}`)
+                         .join("\n")
+                 }}/>;
 
     renderSearch = () => {
         const {configuration} = this.props;
-        const {selectedType, searchAttributes, errorAttributes, searchResults, status, copiedToClipboardClassName} = this.state;
+        const {
+            selectedType, searchAttributes, errorAttributes, searchResults, status, copiedToClipboardClassName,
+            globalSearchAttributes, globalErrorAttributes
+        } = this.state;
         const conf = configuration.find(conf => conf.title === selectedType);
         const hasSearchAttributes = Object.keys(searchAttributes).length > 0;
+        const hasGlobalSearchAttributes = Object.keys(globalSearchAttributes).length > 0;
         const valid = this.isValidInput(errorAttributes);
 
         const hasNoResults = searchResults && searchResults.length === 0;
@@ -215,6 +316,14 @@ export default class API extends React.PureComponent {
                 {hasSearchAttributes && this.renderSearchTable(searchAttributes, errorAttributes)}
                 <SelectNewMetaDataField configuration={conf} onChange={this.addSearchKey}
                                         metaDataFields={searchAttributes} placeholder={"Search and add metadata keys"}/>
+                <p>Add non-Metadata fields to search for. Type <span className="code">true</span> or <span
+                    className="code">false</span> for boolean fields
+                    including the <span className="code">arp.attributes</span>. You can use the <span
+                        className="code">.*</span> wildcard for text fields.</p>
+                <SelectNewEntityAttribute configuration={conf} onChange={this.addGlobalSearchKey}
+                                          attributes={globalSearchAttributes}
+                                          placeholder={"Search and add global attributes"}/>
+                {hasGlobalSearchAttributes && this.renderGlobalSearchTable(globalSearchAttributes, globalErrorAttributes)}
                 <section className="options">
                     <a className="reset button" onClick={this.reset}>Reset<i className="fa fa-times"></i></a>
                     <a className={`button ${valid ? "green" : "disabled grey"}`} onClick={this.doSearch}>Search<i
@@ -230,7 +339,7 @@ export default class API extends React.PureComponent {
                                             .map(s => ({value: s, label: I18n.t(`metadata.${s}`)}))}
                                         value={status}
                                         className="status-select"/>}
-                {showResults && this.renderSearchResultsTable(searchResults, selectedType, searchAttributes, status)}
+                {showResults && this.renderSearchResultsTable(searchResults, selectedType, searchAttributes, globalSearchAttributes, status)}
                 {showResults && this.renderSearchResultsTablePrintable(searchResults)}
             </section>
         );

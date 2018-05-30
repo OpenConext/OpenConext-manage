@@ -111,7 +111,11 @@ export default class SelectNewMetaDataField extends React.PureComponent {
     render() {
         const {onChange, configuration, metaDataFields, placeholder} = this.props;
         return <Select className="select-new-metadata"
-                       onChange={option => onChange(option.value)}
+                       onChange={option => {
+                           if (option) {
+                               onChange(option.value);
+                           }
+                       }}
                        options={this.options(configuration, metaDataFields)}
                        value={null}
                        searchable={true}

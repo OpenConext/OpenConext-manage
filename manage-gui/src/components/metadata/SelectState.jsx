@@ -25,7 +25,11 @@ export default class SelectState extends React.PureComponent {
             return {value: s, label: I18n.t(`metadata.${s}`)};
         });
         return <Select className="select-state"
-                       onChange={option => onChange(option.value)}
+                       onChange={option => {
+                           if (option) {
+                               onChange(option.value);
+                           }
+                       }}
                        optionRenderer={this.renderOption}
                        options={options}
                        value={state}

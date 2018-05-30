@@ -7,6 +7,7 @@ import manage.exception.DuplicateEntityIdException;
 import manage.exception.ResourceNotFoundException;
 import manage.format.Exporter;
 import manage.format.Importer;
+import manage.hook.MetaDataHook;
 import manage.migration.EntityType;
 import manage.model.MetaData;
 import manage.model.MetaDataUpdate;
@@ -54,6 +55,7 @@ public class MetaDataController {
 
     private MetaDataRepository metaDataRepository;
     private MetaDataAutoConfiguration metaDataAutoConfiguration;
+    private MetaDataHook metaDataHook;
     private Importer importer;
     private Exporter exporter;
 
@@ -61,9 +63,11 @@ public class MetaDataController {
     public MetaDataController(MetaDataRepository metaDataRepository,
                               MetaDataAutoConfiguration metaDataAutoConfiguration,
                               ResourceLoader resourceLoader,
+                              MetaDataHook metaDataHook,
                               @Value("${metadata_export_path}") String metadataExportPath) {
         this.metaDataRepository = metaDataRepository;
         this.metaDataAutoConfiguration = metaDataAutoConfiguration;
+        this.metaDataHook = metaDataHook;
         this.importer = new Importer(metaDataAutoConfiguration);
         this.exporter = new Exporter(Clock.systemDefaultZone(), resourceLoader, metadataExportPath);
 
@@ -155,6 +159,7 @@ public class MetaDataController {
 
     private MetaData doPost(@Validated @RequestBody MetaData metaData, String uid) throws JsonProcessingException {
         validate(metaData);
+        metaData = metaDataHook.prePost(metaData);
         Long eid = metaDataRepository.highestEid(metaData.getType());
         metaData.initial(UUID.randomUUID().toString(), uid, eid + 1);
         return metaDataRepository.save(metaData);
@@ -173,6 +178,7 @@ public class MetaDataController {
     @DeleteMapping("/client/metadata/{type}/{id}")
     public boolean remove(@PathVariable("type") String type, @PathVariable("id") String id) {
         MetaData current = metaDataRepository.findById(id, type);
+        current = metaDataHook.preDelete(current);
         metaDataRepository.remove(current);
 
         current.terminate(UUID.randomUUID().toString());
@@ -200,6 +206,9 @@ public class MetaDataController {
         validate(metaData);
         String id = metaData.getId();
         MetaData previous = metaDataRepository.findById(id, metaData.getType());
+
+        metaData = metaDataHook.prePut(previous, metaData);
+
         previous.revision(UUID.randomUUID().toString());
         metaDataRepository.save(previous);
 
@@ -259,9 +268,6 @@ public class MetaDataController {
 
     @GetMapping("/client/autocomplete/{type}")
     public List<Map> autoCompleteEntities(@PathVariable("type") String type, @RequestParam("query") String query) {
-        if (query.equals("afreet")) {
-            throw new RuntimeException("oeps");
-        }
         return metaDataRepository.autoComplete(type, query);
     }
 
@@ -280,6 +286,11 @@ public class MetaDataController {
         properties.remove(ALL_ATTRIBUTES);
         properties.remove(LOGICAL_OPERATOR_IS_AND);
         return metaDataRepository.search(type, properties, requestedAttributes, allAttributes, logicalOperatorIsAnd);
+    }
+
+    @GetMapping({"/client/rawSearch/{type}", "/internal/rawSearch/{type}"})
+    public List<MetaData> rawSearch(@PathVariable("type") String type, @RequestParam("query") String query) {
+        return metaDataRepository.findRaw(type, query);
     }
 
     private void validate(MetaData metaData) throws JsonProcessingException {

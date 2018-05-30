@@ -208,6 +208,17 @@ export default class Detail extends React.PureComponent {
     };
 
     applyImportChanges = (results, applyChangesFor) => {
+        if (results && results.metaDataFields) {
+            //corner case, when any of the certData is selected we delete alle current certData
+            const certDataMetaData = ["certData", "certData2", "certData3"];
+            const deleteCurrentCertificateValue = certDataMetaData.some(name => {
+                const certData = results.metaDataFields[name];
+                return certData && certData.selected;
+            });
+            if (deleteCurrentCertificateValue) {
+                certDataMetaData.forEach(name => delete this.state.metaData.data.metaDataFields[name]);
+            }
+        }
         const newChanges = {...this.state.changes};
 
         const newData = {...this.state.metaData.data};

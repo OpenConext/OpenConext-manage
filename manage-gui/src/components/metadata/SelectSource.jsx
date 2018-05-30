@@ -12,7 +12,11 @@ export default class SelectSource extends React.PureComponent {
             return {value: s, label: s};
         });
         return <Select className="select-state"
-                       onChange={option => onChange(option.value)}
+                       onChange={option => {
+                           if (option) {
+                               onChange(option.value);
+                           }
+                       }}
                        options={options}
                        value={source}
                        autoFocus={autofocus}

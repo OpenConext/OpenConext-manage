@@ -13,7 +13,11 @@ export default class SelectMetaDataType extends React.PureComponent {
             return {value: conf.title, label: I18n.t(`metadata.${conf.title}_single`)};
         });
         return <Select className="select-metadata-type"
-                       onChange={option => onChange(option.value)}
+                       onChange={option => {
+                           if (option) {
+                               onChange(option.value);
+                           }
+                       }}
                        options={options}
                        value={state}
                        searchable={false}/>;

@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<md:EntityDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata"
+                     xmlns:mdui="urn:oasis:names:tc:SAML:metadata:ui"
+                     xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
+                     entityID="https://api.test.surfconext.nl/" validUntil="2019-05-30T14:09:17.257Z" cacheDuration="PT86400S">
+    <md:SPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+        <md:Extensions>
+            <mdui:UIInfo>
+                <mdui:DisplayName xml:lang="en">OpenConext API</mdui:DisplayName>
+                <mdui:DisplayName xml:lang="nl">OpenConext API</mdui:DisplayName>
+                <mdui:Logo width="120" height="60" xml:lang="en">https://.png</mdui:Logo>
+            </mdui:UIInfo>
+        </md:Extensions>
+        <md:KeyDescriptor use="signing">
+            <ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+                <ds:X509Data>
+                    <ds:X509Certificate>MIIC5DCCAcygAwIBAgIQTdkngZprA5pCwrPNarr1CDANBgkqhkiG9w0BAQsFADAuMSwwKgYDVQQDEyNBREZTIEVuY3J5cHRpb24gLSBmZWQucmlqbmlqc3NlbC5ubDAeFw0xODA1MDQyMzQ1NTdaFw0yMTA1MDMyMzQ1NTdaMC4xLDAqBgNVBAMTI0FERlMgRW5jcnlwdGlvbiAtIGZlZC5yaWpuaWpzc2VsLm5sMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAq4ePyIE0qYnPd9ZTEFtlk/Uzxbrl0PHCa3OvTKu2Pj8gXMeA/4/LXp/vg2w1WVldoELou6oTlAwOnnzlhJDqTretOyWWkVSUXrUd/wIMbdNAd/bf5X7mO+m84Xzoh77MTlNI34An5vhClPPprnn/8ES6Vw5Flpvvo+WYRv3pUxQUTwFevR2cr3uaWZfJspNBzoSC3OyWrdjDSsWOQrSO1bgRKDNmbOshbU+sPOBurkf84J5nU7x9RtTmLRUq8F+dnJd/lISLlfPOEPR/OKFd4QyUWlTV8abSiXNy9GnFHIRMSrgcHzjG1pwQODXxNaPwr177TyvIVG7u0bW4XCX9kQIDAQABMA0GCSqGSIb3DQEBCwUAA4IBAQARCF8bY9Gnnxnz2Ilof+EcBkBKVnhxwaCchWvfokHpk59ZxG0XOMy2RYg0+pX68/HJ2YmdfucPsslXTd9gHTdzgSfrzM7iuiq7lUgmbIZvptx5GiJipCddNoLFVc9M8mDuZKWvRXJ6ibdBtimqeVYfnMtbv8EHu4uGba/nJEsopSqdlg4g+5gKUtdkuvvrsTLO0CCwxb0tvNKjeJgcJFjjANVBENN3VmivhxUtlXYafKDfafq3NlMi6L+R+abW/IejU4whOVmbIAHZIOiIqGxic222kzqnr0CVqHqJfHK0UOVgk4Hy7vxU34+7c7CataMZb7uyhEYrWSFcm0Sgnpd2</ds:X509Certificate>
+                </ds:X509Data>
+            </ds:KeyInfo>
+        </md:KeyDescriptor>
+        <md:KeyDescriptor use="encryption">
+            <ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+                <ds:X509Data>
+                    <ds:X509Certificate>MIIC5DCCAcygAwIBAgIQTdkngZprA5pCwrPNarr1CDANBgkqhkiG9w0BAQsFADAuMSwwKgYDVQQDEyNBREZTIEVuY3J5cHRpb24gLSBmZWQucmlqbmlqc3NlbC5ubDAeFw0xODA1MDQyMzQ1NTdaFw0yMTA1MDMyMzQ1NTdaMC4xLDAqBgNVBAMTI0FERlMgRW5jcnlwdGlvbiAtIGZlZC5yaWpuaWpzc2VsLm5sMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAq4ePyIE0qYnPd9ZTEFtlk/Uzxbrl0PHCa3OvTKu2Pj8gXMeA/4/LXp/vg2w1WVldoELou6oTlAwOnnzlhJDqTretOyWWkVSUXrUd/wIMbdNAd/bf5X7mO+m84Xzoh77MTlNI34An5vhClPPprnn/8ES6Vw5Flpvvo+WYRv3pUxQUTwFevR2cr3uaWZfJspNBzoSC3OyWrdjDSsWOQrSO1bgRKDNmbOshbU+sPOBurkf84J5nU7x9RtTmLRUq8F+dnJd/lISLlfPOEPR/OKFd4QyUWlTV8abSiXNy9GnFHIRMSrgcHzjG1pwQODXxNaPwr177TyvIVG7u0bW4XCX9kQIDAQABMA0GCSqGSIb3DQEBCwUAA4IBAQARCF8bY9Gnnxnz2Ilof+EcBkBKVnhxwaCchWvfokHpk59ZxG0XOMy2RYg0+pX68/HJ2YmdfucPsslXTd9gHTdzgSfrzM7iuiq7lUgmbIZvptx5GiJipCddNoLFVc9M8mDuZKWvRXJ6ibdBtimqeVYfnMtbv8EHu4uGba/nJEsopSqdlg4g+5gKUtdkuvvrsTLO0CCwxb0tvNKjeJgcJFjjANVBENN3VmivhxUtlXYafKDfafq3NlMi6L+R+abW/IejU4whOVmbIAHZIOiIqGxic222kzqnr0CVqHqJfHK0UOVgk4Hy7vxU34+7c7CataMZb7uyhEYrWSFcm0Sgnpd2</ds:X509Certificate>
+                </ds:X509Data>
+            </ds:KeyInfo>
+        </md:KeyDescriptor>
+        <md:KeyDescriptor use="signing">
+            <ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+                <ds:X509Data>
+                    <ds:X509Certificate>MIIDrzCCApegAwIBAgIJAO6SW/H3NnknMA0GCSqGSIb3DQEBBQUAMEMxDDAKBgNVBAMTA0FwaTERMA8GA1UECxMIU2VydmljZXMxEzARBgNVBAoTCk9wZW5Db25leHQxCzAJBgNVBAYTAk5MMB4XDTE1MDIwMzEyNTkyNFoXDTI1MDIwMjEyNTkyNFowQzEMMAoGA1UEAxMDQXBpMREwDwYDVQQLEwhTZXJ2aWNlczETMBEGA1UEChMKT3BlbkNvbmV4dDELMAkGA1UEBhMCTkwwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDwgosryFItC57ekz7aZmguG+u6cwPt9xry6kHbWdv8LajYUomtADjfHqYtuEaVrdqqx4yZr4ygdlWXvPRH1tMaxNttslO72sdSxheXmzhm6Gvb/COaVP3sPXKtJ4lxC1FC6IfyZDwJ4wuU2ggBDpE8D8WwU1ZdFX2RBRuaLu/j63c8fi76Y1U7IN+K7T713/Fc6acK2GpjHMGLqFuk9BdfeMOm0E9WGERhCB+AN8NCjhe3yVwl/pYqM0NZWqrCFwu4ly0r8ELDDSf6Rz90zrH5kerWO8KEJgaUU0y8iXQIzHkJKO8tD6PSAyxgVY8XECkXDyzCIi1g6XFZGZzfCRhVAgMBAAGjgaUwgaIwHQYDVR0OBBYEFLxQzVMWo0mFbZJzxn9xwhbruEpWMHMGA1UdIwRsMGqAFLxQzVMWo0mFbZJzxn9xwhbruEpWoUekRTBDMQwwCgYDVQQDEwNBcGkxETAPBgNVBAsTCFNlcnZpY2VzMRMwEQYDVQQKEwpPcGVuQ29uZXh0MQswCQYDVQQGEwJOTIIJAO6SW/H3NnknMAwGA1UdEwQFMAMBAf8wDQYJKoZIhvcNAQEFBQADggEBAEixPVzc8m2/SO7TjMWdr+BO9n5oB1aCPYtA+VO70XaqktgcwP1vDS2cOaKJtLJN9/4TlD5NOQno2QwOz3xcGf0vTQAGn+H2NYg+RhS8Zg4gwIfttQ3tccQYKoc00BCs64UEsGqb4eW9IENMRQtryTIkF/e+dvIRpBkgNeh4hAExwJ0rqGDsDaqwGpaZL9fUsk4jP8K27oa1WLjwJjsXXQWNvqAGfcVE4dzOVx8GS6QmynLiFfEqkRYid2dpW5g5GQCMWTVlSVEdtYwkHmFcvuy4azUWkZy/VcdSUDxovBTXNAmJ/FvQgAYDdT/Xjv8OS0TEuop/cWT5mxIVsmToV9U&#61;</ds:X509Certificate>
+                </ds:X509Data>
+            </ds:KeyInfo>
+        </md:KeyDescriptor>
+        <md:KeyDescriptor use="encryption">
+            <ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+                <ds:X509Data>
+                    <ds:X509Certificate>MIIDrzCCApegAwIBAgIJAO6SW/H3NnknMA0GCSqGSIb3DQEBBQUAMEMxDDAKBgNVBAMTA0FwaTERMA8GA1UECxMIU2VydmljZXMxEzARBgNVBAoTCk9wZW5Db25leHQxCzAJBgNVBAYTAk5MMB4XDTE1MDIwMzEyNTkyNFoXDTI1MDIwMjEyNTkyNFowQzEMMAoGA1UEAxMDQXBpMREwDwYDVQQLEwhTZXJ2aWNlczETMBEGA1UEChMKT3BlbkNvbmV4dDELMAkGA1UEBhMCTkwwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDwgosryFItC57ekz7aZmguG+u6cwPt9xry6kHbWdv8LajYUomtADjfHqYtuEaVrdqqx4yZr4ygdlWXvPRH1tMaxNttslO72sdSxheXmzhm6Gvb/COaVP3sPXKtJ4lxC1FC6IfyZDwJ4wuU2ggBDpE8D8WwU1ZdFX2RBRuaLu/j63c8fi76Y1U7IN+K7T713/Fc6acK2GpjHMGLqFuk9BdfeMOm0E9WGERhCB+AN8NCjhe3yVwl/pYqM0NZWqrCFwu4ly0r8ELDDSf6Rz90zrH5kerWO8KEJgaUU0y8iXQIzHkJKO8tD6PSAyxgVY8XECkXDyzCIi1g6XFZGZzfCRhVAgMBAAGjgaUwgaIwHQYDVR0OBBYEFLxQzVMWo0mFbZJzxn9xwhbruEpWMHMGA1UdIwRsMGqAFLxQzVMWo0mFbZJzxn9xwhbruEpWoUekRTBDMQwwCgYDVQQDEwNBcGkxETAPBgNVBAsTCFNlcnZpY2VzMRMwEQYDVQQKEwpPcGVuQ29uZXh0MQswCQYDVQQGEwJOTIIJAO6SW/H3NnknMAwGA1UdEwQFMAMBAf8wDQYJKoZIhvcNAQEFBQADggEBAEixPVzc8m2/SO7TjMWdr+BO9n5oB1aCPYtA+VO70XaqktgcwP1vDS2cOaKJtLJN9/4TlD5NOQno2QwOz3xcGf0vTQAGn+H2NYg+RhS8Zg4gwIfttQ3tccQYKoc00BCs64UEsGqb4eW9IENMRQtryTIkF/e+dvIRpBkgNeh4hAExwJ0rqGDsDaqwGpaZL9fUsk4jP8K27oa1WLjwJjsXXQWNvqAGfcVE4dzOVx8GS6QmynLiFfEqkRYid2dpW5g5GQCMWTVlSVEdtYwkHmFcvuy4azUWkZy/VcdSUDxovBTXNAmJ/FvQgAYDdT/Xjv8OS0TEuop/cWT5mxIVsmToV9U&#61;</ds:X509Certificate>
+                </ds:X509Data>
+            </ds:KeyInfo>
+        </md:KeyDescriptor>
+        <md:NameIDFormat>urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified</md:NameIDFormat>
+        <md:AssertionConsumerService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+                                     Location="https://api.test.surfconext.nl/v1/assertionConsumer"
+                                     index="0"/>
+    </md:SPSSODescriptor>
+    <md:ContactPerson contactType="technical">
+    </md:ContactPerson>
+    <md:ContactPerson contactType="technical">
+    </md:ContactPerson>
+    <md:ContactPerson contactType="technical">
+    </md:ContactPerson>
+
+</md:EntityDescriptor>

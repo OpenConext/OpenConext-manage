@@ -404,6 +404,23 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void rawSearch() throws Exception {
+        String query = "{$and: [{$or:[{\"data.allowedEntities.name\": {$in: [\"http://mock-idp\"]}}, {\"data" +
+            ".allowedall\": true}]}, {\"data.state\":\"prodaccepted\"}]}";
+        given()
+            .auth()
+            .preemptive()
+            .basic("sp-portal", "secret")
+            .when()
+            .header("Content-type", "application/json")
+            .queryParam("query",query)
+            .get("manage/api/internal/rawSearch/saml20_sp")
+            .then()
+            .statusCode(SC_OK)
+            .body("size()", is(4));
+    }
+
+    @Test
     public void searchWithAllAttributes() throws Exception {
         Map<String, Object> searchOptions = new HashMap<>();
         searchOptions.put(ALL_ATTRIBUTES, true);
@@ -558,6 +575,39 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         assertTrue(xml.contains("entityID=\"Duis ad do\""));
     }
 
+    @Test
+    public void putReconcileEntityIdIdP() throws Exception {
+        MetaData metaData = metaDataRepository.findById("7", EntityType.IDP.getType());
+        Map.class.cast(metaData.getData()).put("entityid", "new-entityid");
+        given()
+            .when()
+            .body(metaData)
+            .header("Content-type", "application/json")
+            .put("/manage/api/client/metadata")
+            .then()
+            .statusCode(SC_OK);
+
+        List<MetaData> sps = metaDataRepository.findRaw("saml20_sp", "{\"data.allowedEntities.name\" : \"new-entityid\"}");
+        assertEquals(2, sps.size());
+    }
+
+    @Test
+    public void deleteReconcileEntityIdSP() throws Exception {
+        MetaData idp = metaDataRepository.findById("6", "saml20_idp");
+        assertEquals(2, List.class.cast(idp.getData().get("allowedEntities")).size());
+        assertEquals(2, List.class.cast(idp.getData().get("disableConsent")).size());
+
+        given()
+            .when()
+            .delete("manage/api/client/metadata/saml20_sp/3")
+            .then()
+            .statusCode(SC_OK);
+
+        idp = metaDataRepository.findById("6", "saml20_idp");
+        assertEquals(1, List.class.cast(idp.getData().get("allowedEntities")).size());
+        assertEquals(1, List.class.cast(idp.getData().get("disableConsent")).size());
+
+    }
     private ValidatableResponse doUpdateSp(Map<String, String> body, MetaData metaData) {
         return given()
             .auth()

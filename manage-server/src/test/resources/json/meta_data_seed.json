@@ -43,8 +43,8 @@
         "coin:policy_enforcement_decision_required": "1",
         "coin:attribute_aggregation_required": "1",
         "coin:no_consent_required": "1",
-        "SingleLogoutService_Location":"https://sls",
-        "SingleLogoutService_Binding":"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
+        "SingleLogoutService_Location": "https://sls",
+        "SingleLogoutService_Binding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
         "logo:0:height": "96",
         "logo:0:url": "https://static.test2.surfconext.nl/media/conext_logo.png",
         "logo:0:width": "96",
@@ -292,11 +292,20 @@
       "allowedEntities": [
         {
           "name": "http://allowed1"
+        },
+        {
+          "name": "http://mock-sp"
         }
       ],
       "disableConsent": [
         {
           "name": "http://disableConsent1"
+        },
+        {
+          "name": "http://mock-sp",
+          "type": "no_consent",
+          "explanation:nl": "thats why",
+          "explanation:en": "daarom"
         }
       ],
       "manipulation": "PHP code",
@@ -354,6 +363,23 @@
         "logo:0:height": "96",
         "logo:0:url": "https://static.test2.surfconext.nl/media/conext_logo.png",
         "logo:0:width": "96"
+      }
+    }
+  },
+  {
+    "id": "7",
+    "type": "saml20_idp",
+    "data": {
+      "entityid": "http://mock-idp",
+      "eid": 0,
+      "state": "prodaccepted",
+      "allowedall": true,
+      "allowedEntities": [],
+      "disableConsent": [],
+      "metaDataFields": {
+        "name:en": "OpenConext ServiceRegistry Mock",
+        "SingleSignOnService:0:Binding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect",
+        "SingleSignOnService:0:Location": "https://sso0"
       }
     }
   }

@@ -19,6 +19,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.IndexOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.data.mongodb.core.index.Index;
@@ -118,7 +119,8 @@ public class MongobeeConfiguration {
 
     private void doImportCsaSettings(MongoTemplate mongoTemplate) throws IOException {
         String type = EntityType.SP.getType();
-        String content = IOUtils.toString(new ClassPathResource("csa_export/compound_service_provider.csv").getInputStream(), Charset
+        String content = IOUtils.toString(new ClassPathResource("csa_export/compound_service_provider.csv")
+            .getInputStream(), Charset
             .defaultCharset());
         List<String> lines = Arrays.asList(content.split("\n"));
 
@@ -282,7 +284,8 @@ public class MongobeeConfiguration {
         query.addCriteria(Criteria.where("data.disableConsent").exists(true).not().size(0));
         List<MetaData> entities = mongoTemplate.find(query, MetaData.class, EntityType.IDP.getType());
         entities.forEach(entity -> {
-            List<Map<String, Object>> disableConsents = (List<Map<String, Object>>) entity.getData().get("disableConsent");
+            List<Map<String, Object>> disableConsents = (List<Map<String, Object>>) entity.getData().get
+                ("disableConsent");
             disableConsents.forEach(disableConsent -> {
                 Object explanation = disableConsent.get("explanation");
                 disableConsent.put("explanation:en", explanation);
@@ -323,7 +326,7 @@ public class MongobeeConfiguration {
             return new WikiUrlService(columns.get(0), columns.get(3), columns.get(1).equals("18") ? "en" : "nl");
         }).collect(Collectors.groupingBy(WikiUrlService::getEntityId));
 
-        wikiUrlServices.forEach((entityId, urls)-> {
+        wikiUrlServices.forEach((entityId, urls) -> {
             Query query = new Query();
             query.addCriteria(Criteria.where("data.entityid").is(entityId));
             List<MetaData> metaDatas = mongoTemplate.find(query, MetaData.class, type);
@@ -346,7 +349,21 @@ public class MongobeeConfiguration {
         });
     }
 
-
+    @ChangeSet(order = "016", id = "createIndexes", author = "Okke Harsta")
+    public void createIndexes(MongoTemplate mongoTemplate) {
+        Arrays.asList("saml20_sp","saml20_idp").forEach(collection -> {
+            IndexOperations indexOps = mongoTemplate.indexOps(collection);
+            indexOps.ensureIndex(new Index("data.entityid", Sort.Direction.ASC));
+            indexOps.ensureIndex(new Index("data.state", Sort.Direction.ASC));
+            indexOps.ensureIndex(new Index("data.allowedall", Sort.Direction.ASC));
+            indexOps.ensureIndex(new Index("data.allowedEntities.name", Sort.Direction.ASC));
+            indexOps.ensureIndex(new Index("metaDataFields.coin:institution_id", Sort.Direction.ASC));
+        });
+        Arrays.asList("saml20_sp_revision","saml20_idp_revision").forEach(collection -> {
+            IndexOperations indexOps = mongoTemplate.indexOps(collection);
+            indexOps.ensureIndex(new Index("revision.parentId", Sort.Direction.ASC));
+        });
+    }
 
     private Long highestEid(MongoTemplate mongoTemplate, String type) {
         Query query = new Query().limit(1).with(new Sort(Sort.Direction.DESC, "data.eid"));
