@@ -2,6 +2,7 @@ package manage.repository;
 
 import com.mongodb.util.JSON;
 import manage.model.MetaData;
+import manage.mongo.Sequence;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -9,6 +10,7 @@ import org.springframework.data.mongodb.core.query.BasicQuery;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.CriteriaDefinition;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
@@ -143,14 +145,11 @@ public class MetaDataRepository {
         return mongoTemplate.find(query, Map.class, type);
     }
 
-    public Long highestEid(String type) {
-        Query query = new Query().limit(1).with(new Sort(Sort.Direction.DESC, "data.eid"));
-        query.fields().include("data.eid");
-        Map res = mongoTemplate.findOne(query, Map.class, type);
-        if (res == null) {
-            return new Long(1);
-        }
-        return Long.valueOf(Map.class.cast(res.get("data")).get("eid").toString());
+    public Long incrementEid() {
+        Update updateInc = new Update();
+        updateInc.inc("value", 1L);
+        Sequence res = mongoTemplate.findAndModify(new BasicQuery("{\"_id\":\"sequence\"}"),updateInc, Sequence.class);
+        return res.getValue();
     }
 
     private Query queryWithSamlFields() {

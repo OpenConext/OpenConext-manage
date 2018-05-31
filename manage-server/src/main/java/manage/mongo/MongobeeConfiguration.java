@@ -4,11 +4,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.mongobee.Mongobee;
 import com.github.mongobee.changeset.ChangeLog;
 import com.github.mongobee.changeset.ChangeSet;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
 import manage.conf.IndexConfiguration;
 import manage.conf.MetaDataAutoConfiguration;
 import manage.migration.EntityType;
 import manage.model.MetaData;
+import manage.repository.MetaDataRepository;
 import org.apache.commons.io.IOUtils;
+import org.bson.types.Code;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +44,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @Configuration
 @ChangeLog
@@ -366,6 +372,54 @@ public class MongobeeConfiguration {
         });
     }
 
+    @ChangeSet(order = "017", id = "updateEidForDuplicates", author = "Okke Harsta")
+    public void updateEidForDuplicates(MongoTemplate mongoTemplate) {
+        List<MetaData> identityProviders = mongoTemplate.findAll(MetaData.class, "saml20_idp");
+        List<MetaData> serviceProviders = mongoTemplate.findAll(MetaData.class, "saml20_sp");
+
+        long max = Math.max(highestEid(mongoTemplate, "saml20_idp"), highestEid(mongoTemplate, "saml20_sp"));
+
+        if (mongoTemplate.collectionExists("sequences")) {
+            mongoTemplate.dropCollection("sequences");
+        }
+        mongoTemplate.createCollection("sequences");
+        LOG.info("Creating sequence collection with new start seq {}", max + 1L);
+        mongoTemplate.save(new Sequence("sequence", max + 1L));
+
+        Set<Long> eids = serviceProviders.stream().map(this::eid).collect(Collectors.toSet());
+        List<MetaData> duplicates = identityProviders.stream().filter(m -> !eids.add(eid(m))).collect(toList());
+
+        MetaDataRepository repository = new MetaDataRepository(mongoTemplate);
+
+        duplicates.forEach(metaData -> {
+            Object currentEid = metaData.getData().get("eid");
+
+            Long newEid = repository.incrementEid();
+            metaData.getData().put("eid", newEid);
+
+            repository.update(metaData);
+
+            LOG.info("Updated identityProvider {} with current eid {} to new eid {}",
+                metaData.getData().get("entityid"),
+                currentEid,
+                newEid);
+
+            List<MetaData> revisions = repository.revisions(metaData.getType().concat(REVISION_POSTFIX), metaData.getId());
+
+            revisions.forEach(revision -> {
+                Object currentRevEid = metaData.getData().get("eid");
+
+                revision.getData().put("eid", newEid);
+                repository.update(revision);
+
+                LOG.info("Updated identityProvider revision {} with current eid {} to new eid {}",
+                    revision.getData().get("entityid"),
+                    currentRevEid,
+                    newEid);
+            });
+        });
+    }
+
     private Long highestEid(MongoTemplate mongoTemplate, String type) {
         Query query = new Query().limit(1).with(new Sort(Sort.Direction.DESC, "data.eid"));
         query.fields().include("data.eid");
@@ -373,6 +427,9 @@ public class MongobeeConfiguration {
         return Long.valueOf(Map.class.cast(res.get("data")).get("eid").toString());
     }
 
+    private Long eid(MetaData metaData) {
+        return Long.valueOf(metaData.getData().get("eid").toString());
+    }
     private void addTypeOfService(MongoTemplate mongoTemplate, String type, Map<String, List<TypeOfService>> nl,
                                   String lang) {
         nl.keySet().forEach(entityId -> {

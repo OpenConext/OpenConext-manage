@@ -13,8 +13,11 @@ import manage.model.MetaData;
 import manage.model.MetaDataUpdate;
 import manage.model.RevisionRestore;
 import manage.model.XML;
+import manage.mongo.MongobeeConfiguration;
 import manage.repository.MetaDataRepository;
 import manage.shibboleth.FederatedUser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
@@ -52,6 +55,8 @@ public class MetaDataController {
     public static final String REQUESTED_ATTRIBUTES = "REQUESTED_ATTRIBUTES";
     public static final String ALL_ATTRIBUTES = "ALL_ATTRIBUTES";
     public static final String LOGICAL_OPERATOR_IS_AND = "LOGICAL_OPERATOR_IS_AND";
+
+    private static final Logger LOG = LoggerFactory.getLogger(MetaDataController.class);
 
     private MetaDataRepository metaDataRepository;
     private MetaDataAutoConfiguration metaDataAutoConfiguration;
@@ -160,8 +165,11 @@ public class MetaDataController {
     private MetaData doPost(@Validated @RequestBody MetaData metaData, String uid) throws JsonProcessingException {
         validate(metaData);
         metaData = metaDataHook.prePost(metaData);
-        Long eid = metaDataRepository.highestEid(metaData.getType());
-        metaData.initial(UUID.randomUUID().toString(), uid, eid + 1);
+        Long eid = metaDataRepository.incrementEid();
+        metaData.initial(UUID.randomUUID().toString(), uid, eid);
+
+        LOG.info("Saving new metaData {} by {}", metaData.getId(), uid);
+
         return metaDataRepository.save(metaData);
     }
 
@@ -176,10 +184,12 @@ public class MetaDataController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/client/metadata/{type}/{id}")
-    public boolean remove(@PathVariable("type") String type, @PathVariable("id") String id) {
+    public boolean remove(@PathVariable("type") String type, @PathVariable("id") String id, FederatedUser user) {
         MetaData current = metaDataRepository.findById(id, type);
         current = metaDataHook.preDelete(current);
         metaDataRepository.remove(current);
+
+        LOG.info("Deleted metaData {} by {}", current.getId(), user.getUid());
 
         current.terminate(UUID.randomUUID().toString());
         metaDataRepository.save(current);
@@ -214,6 +224,8 @@ public class MetaDataController {
 
         metaData.promoteToLatest(updatedBy);
         metaDataRepository.update(metaData);
+
+        LOG.info("Updated metaData {} by {}", metaData.getId(), updatedBy);
 
         return metaData;
     }
@@ -257,6 +269,8 @@ public class MetaDataController {
 
         parent.revision(UUID.randomUUID().toString());
         metaDataRepository.save(parent);
+
+        LOG.info("Restored revision {} with metaData {} by {}", revisionRestore, revision.getId(), federatedUser.getUid());
 
         return revision;
     }
