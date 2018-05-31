@@ -2,7 +2,7 @@ import React from "react";
 import I18n from "i18n-js";
 import CopyToClipboard from "react-copy-to-clipboard";
 import PropTypes from "prop-types";
-import {migrate, ping, push, pushPreview, validate} from "../api";
+import {migrate, ping, push, pushPreview, validate, orphans} from "../api";
 import {stop} from "../utils/Utils";
 import JsonView from "react-pretty-json";
 import ConfirmationDialog from "../components/ConfirmationDialog";
@@ -20,6 +20,7 @@ export default class System extends React.PureComponent {
             selectedTab: tabs[0],
             migrationResults: undefined,
             validationResults: undefined,
+            orphansResults: undefined,
             pushPreviewResults: undefined,
             pushResults: undefined,
             loading: false,
@@ -52,6 +53,16 @@ export default class System extends React.PureComponent {
         this.setState({loading: true});
         validate().then(json => this.setState({validationResults: json, loading: false}));
     };
+
+    runOrphans = (e) => {
+        stop(e);
+        if (this.state.loading) {
+            return;
+        }
+        this.setState({loading: true});
+        orphans().then(json => this.setState({orphansResults: json, loading: false}));
+    };
+
 
     switchTab = tab => e => {
         stop(e);
@@ -237,12 +248,32 @@ export default class System extends React.PureComponent {
         );
     };
 
+    renderOrphans = () => {
+        const {orphansResults, loading} = this.state;
+        return (
+            <section className="orphans">
+                <p>The allowed entries in both IdP and SP whiteListings and the Service Providers in the IdP Consent Management are references to
+                other MetaData instances. The referential integrity is not enforced by the underlying storage. Run the referential integrity check to identify all
+                references to MetaData instances that do not exist.</p>
+                <a className={`button ${loading ? "grey disabled" : "green"}`}
+                   onClick={this.runOrphans}>{I18n.t("playground.runOrphans")}
+                    <i className="fa fa-check" aria-hidden="true"></i></a>
+                {orphansResults &&
+                <section className="results">
+                    <JsonView json={orphansResults}/>
+                </section>}
+            </section>
+        );
+    };
+
     renderCurrentTab = selectedTab => {
         switch (selectedTab) {
             case "migration" :
                 return this.renderMigrate();
             case "validation" :
                 return this.renderValidate();
+            case "orphans" :
+                return this.renderOrphans();
             case "push":
                 return this.renderPush();
             case "push_preview":

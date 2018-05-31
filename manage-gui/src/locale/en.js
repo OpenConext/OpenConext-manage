@@ -87,6 +87,7 @@ I18n.translations.en = {
     playground: {
         migration: "Migrate",
         validation: "Validate",
+        orphans: "Referential integrity",
         extended_search: "Extended Search",
         push: "Push",
         push_preview: "Push Preview",
@@ -98,6 +99,7 @@ I18n.translations.en = {
         runPush: "Push MetaData",
         runMigration: "RUN MIGRATION",
         runValidation: "VALIDATE MIGRATION",
+        runOrphans: "CHECK REFERENTIAL INTEGRITY",
         migrationConfirmation: "Are you sure you want to run the migration? All current data will be deleted.",
         pushConfirmation: "Are you sure you want to push all metadata to {{name}} with endpoint {{url}}?",
         headers: {

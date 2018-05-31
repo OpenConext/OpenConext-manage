@@ -30,7 +30,7 @@
         }
     }
 
-    section.validate, section.migrate, section.push {
+    section.validate, section.migrate, section.push, section.orphans {
         background-color: white;
         padding: 15px 15px 150px 15px;
         p {

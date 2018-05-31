@@ -9,7 +9,7 @@ server:
   session:
     timeout: 28800
 
-features: push, validation, push_preview, migration
+features: push, validation, push_preview, migration, orphans
 
 push:
   url: http://localhost:9898/api/connections

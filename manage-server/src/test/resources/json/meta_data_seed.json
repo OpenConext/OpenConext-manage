@@ -13,7 +13,7 @@
       "allowedall": false,
       "allowedEntities": [
         {
-          "name": "http://allowed1"
+          "name": "http://allowed2"
         }
       ],
       "metaDataFields": {

@@ -1,0 +1,20 @@
+[
+  {
+    "missingEntityId": "http://allowed1",
+    "referencedByEntityId": "https://idp.test2.surfconext.nl",
+    "referencedByName": "OpenConext ServiceRegistry Mock",
+    "referencedCollectionName": "allowedEntities"
+  },
+  {
+    "missingEntityId": "http://disableConsent1",
+    "referencedByEntityId": "https://idp.test2.surfconext.nl",
+    "referencedByName": "OpenConext ServiceRegistry Mock",
+    "referencedCollectionName": "disableConsent"
+  },
+  {
+    "missingEntityId": "http://allowed2",
+    "referencedByEntityId": "Duis ad do",
+    "referencedByName": "OpenConext Valid SP",
+    "referencedCollectionName": "allowedEntities"
+  }
+]

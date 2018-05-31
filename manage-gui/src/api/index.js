@@ -181,3 +181,7 @@ export function pushPreview() {
 export function validate() {
     return fetchJson("playground/validate");
 }
+
+export function orphans() {
+    return fetchJson("playground/orphans");
+}

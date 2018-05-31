@@ -353,7 +353,8 @@ public class MongobeeConfiguration {
     public void createIndexes(MongoTemplate mongoTemplate) {
         Arrays.asList("saml20_sp","saml20_idp").forEach(collection -> {
             IndexOperations indexOps = mongoTemplate.indexOps(collection);
-            indexOps.ensureIndex(new Index("data.entityid", Sort.Direction.ASC));
+            indexOps.dropIndex("field_entityid");
+            indexOps.ensureIndex(new Index("data.entityid", Sort.Direction.ASC).unique());
             indexOps.ensureIndex(new Index("data.state", Sort.Direction.ASC));
             indexOps.ensureIndex(new Index("data.allowedall", Sort.Direction.ASC));
             indexOps.ensureIndex(new Index("data.allowedEntities.name", Sort.Direction.ASC));

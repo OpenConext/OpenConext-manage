@@ -4,16 +4,11 @@
       "allow_all_entities": false,
       "allowed_connections": [
         {
-          "name": "http://allowed1"
+          "name": "http://allowed2"
         }
       ],
       "arp_attributes": {
         "urn:mace:dir:attribute-def:displayName": [
-          {
-            "value": "*"
-          }
-        ],
-        "urn:mace:dir:attribute-def:uid": [
           {
             "value": "*"
           }
@@ -27,6 +22,11 @@
         "urn:mace:dir:attribute-def:isMemberOf": [
           {
             "value": "urn:collab:org:surf.nl"
+          }
+        ],
+        "urn:mace:dir:attribute-def:uid": [
+          {
+            "value": "*"
           }
         ],
         "urn:mace:terena.org:attribute-def:schacHomeOrganization": [
@@ -114,16 +114,323 @@
       "state": "testaccepted",
       "type": "saml20-sp"
     },
+    "2": {
+      "allow_all_entities": true,
+      "allowed_connections": [
+        {
+          "name": "http://mock-idp"
+        }
+      ],
+      "arp_attributes": {},
+      "metadata": {
+        "AssertionConsumerService": [
+          {
+            "Binding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
+            "Index": "0",
+            "Location": "https://profile.test2.surfconext.nl/authentication/consume-assertion"
+          }
+        ],
+        "NameIDFormat": "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
+        "NameIDFormats": [
+          "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
+          "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent",
+          "urn:oasis:names:tc:SAML:2.0:nameid-format:transient"
+        ],
+        "OrganizationDisplayName": {
+          "en": "OrgDisplayName"
+        },
+        "OrganizationName": {
+          "en": "OrgName"
+        },
+        "OrganizationURL": {
+          "en": "OrgURL"
+        },
+        "certData": "MIIEdjCCA16gAwIBAgIRALcDQnHscLnQAL4GULGaHsIwDQYJKoZIhvcNAQEFBQAwNjELMAkGA1UEBhMCTkwxDzANBgNVBAoTBlRFUkVOQTEWMBQGA1UEAxMNVEVSRU5BIFNTTCBDQTAeFw0wOTEwMjYwMDAwMDBaFw0xMjEwMjUyMzU5NTlaMFExCzAJBgNVBAYTAk5MMRUwEwYDVQQKEwxTVVJGbmV0IEIuVi4xETAPBgNVBAsTCFNlcnZpY2VzMRgwFgYDVQQDEw9iZXRhLnN1cmZuZXQubmwwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC7D6V4dl41AF70veMMQqL7kpk+p06qU9EW2YUuJAnwhRO1SfbiqPweitLE7ReXfK/vSPvdFG194gZjJ4JS7M7pP00eolfEK6ljLhMoUrzbBuEc5LoQB6HsOogod7YrJiVRXLzM4bV2LzbyjAwBgForoM4l576CjbN/NDAPO3YvbktodR5DH/nPiw/5L7w2KS3x55xUd8clY7Nji9W7XbviMUAugSkkC2ethl0AMpdmk6BI5pjyr6KCUrGz9bKl101yUGhrkHy1NpHagOoxakkgVDgi2Erf8aDnkCe8A419m2mBD1WA9uQWF5eMpiY8fDMwjwSFDFoSUlJPhiKN8vpnAgMBAAGjggFiMIIBXjAfBgNVHSMEGDAWgBQMvZNoDPPeq6NJays3V0fqkOO57TAdBgNVHQ4EFgQUrCpeMIzTW5M13G4ib1B+yq7Fm60wDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMBgGA1UdIAQRMA8wDQYLKwYBBAGyMQECAh0wOgYDVR0fBDMwMTAvoC2gK4YpaHR0cDovL2NybC50Y3MudGVyZW5hLm9yZy9URVJFTkFTU0xDQS5jcmwwbQYIKwYBBQUHAQEEYTBfMDUGCCsGAQUFBzAChilodHRwOi8vY3J0LnRjcy50ZXJlbmEub3JnL1RFUkVOQVNTTENBLmNydDAmBggrBgEFBQcwAYYaaHR0cDovL29jc3AudGNzLnRlcmVuYS5vcmcwGgYDVR0RBBMwEYIPYmV0YS5zdXJmbmV0Lm5sMA0GCSqGSIb3DQEBBQUAA4IBAQC8iCICDbP4/8JTDeLPfo/n6roOvpMsteQt7X5oN2Ka1xgKflpBGqJO5o3PcnfP437kcLRTnp6XDyTfS4eyZdxCqCECR2Pb8nbULVFv9hyF6asIWUfbJ67CFcRIpcuaD5habSrg8+rT86DjKdtYQKwbKL+rNbOsg6/ROR7vJgbSqrBLraXvl8HDUq5+lSF/II4LHVzNM8TpQlMY4ynRP6GEjcNUTH3IFKPQk+NwBYQqJ83Uil/36kbXsHQ81o/Vp6it7tlvLBOP1EN9jNGUXZuAqvFphNkwEJpABx1x4ukY8bZVl6QzQ79P48oGxOaIy27/g1FVkGqRtA4UPABcn0sJ",
+        "coin": {
+          "display_unconnected_idps_wayf": "1",
+          "do_not_add_attribute_aliases": "1",
+          "eula": "https://www.surfconext.nl"
+        },
+        "contacts": [
+          {
+            "emailAddress": "support@openconext.org",
+            "surName": "OpenConext",
+            "givenName": "Support",
+            "contactType": "technical"
+          },
+          {
+            "emailAddress": "support@openconext.org",
+            "surName": "OpenConext",
+            "givenName": "Support",
+            "contactType": "support"
+          },
+          {
+            "emailAddress": "support@openconext.org",
+            "surName": "OpenConext",
+            "givenName": "Support",
+            "contactType": "administrative"
+          },
+          {
+            "contactType": "technical"
+          }
+        ],
+        "description": {
+          "en": "OpenConext Profile management Mock",
+          "nl": "OpenConext Profile management"
+        },
+        "displayName": {
+          "en": "OpenConext Profile",
+          "nl": "OpenConext Profile"
+        },
+        "logo": [
+          {
+            "width": "96",
+            "url": "https://static.test2.surfconext.nl/media/conext_logo.png",
+            "height": "96"
+          }
+        ],
+        "name": {
+          "en": "OpenConext Profile",
+          "nl": "OpenConext Profile"
+        },
+        "url": {
+          "en": "https://www.surfconext.nl",
+          "nl": "https://www.surfconext.nl"
+        }
+      },
+      "name": "https://profile.test2.surfconext.nl/authentication/metadata",
+      "state": "prodaccepted",
+      "type": "saml20-sp"
+    },
+    "3": {
+      "allow_all_entities": false,
+      "allowed_connections": [
+        {
+          "name": "http://mock-idp"
+        }
+      ],
+      "arp_attributes": {},
+      "metadata": {
+        "AssertionConsumerService": [
+          {
+            "Binding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
+            "Index": "0",
+            "Location": "https://mujina-sp.test2.surfconext.nl/saml/SSO"
+          }
+        ],
+        "NameIDFormat": "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
+        "NameIDFormats": [
+          "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
+          "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent",
+          "urn:oasis:names:tc:SAML:2.0:nameid-format:transient"
+        ],
+        "coin": {
+          "attribute_aggregation_required": "1",
+          "do_not_add_attribute_aliases": "1",
+          "policy_enforcement_decision_required": "1"
+        },
+        "contacts": [
+          {
+            "emailAddress": "support@openconext.org",
+            "surName": "OpenConext",
+            "givenName": "Support",
+            "contactType": "technical"
+          },
+          {
+            "emailAddress": "support@openconext.org",
+            "surName": "OpenConext",
+            "givenName": "Support",
+            "contactType": "support"
+          },
+          {
+            "emailAddress": "support@openconext.org",
+            "surName": "OpenConext",
+            "givenName": "Support",
+            "contactType": "administrative"
+          },
+          {
+            "contactType": "technical"
+          }
+        ],
+        "description": {
+          "en": "OpenConext Mujina Test Service Provider",
+          "nl": "OpenConext Mujina Test Service Provider"
+        },
+        "displayName": {
+          "en": "OpenConext Mujina SP",
+          "nl": "OpenConext Mujina SP"
+        },
+        "logo": [
+          {
+            "width": "96",
+            "url": "https://static.test2.surfconext.nl/media/conext_logo.png",
+            "height": "96"
+          }
+        ],
+        "name": {
+          "en": "OpenConext Mujina SP",
+          "nl": "OpenConext Mujina SP"
+        }
+      },
+      "name": "http://mock-sp",
+      "state": "prodaccepted",
+      "type": "saml20-sp"
+    },
+    "4": {
+      "allow_all_entities": true,
+      "allowed_connections": [],
+      "arp_attributes": {},
+      "metadata": {
+        "AssertionConsumerService": [
+          {
+            "Binding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
+            "Index": "0",
+            "Location": "https://serviceregistry.test2.surfconext.nl/simplesaml/module.php/saml/sp/saml2-acs.php/default-sp"
+          }
+        ],
+        "NameIDFormat": "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
+        "NameIDFormats": [
+          "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
+          "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent",
+          "urn:oasis:names:tc:SAML:2.0:nameid-format:transient"
+        ],
+        "coin": {
+          "policy_enforcement_decision_required": "1"
+        },
+        "contacts": [
+          {
+            "emailAddress": "support@openconext.org",
+            "surName": "OpenConext",
+            "givenName": "Support",
+            "contactType": "technical"
+          },
+          {
+            "emailAddress": "support@openconext.org",
+            "surName": "OpenConext",
+            "givenName": "Support",
+            "contactType": "support"
+          },
+          {
+            "emailAddress": "support@openconext.org",
+            "surName": "OpenConext",
+            "givenName": "Support",
+            "contactType": "administrative"
+          },
+          {
+            "contactType": "technical"
+          }
+        ],
+        "description": {
+          "en": "OpenConext Service Registry, register all SPs and IdPs here",
+          "nl": "OpenConext Service Registry, register all SPs and IdPs here"
+        },
+        "displayName": {
+          "en": "OpenConext ServiceRegistry",
+          "nl": "OpenConext ServiceRegistry"
+        },
+        "logo": [
+          {
+            "width": "96",
+            "url": "https://static.test2.surfconext.nl/media/conext_logo.png",
+            "height": "96"
+          }
+        ],
+        "name": {
+          "en": "OpenConext ServiceRegistry",
+          "nl": "OpenConext ServiceRegistry"
+        }
+      },
+      "name": "https://serviceregistry.test2.surfconext.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp",
+      "state": "prodaccepted",
+      "type": "saml20-sp"
+    },
+    "5": {
+      "allow_all_entities": true,
+      "allowed_connections": [],
+      "arp_attributes": {},
+      "metadata": {
+        "AssertionConsumerService": [
+          {
+            "Binding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
+            "Index": "0",
+            "Location": "https://serviceregistry.test2.surfconext.nl/simplesaml/module.php/saml/sp/saml2-acs.php/default-sp"
+          }
+        ],
+        "NameIDFormat": "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
+        "NameIDFormats": [
+          "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
+          "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent",
+          "urn:oasis:names:tc:SAML:2.0:nameid-format:transient"
+        ],
+        "coin": {
+          "policy_enforcement_decision_required": "1"
+        },
+        "contacts": [
+          {
+            "emailAddress": "support@openconext.org",
+            "surName": "OpenConext",
+            "givenName": "Support",
+            "contactType": "technical"
+          },
+          {
+            "emailAddress": "support@openconext.org",
+            "surName": "OpenConext",
+            "givenName": "Support",
+            "contactType": "support"
+          },
+          {
+            "emailAddress": "support@openconext.org",
+            "surName": "OpenConext",
+            "givenName": "Support",
+            "contactType": "administrative"
+          },
+          {
+            "contactType": "technical"
+          }
+        ],
+        "description": {
+          "en": "OpenConext Service Registry, register all SPs and IdPs here",
+          "nl": "OpenConext Service Registry, register all SPs and IdPs here"
+        },
+        "displayName": {
+          "en": "OpenConext ServiceRegistry",
+          "nl": "OpenConext ServiceRegistry"
+        },
+        "logo": [
+          {
+            "width": "96",
+            "url": "https://static.test2.surfconext.nl/media/conext_logo.png",
+            "height": "96"
+          }
+        ],
+        "name": {
+          "en": "OpenConext ServiceRegistry Mock",
+          "nl": "OpenConext ServiceRegistry"
+        }
+      },
+      "name": "https://serviceregistry.test2.surfconext.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp-2",
+      "state": "prodaccepted",
+      "type": "saml20-sp"
+    },
     "6": {
       "allow_all_entities": false,
       "allowed_connections": [
         {
           "name": "http://allowed1"
+        },
+        {
+          "name": "http://mock-sp"
         }
       ],
       "disable_consent_connections": [
         {
           "name": "http://disableConsent1"
+        },
+        {
+          "name": "http://mock-sp",
+          "type": "no_consent",
+          "explanation:nl": "thats why",
+          "explanation:en": "daarom"
         }
       ],
       "manipulation_code": "PHP code",

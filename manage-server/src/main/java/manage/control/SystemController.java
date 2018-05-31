@@ -3,15 +3,16 @@ package manage.control;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import manage.api.APIUser;
 import manage.conf.Features;
-import manage.conf.MetaDataAutoConfiguration;
 import manage.conf.Product;
 import manage.conf.Push;
 import manage.exception.EndpointNotAllowed;
 import manage.format.EngineBlockFormatter;
 import manage.mail.MailBox;
+import manage.migration.EntityType;
 import manage.migration.JanusMigration;
 import manage.migration.JanusMigrationValidation;
 import manage.model.MetaData;
+import manage.model.OrphanMetaData;
 import manage.push.Delta;
 import manage.push.PrePostComparator;
 import manage.repository.MetaDataRepository;
@@ -28,28 +29,35 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
-import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.BasicQuery;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-import javax.mail.MessagingException;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 import static java.util.concurrent.Executors.newScheduledThreadPool;
 import static java.util.stream.Collectors.toList;
@@ -112,7 +120,8 @@ public class SystemController {
 
         if (cronJobResponsible) {
             newScheduledThreadPool(1)
-                .scheduleAtFixedRate(() -> migrateAndPush(runMigrations, pushAfterMigration), 0, everyMinutes, TimeUnit.MINUTES);
+                .scheduleAtFixedRate(() -> migrateAndPush(runMigrations, pushAfterMigration), 0, everyMinutes,
+                    TimeUnit.MINUTES);
         }
     }
 
@@ -142,7 +151,6 @@ public class SystemController {
         return janusMigration.doMigrate();
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/client/playground/pushPreview")
     public Map<String, Map<String, Map<String, Object>>> pushPreview() {
         EngineBlockFormatter formatter = new EngineBlockFormatter();
@@ -164,7 +172,7 @@ public class SystemController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/client/playground/push")
-    public ResponseEntity<Map> push(FederatedUser federatedUser) throws IOException {
+    public ResponseEntity<Map> push(FederatedUser federatedUser) {
         if (!federatedUser.featureAllowed(Features.PUSH)) {
             throw new EndpointNotAllowed();
         }
@@ -173,12 +181,12 @@ public class SystemController {
 
     @PreAuthorize("hasRole('PUSH')")
     @GetMapping("/internal/push")
-    public ResponseEntity<Map> pushInternal(APIUser apiUser) throws IOException {
+    public ResponseEntity<Map> pushInternal(APIUser apiUser) {
         LOG.info("Push initiated by {}", apiUser.getName());
         return doPush();
     }
 
-    private ResponseEntity<Map> doPush() throws IOException {
+    private ResponseEntity<Map> doPush() {
         List<Map<String, Object>> preProvidersData = ebJdbcTemplate.queryForList("SELECT * FROM " +
             "sso_provider_roles_eb5 ORDER BY id ASC");
 
@@ -209,13 +217,63 @@ public class SystemController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/client/playground/validate")
     public Map<String, Object> validate(FederatedUser federatedUser) {
         if (!federatedUser.featureAllowed(Features.VALIDATION)) {
             throw new EndpointNotAllowed();
         }
         return janusMigrationValidation.validateMigration();
+    }
+
+    @GetMapping({"/client/playground/orphans", "/internal/playground/orphans"})
+    public List<OrphanMetaData> orphans() {
+        return Stream.of(EntityType.values()).map(this::orphanMetaData)
+            .flatMap(Function.identity())
+            .collect(toList());
+    }
+
+    private Stream<OrphanMetaData> orphanMetaData(EntityType type) {
+        Query query = new Query();
+        query.fields()
+            .include("data.entityid")
+            .include("type")
+            .include("data.metaDataFields.name:en")
+            .include("data.allowedEntities.name")
+            .include("data.disableConsent.name");
+
+        query.addCriteria(new Criteria().orOperator(
+            Criteria.where("data.allowedEntities").exists(true),
+            Criteria.where("data.disableConsent").exists(true)));
+
+        MongoTemplate mongoTemplate = metaDataRepository.getMongoTemplate();
+        List<MetaData> metaDataWithReferences = mongoTemplate.find(query, MetaData.class, type.getType());
+
+        Map<String, Map<String, List<MetaData>>> groupedByEntityIdReference = new HashMap<>();
+        Stream.of("allowedEntities", "disableConsent").forEach(propertyName -> {
+            metaDataWithReferences.stream().forEach(metaData -> {
+                List<Map<String, Object>> entries = (List<Map<String, Object>>) metaData.getData().get(propertyName);
+                if (!CollectionUtils.isEmpty(entries)) {
+                    entries.forEach(ae -> groupedByEntityIdReference
+                        .computeIfAbsent((String) ae.get("name"), k -> new HashMap<>())
+                        .computeIfAbsent(propertyName, m -> new ArrayList<>())
+                        .add(metaData));
+                }
+            });
+        });
+        String oppositeCollectionName = type.equals(EntityType.IDP) ? EntityType.SP.getType() :
+            EntityType.IDP.getType();
+        return groupedByEntityIdReference.entrySet().stream()
+            .filter(entry -> !mongoTemplate.exists(new BasicQuery("{\"data.entityid\":\"" + entry.getKey() + "\"}"),
+                oppositeCollectionName))
+            .map(entry -> entry.getValue().entrySet().stream().map(m ->
+                m.getValue().stream().map(metaData -> new OrphanMetaData(
+                    entry.getKey(),
+                    (String) metaData.getData().get("entityid"),
+                    (String) Map.class.cast(metaData.getData().get("metaDataFields")).get("name:en"),
+                    m.getKey()
+                ))))
+            .flatMap(Function.identity())
+            .flatMap(Function.identity());
     }
 
     private ClientHttpRequestFactory getRequestFactory() throws MalformedURLException {

@@ -3,6 +3,7 @@ package manage.control;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import io.restassured.specification.RequestSpecification;
 import manage.AbstractIntegrationTest;
+import manage.model.OrphanMetaData;
 import org.junit.Rule;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,12 +34,12 @@ public class SystemControllerTest extends AbstractIntegrationTest {
     public WireMockRule wireMockRule = new WireMockRule(9898);
 
     @Test
-    public void push() throws Exception {
+    public void push() {
         doPush(true);
     }
 
     @Test
-    public void pushInternal() throws Exception {
+    public void pushInternal() {
         doPush(false);
     }
 
@@ -70,15 +71,9 @@ public class SystemControllerTest extends AbstractIntegrationTest {
             .then()
             .statusCode(SC_OK)
             .extract().as(Map.class);
-
-        Map<String, Object> innerConnections = Map.class.cast(connections.get("connections"));
-
-        List<String> idsToRemove = Arrays.asList("2", "3", "4", "5");
-        innerConnections.entrySet().removeIf(entry -> idsToRemove.contains(entry.getKey()));
-
         Map expected = objectMapper.readValue(readFile("push/push.expected.json"), Map.class);
-        System.out.println(objectMapper.writeValueAsString(expected));
-//        assertEquals(expected, connections);
+
+        assertEquals(expected, connections);
     }
 
     @Test
@@ -92,4 +87,16 @@ public class SystemControllerTest extends AbstractIntegrationTest {
         assertEquals("{}", body);
     }
 
+    @Test
+    public void orphans() throws Exception {
+        List orphans = given()
+            .when()
+            .get("manage/api/client/playground/orphans")
+            .then()
+            .statusCode(SC_OK)
+            .extract().as(List.class);
+        List expected = objectMapper.readValue(readFile("json/expected_orphans.json"), List.class);
+
+        assertEquals(expected, orphans);
+    }
 }
