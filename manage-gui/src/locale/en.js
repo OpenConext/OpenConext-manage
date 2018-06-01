@@ -100,7 +100,10 @@ I18n.translations.en = {
         runMigration: "RUN MIGRATION",
         runValidation: "VALIDATE MIGRATION",
         runOrphans: "CHECK REFERENTIAL INTEGRITY",
+        deleteOrphans: "DELETE REFERENCES",
+        orphanConfirmation: "Are you sure you want to delete the above references?",
         migrationConfirmation: "Are you sure you want to run the migration? All current data will be deleted.",
+        orphansDeleted: "References to deleted / renamed MetaData removed",
         pushConfirmation: "Are you sure you want to push all metadata to {{name}} with endpoint {{url}}?",
         headers: {
             status: "Status",

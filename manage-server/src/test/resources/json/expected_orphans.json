@@ -3,18 +3,24 @@
     "missingEntityId": "http://allowed1",
     "referencedByEntityId": "https://idp.test2.surfconext.nl",
     "referencedByName": "OpenConext ServiceRegistry Mock",
-    "referencedCollectionName": "allowedEntities"
+    "referencedCollectionName": "allowedEntities",
+    "id": "6",
+    "collection": "saml20_idp"
   },
   {
     "missingEntityId": "http://disableConsent1",
     "referencedByEntityId": "https://idp.test2.surfconext.nl",
     "referencedByName": "OpenConext ServiceRegistry Mock",
-    "referencedCollectionName": "disableConsent"
+    "referencedCollectionName": "disableConsent",
+    "id": "6",
+    "collection": "saml20_idp"
   },
   {
     "missingEntityId": "http://allowed2",
     "referencedByEntityId": "Duis ad do",
     "referencedByName": "OpenConext Valid SP",
-    "referencedCollectionName": "allowedEntities"
+    "referencedCollectionName": "allowedEntities",
+    "id": "1",
+    "collection": "saml20_sp"
   }
 ]

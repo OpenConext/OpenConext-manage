@@ -137,7 +137,7 @@ export default class WhiteList extends React.Component {
         this.props.onChange("data.allowedEntities", newState);
 
         const newAllowedEntries = [...this.state.enrichedAllowedEntries]
-            .filter(entity => entity.name !== allowedEntry.name);
+            .filter(entity => entity.entityid !== allowedEntry.entityid);
         this.setAllowedEntryState(newAllowedEntries);
     };
 

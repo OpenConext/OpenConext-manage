@@ -39,6 +39,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
@@ -54,8 +55,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.concurrent.Executors.newScheduledThreadPool;
@@ -221,6 +224,26 @@ public class SystemController {
         return janusMigrationValidation.validateMigration();
     }
 
+    @DeleteMapping({"/client/playground/deleteOrphans", "/internal/playground/deleteOrphans"})
+    public void deleteOrphans() {
+        List<OrphanMetaData> orphans = this.orphans();
+        orphans.forEach(orphanMetaData -> {
+            MetaData metaData = metaDataRepository.findById(orphanMetaData.getId(), orphanMetaData.getCollection());
+            List<Map<String, Object>> entries = (List<Map<String, Object>>) metaData.getData().get(orphanMetaData.getReferencedCollectionName());
+
+            List<Map<String, Object>> newEntries = entries.stream().filter(entry -> !entry.get("name").equals
+                (orphanMetaData.getMissingEntityId())).collect(Collectors.toList());
+            metaData.getData().put(orphanMetaData.getReferencedCollectionName(), newEntries);
+            metaData.getData().put("revisionnote", "Removed reference to non-existent entityID");
+            MetaData previous = metaDataRepository.findById(metaData.getId(), orphanMetaData.getCollection());
+            previous.revision(UUID.randomUUID().toString());
+            metaDataRepository.save(previous);
+            metaData.promoteToLatest("System");
+            metaDataRepository.update(metaData);
+
+        });
+    }
+
     @GetMapping({"/client/playground/orphans", "/internal/playground/orphans"})
     public List<OrphanMetaData> orphans() {
         return Stream.of(EntityType.values()).map(this::orphanMetaData)
@@ -266,7 +289,9 @@ public class SystemController {
                     entry.getKey(),
                     (String) metaData.getData().get("entityid"),
                     (String) Map.class.cast(metaData.getData().get("metaDataFields")).get("name:en"),
-                    m.getKey()
+                    m.getKey(),
+                    metaData.getId(),
+                    type.getType()
                 ))))
             .flatMap(Function.identity())
             .flatMap(Function.identity());

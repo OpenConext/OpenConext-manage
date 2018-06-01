@@ -11,6 +11,7 @@ public class OrphanMetaData {
     private String referencedByEntityId;
     private String referencedByName;
     private String referencedCollectionName;
-
+    private String id;
+    private String collection;
 
 }

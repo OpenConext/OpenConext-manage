@@ -185,3 +185,7 @@ export function validate() {
 export function orphans() {
     return fetchJson("playground/orphans");
 }
+
+export function deleteOrphanedReferences() {
+    return fetchDelete("playground/deleteOrphans");
+}

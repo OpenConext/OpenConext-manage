@@ -2,7 +2,7 @@ import React from "react";
 import I18n from "i18n-js";
 import CopyToClipboard from "react-copy-to-clipboard";
 import PropTypes from "prop-types";
-import {migrate, ping, push, pushPreview, validate, orphans} from "../api";
+import {deleteOrphanedReferences, migrate, orphans, ping, push, pushPreview, validate} from "../api";
 import {stop} from "../utils/Utils";
 import JsonView from "react-pretty-json";
 import ConfirmationDialog from "../components/ConfirmationDialog";
@@ -187,13 +187,13 @@ export default class System extends React.PureComponent {
                 </CopyToClipboard>
                 }
                 {showSelectText &&
-                    <span className="button green" onClick={() =>{
-                        const range = document.createRange();
-                        const sel = window.getSelection();
-                        range.selectNodeContents(this.pushPreviewResults);
-                        sel.removeAllRanges();
-                        sel.addRange(range);
-                    }}>
+                <span className="button green" onClick={() => {
+                    const range = document.createRange();
+                    const sel = window.getSelection();
+                    range.selectNodeContents(this.pushPreviewResults);
+                    sel.removeAllRanges();
+                    sel.addRange(range);
+                }}>
                        Select all JSON <i className="fa fa-clone"></i>
                     </span>
                 }
@@ -250,11 +250,22 @@ export default class System extends React.PureComponent {
 
     renderOrphans = () => {
         const {orphansResults, loading} = this.state;
+        const action = e => {
+            stop(e);
+            this.setState({confirmationDialogOpen: false});
+            deleteOrphanedReferences().then(() => {
+                setFlash(I18n.t("playground.orphansDeleted"));
+                this.runOrphans();
+            });
+        };
+
         return (
             <section className="orphans">
-                <p>The allowed entries in both IdP and SP whiteListings and the Service Providers in the IdP Consent Management are references to
-                other MetaData instances. The referential integrity is not enforced by the underlying storage. Run the referential integrity check to identify all
-                references to MetaData instances that do not exist.</p>
+                <p>The allowed entries in both IdP and SP whiteListings and the Service Providers in the IdP Consent
+                    Management are references to
+                    other MetaData instances. The referential integrity is not enforced by the underlying storage. Run
+                    the referential integrity check to identify all
+                    references to MetaData instances that do not exist.</p>
                 <a className={`button ${loading ? "grey disabled" : "green"}`}
                    onClick={this.runOrphans}>{I18n.t("playground.runOrphans")}
                     <i className="fa fa-check" aria-hidden="true"></i></a>
@@ -262,6 +273,15 @@ export default class System extends React.PureComponent {
                 <section className="results">
                     <JsonView json={orphansResults}/>
                 </section>}
+                {(orphansResults && orphansResults.length > 0) &&
+                <a className={`button ${loading ? "grey disabled" : "blue"}`}
+                   onClick={() => this.setState({
+                       confirmationDialogOpen: true,
+                       confirmationQuestion: I18n.t("playground.orphanConfirmation"),
+                       confirmationDialogAction: action
+                   })}>{I18n.t("playground.deleteOrphans")}
+                    <i className="fa fa-trash"></i>
+                </a>}
             </section>
         );
     };

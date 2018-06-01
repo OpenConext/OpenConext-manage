@@ -19,6 +19,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static io.restassured.RestAssured.given;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 
 @SuppressWarnings("unchecked")
@@ -98,5 +99,18 @@ public class SystemControllerTest extends AbstractIntegrationTest {
         List expected = objectMapper.readValue(readFile("json/expected_orphans.json"), List.class);
 
         assertEquals(expected, orphans);
+
+        given()
+            .when()
+            .delete("manage/api/client/playground/deleteOrphans")
+            .then()
+            .statusCode(SC_OK);
+
+        given()
+            .when()
+            .get("manage/api/client/playground/orphans")
+            .then()
+            .statusCode(SC_OK)
+            .body("size()", is(0));
     }
 }
