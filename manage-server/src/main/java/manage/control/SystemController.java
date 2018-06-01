@@ -1,6 +1,5 @@
 package manage.control;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import manage.api.APIUser;
 import manage.conf.Features;
 import manage.conf.Product;
@@ -86,7 +85,6 @@ public class SystemController {
     private MetaDataRepository metaDataRepository;
     private JdbcTemplate ebJdbcTemplate;
     private Environment environment;
-    private ObjectMapper objectMapper;
     private MailBox mailBox;
 
     private PrePostComparator prePostComparator = new PrePostComparator();
@@ -104,7 +102,6 @@ public class SystemController {
                             @Value("${run_migrations}") boolean runMigrations,
                             @Value("${push_after_migration}") boolean pushAfterMigration,
                             Environment environment,
-                            ObjectMapper objectMapper,
                             MailBox mailBox) throws MalformedURLException {
         this.janusMigration = janusMigration;
         this.janusMigrationValidation = janusMigrationValidation;
@@ -115,7 +112,6 @@ public class SystemController {
         this.restTemplate = new RestTemplate(getRequestFactory());
         this.ebJdbcTemplate = new JdbcTemplate(ebDataSource);
         this.environment = environment;
-        this.objectMapper = objectMapper;
         this.mailBox = mailBox;
 
         if (cronJobResponsible) {

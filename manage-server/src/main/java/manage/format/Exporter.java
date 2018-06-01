@@ -14,15 +14,11 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.nio.charset.Charset;
 import java.time.Clock;
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -73,8 +69,16 @@ public class Exporter {
         }
     }
 
+    public Map<String, Object> nestMetaData(Map metaData, String type) {
+        return doExportToMap(true, metaData, type);
+    }
+
     public Map<String, Object> exportToMap(MetaData metaData, boolean nested) {
-        Map<String, Object> data = Map.class.cast(metaData.getData());
+        Map<String, Object> data = metaData.getData();
+        return doExportToMap(nested, data, metaData.getType().replaceAll("_", "-"));
+    }
+
+    private Map<String, Object> doExportToMap(boolean nested, Map<String, Object> data, String type) {
         final Map<String, Object> result = new TreeMap<>();
         if (nested) {
             data.forEach((key, value) -> this.addKeyValue(key, value, result));
@@ -83,7 +87,7 @@ public class Exporter {
             result.put("metaDataFields", new TreeMap(Map.class.cast(result.get("metaDataFields"))));
         }
         this.excludedDataFields.forEach(result::remove);
-        result.put("type", metaData.getType().replaceAll("_", "-"));
+        result.put("type", type);
         return result;
     }
 

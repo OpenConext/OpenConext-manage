@@ -44,6 +44,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonMap;
@@ -291,7 +292,9 @@ public class MetaDataController {
     }
 
     @PostMapping({"/client/search/{type}", "/internal/search/{type}"})
-    public List<Map> searchEntities(@PathVariable("type") String type, @RequestBody Map<String, Object> properties) {
+    public List<Map> searchEntities(@PathVariable("type") String type,
+                                    @RequestBody Map<String, Object> properties,
+                                    @RequestParam(required = false, defaultValue = "false") boolean nested) {
         List requestedAttributes = List.class.cast(properties.getOrDefault(REQUESTED_ATTRIBUTES, new
             ArrayList<String>()));
         Boolean allAttributes = Boolean.class.cast(properties.getOrDefault(ALL_ATTRIBUTES, false));
@@ -299,7 +302,9 @@ public class MetaDataController {
         properties.remove(REQUESTED_ATTRIBUTES);
         properties.remove(ALL_ATTRIBUTES);
         properties.remove(LOGICAL_OPERATOR_IS_AND);
-        return metaDataRepository.search(type, properties, requestedAttributes, allAttributes, logicalOperatorIsAnd);
+        List<Map> search = metaDataRepository.search(type, properties, requestedAttributes, allAttributes,
+            logicalOperatorIsAnd);
+        return nested ? search.stream().map(m -> exporter.nestMetaData(m, type)).collect(Collectors.toList()) : search;
     }
 
     @GetMapping({"/client/rawSearch/{type}", "/internal/rawSearch/{type}"})
