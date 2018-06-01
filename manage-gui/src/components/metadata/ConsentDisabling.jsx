@@ -86,7 +86,7 @@ export default class ConsentDisabling extends React.Component {
         this.props.onChange("data.disableConsent", newState);
 
         const newDisableConsent = [...this.state.enrichedDisableConsent]
-            .filter(entity => entity.name !== entry.name);
+            .filter(entity => entity.entityid !== entry.entityid);
         this.setDisableConsentState(newDisableConsent);
 
     };
