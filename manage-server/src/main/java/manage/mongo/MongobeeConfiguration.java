@@ -359,7 +359,9 @@ public class MongobeeConfiguration {
     public void createIndexes(MongoTemplate mongoTemplate) {
         Arrays.asList("saml20_sp","saml20_idp").forEach(collection -> {
             IndexOperations indexOps = mongoTemplate.indexOps(collection);
-            indexOps.dropIndex("field_entityid");
+            if (indexOps.getIndexInfo().stream().anyMatch(indexInfo -> indexInfo.getName().equals("field_entityid"))) {
+                indexOps.dropIndex("field_entityid");
+            }
             indexOps.ensureIndex(new Index("data.entityid", Sort.Direction.ASC).unique());
             indexOps.ensureIndex(new Index("data.state", Sort.Direction.ASC));
             indexOps.ensureIndex(new Index("data.allowedall", Sort.Direction.ASC));
@@ -424,7 +426,10 @@ public class MongobeeConfiguration {
         Query query = new Query().limit(1).with(new Sort(Sort.Direction.DESC, "data.eid"));
         query.fields().include("data.eid");
         Map res = mongoTemplate.findOne(query, Map.class, type);
-        return Long.valueOf(Map.class.cast(res.get("data")).get("eid").toString());
+        if (res == null) {
+            return 1L;
+        }
+        return Long.valueOf( Map.class.cast(res.get("data")).get("eid").toString());
     }
 
     private Long eid(MetaData metaData) {

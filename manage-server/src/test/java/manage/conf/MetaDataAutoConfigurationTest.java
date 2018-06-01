@@ -73,10 +73,8 @@ public class MetaDataAutoConfigurationTest implements TestUtils {
     @Test
     public void testIndexConfiguration() {
         List<IndexConfiguration> indexConfigurations = subject.indexConfigurations(EntityType.SP.getType());
-        assertEquals(1, indexConfigurations.size());
+        assertEquals(0, indexConfigurations.size());
 
-        IndexConfiguration indexConfiguration = indexConfigurations.get(0);
-        assertEquals("field", indexConfiguration.getType());
     }
 
     @Test
