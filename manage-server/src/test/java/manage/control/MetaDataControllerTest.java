@@ -9,6 +9,7 @@ import manage.model.MetaDataUpdate;
 import manage.model.Revision;
 import org.junit.Test;
 
+import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -413,8 +414,25 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
             .basic("sp-portal", "secret")
             .when()
             .header("Content-type", "application/json")
-            .queryParam("query",query)
+            .queryParam("query", query)
             .get("manage/api/internal/rawSearch/saml20_sp")
+            .then()
+            .statusCode(SC_OK)
+            .body("size()", is(4));
+    }
+
+    @Test
+    public void rawSearchEncoded() throws Exception {
+        String query = URLEncoder.encode("{$and: [{$or:[{\"data.allowedEntities.name\": {$in: " +
+            "[\"http://mock-idp\"]}}, {\"data" +
+            ".allowedall\": true}]}, {\"data.state\":\"prodaccepted\"}]}", "UTF-8");
+        given()
+            .auth()
+            .preemptive()
+            .basic("sp-portal", "secret")
+            .when()
+            .header("Content-type", "application/json")
+            .get("manage/api/internal/rawSearch/saml20_sp?query=" + query)
             .then()
             .statusCode(SC_OK)
             .body("size()", is(4));
@@ -587,7 +605,8 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
             .then()
             .statusCode(SC_OK);
 
-        List<MetaData> sps = metaDataRepository.findRaw("saml20_sp", "{\"data.allowedEntities.name\" : \"new-entityid\"}");
+        List<MetaData> sps = metaDataRepository.findRaw("saml20_sp", "{\"data.allowedEntities.name\" : " +
+            "\"new-entityid\"}");
         assertEquals(2, sps.size());
     }
 
@@ -608,6 +627,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         assertEquals(1, List.class.cast(idp.getData().get("disableConsent")).size());
 
     }
+
     private ValidatableResponse doUpdateSp(Map<String, String> body, MetaData metaData) {
         return given()
             .auth()

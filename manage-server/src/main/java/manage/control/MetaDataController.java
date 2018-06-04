@@ -38,6 +38,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.time.Clock;
 import java.util.ArrayList;
 import java.util.List;
@@ -308,7 +310,10 @@ public class MetaDataController {
     }
 
     @GetMapping({"/client/rawSearch/{type}", "/internal/rawSearch/{type}"})
-    public List<MetaData> rawSearch(@PathVariable("type") String type, @RequestParam("query") String query) {
+    public List<MetaData> rawSearch(@PathVariable("type") String type, @RequestParam("query") String query) throws UnsupportedEncodingException {
+        if (query.startsWith("%")) {
+            query = URLDecoder.decode(query, "UTF-8");
+        }
         return metaDataRepository.findRaw(type, query);
     }
 
