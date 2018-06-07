@@ -422,6 +422,17 @@ public class MongobeeConfiguration {
         });
     }
 
+    @ChangeSet(order = "018", id = "createIndexeForEid", author = "Okke Harsta")
+    public void createIndexForEid(MongoTemplate mongoTemplate) {
+        Arrays.asList("saml20_sp","saml20_idp").forEach(collection -> {
+            IndexOperations indexOps = mongoTemplate.indexOps(collection);
+            indexOps.getIndexInfo().stream()
+                .filter(indexInfo -> indexInfo.getName().contains("data.eid"))
+                .forEach(indexInfo -> indexOps.dropIndex(indexInfo.getName()));
+            indexOps.ensureIndex(new Index("data.eid", Sort.Direction.ASC).unique());
+        });
+    }
+
     private Long highestEid(MongoTemplate mongoTemplate, String type) {
         Query query = new Query().limit(1).with(new Sort(Sort.Direction.DESC, "data.eid"));
         query.fields().include("data.eid");

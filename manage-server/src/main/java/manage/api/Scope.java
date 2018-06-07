@@ -2,5 +2,5 @@ package manage.api;
 
 public enum Scope {
 
-    READ, WRITE, PUSH
+    READ, WRITE, PUSH, SYSTEM
 }

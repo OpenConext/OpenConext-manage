@@ -224,8 +224,19 @@ public class SystemController {
         return janusMigrationValidation.validateMigration();
     }
 
-    @DeleteMapping({"/client/playground/deleteOrphans", "/internal/playground/deleteOrphans"})
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping({"/client/playground/deleteOrphans"})
     public void deleteOrphans() {
+        doDeleteOrphans();
+    }
+
+    @PreAuthorize("hasRole('SYSTEM')")
+    @DeleteMapping({"/internal/playground/deleteOrphans"})
+    public void deleteOrphansInternal() {
+        doDeleteOrphans();
+    }
+
+    private void doDeleteOrphans() {
         List<OrphanMetaData> orphans = this.orphans();
         orphans.forEach(orphanMetaData -> {
             MetaData metaData = metaDataRepository.findById(orphanMetaData.getId(), orphanMetaData.getCollection());

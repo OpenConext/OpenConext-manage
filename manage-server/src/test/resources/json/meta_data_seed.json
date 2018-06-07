@@ -8,7 +8,7 @@
     },
     "data": {
       "entityid": "Duis ad do",
-      "eid": 76,
+      "eid": 1,
       "state": "testaccepted",
       "allowedall": false,
       "allowedEntities": [
@@ -99,7 +99,7 @@
     "type": "saml20_sp",
     "data": {
       "entityid": "https://profile.test2.surfconext.nl/authentication/metadata",
-      "eid": 29,
+      "eid": 2,
       "state": "prodaccepted",
       "allowedall": true,
       "metaDataFields": {
@@ -154,7 +154,7 @@
     "type": "saml20_sp",
     "data": {
       "entityid": "http://mock-sp",
-      "eid": 4,
+      "eid": 3,
       "state": "prodaccepted",
       "allowedall": false,
       "metaDataFields": {
@@ -202,7 +202,7 @@
     "type": "saml20_sp",
     "data": {
       "entityid": "https://serviceregistry.test2.surfconext.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp",
-      "eid": 45,
+      "eid": 4,
       "state": "prodaccepted",
       "allowedall": true,
       "metaDataFields": {
@@ -244,7 +244,7 @@
     "type": "saml20_sp",
     "data": {
       "entityid": "https://serviceregistry.test2.surfconext.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp-2",
-      "eid": 117,
+      "eid": 5,
       "state": "prodaccepted",
       "allowedall": true,
       "metaDataFields": {
@@ -286,7 +286,7 @@
     "type": "saml20_idp",
     "data": {
       "entityid": "https://idp.test2.surfconext.nl",
-      "eid": 0,
+      "eid": 6,
       "state": "prodaccepted",
       "allowedall": false,
       "allowedEntities": [
@@ -371,7 +371,7 @@
     "type": "saml20_idp",
     "data": {
       "entityid": "http://mock-idp",
-      "eid": 0,
+      "eid": 7,
       "state": "prodaccepted",
       "allowedall": true,
       "allowedEntities": [],

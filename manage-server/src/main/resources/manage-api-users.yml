@@ -20,3 +20,8 @@ apiUsers:
       password: "secret",
       scopes: [READ, WRITE, PUSH]
     }
+  - {
+      name: "sysadmin",
+      password: "secret",
+      scopes: [READ, WRITE, PUSH, SYSTEM]
+    }

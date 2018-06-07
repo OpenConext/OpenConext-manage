@@ -26,7 +26,7 @@ public class MailConfiguration {
     }
 
     @Bean
-    @Profile({"dev"})
+    @Profile({"dev","local"})
     public MailBox mailSenderDev() {
         return new MockMailBox(baseUrl, emailTo, emailFrom);
     }
