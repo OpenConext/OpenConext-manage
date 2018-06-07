@@ -149,7 +149,7 @@ I18n.translations.en = {
     },
     consentDisabling: {
         title: "Consent disabling",
-        description: "Search and add Service Providers that will skip consent for '{{name}}'.",
+        description: "Search and add Service Providers that will skip consent or need a custom consent message for '{{name}}'.",
         placeholder: "Search, select and add Service Providers to the consent-disabled-list",
         entries: {
             status: "Status",
@@ -157,6 +157,7 @@ I18n.translations.en = {
             name: "Name",
             no_consent: "No consent is required",
             minimal_consent: "Minimal consent is required",
+            default_consent: "Default consent with custom message",
             consent_value: "Type of consent required",
             explanationNl: "Explanation EN",
             explanationEn: "Explanation NL"
