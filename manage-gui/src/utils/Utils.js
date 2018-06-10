@@ -39,8 +39,7 @@ export function escapeDeep(obj) {
 
 export function copyToClip(elementId) {
     const listener = e => {
-        const str = document.getElementById(elementId).innerHTML;
-        // e.clipboardData.setData("text/html", str);
+        const str = document.getElementById(elementId).innerHTML.replace(/&amp;/g, "&");
         e.clipboardData.setData("text/plain", str);
         e.preventDefault();
     };
