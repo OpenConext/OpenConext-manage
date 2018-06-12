@@ -113,7 +113,7 @@ export default class Connection extends React.PureComponent {
                             <SelectState onChange={this.onChange("data.state")} state={data.state} disabled={guest}/>
                         </td>
                     </tr>
-                    {id && <tr>
+                    {(id && revision) && <tr>
                         <td className="key">{I18n.t("metadata.revision")}</td>
                         <td className="value">
                             <span>{I18n.t("metadata.revisionInfo",

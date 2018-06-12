@@ -65,7 +65,7 @@
                 width: 5%;
             }
         }
-        tbody tr:nth-child(odd) {
+        tbody:nth-child(odd) {
             background-color: $lightest-grey;
         }
         td {

@@ -95,7 +95,7 @@ export default class ARP extends React.Component {
         if (arpConf.multiplicity) {
             this.setState({addInput: true, keyForNewInput: key});
         } else {
-            this.onChange(key, [{value: "*", source: "idp"}]);
+            this.onChange(key, [{value: "*", source: "idp", motivation: ""}]);
             this.setState({newArpAttributeAddedKey: key});
         }
     };
@@ -106,11 +106,21 @@ export default class ARP extends React.Component {
             this.setState({addInput: false, keyForNewInput: undefined, value: ""});
         } else {
             const currentArpValues = [...this.props.arp.attributes[key] || []];
-            currentArpValues.push({value: value, source: "idp"});
+            currentArpValues.push({value: value, source: "idp", motivation: ""});
             this.setState({addInput: false, keyForNewInput: undefined, value: "", newArpAttributeAddedKey: key});
             this.onChange(key, currentArpValues);
         }
     };
+
+    motivationChange = key => e => {
+        const value = e.target.value;
+        const currentArpValues = [...this.props.arp.attributes[key] || []];
+        const newArpValues = currentArpValues.map(arpValue => (
+            {value: arpValue.value, source: arpValue.source, motivation: value}
+        ));
+        this.onChange(key, newArpValues);
+    };
+
 
     renderEnabledCell = (sources, attributeKey, attributeValues, guest) => {
         const {addInput, keyForNewInput} = this.state;
@@ -178,13 +188,11 @@ export default class ARP extends React.Component {
         </ul>;
 
     renderSourceCell = (sources, key, attributeValues, guest) => {
-        const autoFocus = this.state.newArpAttributeAddedKey === key;
         return <ul className="sources">
             {attributeValues.map((attributeValue, index) =>
                 <li key={`${attributeValue.source}-${index}`}>
                     <SelectSource onChange={this.onChangeArp("source", key, index)} sources={sources}
-                                  source={attributeValue.source} disabled={guest}
-                                  autofocus={autoFocus}/>
+                                  source={attributeValue.source} disabled={guest}/>
                 </li>)}
         </ul>;
     };
@@ -205,8 +213,11 @@ export default class ARP extends React.Component {
         displayKey += deprecated ? " - deprecated" : "";
 
         const renderAction = arpAttribute.multiplicity && !guest;
+        const {addInput, keyForNewInput} = this.state;
+        const doAddInput = (addInput && keyForNewInput === attributeKey);
 
-        return <tr key={attributeKey}>
+        return <tbody key={attributeKey}>
+        <tr>
             <td className={`name ${deprecated ? "deprecated" : ""}`}><span
                 className="display-name">{displayKey}</span><i className="fa fa-info-circle"
                                                                data-for={attributeKey} data-tip></i>
@@ -219,6 +230,22 @@ export default class ARP extends React.Component {
             <td className="matching_rule">{this.renderMatchingRulesCell(sources, attributeKey, attributeValues, guest)}</td>
             <td className="action">{renderAction && arpAttribute.multiplicity && this.renderActionsCell(attributeKey, guest)}</td>
         </tr>
+        {(!doAddInput && attributeValues.length > 0) &&
+        <tr>
+            <td className="new-attribute-value"
+                colSpan={2}>{I18n.t("arp.new_attribute_motivation", {key: this.nameOfKey(attributeKey)})}</td>
+            <td colSpan={3}><input
+                ref={ref => {
+                    if (this.state.newArpAttributeAddedKey === attributeKey) {
+                        console.log("time out requested");
+                        setTimeout(() => ref.focus(), 75);
+                    }
+                }}
+                type="text" value={attributeValues[0].motivation} className="motivation"
+                onChange={this.motivationChange(attributeKey)}
+                placeholder={I18n.t("arp.new_attribute_motivation_placeholder")}/></td>
+        </tr>}
+        </tbody>
     };
 
     renderArpAttributesTable = (arp, onChange, arpConfiguration, guest) => {
@@ -235,7 +262,6 @@ export default class ARP extends React.Component {
                 {headers.map(td => <th className={td} key={td}>{I18n.t(`arp.${td}`)}</th>)}
             </tr>
             </thead>
-            <tbody>
             {configurationAttributes.map(attrKey => {
                 const {addInput, keyForNewInput} = this.state;
                 const doAddInput = addInput && keyForNewInput === attrKey;
@@ -243,20 +269,21 @@ export default class ARP extends React.Component {
                     sources, attrKey, arp.attributes[attrKey] || [],
                     configurationAttributes, arpConfAttributes, guest)];
                 if (doAddInput) {
-                    rows.push(this.renderValueCellWithInput(attrKey))
+                    rows.push(this.renderValueCellWithInput(attrKey));
                 }
                 return rows;
             })}
-            </tbody>
         </table>
     };
 
 
     renderArpAttributesTablePrintable = (arp) =>
-            <section id="arp-attributes-printable"
-                     className="arp-attributes-printable"
-                     dangerouslySetInnerHTML={{__html: Object.keys(arp.attributes)
-                             .map(attr => `${attr}\t${arp.attributes[attr].filter(val => val.value !== "*").map(val => val.value).join(",")}`).join("\n")}}/>
+        <section id="arp-attributes-printable"
+                 className="arp-attributes-printable"
+                 dangerouslySetInnerHTML={{
+                     __html: Object.keys(arp.attributes)
+                         .map(attr => `${attr}\t${arp.attributes[attr].filter(val => val.value !== "*").map(val => val.value).join(",")}`).join("\n")
+                 }}/>;
 
     render() {
         const {arp, onChange, arpConfiguration, guest} = this.props;

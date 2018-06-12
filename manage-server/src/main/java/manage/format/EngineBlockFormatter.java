@@ -110,7 +110,7 @@ public class EngineBlockFormatter {
         identityProvider.put("type", EntityType.IDP.getJanusDbValue());
 
         List<Map<String, String>> disableConsent = (List<Map<String, String>>) source.get("disableConsent");
-        identityProvider.put("disable_consent_connections", this.convertNameList(disableConsent));
+        identityProvider.put("disable_consent_connections", disableConsent == null ? new ArrayList<>() : disableConsent);
 
         addCommonProviderAttributes(source, identityProvider);
         addSingleSignOnService(source, identityProvider);
@@ -131,7 +131,7 @@ public class EngineBlockFormatter {
         addRedirectSign(source, result);
 
         List<Map<String, String>> allowedEntities = (List<Map<String, String>>) source.get("allowedEntities");
-        result.put("allowed_connections", convertNameList(allowedEntities));
+        result.put("allowed_connections", allowedEntities == null ? new ArrayList<>() : allowedEntities);
         result.put("allow_all_entities", source.get("allowedall"));
     }
 
@@ -337,13 +337,6 @@ public class EngineBlockFormatter {
             }
 
         });
-    }
-
-    private List<Map<String, String>> convertNameList(List<Map<String, String>> entities) {
-        if (entities == null) {
-            return new ArrayList<>();
-        }
-        return entities;
     }
 
     protected void addToResult(Map<String, Object> source,

@@ -4,15 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.mongobee.Mongobee;
 import com.github.mongobee.changeset.ChangeLog;
 import com.github.mongobee.changeset.ChangeSet;
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
 import manage.conf.IndexConfiguration;
 import manage.conf.MetaDataAutoConfiguration;
 import manage.migration.EntityType;
 import manage.model.MetaData;
 import manage.repository.MetaDataRepository;
 import org.apache.commons.io.IOUtils;
-import org.bson.types.Code;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +26,9 @@ import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.index.IndexDefinition;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.CriteriaDefinition;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.util.Assert;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
@@ -357,7 +356,7 @@ public class MongobeeConfiguration {
 
     @ChangeSet(order = "016", id = "createIndexes", author = "Okke Harsta")
     public void createIndexes(MongoTemplate mongoTemplate) {
-        Arrays.asList("saml20_sp","saml20_idp").forEach(collection -> {
+        Arrays.asList("saml20_sp", "saml20_idp").forEach(collection -> {
             IndexOperations indexOps = mongoTemplate.indexOps(collection);
             if (indexOps.getIndexInfo().stream().anyMatch(indexInfo -> indexInfo.getName().equals("field_entityid"))) {
                 indexOps.dropIndex("field_entityid");
@@ -368,7 +367,7 @@ public class MongobeeConfiguration {
             indexOps.ensureIndex(new Index("data.allowedEntities.name", Sort.Direction.ASC));
             indexOps.ensureIndex(new Index("metaDataFields.coin:institution_id", Sort.Direction.ASC));
         });
-        Arrays.asList("saml20_sp_revision","saml20_idp_revision").forEach(collection -> {
+        Arrays.asList("saml20_sp_revision", "saml20_idp_revision").forEach(collection -> {
             IndexOperations indexOps = mongoTemplate.indexOps(collection);
             indexOps.ensureIndex(new Index("revision.parentId", Sort.Direction.ASC));
         });
@@ -406,7 +405,8 @@ public class MongobeeConfiguration {
                 currentEid,
                 newEid);
 
-            List<MetaData> revisions = repository.revisions(metaData.getType().concat(REVISION_POSTFIX), metaData.getId());
+            List<MetaData> revisions = repository.revisions(metaData.getType().concat(REVISION_POSTFIX), metaData
+                .getId());
 
             revisions.forEach(revision -> {
                 Object currentRevEid = metaData.getData().get("eid");
@@ -424,12 +424,77 @@ public class MongobeeConfiguration {
 
     @ChangeSet(order = "018", id = "createIndexeForEid", author = "Okke Harsta")
     public void createIndexForEid(MongoTemplate mongoTemplate) {
-        Arrays.asList("saml20_sp","saml20_idp").forEach(collection -> {
+        Arrays.asList("saml20_sp", "saml20_idp").forEach(collection -> {
             IndexOperations indexOps = mongoTemplate.indexOps(collection);
             indexOps.getIndexInfo().stream()
                 .filter(indexInfo -> indexInfo.getName().contains("data.eid"))
                 .forEach(indexInfo -> indexOps.dropIndex(indexInfo.getName()));
             indexOps.ensureIndex(new Index("data.eid", Sort.Direction.ASC).unique());
+        });
+    }
+
+    @ChangeSet(order = "019", id = "migrateAttrMotivationMetaDataToArp", author = "Okke Harsta")
+    public void migrateAttrMotivationMetaDataToArp(MongoTemplate mongoTemplate) {
+        Query query = new Query();
+        List<String> arpMotivations = Arrays.asList(
+            "coin:attr_motivation:eduPersonEntitlement", "coin:attr_motivation:schacPersonalUniqueCode",
+            "coin:attr_motivation:preferredLanguage", "coin:attr_motivation:mail",
+            "coin:attr_motivation:eduPersonAffiliation", "coin:attr_motivation:displayName",
+            "coin:attr_motivation:givenName", "coin:attr_motivation:schacHomeOrganizationType",
+            "coin:attr_motivation:cn", "coin:attr_motivation:uid", "coin:attr_motivation:eduPersonScopedAffiliation",
+            "coin:attr_motivation:eduPersonTargetedID", "coin:attr_motivation:schacHomeOrganization",
+            "coin:attr_motivation:eduPersonOrcid", "coin:attr_motivation:isMemberOf",
+            "coin:attr_motivation:eduPersonPrincipalName", "coin:attr_motivation:sn");
+
+        Map<String, String> attrMotivationMap = arpMotivations.stream()
+            .collect(Collectors.toMap(k -> k, k -> k.substring(k.lastIndexOf(":") + 1)));
+
+        Map<String, String> arpAttributes = (Map<String, String>) Map.class.cast(Map.class.cast(Map.class.cast(Map
+            .class.cast(Map.class.cast(staticMetaDataAutoConfiguration.schemaRepresentation(EntityType.SP)
+            .get("properties")).get("arp")).get("properties")).get("attributes")).get("properties"))
+            .keySet().stream().collect(Collectors.toMap(k -> {
+                String key = (String) k;
+                return key.substring(key.lastIndexOf(":") + 1);
+            }, k -> k));
+
+        Assert.isTrue(arpAttributes.keySet().containsAll(attrMotivationMap.values()), "Not all ");
+
+        List<CriteriaDefinition> criteriaDefinitions = attrMotivationMap.keySet().stream()
+            .map(key -> Criteria.where("data.metaDataFields.".concat(key)).exists(true))
+            .collect(Collectors.toList());
+        Criteria[] criteria = criteriaDefinitions.toArray(new Criteria[]{});
+        query.addCriteria(new Criteria().orOperator(criteria));
+        Arrays.asList(EntityType.SP.getType(), "single_tenant_template").forEach(type -> {
+            List<MetaData> entities = mongoTemplate.find(query, MetaData.class, type);
+
+            entities.forEach(entity -> {
+                Map<String, Object> dmFields = (Map<String, Object>) entity.getData().get("metaDataFields");
+                Map<String, Object> arp = (Map<String, Object>) entity.getData().get("arp");
+                Map<String, Object> attributes = (Map<String, Object>) arp.get("attributes");
+                attrMotivationMap.keySet().forEach(k -> {
+                    String motivation = (String) dmFields.remove(k);
+                    if (motivation != null) {
+                        String arpSimpleAttribute = attrMotivationMap.get(k);
+                        String arpAttribute = arpAttributes.get(arpSimpleAttribute);
+                        List newArpAttribute = (List) attributes.getOrDefault(arpAttribute, new ArrayList<>());
+                        if (newArpAttribute.isEmpty()) {
+                            Map<String, String> replacementForDeletedMotivation = new HashMap<>();
+                            replacementForDeletedMotivation.put("source", "idp");
+                            replacementForDeletedMotivation.put("value", "*");
+                            replacementForDeletedMotivation.put("motivation", motivation);
+                            newArpAttribute.add(replacementForDeletedMotivation);
+                            attributes.put(arpAttribute, newArpAttribute);
+                        } else {
+                            newArpAttribute.forEach(m -> {
+                                Map<String, String> existingArpAttribute = (Map<String, String>) m;
+                                existingArpAttribute.put("motivation", motivation);
+                            });
+                        }
+                    }
+                });
+                LOG.info("Saving metadata {} with removed coin:attr_motivation metaData", entity.getId());
+                mongoTemplate.save(entity, type);
+            });
         });
     }
 
@@ -440,12 +505,13 @@ public class MongobeeConfiguration {
         if (res == null) {
             return 1L;
         }
-        return Long.valueOf( Map.class.cast(res.get("data")).get("eid").toString());
+        return Long.valueOf(Map.class.cast(res.get("data")).get("eid").toString());
     }
 
     private Long eid(MetaData metaData) {
         return Long.valueOf(metaData.getData().get("eid").toString());
     }
+
     private void addTypeOfService(MongoTemplate mongoTemplate, String type, Map<String, List<TypeOfService>> nl,
                                   String lang) {
         nl.keySet().forEach(entityId -> {
