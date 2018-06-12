@@ -23,12 +23,14 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.IndexOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
+import org.springframework.data.mongodb.core.convert.MongoConverter;
 import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.index.IndexDefinition;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.CriteriaDefinition;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.util.Assert;
+import org.springframework.util.ReflectionUtils;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
@@ -435,6 +437,9 @@ public class MongobeeConfiguration {
 
     @ChangeSet(order = "019", id = "migrateAttrMotivationMetaDataToArp", author = "Okke Harsta")
     public void migrateAttrMotivationMetaDataToArp(MongoTemplate mongoTemplate) {
+        MappingMongoConverter converter = (MappingMongoConverter) mongoTemplate.getConverter();
+        converter.setMapKeyDotReplacement("@");
+
         Query query = new Query();
         List<String> arpMotivations = Arrays.asList(
             "coin:attr_motivation:eduPersonEntitlement", "coin:attr_motivation:schacPersonalUniqueCode",
