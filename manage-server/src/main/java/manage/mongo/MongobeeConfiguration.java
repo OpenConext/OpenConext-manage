@@ -437,6 +437,15 @@ public class MongobeeConfiguration {
 
     @ChangeSet(order = "019", id = "migrateAttrMotivationMetaDataToArp", author = "Okke Harsta")
     public void migrateAttrMotivationMetaDataToArp(MongoTemplate mongoTemplate) {
+        doMigrateMotivation(mongoTemplate);
+    }
+
+    @ChangeSet(order = "020", id = "migrateAttrMotivationMetaDataToArpAgain", author = "Okke Harsta")
+    public void migrateAttrMotivationMetaDataToArpAgain(MongoTemplate mongoTemplate) {
+        doMigrateMotivation(mongoTemplate);
+    }
+
+    protected void doMigrateMotivation(MongoTemplate mongoTemplate) {
         MappingMongoConverter converter = (MappingMongoConverter) mongoTemplate.getConverter();
         converter.setMapKeyDotReplacement("@");
 
