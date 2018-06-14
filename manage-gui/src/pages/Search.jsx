@@ -28,7 +28,8 @@ export default class Search extends React.PureComponent {
             confirmationQuestion: "",
             confirmationDialogAction: () => this,
             cancelDialogAction: () => this.setState({confirmationDialogOpen: false}),
-            loading: false
+            loading: false,
+            moreToShow: false
         };
     }
 
@@ -71,7 +72,7 @@ export default class Search extends React.PureComponent {
            })}>{I18n.t("playground.runPush")}
             <i className="fa fa-refresh"></i>
         </a>
-    }
+    };
 
     onSearchKeyDown = e => {
         const {suggestions, selected} = this.state;
@@ -105,8 +106,9 @@ export default class Search extends React.PureComponent {
 
     delayedAutocomplete = debounce(() =>
         autocomplete(this.state.selectedTab, this.state.query).then(results => this.setState({
-            suggestions: results,
-            loadingAutoComplete: false
+            suggestions: results.length > 15 ? results.slice(0, results.length-1) : results,
+            loadingAutoComplete: false,
+            moreToShow: results.length > 15
         })), 200);
 
     itemSelected = metaData => this.props.history.push(`/metadata/${this.state.selectedTab}/${metaData["_id"]}`);
@@ -137,8 +139,8 @@ export default class Search extends React.PureComponent {
         </span>;
 
     render() {
-        const {selected, suggestions, query, loadingAutoComplete, selectedTab, tabs,
-            confirmationDialogOpen, cancelDialogAction, confirmationDialogAction, confirmationQuestion} = this.state;
+        const {selected, suggestions, query, loadingAutoComplete, selectedTab, tabs, confirmationDialogOpen,
+            cancelDialogAction, confirmationDialogAction, confirmationQuestion, moreToShow} = this.state;
         const showAutoCompletes = (query.length > 1 || "*" === query.trim()) && !loadingAutoComplete;
         return (
             <div className="search-metadata">
@@ -166,6 +168,7 @@ export default class Search extends React.PureComponent {
                                                             selected={selected}
                                                             itemSelected={this.itemSelected}
                                                             type={selectedTab}
+                                                            moreToShow={moreToShow}
                         />}
                     </div>
                     {!this.props.currentUser.guest && <a className="new button green" onClick={this.newMetaData}>

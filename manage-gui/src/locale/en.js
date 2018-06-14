@@ -283,7 +283,8 @@ I18n.translations.en = {
         state: "Production",
         notes: "Notes",
         link: "Link",
-        no_results: "No results"
+        no_results: "No results",
+        results_limited: "More entries then shown matched, please narrow your search term....."
     },
 
     arp: {

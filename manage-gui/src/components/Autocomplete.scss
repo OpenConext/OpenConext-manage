@@ -14,7 +14,11 @@ section.metadata-autocomplete {
         padding: 10px 15px;
         font-style: italic;
     }
-
+    em.resultsLimited {
+        margin: 5px 10px;
+        display: inline-block;
+        color: $orange;
+    }
     table.result {
         width: 100%;
         word-break: break-all;

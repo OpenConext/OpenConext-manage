@@ -28,7 +28,7 @@ import java.util.regex.PatternSyntaxException;
 @Repository
 public class MetaDataRepository {
 
-    private static final int AUTOCOMPLETE_LIMIT = 15;
+    private static final int AUTOCOMPLETE_LIMIT = 16;
 
     private MongoTemplate mongoTemplate;
 
