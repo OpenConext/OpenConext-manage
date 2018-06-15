@@ -284,7 +284,7 @@ I18n.translations.en = {
         notes: "Notes",
         link: "Link",
         no_results: "No results",
-        results_limited: "More entries matched than can be shownthen shown, please narrow your search term..."
+        results_limited: "More entries matched than can be shown, please narrow your search term..."
     },
 
     arp: {
