@@ -3,13 +3,6 @@
 .search-metadata {
     @include page;
 
-    a.push {
-        float: right;
-        i.fa-refresh {
-            margin-left: 35px;
-        }
-    }
-
     section.tabs {
         display: flex;
         margin-top: 15px;

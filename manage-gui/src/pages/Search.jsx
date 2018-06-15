@@ -4,12 +4,10 @@ import PropTypes from "prop-types";
 import debounce from "lodash.debounce";
 
 import Autocomplete from "../components/Autocomplete";
-import {autocomplete, ping, push} from "../api";
+import {autocomplete, ping} from "../api";
 import {isEmpty, stop} from "../utils/Utils";
-import ConfirmationDialog from "../components/ConfirmationDialog";
 
 import "./Search.css";
-import {setFlash} from "../utils/Flash";
 
 export default class Search extends React.PureComponent {
 
@@ -24,10 +22,6 @@ export default class Search extends React.PureComponent {
             tabs: tabs,
             selectedTab: tabs[0],
             loadingAutoComplete: false,
-            confirmationDialogOpen: false,
-            confirmationQuestion: "",
-            confirmationDialogAction: () => this,
-            cancelDialogAction: () => this.setState({confirmationDialogOpen: false}),
             loading: false,
             moreToShow: false
         };
@@ -36,43 +30,6 @@ export default class Search extends React.PureComponent {
     componentDidMount() {
         ping().then(() => this.searchInput.focus());
     }
-
-    runPush = e => {
-        stop(e);
-        if (this.state.loading) {
-            return;
-        }
-        this.setState({loading: true});
-        push().then(json => {
-            this.setState({loading: false, pushResults: json.deltas});
-            const ok = json.status === "OK";
-            const msg = ok ? "playground.pushedOk" : "playground.pushedNotOk";
-            setFlash(I18n.t(msg, {name: this.props.currentUser.push.name}), ok ? "info" : "error");
-        });
-    };
-
-    renderPushButton = () => {
-        const {currentUser} = this.props;
-        if (currentUser.featureToggles.indexOf("push") < 0 && currentUser.featureToggles.indexOf("PUSH") < 0) {
-            return null;
-        }
-        const {loading} = this.state;
-        const action = () => {
-            this.setState({confirmationDialogOpen: false});
-            this.runPush();
-        };
-        return  <a className={`push button ${loading ? "grey disabled" : "blue"}`}
-           onClick={() => this.setState({
-               confirmationDialogOpen: true,
-               confirmationQuestion: I18n.t("playground.pushConfirmation", {
-                   url: currentUser.push.url,
-                   name: currentUser.push.name
-               }),
-               confirmationDialogAction: action
-           })}>{I18n.t("playground.runPush")}
-            <i className="fa fa-refresh"></i>
-        </a>
-    };
 
     onSearchKeyDown = e => {
         const {suggestions, selected} = this.state;
@@ -139,16 +96,10 @@ export default class Search extends React.PureComponent {
         </span>;
 
     render() {
-        const {selected, suggestions, query, loadingAutoComplete, selectedTab, tabs, confirmationDialogOpen,
-            cancelDialogAction, confirmationDialogAction, confirmationQuestion, moreToShow} = this.state;
+        const {selected, suggestions, query, loadingAutoComplete, selectedTab, tabs, moreToShow} = this.state;
         const showAutoCompletes = (query.length > 1 || "*" === query.trim()) && !loadingAutoComplete;
         return (
             <div className="search-metadata">
-                {this.renderPushButton()}
-                <ConfirmationDialog isOpen={confirmationDialogOpen}
-                                    cancel={cancelDialogAction}
-                                    confirm={confirmationDialogAction}
-                                    question={confirmationQuestion}/>
                 <section className="tabs">
                     {tabs.map(tab => this.renderTab(tab, selectedTab))}
                 </section>
