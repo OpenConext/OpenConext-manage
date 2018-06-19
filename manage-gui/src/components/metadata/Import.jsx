@@ -105,6 +105,21 @@ export default class Import extends React.Component {
         const currentMetaData = this.props.metaData.data;
         results.connection = {};
         const keys = Object.keys(results);
+        if (!this.props.newEntity) {
+            const notifyByRemoval = ["certData", "certData2", "certData3"];
+            notifyByRemoval.forEach(name => {
+                if (currentMetaData.metaDataFields[name] && (!results.metaDataFields || !results.metaDataFields[name])) {
+                    if (!results.metaDataFields) {
+                        results.metaDataFields = {};
+                    }
+                    results.metaDataFields[name] = {
+                        value: undefined,
+                        selected: true,
+                        current: currentMetaData.metaDataFields[name]
+                    };
+                }
+            });
+        }
         keys.forEach(key => {
             const value = results[key];
             if (key === "allowedEntities" || key === "disableConsent") {
@@ -123,7 +138,7 @@ export default class Import extends React.Component {
                     const current = currentMetaData[key][field];
                     if (current === value[field]) {
                         delete value[field];
-                    } else {
+                    } else if (!value[field].current) {
                         value[field] = {
                             value: value[field],
                             selected: true,
@@ -282,7 +297,7 @@ export default class Import extends React.Component {
                                                                   onChange={this.changeMetaPropertySelected(name, key)}/>}</td>
                             <td>{key}</td>
                             <td>{prop.current ? prop.current.toString() : ""}</td>
-                            <td>{prop.value.toString()}</td>
+                            <td>{prop.value ? prop.value.toString() : ""}</td>
                         </tr>)
                 })}
                 </tbody>

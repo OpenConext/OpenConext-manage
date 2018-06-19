@@ -208,19 +208,7 @@ export default class Detail extends React.PureComponent {
     };
 
     applyImportChanges = (results, applyChangesFor) => {
-        if (results && results.metaDataFields) {
-            //corner case, when any of the certData is selected we delete alle current certData
-            const certDataMetaData = ["certData", "certData2", "certData3"];
-            const deleteCurrentCertificateValue = certDataMetaData.some(name => {
-                const certData = results.metaDataFields[name];
-                return certData && certData.selected;
-            });
-            if (deleteCurrentCertificateValue) {
-                certDataMetaData.forEach(name => delete this.state.metaData.data.metaDataFields[name]);
-            }
-        }
         const newChanges = {...this.state.changes};
-
         const newData = {...this.state.metaData.data};
         ["allowedEntities", "disableConsent", "arp"].forEach(name => {
             if (applyChangesFor[name] && results[name]) {
@@ -239,10 +227,13 @@ export default class Detail extends React.PureComponent {
         if (applyChangesFor["metaDataFields"] && results["metaDataFields"]) {
             Object.keys(results.metaDataFields).forEach(key => {
                 if (results.metaDataFields[key].selected) {
-                    newData.metaDataFields[key] = results.metaDataFields[key].value;
+                    if (results.metaDataFields[key].value) {
+                        newData.metaDataFields[key] = results.metaDataFields[key].value;
+                    } else {
+                        delete this.state.metaData.data.metaDataFields[key]
+                    }
                     newChanges.metadata = true;
                 }
-
             });
         }
         if (applyChangesFor["connection"] && results["connection"]) {

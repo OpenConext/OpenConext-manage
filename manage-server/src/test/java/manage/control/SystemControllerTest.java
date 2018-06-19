@@ -35,36 +35,6 @@ public class SystemControllerTest extends AbstractIntegrationTest {
     public WireMockRule wireMockRule = new WireMockRule(9898);
 
     @Test
-    public void push() {
-        doPush(true);
-    }
-
-    @Test
-    public void pushInternal() {
-        doPush(false);
-    }
-
-    private void doPush(boolean client) {
-        stubFor(post(urlPathEqualTo("/api/connections")).withBasicAuth(pushUser, pushPassword)
-            .willReturn(aResponse().withStatus(200)
-                .withHeader("Content-Type", "application/json")));
-
-        RequestSpecification given = given();
-        if (!client) {
-            given
-                .auth()
-                .preemptive()
-                .basic("sp-portal", "secret");
-        }
-        given
-            .when()
-            .get("manage/api/" + (client ? "client/playground" : "internal") + "/push")
-            .then()
-            .statusCode(SC_OK)
-            .body("status", equalTo("OK"));
-    }
-
-    @Test
     public void pushPreview() throws Exception {
         Map connections = given()
             .when()
