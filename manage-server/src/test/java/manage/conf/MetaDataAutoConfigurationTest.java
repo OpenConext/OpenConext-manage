@@ -1,14 +1,13 @@
 package manage.conf;
 
 import manage.TestUtils;
-import manage.migration.EntityType;
+import manage.model.EntityType;
 import org.everit.json.schema.ValidationException;
 import org.everit.json.schema.internal.URIFormatValidator;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;

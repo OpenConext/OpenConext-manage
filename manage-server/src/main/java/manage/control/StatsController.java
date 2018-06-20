@@ -1,7 +1,7 @@
 package manage.control;
 
 import manage.api.APIUser;
-import manage.migration.EntityType;
+import manage.model.EntityType;
 import manage.model.ProviderIdentifier;
 import manage.repository.MetaDataRepository;
 import org.slf4j.Logger;

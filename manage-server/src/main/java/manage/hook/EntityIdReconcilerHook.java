@@ -1,6 +1,6 @@
 package manage.hook;
 
-import manage.migration.EntityType;
+import manage.model.EntityType;
 import manage.model.MetaData;
 import manage.repository.MetaDataRepository;
 
@@ -8,7 +8,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 

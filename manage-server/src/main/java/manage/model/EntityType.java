@@ -1,4 +1,4 @@
-package manage.migration;
+package manage.model;
 
 import org.springframework.util.Assert;
 

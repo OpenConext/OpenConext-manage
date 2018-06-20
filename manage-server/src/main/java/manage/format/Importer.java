@@ -2,7 +2,7 @@ package manage.format;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import manage.conf.MetaDataAutoConfiguration;
-import manage.migration.EntityType;
+import manage.model.EntityType;
 import org.springframework.core.io.Resource;
 
 import javax.xml.stream.XMLStreamException;

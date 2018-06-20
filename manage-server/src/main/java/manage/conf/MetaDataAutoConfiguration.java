@@ -1,7 +1,7 @@
 package manage.conf;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import manage.migration.EntityType;
+import manage.model.EntityType;
 import manage.validations.BooleanFormatValidator;
 import manage.validations.CertificateFormatValidator;
 import manage.validations.NumberFormatValidator;

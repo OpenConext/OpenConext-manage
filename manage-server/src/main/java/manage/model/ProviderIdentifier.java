@@ -1,7 +1,6 @@
 package manage.model;
 
 import lombok.EqualsAndHashCode;
-import manage.migration.EntityType;
 
 import java.util.HashMap;
 import java.util.Map;

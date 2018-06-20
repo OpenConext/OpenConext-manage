@@ -3,7 +3,7 @@ package manage.control;
 import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 import manage.AbstractIntegrationTest;
-import manage.migration.EntityType;
+import manage.model.EntityType;
 import manage.model.MetaData;
 import manage.model.MetaDataUpdate;
 import manage.model.Revision;

@@ -7,9 +7,7 @@ import manage.conf.Push;
 import manage.exception.EndpointNotAllowed;
 import manage.format.EngineBlockFormatter;
 import manage.mail.MailBox;
-import manage.migration.EntityType;
-import manage.migration.JanusMigration;
-import manage.migration.JanusMigrationValidation;
+import manage.model.EntityType;
 import manage.model.MetaData;
 import manage.model.OrphanMetaData;
 import manage.push.Delta;
@@ -45,13 +43,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import javax.sql.DataSource;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -61,7 +57,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static java.util.concurrent.Executors.newScheduledThreadPool;
 import static java.util.stream.Collectors.toList;
 
 @RestController
@@ -70,32 +65,18 @@ public class SystemController {
 
     private static final Logger LOG = LoggerFactory.getLogger(SystemController.class);
 
-    private static final FederatedUser FEDERATED_USER = new FederatedUser(
-        "system",
-        "system",
-        "system",
-        AuthorityUtils.createAuthorityList("ROLE_ADMIN"),
-        Arrays.asList(Features.values()),
-        Product.DEFAULT,
-        new Push("https://nope", "push"));
-
     private RestTemplate restTemplate;
     private String pushUser;
     private String pushPassword;
     private String pushUri;
-    private JanusMigrationValidation janusMigrationValidation;
-    private JanusMigration janusMigration;
     private MetaDataRepository metaDataRepository;
     private JdbcTemplate ebJdbcTemplate;
     private Environment environment;
-    private MailBox mailBox;
 
     private PrePostComparator prePostComparator = new PrePostComparator();
 
     @Autowired
-    public SystemController(JanusMigration janusMigration,
-                            JanusMigrationValidation janusMigrationValidation,
-                            MetaDataRepository metaDataRepository,
+    public SystemController(MetaDataRepository metaDataRepository,
                             @Qualifier("ebDataSource") DataSource ebDataSource,
                             @Value("${push.url}") String pushUri,
                             @Value("${push.user}") String user,
@@ -104,10 +85,7 @@ public class SystemController {
                             @Value("${manage_cronjobmaster}") boolean cronJobResponsible,
                             @Value("${run_migrations}") boolean runMigrations,
                             @Value("${push_after_migration}") boolean pushAfterMigration,
-                            Environment environment,
-                            MailBox mailBox) throws MalformedURLException {
-        this.janusMigration = janusMigration;
-        this.janusMigrationValidation = janusMigrationValidation;
+                            Environment environment) throws MalformedURLException {
         this.metaDataRepository = metaDataRepository;
         this.pushUri = pushUri;
         this.pushUser = user;
@@ -115,39 +93,6 @@ public class SystemController {
         this.restTemplate = new RestTemplate(getRequestFactory());
         this.ebJdbcTemplate = new JdbcTemplate(ebDataSource);
         this.environment = environment;
-        this.mailBox = mailBox;
-
-        if (cronJobResponsible) {
-            newScheduledThreadPool(1)
-                .scheduleAtFixedRate(() -> migrateAndPush(runMigrations, pushAfterMigration), 0, everyMinutes,
-                    TimeUnit.MINUTES);
-        }
-    }
-
-    private void migrateAndPush(boolean runMigrations, boolean pushAfterMigration) {
-        try {
-            if (runMigrations) {
-                janusMigration.doMigrate();
-                if (pushAfterMigration) {
-                    ResponseEntity<Map> responseEntity = this.push(FEDERATED_USER);
-                    List<Delta> realDeltas = (List<Delta>) responseEntity.getBody().get("deltas");
-                    if (!responseEntity.getStatusCode().equals(HttpStatus.OK) || !realDeltas.isEmpty()) {
-                        mailBox.sendDeltaPushMail(realDeltas);
-                    }
-                }
-            }
-        } catch (Throwable e) {
-            //don't break the scheduler
-        }
-    }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/client/playground/migrate")
-    public List<Map<String, Long>> migrate(FederatedUser federatedUser) {
-        if (!federatedUser.featureAllowed(Features.MIGRATION)) {
-            throw new EndpointNotAllowed();
-        }
-        return janusMigration.doMigrate();
     }
 
     @GetMapping("/client/playground/pushPreview")

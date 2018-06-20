@@ -3,7 +3,7 @@ package manage.control;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import manage.conf.MetaDataAutoConfiguration;
 import manage.format.Importer;
-import manage.migration.EntityType;
+import manage.model.EntityType;
 import manage.model.Import;
 import manage.model.XML;
 import org.apache.commons.io.IOUtils;

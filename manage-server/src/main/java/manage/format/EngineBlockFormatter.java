@@ -1,6 +1,6 @@
 package manage.format;
 
-import manage.migration.EntityType;
+import manage.model.EntityType;
 import manage.model.MetaData;
 
 import java.util.ArrayList;

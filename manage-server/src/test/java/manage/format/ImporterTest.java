@@ -2,7 +2,7 @@ package manage.format;
 
 import manage.TestUtils;
 import manage.conf.MetaDataAutoConfiguration;
-import manage.migration.EntityType;
+import manage.model.EntityType;
 import org.everit.json.schema.ValidationException;
 import org.junit.Test;
 import org.springframework.core.io.ByteArrayResource;
