@@ -4,6 +4,11 @@
 
 Stores and publishes metadata of all entities known to OpenConext
 
+## Disclaimer
+
+Note that the original migration from Janus was removed in version 3.0.0. If you want to run the migrations from a Janus
+ database then install version 2.0.8.
+
 ## [Getting started](#getting-started)
 
 ### [System Requirements](#system-requirements)

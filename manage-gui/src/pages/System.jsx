@@ -2,7 +2,7 @@ import React from "react";
 import I18n from "i18n-js";
 import CopyToClipboard from "react-copy-to-clipboard";
 import PropTypes from "prop-types";
-import {deleteOrphanedReferences, migrate, orphans, ping, push, pushPreview, validate} from "../api";
+import {deleteOrphanedReferences, orphans, ping, push, pushPreview, validate} from "../api";
 import {stop} from "../utils/Utils";
 import JsonView from "react-pretty-json";
 import ConfirmationDialog from "../components/ConfirmationDialog";
@@ -18,7 +18,6 @@ export default class System extends React.PureComponent {
         this.state = {
             tabs: tabs,
             selectedTab: tabs[0],
-            migrationResults: undefined,
             validationResults: undefined,
             orphansResults: undefined,
             pushPreviewResults: undefined,
@@ -35,15 +34,6 @@ export default class System extends React.PureComponent {
     componentDidMount() {
         ping();
     }
-
-    runMigration = (e) => {
-        stop(e);
-        if (this.state.loading) {
-            return;
-        }
-        this.setState({loading: true});
-        migrate().then(json => this.setState({migrationResults: json, loading: false}));
-    };
 
     runValidations = (e) => {
         stop(e);
@@ -205,38 +195,13 @@ export default class System extends React.PureComponent {
         );
     };
 
-    renderMigrate = () => {
-        const {migrationResults, loading} = this.state;
-        const action = () => {
-            this.setState({confirmationDialogOpen: false});
-            this.runMigration();
-        };
-        return (
-            <section className="migrate">
-                <p>The migration will query the janus database - or a copy based on the server configuration - and
-                    migrate all data to MongoDB collections.</p>
-                <a className={`button ${loading ? "grey disabled" : "green"}`}
-                   onClick={() => this.setState({
-                       confirmationDialogOpen: true,
-                       confirmationQuestion: I18n.t("playground.migrationConfirmation"),
-                       confirmationDialogAction: action
-                   })}>{I18n.t("playground.runMigration")}
-                    <i className="fa fa-retweet" aria-hidden="true"></i></a>
-                {migrationResults &&
-                <section className="results">
-                    <JsonView json={migrationResults}/>
-                </section>}
-            </section>
-        );
-    };
-
     renderValidate = () => {
         const {validationResults, loading} = this.state;
         return (
             <section className="validate">
-                <p>All latest revisions of the migrated metadata with a production status will be validated against
+                <p>All latest revisions of the metadata with a production status will be validated against
                     the JSON schema. This validation is performed on every create and update and preferably
-                    all migrated metadata is valid.</p>
+                    all metadata is valid.</p>
                 <a className={`button ${loading ? "grey disabled" : "green"}`}
                    onClick={this.runValidations}>{I18n.t("playground.runValidation")}
                     <i className="fa fa-check" aria-hidden="true"></i></a>
@@ -288,8 +253,6 @@ export default class System extends React.PureComponent {
 
     renderCurrentTab = selectedTab => {
         switch (selectedTab) {
-            case "migration" :
-                return this.renderMigrate();
             case "validation" :
                 return this.renderValidate();
             case "orphans" :

@@ -17,16 +17,6 @@ push:
   user: user
   password: password
 
-manage_cronjobmaster: false
-manage_cronjob_minutes: 30
-run_migrations: false
-push_after_migration: false
-
-email:
-  base_url: http://localhost:8001/#delta
-  from: from@test.nl
-  to: to@test.nl
-
 product:
   name: Manage
   organization: OpenConext
@@ -49,7 +39,7 @@ spring:
       uri: mongodb://localhost:27017/metadata
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mysql://localhost/sr?autoReconnect=true&useSSL=false
+    url: jdbc:mysql://localhost/eb?autoReconnect=true&useSSL=false
     username: root
     password:
     tomcat:
@@ -59,18 +49,6 @@ spring:
       test-while-idle: true
   main:
     banner-mode: "off"
-
-eb:
-  datasource:
-    driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mysql://localhost/eb?autoReconnect=true&useSSL=false
-    username: root
-    password:
-    tomcat:
-      test-on-borrow: true
-      validation-query: SELECT 1
-      remove-abandoned: true
-      test-while-idle: true
 
 management:
   health:

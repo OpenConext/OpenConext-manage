@@ -2,11 +2,8 @@ package manage.control;
 
 import manage.api.APIUser;
 import manage.conf.Features;
-import manage.conf.Product;
-import manage.conf.Push;
 import manage.exception.EndpointNotAllowed;
 import manage.format.EngineBlockFormatter;
-import manage.mail.MailBox;
 import manage.model.EntityType;
 import manage.model.MetaData;
 import manage.model.OrphanMetaData;
@@ -14,6 +11,7 @@ import manage.push.Delta;
 import manage.push.PrePostComparator;
 import manage.repository.MetaDataRepository;
 import manage.shibboleth.FederatedUser;
+import manage.validations.MetaDataValidator;
 import manage.web.PreemptiveAuthenticationHttpComponentsClientHttpRequestFactory;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -23,7 +21,6 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -35,7 +32,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -72,19 +68,17 @@ public class SystemController {
     private MetaDataRepository metaDataRepository;
     private JdbcTemplate ebJdbcTemplate;
     private Environment environment;
+    private MetaDataValidator metaDataValidator;
 
     private PrePostComparator prePostComparator = new PrePostComparator();
 
     @Autowired
     public SystemController(MetaDataRepository metaDataRepository,
-                            @Qualifier("ebDataSource") DataSource ebDataSource,
+                            MetaDataValidator metaDataValidator,
+                            DataSource ebDataSource,
                             @Value("${push.url}") String pushUri,
                             @Value("${push.user}") String user,
                             @Value("${push.password}") String password,
-                            @Value("${manage_cronjob_minutes}") int everyMinutes,
-                            @Value("${manage_cronjobmaster}") boolean cronJobResponsible,
-                            @Value("${run_migrations}") boolean runMigrations,
-                            @Value("${push_after_migration}") boolean pushAfterMigration,
                             Environment environment) throws MalformedURLException {
         this.metaDataRepository = metaDataRepository;
         this.pushUri = pushUri;
@@ -93,6 +87,7 @@ public class SystemController {
         this.restTemplate = new RestTemplate(getRequestFactory());
         this.ebJdbcTemplate = new JdbcTemplate(ebDataSource);
         this.environment = environment;
+        this.metaDataValidator = metaDataValidator;
     }
 
     @GetMapping("/client/playground/pushPreview")
@@ -166,7 +161,7 @@ public class SystemController {
         if (!federatedUser.featureAllowed(Features.VALIDATION)) {
             throw new EndpointNotAllowed();
         }
-        return janusMigrationValidation.validateMigration();
+        return metaDataValidator.validateMigration();
     }
 
     @PreAuthorize("hasRole('ADMIN')")

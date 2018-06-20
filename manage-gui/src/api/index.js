@@ -166,10 +166,6 @@ export function logOut() {
     return fetchDelete("users/logout");
 }
 
-export function migrate() {
-    return fetchJson("playground/migrate");
-}
-
 export function push() {
     return fetchJson("playground/push");
 }
