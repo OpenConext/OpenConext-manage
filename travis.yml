@@ -30,8 +30,6 @@ install:
 before_script:
 - mkdir ${PWD}/mongodb-linux-x86_64-${MONGODB}/data
 - ${PWD}/mongodb-linux-x86_64-${MONGODB}/bin/mongod --dbpath ${PWD}/mongodb-linux-x86_64-${MONGODB}/data --logpath ${PWD}/mongodb-linux-x86_64-${MONGODB}/mongodb.log --fork
-- mysql -e "create database IF NOT EXISTS manage; grant all on manage.* to 'root';SET GLOBAL TRANSACTION ISOLATION LEVEL SERIALIZABLE;" -uroot
-- mysql -e "create database IF NOT EXISTS sr; grant all on sr.* to 'root';" -uroot
 - mysql -e "create database IF NOT EXISTS eb; grant all on eb.* to 'root';" -uroot
 script:
 - mvn test
