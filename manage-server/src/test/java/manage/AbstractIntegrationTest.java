@@ -31,8 +31,8 @@ import static org.awaitility.Awaitility.await;
  * impersonate EB or other identity).
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = "spring.data.mongodb" +
-    ".uri=mongodb://localhost:27017/metadata_test")
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+    properties = "spring.data.mongodb.uri=mongodb://localhost:27017/metadata_test")
 @ActiveProfiles("dev")
 public abstract class AbstractIntegrationTest implements TestUtils {
 

@@ -106,7 +106,7 @@ public class MongobeeConfiguration {
         query.fields().include("data.eid");
         Map res = mongoTemplate.findOne(query, Map.class, type);
         if (res == null) {
-            return 1L;
+            return 10L;
         }
         return Long.valueOf(Map.class.cast(res.get("data")).get("eid").toString());
     }
