@@ -1,10 +1,8 @@
 package manage.repository;
 
-import com.mongodb.util.JSON;
 import manage.model.MetaData;
 import manage.mongo.Sequence;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.BasicQuery;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -17,9 +15,6 @@ import org.springframework.util.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 
 /**
  * We can't use the Spring JPA repositories as we at runtime need to decide which collection to use. We only have one
@@ -87,11 +82,18 @@ public class MetaDataRepository {
     private Criteria regex(String key, String search) {
         try {
             return Criteria.where(key).regex(".*" + search + ".*", "i");
-        }
-        catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             //ignore
             return Criteria.where("nope").exists(true);
         }
+    }
+
+    private String escapeMetaDataField(String key) {
+        if (key.startsWith("metaDataFields")) {
+            return "metaDataFields." + key.substring("metaDataFields.".length())
+                .replaceAll("\\.", "@");
+        }
+        return key;
     }
 
     public List<Map> search(String type, Map<String, Object> properties, List<String> requestedAttributes, Boolean
@@ -99,12 +101,15 @@ public class MetaDataRepository {
         Query query = allAttributes ? new Query() : queryWithSamlFields();
         if (!allAttributes) {
             requestedAttributes.forEach(requestedAttribute -> {
-                query.fields().include("data.".concat(requestedAttribute));
+                String key = escapeMetaDataField(requestedAttribute);
+                query.fields().include("data.".concat(key));
             });
         }
         List<CriteriaDefinition> criteriaDefinitions = new ArrayList<>();
 
         properties.forEach((key, value) -> {
+            key = escapeMetaDataField(key);
+
             if (value instanceof Boolean && Boolean.class.cast(value) && key.contains("attributes")) {
                 criteriaDefinitions.add(Criteria.where("data.".concat(key)).exists(true));
             } else if (value instanceof String && !StringUtils.hasText(String.class.cast(value))) {
@@ -134,7 +139,7 @@ public class MetaDataRepository {
     }
 
     public List<MetaData> findRaw(String type, String query) {
-        return mongoTemplate.find(new BasicQuery(query),MetaData.class, type);
+        return mongoTemplate.find(new BasicQuery(query), MetaData.class, type);
     }
 
     public List<Map> whiteListing(String type) {
@@ -148,7 +153,7 @@ public class MetaDataRepository {
     public Long incrementEid() {
         Update updateInc = new Update();
         updateInc.inc("value", 1L);
-        Sequence res = mongoTemplate.findAndModify(new BasicQuery("{\"_id\":\"sequence\"}"),updateInc, Sequence.class);
+        Sequence res = mongoTemplate.findAndModify(new BasicQuery("{\"_id\":\"sequence\"}"), updateInc, Sequence.class);
         return res.getValue();
     }
 
