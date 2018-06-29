@@ -24,14 +24,19 @@ import static org.junit.Assert.assertTrue;
 @SuppressWarnings("unchecked")
 public class ImporterTest implements TestUtils {
 
-    private Importer subject = new Importer(new MetaDataAutoConfiguration(
-        objectMapper,
-        new ClassPathResource("metadata_configuration"),
-        new ClassPathResource("metadata_templates")));
+    private static Importer subject;
 
-
-    public ImporterTest() throws IOException {
+    static {
+        try {
+            subject = new Importer(new MetaDataAutoConfiguration(
+                    objectMapper,
+                    new ClassPathResource("metadata_configuration"),
+                    new ClassPathResource("metadata_templates")));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
+
 
     @Test
     public void importSPMetaData() throws IOException, XMLStreamException {

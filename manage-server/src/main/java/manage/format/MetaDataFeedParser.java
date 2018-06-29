@@ -54,6 +54,7 @@ public class MetaDataFeedParser {
         boolean inUIInfo = false;
         boolean inCorrectEntityDescriptor = !entityIDOptional.isPresent();
         boolean inAttributeConsumingService = false;
+        boolean inEntityAttributes = false;
 
         result.put("type", entityType.getJanusDbValue());
         boolean isSp = entityType.equals(EntityType.SP);
@@ -109,19 +110,13 @@ public class MetaDataFeedParser {
                             }
                             break;
                         case "SingleLogoutService":
-                            if (!inCorrectEntityDescriptor) {
-                                break;
-                            }
-                            if (isSp) {
+                            if (inCorrectEntityDescriptor && isSp) {
                                 addMetaDataField(metaDataFields, reader, "Binding", "SingleLogoutService_Binding");
                                 addMetaDataField(metaDataFields, reader, "Location", "SingleLogoutService_Location");
                             }
                             break;
                         case "AssertionConsumerService":
-                            if (!inCorrectEntityDescriptor) {
-                                break;
-                            }
-                            if (isSp) {
+                            if (inCorrectEntityDescriptor && isSp) {
                                 Optional<String> bindingOpt = getAttributeValue(reader, "Binding");
                                 bindingOpt.ifPresent(binding ->
                                     addMultiplicity(metaDataFields, "AssertionConsumerService:%s:Binding",
@@ -181,6 +176,11 @@ public class MetaDataFeedParser {
                         case "Description":
                             if (inUIInfo) {
                                 addLanguageElement(metaDataFields, reader, "description");
+                            }
+                            break;
+                        case "PrivacyStatementURL":
+                            if (inUIInfo) {
+                                addLanguageElement(metaDataFields, reader, "mdui:PrivacyStatementURL");
                             }
                             break;
                         case "ServiceName":
@@ -246,7 +246,15 @@ public class MetaDataFeedParser {
                                     .getElementText());
                             }
                             break;
-
+                        case "EntityAttributes":
+                            inEntityAttributes  = inCorrectEntityDescriptor;
+                            break;
+                        case "AttributeValue":
+                            if (inEntityAttributes) {
+                                addCoinEntityCategories(entityType, metaDataFields, metaDataAutoConfiguration,
+                                    reader.getElementText());
+                            }
+                            break;
                     }
                     break;
                 case END_ELEMENT:
@@ -265,6 +273,9 @@ public class MetaDataFeedParser {
                                 //we got what we came for
                                 return result;
                             }
+                        case "EntityAttributes":
+                            inEntityAttributes = false;
+                            break;
                     }
             }
         }
@@ -385,16 +396,44 @@ public class MetaDataFeedParser {
         return Optional.empty();
     }
 
-    private boolean attributeValueMatches(XMLStreamReader reader, String attributeName, String value) {
-        int attributeCount = reader.getAttributeCount();
-        for (int i = 0; i < attributeCount; i++) {
-            QName qName = reader.getAttributeName(i);
-            if (qName.getLocalPart().equalsIgnoreCase(attributeName)) {
-                return reader.getAttributeValue(qName.getNamespaceURI(), qName.getLocalPart()).equalsIgnoreCase(value);
-            }
+    private void addCoinEntityCategories(EntityType entityType, Map<String, String> metaDataFields,
+                                         MetaDataAutoConfiguration metaDataAutoConfiguration, String elementText) {
+        Map<String, Object> schema = metaDataAutoConfiguration.schemaRepresentation(entityType);
+        Map<String, Object> schemaPart = this.unpack(schema,
+            Arrays.asList("properties", "metaDataFields", "patternProperties", "^coin:entity_categories:"));
+        List<String> enumeration = (List<String>) schemaPart.get("enum");
+        String strippedValue = elementText.replaceAll("\n", "").trim();
+        if (!enumeration.contains(strippedValue)) {
+            return;
         }
-        return false;
+        String entityCategoryKey = "coin:entity_categories:";
+        //do not add the same entity category twice as we limit the number
+        List<String> categories = metaDataFields.entrySet().stream()
+            .filter(e -> e.getKey().startsWith(entityCategoryKey))
+            .map(Map.Entry::getValue)
+            .collect(toList());
+        if (categories.contains(strippedValue)) {
+            return;
+        }
+
+        int multiplicity = (int) schemaPart.get("multiplicity");
+        int startIndex = (int) schemaPart.get("startIndex");
+
+        metaDataFields.keySet().stream()
+            .filter(s -> s.startsWith(entityCategoryKey))
+            .map(s -> Integer.valueOf(s.substring(entityCategoryKey.length())))
+            .max(Integer::compareTo)
+            .map(i -> multiplicity >= startIndex + i ? "put returns null" + metaDataFields.put(entityCategoryKey + ++i,
+                strippedValue) : "")
+            .orElseGet(() -> metaDataFields.put(entityCategoryKey + startIndex, strippedValue));
     }
 
+    private Map<String, Object> unpack(Map<String, Object> schema, List<String> keys) {
+        return keys.stream().sequential().reduce(schema, (map, s) -> s.startsWith("^") ?
+                Map.class.cast(map.get(map.keySet().stream().filter(k -> k.startsWith(s)).findAny()
+                    .orElseThrow(() -> new IllegalArgumentException("Key not present: " + s)))) :
+                Map.class.cast(map.get(s)),
+            (acc, com) -> com);
+    }
 
 }
