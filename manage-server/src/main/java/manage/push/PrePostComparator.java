@@ -21,8 +21,10 @@ public class PrePostComparator {
 
     private void doCompare(Set<Delta> deltas, List<Map<String, Object>> firstProvidersData, List<Map<String, Object>>
         secondProvidersData, boolean reversed) {
-        firstProvidersData.forEach(provider -> compareProvider(deltas, provider, this.findByEntityId
-            (secondProvidersData, String.class.cast(provider.get("entity_id"))), reversed));
+        firstProvidersData.forEach(provider -> compareProvider(deltas, provider,
+            this.findByEntityIdAndType(secondProvidersData,
+                String.class.cast(provider.get("entity_id")),
+                String.class.cast(provider.get("type"))), reversed));
     }
 
     private void compareProvider(Set<Delta> deltas, Map<String, Object> provider,
@@ -48,9 +50,10 @@ public class PrePostComparator {
         });
     }
 
-    private Optional<Map<String, Object>> findByEntityId(List<Map<String, Object>> providersData, String entityId) {
+    private Optional<Map<String, Object>> findByEntityIdAndType(List<Map<String, Object>> providersData,
+                                                                String entityId, String type) {
         List<Map<String, Object>> providers = providersData.stream().filter(provider -> provider.get("entity_id")
-            .equals(entityId)).collect(toList());
+            .equals(entityId) && provider.get("type").equals(type)).collect(toList());
         return providers.isEmpty() ? Optional.empty() : Optional.of(providers.get(0));
     }
 
