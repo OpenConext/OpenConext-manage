@@ -39,9 +39,6 @@
           },
           "value": {
             "type": "string"
-          },
-          "motivation": {
-            "type": "string"
           }
         }
       }
@@ -486,7 +483,7 @@
             "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"
           ],
           "default": "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256",
-          "info": "Select the Secure Hash Algorithm (SHA) as used by the service provider."
+          "info": "Select the Secure Hash Algorithm (SHA) to use for assertions sent by Engineblock to this service provider."
         },
         "coin:ss:supports_strong_authentication": {
           "type": "string",
@@ -625,14 +622,15 @@
           "type": "string",
           "info": "The URL to the Registration Policy of the service."
         },
-        "^coin:entity_categories:([1-3]{1})$": {
+        "^coin:entity_categories:([1-4]{1})$": {
           "type": "string",
           "enum": [
             "http://refeds.org/category/research-and-scholarship",
             "http://refeds.org/category/hide-from-discovery",
-            "http://www.geant.net/uri/dataprotection-code-of-conduct/v1"
+            "http://www.geant.net/uri/dataprotection-code-of-conduct/v1",
+            "http://clarin.eu/category/clarin-member"
           ],
-          "multiplicity": 3,
+          "multiplicity": 4,
           "startIndex": 1,
           "info": "Select one of the entity categories applicable to this service. Entity Categories group federation entities that share common criteria."
         }
