@@ -324,6 +324,7 @@ public class EngineBlockFormatter {
         IntStream.range(0, 10).forEach(i -> {
             String binding = metaDataFields.get("AssertionConsumerService:" + i + ":Binding");
             String location = metaDataFields.get("AssertionConsumerService:" + i + ":Location");
+            String index = metaDataFields.get("AssertionConsumerService:" + i + ":index");
 
             if (hasText(binding) || hasText(location)) {
                 ArrayList<Object> assertionConsumerServiceContainer = (ArrayList<Object>) metadata.computeIfAbsent(
@@ -331,7 +332,7 @@ public class EngineBlockFormatter {
                 Map<String, String> assertionConsumerService = new HashMap<>();
                 putIfHasText("Binding", binding, assertionConsumerService);
                 putIfHasText("Location", location, assertionConsumerService);
-                assertionConsumerService.put("Index", Integer.toString(i));
+                putIfHasText("Index", index, assertionConsumerService);
 
                 assertionConsumerServiceContainer.add(assertionConsumerService);
             }

@@ -28,15 +28,15 @@
   "metadata" : {
     "AssertionConsumerService" : [ {
       "Binding" : "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
-      "Index" : "0",
+      "Index" : "1",
       "Location" : "https://teams.surfconext.nl/Shibboleth.sso/SAML2/POST"
     }, {
       "Binding" : "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Artifact",
-      "Index" : "1",
+      "Index" : "3",
       "Location" : "https://teams.surfconext.nl/Shibboleth.sso/SAML2/Artifact"
     }, {
       "Binding" : "urn:oasis:names:tc:SAML:2.0:bindings:PAOS",
-      "Index" : "2",
+      "Index" : "4",
       "Location" : "https://teams.surfconext.nl/Shibboleth.sso/SAML2/ECP"
     } ],
     "NameIDFormat" : "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
