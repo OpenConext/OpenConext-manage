@@ -90,6 +90,9 @@ I18n.translations.en = {
         extended_search: "Extended Search",
         push: "Push",
         push_preview: "Push Preview",
+        find_my_data: "Find my MetaData",
+        findMyDataInfo: "Find your 'lost' MetaData. Enter part of the entityId, specify the type of MetaData and search in the revisions where all deleted MetaData still exists.",
+        findMyDataNoResults: "No results based on the entityID part",
         pushPreviewInfo: "Collect all relevant metadata and perform a simulation of the {{name}} push",
         pushInfo: "Collect all relevant metadata and push the metadata to {{name}}. The metadata will be pushed to {{url}}.",
         pushedOk: "Metadata successfully pushed to {{name}}",
@@ -106,7 +109,12 @@ I18n.translations.en = {
             status: "Status",
             entityid:"Entity ID",
             name: "Name",
-            notes: "Notes"
+            notes: "Notes",
+            created: "Created",
+            revisionNumber: "Revision",
+            updatedBy: "Deleted by",
+            revisionNote: "Revision note",
+
         },
         no_results: "No results",
         error: "Invalid input: dangling meta character '*'",
@@ -117,7 +125,8 @@ I18n.translations.en = {
             prePushValue: "Pre-push value",
             attribute: "Attribute",
             entityId: "Entity-ID"
-        }
+        },
+        search: "Search"
 
     },
     whitelisting: {

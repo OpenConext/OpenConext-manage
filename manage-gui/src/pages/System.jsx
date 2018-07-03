@@ -1,14 +1,17 @@
 import React from "react";
 import I18n from "i18n-js";
+
 import CopyToClipboard from "react-copy-to-clipboard";
 import PropTypes from "prop-types";
-import {deleteOrphanedReferences, orphans, ping, push, pushPreview, validate} from "../api";
-import {stop} from "../utils/Utils";
+import {deleteOrphanedReferences, orphans, ping, push, pushPreview, search, validate} from "../api";
+import {isEmpty, stop} from "../utils/Utils";
 import JsonView from "react-pretty-json";
 import ConfirmationDialog from "../components/ConfirmationDialog";
 import "./System.css";
 import "react-pretty-json/assets/json-view.css";
 import {setFlash} from "../utils/Flash";
+import SelectMetaDataType from "../components/metadata/SelectMetaDataType";
+import NotesTooltip from "../components/NotesTooltip";
 
 export default class System extends React.PureComponent {
 
@@ -20,6 +23,9 @@ export default class System extends React.PureComponent {
             selectedTab: tabs[0],
             validationResults: undefined,
             orphansResults: undefined,
+            findMyDataInput: "",
+            findMyDataEntityType: undefined,
+            findMyDataResults: undefined,
             pushPreviewResults: undefined,
             pushResults: undefined,
             loading: false,
@@ -99,6 +105,76 @@ export default class System extends React.PureComponent {
         this.setState({loading: true});
         pushPreview().then(json => this.setState({pushPreviewResults: json, loading: false}));
     };
+
+    findMyData = e => {
+        stop(e);
+
+        const {findMyDataInput, findMyDataEntityType} = this.state;
+        if (findMyDataInput.length > 3) {
+            const metaDataSearch = {"entityid": `.*${findMyDataInput}.*`};
+            search(metaDataSearch, `${findMyDataEntityType}_revision`)
+                .then(json => this.setState({findMyDataResults: json}));
+        }
+    };
+
+    renderFindMyData = () => {
+        const {findMyDataInput, findMyDataEntityType, findMyDataResults} = this.state;
+        const showResults = findMyDataResults && findMyDataResults.length > 0;
+        const noResults = findMyDataResults && findMyDataResults.length === 0;
+        const classNameSearch = findMyDataInput.length > 3 ? "green" : "disabled grey";
+        return (
+            <section className="find-my-data">
+                <p>{I18n.t("playground.findMyDataInfo")}</p>
+                <section className="find-my-data-controls">
+                    <section className="search-input-container">
+                        <input className="search-input" type="text" value={findMyDataInput}
+                               onChange={e => this.setState({findMyDataInput: e.target.value})}/>
+                        <i className="fa fa-search"></i>
+                    </section>
+                    <a className={`${classNameSearch} search button`} onClick={this.findMyData}>
+                        {I18n.t("playground.search")}<i className="fa fa-search"></i></a>
+                    <SelectMetaDataType onChange={val => this.setState({findMyDataEntityType: val})}
+                                        state={findMyDataEntityType}
+                                        configuration={this.props.configuration}
+                                        defaultToFirst={true}/>
+                </section>
+                {showResults && this.renderMyDataResults(findMyDataResults)}
+                {noResults && <p>{I18n.t("playground.findMyDataNoResults")}</p>}
+            </section>
+        );
+    };
+
+    renderMyDataResults = findMyDataResults => {
+        const headers = ["status", "name", "entityid", "created", "revisionNumber", "updatedBy", "revisionNote", "notes"]
+        return <section>
+            <table className="find-my-data-results">
+                <thead>
+                <tr>
+                    {headers.map(h => <th key={h}
+                                          className={`find-my-data-${h}`}>{I18n.t(`playground.headers.${h}`)}</th>)}
+
+                </tr>
+                </thead>
+                <tbody>
+                {findMyDataResults.map((entity, index) => <tr key={`${entity.data.entityid}_${index}`}>
+                    <td className="state">{I18n.t(`metadata.${entity.data.state}`)}</td>
+                    <td className="name">{entity.data.metaDataFields["name:en"] || entity.data.metaDataFields["name:nl"]}
+                    </td>
+                    <td className="entityId">{entity.data.entityid}</td>
+                    <td className="created">{new Date(entity.revision.created).toLocaleDateString()}</td>
+                    <td className="revisionNumber">{entity.revision.number}</td>
+                    <td className="updatedBy">{entity.revision.updatedBy}</td>
+                    <td className="revisionNote">{entity.data.revisionnote}</td>
+                    <td className="notes">
+                        {isEmpty(entity.data.notes) ? <span></span> :
+                            <NotesTooltip identifier={entity.data.entityid} notes={entity.data.notes}/>}
+                    </td>
+                </tr>)}
+                </tbody>
+
+            </table>
+        </section>;
+    }
 
     renderPush = () => {
         const {loading, pushResults} = this.state;
@@ -261,6 +337,8 @@ export default class System extends React.PureComponent {
                 return this.renderPush();
             case "push_preview":
                 return this.renderPushPreview();
+            case "find_my_data":
+                return this.renderFindMyData();
             default :
                 throw new Error(`Unknown tab: ${selectedTab}`);
         }

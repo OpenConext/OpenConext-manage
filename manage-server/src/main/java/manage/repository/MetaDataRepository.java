@@ -104,6 +104,9 @@ public class MetaDataRepository {
                 String key = escapeMetaDataField(requestedAttribute);
                 query.fields().include("data.".concat(key));
             });
+            if (type.contains("revision")) {
+                query.fields().include("revision").include("data.revisionnote");
+            }
         }
         List<CriteriaDefinition> criteriaDefinitions = new ArrayList<>();
 

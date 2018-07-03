@@ -30,7 +30,7 @@
         }
     }
 
-    section.validate, section.migrate, section.push, section.orphans {
+    section.validate, section.migrate, section.push, section.orphans, section.find-my-data {
         background-color: white;
         padding: 15px 15px 150px 15px;
         p {
@@ -45,6 +45,96 @@
 
     }
 
+    section.find-my-data-controls {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding: 30px 0;
+        background-color: white;
+
+        .search-input-container {
+            flex-grow: 2;
+            position: relative;
+        }
+        .search-input {
+            padding: 6px;
+            font-size: larger;
+            width: 100%;
+        }
+        .fa-search {
+            position: absolute;
+            right: 15px;
+            top: 10px;
+            font-size: 20px;
+            color: $blue;
+        }
+        div.select-metadata-type {
+            margin: 0 15px;
+            min-width: 350px;
+            div.Select-control {
+                margin-top: 0;
+            }
+        }
+        a.search {
+            margin: 0;
+            padding: 8px 30px 8px 30px;
+            i.fa {
+                margin-left: 35px;
+            }
+        }
+    }
+
+    table.find-my-data-results {
+        width: 100%;
+        th {
+            text-align: left;
+            &.extra {
+                padding-right: 10px;
+            }
+            &.notes {
+                text-align: center;
+            }
+        }
+        tbody {
+            tr:nth-child(odd) {
+                background-color: $lightest-grey;
+            }
+            td {
+                vertical-align: middle;
+                word-wrap: break-word;
+                padding: 3px;
+                &.state {
+                    width: 8%;
+                }
+                &.name {
+                    width: 15%;
+                }
+                &.entityId {
+                    width: 20%;
+                }
+                &.created {
+                    width: 8%;
+                }
+                &.revisionNumber {
+                    width: 4%;
+                }
+                &.updatedBy {
+                    width: 10%;
+                }
+                &.revisionNote {
+                    width: 15%;
+                }
+                &.notes {
+                    width: 10%;
+                    text-align: center;
+                    i.fa-info-circle {
+                        color: $blue;
+                        font-size: 20px;
+                    }
+                }
+            }
+        }
+    }
     section.results {
         padding: 30px;
         background-color: white;
