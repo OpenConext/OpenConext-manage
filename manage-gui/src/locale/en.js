@@ -156,8 +156,8 @@ I18n.translations.en = {
             minimal_consent: "Minimal consent is required",
             default_consent: "Default consent with custom message",
             consent_value: "Type of consent required",
-            explanationNl: "Explanation EN",
-            explanationEn: "Explanation NL"
+            explanationNl: "Explanation NL",
+            explanationEn: "Explanation EN"
         }
     },
 
