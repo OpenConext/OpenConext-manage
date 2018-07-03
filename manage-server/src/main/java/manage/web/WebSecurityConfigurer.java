@@ -30,6 +30,7 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.yaml.snakeyaml.Yaml;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -90,9 +91,15 @@ public class WebSecurityConfigurer {
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
-            List<Features> featuresList = Stream.of(features.split(","))
+            List<String> allFeatures = Arrays.asList(Features.values()).stream()
+                .map(feature -> feature.name())
+                .collect(toList());
+
+            List<Features> featuresList = Stream.of(this.features.split(","))
+                .filter(feature -> allFeatures.contains(feature.trim().toUpperCase()))
                 .map(feature -> Features.valueOf(feature.trim().toUpperCase()))
                 .collect(toList());
+
             Product product = new Product(productOrganization, productName);
             Push push = new Push(pushUrl, pushName);
 
