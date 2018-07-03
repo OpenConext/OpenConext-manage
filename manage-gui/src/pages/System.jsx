@@ -144,7 +144,7 @@ export default class System extends React.PureComponent {
         );
     };
 
-    terminationDate = revision => revision.terminated ?  new Date(revision.terminated).toLocaleDateString() : "";
+    terminationDate = revision => revision.terminated ? new Date(revision.terminated).toLocaleDateString() : "";
 
     renderMyDataResults = findMyDataResults => {
         const headers = ["status", "name", "entityid", "terminated", "revisionNumber", "updatedBy", "revisionNote", "notes"];
@@ -158,20 +158,24 @@ export default class System extends React.PureComponent {
                 </tr>
                 </thead>
                 <tbody>
-                {findMyDataResults.map((entity, index) => <tr key={`${entity.data.entityid}_${index}`}>
-                    <td className="state">{I18n.t(`metadata.${entity.data.state}`)}</td>
-                    <td className="name">{entity.data.metaDataFields["name:en"] || entity.data.metaDataFields["name:nl"]}
-                    </td>
-                    <td className="entityId">{entity.data.entityid}</td>
-                    <td className="terminated">{this.terminationDate(entity.revision)}</td>
-                    <td className="revisionNumber">{entity.revision.number}</td>
-                    <td className="updatedBy">{entity.revision.updatedBy}</td>
-                    <td className="revisionNote">{entity.data.revisionnote}</td>
-                    <td className="notes">
-                        {isEmpty(entity.data.notes) ? <span></span> :
-                            <NotesTooltip identifier={entity.data.entityid} notes={entity.data.notes}/>}
-                    </td>
-                </tr>)}
+                {findMyDataResults.map((entity, index) => {
+                    const metaDataFields = entity.data.metaDataFields || {};
+                    const revision = entity.revision || {};
+                    return (<tr key={`${entity.data.entityid}_${index}`}>
+                        <td className="state">{I18n.t(`metadata.${entity.data.state}`)}</td>
+                        <td className="name">{metaDataFields["name:en"] || metaDataFields["name:nl"]}
+                        </td>
+                        <td className="entityId">{entity.data.entityid}</td>
+                        <td className="terminated">{this.terminationDate(revision)}</td>
+                        <td className="revisionNumber">{revision.number}</td>
+                        <td className="updatedBy">{revision.updatedBy}</td>
+                        <td className="revisionNote">{entity.data.revisionnote}</td>
+                        <td className="notes">
+                            {isEmpty(entity.data.notes) ? <span></span> :
+                                <NotesTooltip identifier={entity.data.entityid} notes={entity.data.notes}/>}
+                        </td>
+                    </tr>);
+                })}
                 </tbody>
 
             </table>
