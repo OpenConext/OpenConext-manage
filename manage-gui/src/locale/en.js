@@ -110,7 +110,7 @@ I18n.translations.en = {
             entityid:"Entity ID",
             name: "Name",
             notes: "Notes",
-            created: "Created",
+            terminated: "Deleted",
             revisionNumber: "Revision",
             updatedBy: "Deleted by",
             revisionNote: "Revision note",

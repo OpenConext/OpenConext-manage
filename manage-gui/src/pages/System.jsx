@@ -24,7 +24,7 @@ export default class System extends React.PureComponent {
             validationResults: undefined,
             orphansResults: undefined,
             findMyDataInput: "",
-            findMyDataEntityType: undefined,
+            findMyDataEntityType: "saml20_sp",
             findMyDataResults: undefined,
             pushPreviewResults: undefined,
             pushResults: undefined,
@@ -144,8 +144,10 @@ export default class System extends React.PureComponent {
         );
     };
 
+    terminationDate = revision => revision.terminated ?  new Date(revision.terminated).toLocaleDateString() : "";
+
     renderMyDataResults = findMyDataResults => {
-        const headers = ["status", "name", "entityid", "created", "revisionNumber", "updatedBy", "revisionNote", "notes"]
+        const headers = ["status", "name", "entityid", "terminated", "revisionNumber", "updatedBy", "revisionNote", "notes"];
         return <section>
             <table className="find-my-data-results">
                 <thead>
@@ -161,7 +163,7 @@ export default class System extends React.PureComponent {
                     <td className="name">{entity.data.metaDataFields["name:en"] || entity.data.metaDataFields["name:nl"]}
                     </td>
                     <td className="entityId">{entity.data.entityid}</td>
-                    <td className="created">{new Date(entity.revision.created).toLocaleDateString()}</td>
+                    <td className="terminated">{this.terminationDate(entity.revision)}</td>
                     <td className="revisionNumber">{entity.revision.number}</td>
                     <td className="updatedBy">{entity.revision.updatedBy}</td>
                     <td className="revisionNote">{entity.data.revisionnote}</td>
