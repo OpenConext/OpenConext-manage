@@ -25,10 +25,14 @@ export default class Import extends React.Component {
 
     constructor(props) {
         super(props);
+        const {newEntity, metaData} = this.props;
+        if (!newEntity) {
+            this.setState({})
+        }
         this.state = {
-            url: "",
+            url: newEntity ? "" : metaData.data.metadataurl,
             jsonUrl: "",
-            entityId: "",
+            entityId: newEntity ? "" : metaData.data.entityid,
             invalidUrl: false,
             invalidJsonUrl: false,
             xml: "",
