@@ -4,6 +4,7 @@
     "type": "saml20_sp",
     "revision": {
       "number": 0,
+      "created": "2018-06-15T08:20:34.575Z",
       "updatedBy": "saml2_user.com"
     },
     "data": {
@@ -97,6 +98,11 @@
   {
     "id": "2",
     "type": "saml20_sp",
+    "revision": {
+      "number": 0,
+      "created": "2018-06-15T08:20:34.575Z",
+      "updatedBy": "saml2_user.com"
+    },
     "data": {
       "entityid": "https://profile.test2.surfconext.nl/authentication/metadata",
       "eid": 2,
@@ -152,6 +158,11 @@
   {
     "id": "3",
     "type": "saml20_sp",
+    "revision": {
+      "number": 0,
+      "created": "2018-06-15T08:20:34.575Z",
+      "updatedBy": "saml2_user.com"
+    },
     "data": {
       "entityid": "http://mock-sp",
       "eid": 3,
@@ -193,6 +204,9 @@
       "allowedEntities": [
         {
           "name": "http://mock-idp"
+        },
+        {
+          "name": "https://idp.test2.surfconext.nl"
         }
       ]
     }
@@ -200,6 +214,11 @@
   {
     "id": "4",
     "type": "saml20_sp",
+    "revision": {
+      "number": 0,
+      "created": "2018-06-15T08:20:34.575Z",
+      "updatedBy": "saml2_user.com"
+    },
     "data": {
       "entityid": "https://serviceregistry.test2.surfconext.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp",
       "eid": 4,
@@ -242,6 +261,11 @@
   {
     "id": "5",
     "type": "saml20_sp",
+    "revision": {
+      "number": 0,
+      "created": "2018-06-15T08:20:34.575Z",
+      "updatedBy": "saml2_user.com"
+    },
     "data": {
       "entityid": "https://serviceregistry.test2.surfconext.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp-2",
       "eid": 5,
@@ -284,6 +308,11 @@
   {
     "id": "6",
     "type": "saml20_idp",
+    "revision": {
+      "number": 0,
+      "created": "2018-06-15T08:20:34.575Z",
+      "updatedBy": "saml2_user.com"
+    },
     "data": {
       "entityid": "https://idp.test2.surfconext.nl",
       "eid": 6,
@@ -369,6 +398,11 @@
   {
     "id": "7",
     "type": "saml20_idp",
+    "revision": {
+      "number": 0,
+      "created": "2018-06-15T08:20:34.575Z",
+      "updatedBy": "saml2_user.com"
+    },
     "data": {
       "entityid": "http://mock-idp",
       "eid": 7,

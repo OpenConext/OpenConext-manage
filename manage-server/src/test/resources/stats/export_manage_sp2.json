@@ -1,0 +1,38 @@
+[
+  {
+    "saml20_sp_state": "prodaccepted",
+    "date": "2018-07-10",
+    "saml20_idp_coin:institution_id": null,
+    "saml20_sp_entityid": "https://profile.test2.surfconext.nl/authentication/metadata",
+    "saml20_idp_entityid": "http://mock-idp",
+    "saml20_sp_coin:institution_id": null,
+    "saml20_idp_state": "prodaccepted"
+  },
+  {
+    "saml20_sp_state": "prodaccepted",
+    "date": "2018-07-10",
+    "saml20_idp_coin:institution_id": null,
+    "saml20_sp_entityid": "http://mock-sp",
+    "saml20_idp_entityid": "http://mock-idp",
+    "saml20_sp_coin:institution_id": null,
+    "saml20_idp_state": "prodaccepted"
+  },
+  {
+    "saml20_sp_state": "prodaccepted",
+    "date": "2018-07-10",
+    "saml20_idp_coin:institution_id": null,
+    "saml20_sp_entityid": "https://serviceregistry.test2.surfconext.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp",
+    "saml20_idp_entityid": "http://mock-idp",
+    "saml20_sp_coin:institution_id": null,
+    "saml20_idp_state": "prodaccepted"
+  },
+  {
+    "saml20_sp_state": "prodaccepted",
+    "date": "2018-07-10",
+    "saml20_idp_coin:institution_id": null,
+    "saml20_sp_entityid": "https://serviceregistry.test2.surfconext.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp-2",
+    "saml20_idp_entityid": "http://mock-idp",
+    "saml20_sp_coin:institution_id": null,
+    "saml20_idp_state": "prodaccepted"
+  }
+]

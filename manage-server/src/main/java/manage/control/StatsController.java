@@ -134,7 +134,11 @@ public class StatsController {
             if (allowedAll) {
                 spCandidates = serviceProviders;
             } else {
-                List<String> allowedEntities = List.class.cast(idpData.get("allowedEntities"));
+                List<String> allowedEntities = (List<String>) List.class.cast(idpData.getOrDefault("allowedEntities",
+                    new ArrayList<>())).stream()
+                    .map(m -> Map.class.cast(m).get("name"))
+                    .collect(toList());
+
                 spCandidates = serviceProviders.stream().filter(sp -> allowedEntities.contains(Map.class.cast(sp.get
                     ("data")).get("entityid"))).collect(toList());
             }
@@ -149,8 +153,11 @@ public class StatsController {
                 Long spEnded = this.getTime(idpRevision, "ended");
                 Map spData = Map.class.cast(sp.get("data"));
                 Boolean spAllowedAll = Boolean.class.cast(spData.get("allowedall"));
-                boolean whiteListed = List.class.cast(spData.getOrDefault("allowedEntities", new ArrayList()))
-                    .contains(idpData.get("entityid"));
+                List<String> allowedEntities = (List<String>) List.class.cast(spData.getOrDefault("allowedEntities",
+                    new ArrayList()))
+                    .stream().map(m -> Map.class.cast(m).get("name"))
+                    .collect(toList());
+                boolean whiteListed = allowedEntities.contains(idpData.get("entityid"));
                 return (spAllowedAll || whiteListed) &&
                     (spData.get("state").equals(idpData.get("state"))) &&
                     (spTerminated == null || spTerminated > idpCreated) &&
