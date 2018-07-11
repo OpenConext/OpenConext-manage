@@ -66,6 +66,7 @@ public class EngineBlockFormatter {
         //single log outs are handled in separate method
         commonAttributes.put("metadata:coin:disable_scoping", empty());
         commonAttributes.put("metadata:coin:additional_logging", empty());
+        commonAttributes.put("metadata:coin:signature_method", empty());
         commonAttributes.put("manipulation", of("manipulation_code"));
 
         spAttributes.put("metadata:coin:transparant_issuer", empty());
@@ -77,12 +78,10 @@ public class EngineBlockFormatter {
         spAttributes.put("metadata:coin:policy_enforcement_decision_required", empty());
         spAttributes.put("metadata:coin:attribute_aggregation_required", empty());
         spAttributes.put("metadata:coin:no_consent_required", empty());
-        spAttributes.put("metadata:coin:signature_method", empty());
 
         idpAttributes.put("metadata:coin:guest_qualifier", empty());
         idpAttributes.put("metadata:coin:schachomeorganization", empty());
         idpAttributes.put("metadata:coin:hidden", empty());
-
     }
 
     public Map<String, Object> parseServiceProvider(MetaData metaDataContainer) {
