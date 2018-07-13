@@ -7,6 +7,7 @@ import manage.model.EntityType;
 import manage.model.MetaData;
 import manage.model.MetaDataUpdate;
 import manage.model.Revision;
+import manage.model.RevisionRestore;
 import org.junit.Test;
 
 import java.net.URLEncoder;
@@ -627,6 +628,72 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         assertEquals(1, List.class.cast(idp.getData().get("disableConsent")).size());
 
     }
+
+    @Test
+    public void restoreRevision() throws Exception {
+        String type = EntityType.SP.getType();
+        MetaData metaData = metaDataRepository.findById("1", type);
+        Map.class.cast(metaData.getData()).put("entityid", "something changed");
+        given()
+            .when()
+            .body(metaData)
+            .header("Content-type", "application/json")
+            .put("/manage/api/client/metadata")
+            .then()
+            .statusCode(SC_OK);
+
+        List<MetaData> revisions = metaDataRepository.getMongoTemplate().findAll(MetaData.class, "saml20_sp_revision");
+        assertEquals(1, revisions.size());
+        RevisionRestore revisionRestore = new RevisionRestore(revisions.get(0).getId(),
+            type.concat("_revision"), type);
+
+        given()
+            .when()
+            .body(revisionRestore)
+            .header("Content-type", "application/json")
+            .put("manage/api/client/restoreRevision")
+            .then()
+            .statusCode(SC_OK);
+
+        revisions = metaDataRepository.getMongoTemplate().findAll(MetaData.class, "saml20_sp_revision");
+        assertEquals(2, revisions.size());
+        revisions.forEach(rev -> assertEquals(rev.getRevision().getParentId(), "1"));
+    }
+
+    @Test
+    public void restoreDeletedRevision() throws Exception {
+        String type = EntityType.SP.getType();
+        given()
+            .when()
+            .delete("manage/api/client/metadata/saml20_sp/1")
+            .then()
+            .statusCode(SC_OK);
+
+        MetaData metaData = metaDataRepository.findById("1", "saml20_sp");
+        assertNull(metaData);
+
+        List<MetaData> revisions = metaDataRepository.getMongoTemplate().findAll(MetaData.class, "saml20_sp_revision");
+        assertEquals(1, revisions.size());
+        RevisionRestore revisionRestore = new RevisionRestore(revisions.get(0).getId(),
+            type.concat("_revision"), type);
+
+        given()
+            .when()
+            .body(revisionRestore)
+            .header("Content-type", "application/json")
+            .put("manage/api/client/restoreDeleted")
+            .then()
+            .statusCode(SC_OK);
+
+        metaData = metaDataRepository.findById("1", "saml20_sp");
+        assertNotNull(metaData);
+
+        revisions = metaDataRepository.getMongoTemplate().findAll(MetaData.class, "saml20_sp_revision");
+        assertEquals(1, revisions.size());
+        revisions.forEach(rev -> assertEquals(rev.getRevision().getParentId(), "1"));
+
+    }
+
 
     private ValidatableResponse doUpdateSp(Map<String, String> body, MetaData metaData) {
         return given()

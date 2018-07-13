@@ -15,6 +15,7 @@ import manage.model.RevisionRestore;
 import manage.model.XML;
 import manage.repository.MetaDataRepository;
 import manage.shibboleth.FederatedUser;
+import org.everit.json.schema.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -253,6 +254,36 @@ public class MetaDataController {
         return metaData;
     }
 
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/client/restoreDeleted")
+    @Transactional
+    public MetaData restoreDeleted(@Validated @RequestBody RevisionRestore revisionRestore,
+                                    FederatedUser federatedUser) throws JsonProcessingException {
+        MetaData revision = metaDataRepository.findById(revisionRestore.getId(), revisionRestore.getType());
+
+        MetaData parent = metaDataRepository.findById(revision.getRevision().getParentId(),
+            revisionRestore.getParentType());
+
+        if (parent != null) {
+            throw new IllegalArgumentException("Parent is not null");
+        }
+        String newId = revision.getRevision().getParentId();
+        revision.getRevision().deTerminate(newId);
+        metaDataRepository.update(revision);
+
+        revision.restoreToLatest(newId, 0L, federatedUser.getUid(),
+            revision.getRevision().getNumber(), revisionRestore.getParentType());
+        //It might be that the revision is no longer valid as metaData configuration has changed
+        validate(revision);
+        metaDataRepository.save(revision);
+
+        LOG.info("Restored deleted revision {} with Id {} by {}", revisionRestore, revision.getId(), federatedUser.getUid());
+
+        return revision;
+    }
+
+
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/client/restoreRevision")
     @Transactional
@@ -272,7 +303,7 @@ public class MetaDataController {
         parent.revision(UUID.randomUUID().toString());
         metaDataRepository.save(parent);
 
-        LOG.info("Restored revision {} with metaData {} by {}", revisionRestore, revision.getId(), federatedUser.getUid());
+        LOG.info("Restored revision {} with Id {} by {}", revisionRestore, revision.getId(), federatedUser.getUid());
 
         return revision;
     }

@@ -3,7 +3,16 @@ import I18n from "i18n-js";
 
 import CopyToClipboard from "react-copy-to-clipboard";
 import PropTypes from "prop-types";
-import {deleteOrphanedReferences, orphans, ping, push, pushPreview, search, validate} from "../api";
+import {
+    deleteOrphanedReferences,
+    orphans,
+    ping,
+    push,
+    pushPreview,
+    restoreDeletedRevision,
+    search,
+    validate
+} from "../api";
 import {isEmpty, stop} from "../utils/Utils";
 import JsonView from "react-pretty-json";
 import ConfirmationDialog from "../components/ConfirmationDialog";
@@ -128,7 +137,8 @@ export default class System extends React.PureComponent {
                 <section className="find-my-data-controls">
                     <section className="search-input-container">
                         <input className="search-input" type="text" value={findMyDataInput}
-                               onChange={e => this.setState({findMyDataInput: e.target.value})}/>
+                               onChange={e => this.setState({findMyDataInput: e.target.value})}
+                               onKeyPress={e => e.key === "Enter" ? this.findMyData(e) : false}/>
                         <i className="fa fa-search"></i>
                     </section>
                     <a className={`${classNameSearch} search button`} onClick={this.findMyData}>
@@ -146,8 +156,39 @@ export default class System extends React.PureComponent {
 
     terminationDate = revision => revision.terminated ? new Date(revision.terminated).toLocaleDateString() : "";
 
+    doRestoreDeleted = (id, revisionType, parentType, number) => () => {
+        this.setState({confirmationDialogOpen: false});
+        restoreDeletedRevision(id, revisionType, parentType).then(json => {
+            if (json.exception) {
+                setFlash(json.validations, "error");
+            } else {
+                const name = json.data.metaDataFields["name:en"] || json.data.metaDataFields["name:nl"] || "this service";
+                setFlash(I18n.t("metadata.flash.restored", {
+                    name: name,
+                    revision: number,
+                    newRevision: json.revision.number
+                }));
+                this.props.history.replace(`/dummy`);
+                setTimeout(() => this.props.history.replace(`/metadata/${json.type}/${json.id}`), 50);
+            }
+        });
+    };
+
+    restoreDeleted = (entity, number, revisionType, parentType, isTerminated) => e => {
+        stop(e);
+        if (isTerminated) {
+            this.setState({
+                confirmationDialogOpen: true,
+                confirmationQuestion: I18n.t("playground.restoreConfirmation", {name: entity.data.metaDataFields["name:en"] || entity.data.entityid, number: number}),
+                confirmationDialogAction: this.doRestoreDeleted(entity._id, revisionType, parentType, number)
+            });
+        }
+    };
+
+
     renderMyDataResults = findMyDataResults => {
         const headers = ["status", "name", "entityid", "terminated", "revisionNumber", "updatedBy", "revisionNote", "notes"];
+        const {findMyDataEntityType} = this.state;
         return <section>
             <table className="find-my-data-results">
                 <thead>
@@ -161,6 +202,9 @@ export default class System extends React.PureComponent {
                 {findMyDataResults.map((entity, index) => {
                     const metaDataFields = entity.data.metaDataFields || {};
                     const revision = entity.revision || {};
+                    const isTerminated = entity.revision.terminated;
+                    const restoreClassName = `button ${isTerminated ? "blue" : "grey"}`;
+
                     return (<tr key={`${entity.data.entityid}_${index}`}>
                         <td className="state">{I18n.t(`metadata.${entity.data.state}`)}</td>
                         <td className="name">{metaDataFields["name:en"] || metaDataFields["name:nl"]}
@@ -174,13 +218,20 @@ export default class System extends React.PureComponent {
                             {isEmpty(entity.data.notes) ? <span></span> :
                                 <NotesTooltip identifier={entity.data.entityid} notes={entity.data.notes}/>}
                         </td>
+                        <td><a className={restoreClassName} href={`/restore/${entity.id}`}
+                               onClick={this.restoreDeleted(entity, revision.number,
+                                   `${findMyDataEntityType}_revision`,
+                                   findMyDataEntityType, isTerminated)}
+                               disabled={!isTerminated}>
+                            {I18n.t("revisions.restore")}</a>
+                        </td>
                     </tr>);
                 })}
                 </tbody>
 
             </table>
         </section>;
-    }
+    };
 
     renderPush = () => {
         const {loading, pushResults} = this.state;

@@ -30,4 +30,9 @@ public class Revision {
     public void terminate() {
         this.terminated = Instant.now();
     }
+
+    public void deTerminate(String newId) {
+        this.terminated = null;
+        this.parentId = newId;
+    }
 }

@@ -126,7 +126,9 @@ I18n.translations.en = {
             attribute: "Attribute",
             entityId: "Entity-ID"
         },
-        search: "Search"
+        search: "Search",
+        restore: "Restore",
+        restoreConfirmation: "Are you sure you want to restore deleted {{name}} revision {{number}}?"
 
     },
     whitelisting: {

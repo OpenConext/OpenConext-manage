@@ -107,6 +107,9 @@ export function restoreRevision(id, type, parentType) {
     return postPutJson("restoreRevision", {id: id, type: type, parentType: parentType}, "put");
 }
 
+export function restoreDeletedRevision(id, type, parentType) {
+    return postPutJson("restoreDeleted", {id: id, type: type, parentType: parentType}, "put");
+}
 
 export function configuration() {
     return fetchJson("metadata/configuration");
