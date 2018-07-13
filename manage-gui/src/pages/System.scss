@@ -108,9 +108,17 @@
                 }
                 &.name {
                     width: 15%;
+                    max-width: 350px;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
                 }
                 &.entityId {
                     width: 20%;
+                    max-width: 350px;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
                 }
                 &.terminated {
                     width: 8%;
@@ -119,10 +127,18 @@
                     width: 4%;
                 }
                 &.updatedBy {
-                    width: 10%;
+                    width: 8%;
+                    max-width: 100px;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
                 }
                 &.revisionNote {
-                    width: 15%;
+                    width: 12%;
+                    max-width: 100px;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
                 }
                 &.notes {
                     width: 10%;
@@ -131,6 +147,9 @@
                         color: $blue;
                         font-size: 20px;
                     }
+                }
+                &.nope {
+                    width: 15%;
                 }
             }
         }
