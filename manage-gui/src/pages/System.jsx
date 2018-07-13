@@ -187,7 +187,7 @@ export default class System extends React.PureComponent {
 
 
     renderMyDataResults = findMyDataResults => {
-        const headers = ["status", "name", "entityid", "terminated", "revisionNumber", "updatedBy", "revisionNote", "notes"];
+        const headers = ["status", "name", "entityid", "terminated", "revisionNumber", "updatedBy", "revisionNote", "notes", "nope"];
         const {findMyDataEntityType} = this.state;
         return <section>
             <table className="find-my-data-results">
@@ -207,8 +207,7 @@ export default class System extends React.PureComponent {
 
                     return (<tr key={`${entity.data.entityid}_${index}`}>
                         <td className="state">{I18n.t(`metadata.${entity.data.state}`)}</td>
-                        <td className="name">{metaDataFields["name:en"] || metaDataFields["name:nl"]}
-                        </td>
+                        <td className="name">{metaDataFields["name:en"] || metaDataFields["name:nl"]}</td>
                         <td className="entityId">{entity.data.entityid}</td>
                         <td className="terminated">{this.terminationDate(revision)}</td>
                         <td className="revisionNumber">{revision.number}</td>

@@ -114,7 +114,7 @@ I18n.translations.en = {
             revisionNumber: "Revision",
             updatedBy: "Deleted by",
             revisionNote: "Revision note",
-
+            nope: ""
         },
         no_results: "No results",
         error: "Invalid input: dangling meta character '*'",
