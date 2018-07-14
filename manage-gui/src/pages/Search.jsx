@@ -65,7 +65,7 @@ export default class Search extends React.PureComponent {
         autocomplete(this.state.selectedTab, this.state.query).then(results => this.setState({
             suggestions: results.length > 15 ? results.slice(0, results.length-1) : results,
             loadingAutoComplete: false,
-            moreToShow: results.length > 15
+            moreToShow: results.length > 15 && this.state.query !== "*"
         })), 200);
 
     itemSelected = metaData => this.props.history.push(`/metadata/${this.state.selectedTab}/${metaData["_id"]}`);
