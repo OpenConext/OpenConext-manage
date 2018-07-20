@@ -275,6 +275,7 @@ export default class Detail extends React.PureComponent {
                     <section className="notes">
                         <label htmlFor="revisionnote">{I18n.t("metadata.revisionnote")}</label>
                         <input name="revisionnote" type="text" value={revisionNote}
+                               ref={ref => this.revisionNote = ref}
                                onChange={e => this.setState({revisionNote: e.target.value})}/>
                     </section>
                     {revisionNoteRequired && <em className="error">{I18n.t("metadata.revisionnoteRequired")}</em>}
@@ -292,7 +293,7 @@ export default class Detail extends React.PureComponent {
                     <a className={`button ${hasErrors ? "grey disabled" : "blue"}`} onClick={e => {
                         stop(e);
                         if (isEmpty(revisionNote)) {
-                            this.setState({revisionNoteError: true});
+                            this.setState({revisionNoteError: true}, () => this.revisionNote.focus());
                             return false;
                         }
                         if (hasErrors) {
