@@ -81,6 +81,8 @@
             i.fa {
                 margin-left: 35px;
             }
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
         }
     }
 
@@ -108,14 +110,14 @@
                 }
                 &.name {
                     width: 15%;
-                    max-width: 350px;
+                    max-width: 300px;
                     overflow: hidden;
                     text-overflow: ellipsis;
                     white-space: nowrap;
                 }
                 &.entityId {
                     width: 20%;
-                    max-width: 350px;
+                    max-width: 300px;
                     overflow: hidden;
                     text-overflow: ellipsis;
                     white-space: nowrap;

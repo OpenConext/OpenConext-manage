@@ -21,6 +21,7 @@ import "react-pretty-json/assets/json-view.css";
 import {setFlash} from "../utils/Flash";
 import SelectMetaDataType from "../components/metadata/SelectMetaDataType";
 import NotesTooltip from "../components/NotesTooltip";
+import CheckBox from "../components/CheckBox";
 
 export default class System extends React.PureComponent {
 
@@ -37,6 +38,7 @@ export default class System extends React.PureComponent {
             findMyDataResults: undefined,
             pushPreviewResults: undefined,
             pushResults: undefined,
+            showNonRestorable: true,
             loading: false,
             copiedToClipboardClassName: "",
             confirmationDialogOpen: false,
@@ -127,7 +129,7 @@ export default class System extends React.PureComponent {
     };
 
     renderFindMyData = () => {
-        const {findMyDataInput, findMyDataEntityType, findMyDataResults} = this.state;
+        const {findMyDataInput, findMyDataEntityType, findMyDataResults, showNonRestorable} = this.state;
         const showResults = findMyDataResults && findMyDataResults.length > 0;
         const noResults = findMyDataResults && findMyDataResults.length === 0;
         const classNameSearch = findMyDataInput.length > 3 ? "green" : "disabled grey";
@@ -147,8 +149,11 @@ export default class System extends React.PureComponent {
                                         state={findMyDataEntityType}
                                         configuration={this.props.configuration}
                                         defaultToFirst={true}/>
+                    <CheckBox name="filter-live" value={showNonRestorable}
+                              info={I18n.t("playground.displayNonRestorable")} readOnly={!showResults}
+                              onChange={() => this.setState({showNonRestorable: !this.state.showNonRestorable})}/>
                 </section>
-                {showResults && this.renderMyDataResults(findMyDataResults)}
+                {showResults && this.renderMyDataResults(findMyDataResults, showNonRestorable)}
                 {noResults && <p>{I18n.t("playground.findMyDataNoResults")}</p>}
             </section>
         );
@@ -179,16 +184,21 @@ export default class System extends React.PureComponent {
         if (isTerminated) {
             this.setState({
                 confirmationDialogOpen: true,
-                confirmationQuestion: I18n.t("playground.restoreConfirmation", {name: entity.data.metaDataFields["name:en"] || entity.data.entityid, number: number}),
+                confirmationQuestion: I18n.t("playground.restoreConfirmation", {
+                    name: entity.data.metaDataFields["name:en"] || entity.data.entityid,
+                    number: number
+                }),
                 confirmationDialogAction: this.doRestoreDeleted(entity._id, revisionType, parentType, number)
             });
         }
     };
 
 
-    renderMyDataResults = findMyDataResults => {
+    renderMyDataResults = (findMyDataResults, showNonRestorable) => {
         const headers = ["status", "name", "entityid", "terminated", "revisionNumber", "updatedBy", "revisionNote", "notes", "nope"];
         const {findMyDataEntityType} = this.state;
+        const filteredDataResults = showNonRestorable ? findMyDataResults :
+            findMyDataResults.filter(entity => entity.revision.terminated);
         return <section>
             <table className="find-my-data-results">
                 <thead>
@@ -199,12 +209,11 @@ export default class System extends React.PureComponent {
                 </tr>
                 </thead>
                 <tbody>
-                {findMyDataResults.map((entity, index) => {
+                {filteredDataResults.map((entity, index) => {
                     const metaDataFields = entity.data.metaDataFields || {};
                     const revision = entity.revision || {};
                     const isTerminated = entity.revision.terminated;
                     const restoreClassName = `button ${isTerminated ? "blue" : "grey"}`;
-
                     return (<tr key={`${entity.data.entityid}_${index}`}>
                         <td className="state">{I18n.t(`metadata.${entity.data.state}`)}</td>
                         <td className="name">{metaDataFields["name:en"] || metaDataFields["name:nl"]}</td>
@@ -217,7 +226,7 @@ export default class System extends React.PureComponent {
                             {isEmpty(entity.data.notes) ? <span></span> :
                                 <NotesTooltip identifier={entity.data.entityid} notes={entity.data.notes}/>}
                         </td>
-                        <td><a className={restoreClassName} href={`/restore/${entity.id}`}
+                        <td><a className={restoreClassName} href={`/restore/${entity._id}`}
                                onClick={this.restoreDeleted(entity, revision.number,
                                    `${findMyDataEntityType}_revision`,
                                    findMyDataEntityType, isTerminated)}

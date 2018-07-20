@@ -116,6 +116,7 @@ I18n.translations.en = {
             revisionNote: "Revision note",
             nope: ""
         },
+        displayNonRestorable: "Display non-restorable",
         no_results: "No results",
         error: "Invalid input: dangling meta character '*'",
         pushResults: {
