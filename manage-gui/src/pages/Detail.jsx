@@ -262,6 +262,37 @@ export default class Detail extends React.PureComponent {
         }
     };
 
+    submit = e => {
+        stop(e);
+        const {errors, revisionNote} = this.state;
+        const hasErrors = this.hasGlobalErrors(errors);
+        if (isEmpty(revisionNote)) {
+            this.setState({revisionNoteError: true}, () => this.revisionNote.focus());
+            return false;
+        }
+        if (hasErrors) {
+            return false;
+        }
+        this.setState({revisionNoteError: false});
+        const promise = this.state.isNew ? save : update;
+        const metaData = this.state.metaData;
+        metaData.data.revisionnote = revisionNote;
+        promise(metaData)
+            .then(json => {
+                if (json.exception) {
+                    setFlash(json.validations, "error");
+                } else {
+                    const name = json.data.metaDataFields["name:en"] || json.data.metaDataFields["name:nl"] || "this service";
+                    setFlash(I18n.t("metadata.flash.updated", {
+                        name: name,
+                        revision: json.revision.number
+                    }));
+                    this.props.history.replace(`/dummy`);
+                    setTimeout(() => this.props.history.replace(`/metadata/${json.type}/${json.id}/${this.state.selectedTab}`), 50);
+                }
+            });
+    };
+
     renderActions = (revisionNote) => {
         if (this.props.currentUser.guest) {
             return null;
@@ -276,6 +307,7 @@ export default class Detail extends React.PureComponent {
                         <label htmlFor="revisionnote">{I18n.t("metadata.revisionnote")}</label>
                         <input name="revisionnote" type="text" value={revisionNote}
                                ref={ref => this.revisionNote = ref}
+                               onKeyPress={e => e.key === "Enter" ? this.submit(e) : false}
                                onChange={e => this.setState({revisionNote: e.target.value})}/>
                     </section>
                     {revisionNoteRequired && <em className="error">{I18n.t("metadata.revisionnoteRequired")}</em>}
@@ -290,34 +322,8 @@ export default class Detail extends React.PureComponent {
                             leavePage: true
                         });
                     }}>{I18n.t("metadata.cancel")}</a>
-                    <a className={`button ${hasErrors ? "grey disabled" : "blue"}`} onClick={e => {
-                        stop(e);
-                        if (isEmpty(revisionNote)) {
-                            this.setState({revisionNoteError: true}, () => this.revisionNote.focus());
-                            return false;
-                        }
-                        if (hasErrors) {
-                            return false;
-                        }
-                        this.setState({revisionNoteError: false});
-                        const promise = this.state.isNew ? save : update;
-                        const metaData = this.state.metaData;
-                        metaData.data.revisionnote = revisionNote;
-                        promise(metaData)
-                            .then(json => {
-                                if (json.exception) {
-                                    setFlash(json.validations, "error");
-                                } else {
-                                    const name = json.data.metaDataFields["name:en"] || json.data.metaDataFields["name:nl"] || "this service";
-                                    setFlash(I18n.t("metadata.flash.updated", {
-                                        name: name,
-                                        revision: json.revision.number
-                                    }));
-                                    this.props.history.replace(`/dummy`);
-                                    setTimeout(() => this.props.history.replace(`/metadata/${json.type}/${json.id}/${this.state.selectedTab}`), 50);
-                                }
-                            });
-                    }}>{I18n.t("metadata.submit")}</a>
+                    <a className={`button ${hasErrors ? "grey disabled" : "blue"}`}
+                       onClick={this.submit}>{I18n.t("metadata.submit")}</a>
                 </section>
             </section>
         );

@@ -115,6 +115,26 @@ public class MongobeeConfiguration {
         doMigrateMotivation(mongoTemplate);
     }
 
+    @ChangeSet(order = "024", id = "removeEmptyManipulations", author = "Okke Harsta")
+    public void removeEmptyManipulation(MongoTemplate mongoTemplate) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("data.manipulation").regex("^\\s*$"));
+
+        Arrays.asList(EntityType.values()).forEach(entityType -> {
+            String collectionName = entityType.getType();
+            List<Map> results = mongoTemplate.find(query, Map.class, collectionName);
+            results.forEach(provider -> {
+                Map data = Map.class.cast(provider.get("data"));
+                String manipulation = (String) data.get("manipulation");
+                if (manipulation != null && manipulation.replaceAll("\\s+", "").equals("")) {
+                    data.put("manipulation", null);
+                    mongoTemplate.save(provider, collectionName);
+                    LOG.info("Nullified empty manipulation for {}", data.get("entityid"));
+                }
+            });
+        });
+    }
+
     protected void doMigrateMotivation(MongoTemplate mongoTemplate) {
         MappingMongoConverter converter = (MappingMongoConverter) mongoTemplate.getConverter();
         converter.setMapKeyDotReplacement("@");
