@@ -7,7 +7,10 @@
     background-color: white;
 
     p.info {
-        padding-top: 15px;
+        padding: 15px 0 0 30px;
+        span.warning {
+            color: $red;
+        }
     }
 
     section.form {
@@ -21,6 +24,10 @@
             border: 1px solid #d9d9d8;
             line-height: 33px;
         }
+        i.fa-cloud-download {
+            margin-left: 65px;
+        }
+
     }
 }
 

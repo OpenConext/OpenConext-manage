@@ -52,7 +52,9 @@ export default class EduGain extends React.PureComponent {
         const {results} = this.state;
         return (
             <div className="edugain">
-                <p className="info">Import all Service Providers from the specified feed</p>
+                <p className="info">Import all Service Providers from the specified feed.
+                    <span className="warning"> Note that there is no review before the Service Providers are imported.</span>
+                </p>
                 <section className="form">
                     {this.state.invalidUrl && <p className="invalid">{I18n.t("import.invalid", {type: "URL"})}</p>}
                     <input type="text" value={this.state.url}
