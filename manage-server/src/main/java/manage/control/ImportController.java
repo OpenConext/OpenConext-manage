@@ -100,18 +100,6 @@ public class ImportController {
         }
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping(value = "/client/import/feed")
-    public List<Map<String, Object>> importFeed(@Validated @RequestBody Import importRequest) {
-        try {
-            Resource resource = new UrlResource(new URL(importRequest.getUrl()));
-            return this.importer.importFeed(resource);
-        } catch (IOException | XMLStreamException e) {
-            return singletonList(singletonMap("errors", singletonList(e.toString())));
-        }
-    }
-
-
     private EntityType getType(String type, Map<String, Object> json) {
         EntityType entityType = EntityType.IDP.getType().equals(type) ?
             EntityType.IDP : EntityType.SP.getType().equals(type) ? EntityType.SP : null;

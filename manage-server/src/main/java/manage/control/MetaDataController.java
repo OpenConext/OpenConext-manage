@@ -9,19 +9,21 @@ import manage.format.Exporter;
 import manage.format.Importer;
 import manage.hook.MetaDataHook;
 import manage.model.EntityType;
+import manage.model.Import;
 import manage.model.MetaData;
 import manage.model.MetaDataUpdate;
 import manage.model.RevisionRestore;
 import manage.model.XML;
 import manage.repository.MetaDataRepository;
 import manage.shibboleth.FederatedUser;
-import org.everit.json.schema.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,6 +41,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
 import java.net.URLDecoder;
 import java.time.Clock;
 import java.util.ArrayList;
@@ -49,6 +52,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static java.util.Collections.singletonMap;
 import static manage.mongo.MongobeeConfiguration.REVISION_POSTFIX;
 
@@ -132,6 +136,24 @@ public class MetaDataController {
         MetaData metaData = new MetaData(EntityType.SP.getType(), innerJson);
 
         return doPost(metaData, apiUser.getName());
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping(value = "/client/import/feed")
+    public List<Map<String, Object>> importFeed(@Validated @RequestBody Import importRequest) {
+        try {
+            Resource resource = new UrlResource(new URL(importRequest.getUrl()));
+            //TODO fetch all entitiesID's and sort them into to_ignore and imported:
+            /*
+            new imported
+overwritten
+skipped as coin:imported_from_edugain is false
+
+             */
+            return this.importer.importFeed(resource);
+        } catch (IOException | XMLStreamException e) {
+            return singletonList(singletonMap("errors", singletonList(e.toString())));
+        }
     }
 
     private void addDefaultSpData(Map<String, Object> innerJson) {
@@ -259,7 +281,7 @@ public class MetaDataController {
     @PutMapping("/client/restoreDeleted")
     @Transactional
     public MetaData restoreDeleted(@Validated @RequestBody RevisionRestore revisionRestore,
-                                    FederatedUser federatedUser) throws JsonProcessingException {
+                                   FederatedUser federatedUser) throws JsonProcessingException {
         MetaData revision = metaDataRepository.findById(revisionRestore.getId(), revisionRestore.getType());
 
         MetaData parent = metaDataRepository.findById(revision.getRevision().getParentId(),
@@ -278,7 +300,8 @@ public class MetaDataController {
         validate(revision);
         metaDataRepository.save(revision);
 
-        LOG.info("Restored deleted revision {} with Id {} by {}", revisionRestore, revision.getId(), federatedUser.getUid());
+        LOG.info("Restored deleted revision {} with Id {} by {}", revisionRestore, revision.getId(), federatedUser
+            .getUid());
 
         return revision;
     }
@@ -340,7 +363,8 @@ public class MetaDataController {
     }
 
     @GetMapping({"/client/rawSearch/{type}", "/internal/rawSearch/{type}"})
-    public List<MetaData> rawSearch(@PathVariable("type") String type, @RequestParam("query") String query) throws UnsupportedEncodingException {
+    public List<MetaData> rawSearch(@PathVariable("type") String type, @RequestParam("query") String query) throws
+        UnsupportedEncodingException {
         if (query.startsWith("%")) {
             query = URLDecoder.decode(query, "UTF-8");
         }
