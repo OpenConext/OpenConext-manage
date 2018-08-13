@@ -1,0 +1,26 @@
+@import "../stylesheets/mixins.scss";
+@import "../stylesheets/vars.scss";
+
+.edugain {
+    @include page;
+
+    background-color: white;
+
+    p.info {
+        padding-top: 15px;
+    }
+
+    section.form {
+        display: flex;
+        padding: 30px;
+        input {
+            flex-grow: 2;
+            font-size: 14px;
+            padding: 0 10px;
+            border-radius: 3px;
+            border: 1px solid #d9d9d8;
+            line-height: 33px;
+        }
+    }
+}
+

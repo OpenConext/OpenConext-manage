@@ -34,6 +34,22 @@ public class MetaDataFeedParser {
     private static final List<String> languages = Arrays.asList("en", "nl");
     private static final String ATTRIBUTES = "attributes";
 
+
+    public List<Map<String, Object>> importFeed(Resource xml,
+                                                MetaDataAutoConfiguration metaDataAutoConfiguration) throws
+        XMLStreamException, IOException {
+        //despite it's name, the XMLInputFactoryImpl is not thread safe
+        XMLInputFactory factory = XMLInputFactory.newInstance();
+
+        XMLStreamReader reader = factory.createXMLStreamReader(xml.getInputStream());
+
+        List<Map<String, Object>> results = new ArrayList<>();
+        while (reader.hasNext()) {
+            results.add(parseEntity(EntityType.SP, Optional.empty(), metaDataAutoConfiguration, reader));
+        }
+        return results;
+    }
+
     public Map<String, Object> importXML(Resource xml,
                                          EntityType entityType,
                                          Optional<String> entityIDOptional,
@@ -44,6 +60,13 @@ public class MetaDataFeedParser {
 
         XMLStreamReader reader = factory.createXMLStreamReader(xml.getInputStream());
 
+        return parseEntity(entityType, entityIDOptional, metaDataAutoConfiguration, reader);
+    }
+
+    private Map<String, Object> parseEntity(EntityType entityType,
+                                            Optional<String> entityIDOptional,
+                                            MetaDataAutoConfiguration metaDataAutoConfiguration,
+                                            XMLStreamReader reader) throws XMLStreamException {
         Map<String, Object> result = new TreeMap<>();
         Map<String, String> metaDataFields = new TreeMap<>();
 
@@ -247,7 +270,7 @@ public class MetaDataFeedParser {
                             }
                             break;
                         case "EntityAttributes":
-                            inEntityAttributes  = inCorrectEntityDescriptor;
+                            inEntityAttributes = inCorrectEntityDescriptor;
                             break;
                         case "AttributeValue":
                             if (inEntityAttributes) {

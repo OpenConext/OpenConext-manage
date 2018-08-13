@@ -23,10 +23,13 @@ import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import static java.util.Collections.singletonList;
+import static java.util.Collections.singletonMap;
 
 @RestController
 public class ImportController {
@@ -42,15 +45,17 @@ public class ImportController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(value = "/client/import/endpoint/xml/{type}")
-    public Map<String, Object> importXMLUrl(@PathVariable("type") String type, @Validated @RequestBody Import importRequest) {
+    public Map<String, Object> importXMLUrl(@PathVariable("type") String type, @Validated @RequestBody Import
+        importRequest) {
         try {
             Resource resource = new UrlResource(new URL(importRequest.getUrl()));
-            Map<String, Object> result = this.importer.importXML(resource, EntityType.fromType(type), Optional.ofNullable(importRequest
+            Map<String, Object> result = this.importer.importXML(resource, EntityType.fromType(type), Optional
+                .ofNullable(importRequest
                 .getEntityId()));
             result.put("metadataurl", importRequest.getUrl());
             return result;
         } catch (IOException | XMLStreamException e) {
-            return Collections.singletonMap("errors", Collections.singletonList(e.toString()));
+            return singletonMap("errors", singletonList(e.toString()));
         }
     }
 
@@ -58,10 +63,11 @@ public class ImportController {
     @PostMapping(value = "/client/import/xml/{type}")
     public Map<String, Object> importXml(@PathVariable("type") String type, @Validated @RequestBody XML container) {
         try {
-            return this.importer.importXML(new ByteArrayResource(container.getXml().getBytes()), EntityType.fromType(type), Optional.ofNullable
+            return this.importer.importXML(new ByteArrayResource(container.getXml().getBytes()), EntityType.fromType
+                (type), Optional.ofNullable
                 (container.getEntityId()));
         } catch (IOException | XMLStreamException e) {
-            return Collections.singletonMap("errors", Collections.singletonList(e.toString()));
+            return singletonMap("errors", singletonList(e.toString()));
         }
     }
 
@@ -82,16 +88,29 @@ public class ImportController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(value = "/client/import/endpoint/json/{type}")
-    public Map<String, Object> importJsonUrl(@PathVariable("type") String type, @Validated @RequestBody Import importRequest) {
+    public Map<String, Object> importJsonUrl(@PathVariable("type") String type, @Validated @RequestBody Import
+        importRequest) {
         try {
             Resource resource = new UrlResource(new URL(importRequest.getUrl()));
             String json = IOUtils.toString(resource.getInputStream(), Charset.defaultCharset());
             Map map = objectMapper.readValue(json, Map.class);
             return this.importJson(type, map);
         } catch (IOException e) {
-            return Collections.singletonMap("errors", Collections.singletonList(e.toString()));
+            return singletonMap("errors", singletonList(e.toString()));
         }
     }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping(value = "/client/import/feed")
+    public List<Map<String, Object>> importFeed(@Validated @RequestBody Import importRequest) {
+        try {
+            Resource resource = new UrlResource(new URL(importRequest.getUrl()));
+            return this.importer.importFeed(resource);
+        } catch (IOException | XMLStreamException e) {
+            return singletonList(singletonMap("errors", singletonList(e.toString())));
+        }
+    }
+
 
     private EntityType getType(String type, Map<String, Object> json) {
         EntityType entityType = EntityType.IDP.getType().equals(type) ?
@@ -99,7 +118,8 @@ public class ImportController {
         if (entityType == null) {
             Object jsonType = json.get("type");
             if (jsonType == null) {
-                throw new IllegalArgumentException("Expected a 'type' attribute in the JSON with value 'saml20-idp' or 'saml20-sp'");
+                throw new IllegalArgumentException("Expected a 'type' attribute in the JSON with value 'saml20-idp' " +
+                    "or 'saml20-sp'");
             }
             return EntityType.fromType(String.class.cast(jsonType));
         }

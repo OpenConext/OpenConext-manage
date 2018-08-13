@@ -153,6 +153,10 @@ export function importMetaDataJSON(type, metaData) {
     return postPutJson(`import/json/${type}`, JSON.parse(metaData), "post");
 }
 
+export function importFeed(url) {
+    return postPutJson("import/feed", {url: url}, "post");
+}
+
 export function search(options, type) {
     return postPutJson(`search/${type}`, options, "post");
 }

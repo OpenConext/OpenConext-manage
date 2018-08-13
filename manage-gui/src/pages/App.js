@@ -17,6 +17,7 @@ import {configuration, me, reportError} from "../api";
 import "../locale/en";
 import "../locale/nl";
 import Dummy from "./Dummy";
+import EduGain from "./EduGain";
 
 const S4 = () => (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
 
@@ -114,6 +115,9 @@ class App extends React.PureComponent {
                         <Route path="/import"
                                render={props => <ImportMetaData currentUser={currentUser}
                                                                 configuration={configuration} {...props}/>}/>
+                        <Route path="/edugain"
+                               render={props => <EduGain currentUser={currentUser}
+                                                         configuration={configuration} {...props}/>}/>
                         <Route path="/api"
                                render={props => <API configuration={configuration} {...props}/>}/>
                         <ProtectedRoute path="/system"

@@ -325,6 +325,12 @@
           "format": "date-time",
           "info": "When to add metadata to the eduGAIN feed. Usually the current time."
         },
+        "coin:imported_from_edugain": {
+          "type": "string",
+          "format": "boolean",
+          "default": false,
+          "info": "This is automatically set for service providers imported from eduGAIN. Unset it to prevent re-import."
+        },
         "coin:interfed_source": {
           "type": "string",
           "enum": [

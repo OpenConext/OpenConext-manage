@@ -7,6 +7,7 @@ import org.springframework.core.io.Resource;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -30,9 +31,14 @@ public class Importer {
         this.metaDataAutoConfiguration = metaDataAutoConfiguration;
     }
 
-    public Map<String, Object> importXML(Resource resource, EntityType entityType, Optional<String> entityId) throws IOException,
-        XMLStreamException {
+    public Map<String, Object> importXML(Resource resource, EntityType entityType, Optional<String> entityId) throws
+        IOException, XMLStreamException {
         return metaDataFeedParser.importXML(resource, entityType, entityId, metaDataAutoConfiguration);
+    }
+
+    public List<Map<String, Object>> importFeed(Resource resource) throws IOException,
+        XMLStreamException {
+        return metaDataFeedParser.importFeed(resource, metaDataAutoConfiguration);
     }
 
     public Map<String, Object> importJSON(EntityType entityType, Map<String, Object> data) throws
