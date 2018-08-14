@@ -114,7 +114,7 @@ public class ImporterTest implements TestUtils {
     @Test
     public void importNoEncryptionCerts() throws IOException, XMLStreamException {
         Map<String, Object> results = this.subject.importXML(new ClassPathResource
-                ("xml/FederationMetadataCertificate.xml"), EntityType.IDP,
+                ("xml/FederationMetadataCertificate.xml"), EntityType.SP,
             Optional.of("http://adfs2.noorderpoort.nl/adfs/services/trust"));
         Map<String, String> metadataFields = (Map<String, String>) results.get("metaDataFields");
         assertTrue(metadataFields.containsKey("certData"));

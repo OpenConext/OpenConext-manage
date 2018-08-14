@@ -1,5 +1,6 @@
 package manage.repository;
 
+import manage.model.EntityType;
 import manage.model.MetaData;
 import manage.mongo.Sequence;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,6 +74,16 @@ public class MetaDataRepository {
             regex("data.metaDataFields.keywords:en", search),
             regex("data.metaDataFields.keywords:nl", search)));
         return mongoTemplate.find(query, Map.class, type);
+    }
+
+    public List<Map> allServiceProviderEntityIds() {
+        Query query = new Query();
+        query
+            .fields()
+            .include("data.entityid")
+            .include("data.metaDataFields.name:en")
+            .include("data.metaDataFields.coin:imported_from_edugain");
+        return mongoTemplate.find(query, Map.class, EntityType.SP.getType());
     }
 
     protected String escapeSpecialChars(String query) {

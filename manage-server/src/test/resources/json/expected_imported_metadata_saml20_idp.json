@@ -29,5 +29,6 @@
   "contacts:3:contactType" : "technical",
   "contacts:3:emailAddress" : "Henny.Bekker@braindrops.nl",
   "contacts:3:givenName" : "Henny",
-  "contacts:3:surName" : "Bekker"
+  "contacts:3:surName" : "Bekker",
+  "name:en" : "SURFdropjes Beta"
 }

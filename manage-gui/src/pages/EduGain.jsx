@@ -11,7 +11,7 @@ export default class EduGain extends React.PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            url: "http://mds.edugain.org/",
+            url: "http://localhost:8000/edugain.xml",//"http://mds.edugain.org/",
             invalidUrl: false,
             results: {}
         };

@@ -11,6 +11,7 @@ import javax.xml.stream.XMLStreamReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -45,7 +46,8 @@ public class MetaDataFeedParser {
 
         List<Map<String, Object>> results = new ArrayList<>();
         while (reader.hasNext()) {
-            results.add(parseEntity(EntityType.SP, Optional.empty(), metaDataAutoConfiguration, reader));
+            Map<String, Object> entity = parseEntity(EntityType.SP, Optional.empty(), metaDataAutoConfiguration, reader);
+            results.add(entity);
         }
         return results;
     }
@@ -78,6 +80,7 @@ public class MetaDataFeedParser {
         boolean inCorrectEntityDescriptor = !entityIDOptional.isPresent();
         boolean inAttributeConsumingService = false;
         boolean inEntityAttributes = false;
+        boolean typeMismatch = false;
 
         result.put("type", entityType.getJanusDbValue());
         boolean isSp = entityType.equals(EntityType.SP);
@@ -86,9 +89,11 @@ public class MetaDataFeedParser {
         Map<String, String> arpAliases = new HashMap<>();
 
         while (reader.hasNext()) {
-            switch (reader.next()) {
+            int next = reader.next();
+            switch (next) {
                 case START_ELEMENT:
-                    switch (reader.getLocalName()) {
+                    String startLocalName = reader.getLocalName();
+                    switch (startLocalName) {
                         case "EntityDescriptor":
                             Optional<String> optional = getAttributeValue(reader, "entityID");
                             if (optional.isPresent()) {
@@ -101,7 +106,11 @@ public class MetaDataFeedParser {
                             }
                             break;
                         case "SPSSODescriptor":
-                            if (inCorrectEntityDescriptor && isSp) {
+                            if (inCorrectEntityDescriptor) {
+                                if (!isSp) {
+                                    //This should not happen, but an exception breaks reading the feed
+                                    typeMismatch = true;
+                                }
                                 arpKeys = arpKeys(EntityType.SP, metaDataAutoConfiguration, isSp);
                                 arpAliases = arpAliases(EntityType.SP, metaDataAutoConfiguration, isSp);
 
@@ -111,6 +120,14 @@ public class MetaDataFeedParser {
 
                                 arp.put(ATTRIBUTES, attributes);
                                 result.put(ARP, arp);
+                            }
+                            break;
+                        case "IDPSSODescriptor":
+                            if (inCorrectEntityDescriptor) {
+                                if (isSp) {
+                                    //This should not happen, but an exception breaks reading the feed
+                                    typeMismatch = true;
+                                }
                             }
                             break;
                         case "KeyDescriptor":
@@ -281,7 +298,8 @@ public class MetaDataFeedParser {
                     }
                     break;
                 case END_ELEMENT:
-                    switch (reader.getLocalName()) {
+                    String localName = reader.getLocalName();
+                    switch (localName) {
                         case "ContactPerson":
                             inContact = false;
                             break;
@@ -294,15 +312,25 @@ public class MetaDataFeedParser {
                         case "EntityDescriptor":
                             if (inCorrectEntityDescriptor) {
                                 //we got what we came for
-                                return result;
+                                return  typeMismatch ? Collections.emptyMap() : this.enrichMetaData(result);
                             }
+                            break;
                         case "EntityAttributes":
                             inEntityAttributes = false;
                             break;
                     }
+                break;
             }
         }
-        return result;
+        return Collections.emptyMap();
+    }
+
+    private Map<String, Object> enrichMetaData(Map<String, Object> metaData) {
+        Map<String, String> metaDataFields = (Map<String, String>) metaData.get(META_DATA_FIELDS);
+        if (!metaDataFields.containsKey("name:en") && metaDataFields.containsKey("OrganizationName:en")) {
+            metaDataFields.put("name:en", metaDataFields.get("OrganizationName:en"));
+        }
+        return metaData;
     }
 
     private Set<String> arpKeys(EntityType type, MetaDataAutoConfiguration metaDataAutoConfiguration, boolean isSp) {

@@ -13,9 +13,11 @@ import manage.model.Import;
 import manage.model.MetaData;
 import manage.model.MetaDataUpdate;
 import manage.model.RevisionRestore;
+import manage.model.ServiceProvider;
 import manage.model.XML;
 import manage.repository.MetaDataRepository;
 import manage.shibboleth.FederatedUser;
+import org.everit.json.schema.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +47,8 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.time.Clock;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -57,6 +61,7 @@ import static java.util.Collections.singletonMap;
 import static manage.mongo.MongobeeConfiguration.REVISION_POSTFIX;
 
 @RestController
+@SuppressWarnings("unchecked")
 public class MetaDataController {
 
     public static final String REQUESTED_ATTRIBUTES = "REQUESTED_ATTRIBUTES";
@@ -140,20 +145,78 @@ public class MetaDataController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(value = "/client/import/feed")
-    public List<Map<String, Object>> importFeed(@Validated @RequestBody Import importRequest) {
+    public Map<String, List> importFeed(@Validated @RequestBody Import importRequest) {
         try {
+            Map<String, ServiceProvider> serviceProviderMap =
+                metaDataRepository.allServiceProviderEntityIds().stream()
+                    .map(ServiceProvider::new)
+                    .collect(Collectors.toMap(sp -> sp.getEntityId(), sp -> sp));
             Resource resource = new UrlResource(new URL(importRequest.getUrl()));
-            //TODO fetch all entitiesID's and sort them into to_ignore and imported:
-            /*
-            new imported
-overwritten
-skipped as coin:imported_from_edugain is false
 
-             */
-            return this.importer.importFeed(resource);
+            List<Map<String, Object>> allImports = this.importer.importFeed(resource);
+            List<Map<String, Object>> imports =
+                allImports.stream().filter(m -> !m.isEmpty()).collect(Collectors.toList());
+
+            Map<String, List> results = new HashMap<>();
+            imports.forEach(sp -> {
+                String entityId = (String) sp.get("entityid");
+                EntityType entityType = EntityType.fromType(String.class.cast(sp.get("type")));
+                ServiceProvider existingServiceProvider = serviceProviderMap.get(entityId);
+                if (existingServiceProvider != null) {
+                    if (existingServiceProvider.isImportedFromEduGain()) {
+                        try {
+                            MetaDataUpdate metaDataUpdate =
+                                this.importToMetaDataUpdate(existingServiceProvider.getId(), entityType, sp);
+                            this.doMergeUpdate(metaDataUpdate, "edugain-import");
+                            List merged = results.computeIfAbsent("merged", s -> new ArrayList());
+                            merged.add(entityId);
+                        } catch (JsonProcessingException | ValidationException e) {
+                            addNoValid(results, entityId, e);
+                        }
+                    } else {
+                        // Do not import this SP as it is modified after the import or is not imported at all
+                        List notImported = results.computeIfAbsent("not_imported", s -> new ArrayList());
+                        notImported.add(entityId);
+                    }
+                } else {
+                    try {
+                        MetaData metaData = this.importToMetaData(sp, entityType);
+                        this.doPost(metaData, "edugain-import");
+                        List imported = results.computeIfAbsent("imported", s -> new ArrayList());
+                        imported.add(entityId);
+                    } catch (JsonProcessingException | ValidationException e) {
+                        addNoValid(results, entityId, e);
+                    }
+                }
+            });
+            return results;
         } catch (IOException | XMLStreamException e) {
-            return singletonList(singletonMap("errors", singletonList(e.toString())));
+            return singletonMap("errors", singletonList(e.toString()));
         }
+    }
+
+    private void addNoValid(Map<String, List> results, String entityId, Exception e) {
+        String msg = e instanceof ValidationException ?
+            ValidationException.class.cast(e).toJSON().toMap().toString() : e.toString();
+        List notValid = results.computeIfAbsent("not_valid", s -> new ArrayList());
+        notValid.add(Collections.singletonMap(entityId, msg));
+
+    }
+
+    private MetaData importToMetaData(Map<String, Object> m, EntityType entityType) {
+        Map.class.cast(m.get("metaDataFields")).put("coin:imported_from_edugain", "1");
+        MetaData template = this.template(entityType.getType());
+        template.getData().putAll(m);
+        return template;
+    }
+
+    private MetaDataUpdate importToMetaDataUpdate(String id, EntityType entityType, Map<String, Object> m) {
+        Map<String, String> metaDataFields = Map.class.cast(m.get("metaDataFields"));
+        metaDataFields.put("coin:imported_from_edugain", "1");
+        Map<String, Object> pathUpdates = new HashMap<>();
+        metaDataFields.forEach((k, v) -> pathUpdates.put("metaDataFields.".concat(k), v));
+        MetaDataUpdate metaDataUpdate = new MetaDataUpdate(id, entityType.getType(), pathUpdates);
+        return metaDataUpdate;
     }
 
     private void addDefaultSpData(Map<String, Object> innerJson) {
@@ -260,18 +323,25 @@ skipped as coin:imported_from_edugain is false
     @Transactional
     public MetaData update(@Validated @RequestBody MetaDataUpdate metaDataUpdate, APIUser apiUser) throws
         JsonProcessingException {
+        String name = apiUser.getName();
+        return doMergeUpdate(metaDataUpdate, name);
+    }
+
+    private MetaData doMergeUpdate(@RequestBody @Validated MetaDataUpdate metaDataUpdate, String name) throws JsonProcessingException {
         String id = metaDataUpdate.getId();
         MetaData previous = metaDataRepository.findById(id, metaDataUpdate.getType());
         previous.revision(UUID.randomUUID().toString());
 
         MetaData metaData = metaDataRepository.findById(id, metaDataUpdate.getType());
-        metaData.promoteToLatest(apiUser.getName());
+        metaData.promoteToLatest(name);
         metaData.merge(metaDataUpdate);
 
         validate(metaData);
 
         metaDataRepository.save(previous);
         metaDataRepository.update(metaData);
+
+        LOG.info("Merging new metaData {} by {}", metaData.getId(), name);
 
         return metaData;
     }
