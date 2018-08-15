@@ -11,6 +11,7 @@ import java.util.UUID;
 
 import static java.util.stream.Collectors.toList;
 
+@SuppressWarnings("unchecked")
 public class EntityIdReconcilerHook extends MetaDataHookAdapter {
 
     @Override

@@ -46,7 +46,8 @@ public class MetaDataFeedParser {
 
         List<Map<String, Object>> results = new ArrayList<>();
         while (reader.hasNext()) {
-            Map<String, Object> entity = parseEntity(EntityType.SP, Optional.empty(), metaDataAutoConfiguration, reader);
+            Map<String, Object> entity = parseEntity(EntityType.SP, Optional.empty(), metaDataAutoConfiguration,
+                reader, true);
             results.add(entity);
         }
         return results;
@@ -62,13 +63,14 @@ public class MetaDataFeedParser {
 
         XMLStreamReader reader = factory.createXMLStreamReader(xml.getInputStream());
 
-        return parseEntity(entityType, entityIDOptional, metaDataAutoConfiguration, reader);
+        return parseEntity(entityType, entityIDOptional, metaDataAutoConfiguration, reader, false);
     }
 
     private Map<String, Object> parseEntity(EntityType entityType,
                                             Optional<String> entityIDOptional,
                                             MetaDataAutoConfiguration metaDataAutoConfiguration,
-                                            XMLStreamReader reader) throws XMLStreamException {
+                                            XMLStreamReader reader,
+                                            boolean enforceTypeStrictness) throws XMLStreamException {
         Map<String, Object> result = new TreeMap<>();
         Map<String, String> metaDataFields = new TreeMap<>();
 
@@ -312,14 +314,15 @@ public class MetaDataFeedParser {
                         case "EntityDescriptor":
                             if (inCorrectEntityDescriptor) {
                                 //we got what we came for
-                                return  typeMismatch ? Collections.emptyMap() : this.enrichMetaData(result);
+                                return typeMismatch && enforceTypeStrictness ? Collections.emptyMap() :
+                                    this.enrichMetaData(result);
                             }
                             break;
                         case "EntityAttributes":
                             inEntityAttributes = false;
                             break;
                     }
-                break;
+                    break;
             }
         }
         return Collections.emptyMap();
