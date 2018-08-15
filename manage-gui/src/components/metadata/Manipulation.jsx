@@ -8,7 +8,7 @@ import "codemirror/mode/javascript/javascript";
 import "codemirror/lib/codemirror.css";
 import "react-md-editor/dist/react-md-editor.css";
 import "./Manipulation.css";
-import {stop} from "../../utils/Utils";
+import {isEmpty, stop} from "../../utils/Utils";
 
 export default class Manipulation extends React.PureComponent {
 
@@ -25,7 +25,7 @@ export default class Manipulation extends React.PureComponent {
     }
 
     onChange = name => value => {
-        this.props.onChange(name, value);
+        this.props.onChange(name, isEmpty(value) ? null : value);
     };
 
     renderSelectedTab = selectedTab => {
