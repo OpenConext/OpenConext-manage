@@ -265,7 +265,12 @@ I18n.translations.en = {
         new_applyImportChangesInfo: "Note that after importing the new metadata you still need to submit the new metadata to persist the changes",
         new_applyImportChangesFlash: "{{changes}} were imported. Note that you still need to submit the new metadata to persist the changes"
     },
-
+    edugain: {
+        import_feed: "Import feed",
+        delete_import: "Delete",
+        delete: "Delete imported Service Providers",
+        deletedFlash: "Deleted {{number}} Service Providers"
+    },
     clipboard: {
         copied: "Copied!",
         copy: "Copy to clipboard"

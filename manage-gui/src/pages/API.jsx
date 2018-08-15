@@ -6,7 +6,6 @@ import {ping, search, validation} from "../api";
 import {copyToClip, isEmpty, stop} from "../utils/Utils";
 import SelectMetaDataType from "../components/metadata/SelectMetaDataType";
 import "./API.css";
-import "react-pretty-json/assets/json-view.css";
 import SelectNewMetaDataField from "../components/metadata/SelectNewMetaDataField";
 import debounce from "lodash.debounce";
 import Select from "react-select";

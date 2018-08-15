@@ -14,14 +14,14 @@ import {
     validate
 } from "../api";
 import {isEmpty, stop} from "../utils/Utils";
-import JsonView from "react-pretty-json";
 import ConfirmationDialog from "../components/ConfirmationDialog";
 import "./System.css";
-import "react-pretty-json/assets/json-view.css";
 import {setFlash} from "../utils/Flash";
 import SelectMetaDataType from "../components/metadata/SelectMetaDataType";
 import NotesTooltip from "../components/NotesTooltip";
 import CheckBox from "../components/CheckBox";
+import JSONPretty from "react-json-pretty";
+import "react-json-pretty/JSONPretty.monikai.styl";
 
 export default class System extends React.PureComponent {
 
@@ -348,7 +348,7 @@ export default class System extends React.PureComponent {
                     <i className="fa fa-check" aria-hidden="true"></i></a>
                 {validationResults &&
                 <section className="results">
-                    <JsonView json={validationResults}/>
+                    <JSONPretty id="json-pretty" json={validationResults}></JSONPretty>
                 </section>}
             </section>
         );
@@ -377,7 +377,7 @@ export default class System extends React.PureComponent {
                     <i className="fa fa-check" aria-hidden="true"></i></a>
                 {orphansResults &&
                 <section className="results">
-                    <JsonView json={orphansResults}/>
+                    <JSONPretty json={orphansResults}></JSONPretty>
                 </section>}
                 {(orphansResults && orphansResults.length > 0) &&
                 <a className={`button ${loading ? "grey disabled" : "blue"}`}

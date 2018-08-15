@@ -157,6 +157,14 @@ export function importFeed(url) {
     return postPutJson("import/feed", {url: url}, "post");
 }
 
+export function deleteFeed() {
+    return fetchDelete("delete/feed").then(res => res.json());
+}
+
+export function countFeed() {
+    return fetchJson("count/feed");
+}
+
 export function search(options, type) {
     return postPutJson(`search/${type}`, options, "post");
 }

@@ -86,6 +86,17 @@ public class MetaDataRepository {
         return mongoTemplate.find(query, Map.class, EntityType.SP.getType());
     }
 
+    public int deleteAllImportedServiceProviders() {
+        Query query = new Query(Criteria.where("data.metaDataFields.coin:imported_from_edugain").is("1"));
+        return mongoTemplate.remove(query, EntityType.SP.getType()).getN();
+    }
+
+    public long countAllImportedServiceProviders() {
+        Query query = new Query(Criteria.where("data.metaDataFields.coin:imported_from_edugain").is("1"));
+        return mongoTemplate.count(query, EntityType.SP.getType());
+    }
+
+
     protected String escapeSpecialChars(String query) {
         return query.replaceAll("([\\Q\\/$^.?*+{}()|[]\\E]+)", "\\\\$1");
     }

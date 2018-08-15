@@ -143,6 +143,21 @@ public class MetaDataController {
         return doPost(metaData, apiUser.getName());
     }
 
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping(value = "/client/delete/feed")
+    public Map<String, Integer> deleteFeed() {
+        int deleted = this.metaDataRepository.deleteAllImportedServiceProviders();
+        return Collections.singletonMap("deleted", deleted);
+    }
+
+    @GetMapping(value = "/client/count/feed")
+    public Map<String, Long> countFeed() {
+        long count = this.metaDataRepository.countAllImportedServiceProviders();
+        return Collections.singletonMap("count", count);
+    }
+
+
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(value = "/client/import/feed")
     public Map<String, List> importFeed(@Validated @RequestBody Import importRequest) {
