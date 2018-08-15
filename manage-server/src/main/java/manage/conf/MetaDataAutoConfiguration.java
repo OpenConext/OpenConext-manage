@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import manage.model.EntityType;
 import manage.validations.BooleanFormatValidator;
 import manage.validations.CertificateFormatValidator;
+import manage.validations.LocalEmailFormatValidator;
 import manage.validations.NumberFormatValidator;
 import org.everit.json.schema.FormatValidator;
 import org.everit.json.schema.Schema;
@@ -52,7 +53,8 @@ public class MetaDataAutoConfiguration {
         this.schemas = parseConfiguration(metadataConfigurationPath, Arrays.asList(
             new CertificateFormatValidator(),
             new NumberFormatValidator(),
-            new BooleanFormatValidator()
+            new BooleanFormatValidator(),
+            new LocalEmailFormatValidator()
         ));
         this.objectMapper = objectMapper;
         this.templates = parseTemplates(metadataTemplatesPath);
