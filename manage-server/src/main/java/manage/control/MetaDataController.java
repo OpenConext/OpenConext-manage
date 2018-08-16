@@ -182,9 +182,14 @@ public class MetaDataController {
                         try {
                             MetaDataUpdate metaDataUpdate =
                                 this.importToMetaDataUpdate(existingServiceProvider.getId(), entityType, sp);
-                            this.doMergeUpdate(metaDataUpdate, "edugain-import");
-                            List merged = results.computeIfAbsent("merged", s -> new ArrayList());
-                            merged.add(entityId);
+                            Optional<MetaData> metaData = this.doMergeUpdate(metaDataUpdate, "edugain-import", false);
+                            if (metaData.isPresent()) {
+                                List merged = results.computeIfAbsent("merged", s -> new ArrayList());
+                                merged.add(entityId);
+                            } else {
+                                List noChanges = results.computeIfAbsent("no_changes", s -> new ArrayList());
+                                noChanges.add(entityId);
+                            }
                         } catch (JsonProcessingException | ValidationException e) {
                             addNoValid(results, entityId, e);
                         }
@@ -339,10 +344,11 @@ public class MetaDataController {
     public MetaData update(@Validated @RequestBody MetaDataUpdate metaDataUpdate, APIUser apiUser) throws
         JsonProcessingException {
         String name = apiUser.getName();
-        return doMergeUpdate(metaDataUpdate, name);
+        return doMergeUpdate(metaDataUpdate, name, true).get();
     }
 
-    private MetaData doMergeUpdate(@RequestBody @Validated MetaDataUpdate metaDataUpdate, String name) throws JsonProcessingException {
+    private Optional<MetaData> doMergeUpdate(MetaDataUpdate metaDataUpdate, String name, boolean forceNewRevision)
+        throws JsonProcessingException {
         String id = metaDataUpdate.getId();
         MetaData previous = metaDataRepository.findById(id, metaDataUpdate.getType());
         previous.revision(UUID.randomUUID().toString());
@@ -351,14 +357,21 @@ public class MetaDataController {
         metaData.promoteToLatest(name);
         metaData.merge(metaDataUpdate);
 
-        validate(metaData);
+        //Only save and update if there are changes
+        boolean somethingChanged = !metaData.getData().equals(previous.getData());
 
-        metaDataRepository.save(previous);
-        metaDataRepository.update(metaData);
+        if (somethingChanged || forceNewRevision) {
+            validate(metaData);
 
-        LOG.info("Merging new metaData {} by {}", metaData.getId(), name);
+            metaDataRepository.save(previous);
+            metaDataRepository.update(metaData);
 
-        return metaData;
+            LOG.info("Merging new metaData {} by {}", metaData.getId(), name);
+
+            return Optional.of(metaData);
+        } else {
+            return Optional.empty();
+        }
     }
 
 

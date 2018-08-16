@@ -4,12 +4,15 @@ import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 import manage.AbstractIntegrationTest;
 import manage.model.EntityType;
+import manage.model.Import;
 import manage.model.MetaData;
 import manage.model.MetaDataUpdate;
 import manage.model.Revision;
 import manage.model.RevisionRestore;
 import org.junit.Test;
+import org.springframework.core.io.ClassPathResource;
 
+import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.Collections;
@@ -659,6 +662,40 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         revisions = metaDataRepository.getMongoTemplate().findAll(MetaData.class, "saml20_sp_revision");
         assertEquals(2, revisions.size());
         revisions.forEach(rev -> assertEquals(rev.getRevision().getParentId(), "1"));
+    }
+
+    @Test
+    public void importFeed() throws IOException {
+        String urlS = new ClassPathResource("xml/edugain_feed.xml").getURL().toString();
+        Import importRequest = new Import(urlS, null);
+        Map result = given()
+            .body(importRequest)
+            .header("Content-type", "application/json")
+            .post("manage/api/client/import/feed")
+            .getBody()
+            .as(Map.class);
+        assertEquals(1, result.size());
+        assertEquals(2, List.class.cast(result.get("imported")).size());
+
+        result = given()
+            .body(importRequest)
+            .header("Content-type", "application/json")
+            .post("manage/api/client/import/feed")
+            .getBody()
+            .as(Map.class);
+        assertEquals(1, result.size());
+        assertEquals(2, List.class.cast(result.get("no_changes")).size());
+
+        urlS = new ClassPathResource("xml/edugain_feed_changed.xml").getURL().toString();
+        importRequest = new Import(urlS, null);
+        result = given()
+            .body(importRequest)
+            .header("Content-type", "application/json")
+            .post("manage/api/client/import/feed")
+            .getBody()
+            .as(Map.class);
+        assertEquals(1, result.size());
+        assertEquals(2, List.class.cast(result.get("merged")).size());
     }
 
     @Test

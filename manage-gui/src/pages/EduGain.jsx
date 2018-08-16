@@ -117,6 +117,7 @@ export default class EduGain extends React.PureComponent {
     switchTab = tab => e => {
         stop(e);
         this.setState({selectedTab: tab});
+        countFeed().then(json => this.setState({count: json.count}));
     };
 
 

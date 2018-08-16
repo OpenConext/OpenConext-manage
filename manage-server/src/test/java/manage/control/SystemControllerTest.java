@@ -31,9 +31,6 @@ public class SystemControllerTest extends AbstractIntegrationTest {
     @Value("${push.password}")
     private String pushPassword;
 
-    @Rule
-    public WireMockRule wireMockRule = new WireMockRule(9898);
-
     @Test
     public void pushPreview() throws Exception {
         Map connections = given()
