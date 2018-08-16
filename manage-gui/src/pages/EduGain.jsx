@@ -77,7 +77,7 @@ export default class EduGain extends React.PureComponent {
     renderServiceProvider = sp => sp.validationException ?
         <div>
             <span>{sp.entityId}</span>
-            <p className="error">{sp.validationException}</p>
+            {sp.validationException.split(",").map(s => <p className="error">{s}</p>)}
         </div> :
         <div>
             <a href={`/metadata/saml20_sp/${sp.id}`} target="_blank"
