@@ -71,6 +71,7 @@ public class EngineBlockFormatter {
 
         spAttributes.put("metadata:coin:transparant_issuer", empty());
         spAttributes.put("metadata:coin:trusted_proxy", empty());
+        spAttributes.put("metadata:coin:requesterid_required", empty());
         spAttributes.put("metadata:coin:display_unconnected_idps_wayf", empty());
 
         spAttributes.put("metadata:coin:eula", empty());

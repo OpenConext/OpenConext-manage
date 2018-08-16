@@ -359,6 +359,12 @@
           "default": "false",
           "info": "Set if the service provider can act on behalf of connected services to this service."
         },
+        "coin:requesterid_required": {
+          "type": "string",
+          "format": "boolean",
+          "default": "false",
+          "info": "Enforce the presence of a RequesterId on AuthnRequests coming from a trusted proxy."
+        },
         "coin:no_consent_required": {
           "type": "string",
           "format": "boolean",
