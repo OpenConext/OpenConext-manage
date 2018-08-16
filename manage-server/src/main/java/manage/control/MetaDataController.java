@@ -185,10 +185,10 @@ public class MetaDataController {
                             Optional<MetaData> metaData = this.doMergeUpdate(metaDataUpdate, "edugain-import", false);
                             if (metaData.isPresent()) {
                                 List merged = results.computeIfAbsent("merged", s -> new ArrayList());
-                                merged.add(entityId);
+                                merged.add(existingServiceProvider);
                             } else {
                                 List noChanges = results.computeIfAbsent("no_changes", s -> new ArrayList());
-                                noChanges.add(entityId);
+                                noChanges.add(existingServiceProvider);
                             }
                         } catch (JsonProcessingException | ValidationException e) {
                             addNoValid(results, entityId, e);
@@ -196,14 +196,14 @@ public class MetaDataController {
                     } else {
                         // Do not import this SP as it is modified after the import or is not imported at all
                         List notImported = results.computeIfAbsent("not_imported", s -> new ArrayList());
-                        notImported.add(entityId);
+                        notImported.add(existingServiceProvider);
                     }
                 } else {
                     try {
                         MetaData metaData = this.importToMetaData(sp, entityType);
-                        this.doPost(metaData, "edugain-import");
+                        MetaData persistedMetaData = this.doPost(metaData, "edugain-import");
                         List imported = results.computeIfAbsent("imported", s -> new ArrayList());
-                        imported.add(entityId);
+                        imported.add(new ServiceProvider(persistedMetaData.getId(), entityId, false, null));
                     } catch (JsonProcessingException | ValidationException e) {
                         addNoValid(results, entityId, e);
                     }
@@ -217,10 +217,12 @@ public class MetaDataController {
 
     private void addNoValid(Map<String, List> results, String entityId, Exception e) {
         String msg = e instanceof ValidationException ?
-            ValidationException.class.cast(e).toJSON().toMap().toString() : e.toString();
+            String.join(", ", ValidationException.class.cast(e).getAllMessages()) : e.toString();
         List notValid = results.computeIfAbsent("not_valid", s -> new ArrayList());
-        notValid.add(Collections.singletonMap(entityId, msg));
-
+        Map<String, String> result = new HashMap<>();
+        result.put("validationException", msg);
+        result.put("entityId", entityId);
+        notValid.add(result);
     }
 
     private MetaData importToMetaData(Map<String, Object> m, EntityType entityType) {

@@ -108,7 +108,7 @@ I18n.translations.en = {
         pushConfirmation: "Are you sure you want to push all metadata to {{name}} with endpoint {{url}}?",
         headers: {
             status: "Status",
-            entityid:"Entity ID",
+            entityid: "Entity ID",
             name: "Name",
             notes: "Notes",
             terminated: "Deleted",
@@ -134,8 +134,8 @@ I18n.translations.en = {
 
     },
     whitelisting: {
-        confirmationAllowAll:"Are you sure you want to allow all {{type}} access to '{{name}}'? You will have to add {{type}} one-by-one to selectively deny them again.",
-        confirmationAllowNone:"Are you sure you want to deny all {{type}} access to '{{name}}'? You will have to add {{type}} one-by-one or allow them all again.",
+        confirmationAllowAll: "Are you sure you want to allow all {{type}} access to '{{name}}'? You will have to add {{type}} one-by-one to selectively deny them again.",
+        confirmationAllowNone: "Are you sure you want to deny all {{type}} access to '{{name}}'? You will have to add {{type}} one-by-one or allow them all again.",
         placeholder: "Search, select and add {{type}} to the whitelist",
         allowAllProviders: "Allow all {{type}} access to {{name}}",
         title: "{{type}} Whitelist",
@@ -145,7 +145,7 @@ I18n.translations.en = {
         allowedEntries: {
             blocked: "Blocked",
             status: "Status",
-            entityid:"Entity ID",
+            entityid: "Entity ID",
             name: "Name",
             notes: "Notes"
         }
@@ -163,7 +163,7 @@ I18n.translations.en = {
         placeholder: "Search, select and add Service Providers to the consent-disabled-list",
         entries: {
             status: "Status",
-            entityid:"Entity ID",
+            entityid: "Entity ID",
             name: "Name",
             no_consent: "No consent is required",
             minimal_consent: "Minimal consent is required",
@@ -174,7 +174,7 @@ I18n.translations.en = {
         }
     },
 
-    manipulation : {
+    manipulation: {
         manipulationInfo: "Documentation on attribute manipulations",
         notesInfo: "Documentation on attribute manipulations notes",
         manipulation: "PHP Code",
@@ -189,9 +189,7 @@ I18n.translations.en = {
         placeholder: "Search and add metadata fields"
     },
 
-    selectEntities: {
-
-    },
+    selectEntities: {},
 
     revisions: {
         info: "All revisions",
@@ -269,13 +267,26 @@ I18n.translations.en = {
         import_feed: "Import feed",
         delete_import: "Delete",
         delete: "Delete imported Service Providers",
-        deletedFlash: "Deleted {{number}} Service Providers"
+        deletedFlash: "Deleted {{number}} Service Providers",
+        results: {
+            category: "Category",
+            number: "Number of Service Providers",
+            imported: "Imported",
+            imported_info: "Imported new SP - resulting in first revision",
+            merged: "Merged",
+            merged_info: "Merged with existing SP - resulting in new revision",
+            no_changes: "No changes",
+            no_changes_info: "No changes with the current revision - as such not imported",
+            not_imported: "Not imported",
+            not_imported_info: "Not imported because there was an existing SP that was not marked as ever being imported",
+            not_valid: "Not valid",
+            not_valid_info: "The metadata was not valid according out JSON schema"
+        }
     },
     clipboard: {
         copied: "Copied!",
         copy: "Copy to clipboard"
     },
-
     error_dialog: {
         title: "Unexpected error",
         body: "This is embarrassing; an unexpected error has occurred. It has been logged and reported. Please try again. Still doesn't work? Please click 'Help'.",

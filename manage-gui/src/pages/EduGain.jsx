@@ -3,24 +3,26 @@ import I18n from "i18n-js";
 import PropTypes from "prop-types";
 import {countFeed, deleteFeed, importFeed, validation} from "../api";
 import "./EduGain.css";
+
 import {isEmpty, stop} from "../utils/Utils";
 import {setFlash} from "../utils/Flash";
-import JSONPretty from "react-json-pretty";
 import "react-json-pretty/JSONPretty.monikai.styl";
+import ReactTooltip from "react-tooltip";
 
 export default class EduGain extends React.PureComponent {
 
     constructor(props) {
         super(props);
         this.state = {
-            url: "http://mds.edugain.org/",//"http://localhost:8000/edugain.xml"
+            url: props.currentUser.product.serviceProviderFeedUrl,
             invalidUrl: false,
             results: {},
             tabs: ["import_feed", "delete_import"],
             selectedTab: "import_feed",
             loading: false,
             deleting: false,
-            count: "?"
+            count: "?",
+            resultsCollapsed: {}
         };
     }
 
@@ -66,10 +68,58 @@ export default class EduGain extends React.PureComponent {
         });
     };
 
+    toggleResultsCollapsed = key => () => {
+        const resultsCollapsed = {...this.state.resultsCollapsed};
+        resultsCollapsed[key] = !resultsCollapsed[key];
+        this.setState({resultsCollapsed: resultsCollapsed});
+    };
+
+    renderServiceProvider = sp => sp.validationException ?
+        <div>
+            <span>{sp.entityId}</span>
+            <p className="error">{sp.validationException}</p>
+        </div> :
+        <div>
+            <a href={`/metadata/saml20_sp/${sp.id}`} target="_blank"
+               onClick={e => e.stopPropagation()}>
+                {sp.entityId}<i className="fa fa-external-link"></i>
+            </a>
+        </div>;
+
     renderResults = results => {
+        const keys = ["imported", "merged", "no_changes", "not_imported", "not_valid"];
+        const {resultsCollapsed} = this.state;
         return (
             <section className="results">
-                <JSONPretty json={results}></JSONPretty>
+                <table>
+                    <thead>
+                    <tr>
+                        <th className="category"> {I18n.t("edugain.results.category")}
+                        </th>
+                        <th className="number"> {I18n.t("edugain.results.number")}</th>
+                    </tr>
+                    </thead>
+                    {keys.map(k => <tbody key={k}>
+                    <tr className={`${results[k] && results[k].length > 0 ? "collapsible" : ""}`}
+                        onClick={this.toggleResultsCollapsed(k)}>
+                        <td>{I18n.t(`edugain.results.${k}`)}
+                            <span>
+                            <i className="fa fa-info-circle" data-for={k} data-tip></i>
+                                <ReactTooltip id={k} type="info" class="tool-tip" effect="solid">
+                                    <span>{I18n.t(`edugain.results.${k}_info`)}</span>
+                                </ReactTooltip>
+                        </span>
+                        </td>
+                        <td>{results[k] ? results[k].length : 0}</td>
+                    </tr>
+                    {(resultsCollapsed[k] && results[k]) && results[k].map((sp, index) =>
+                        <tr key={index} className="sp">
+                            <td></td>
+                            <td>{this.renderServiceProvider(sp)}</td>
+                        </tr>)}
+                    </tbody>)}
+                </table>
+
             </section>
         );
     };
@@ -116,7 +166,7 @@ export default class EduGain extends React.PureComponent {
 
     switchTab = tab => e => {
         stop(e);
-        this.setState({selectedTab: tab});
+        this.setState({selectedTab: tab, results: {}});
         countFeed().then(json => this.setState({count: json.count}));
     };
 

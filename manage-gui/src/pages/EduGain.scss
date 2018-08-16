@@ -63,7 +63,39 @@
         padding: 30px;
         background-color: white;
         border: 1px solid $light-grey;
-        font-family: "Courier New";
+        margin-top: 15px;
+        table {
+            width: 100%;
+            th {
+                text-align: left;
+                i {
+                    margin-left: 15px;
+                    color: $lighter-grey;
+                }
+                &.category {
+                    width: 25%;
+                }
+                &.number {
+                    width: 75%;
+                }
+            }
+            tbody:nth-child(odd) {
+                background-color: $lightest-grey;
+            }
+            tbody tr.collapsible {
+                cursor: pointer;
+            }
+            td {
+                vertical-align: middle;
+                padding: 5px;
+                i.fa-info-circle {
+                    color: $blue;
+                    margin-left: 25px;
+                }
+            }
+
+        }
+
     }
     section.delete {
         a.button {

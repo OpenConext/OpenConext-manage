@@ -20,6 +20,8 @@ push:
 product:
   name: Manage
   organization: OpenConext
+#  service_provider_feed_url: http://mds.edugain.org/
+  service_provider_feed_url: http://localhost:8000/edugain.xml
 
 metadata_configuration_path: classpath:/metadata_configuration
 metadata_templates_path: classpath:/metadata_templates
