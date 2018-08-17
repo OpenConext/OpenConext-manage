@@ -91,6 +91,8 @@
             }
             tbody tr.collapsible {
                 cursor: pointer;
+                color: $blue;
+                font-weight: bold;
             }
             td {
                 vertical-align: middle;
