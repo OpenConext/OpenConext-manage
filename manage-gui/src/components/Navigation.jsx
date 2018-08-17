@@ -74,7 +74,7 @@ export default class Navigation extends React.PureComponent {
             this.runPush();
         };
         return <a className={`push button ${loading ? "grey disabled" : "white"}`}
-                  onClick={() => this.setState({
+                  onClick={() => !this.state.loading && this.setState({
                       confirmationDialogOpen: true,
                       confirmationQuestion: I18n.t("playground.pushConfirmation", {
                           url: currentUser.push.url,

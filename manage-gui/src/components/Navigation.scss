@@ -25,12 +25,18 @@
         }
         a.push {
             position: absolute;
-            top: 8px;
+            top: 10px;
             right: 15px;
             font-size: 16px;
             i {
                 margin-left: 35px;
                 color: $blue;
+            }
+            &.disabled {
+                i {
+                    color: white;
+                }
+
             }
         }
 
