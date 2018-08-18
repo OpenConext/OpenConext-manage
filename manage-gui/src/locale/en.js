@@ -281,7 +281,9 @@ I18n.translations.en = {
             not_imported: "Not imported",
             not_imported_info: "Not imported because there was an existing SP that was not marked as ever being imported",
             not_valid: "Not valid",
-            not_valid_info: "The metadata was not valid according out JSON schema"
+            not_valid_info: "The metadata was not valid according out JSON schema",
+            deleted: "Deleted",
+            deleted_info: "Metadata previously imported but not present anymore in the feed"
         }
     },
     clipboard: {

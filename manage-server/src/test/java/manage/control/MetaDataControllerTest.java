@@ -674,7 +674,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
             .post("manage/api/client/import/feed")
             .getBody()
             .as(Map.class);
-        assertEquals(1, result.size());
+        assertEquals(3, result.size());
         assertEquals(2, List.class.cast(result.get("imported")).size());
 
         result = given()
@@ -683,7 +683,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
             .post("manage/api/client/import/feed")
             .getBody()
             .as(Map.class);
-        assertEquals(1, result.size());
+        assertEquals(3, result.size());
         assertEquals(2, List.class.cast(result.get("no_changes")).size());
 
         urlS = new ClassPathResource("xml/edugain_feed_changed.xml").getURL().toString();
@@ -694,7 +694,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
             .post("manage/api/client/import/feed")
             .getBody()
             .as(Map.class);
-        assertEquals(1, result.size());
+        assertEquals(3, result.size());
         assertEquals(2, List.class.cast(result.get("merged")).size());
     }
 

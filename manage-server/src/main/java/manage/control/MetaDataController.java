@@ -173,9 +173,10 @@ public class MetaDataController {
                 allImports.stream().filter(m -> !m.isEmpty()).collect(Collectors.toList());
 
             Map<String, List> results = new HashMap<>();
+            EntityType entityType = EntityType.SP;
             imports.forEach(sp -> {
                 String entityId = (String) sp.get("entityid");
-                EntityType entityType = EntityType.fromType(String.class.cast(sp.get("type")));
+
                 ServiceProvider existingServiceProvider = serviceProviderMap.get(entityId);
                 if (existingServiceProvider != null) {
                     if (existingServiceProvider.isImportedFromEduGain()) {
@@ -209,6 +210,17 @@ public class MetaDataController {
                     }
                 }
             });
+            List<ServiceProvider> notInFeedAnymore = serviceProviderMap.values().stream()
+                .filter(sp -> sp.isImportedFromEduGain() &&
+                    !imports.stream().anyMatch(map -> sp.getEntityId().equals(map.get("entityid"))))
+                .collect(Collectors.toList());
+            notInFeedAnymore.forEach(sp -> this.doRemove(entityType.getType(),sp.getId(),"edugain-import"));
+
+            List deleted = results.computeIfAbsent("deleted", s -> new ArrayList());
+            deleted.addAll(notInFeedAnymore.stream().map(sp -> sp.getEntityId()).collect(Collectors.toList()));
+
+            results.put("total", Collections.singletonList(imports.size()));
+
             return results;
         } catch (IOException | XMLStreamException e) {
             return singletonMap("errors", singletonList(e.toString()));
@@ -295,11 +307,17 @@ public class MetaDataController {
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/client/metadata/{type}/{id}")
     public boolean remove(@PathVariable("type") String type, @PathVariable("id") String id, FederatedUser user) {
+        String uid = user.getUid();
+
+        return doRemove(type, id, uid);
+    }
+
+    private boolean doRemove(@PathVariable("type") String type, @PathVariable("id") String id, String uid) {
         MetaData current = metaDataRepository.findById(id, type);
         current = metaDataHook.preDelete(current);
         metaDataRepository.remove(current);
 
-        LOG.info("Deleted metaData {} by {}", current.getId(), user.getUid());
+        LOG.info("Deleted metaData {} by {}", current.getId(), uid);
 
         current.terminate(UUID.randomUUID().toString());
         metaDataRepository.save(current);

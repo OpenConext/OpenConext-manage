@@ -23,7 +23,8 @@ export default class EduGain extends React.PureComponent {
             deleting: false,
             count: "?",
             resultsCollapsed: {},
-            start: undefined
+            start: undefined,
+            elapsed: undefined
         };
     }
 
@@ -56,13 +57,17 @@ export default class EduGain extends React.PureComponent {
                 invalidUrl: !result
             });
             if (result) {
-                this.setState({loading: true, start: Date.now()});
+                this.setState({loading: true, start: Date.now(), results: []});
                 importFeed(url).then(result => {
                     if (result["errors"]) {
                         setFlash(JSON.stringify(result), "error");
                         this.setState({results: {}, loading: false});
                     } else {
-                        this.setState({results: result, loading: false});
+                        this.setState({
+                            results: result,
+                            loading: false,
+                            elapsed: Math.floor((Date.now() - this.state.start) / 1000)
+                        });
                     }
                 });
             }
@@ -75,7 +80,7 @@ export default class EduGain extends React.PureComponent {
         this.setState({resultsCollapsed: resultsCollapsed});
     };
 
-    renderServiceProvider = sp => sp.validationException ?
+    renderServiceProvider = sp => typeof sp === "string" ? <span>{sp}</span> : sp.validationException ?
         <div>
             <span>{sp.entityId}</span>
             {sp.validationException.split(",").map(s => <p className="error">{s}</p>)}
@@ -88,13 +93,13 @@ export default class EduGain extends React.PureComponent {
         </div>;
 
     renderResults = results => {
-        const keys = ["imported", "merged", "no_changes", "not_imported", "not_valid"];
-        const nbr = keys.reduce((acc, key) => acc + (results[key] || []).length, 0);
-        const {resultsCollapsed, start} = this.state;
+        const keys = ["imported", "merged", "no_changes", "not_imported", "not_valid", "deleted"];
+        const nbr = results.total[0];
+        const {resultsCollapsed, elapsed} = this.state;
         return (
             <section className="results">
                 <span className="elapsed">{I18n.t("edugain.elapsed", {
-                    time: Math.floor((Date.now()-start) / 1000), nbr: nbr
+                    time: elapsed, nbr: nbr
                 })}</span>
                 <table>
                     <thead>
