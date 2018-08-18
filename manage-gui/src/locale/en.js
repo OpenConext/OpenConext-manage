@@ -268,6 +268,7 @@ I18n.translations.en = {
         delete_import: "Delete",
         delete: "Delete imported Service Providers",
         deletedFlash: "Deleted {{number}} Service Providers",
+        elapsed: "Processed {{nbr}} Service Providers in ~{{time}} seconds",
         results: {
             category: "Category",
             number: "Number of Service Providers",

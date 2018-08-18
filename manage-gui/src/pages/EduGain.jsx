@@ -22,7 +22,8 @@ export default class EduGain extends React.PureComponent {
             loading: false,
             deleting: false,
             count: "?",
-            resultsCollapsed: {}
+            resultsCollapsed: {},
+            start: undefined
         };
     }
 
@@ -55,7 +56,7 @@ export default class EduGain extends React.PureComponent {
                 invalidUrl: !result
             });
             if (result) {
-                this.setState({loading: true});
+                this.setState({loading: true, start: Date.now()});
                 importFeed(url).then(result => {
                     if (result["errors"]) {
                         setFlash(JSON.stringify(result), "error");
@@ -88,9 +89,13 @@ export default class EduGain extends React.PureComponent {
 
     renderResults = results => {
         const keys = ["imported", "merged", "no_changes", "not_imported", "not_valid"];
-        const {resultsCollapsed} = this.state;
+        const nbr = keys.reduce((acc, key) => acc + (results[key] || []).length, 0);
+        const {resultsCollapsed, start} = this.state;
         return (
             <section className="results">
+                <span className="elapsed">{I18n.t("edugain.elapsed", {
+                    time: Math.floor((Date.now()-start) / 1000), nbr: nbr
+                })}</span>
                 <table>
                     <thead>
                     <tr>
