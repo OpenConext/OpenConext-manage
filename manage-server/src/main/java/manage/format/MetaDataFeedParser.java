@@ -346,7 +346,8 @@ public class MetaDataFeedParser {
         return arp.entrySet().stream()
             .collect(toMap(
                 entry -> (String) Map.class.cast(entry.getValue()).getOrDefault("alias", "nope"),
-                entry -> entry.getKey()));
+                entry -> entry.getKey(),
+                (alias1, alias2) -> alias1));
     }
 
     private Map<String, Object> arpAttributes(EntityType type, MetaDataAutoConfiguration metaDataAutoConfiguration,

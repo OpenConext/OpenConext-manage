@@ -486,7 +486,7 @@ export default class Import extends React.Component {
             <section className="import-header">
                 <h2>{info}</h2>
                 <Select onChange={this.changeType}
-                        options={["saml20_idp", "saml20_sp"].map(s => ({
+                        options={["saml20_sp", "saml20_idp"].map(s => ({
                             value: s,
                             label: I18n.t(`metadata.${s}_single`)
                         }))}
