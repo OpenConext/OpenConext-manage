@@ -344,8 +344,9 @@ public class MetaDataFeedParser {
                                            boolean isSp) {
         Map<String, Object> arp = arpAttributes(type, metaDataAutoConfiguration, isSp);
         return arp.entrySet().stream()
+            .filter(entry -> Map.class.cast(entry.getValue()).containsKey("alias"))
             .collect(toMap(
-                entry -> (String) Map.class.cast(entry.getValue()).getOrDefault("alias", "nope"),
+                entry -> (String) Map.class.cast(entry.getValue()).get("alias"),
                 entry -> entry.getKey(),
                 (alias1, alias2) -> alias1));
     }
