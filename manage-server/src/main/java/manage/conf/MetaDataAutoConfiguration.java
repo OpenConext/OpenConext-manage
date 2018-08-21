@@ -21,6 +21,7 @@ import org.springframework.util.Assert;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,6 +31,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
@@ -102,10 +105,14 @@ public class MetaDataAutoConfiguration {
 
     private Map<String, Schema> parseConfiguration(Resource metadataConfigurationPath, List<FormatValidator>
         validators) throws IOException {
-        File[] schemaFiles = metadataConfigurationPath.getFile().listFiles((dir, name) -> name.endsWith("schema.json"));
+        File[] files = metadataConfigurationPath.getFile().listFiles();
+
+        List<File> schemaFiles =
+            Stream.of(files).filter(file -> file.getName().endsWith("schema.json")).collect(Collectors.toList());
         Assert.notEmpty(schemaFiles, String.format("No schema.json files defined in %s", metadataConfigurationPath
             .getFilename()));
-        return Arrays.stream(schemaFiles).map(file -> this.parse(file, validators))
+        return schemaFiles.stream().map(file -> this.parse(file, validators,
+            Stream.of(files).filter(f -> f.getName().equals(file.getName().replace("schema", "addendum"))).findAny()))
             .collect(toMap(Schema::getTitle, schema -> schema));
     }
 
@@ -117,12 +124,12 @@ public class MetaDataAutoConfiguration {
             .collect(toMap(map -> map.keySet().iterator().next(), map -> map.values().iterator().next()));
     }
 
-    private Schema parse(File file, List<FormatValidator> validators) {
-        JSONObject jsonObject;
-        try {
-            jsonObject = new JSONObject(new JSONTokener(new FileInputStream(file)));
-        } catch (IOException e) {
-            throw new IllegalArgumentException(String.format("%s not found", file.getAbsolutePath()));
+    private Schema parse(File file, List<FormatValidator> validators, Optional<File> addendum) {
+        JSONObject jsonObject = new JSONObject(new JSONTokener(this.fileInputStream(file)));
+        Optional<JSONObject> optionalAddendum =
+            addendum.map(addendumFile -> new JSONObject(new JSONTokener(this.fileInputStream(addendumFile))));
+        if (optionalAddendum.isPresent()) {
+            jsonObject = this.deepMerge(jsonObject, optionalAddendum.get());
         }
         SchemaLoader.SchemaLoaderBuilder schemaLoaderBuilder = SchemaLoader.builder().schemaJson(jsonObject);
         validators.forEach(schemaLoaderBuilder::addFormatValidator);
@@ -130,6 +137,34 @@ public class MetaDataAutoConfiguration {
         addIndexes(schema.getTitle(), jsonObject);
         this.schemaRepresentations.add(jsonObject.toMap());
         return schema;
+    }
+
+    private JSONObject deepMerge(JSONObject source, JSONObject addendum) {
+        Stream.of(JSONObject.getNames(addendum)).forEach(name -> {
+                Object value = addendum.get(name);
+                if (!source.has(name)) {
+                    source.put(name, value);
+                } else {
+                    if (value instanceof JSONObject) {
+                        JSONObject addendumValueJson = (JSONObject) value;
+                        JSONObject jsonObject = source.getJSONObject(name);
+                        deepMerge(jsonObject, addendumValueJson);
+                    } else {
+                        source.put(name, value);
+                    }
+
+                }
+            }
+        );
+        return source;
+    }
+
+    private FileInputStream fileInputStream(File file) {
+        try {
+            return new FileInputStream(file);
+        } catch (FileNotFoundException e) {
+            throw new IllegalArgumentException(String.format("%s not found", file.getAbsolutePath()));
+        }
     }
 
     private Map<String, Object> parseTemplate(File file) {

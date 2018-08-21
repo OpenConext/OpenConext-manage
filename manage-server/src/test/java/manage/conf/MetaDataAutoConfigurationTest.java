@@ -30,36 +30,47 @@ public class MetaDataAutoConfigurationTest implements TestUtils {
     }
 
     @Test
-    public void testSpDashBaord() throws Exception {
+    public void testSpDashBaord() {
         testErrors("json/validation_error_dashboard_sp.json", EntityType.SP, 2);
     }
 
     @Test
-    public void testSpSchema() throws Exception {
+    public void testSpSchema() {
         String json = readFile("json/valid_service_provider.json");
         subject.validate(json, EntityType.SP.getType());
     }
 
     @Test
-    public void testSchemaSpInvalid() throws Exception {
+    public void testSchemaSpInvalid() {
         testErrors("json/invalid_service_provider.json", EntityType.SP, 3);
     }
 
     @Test
-    public void testSchemaSpForUpdateIsValid() throws Exception {
+    public void testSchemaSpForUpdateIsValid() {
         String json = readFile("json/updated_metadata.json");
         subject.validate(json, EntityType.SP.getType());
     }
 
     @Test
-    public void testIdpSchema() throws Exception {
+    public void testIdpSchema() {
         String json = readFile("json/valid_identity_provider.json");
         subject.validate(json, EntityType.IDP.getType());
     }
 
     @Test
-    public void testSchemaIdpInvalid() throws Exception {
+    public void testSchemaIdpInvalid() {
         testErrors("json/invalid_identity_provider.json", EntityType.IDP, 13);
+    }
+
+    @Test
+    public void testAddendumServiceProvider() {
+        Map metaDataFields = Map.class.cast(Map.class.cast(subject.schemaRepresentation(EntityType.SP)
+            .get("properties")).get("metaDataFields"));
+        Map<String, Map> properties = (Map) metaDataFields.get("properties");
+        Map<String, Map> patternProperties = (Map) metaDataFields.get("patternProperties");
+
+        assertEquals("Additional info.", properties.get("coin:additional_info").get("info"));
+        assertEquals("The USP of the Service.", patternProperties.get("^usp:(en|nl)$").get("info"));
     }
 
     private void testErrors(String path, EntityType type, int errorsExpected) {
@@ -70,28 +81,6 @@ public class MetaDataAutoConfigurationTest implements TestUtils {
         } catch (ValidationException e) {
             assertEquals(errorsExpected, e.getAllMessages().size());
         }
-    }
-
-    @Test
-    public void testMetaDataMotivations() {
-        Map metaDataFields = (Map) Map.class.cast(subject.schemaRepresentation(EntityType.SP).get("properties")).get
-            ("metaDataFields");
-        Map<String, String> keys = (Map<String, String>) Map.class.cast(metaDataFields.get("properties")).keySet()
-            .stream()
-            .filter(key -> String.class.cast(key).startsWith("coin:attr_motivation:")).collect(Collectors.toMap(k -> {
-                String key = (String) k;
-                return key.substring(key.lastIndexOf(":") + 1);
-            }, k -> k));
-        System.out.println(String.join(", ",  keys.values().stream().map(s -> (String) "\""+s +"\"").collect(Collectors.toList())));
-
-        Map<String, String> arpAttributes = (Map<String, String>) Map.class.cast(Map.class.cast(Map.class.cast(Map
-            .class.cast(Map.class.cast(subject.schemaRepresentation(EntityType.SP).get("properties")).get("arp")).get
-            ("properties")).get("attributes")).get("properties"))
-            .keySet().stream().collect(Collectors.toMap(k -> {
-                String key = (String) k;
-                return key.substring(key.lastIndexOf(":") + 1);
-            }, k -> k));
-        System.out.println(arpAttributes);
     }
 
     @Test

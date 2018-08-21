@@ -1,0 +1,18 @@
+{
+  "properties": {
+    "metaDataFields": {
+      "properties": {
+        "coin:additional_info": {
+          "type": "string",
+          "info": "Additional info."
+        }
+      },
+      "patternProperties": {
+        "^usp:(en|nl)$": {
+          "type": "string",
+          "info": "The USP of the Service."
+        }
+      }
+    }
+  }
+}
