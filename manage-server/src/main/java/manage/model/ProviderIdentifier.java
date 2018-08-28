@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @EqualsAndHashCode
+@SuppressWarnings("unchecked")
 public class ProviderIdentifier {
     //Every revision that has a different entityID, state or institution_id is considered a different entity
     private String entityId;
@@ -21,7 +22,7 @@ public class ProviderIdentifier {
         this.state = String.class.cast(data.get("state"));
     }
 
-    @SuppressWarnings("unchecked")
+
     public Map toMap(EntityType entityType, Optional<Map<String, String>> optionalMap) {
         Map<String, String> result = optionalMap.orElseGet(HashMap::new);
         result.put(entityType.getType() + "_entityid", entityId);

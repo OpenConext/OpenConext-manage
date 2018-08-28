@@ -100,8 +100,10 @@ public class SystemController {
         results.put("connections", connections);
 
         List<MetaData> serviceProviders = metaDataRepository.getMongoTemplate().findAll(MetaData.class, "saml20_sp");
-        serviceProviders.forEach(sp ->
-            connections.put(sp.getId(), formatter.parseServiceProvider(sp)));
+        //For now we don't want to push imported eduGain ServiceProviders
+        serviceProviders.stream()
+            .filter(metaData -> !"1".equals(Map.class.cast(metaData.getData().get("metaDataFields")).get("coin:imported_from_edugain")))
+            .forEach(sp -> connections.put(sp.getId(), formatter.parseServiceProvider(sp)));
 
         List<MetaData> identityProviders = metaDataRepository.getMongoTemplate().findAll(MetaData.class, "saml20_idp");
         identityProviders.forEach(idp ->
