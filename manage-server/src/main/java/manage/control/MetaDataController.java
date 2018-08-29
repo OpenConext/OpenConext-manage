@@ -92,7 +92,8 @@ public class MetaDataController {
 
     @GetMapping("/client/template/{type}")
     public MetaData template(@PathVariable("type") String type) {
-        return new MetaData(type, Map.class.cast(metaDataAutoConfiguration.metaDataTemplate(type)));
+        Map<String, Object> data = metaDataAutoConfiguration.metaDataTemplate(type);
+        return new MetaData(type, data);
     }
 
     @GetMapping({"/client/metadata/{type}/{id}", "/internal/metadata/{type}/{id}"})
@@ -176,6 +177,7 @@ public class MetaDataController {
             EntityType entityType = EntityType.SP;
             imports.forEach(sp -> {
                 String entityId = (String) sp.get("entityid");
+                sp.put("metadataurl", importRequest.getUrl());
 
                 ServiceProvider existingServiceProvider = serviceProviderMap.get(entityId);
                 if (existingServiceProvider != null) {

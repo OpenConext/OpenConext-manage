@@ -43,7 +43,7 @@ public class MetaDataAutoConfiguration {
     private static final Logger LOG = LoggerFactory.getLogger(MetaDataAutoConfiguration.class);
 
     private Map<String, Schema> schemas;
-    private Map<String, Object> templates;
+    private Map<String, File> templates;
     private List<Map<String, Object>> schemaRepresentations = new ArrayList<>();
     private Map<String, List<IndexConfiguration>> indexConfigurations = new HashMap<>();
     private ObjectMapper objectMapper;
@@ -77,10 +77,11 @@ public class MetaDataAutoConfiguration {
         return schemas.keySet();
     }
 
-    public Object metaDataTemplate(String type) {
-        return templates.computeIfAbsent(type, key -> {
+    public Map<String, Object> metaDataTemplate(String type) {
+        File file = templates.computeIfAbsent(type, key -> {
             throw new IllegalArgumentException(String.format("No template defined for %s", key));
         });
+        return this.parseTemplate(file);
     }
 
     public List<IndexConfiguration> indexConfigurations(String schemaType) {
@@ -116,12 +117,13 @@ public class MetaDataAutoConfiguration {
             .collect(toMap(Schema::getTitle, schema -> schema));
     }
 
-    private Map<String, Object> parseTemplates(Resource metadataTemplatesPath) throws IOException {
+
+    private Map<String, File> parseTemplates(Resource metadataTemplatesPath) throws IOException {
         File[] templates = metadataTemplatesPath.getFile().listFiles((dir, name) -> name.endsWith("template.json"));
         Assert.notEmpty(templates, String.format("No template.json files defined in %s", metadataTemplatesPath
             .getFilename()));
-        return Arrays.stream(templates).map(this::parseTemplate)
-            .collect(toMap(map -> map.keySet().iterator().next(), map -> map.values().iterator().next()));
+        return Stream.of(templates).collect(toMap(file -> file.getName().substring(0, file.getName().indexOf(
+            ".template.json")), file -> file));
     }
 
     private Schema parse(File file, List<FormatValidator> validators, Optional<File> addendum) {
@@ -168,12 +170,8 @@ public class MetaDataAutoConfiguration {
     }
 
     private Map<String, Object> parseTemplate(File file) {
-        Map<String, Object> result = new HashMap<>();
         try {
-            Object template = objectMapper.readValue(file, Object.class);
-            String name = file.getName();
-            result.put(name.substring(0, name.indexOf(".template.json")), template);
-            return result;
+            return objectMapper.readValue(file, Map.class);
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
         }

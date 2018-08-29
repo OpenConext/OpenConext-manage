@@ -80,20 +80,29 @@ export default class EduGain extends React.PureComponent {
         this.setState({resultsCollapsed: resultsCollapsed});
     };
 
-    renderServiceProvider = sp => typeof sp === "string" ? <span>{sp}</span> : sp.validationException ?
-        <div>
-            <span>{sp.entityId}</span>
-            {sp.validationException.split(",").map(s => <p className="error">{s}</p>)}
-        </div> :
-        <div>
-            <a href={`/metadata/saml20_sp/${sp.id}`} target="_blank"
-               onClick={e => e.stopPropagation()}>
-                {sp.entityId}<i className="fa fa-external-link"></i>
-            </a>
-        </div>;
+    renderServiceProvider = (sp, resultType) => {
+        switch (resultType) {
+            case "deleted":
+                return <span>{sp.entityId}</span>;
+            case "not_valid":
+                return <div>
+                    <span>{sp.entityId}</span>
+                    {sp.validationException.split(",").map(s => <p className="error">{s}</p>)}
+                </div>;
+            default: {
+                const tab = resultType === "not_imported" ? "/import" : "";
+                return <div>
+                    <a href={`/metadata/saml20_sp/${sp.id}${tab}`} target="_blank"
+                       onClick={e => e.stopPropagation()}>
+                        {sp.entityId}<i className="fa fa-external-link"></i>
+                    </a>
+                </div>;
+            }
+        }
+    };
 
     renderResults = results => {
-        const keys = ["imported", "merged", "no_changes", "not_imported", "not_valid", "deleted"];
+        const keys = ["imported", "merged", "no_changes", "not_imported",];
         const nbr = results.total[0];
         const {resultsCollapsed, elapsed} = this.state;
         return (
@@ -125,7 +134,7 @@ export default class EduGain extends React.PureComponent {
                     {(resultsCollapsed[k] && results[k]) && results[k].map((sp, index) =>
                         <tr key={index} className="sp">
                             <td></td>
-                            <td>{this.renderServiceProvider(sp)}</td>
+                            <td>{this.renderServiceProvider(sp, k)}</td>
                         </tr>)}
                     </tbody>)}
                 </table>

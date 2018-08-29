@@ -43,7 +43,6 @@ public class MetaDataFeedParser {
         XMLInputFactory factory = XMLInputFactory.newInstance();
 
         XMLStreamReader reader = factory.createXMLStreamReader(xml.getInputStream());
-
         List<Map<String, Object>> results = new ArrayList<>();
         while (reader.hasNext()) {
             Map<String, Object> entity = parseEntity(EntityType.SP, Optional.empty(), metaDataAutoConfiguration,
