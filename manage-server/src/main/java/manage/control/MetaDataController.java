@@ -167,7 +167,8 @@ public class MetaDataController {
                 metaDataRepository.allServiceProviderEntityIds().stream()
                     .map(ServiceProvider::new)
                     .collect(Collectors.toMap(sp -> sp.getEntityId(), sp -> sp));
-            Resource resource = new UrlResource(new URL(importRequest.getUrl()));
+            String feedUrl = importRequest.getUrl();
+            Resource resource = new UrlResource(new URL(feedUrl));
 
             List<Map<String, Object>> allImports = this.importer.importFeed(resource);
             List<Map<String, Object>> imports =
@@ -177,7 +178,10 @@ public class MetaDataController {
             EntityType entityType = EntityType.SP;
             imports.forEach(sp -> {
                 String entityId = (String) sp.get("entityid");
-                sp.put("metadataurl", importRequest.getUrl());
+                sp.put("metadataurl", feedUrl);
+                Map metaDataFields = Map.class.cast(sp.get("metaDataFields"));
+                metaDataFields.put("coin:imported_from_edugain", "1");
+                metaDataFields.put("coin:interfed_source", "eduGAIN");
 
                 ServiceProvider existingServiceProvider = serviceProviderMap.get(entityId);
                 if (existingServiceProvider != null) {
@@ -248,7 +252,6 @@ public class MetaDataController {
 
     private MetaDataUpdate importToMetaDataUpdate(String id, EntityType entityType, Map<String, Object> m) {
         Map<String, String> metaDataFields = Map.class.cast(m.get("metaDataFields"));
-        metaDataFields.put("coin:imported_from_edugain", "1");
         Map<String, Object> pathUpdates = new HashMap<>();
         metaDataFields.forEach((k, v) -> pathUpdates.put("metaDataFields.".concat(k), v));
         MetaDataUpdate metaDataUpdate = new MetaDataUpdate(id, entityType.getType(), pathUpdates);

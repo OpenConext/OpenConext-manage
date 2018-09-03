@@ -44,6 +44,7 @@ public class MetaDataFeedParser {
 
         XMLStreamReader reader = factory.createXMLStreamReader(xml.getInputStream());
         List<Map<String, Object>> results = new ArrayList<>();
+
         while (reader.hasNext()) {
             Map<String, Object> entity = parseEntity(EntityType.SP, Optional.empty(), metaDataAutoConfiguration,
                 reader, true);
@@ -331,6 +332,9 @@ public class MetaDataFeedParser {
         Map<String, String> metaDataFields = (Map<String, String>) metaData.get(META_DATA_FIELDS);
         if (!metaDataFields.containsKey("name:en") && metaDataFields.containsKey("OrganizationName:en")) {
             metaDataFields.put("name:en", metaDataFields.get("OrganizationName:en"));
+        }
+        if (!metaDataFields.containsKey("name:nl") && metaDataFields.containsKey("OrganizationName:nl")) {
+            metaDataFields.put("name:nl", metaDataFields.get("OrganizationName:nl"));
         }
         return metaData;
     }
