@@ -188,7 +188,7 @@ public class MetaDataController {
                     if (existingServiceProvider.isImportedFromEduGain()) {
                         try {
                             MetaDataUpdate metaDataUpdate =
-                                this.importToMetaDataUpdate(existingServiceProvider.getId(), entityType, sp);
+                                this.importToMetaDataUpdate(existingServiceProvider.getId(), entityType, sp, feedUrl);
                             Optional<MetaData> metaData = this.doMergeUpdate(metaDataUpdate, "edugain-import", false);
                             if (metaData.isPresent()) {
                                 List merged = results.computeIfAbsent("merged", s -> new ArrayList());
@@ -244,16 +244,16 @@ public class MetaDataController {
     }
 
     private MetaData importToMetaData(Map<String, Object> m, EntityType entityType) {
-        Map.class.cast(m.get("metaDataFields")).put("coin:imported_from_edugain", "1");
         MetaData template = this.template(entityType.getType());
         template.getData().putAll(m);
         return template;
     }
 
-    private MetaDataUpdate importToMetaDataUpdate(String id, EntityType entityType, Map<String, Object> m) {
+    private MetaDataUpdate importToMetaDataUpdate(String id, EntityType entityType, Map<String, Object> m, String feedUrl) {
         Map<String, String> metaDataFields = Map.class.cast(m.get("metaDataFields"));
         Map<String, Object> pathUpdates = new HashMap<>();
         metaDataFields.forEach((k, v) -> pathUpdates.put("metaDataFields.".concat(k), v));
+        pathUpdates.put("metadataurl", feedUrl);
         MetaDataUpdate metaDataUpdate = new MetaDataUpdate(id, entityType.getType(), pathUpdates);
         return metaDataUpdate;
     }
