@@ -283,7 +283,9 @@ I18n.translations.en = {
             not_valid: "Not valid",
             not_valid_info: "The metadata was not valid according out JSON schema",
             deleted: "Deleted",
-            deleted_info: "Metadata previously imported but not present anymore in the feed"
+            deleted_info: "Metadata previously imported but not present anymore in the feed",
+            published_in_edugain: "Published in eduGAIN",
+            published_in_edugain_info: "Published in eduGAIN  and as such ignored in the feed import / merge"
         }
     },
     clipboard: {

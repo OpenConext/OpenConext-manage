@@ -82,7 +82,8 @@ public class MetaDataRepository {
             .fields()
             .include("data.entityid")
             .include("data.metaDataFields.name:en")
-            .include("data.metaDataFields.coin:imported_from_edugain");
+            .include("data.metaDataFields.coin:imported_from_edugain")
+            .include("data.metaDataFields.coin:publish_in_edugain");
         return mongoTemplate.find(query, Map.class, EntityType.SP.getType());
     }
 

@@ -102,7 +102,7 @@ export default class EduGain extends React.PureComponent {
     };
 
     renderResults = results => {
-        const keys = ["imported", "merged", "no_changes", "not_imported", "deleted"];
+        const keys = ["imported", "merged", "no_changes", "not_imported", "deleted", "published_in_edugain"];
         const nbr = results.total[0];
         const {resultsCollapsed, elapsed} = this.state;
         return (

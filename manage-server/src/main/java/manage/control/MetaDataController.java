@@ -185,7 +185,11 @@ public class MetaDataController {
 
                 ServiceProvider existingServiceProvider = serviceProviderMap.get(entityId);
                 if (existingServiceProvider != null) {
-                    if (existingServiceProvider.isImportedFromEduGain()) {
+                    if (existingServiceProvider.isPublishedInEduGain()) {
+                        // Do not import this SP as it's source is SURFconext
+                        List publishedInEdugain = results.computeIfAbsent("published_in_edugain", s -> new ArrayList());
+                        publishedInEdugain.add(existingServiceProvider);
+                    } else if (existingServiceProvider.isImportedFromEduGain()) {
                         try {
                             MetaDataUpdate metaDataUpdate =
                                 this.importToMetaDataUpdate(existingServiceProvider.getId(), entityType, sp, feedUrl);
@@ -210,7 +214,7 @@ public class MetaDataController {
                         MetaData metaData = this.importToMetaData(sp, entityType);
                         MetaData persistedMetaData = this.doPost(metaData, "edugain-import");
                         List imported = results.computeIfAbsent("imported", s -> new ArrayList());
-                        imported.add(new ServiceProvider(persistedMetaData.getId(), entityId, false, null));
+                        imported.add(new ServiceProvider(persistedMetaData.getId(), entityId, false, false, null));
                     } catch (JsonProcessingException | ValidationException e) {
                         addNoValid(results, entityId, e);
                     }
@@ -220,7 +224,7 @@ public class MetaDataController {
                 .filter(sp -> sp.isImportedFromEduGain() &&
                     !imports.stream().anyMatch(map -> sp.getEntityId().equals(map.get("entityid"))))
                 .collect(Collectors.toList());
-            notInFeedAnymore.forEach(sp -> this.doRemove(entityType.getType(),sp.getId(),"edugain-import"));
+            notInFeedAnymore.forEach(sp -> this.doRemove(entityType.getType(), sp.getId(), "edugain-import"));
 
             List deleted = results.computeIfAbsent("deleted", s -> new ArrayList());
             deleted.addAll(notInFeedAnymore.stream().map(sp -> sp.getEntityId()).collect(Collectors.toList()));
@@ -246,10 +250,12 @@ public class MetaDataController {
     private MetaData importToMetaData(Map<String, Object> m, EntityType entityType) {
         MetaData template = this.template(entityType.getType());
         template.getData().putAll(m);
+        template.getData().put("state", "prodaccepted");
         return template;
     }
 
-    private MetaDataUpdate importToMetaDataUpdate(String id, EntityType entityType, Map<String, Object> m, String feedUrl) {
+    private MetaDataUpdate importToMetaDataUpdate(String id, EntityType entityType, Map<String, Object> m,
+                                                  String feedUrl) {
         Map<String, String> metaDataFields = Map.class.cast(m.get("metaDataFields"));
         Map<String, Object> pathUpdates = new HashMap<>();
         metaDataFields.forEach((k, v) -> pathUpdates.put("metaDataFields.".concat(k), v));
