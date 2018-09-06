@@ -40,7 +40,7 @@ export default class Navigation extends React.PureComponent {
                     width: 3, // The line thickness
                     radius: 8, // The radius of the inner circle
                     color: "#4DB3CF", // #rgb or #rrggbb or array of colors
-                    top: "5%",
+                    top: "40px",
                     position: "fixed"
                 }).spin(this.spinnerNode);
             }
