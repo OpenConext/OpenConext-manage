@@ -33,8 +33,8 @@ public class ValidationControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void validationEmail() throws Exception {
-        doValidation("email", "conext-beheer@surfnet.nl", true);
-        doValidation("email", "nope", false);
+        doValidation("local-email", "conext-beheer@surfnet.nl", true);
+        doValidation("local-email", "nope", false);
     }
 
     @Test
