@@ -16,6 +16,7 @@ push:
   name: OpenConext EngineBlock
   user: user
   password: password
+  exclude_edugain_imports: true
 
 product:
   name: Manage

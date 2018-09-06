@@ -4,6 +4,7 @@ import manage.model.Validation;
 import manage.validations.BooleanFormatValidator;
 import manage.validations.CertificateFormatValidator;
 import manage.validations.JSONFormatValidator;
+import manage.validations.LocalEmailFormatValidator;
 import manage.validations.NumberFormatValidator;
 import manage.validations.PatternFormatValidator;
 import manage.validations.URLFormatValidator;
@@ -33,7 +34,7 @@ public class ValidationController {
             new BooleanFormatValidator(),
             new CertificateFormatValidator(),
             new DateTimeFormatValidator(),
-            new EmailFormatValidator(),
+            new LocalEmailFormatValidator(),
             new NumberFormatValidator(),
             new URLFormatValidator(),
             new XMLFormatValidator(),

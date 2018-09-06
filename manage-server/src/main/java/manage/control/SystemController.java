@@ -54,7 +54,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
-
+import static java.util.stream.Collectors.toMap;
 @RestController
 @SuppressWarnings("unchecked")
 public class SystemController {
@@ -65,6 +65,7 @@ public class SystemController {
     private String pushUser;
     private String pushPassword;
     private String pushUri;
+    private boolean excludeEduGainImported;
     private MetaDataRepository metaDataRepository;
     private JdbcTemplate ebJdbcTemplate;
     private Environment environment;
@@ -79,11 +80,13 @@ public class SystemController {
                             @Value("${push.url}") String pushUri,
                             @Value("${push.user}") String user,
                             @Value("${push.password}") String password,
+                            @Value("${push.exclude_edugain_imports}") boolean excludeEduGainImported,
                             Environment environment) throws MalformedURLException {
         this.metaDataRepository = metaDataRepository;
         this.pushUri = pushUri;
         this.pushUser = user;
         this.pushPassword = password;
+        this.excludeEduGainImported = excludeEduGainImported;
         this.restTemplate = new RestTemplate(getRequestFactory());
         this.ebJdbcTemplate = new JdbcTemplate(ebDataSource);
         this.environment = environment;
@@ -94,20 +97,27 @@ public class SystemController {
     public Map<String, Map<String, Map<String, Object>>> pushPreview() {
         EngineBlockFormatter formatter = new EngineBlockFormatter();
 
-        Map<String, Map<String, Map<String, Object>>> results =
-            new HashMap<>();
-        Map<String, Map<String, Object>> connections = new HashMap<>();
-        results.put("connections", connections);
-
         List<MetaData> serviceProviders = metaDataRepository.getMongoTemplate().findAll(MetaData.class, "saml20_sp");
-        //For now we don't want to push imported eduGain ServiceProviders
-        serviceProviders.stream()
-            .filter(metaData -> !"1".equals(Map.class.cast(metaData.getData().get("metaDataFields")).get("coin:imported_from_edugain")))
-            .forEach(sp -> connections.put(sp.getId(), formatter.parseServiceProvider(sp)));
+        Stream<MetaData> metaDataStream = excludeEduGainImported ?
+            serviceProviders.stream()
+                .filter(metaData -> {
+                    Map metaDataFields = Map.class.cast(metaData.getData().get("metaDataFields"));
+                    boolean importedFromEdugain = "1".equals(metaDataFields.get("coin:imported_from_edugain"));
+                    boolean pushEnabled = "1".equals(metaDataFields.get("coin:push_enabled"));
+                    return !importedFromEdugain || pushEnabled;
+                }) : serviceProviders.stream();
+
+        Map<String, Map<String, Object>> serviceProvidersToPush = metaDataStream
+            .collect(toMap(sp -> sp.getId(), sp -> formatter.parseServiceProvider(sp)));
 
         List<MetaData> identityProviders = metaDataRepository.getMongoTemplate().findAll(MetaData.class, "saml20_idp");
-        identityProviders.forEach(idp ->
-            connections.put(idp.getId(), formatter.parseIdentityProvider(idp)));
+        Map<String, Map<String, Object>> identityProvidersToPush = identityProviders.stream()
+            .collect(toMap(idp -> idp.getId(), idp -> formatter.parseIdentityProvider(idp)));
+
+        serviceProvidersToPush.putAll(identityProvidersToPush);
+        Map<String, Map<String, Map<String, Object>>> results = new HashMap<>();
+        results.put("connections", serviceProvidersToPush);
+
         return results;
     }
 
@@ -182,7 +192,8 @@ public class SystemController {
         List<OrphanMetaData> orphans = this.orphans();
         orphans.forEach(orphanMetaData -> {
             MetaData metaData = metaDataRepository.findById(orphanMetaData.getId(), orphanMetaData.getCollection());
-            List<Map<String, Object>> entries = (List<Map<String, Object>>) metaData.getData().get(orphanMetaData.getReferencedCollectionName());
+            List<Map<String, Object>> entries =
+                (List<Map<String, Object>>) metaData.getData().get(orphanMetaData.getReferencedCollectionName());
 
             List<Map<String, Object>> newEntries = entries.stream().filter(entry -> !entry.get("name").equals
                 (orphanMetaData.getMissingEntityId())).collect(Collectors.toList());
