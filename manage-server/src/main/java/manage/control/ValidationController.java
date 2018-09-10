@@ -5,6 +5,7 @@ import manage.validations.BooleanFormatValidator;
 import manage.validations.CertificateFormatValidator;
 import manage.validations.JSONFormatValidator;
 import manage.validations.LocalEmailFormatValidator;
+import manage.validations.NoopFormatValidator;
 import manage.validations.NumberFormatValidator;
 import manage.validations.PatternFormatValidator;
 import manage.validations.URLFormatValidator;
@@ -40,6 +41,7 @@ public class ValidationController {
             new XMLFormatValidator(),
             new JSONFormatValidator(),
             new UUIDFormatValidator(),
+            new NoopFormatValidator(),
             new PatternFormatValidator()).stream().collect(toMap(FormatValidator::formatName, Function.identity()));
     }
 
