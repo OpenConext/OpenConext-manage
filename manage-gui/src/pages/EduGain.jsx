@@ -83,7 +83,7 @@ export default class EduGain extends React.PureComponent {
     renderServiceProvider = (sp, resultType) => {
         switch (resultType) {
             case "deleted":
-                return <span>{sp.entityId}</span>;
+                return <span>{sp}</span>;
             case "not_valid":
                 return <div>
                     <span>{sp.entityId}</span>
