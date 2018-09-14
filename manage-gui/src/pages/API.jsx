@@ -266,12 +266,24 @@ export default class API extends React.PureComponent {
                         {Object.keys(searchAttributes).map(attr =>
                             <td key={attr}>{entity.data.metaDataFields[attr]}</td>)}
                         {Object.keys(globalSearchAttributes).map(attr => {
-                                const parts = attr.split(".");
+                                //split by dot results in too many parts for
+                                // "arp.attributes.urn:mace:terena.org:attribute-def:schacHomeOrganization"
+                                const arpAttribute = attr.startsWith("arp.attributes");
+                                if (arpAttribute) {
+                                    attr = "arp.attributes." + attr.substring("arp.attributes.".length).replace(/\./g,"@")
+                                }
+                                let parts = attr.split(".");
+                                if (arpAttribute) {
+                                    parts = parts.map(p => p.replace(/@/g,"."));
+                                }
                                 let last = parts.pop();
                                 let ref = entity.data;
                                 parts.forEach(part => ref = ref ? ref[part] : {});
-                                const val = Array.isArray(ref) ? ref.map(x => x[last]) : ref[last];
-                                return <td key={attr}>{JSON.stringify(val)}</td>
+                                if (ref) {
+                                    const val = Array.isArray(ref) ? ref.map(x => x[last]) : ref[last];
+                                    return <td key={attr}>{JSON.stringify(val)}</td>
+                                }
+                                return <td key={attr}></td>
                             }
                         )}
                     </tr>)}

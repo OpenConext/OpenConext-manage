@@ -116,7 +116,12 @@ public class MetaDataRepository {
             return "metaDataFields." + key.substring("metaDataFields.".length())
                 .replaceAll("\\.", "@");
         }
+        if (key.startsWith("arp.attributes")) {
+            return "arp.attributes." + key.substring("arp.attributes.".length())
+                .replaceAll("\\.", "@");
+        }
         return key;
+
     }
 
     public List<Map> search(String type, Map<String, Object> properties, List<String> requestedAttributes, Boolean
