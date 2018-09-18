@@ -45,7 +45,7 @@ public class ErrorController implements org.springframework.boot.autoconfigure.w
         Throwable error = this.errorAttributes.getError(requestAttributes);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        //Bit of a hack to determine which status to return - GUI expects 200 and other client normal behaviour
+        //Determine which status to return - GUI expects 200 and other API clients normal behaviour
         boolean isInternalCall = StringUtils.hasText(request.getHeader(HttpHeaders.AUTHORIZATION));
         HttpStatus status = isInternalCall ? HttpStatus.BAD_REQUEST : HttpStatus.OK;
         if (error instanceof ValidationException) {
@@ -69,12 +69,7 @@ public class ErrorController implements org.springframework.boot.autoconfigure.w
             ResponseStatus annotation = AnnotationUtils.getAnnotation(error.getClass(), ResponseStatus.class);
             statusCode = annotation != null ? annotation.value() : statusCode;
         }
-        if (error != null) {
-            result.put("message", error.getMessage());
-        } else {
-            result.remove("message");
-        }
-
+        result.remove("message");
         return new ResponseEntity<>(result, statusCode);
     }
 

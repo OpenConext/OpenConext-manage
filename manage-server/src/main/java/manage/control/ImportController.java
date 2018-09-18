@@ -55,7 +55,7 @@ public class ImportController {
             result.put("metadataurl", importRequest.getUrl());
             return result;
         } catch (IOException | XMLStreamException e) {
-            return singletonMap("errors", singletonList(e.toString()));
+            return singletonMap("errors", singletonList(e.getClass().getName()));
         }
     }
 
@@ -67,7 +67,7 @@ public class ImportController {
                 (type), Optional.ofNullable
                 (container.getEntityId()));
         } catch (IOException | XMLStreamException e) {
-            return singletonMap("errors", singletonList(e.toString()));
+            return singletonMap("errors", singletonList(e.getClass().getName()));
         }
     }
 
@@ -96,7 +96,7 @@ public class ImportController {
             Map map = objectMapper.readValue(json, Map.class);
             return this.importJson(type, map);
         } catch (IOException e) {
-            return singletonMap("errors", singletonList(e.toString()));
+            return singletonMap("errors", singletonList(e.getClass().getName()));
         }
     }
 

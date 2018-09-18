@@ -233,13 +233,13 @@ public class MetaDataController {
 
             return results;
         } catch (IOException | XMLStreamException e) {
-            return singletonMap("errors", singletonList(e.toString()));
+            return singletonMap("errors", singletonList(e.getClass().getName()));
         }
     }
 
     private void addNoValid(Map<String, List> results, String entityId, Exception e) {
         String msg = e instanceof ValidationException ?
-            String.join(", ", ValidationException.class.cast(e).getAllMessages()) : e.toString();
+            String.join(", ", ValidationException.class.cast(e).getAllMessages()) : e.getClass().getName();
         List notValid = results.computeIfAbsent("not_valid", s -> new ArrayList());
         Map<String, String> result = new HashMap<>();
         result.put("validationException", msg);
