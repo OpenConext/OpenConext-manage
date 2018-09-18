@@ -66,7 +66,6 @@ public class ErrorController implements org.springframework.boot.autoconfigure.w
             result.put("error", DuplicateEntityIdException.class.getName());
             result.put("message", error.getMessage());
             return new ResponseEntity<>(result, status);
-
         }
 
         HttpStatus statusCode = result.containsKey("status") ? HttpStatus.valueOf((Integer) result.get("status")) :
