@@ -279,11 +279,12 @@ export default class ARP extends React.Component {
 
     renderArpAttributesTablePrintable = (arp) =>
         <section id="arp-attributes-printable"
-                 className="arp-attributes-printable"
-                 dangerouslySetInnerHTML={{
-                     __html: Object.keys(arp.attributes)
-                         .map(attr => `${attr}\t${arp.attributes[attr].filter(val => val.value !== "*").map(val => val.value).join(",")}`).join("\n")
-                 }}/>;
+                 className="arp-attributes-printable">
+            {
+                Object.keys(arp.attributes)
+                    .map(attr => `${attr}\t${arp.attributes[attr].filter(val => val.value !== "*").map(val => val.value).join(",")}`).join("\n")
+            }
+        </section>;
 
     render() {
         const {arp, onChange, arpConfiguration, guest} = this.props;

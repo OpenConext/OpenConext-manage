@@ -270,11 +270,11 @@ export default class API extends React.PureComponent {
                                 // "arp.attributes.urn:mace:terena.org:attribute-def:schacHomeOrganization"
                                 const arpAttribute = attr.startsWith("arp.attributes");
                                 if (arpAttribute) {
-                                    attr = "arp.attributes." + attr.substring("arp.attributes.".length).replace(/\./g,"@")
+                                    attr = "arp.attributes." + attr.substring("arp.attributes.".length).replace(/\./g, "@")
                                 }
                                 let parts = attr.split(".");
                                 if (arpAttribute) {
-                                    parts = parts.map(p => p.replace(/@/g,"."));
+                                    parts = parts.map(p => p.replace(/@/g, "."));
                                 }
                                 let last = parts.pop();
                                 let ref = entity.data;
@@ -295,12 +295,10 @@ export default class API extends React.PureComponent {
 
 
     renderSearchResultsTablePrintable = (searchResults) =>
-        <section id={"search-results-printable"}
-                 dangerouslySetInnerHTML={{
-                     __html: searchResults
-                         .map(entity => `${entity.data.state},${entity.data.entityid},${entity.data.metaDataFields["name:en"] || entity.data.metaDataFields["name:nl"]}`)
-                         .join("\n")
-                 }}/>;
+        <section id={"search-results-printable"}>
+            {searchResults
+                .map(entity => `${entity.data.state},${entity.data.entityid},${entity.data.metaDataFields["name:en"] || entity.data.metaDataFields["name:nl"]}`)
+                .join("\n")}</section>
 
     renderSearch = () => {
         const {configuration} = this.props;
