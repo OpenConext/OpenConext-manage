@@ -7,6 +7,7 @@ import manage.exception.DuplicateEntityIdException;
 import manage.exception.ResourceNotFoundException;
 import manage.format.Exporter;
 import manage.format.Importer;
+import manage.format.SaveURLResource;
 import manage.hook.MetaDataHook;
 import manage.model.EntityType;
 import manage.model.Import;
@@ -22,10 +23,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
-import org.springframework.core.io.UrlResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
@@ -75,18 +76,21 @@ public class MetaDataController {
     private MetaDataHook metaDataHook;
     private Importer importer;
     private Exporter exporter;
+    private Environment environment;
 
     @Autowired
     public MetaDataController(MetaDataRepository metaDataRepository,
                               MetaDataAutoConfiguration metaDataAutoConfiguration,
                               ResourceLoader resourceLoader,
                               MetaDataHook metaDataHook,
+                              Environment environment,
                               @Value("${metadata_export_path}") String metadataExportPath) {
         this.metaDataRepository = metaDataRepository;
         this.metaDataAutoConfiguration = metaDataAutoConfiguration;
         this.metaDataHook = metaDataHook;
         this.importer = new Importer(metaDataAutoConfiguration);
         this.exporter = new Exporter(Clock.systemDefaultZone(), resourceLoader, metadataExportPath);
+        this.environment = environment;
 
     }
 
@@ -168,7 +172,7 @@ public class MetaDataController {
                     .map(ServiceProvider::new)
                     .collect(Collectors.toMap(sp -> sp.getEntityId(), sp -> sp));
             String feedUrl = importRequest.getUrl();
-            Resource resource = new UrlResource(new URL(feedUrl));
+            Resource resource = new SaveURLResource(new URL(feedUrl), environment.acceptsProfiles("dev"));
 
             List<Map<String, Object>> allImports = this.importer.importFeed(resource);
             List<Map<String, Object>> imports =

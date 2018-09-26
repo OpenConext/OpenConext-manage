@@ -40,7 +40,7 @@ public class MetaDataFeedParser {
                                                 MetaDataAutoConfiguration metaDataAutoConfiguration) throws
         XMLStreamException, IOException {
         //despite it's name, the XMLInputFactoryImpl is not thread safe
-        XMLInputFactory factory = XMLInputFactory.newInstance();
+        XMLInputFactory factory = getFactory();
 
         XMLStreamReader reader = factory.createXMLStreamReader(xml.getInputStream());
         List<Map<String, Object>> results = new ArrayList<>();
@@ -53,13 +53,20 @@ public class MetaDataFeedParser {
         return results;
     }
 
+    private XMLInputFactory getFactory() {
+        XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
+        xmlInputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, false); // This disables DTDs entirely for that factory
+        xmlInputFactory.setProperty("javax.xml.stream.isSupportingExternalEntities", false); // disable external entities
+        return xmlInputFactory;
+    }
+
     public Map<String, Object> importXML(Resource xml,
                                          EntityType entityType,
                                          Optional<String> entityIDOptional,
                                          MetaDataAutoConfiguration metaDataAutoConfiguration) throws
         XMLStreamException, IOException {
         //despite it's name, the XMLInputFactoryImpl is not thread safe
-        XMLInputFactory factory = XMLInputFactory.newInstance();
+        XMLInputFactory factory = getFactory();
 
         XMLStreamReader reader = factory.createXMLStreamReader(xml.getInputStream());
 

@@ -10,7 +10,7 @@ public class MetaDataRepositoryTest {
 
     @Test
     public void escapeSpecialChars() {
-        String result = subject.escapeSpecialChars("query (test) | part [test] ? {} + *");
-        assertEquals("query \\(test\\) \\| part \\[test\\] \\? \\{} \\+ \\*", result);
+        String result = subject.escapeSpecialChars("query (((test))) | part [test] ? {} + *");
+        assertEquals("query \\(\\(\\(test\\)\\)\\) \\| part \\[test\\] \\? \\{\\} \\+ \\*", result);
     }
 }

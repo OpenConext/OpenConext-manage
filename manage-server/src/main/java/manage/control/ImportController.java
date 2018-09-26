@@ -3,12 +3,14 @@ package manage.control;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import manage.conf.MetaDataAutoConfiguration;
 import manage.format.Importer;
+import manage.format.SaveURLResource;
 import manage.model.EntityType;
 import manage.model.Import;
 import manage.model.XML;
 import org.apache.commons.io.IOUtils;
 import org.everit.json.schema.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -36,11 +38,14 @@ public class ImportController {
 
     private Importer importer;
     private ObjectMapper objectMapper;
+    private Environment environment;
 
     @Autowired
-    public ImportController(MetaDataAutoConfiguration metaDataAutoConfiguration, ObjectMapper objectMapper) {
+    public ImportController(MetaDataAutoConfiguration metaDataAutoConfiguration, ObjectMapper objectMapper,
+                            Environment environment) {
         this.importer = new Importer(metaDataAutoConfiguration);
         this.objectMapper = objectMapper;
+        this.environment = environment;
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -48,7 +53,7 @@ public class ImportController {
     public Map<String, Object> importXMLUrl(@PathVariable("type") String type, @Validated @RequestBody Import
         importRequest) {
         try {
-            Resource resource = new UrlResource(new URL(importRequest.getUrl()));
+            Resource resource = new SaveURLResource(new URL(importRequest.getUrl()), environment.acceptsProfiles("dev"));
             Map<String, Object> result = this.importer.importXML(resource, EntityType.fromType(type), Optional
                 .ofNullable(importRequest
                 .getEntityId()));
@@ -91,7 +96,7 @@ public class ImportController {
     public Map<String, Object> importJsonUrl(@PathVariable("type") String type, @Validated @RequestBody Import
         importRequest) {
         try {
-            Resource resource = new UrlResource(new URL(importRequest.getUrl()));
+            Resource resource = new SaveURLResource(new URL(importRequest.getUrl()),environment.acceptsProfiles("dev"));
             String json = IOUtils.toString(resource.getInputStream(), Charset.defaultCharset());
             Map map = objectMapper.readValue(json, Map.class);
             return this.importJson(type, map);

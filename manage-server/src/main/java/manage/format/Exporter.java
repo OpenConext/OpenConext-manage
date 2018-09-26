@@ -32,11 +32,12 @@ import java.util.TreeMap;
 public class Exporter {
 
     final static List<String> excludedDataFields = Arrays.asList("id", "eid", "revisionid", "user", "created", "ip",
-        "revisionnote", "notes");
+            "revisionnote", "notes");
     private final static MustacheFactory MUSTACHE_FACTORY = new DefaultMustacheFactory();
     private final ResourceLoader resourceLoader;
     private final String metadataExportPath;
     private final Clock clock;
+    private final List<String> validMetadataExportTypes = Arrays.asList("saml20_idp", "saml20_sp", "single_tenant_template");
 
     public Exporter(Clock clock, ResourceLoader resourceLoader, String metadataExportPath) {
         this.clock = clock;
@@ -45,11 +46,15 @@ public class Exporter {
     }
 
     public String exportToXml(MetaData metaData) throws IOException {
-        String path = String.format("%s/%s.xml", metadataExportPath, metaData.getType());
+        String type = metaData.getType();
+        if (!validMetadataExportTypes.contains(type)) {
+            throw new IllegalArgumentException(String.format("Not allowd metaData type %s. Allowed are %s", type, validMetadataExportTypes));
+        }
+        String path = String.format("%s/%s.xml", metadataExportPath, type);
         Resource resource = resourceLoader.getResource(path);
         String template = IOUtils.toString(resource.getInputStream(), Charset.defaultCharset());
 
-        Mustache mustache = MUSTACHE_FACTORY.compile(new StringReader(template), metaData.getType());
+        Mustache mustache = MUSTACHE_FACTORY.compile(new StringReader(template), type);
         StringWriter writer = new StringWriter();
         try {
             Map data = Map.class.cast(metaData.getData());
@@ -96,7 +101,7 @@ public class Exporter {
             Map<String, Object> map = new TreeMap();
             result.put(key, map);
             Map.class.cast(value).forEach((mapKey, mapValue) -> this.addKeyValue(String.class.cast(mapKey), mapValue,
-                map));
+                    map));
             return;
         }
         if (value instanceof List) {
@@ -137,13 +142,13 @@ public class Exporter {
     private void addOrganizationName(Map data) {
         Map metaDataFields = Map.class.cast(data.get("metaDataFields"));
         String name = String.class.cast(metaDataFields.computeIfAbsent("OrganizationName:en", key -> metaDataFields
-            .get("OrganizationName:nl")));
+                .get("OrganizationName:nl")));
         String displayName = String.class.cast(metaDataFields.computeIfAbsent("OrganizationDisplayName:en", key ->
-            metaDataFields.get("OrganizationDisplayName:nl")));
+                metaDataFields.get("OrganizationDisplayName:nl")));
         String url = String.class.cast(metaDataFields.computeIfAbsent("OrganizationURL:en", key -> metaDataFields.get
-            ("OrganizationURL:nl")));
+                ("OrganizationURL:nl")));
         metaDataFields.put("OrganizationInfo", StringUtils.hasText(name) || StringUtils.hasText(displayName) ||
-            StringUtils.hasText(url));
+                StringUtils.hasText(url));
     }
 
     private void addAttributeConsumingService(Map data) {
@@ -153,7 +158,7 @@ public class Exporter {
             Map arp = Map.class.cast(possibleArp);
             if (Boolean.class.cast(arp.getOrDefault("enabled", false))) {
                 Object attributesObject = arp.get("attributes");
-                if (attributesObject != null ) {
+                if (attributesObject != null) {
                     if (attributesObject instanceof Map) {
                         Map attributes = Map.class.cast(attributesObject);
                         arpAttributes = !attributes.isEmpty();
@@ -177,9 +182,9 @@ public class Exporter {
     private void addUIInfoExtension(Map data) {
         Map metaDataFields = Map.class.cast(data.get("metaDataFields"));
         String name = String.class.cast(metaDataFields.computeIfAbsent("name:en", key -> metaDataFields.get
-            ("name:nl")));
+                ("name:nl")));
         String description = String.class.cast(metaDataFields.computeIfAbsent("description:en", key -> metaDataFields
-            .get("description:nl")));
+                .get("description:nl")));
 
         data.put("UIInfoExtension", StringUtils.hasText(name) || StringUtils.hasText(description));
     }

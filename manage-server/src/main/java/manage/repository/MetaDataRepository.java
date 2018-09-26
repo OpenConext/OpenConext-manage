@@ -99,7 +99,7 @@ public class MetaDataRepository {
 
 
     protected String escapeSpecialChars(String query) {
-        return query.replaceAll("([\\Q\\/$^.?*+{}()|[]\\E]+)", "\\\\$1");
+        return query.replaceAll("([\\Q\\/$^.?*+{}()|[]\\E])", "\\\\$1");
     }
 
     private Criteria regex(String key, String search) {
