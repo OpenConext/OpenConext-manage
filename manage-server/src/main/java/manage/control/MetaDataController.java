@@ -293,7 +293,7 @@ public class MetaDataController {
     }
 
     @GetMapping("/internal/sp-metadata/{id}")
-    public String exportXml(@PathVariable("id") String id) throws IOException, XMLStreamException {
+    public String exportXml(@PathVariable("id") String id) throws IOException {
         MetaData metaData = this.get(EntityType.SP.getType(), id);
         return exporter.exportToXml(metaData);
     }
@@ -322,9 +322,13 @@ public class MetaDataController {
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/client/metadata/{type}/{id}")
     public boolean remove(@PathVariable("type") String type, @PathVariable("id") String id, FederatedUser user) {
-        String uid = user.getUid();
+        return doRemove(type, id, user.getUid());
+    }
 
-        return doRemove(type, id, uid);
+    @PreAuthorize("hasRole('WRITE')")
+    @DeleteMapping("/internal/metadata/{type}/{id}")
+    public boolean removeInternal(@PathVariable("type") String type, @PathVariable("id") String id, APIUser apiUser) {
+        return doRemove(type, id, apiUser.getName());
     }
 
     private boolean doRemove(@PathVariable("type") String type, @PathVariable("id") String id, String uid) {

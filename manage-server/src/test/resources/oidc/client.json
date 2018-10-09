@@ -1,0 +1,65 @@
+{
+  "id": 34,
+  "clientId": "http@//del-me",
+  "clientSecret": "ALMGWCSoofv6tM652CHoyWkXlUf77uZESmsLLaILQBEGGxoDLERNtD6TjlgS0uoS0heKKDkOKmHHnfUxclQSAK4",
+  "redirectUris": [
+    "http://redirect"
+  ],
+  "clientName": null,
+  "clientUri": null,
+  "logoUri": null,
+  "contacts": [],
+  "tosUri": null,
+  "tokenEndpointAuthMethod": "SECRET_BASIC",
+  "scope": [
+    "openid"
+  ],
+  "grantTypes": [
+    "authorization_code"
+  ],
+  "responseTypes": [
+    "code"
+  ],
+  "policyUri": null,
+  "jwksUri": null,
+  "jwks": null,
+  "applicationType": null,
+  "sectorIdentifierUri": null,
+    "subjectType": "PUBLIC",
+  "requestObjectSigningAlg": null,
+  "userInfoSignedResponseAlg": null,
+  "userInfoEncryptedResponseAlg": null,
+  "userInfoEncryptedResponseEnc": null,
+  "idTokenSignedResponseAlg": null,
+  "idTokenEncryptedResponseAlg": null,
+  "idTokenEncryptedResponseEnc": null,
+  "tokenEndpointAuthSigningAlg": null,
+  "defaultMaxAge": 60000,
+  "requireAuthTime": true,
+  "defaultACRvalues": [],
+  "initiateLoginUri": null,
+  "postLogoutRedirectUris": [],
+  "requestUris": [],
+  "authorities": [],
+  "accessTokenValiditySeconds": 3600,
+  "refreshTokenValiditySeconds": null,
+  "resourceIds": [],
+  "additionalInformation": {},
+  "clientDescription": null,
+  "reuseRefreshToken": true,
+  "dynamicallyRegistered": false,
+  "allowIntrospection": false,
+  "idTokenValiditySeconds": 600,
+  "createdAt": 1539092981000,
+  "clearAccessTokensOnRefresh": true,
+  "claimsRedirectUris": [],
+  "authorizedGrantTypes": [
+    "authorization_code"
+  ],
+  "registeredRedirectUri": [
+    "http://redirect"
+  ],
+  "allowRefresh": false,
+  "secretRequired": true,
+  "scoped": true
+}

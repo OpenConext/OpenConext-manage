@@ -33,6 +33,12 @@ security:
   backdoor_password: secret
   api_users_config_path: classpath:/manage-api-users.yml
 
+oidc:
+  user: manage
+  password: secret
+  url: http://oidc.test2.surfconext.nl/oidc/api/clients
+  feature: false
+
 spring:
   mail:
     host: localhost
