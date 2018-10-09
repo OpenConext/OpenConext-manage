@@ -1,5 +1,6 @@
 package manage.hook;
 
+import manage.oidc.OpenIdConnect;
 import manage.repository.MetaDataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -9,13 +10,15 @@ import java.util.Arrays;
 
 @Configuration
 public class MetaDataHookConfiguration {
-    
+
     @Bean
-    CompositeMetaDataHook hooks(@Autowired MetaDataRepository metaDataRepository) {
-        EntityIdReconcilerHook hook = new EntityIdReconcilerHook();
-        hook.setMetaDataRepository(metaDataRepository);
-        return new CompositeMetaDataHook(Arrays.asList(hook));
+    @Autowired
+    CompositeMetaDataHook hooks(MetaDataRepository metaDataRepository, OpenIdConnect openIdConnect) {
+        EntityIdReconcilerHook entityIdReconcilerHook = new EntityIdReconcilerHook(metaDataRepository);
+        OpenIdConnectHook openIdConnectHook = new OpenIdConnectHook(openIdConnect);
+
+        return new CompositeMetaDataHook(Arrays.asList(entityIdReconcilerHook, openIdConnectHook));
     }
 
-    
+
 }

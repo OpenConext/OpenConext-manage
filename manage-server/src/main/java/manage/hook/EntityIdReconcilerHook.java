@@ -14,10 +14,16 @@ import static java.util.stream.Collectors.toList;
 @SuppressWarnings("unchecked")
 public class EntityIdReconcilerHook extends MetaDataHookAdapter {
 
+    private MetaDataRepository metaDataRepository;
+
+    public EntityIdReconcilerHook(MetaDataRepository metaDataRepository) {
+        this.metaDataRepository = metaDataRepository;
+    }
+
     @Override
     public boolean appliesForMetaData(MetaData metaData) {
-        return EntityType.SP.getType().equals(metaData.getType()) || EntityType.IDP.getType().equals(metaData.getType
-            ());
+        return EntityType.SP.getType().equals(metaData.getType()) ||
+                EntityType.IDP.getType().equals(metaData.getType());
     }
 
     @Override
@@ -29,20 +35,19 @@ public class EntityIdReconcilerHook extends MetaDataHookAdapter {
             return newMetaData;
         }
 
-        MetaDataRepository repository = getMetaDataRepository();
         Arrays.asList("allowedEntities", "disableConsent").forEach(name -> {
-            List<MetaData> references = repository.findRaw(oppositeProviderType(newMetaData),
-                String.format("{\"data.%s.name\" : \"%s\"}", name, oldEntityId));
+            List<MetaData> references = metaDataRepository.findRaw(oppositeProviderType(newMetaData),
+                    String.format("{\"data.%s.name\" : \"%s\"}", name, oldEntityId));
 
             String revisionNote = String.format("Updated after entityId rename of %s to %s", oldEntityId, newEntityId);
 
             references.forEach(metaData -> {
                 List<Map<String, String>> entities = (List<Map<String, String>>) metaData.getData().get(name);
                 entities.stream().filter(entry -> oldEntityId.equals(entry.get("name")))
-                    .findAny()
-                    .ifPresent(entry -> entry.put("name", newEntityId));
+                        .findAny()
+                        .ifPresent(entry -> entry.put("name", newEntityId));
                 metaData.getData().put("revisionnote", revisionNote);
-                this.revision(repository, metaData);
+                this.revision(metaData);
             });
         });
         return newMetaData;
@@ -50,11 +55,10 @@ public class EntityIdReconcilerHook extends MetaDataHookAdapter {
 
     @Override
     public MetaData preDelete(MetaData metaDataToBeDeleted) {
-        MetaDataRepository repository = getMetaDataRepository();
         String entityId = entityId(metaDataToBeDeleted);
         Arrays.asList("allowedEntities", "disableConsent").forEach(name -> {
-            List<MetaData> references = repository.findRaw(oppositeProviderType(metaDataToBeDeleted),
-                String.format("{\"data.%s.name\" : \"%s\"}", name, entityId));
+            List<MetaData> references = metaDataRepository.findRaw(oppositeProviderType(metaDataToBeDeleted),
+                    String.format("{\"data.%s.name\" : \"%s\"}", name, entityId));
 
             String revisionNote = String.format("Updated after deletion of entityId %s", entityId);
 
@@ -63,7 +67,7 @@ public class EntityIdReconcilerHook extends MetaDataHookAdapter {
                 entities = entities.stream().filter(entry -> !entityId.equals(entry.get("name"))).collect(toList());
                 metaData.getData().put(name, entities);
                 metaData.getData().put("revisionnote", revisionNote);
-                this.revision(repository, metaData);
+                this.revision(metaData);
             });
         });
         return metaDataToBeDeleted;
@@ -84,7 +88,7 @@ public class EntityIdReconcilerHook extends MetaDataHookAdapter {
         return (String) metaData.getData().get("entityid");
     }
 
-    private void revision(MetaDataRepository metaDataRepository, MetaData metaData) {
+    private void revision(MetaData metaData) {
         String id = metaData.getId();
         MetaData previous = metaDataRepository.findById(id, metaData.getType());
         previous.revision(UUID.randomUUID().toString());

@@ -21,6 +21,13 @@ public class CompositeMetaDataHook implements MetaDataHook {
     }
 
     @Override
+    public MetaData postGet(MetaData metaData) {
+        return hooks.stream().filter(hook -> hook.appliesForMetaData(metaData)).map(hook -> hook
+                .postGet(metaData)).findAny()
+                .orElse(metaData);
+    }
+
+    @Override
     public MetaData prePut(MetaData previous, MetaData newMetaData) {
         return hooks.stream().filter(hook -> hook.appliesForMetaData(newMetaData)).map(hook -> hook
             .prePut(previous, newMetaData)).findAny()
