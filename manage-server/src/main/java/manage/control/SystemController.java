@@ -108,6 +108,11 @@ public class SystemController {
                 }) : serviceProviders.stream();
 
         Map<String, Map<String, Object>> serviceProvidersToPush = metaDataStream
+            .filter(metaData -> {
+                Map metaDataFields = Map.class.cast(metaData.getData().get("metaDataFields"));
+                boolean excludeFromPush = "1".equals(metaDataFields.get("coin:exclude_from_push"));
+                return !excludeFromPush;
+            })
             .collect(toMap(sp -> sp.getId(), sp -> formatter.parseServiceProvider(sp)));
 
         List<MetaData> identityProviders = metaDataRepository.getMongoTemplate().findAll(MetaData.class, "saml20_idp");

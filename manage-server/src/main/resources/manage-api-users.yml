@@ -1,4 +1,4 @@
-# Valid scopes are manage.api.Scope.values(); =>  ["READ", "WRITE", "PUSH"]
+# Valid scopes are manage.api.Scope.values(); =>  ["READ", "WRITE", "PUSH", "SYSTEM", "TEST"]
 apiUsers:
   - {
       name: "dashboard",
@@ -18,7 +18,7 @@ apiUsers:
   - {
       name: "sp-portal",
       password: "secret",
-      scopes: [READ, WRITE, PUSH]
+      scopes: [READ, WRITE, PUSH, TEST]
     }
   - {
       name: "sysadmin",

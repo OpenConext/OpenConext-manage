@@ -18,6 +18,7 @@ import "../locale/en";
 import "../locale/nl";
 import Dummy from "./Dummy";
 import EduGain from "./EduGain";
+import Support from "./Support";
 
 const S4 = () => (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
 
@@ -124,6 +125,9 @@ class App extends React.PureComponent {
                                         guest={currentUser.guest}
                                         render={props => <System currentUser={currentUser}
                                                                  configuration={configuration} {...props}/>}/>
+                        <ProtectedRoute path="/support"
+                                        guest={currentUser.guest}
+                                        render={props => <Support {...props}/>}/>
                         <Route path="/error"
                                render={props => <ServerError {...props}/>}/>
                         <Route path="/dummy"

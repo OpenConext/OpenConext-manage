@@ -146,7 +146,8 @@
         "NameIDFormats:1": "urn:oasis:names:tc:SAML:2.0:nameid-format:transient",
         "NameIDFormats:2": "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent",
         "url:en": "https://www.surfconext.nl",
-        "url:nl": "https://www.surfconext.nl"
+        "url:nl": "https://www.surfconext.nl",
+        "coin:exclude_from_push": "1"
       },
       "allowedEntities": [
         {
