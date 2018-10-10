@@ -133,10 +133,6 @@ export default class ConnectedIdps extends React.Component {
         const {name} = this.props;
         return (
             <div className="metadata-connected-idps">
-                {/*<div className="connected-idps-info">*/}
-                {/*<h2>{I18n.t("connectedIdps.title", {type: providerType, name: name})}</h2>*/}
-                {/*<p>{I18n.t("connectedIdps.description", {type: providerType, name: name})}</p>*/}
-                {/*</div>*/}
                 {connectedEntities.length > 0 && <section className="search">
                     <div className="search-input-container">
                         <input className="search-input"

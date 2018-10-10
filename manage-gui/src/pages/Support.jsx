@@ -16,6 +16,8 @@ export default class Support extends React.PureComponent {
         super(props);
         this.state = {
             excludeFromPushServiceProviders: [],
+            filteredPushServiceProviders: [],
+            query: "",
             copiedToClipboardClassName: "",
             loaded: false,
             status: "all"
@@ -24,7 +26,20 @@ export default class Support extends React.PureComponent {
 
     componentDidMount() {
         search({"metaDataFields.coin:exclude_from_push": "1"}, "saml20_sp")
-            .then(json => this.setState({excludeFromPushServiceProviders: json, loaded: true}));
+            .then(json => {
+                const result = json.map(entity => ({
+                    state: entity.data.state,
+                    entityid: entity.data.entityid,
+                    name: entity.data.metaDataFields["name:en"] || entity.data.metaDataFields["name:nl"] || entity.data.entityid,
+                    notes: entity.data.notes,
+                    id: entity["_id"]
+                }));
+                this.setState({
+                    excludeFromPushServiceProviders: result,
+                    filteredPushServiceProviders: result,
+                    loaded: true
+                })
+            });
     }
 
     copyToClipboard = e => {
@@ -39,14 +54,14 @@ export default class Support extends React.PureComponent {
     renderSearchResultsTablePrintable = excludeFromPushServiceProviders =>
         <section id={"results-printable"}>
             {excludeFromPushServiceProviders
-                .map(entity => `${entity.data.state},${entity.data.entityid},${entity.data.metaDataFields["name:en"] || entity.data.metaDataFields["name:nl"]}`)
+                .map(entity => `${entity.state},${entity.entityid},${entity.name}`)
                 .join("\n")}</section>;
 
     changeStatus = option => this.setState({status: option ? option.value : null});
 
     renderSearchResultsTable = (excludeFromPushServiceProviders, status) => {
         const searchHeaders = ["status", "name", "entityid", "notes", "excluded"];
-        excludeFromPushServiceProviders = status === "all" ? excludeFromPushServiceProviders : excludeFromPushServiceProviders.filter(entity => entity.data.state === status);
+        excludeFromPushServiceProviders = status === "all" ? excludeFromPushServiceProviders : excludeFromPushServiceProviders.filter(entity => entity.state === status);
         return (
             <section>
                 <table className="search-results">
@@ -59,19 +74,19 @@ export default class Support extends React.PureComponent {
                     </thead>
                     <tbody>
                     {excludeFromPushServiceProviders.map((entity, index) => <tr
-                        key={`${entity.data.entityid}_${index}`}>
-                        <td className="state">{I18n.t(`metadata.${entity.data.state}`)}</td>
+                        key={`${entity.entityid}_${index}`}>
+                        <td className="state">{I18n.t(`metadata.${entity.state}`)}</td>
                         <td className="name">
-                            <Link to={`/metadata/saml20_sp/${entity["_id"]}/metadata`}
-                                  target="_blank">{entity.data.metaDataFields["name:en"] || entity.data.metaDataFields["name:nl"]}</Link>
+                            <Link to={`/metadata/saml20_sp/${entity.id}/metadata`}
+                                  target="_blank">{entity.name}</Link>
                         </td>
-                        <td className="entityId">{entity.data.entityid}</td>
+                        <td className="entityId">{entity.entityid}</td>
                         <td className="notes">
-                            {isEmpty(entity.data.notes) ? <span></span> :
-                                <NotesTooltip identifier={entity.data.entityid} notes={entity.data.notes}/>}
+                            {isEmpty(entity.notes) ? <span></span> :
+                                <NotesTooltip identifier={entity.entityid} notes={entity.notes}/>}
                         </td>
                         <td><CheckBox name="excluded" value={true}
-                                      onChange={() => includeInPush(entity["_id"]).then(() => this.componentDidMount())}/>
+                                      onChange={() => includeInPush(entity.id).then(() => this.componentDidMount())}/>
                         </td>
                     </tr>)}
                     </tbody>
@@ -79,7 +94,17 @@ export default class Support extends React.PureComponent {
             </section>);
     };
 
-    renderResults = (excludeFromPushServiceProviders, copiedToClipboardClassName, status) => <div>
+    search = e => {
+        const query = e.target.value ? e.target.value.toLowerCase() : "";
+        const {excludeFromPushServiceProviders} = this.state;
+        const names = ["name", "status", "entityid"];
+        const result = isEmpty(query) ? excludeFromPushServiceProviders : excludeFromPushServiceProviders.filter(sp => names.some(name =>
+            sp[name] && sp[name].toLowerCase().indexOf(query) > -1));
+        this.setState({query: query, filteredPushServiceProviders: result});
+    };
+
+
+    renderResults = (excludeFromPushServiceProviders, copiedToClipboardClassName, status, query) => <div>
         <section className="explanation">
             <p>Below are all Service Providers with <span className="code">coin:exclude_from_push</span> set to <span
                 className="code">1</span>.</p>
@@ -88,6 +113,14 @@ export default class Support extends React.PureComponent {
                 review and subsequently the metadata.</p>
         </section>
         <section className="options">
+            <div className="search-input-container">
+                <input className="search-input"
+                       placeholder={I18n.t("support.searchPlaceHolder")}
+                       type="text"
+                       onChange={this.search}
+                       value={query}/>
+                <i className="fa fa-search"></i>
+            </div>
             <a className={`clipboard-copy button green ${copiedToClipboardClassName}`}
                onClick={this.copyToClipboard}>
                 {I18n.t("clipboard.copy")}<i className="fa fa-clone"></i>
@@ -108,12 +141,12 @@ export default class Support extends React.PureComponent {
     </section>;
 
     render() {
-        const {excludeFromPushServiceProviders, loaded, copiedToClipboardClassName, status} = this.state;
+        const {excludeFromPushServiceProviders, filteredPushServiceProviders, loaded, copiedToClipboardClassName, status, query} = this.state;
         const showResults = excludeFromPushServiceProviders.length > 0 && loaded;
         const showNoResults = excludeFromPushServiceProviders.length === 0 && loaded;
         return (
             <div className="support">
-                {showResults && this.renderResults(excludeFromPushServiceProviders, copiedToClipboardClassName, status)}
+                {showResults && this.renderResults(filteredPushServiceProviders, copiedToClipboardClassName, status, query)}
                 {showNoResults && this.renderNoResults()}
             </div>
         );

@@ -290,6 +290,9 @@ I18n.translations.en = {
             published_in_edugain_info: "Published in eduGAIN  and as such ignored in the feed import / merge"
         }
     },
+    support:{
+        searchPlaceHolder: "Search for excluded providers..."
+    },
     clipboard: {
         copied: "Copied!",
         copy: "Copy to clipboard"

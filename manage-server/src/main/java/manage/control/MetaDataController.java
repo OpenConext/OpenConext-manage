@@ -127,7 +127,7 @@ public class MetaDataController {
                                   FederatedUser federatedUser) throws JsonProcessingException {
         MetaData metaData = this.get(type, id);
         Map metaDataFields = Map.class.cast(metaData.getData().get("metaDataFields"));
-        metaDataFields.put("coin:exclude_from_push", "0");
+        metaDataFields.remove("coin:exclude_from_push");
         return doPut(metaData, federatedUser.getUid(), false);
     }
 
