@@ -27,7 +27,7 @@ I18n.translations.en = {
         api: "API",
         system: "System",
         edugain: "eduGAIN",
-        support: "Support"
+        support: "Staging"
     },
 
     metadata: {
