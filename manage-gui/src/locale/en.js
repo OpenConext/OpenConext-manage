@@ -116,7 +116,8 @@ I18n.translations.en = {
             revisionNumber: "Revision",
             updatedBy: "Deleted by",
             revisionNote: "Revision note",
-            nope: ""
+            nope: "",
+            excluded: "Excluded from push"
         },
         displayNonRestorable: "Display non-restorable",
         no_results: "No results",

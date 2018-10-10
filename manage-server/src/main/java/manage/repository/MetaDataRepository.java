@@ -5,6 +5,7 @@ import manage.model.MetaData;
 import manage.mongo.Sequence;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.data.mongodb.core.query.BasicQuery;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.CriteriaDefinition;
@@ -31,6 +32,7 @@ public class MetaDataRepository {
     @Autowired
     public MetaDataRepository(MongoTemplate mongoTemplate) {
         this.mongoTemplate = mongoTemplate;
+        //MappingMongoConverter.class.cast( mongoTemplate.getConverter()).conversions .getConversionService().
     }
 
     public MetaData findById(String id, String type) {

@@ -3,6 +3,8 @@ package manage.mongo;
 import com.github.mongobee.Mongobee;
 import com.github.mongobee.changeset.ChangeLog;
 import com.github.mongobee.changeset.ChangeSet;
+import com.mongodb.Mongo;
+import com.mongodb.MongoClient;
 import manage.conf.IndexConfiguration;
 import manage.conf.MetaDataAutoConfiguration;
 import manage.model.EntityType;
@@ -13,9 +15,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
 import org.springframework.data.mongodb.core.IndexOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.convert.CustomConversions;
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.index.IndexDefinition;
@@ -25,6 +30,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.util.Assert;
 
 import javax.annotation.PostConstruct;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -71,8 +77,8 @@ public class MongobeeConfiguration {
             if (!mongoTemplate.collectionExists(schema)) {
                 mongoTemplate.createCollection(schema);
                 staticMetaDataAutoConfiguration.indexConfigurations(schema).stream()
-                    .map(this::indexDefinition)
-                    .forEach(mongoTemplate.indexOps(schema)::ensureIndex);
+                        .map(this::indexDefinition)
+                        .forEach(mongoTemplate.indexOps(schema)::ensureIndex);
 
                 String revision = schema.concat(REVISION_POSTFIX);
                 mongoTemplate.createCollection(revision);
@@ -82,8 +88,8 @@ public class MongobeeConfiguration {
         Arrays.asList("saml20_sp", "saml20_idp").forEach(collection -> {
             IndexOperations indexOps = mongoTemplate.indexOps(collection);
             indexOps.getIndexInfo().stream()
-                .filter(indexInfo -> indexInfo.getName().contains("data.eid"))
-                .forEach(indexInfo -> indexOps.dropIndex(indexInfo.getName()));
+                    .filter(indexInfo -> indexInfo.getName().contains("data.eid"))
+                    .forEach(indexInfo -> indexOps.dropIndex(indexInfo.getName()));
             indexOps.ensureIndex(new Index("data.eid", Sort.Direction.ASC).unique());
             if (indexOps.getIndexInfo().stream().anyMatch(indexInfo -> indexInfo.getName().equals("field_entityid"))) {
                 indexOps.dropIndex("field_entityid");
@@ -141,31 +147,31 @@ public class MongobeeConfiguration {
 
         Query query = new Query();
         List<String> arpMotivations = Arrays.asList(
-            "coin:attr_motivation:eduPersonEntitlement", "coin:attr_motivation:schacPersonalUniqueCode",
-            "coin:attr_motivation:preferredLanguage", "coin:attr_motivation:mail",
-            "coin:attr_motivation:eduPersonAffiliation", "coin:attr_motivation:displayName",
-            "coin:attr_motivation:givenName", "coin:attr_motivation:schacHomeOrganizationType",
-            "coin:attr_motivation:cn", "coin:attr_motivation:uid", "coin:attr_motivation:eduPersonScopedAffiliation",
-            "coin:attr_motivation:eduPersonTargetedID", "coin:attr_motivation:schacHomeOrganization",
-            "coin:attr_motivation:eduPersonOrcid", "coin:attr_motivation:isMemberOf",
-            "coin:attr_motivation:eduPersonPrincipalName", "coin:attr_motivation:sn");
+                "coin:attr_motivation:eduPersonEntitlement", "coin:attr_motivation:schacPersonalUniqueCode",
+                "coin:attr_motivation:preferredLanguage", "coin:attr_motivation:mail",
+                "coin:attr_motivation:eduPersonAffiliation", "coin:attr_motivation:displayName",
+                "coin:attr_motivation:givenName", "coin:attr_motivation:schacHomeOrganizationType",
+                "coin:attr_motivation:cn", "coin:attr_motivation:uid", "coin:attr_motivation:eduPersonScopedAffiliation",
+                "coin:attr_motivation:eduPersonTargetedID", "coin:attr_motivation:schacHomeOrganization",
+                "coin:attr_motivation:eduPersonOrcid", "coin:attr_motivation:isMemberOf",
+                "coin:attr_motivation:eduPersonPrincipalName", "coin:attr_motivation:sn");
 
         Map<String, String> attrMotivationMap = arpMotivations.stream()
-            .collect(Collectors.toMap(k -> k, k -> k.substring(k.lastIndexOf(":") + 1)));
+                .collect(Collectors.toMap(k -> k, k -> k.substring(k.lastIndexOf(":") + 1)));
 
         Map<String, String> arpAttributes = (Map<String, String>) Map.class.cast(Map.class.cast(Map.class.cast(Map
-            .class.cast(Map.class.cast(staticMetaDataAutoConfiguration.schemaRepresentation(EntityType.SP)
-            .get("properties")).get("arp")).get("properties")).get("attributes")).get("properties"))
-            .keySet().stream().collect(Collectors.toMap(k -> {
-                String key = (String) k;
-                return key.substring(key.lastIndexOf(":") + 1);
-            }, k -> k));
+                .class.cast(Map.class.cast(staticMetaDataAutoConfiguration.schemaRepresentation(EntityType.SP)
+                .get("properties")).get("arp")).get("properties")).get("attributes")).get("properties"))
+                .keySet().stream().collect(Collectors.toMap(k -> {
+                    String key = (String) k;
+                    return key.substring(key.lastIndexOf(":") + 1);
+                }, k -> k));
 
         Assert.isTrue(arpAttributes.keySet().containsAll(attrMotivationMap.values()), "Not all ");
 
         List<CriteriaDefinition> criteriaDefinitions = attrMotivationMap.keySet().stream()
-            .map(key -> Criteria.where("data.metaDataFields.".concat(key)).exists(true))
-            .collect(Collectors.toList());
+                .map(key -> Criteria.where("data.metaDataFields.".concat(key)).exists(true))
+                .collect(Collectors.toList());
         Criteria[] criteria = criteriaDefinitions.toArray(new Criteria[]{});
         query.addCriteria(new Criteria().orOperator(criteria));
         Arrays.asList(EntityType.SP.getType(), "single_tenant_template").forEach(type -> {

@@ -76,3 +76,10 @@ When the application actually gets deployed to a meaningful platform, it is pre-
 environment specific properties in the group_vars. See the project OpenConext-deploy and the role `manage` for more information.
 
 For details, see the [Spring Boot manual](https://docs.spring.io/spring-boot/docs/1.2.1.RELEASE/reference/htmlsingle/).
+
+### [MetaData Import](#metadata-import)
+
+When you want to import existing metaData into your local mongodb you can use the following command:
+```
+mongoimport --db metadata --collection saml20_idp --type json --file identity-providers.json --jsonArray
+```

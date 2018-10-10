@@ -121,6 +121,17 @@ public class MetaDataController {
         return doPost(metaData, federatedUser.getUid(), false);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/client/includeInPush/{type}/{id}")
+    public MetaData includeInPush(@PathVariable("type") String type, @PathVariable("id") String id,
+                                  FederatedUser federatedUser) throws JsonProcessingException {
+        MetaData metaData = this.get(type, id);
+        Map metaDataFields = Map.class.cast(metaData.getData().get("metaDataFields"));
+        metaDataFields.put("coin:exclude_from_push", "0");
+        return doPut(metaData, federatedUser.getUid(), false);
+    }
+
+
     @PreAuthorize("hasRole('WRITE')")
     @PostMapping("/internal/metadata")
     public MetaData postInternal(@Validated @RequestBody MetaData metaData, APIUser apiUser) throws

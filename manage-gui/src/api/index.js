@@ -200,3 +200,8 @@ export function orphans() {
 export function deleteOrphanedReferences() {
     return fetchDelete("playground/deleteOrphans");
 }
+
+export function includeInPush(id) {
+    const path = `includeInPush/saml20_sp/${id}`;
+    return postPutJson(path, {}, "put");
+}
