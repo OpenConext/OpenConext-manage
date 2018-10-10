@@ -291,7 +291,8 @@ I18n.translations.en = {
         }
     },
     support:{
-        searchPlaceHolder: "Search for excluded providers..."
+        searchPlaceHolder: "Search for excluded providers...",
+        includeConfirmation: "Are yoou sure you want to include {{name}} in the MetaData push?"
     },
     clipboard: {
         copied: "Copied!",

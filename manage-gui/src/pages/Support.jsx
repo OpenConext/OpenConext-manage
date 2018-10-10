@@ -9,6 +9,7 @@ import Select from "react-select";
 import "react-select/dist/react-select.css";
 import NotesTooltip from "../components/NotesTooltip";
 import CheckBox from "../components/CheckBox";
+import ConfirmationDialog from "../components/ConfirmationDialog";
 
 export default class Support extends React.PureComponent {
 
@@ -20,7 +21,11 @@ export default class Support extends React.PureComponent {
             query: "",
             copiedToClipboardClassName: "",
             loaded: false,
-            status: "all"
+            status: "all",
+            confirmationDialogOpen: false,
+            confirmationQuestion: "",
+            confirmationDialogAction: () => this,
+            cancelDialogAction: () => this.setState({confirmationDialogOpen: false})
         };
     }
 
@@ -49,6 +54,17 @@ export default class Support extends React.PureComponent {
             this.setState({copiedToClipboardClassName: "copied"});
             setTimeout(() => this.setState({copiedToClipboardClassName: ""}), 5000);
         }
+    };
+
+    confirmIncludeInPush = entity => {
+        this.setState({
+            confirmationDialogOpen: true,
+            confirmationQuestion: I18n.t("support.includeConfirmation", {name: entity.name}),
+            confirmationDialogAction: () => {
+                this.setState({confirmationDialogOpen: false});
+                includeInPush(entity.id).then(() => this.componentDidMount())
+            }
+        })
     };
 
     renderSearchResultsTablePrintable = excludeFromPushServiceProviders =>
@@ -86,7 +102,7 @@ export default class Support extends React.PureComponent {
                                 <NotesTooltip identifier={entity.entityid} notes={entity.notes}/>}
                         </td>
                         <td><CheckBox name="excluded" value={true}
-                                      onChange={() => includeInPush(entity.id).then(() => this.componentDidMount())}/>
+                                      onChange={() => this.confirmIncludeInPush(entity)}/>
                         </td>
                     </tr>)}
                     </tbody>
@@ -141,11 +157,16 @@ export default class Support extends React.PureComponent {
     </section>;
 
     render() {
-        const {excludeFromPushServiceProviders, filteredPushServiceProviders, loaded, copiedToClipboardClassName, status, query} = this.state;
+        const {excludeFromPushServiceProviders, filteredPushServiceProviders, loaded, copiedToClipboardClassName, status, query,
+            confirmationDialogOpen, confirmationQuestion, confirmationDialogAction,cancelDialogAction } = this.state;
         const showResults = excludeFromPushServiceProviders.length > 0 && loaded;
         const showNoResults = excludeFromPushServiceProviders.length === 0 && loaded;
         return (
             <div className="support">
+                <ConfirmationDialog isOpen={confirmationDialogOpen}
+                                    cancel={cancelDialogAction}
+                                    confirm={confirmationDialogAction}
+                                    question={confirmationQuestion}/>
                 {showResults && this.renderResults(filteredPushServiceProviders, copiedToClipboardClassName, status, query)}
                 {showNoResults && this.renderNoResults()}
             </div>
