@@ -46,7 +46,6 @@ public class OpenIdConnectHook implements MetaDataHook{
         if (CollectionUtils.isEmpty(clientMap)) {
             return newMetaData;
         }
-
         String openIdClientId = translateServiceProviderEntityId((String) previous.getData().get("entityid"));
         Optional<Client> clientOptional = openIdConnect.getClient(openIdClientId);
         if (clientOptional.isPresent()) {

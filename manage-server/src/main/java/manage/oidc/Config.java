@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class Config {
 
-
     @Bean
     public OpenIdConnect openIdConnect(@Value("${oidc.feature}") boolean oidc,
                                        @Value("${oidc.user}") String user,
