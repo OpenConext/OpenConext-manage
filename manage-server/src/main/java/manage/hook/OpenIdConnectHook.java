@@ -8,10 +8,7 @@ import manage.oidc.OpenIdConnect;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class OpenIdConnectHook implements MetaDataHook{
 
@@ -33,10 +30,11 @@ public class OpenIdConnectHook implements MetaDataHook{
     @Override
     public MetaData postGet(MetaData metaData) {
         String openIdClientId = translateServiceProviderEntityId((String) metaData.getData().get("entityid"));
-        Client client = openIdConnect.getClient(openIdClientId);
-        if (client == null) {
+        Optional<Client> clientOptional = openIdConnect.getClient(openIdClientId);
+        if (!clientOptional.isPresent()) {
             return metaData;
         }
+        Client client = clientOptional.get();
         client.setClientSecret(null);
         metaData.getData().put(OIDC_CLIENT_KEY, new OidcClient(client));
         return metaData;
@@ -50,8 +48,9 @@ public class OpenIdConnectHook implements MetaDataHook{
         }
 
         String openIdClientId = translateServiceProviderEntityId((String) previous.getData().get("entityid"));
-        Client client = openIdConnect.getClient(openIdClientId);
-        if (client != null) {
+        Optional<Client> clientOptional = openIdConnect.getClient(openIdClientId);
+        if (clientOptional.isPresent()) {
+            Client client = clientOptional.get();
             syncClient(newMetaData, clientMap, client);
             openIdConnect.updateClient(client);
         }

@@ -761,24 +761,25 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         metaData.metaDataFields().put("coin:oidc_client", "1");
         metaData.getData().put("entityid", "http://oidc_client");
 
-        String id = given().auth()
+        Map map = given().auth()
                 .preemptive()
                 .basic("sp-portal", "secret")
                 .when()
                 .body(metaData)
                 .header("Content-type", "application/json")
                 .post("manage/api/internal/metadata")
-                .then()
-                .statusCode(SC_OK)
-                .extract().path("id");
-        Map results = given()
-                .when()
-                .get("manage/api/client/metadata/saml20_sp/" + id)
                 .getBody().as(Map.class);
 
-        Map oidcClientMap = Map.class.cast(Map.class.cast(results.get("data")).get("oidcClient"));
+        Map oidcClientMap = Map.class.cast(Map.class.cast(map.get("data")).get(OpenIdConnectHook.OIDC_CLIENT_KEY));
         assertEquals("http@//oidc_client", oidcClientMap.get("clientId"));
 
+        Map results = given()
+                .when()
+                .get("manage/api/client/metadata/saml20_sp/" + map.get("id"))
+                .getBody().as(Map.class);
+
+        oidcClientMap = Map.class.cast(Map.class.cast(results.get("data")).get(OpenIdConnectHook.OIDC_CLIENT_KEY));
+        assertEquals("http@//oidc_client", oidcClientMap.get("clientId"));
 
 
     }

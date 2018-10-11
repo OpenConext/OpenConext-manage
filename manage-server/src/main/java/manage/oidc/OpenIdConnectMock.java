@@ -1,18 +1,17 @@
 package manage.oidc;
 
-import manage.model.MetaData;
-
 import java.util.Collections;
-import java.util.Set;
+import java.util.Optional;
 
 public class OpenIdConnectMock implements OpenIdConnect {
+
     @Override
-    public Client getClient(String clientId) {
+    public Optional<Client> getClient(String clientId) {
         Client client = new Client();
         client.setGrantTypes(Collections.singleton("authorization_code"));
         client.setClientId(clientId);
         client.setRedirectUris(Collections.singleton("http://redirect"));
-        return client;
+        return Optional.of(client);
     }
 
     @Override

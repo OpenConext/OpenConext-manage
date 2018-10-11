@@ -2,9 +2,11 @@ package manage.oidc;
 
 import manage.model.MetaData;
 
+import java.util.Optional;
+
 public interface OpenIdConnect {
 
-    Client getClient(String clientId);
+    Optional<Client> getClient(String clientId);
 
     Client createClient(Client client);
 

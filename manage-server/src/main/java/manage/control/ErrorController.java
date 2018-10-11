@@ -15,6 +15,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -65,6 +66,12 @@ public class ErrorController implements org.springframework.boot.autoconfigure.w
             result.put("status", status.value());
             result.put("error", DuplicateEntityIdException.class.getName());
             result.put("message", error.getMessage());
+            return new ResponseEntity<>(result, status);
+        } else if (error instanceof HttpClientErrorException) {
+            HttpClientErrorException httpClientErrorException = (HttpClientErrorException) error;
+            result.put("status", httpClientErrorException.getStatusCode().toString());
+            result.put("error", HttpClientErrorException.class.getName());
+            result.put("message", httpClientErrorException.getResponseBodyAsString());
             return new ResponseEntity<>(result, status);
         }
 

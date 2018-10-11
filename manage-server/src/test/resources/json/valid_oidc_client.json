@@ -1,7 +1,7 @@
 {
   "type": "saml20_sp",
   "data": {
-    "entityid": "http://manage-oidc-test-client8",
+    "entityid": "http://del-me",
     "state": "testaccepted",
     "allowedall": true,
     "metaDataFields": {

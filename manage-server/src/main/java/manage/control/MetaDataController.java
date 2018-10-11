@@ -107,7 +107,7 @@ public class MetaDataController {
         if (metaData == null) {
             throw new ResourceNotFoundException(String.format("MetaData type %s with id %s does not exist", type, id));
         }
-        return metaDataHook.postGet( metaData);
+        return metaDataHook.postGet(metaData);
     }
 
     @GetMapping("/client/metadata/configuration")
@@ -321,7 +321,9 @@ public class MetaDataController {
 
         LOG.info("Saving new metaData {} by {}", metaData.getId(), uid);
 
-        return metaDataRepository.save(metaData);
+        metaDataRepository.save(metaData);
+
+        return this.get(metaData.getType(), metaData.getId());
     }
 
     private void sanitizeExcludeFromPush(@RequestBody @Validated MetaData metaData, boolean excludeFromPushRequired) {
@@ -336,7 +338,6 @@ public class MetaDataController {
     public ResponseEntity<Object> validateMetaData(@Validated @RequestBody MetaData metaData) throws
             JsonProcessingException {
         validate(metaData);
-
         return ResponseEntity.ok().build();
     }
 
@@ -396,7 +397,7 @@ public class MetaDataController {
 
         LOG.info("Updated metaData {} by {}", metaData.getId(), updatedBy);
 
-        return metaData;
+        return this.get(metaData.getType(), metaData.getId());
     }
 
     @PreAuthorize("hasRole('WRITE')")
