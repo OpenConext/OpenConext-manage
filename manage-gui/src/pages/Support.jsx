@@ -125,8 +125,7 @@ export default class Support extends React.PureComponent {
             <p>Below are all Service Providers with <span className="code">coin:exclude_from_push</span> set to <span
                 className="code">1</span>.</p>
             <p/>
-            <p>You can either include them in the push by unchecking the checkbox or view them in a separate tab and
-                review and subsequently the metadata.</p>
+            <p>You can either include them in the push by unchecking the checkbox or view them in a separate tab, review and subsequently save the metadata.</p>
         </section>
         <section className="options">
             <div className="search-input-container">

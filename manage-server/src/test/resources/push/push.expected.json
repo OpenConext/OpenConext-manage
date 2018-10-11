@@ -471,6 +471,18 @@
       "name": "http://mock-idp",
       "state": "prodaccepted",
       "type": "saml20-idp"
+    },
+    "8": {
+      "allow_all_entities": true,
+      "allowed_connections": [],
+      "metadata": {
+        "name": {
+          "en": "OIDC SP"
+        }
+      },
+      "name": "https://oidc.client",
+      "state": "testaccepted",
+      "type": "saml20-sp"
     }
   }
 }

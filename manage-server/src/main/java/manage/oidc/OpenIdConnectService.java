@@ -1,5 +1,6 @@
 package manage.oidc;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.support.BasicAuthorizationInterceptor;
 import org.springframework.web.client.RestTemplate;
 
@@ -14,15 +15,16 @@ public class OpenIdConnectService implements OpenIdConnect {
         this.url = url;
     }
 
-
     @Override
     public Client getClient(String clientId) {
-        return restTemplate.getForEntity(String.format("%s/clientId=%s", url, clientId), Client.class).getBody();
+        String url = String.format("%s?clientId=%s", this.url, clientId);
+        return restTemplate.getForEntity(url, Client.class).getBody();
     }
 
     @Override
     public Client createClient(Client client) {
-        return restTemplate.postForEntity(url, client, Client.class).getBody();
+        ResponseEntity<Client> clientResponseEntity = restTemplate.postForEntity(url, client, Client.class);
+        return clientResponseEntity.getBody();
     }
 
     @Override

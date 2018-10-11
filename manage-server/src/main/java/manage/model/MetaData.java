@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.annotation.Version;
 import org.springframework.util.Assert;
 
@@ -109,5 +110,10 @@ public class MetaData implements Serializable {
             }
             Map.class.cast(reference).put(property, value);
         });
+    }
+
+    @Transient
+    public Map<String, Object> metaDataFields() {
+        return Map.class.cast(data.get("metaDataFields"));
     }
 }

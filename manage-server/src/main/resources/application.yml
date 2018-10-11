@@ -36,8 +36,9 @@ security:
 oidc:
   user: manage
   password: secret
-  url: http://oidc.test2.surfconext.nl/oidc/api/clients
-  feature: false
+  url: https://oidc.test2.surfconext.nl/oidc/api/clients
+  feature: true
+  acsLocation: https://oidc.test2.surfconext.nl/saml/SSO
 
 spring:
   mail:

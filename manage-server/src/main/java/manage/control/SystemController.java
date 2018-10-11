@@ -55,6 +55,7 @@ import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
+
 @RestController
 @SuppressWarnings("unchecked")
 public class SystemController {
@@ -99,25 +100,30 @@ public class SystemController {
 
         List<MetaData> serviceProviders = metaDataRepository.getMongoTemplate().findAll(MetaData.class, "saml20_sp");
         Stream<MetaData> metaDataStream = excludeEduGainImported ?
-            serviceProviders.stream()
-                .filter(metaData -> {
-                    Map metaDataFields = Map.class.cast(metaData.getData().get("metaDataFields"));
-                    boolean importedFromEdugain = "1".equals(metaDataFields.get("coin:imported_from_edugain"));
-                    boolean pushEnabled = "1".equals(metaDataFields.get("coin:push_enabled"));
-                    return !importedFromEdugain || pushEnabled;
-                }) : serviceProviders.stream();
+                serviceProviders.stream()
+                        .filter(metaData -> {
+                            Map metaDataFields = metaData.metaDataFields();
+                            boolean importedFromEdugain = "1".equals(metaDataFields.get("coin:imported_from_edugain"));
+                            boolean pushEnabled = "1".equals(metaDataFields.get("coin:push_enabled"));
+                            return !importedFromEdugain || pushEnabled;
+                        }) : serviceProviders.stream();
 
         Map<String, Map<String, Object>> serviceProvidersToPush = metaDataStream
-            .filter(metaData -> {
-                Map metaDataFields = Map.class.cast(metaData.getData().get("metaDataFields"));
-                boolean excludeFromPush = "1".equals(metaDataFields.get("coin:exclude_from_push"));
-                return !excludeFromPush;
-            })
-            .collect(toMap(sp -> sp.getId(), sp -> formatter.parseServiceProvider(sp)));
+                .filter(metaData -> {
+                    Map metaDataFields = metaData.metaDataFields();
+                    boolean excludeFromPush = "1".equals(metaDataFields.get("coin:exclude_from_push"));
+                    return !excludeFromPush;
+                })
+                .collect(toMap(sp -> sp.getId(), sp -> formatter.parseServiceProvider(sp)));
 
         List<MetaData> identityProviders = metaDataRepository.getMongoTemplate().findAll(MetaData.class, "saml20_idp");
         Map<String, Map<String, Object>> identityProvidersToPush = identityProviders.stream()
-            .collect(toMap(idp -> idp.getId(), idp -> formatter.parseIdentityProvider(idp)));
+                .filter(metaData -> {
+                    Map metaDataFields = metaData.metaDataFields();
+                    boolean excludeFromPush = "1".equals(metaDataFields.get("coin:exclude_from_push"));
+                    return !excludeFromPush;
+                })
+                .collect(toMap(idp -> idp.getId(), idp -> formatter.parseIdentityProvider(idp)));
 
         serviceProvidersToPush.putAll(identityProvidersToPush);
         Map<String, Map<String, Map<String, Object>>> results = new HashMap<>();
@@ -144,7 +150,7 @@ public class SystemController {
 
     private ResponseEntity<Map> doPush() {
         List<Map<String, Object>> preProvidersData = ebJdbcTemplate.queryForList("SELECT * FROM " +
-            "sso_provider_roles_eb5 ORDER BY id ASC");
+                "sso_provider_roles_eb5 ORDER BY id ASC");
 
         Map<String, Map<String, Map<String, Object>>> json = this.pushPreview();
         ResponseEntity<String> response;
@@ -157,12 +163,12 @@ public class SystemController {
         }
 
         List<Map<String, Object>> postProvidersData = ebJdbcTemplate.queryForList("SELECT * FROM " +
-            "sso_provider_roles_eb5 ORDER BY id ASC");
+                "sso_provider_roles_eb5 ORDER BY id ASC");
         Set<Delta> deltas = prePostComparator.compare(preProvidersData, postProvidersData);
 
         List<String> knownDeltas = Arrays.asList("id", "name_id_formats");
         List<Delta> realDeltas = deltas.stream().filter(delta -> !knownDeltas.contains(delta.getAttribute())).collect
-            (toList());
+                (toList());
         realDeltas.sort(Comparator.comparing(Delta::getEntityId));
 
         Map<String, Object> result = new HashMap<>();
@@ -198,10 +204,10 @@ public class SystemController {
         orphans.forEach(orphanMetaData -> {
             MetaData metaData = metaDataRepository.findById(orphanMetaData.getId(), orphanMetaData.getCollection());
             List<Map<String, Object>> entries =
-                (List<Map<String, Object>>) metaData.getData().get(orphanMetaData.getReferencedCollectionName());
+                    (List<Map<String, Object>>) metaData.getData().get(orphanMetaData.getReferencedCollectionName());
 
             List<Map<String, Object>> newEntries = entries.stream().filter(entry -> !entry.get("name").equals
-                (orphanMetaData.getMissingEntityId())).collect(Collectors.toList());
+                    (orphanMetaData.getMissingEntityId())).collect(Collectors.toList());
             metaData.getData().put(orphanMetaData.getReferencedCollectionName(), newEntries);
             metaData.getData().put("revisionnote", "Removed reference to non-existent entityID");
             MetaData previous = metaDataRepository.findById(metaData.getId(), orphanMetaData.getCollection());
@@ -216,22 +222,22 @@ public class SystemController {
     @GetMapping({"/client/playground/orphans", "/internal/playground/orphans"})
     public List<OrphanMetaData> orphans() {
         return Stream.of(EntityType.values()).map(this::orphanMetaData)
-            .flatMap(Function.identity())
-            .collect(toList());
+                .flatMap(Function.identity())
+                .collect(toList());
     }
 
     private Stream<OrphanMetaData> orphanMetaData(EntityType type) {
         Query query = new Query();
         query.fields()
-            .include("data.entityid")
-            .include("type")
-            .include("data.metaDataFields.name:en")
-            .include("data.allowedEntities.name")
-            .include("data.disableConsent.name");
+                .include("data.entityid")
+                .include("type")
+                .include("data.metaDataFields.name:en")
+                .include("data.allowedEntities.name")
+                .include("data.disableConsent.name");
 
         query.addCriteria(new Criteria().orOperator(
-            Criteria.where("data.allowedEntities").exists(true),
-            Criteria.where("data.disableConsent").exists(true)));
+                Criteria.where("data.allowedEntities").exists(true),
+                Criteria.where("data.disableConsent").exists(true)));
 
         MongoTemplate mongoTemplate = metaDataRepository.getMongoTemplate();
         List<MetaData> metaDataWithReferences = mongoTemplate.find(query, MetaData.class, type.getType());
@@ -242,33 +248,33 @@ public class SystemController {
                 List<Map<String, Object>> entries = (List<Map<String, Object>>) metaData.getData().get(propertyName);
                 if (!CollectionUtils.isEmpty(entries)) {
                     entries.forEach(ae -> groupedByEntityIdReference
-                        .computeIfAbsent((String) ae.get("name"), k -> new HashMap<>())
-                        .computeIfAbsent(propertyName, m -> new ArrayList<>())
-                        .add(metaData));
+                            .computeIfAbsent((String) ae.get("name"), k -> new HashMap<>())
+                            .computeIfAbsent(propertyName, m -> new ArrayList<>())
+                            .add(metaData));
                 }
             });
         });
         String oppositeCollectionName = type.equals(EntityType.IDP) ? EntityType.SP.getType() :
-            EntityType.IDP.getType();
+                EntityType.IDP.getType();
         return groupedByEntityIdReference.entrySet().stream()
-            .filter(entry -> !mongoTemplate.exists(new BasicQuery("{\"data.entityid\":\"" + entry.getKey() + "\"}"),
-                oppositeCollectionName))
-            .map(entry -> entry.getValue().entrySet().stream().map(m ->
-                m.getValue().stream().map(metaData -> new OrphanMetaData(
-                    entry.getKey(),
-                    (String) metaData.getData().get("entityid"),
-                    (String) Map.class.cast(metaData.getData().get("metaDataFields")).get("name:en"),
-                    m.getKey(),
-                    metaData.getId(),
-                    type.getType()
-                ))))
-            .flatMap(Function.identity())
-            .flatMap(Function.identity());
+                .filter(entry -> !mongoTemplate.exists(new BasicQuery("{\"data.entityid\":\"" + entry.getKey() + "\"}"),
+                        oppositeCollectionName))
+                .map(entry -> entry.getValue().entrySet().stream().map(m ->
+                        m.getValue().stream().map(metaData -> new OrphanMetaData(
+                                entry.getKey(),
+                                (String) metaData.getData().get("entityid"),
+                                (String) Map.class.cast(metaData.getData().get("metaDataFields")).get("name:en"),
+                                m.getKey(),
+                                metaData.getId(),
+                                type.getType()
+                        ))))
+                .flatMap(Function.identity())
+                .flatMap(Function.identity());
     }
 
     private ClientHttpRequestFactory getRequestFactory() throws MalformedURLException {
         HttpClientBuilder httpClientBuilder = HttpClientBuilder.create().evictExpiredConnections()
-            .evictIdleConnections(10l, TimeUnit.SECONDS);
+                .evictIdleConnections(10l, TimeUnit.SECONDS);
         BasicCredentialsProvider basicCredentialsProvider = new BasicCredentialsProvider();
         basicCredentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(pushUser, pushPassword));
         httpClientBuilder.setDefaultCredentialsProvider(basicCredentialsProvider);

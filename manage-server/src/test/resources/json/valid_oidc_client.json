@@ -1,0 +1,22 @@
+{
+  "type": "saml20_sp",
+  "data": {
+    "entityid": "http://manage-oidc-test-client8",
+    "state": "testaccepted",
+    "allowedall": true,
+    "metaDataFields": {
+      "name:en": "OpenConext Valid SP",
+      "AssertionConsumerService:0:Binding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
+      "AssertionConsumerService:0:Location": "https://acs",
+      "NameIDFormat": "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
+      "coin:oidc_client": "1"
+    },
+    "oidcClient": {
+      "clientSecret": "3510DB82-764B-482C-917D-EA473BC5E86B",
+      "redirectUris": [
+        "http://redirect-url"
+      ],
+      "grantType": "authorization_code"
+    }
+  }
+}

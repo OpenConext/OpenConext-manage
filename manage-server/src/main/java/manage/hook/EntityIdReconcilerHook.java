@@ -12,7 +12,7 @@ import java.util.UUID;
 import static java.util.stream.Collectors.toList;
 
 @SuppressWarnings("unchecked")
-public class EntityIdReconcilerHook extends MetaDataHookAdapter {
+public class EntityIdReconcilerHook implements MetaDataHook {
 
     private MetaDataRepository metaDataRepository;
 
@@ -24,6 +24,11 @@ public class EntityIdReconcilerHook extends MetaDataHookAdapter {
     public boolean appliesForMetaData(MetaData metaData) {
         return EntityType.SP.getType().equals(metaData.getType()) ||
                 EntityType.IDP.getType().equals(metaData.getType());
+    }
+
+    @Override
+    public MetaData postGet(MetaData metaData) {
+        return metaData;
     }
 
     @Override
@@ -51,6 +56,11 @@ public class EntityIdReconcilerHook extends MetaDataHookAdapter {
             });
         });
         return newMetaData;
+    }
+
+    @Override
+    public MetaData prePost(MetaData metaData) {
+        return metaData;
     }
 
     @Override

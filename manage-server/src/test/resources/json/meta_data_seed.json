@@ -417,5 +417,26 @@
         "SingleSignOnService:0:Location": "https://sso0"
       }
     }
+  },
+  {
+    "id": "8",
+    "type": "saml20_sp",
+    "revision": {
+      "number": 0,
+      "created": "2018-06-15T08:20:34.575Z",
+      "updatedBy": "saml2_user.com"
+    },
+    "data": {
+      "entityid": "https://oidc.client",
+      "eid": 8,
+      "state": "testaccepted",
+      "allowedall": true,
+      "metaDataFields": {
+        "name:en": "OIDC SP"
+      },
+      "arp": {
+        "enabled": false
+      }
+    }
   }
 ]

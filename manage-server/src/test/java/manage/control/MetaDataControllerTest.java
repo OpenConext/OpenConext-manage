@@ -3,12 +3,14 @@ package manage.control;
 import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 import manage.AbstractIntegrationTest;
+import manage.hook.OpenIdConnectHook;
 import manage.model.EntityType;
 import manage.model.Import;
 import manage.model.MetaData;
 import manage.model.MetaDataUpdate;
 import manage.model.Revision;
 import manage.model.RevisionRestore;
+import manage.oidc.OidcClient;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 
@@ -45,55 +47,55 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     @Test
     public void get() throws Exception {
         given()
-            .when()
-            .get("manage/api/client/metadata/saml20_sp/1")
-            .then()
-            .statusCode(SC_OK)
-            .body("id", equalTo("1"))
-            .body("revision.number", equalTo(0))
-            .body("data.entityid", equalTo("Duis ad do"));
+                .when()
+                .get("manage/api/client/metadata/saml20_sp/1")
+                .then()
+                .statusCode(SC_OK)
+                .body("id", equalTo("1"))
+                .body("revision.number", equalTo(0))
+                .body("data.entityid", equalTo("Duis ad do"));
     }
 
     @Test
     public void getNotFound() throws Exception {
         given()
-            .when()
-            .get("manage/api/client/metadata/saml20_sp/x")
-            .then()
-            .statusCode(SC_NOT_FOUND);
+                .when()
+                .get("manage/api/client/metadata/saml20_sp/x")
+                .then()
+                .statusCode(SC_NOT_FOUND);
     }
 
     @Test
     public void templateSp() throws Exception {
         given()
-            .when()
-            .get("manage/api/client/template/saml20_sp")
-            .then()
-            .statusCode(SC_OK)
-            .body("type", equalTo("saml20_sp"))
-            .body("data.arp.enabled", equalTo(false))
-            .body("data.arp.attributes", notNullValue())
-            .body("data.metaDataFields", notNullValue())
-            .body("data.entityid", isEmptyOrNullString())
-            .body("data.state", equalTo("testaccepted"))
-            .body("data.allowedEntities.size()", is(0))
-            .body("data.disableConsent", isEmptyOrNullString());
+                .when()
+                .get("manage/api/client/template/saml20_sp")
+                .then()
+                .statusCode(SC_OK)
+                .body("type", equalTo("saml20_sp"))
+                .body("data.arp.enabled", equalTo(false))
+                .body("data.arp.attributes", notNullValue())
+                .body("data.metaDataFields", notNullValue())
+                .body("data.entityid", isEmptyOrNullString())
+                .body("data.state", equalTo("testaccepted"))
+                .body("data.allowedEntities.size()", is(0))
+                .body("data.disableConsent", isEmptyOrNullString());
     }
 
     @Test
     public void templateIdp() throws Exception {
         given()
-            .when()
-            .get("manage/api/client/template/saml20_idp")
-            .then()
-            .statusCode(SC_OK)
-            .body("type", equalTo("saml20_idp"))
-            .body("data.allowedall", equalTo(true))
-            .body("data.metaDataFields", notNullValue())
-            .body("data.entityid", isEmptyOrNullString())
-            .body("data.state", equalTo("testaccepted"))
-            .body("data.allowedEntities.size()", is(0))
-            .body("data.disableConsent.size()", is(0));
+                .when()
+                .get("manage/api/client/template/saml20_idp")
+                .then()
+                .statusCode(SC_OK)
+                .body("type", equalTo("saml20_idp"))
+                .body("data.allowedall", equalTo(true))
+                .body("data.metaDataFields", notNullValue())
+                .body("data.entityid", isEmptyOrNullString())
+                .body("data.state", equalTo("testaccepted"))
+                .body("data.allowedEntities.size()", is(0))
+                .body("data.disableConsent.size()", is(0));
     }
 
     @Test
@@ -102,10 +104,10 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         assertNotNull(metaData);
 
         given()
-            .when()
-            .delete("manage/api/client/metadata/saml20_sp/1")
-            .then()
-            .statusCode(SC_OK);
+                .when()
+                .delete("manage/api/client/metadata/saml20_sp/1")
+                .then()
+                .statusCode(SC_OK);
 
         metaData = metaDataRepository.findById("1", "saml20_sp");
         assertNull(metaData);
@@ -115,12 +117,12 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     @Test
     public void configuration() throws Exception {
         given()
-            .when()
-            .get("manage/api/client/metadata/configuration")
-            .then()
-            .statusCode(SC_OK)
-            .body("size()", is(3))
-            .body("title", hasItems("saml20_sp", "saml20_idp", "single_tenant_template"));
+                .when()
+                .get("manage/api/client/metadata/configuration")
+                .then()
+                .statusCode(SC_OK)
+                .body("size()", is(3))
+                .body("title", hasItems("saml20_sp", "saml20_idp", "single_tenant_template"));
     }
 
     @Test
@@ -151,18 +153,18 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         RequestSpecification given = given();
         if (!client) {
             given
-                .auth()
-                .preemptive()
-                .basic("sp-portal", "secret");
+                    .auth()
+                    .preemptive()
+                    .basic("sp-portal", "secret");
         }
         return given
-            .when()
-            .body(metaData)
-            .header("Content-type", "application/json")
-            .post("manage/api/" + (client ? "client" : "internal") + "/metadata")
-            .then()
-            .statusCode(SC_OK)
-            .extract().path("id");
+                .when()
+                .body(metaData)
+                .header("Content-type", "application/json")
+                .post("manage/api/" + (client ? "client" : "internal") + "/metadata")
+                .then()
+                .statusCode(SC_OK)
+                .extract().path("id");
     }
 
     @Test
@@ -175,21 +177,21 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         MetaDataUpdate metaDataUpdate = new MetaDataUpdate(id, EntityType.SP.getType(), pathUpdates);
 
         given()
-            .auth()
-            .preemptive()
-            .basic("sp-portal", "secret")
-            .body(metaDataUpdate)
-            .header("Content-type", "application/json")
-            .when()
-            .put("/manage/api/internal/merge")
-            .then()
-            .statusCode(SC_OK)
-            .body("id", equalTo(id))
-            .body("revision.number", equalTo(1))
-            .body("revision.updatedBy", equalTo("sp-portal"))
-            .body("data.allowedall", equalTo(false))
-            .body("data.metaDataFields.'description:en'", equalTo("New description"))
-            .body("data.allowedEntities[0].name", equalTo("https://allow-me"));
+                .auth()
+                .preemptive()
+                .basic("sp-portal", "secret")
+                .body(metaDataUpdate)
+                .header("Content-type", "application/json")
+                .when()
+                .put("/manage/api/internal/merge")
+                .then()
+                .statusCode(SC_OK)
+                .body("id", equalTo(id))
+                .body("revision.number", equalTo(1))
+                .body("revision.updatedBy", equalTo("sp-portal"))
+                .body("data.allowedall", equalTo(false))
+                .body("data.metaDataFields.'description:en'", equalTo("New description"))
+                .body("data.allowedEntities[0].name", equalTo("https://allow-me"));
     }
 
     @Test
@@ -200,44 +202,44 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         MetaDataUpdate metaDataUpdate = new MetaDataUpdate(id, EntityType.SP.getType(), pathUpdates);
 
         given()
-            .auth()
-            .preemptive()
-            .basic("sp-portal", "secret")
-            .body(metaDataUpdate)
-            .header("Content-type", "application/json")
-            .when()
-            .put("/manage/api/internal/merge")
-            .then()
-            .statusCode(SC_BAD_REQUEST)
-            .body("validations", notNullValue());
+                .auth()
+                .preemptive()
+                .basic("sp-portal", "secret")
+                .body(metaDataUpdate)
+                .header("Content-type", "application/json")
+                .when()
+                .put("/manage/api/internal/merge")
+                .then()
+                .statusCode(SC_BAD_REQUEST)
+                .body("validations", notNullValue());
     }
 
     @Test
     public void updateWithoutCorrectScope() throws Exception {
         given()
-            .auth()
-            .preemptive()
-            .basic("pdp", "secret")
-            .body(new MetaDataUpdate("id", EntityType.SP.getType(), new HashMap<>()))
-            .header("Content-type", "application/json")
-            .when()
-            .put("/manage/api/internal/merge")
-            .then()
-            .statusCode(SC_FORBIDDEN);
+                .auth()
+                .preemptive()
+                .basic("pdp", "secret")
+                .body(new MetaDataUpdate("id", EntityType.SP.getType(), new HashMap<>()))
+                .header("Content-type", "application/json")
+                .when()
+                .put("/manage/api/internal/merge")
+                .then()
+                .statusCode(SC_FORBIDDEN);
     }
 
     @Test
     public void updateWithoutCorrectUser() throws Exception {
         given()
-            .auth()
-            .preemptive()
-            .basic("bogus", "nope")
-            .body(new HashMap<>())
-            .header("Content-type", "application/json")
-            .when()
-            .put("/manage/api/internal/merge")
-            .then()
-            .statusCode(SC_FORBIDDEN);
+                .auth()
+                .preemptive()
+                .basic("bogus", "nope")
+                .body(new HashMap<>())
+                .header("Content-type", "application/json")
+                .when()
+                .put("/manage/api/internal/merge")
+                .then()
+                .statusCode(SC_FORBIDDEN);
     }
 
     @Test
@@ -257,21 +259,21 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         RequestSpecification given = given();
         if (!client) {
             given
-                .auth()
-                .preemptive()
-                .basic("sp-portal", "secret");
+                    .auth()
+                    .preemptive()
+                    .basic("sp-portal", "secret");
         }
         given
-            .when()
-            .body(metaData)
-            .header("Content-type", "application/json")
-            .put("/manage/api/" + (client ? "client" : "internal") + "/metadata")
-            .then()
-            .statusCode(SC_OK)
-            .body("revision.number", equalTo(1))
-            .body("revision.created", notNullValue())
-            .body("revision.updatedBy", equalTo(expectedUpdatedBy))
-            .body("data.entityid", equalTo("changed"));
+                .when()
+                .body(metaData)
+                .header("Content-type", "application/json")
+                .put("/manage/api/" + (client ? "client" : "internal") + "/metadata")
+                .then()
+                .statusCode(SC_OK)
+                .body("revision.number", equalTo(1))
+                .body("revision.created", notNullValue())
+                .body("revision.updatedBy", equalTo(expectedUpdatedBy))
+                .body("data.entityid", equalTo("changed"));
 
         List<MetaData> revisions = metaDataRepository.getMongoTemplate().findAll(MetaData.class, "saml20_sp_revision");
         assertEquals(1, revisions.size());
@@ -282,42 +284,42 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         assertEquals("1", revision.getParentId());
 
         given()
-            .when()
-            .get("manage/api/client/revisions/saml20_sp/1")
-            .then()
-            .statusCode(SC_OK)
-            .body("size()", is(1))
-            .body("[0].id", notNullValue())
-            .body("[0].revision.number", equalTo(0))
-            .body("[0].data.entityid", equalTo("Duis ad do"));
+                .when()
+                .get("manage/api/client/revisions/saml20_sp/1")
+                .then()
+                .statusCode(SC_OK)
+                .body("size()", is(1))
+                .body("[0].id", notNullValue())
+                .body("[0].revision.number", equalTo(0))
+                .body("[0].data.entityid", equalTo("Duis ad do"));
     }
 
     @Test
     public void autoComplete() throws Exception {
         given()
-            .when()
-            .queryParam("query", "mock")
-            .get("manage/api/client/autocomplete/saml20_sp")
-            .then()
-            .statusCode(SC_OK)
-            .body("size()", is(2))
-            .body("'_id'", hasItems("3", "5"))
-            .body("data.entityid", hasItems(
-                "http://mock-sp",
-                "https://serviceregistry.test2.surfconext.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp-2"));
+                .when()
+                .queryParam("query", "mock")
+                .get("manage/api/client/autocomplete/saml20_sp")
+                .then()
+                .statusCode(SC_OK)
+                .body("size()", is(2))
+                .body("'_id'", hasItems("3", "5"))
+                .body("data.entityid", hasItems(
+                        "http://mock-sp",
+                        "https://serviceregistry.test2.surfconext.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp-2"));
     }
 
     @Test
     public void autoCompleteEscaping() throws Exception {
         given()
-            .when()
-            .queryParam("query", "(test)")
-            .get("manage/api/client/autocomplete/saml20_idp")
-            .then()
-            .statusCode(SC_OK)
-            .body("size()", is(1))
-            .body("data.entityid", hasItems(
-                "https://idp.test2.surfconext.nl"));
+                .when()
+                .queryParam("query", "(test)")
+                .get("manage/api/client/autocomplete/saml20_idp")
+                .then()
+                .statusCode(SC_OK)
+                .body("size()", is(1))
+                .body("data.entityid", hasItems(
+                        "https://idp.test2.surfconext.nl"));
     }
 
     @Test
@@ -328,29 +330,29 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         searchOptions.put("metaDataFields.NameIDFormat", "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified");
 
         searchOptions.put(REQUESTED_ATTRIBUTES, Arrays.asList(
-            "allowedall", "metaDataFields.AssertionConsumerService:0:Location"
+                "allowedall", "metaDataFields.AssertionConsumerService:0:Location"
         ));
 
         given()
-            .when()
-            .body(searchOptions)
-            .header("Content-type", "application/json")
-            .post("manage/api/client/search/saml20_sp")
-            .then()
-            .statusCode(SC_OK)
-            .body("size()", is(2))
-            .body("'_id'", hasItems("2", "3"))
-            .body("data.entityid", hasItems(
-                "http://mock-sp",
-                "https://profile.test2.surfconext.nl/authentication/metadata"))
-            .body("data.metaDataFields.'name:en'", hasItems(
-                "OpenConext Profile",
-                "OpenConext Mujina SP"))
-            .body("data.metaDataFields.'AssertionConsumerService:0:Location'", hasItems(
-                "https://profile.test2.surfconext.nl/authentication/consume-assertion",
-                "https://mujina-sp.test2.surfconext.nl/saml/SSO"))
-            .body("data.allowedall", hasItems(
-                true));
+                .when()
+                .body(searchOptions)
+                .header("Content-type", "application/json")
+                .post("manage/api/client/search/saml20_sp")
+                .then()
+                .statusCode(SC_OK)
+                .body("size()", is(2))
+                .body("'_id'", hasItems("2", "3"))
+                .body("data.entityid", hasItems(
+                        "http://mock-sp",
+                        "https://profile.test2.surfconext.nl/authentication/metadata"))
+                .body("data.metaDataFields.'name:en'", hasItems(
+                        "OpenConext Profile",
+                        "OpenConext Mujina SP"))
+                .body("data.metaDataFields.'AssertionConsumerService:0:Location'", hasItems(
+                        "https://profile.test2.surfconext.nl/authentication/consume-assertion",
+                        "https://mujina-sp.test2.surfconext.nl/saml/SSO"))
+                .body("data.allowedall", hasItems(
+                        true));
     }
 
     @Test
@@ -358,16 +360,16 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         Map<String, Object> searchOptions = new HashMap<>();
         searchOptions.put("entityid", "Duis ad do");
         searchOptions.put("metaDataFields.AssertionConsumerService:0:Location",
-            "https://profile.test2.surfconext.nl/authentication/consume-assertion");
+                "https://profile.test2.surfconext.nl/authentication/consume-assertion");
 
         given()
-            .when()
-            .body(searchOptions)
-            .header("Content-type", "application/json")
-            .post("manage/api/client/search/saml20_sp")
-            .then()
-            .statusCode(SC_OK)
-            .body("size()", is(0));
+                .when()
+                .body(searchOptions)
+                .header("Content-type", "application/json")
+                .post("manage/api/client/search/saml20_sp")
+                .then()
+                .statusCode(SC_OK)
+                .body("size()", is(0));
     }
 
     @Test
@@ -375,72 +377,72 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         Map<String, Object> searchOptions = new HashMap<>();
         searchOptions.put("entityid", "Duis ad do");
         searchOptions.put("metaDataFields.AssertionConsumerService:0:Location",
-            "https://profile.test2.surfconext.nl/authentication/consume-assertion");
+                "https://profile.test2.surfconext.nl/authentication/consume-assertion");
 
         searchOptions.put(LOGICAL_OPERATOR_IS_AND, false);
 
         given()
-            .when()
-            .body(searchOptions)
-            .header("Content-type", "application/json")
-            .post("manage/api/client/search/saml20_sp")
-            .then()
-            .statusCode(SC_OK)
-            .body("size()", is(2))
-            .body("data.entityid", hasItems(
-                "Duis ad do",
-                "https://profile.test2.surfconext.nl/authentication/metadata"));
+                .when()
+                .body(searchOptions)
+                .header("Content-type", "application/json")
+                .post("manage/api/client/search/saml20_sp")
+                .then()
+                .statusCode(SC_OK)
+                .body("size()", is(2))
+                .body("data.entityid", hasItems(
+                        "Duis ad do",
+                        "https://profile.test2.surfconext.nl/authentication/metadata"));
     }
 
     @Test
     public void searchWithListIn() throws Exception {
         Map<String, Object> searchOptions = new HashMap<>();
         searchOptions.put("entityid", Arrays.asList(
-            "Duis ad do",
-            "https://profile.test2.surfconext.nl/authentication/metadata",
-            "http://mock-sp"));
+                "Duis ad do",
+                "https://profile.test2.surfconext.nl/authentication/metadata",
+                "http://mock-sp"));
         given()
-            .when()
-            .body(searchOptions)
-            .header("Content-type", "application/json")
-            .post("manage/api/client/search/saml20_sp")
-            .then()
-            .statusCode(SC_OK)
-            .body("size()", is(3));
+                .when()
+                .body(searchOptions)
+                .header("Content-type", "application/json")
+                .post("manage/api/client/search/saml20_sp")
+                .then()
+                .statusCode(SC_OK)
+                .body("size()", is(3));
     }
 
     @Test
     public void rawSearch() throws Exception {
         String query = "{$and: [{$or:[{\"data.allowedEntities.name\": {$in: [\"http://mock-idp\"]}}, {\"data" +
-            ".allowedall\": true}]}, {\"data.state\":\"prodaccepted\"}]}";
+                ".allowedall\": true}]}, {\"data.state\":\"prodaccepted\"}]}";
         given()
-            .auth()
-            .preemptive()
-            .basic("sp-portal", "secret")
-            .when()
-            .header("Content-type", "application/json")
-            .queryParam("query", query)
-            .get("manage/api/internal/rawSearch/saml20_sp")
-            .then()
-            .statusCode(SC_OK)
-            .body("size()", is(4));
+                .auth()
+                .preemptive()
+                .basic("sp-portal", "secret")
+                .when()
+                .header("Content-type", "application/json")
+                .queryParam("query", query)
+                .get("manage/api/internal/rawSearch/saml20_sp")
+                .then()
+                .statusCode(SC_OK)
+                .body("size()", is(4));
     }
 
     @Test
     public void rawSearchEncoded() throws Exception {
         String query = URLEncoder.encode("{$and: [{$or:[{\"data.allowedEntities.name\": {$in: " +
-            "[\"http://mock-idp\"]}}, {\"data" +
-            ".allowedall\": true}]}, {\"data.state\":\"prodaccepted\"}]}", "UTF-8");
+                "[\"http://mock-idp\"]}}, {\"data" +
+                ".allowedall\": true}]}, {\"data.state\":\"prodaccepted\"}]}", "UTF-8");
         given()
-            .auth()
-            .preemptive()
-            .basic("sp-portal", "secret")
-            .when()
-            .header("Content-type", "application/json")
-            .get("manage/api/internal/rawSearch/saml20_sp?query=" + query)
-            .then()
-            .statusCode(SC_OK)
-            .body("size()", is(4));
+                .auth()
+                .preemptive()
+                .basic("sp-portal", "secret")
+                .when()
+                .header("Content-type", "application/json")
+                .get("manage/api/internal/rawSearch/saml20_sp?query=" + query)
+                .then()
+                .statusCode(SC_OK)
+                .body("size()", is(4));
     }
 
     @Test
@@ -449,26 +451,26 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         searchOptions.put(ALL_ATTRIBUTES, true);
 
         given()
-            .when()
-            .body(searchOptions)
-            .header("Content-type", "application/json")
-            .post("manage/api/client/search/saml20_sp")
-            .then()
-            .statusCode(SC_OK)
-            .body("size()", is(5))
-            .body("data.metaDataFields.'SingleLogoutService_Location'", hasItems(
-                "https://sls", null, null, null, null));
+                .when()
+                .body(searchOptions)
+                .header("Content-type", "application/json")
+                .post("manage/api/client/search/saml20_sp")
+                .then()
+                .statusCode(SC_OK)
+                .body("size()", is(6))
+                .body("data.metaDataFields.'SingleLogoutService_Location'", hasItems(
+                        "https://sls", null, null, null, null, null));
     }
 
     @Test
     public void whiteListing() throws Exception {
         given()
-            .when()
-            .get("manage/api/client/whiteListing/saml20_sp")
-            .then()
-            .statusCode(SC_OK)
-            .body("size()", is(5))
-            .body("data.allowedall", hasItems(true, false));
+                .when()
+                .get("manage/api/client/whiteListing/saml20_sp")
+                .then()
+                .statusCode(SC_OK)
+                .body("size()", is(6))
+                .body("data.allowedall", hasItems(true, false));
     }
 
     @Test
@@ -477,16 +479,16 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         Map data = objectMapper.readValue(json, Map.class);
         MetaData metaData = new MetaData(EntityType.SP.getType(), data);
         given()
-            .auth()
-            .preemptive()
-            .basic("sp-portal", "secret")
-            .when()
-            .body(metaData)
-            .header("Content-type", "application/json")
-            .post("manage/api/internal/validate/metadata")
-            .then()
-            .statusCode(SC_OK)
-            .body(isEmptyOrNullString());
+                .auth()
+                .preemptive()
+                .basic("sp-portal", "secret")
+                .when()
+                .body(metaData)
+                .header("Content-type", "application/json")
+                .post("manage/api/internal/validate/metadata")
+                .then()
+                .statusCode(SC_OK)
+                .body(isEmptyOrNullString());
     }
 
     @Test
@@ -496,17 +498,17 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         Map.class.cast(data.get("metaDataFields")).put("AssertionConsumerService:0:Binding", "bogus");
         MetaData metaData = new MetaData(EntityType.SP.getType(), data);
         given()
-            .auth()
-            .preemptive()
-            .basic("sp-portal", "secret")
-            .when()
-            .body(metaData)
-            .header("Content-type", "application/json")
-            .post("manage/api/internal/validate/metadata")
-            .then()
-            .statusCode(SC_BAD_REQUEST)
-            .body("validations", equalTo("#/metaDataFields/AssertionConsumerService:0:Binding: bogus is not a valid " +
-                "enum value"));
+                .auth()
+                .preemptive()
+                .basic("sp-portal", "secret")
+                .when()
+                .body(metaData)
+                .header("Content-type", "application/json")
+                .post("manage/api/internal/validate/metadata")
+                .then()
+                .statusCode(SC_BAD_REQUEST)
+                .body("validations", equalTo("#/metaDataFields/AssertionConsumerService:0:Binding: bogus is not a valid " +
+                        "enum value"));
     }
 
     @Test
@@ -515,8 +517,8 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         Map<String, String> body = Collections.singletonMap("xml", xml);
 
         doNewSp(body)
-            .statusCode(SC_OK)
-            .body("data.entityid", equalTo("https://engine.test2.surfconext.nl/authentication/sp/metadata"));
+                .statusCode(SC_OK)
+                .body("data.entityid", equalTo("https://engine.test2.surfconext.nl/authentication/sp/metadata"));
     }
 
     @Test
@@ -524,15 +526,15 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         String xml = readFile("sp_portal/sp_xml.xml");
         String entityId = "https://profile.test2.surfconext.nl/authentication/metadata";
         xml = xml.replaceAll(Pattern.quote("https://engine.test2.surfconext.nl/authentication/sp/metadata"),
-            entityId);
+                entityId);
 
         Map<String, String> body = new HashMap<>();
         body.put("xml", xml);
 
         doNewSp(body)
-            .statusCode(SC_BAD_REQUEST)
-            .body("message", equalTo(String.format("There already exists a MetaData entry with entityId: %s",
-                entityId)));
+                .statusCode(SC_BAD_REQUEST)
+                .body("message", equalTo(String.format("There already exists a MetaData entry with entityId: %s",
+                        entityId)));
     }
 
     @Test
@@ -542,22 +544,22 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         body.put("xml", xml);
 
         doNewSp(body)
-            .statusCode(SC_BAD_REQUEST)
-            .body("validations", equalTo(
-                "#/metaDataFields: required key [AssertionConsumerService:0:Binding] not found, " +
-                    "#/metaDataFields: required key [AssertionConsumerService:0:Location] not found"));
+                .statusCode(SC_BAD_REQUEST)
+                .body("validations", equalTo(
+                        "#/metaDataFields: required key [AssertionConsumerService:0:Binding] not found, " +
+                                "#/metaDataFields: required key [AssertionConsumerService:0:Location] not found"));
     }
 
     private ValidatableResponse doNewSp(Map<String, String> body) {
         return given()
-            .auth()
-            .preemptive()
-            .basic("sp-portal", "secret")
-            .body(body)
-            .header("Content-type", "application/json")
-            .when()
-            .post("/manage/api/internal/new-sp")
-            .then();
+                .auth()
+                .preemptive()
+                .basic("sp-portal", "secret")
+                .body(body)
+                .header("Content-type", "application/json")
+                .when()
+                .post("/manage/api/internal/new-sp")
+                .then();
     }
 
     @Test
@@ -566,12 +568,12 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         String xml = readFile("sp_portal/sp_xml.xml");
         Map<String, String> body = Collections.singletonMap("xml", xml);
         doUpdateSp(body, metaData)
-            .statusCode(SC_OK);
+                .statusCode(SC_OK);
 
         MetaData updated = metaDataRepository.findById("1", EntityType.SP.getType());
         assertEquals(1L, updated.getVersion().longValue());
         assertEquals(updated.getData().get("entityid"),
-            "https://engine.test2.surfconext.nl/authentication/sp/metadata");
+                "https://engine.test2.surfconext.nl/authentication/sp/metadata");
     }
 
     @Test
@@ -581,20 +583,20 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         xml = xml.replace("urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST", "bogus");
         Map<String, String> body = Collections.singletonMap("xml", xml);
         doUpdateSp(body, metaData)
-            .statusCode(SC_BAD_REQUEST)
-            .body("validations", equalTo("#/metaDataFields/AssertionConsumerService:0:Binding: bogus is not a valid " +
-                "enum value"));
+                .statusCode(SC_BAD_REQUEST)
+                .body("validations", equalTo("#/metaDataFields/AssertionConsumerService:0:Binding: bogus is not a valid " +
+                        "enum value"));
 
     }
 
     @Test
     public void exportToXml() throws Exception {
         String xml = given()
-            .auth()
-            .preemptive()
-            .basic("sp-portal", "secret")
-            .get("/manage/api/internal/sp-metadata/1")
-            .asString();
+                .auth()
+                .preemptive()
+                .basic("sp-portal", "secret")
+                .get("/manage/api/internal/sp-metadata/1")
+                .asString();
         assertTrue(xml.contains("entityID=\"Duis ad do\""));
     }
 
@@ -603,15 +605,15 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         MetaData metaData = metaDataRepository.findById("7", EntityType.IDP.getType());
         Map.class.cast(metaData.getData()).put("entityid", "new-entityid");
         given()
-            .when()
-            .body(metaData)
-            .header("Content-type", "application/json")
-            .put("/manage/api/client/metadata")
-            .then()
-            .statusCode(SC_OK);
+                .when()
+                .body(metaData)
+                .header("Content-type", "application/json")
+                .put("/manage/api/client/metadata")
+                .then()
+                .statusCode(SC_OK);
 
         List<MetaData> sps = metaDataRepository.findRaw("saml20_sp", "{\"data.allowedEntities.name\" : " +
-            "\"new-entityid\"}");
+                "\"new-entityid\"}");
         assertEquals(2, sps.size());
     }
 
@@ -622,10 +624,10 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         assertEquals(2, List.class.cast(idp.getData().get("disableConsent")).size());
 
         given()
-            .when()
-            .delete("manage/api/client/metadata/saml20_sp/3")
-            .then()
-            .statusCode(SC_OK);
+                .when()
+                .delete("manage/api/client/metadata/saml20_sp/3")
+                .then()
+                .statusCode(SC_OK);
 
         idp = metaDataRepository.findById("6", "saml20_idp");
         assertEquals(1, List.class.cast(idp.getData().get("allowedEntities")).size());
@@ -639,25 +641,25 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         MetaData metaData = metaDataRepository.findById("1", type);
         Map.class.cast(metaData.getData()).put("entityid", "something changed");
         given()
-            .when()
-            .body(metaData)
-            .header("Content-type", "application/json")
-            .put("/manage/api/client/metadata")
-            .then()
-            .statusCode(SC_OK);
+                .when()
+                .body(metaData)
+                .header("Content-type", "application/json")
+                .put("/manage/api/client/metadata")
+                .then()
+                .statusCode(SC_OK);
 
         List<MetaData> revisions = metaDataRepository.getMongoTemplate().findAll(MetaData.class, "saml20_sp_revision");
         assertEquals(1, revisions.size());
         RevisionRestore revisionRestore = new RevisionRestore(revisions.get(0).getId(),
-            type.concat("_revision"), type);
+                type.concat("_revision"), type);
 
         given()
-            .when()
-            .body(revisionRestore)
-            .header("Content-type", "application/json")
-            .put("manage/api/client/restoreRevision")
-            .then()
-            .statusCode(SC_OK);
+                .when()
+                .body(revisionRestore)
+                .header("Content-type", "application/json")
+                .put("manage/api/client/restoreRevision")
+                .then()
+                .statusCode(SC_OK);
 
         revisions = metaDataRepository.getMongoTemplate().findAll(MetaData.class, "saml20_sp_revision");
         assertEquals(2, revisions.size());
@@ -669,31 +671,31 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         String urlS = new ClassPathResource("xml/edugain_feed.xml").getURL().toString();
         Import importRequest = new Import(urlS, null);
         Map result = given()
-            .body(importRequest)
-            .header("Content-type", "application/json")
-            .post("manage/api/client/import/feed")
-            .getBody()
-            .as(Map.class);
+                .body(importRequest)
+                .header("Content-type", "application/json")
+                .post("manage/api/client/import/feed")
+                .getBody()
+                .as(Map.class);
         assertEquals(3, result.size());
         assertEquals(2, List.class.cast(result.get("imported")).size());
 
         result = given()
-            .body(importRequest)
-            .header("Content-type", "application/json")
-            .post("manage/api/client/import/feed")
-            .getBody()
-            .as(Map.class);
+                .body(importRequest)
+                .header("Content-type", "application/json")
+                .post("manage/api/client/import/feed")
+                .getBody()
+                .as(Map.class);
         assertEquals(3, result.size());
         assertEquals(2, List.class.cast(result.get("no_changes")).size());
 
         urlS = new ClassPathResource("xml/edugain_feed_changed.xml").getURL().toString();
         importRequest = new Import(urlS, null);
         result = given()
-            .body(importRequest)
-            .header("Content-type", "application/json")
-            .post("manage/api/client/import/feed")
-            .getBody()
-            .as(Map.class);
+                .body(importRequest)
+                .header("Content-type", "application/json")
+                .post("manage/api/client/import/feed")
+                .getBody()
+                .as(Map.class);
         assertEquals(3, result.size());
         assertEquals(2, List.class.cast(result.get("merged")).size());
     }
@@ -702,10 +704,10 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     public void restoreDeletedRevision() throws Exception {
         String type = EntityType.SP.getType();
         given()
-            .when()
-            .delete("manage/api/client/metadata/saml20_sp/1")
-            .then()
-            .statusCode(SC_OK);
+                .when()
+                .delete("manage/api/client/metadata/saml20_sp/1")
+                .then()
+                .statusCode(SC_OK);
 
         MetaData metaData = metaDataRepository.findById("1", "saml20_sp");
         assertNull(metaData);
@@ -713,15 +715,15 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         List<MetaData> revisions = metaDataRepository.getMongoTemplate().findAll(MetaData.class, "saml20_sp_revision");
         assertEquals(1, revisions.size());
         RevisionRestore revisionRestore = new RevisionRestore(revisions.get(0).getId(),
-            type.concat("_revision"), type);
+                type.concat("_revision"), type);
 
         given()
-            .when()
-            .body(revisionRestore)
-            .header("Content-type", "application/json")
-            .put("manage/api/client/restoreDeleted")
-            .then()
-            .statusCode(SC_OK);
+                .when()
+                .body(revisionRestore)
+                .header("Content-type", "application/json")
+                .put("manage/api/client/restoreDeleted")
+                .then()
+                .statusCode(SC_OK);
 
         metaData = metaDataRepository.findById("1", "saml20_sp");
         assertNotNull(metaData);
@@ -735,13 +737,50 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
 
     private ValidatableResponse doUpdateSp(Map<String, String> body, MetaData metaData) {
         return given()
-            .auth()
-            .preemptive()
-            .basic("sp-portal", "secret")
-            .body(body)
-            .header("Content-type", "application/json")
-            .when()
-            .post("/manage/api/internal/update-sp/" + metaData.getId() + "/" + metaData.getVersion())
-            .then();
+                .auth()
+                .preemptive()
+                .basic("sp-portal", "secret")
+                .body(body)
+                .header("Content-type", "application/json")
+                .when()
+                .post("/manage/api/internal/update-sp/" + metaData.getId() + "/" + metaData.getVersion())
+                .then();
     }
+
+    @Test
+    public void createOidc() throws java.io.IOException {
+        String json = readFile("/json/valid_service_provider.json");
+        Map data = objectMapper.readValue(json, Map.class);
+
+        OidcClient oidcClient = new OidcClient("http://client_id", "secret", Collections.singleton("http://redirect"), "authorization_code", Collections.singleton("openid"));
+        data.put(OpenIdConnectHook.OIDC_CLIENT_KEY, oidcClient);
+
+        MetaData metaData = new MetaData(EntityType.SP.getType(), data);
+        metaData.metaDataFields().remove("AssertionConsumerService:0:Binding");
+        metaData.metaDataFields().remove("AssertionConsumerService:0:Location");
+        metaData.metaDataFields().put("coin:oidc_client", "1");
+        metaData.getData().put("entityid", "http://oidc_client");
+
+        String id = given().auth()
+                .preemptive()
+                .basic("sp-portal", "secret")
+                .when()
+                .body(metaData)
+                .header("Content-type", "application/json")
+                .post("manage/api/internal/metadata")
+                .then()
+                .statusCode(SC_OK)
+                .extract().path("id");
+        Map results = given()
+                .when()
+                .get("manage/api/client/metadata/saml20_sp/" + id)
+                .getBody().as(Map.class);
+
+        Map oidcClientMap = Map.class.cast(Map.class.cast(results.get("data")).get("oidcClient"));
+        assertEquals("http@//oidc_client", oidcClientMap.get("clientId"));
+
+
+
+    }
+
 }

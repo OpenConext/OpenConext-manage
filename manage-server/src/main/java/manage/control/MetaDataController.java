@@ -59,15 +59,16 @@ import java.util.stream.Collectors;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Collections.singletonMap;
+import static manage.api.Scope.TEST;
 import static manage.mongo.MongobeeConfiguration.REVISION_POSTFIX;
 
 @RestController
 @SuppressWarnings("unchecked")
 public class MetaDataController {
 
-    public static final String REQUESTED_ATTRIBUTES = "REQUESTED_ATTRIBUTES";
-    public static final String ALL_ATTRIBUTES = "ALL_ATTRIBUTES";
-    public static final String LOGICAL_OPERATOR_IS_AND = "LOGICAL_OPERATOR_IS_AND";
+    static final String REQUESTED_ATTRIBUTES = "REQUESTED_ATTRIBUTES";
+    static final String ALL_ATTRIBUTES = "ALL_ATTRIBUTES";
+    static final String LOGICAL_OPERATOR_IS_AND = "LOGICAL_OPERATOR_IS_AND";
 
     private static final Logger LOG = LoggerFactory.getLogger(MetaDataController.class);
 
@@ -106,7 +107,7 @@ public class MetaDataController {
         if (metaData == null) {
             throw new ResourceNotFoundException(String.format("MetaData type %s with id %s does not exist", type, id));
         }
-        return metaData;
+        return metaDataHook.postGet( metaData);
     }
 
     @GetMapping("/client/metadata/configuration")
@@ -126,7 +127,7 @@ public class MetaDataController {
     public MetaData includeInPush(@PathVariable("type") String type, @PathVariable("id") String id,
                                   FederatedUser federatedUser) throws JsonProcessingException {
         MetaData metaData = this.get(type, id);
-        Map metaDataFields = Map.class.cast(metaData.getData().get("metaDataFields"));
+        Map metaDataFields = metaData.metaDataFields();
         metaDataFields.remove("coin:exclude_from_push");
         return doPut(metaData, federatedUser.getUid(), false);
     }
@@ -136,7 +137,7 @@ public class MetaDataController {
     @PostMapping("/internal/metadata")
     public MetaData postInternal(@Validated @RequestBody MetaData metaData, APIUser apiUser) throws
             JsonProcessingException {
-        return doPost(metaData, apiUser.getName(), !apiUser.getScopes().contains("TEST"));
+        return doPost(metaData, apiUser.getName(), !apiUser.getScopes().contains(TEST));
     }
 
     @PreAuthorize("hasRole('WRITE')")
@@ -156,7 +157,7 @@ public class MetaDataController {
         addDefaultSpData(innerJson);
         MetaData metaData = new MetaData(EntityType.SP.getType(), innerJson);
 
-        return doPost(metaData, apiUser.getName(), !apiUser.getScopes().contains("TEST"));
+        return doPost(metaData, apiUser.getName(), !apiUser.getScopes().contains(TEST));
     }
 
 
@@ -300,7 +301,7 @@ public class MetaDataController {
         metaData.setData(innerJson);
         metaData.setVersion(version);
 
-        return doPut(metaData, apiUser.getName(), !apiUser.getScopes().contains("TEST"));
+        return doPut(metaData, apiUser.getName(), !apiUser.getScopes().contains(TEST));
     }
 
     @GetMapping("/internal/sp-metadata/{id}")
@@ -312,8 +313,9 @@ public class MetaDataController {
 
     private MetaData doPost(@Validated @RequestBody MetaData metaData, String uid, boolean excludeFromPushRequired) throws JsonProcessingException {
         sanitizeExcludeFromPush(metaData, excludeFromPushRequired);
-        validate(metaData);
         metaData = metaDataHook.prePost(metaData);
+
+        validate(metaData);
         Long eid = metaDataRepository.incrementEid();
         metaData.initial(UUID.randomUUID().toString(), uid, eid);
 
@@ -323,9 +325,8 @@ public class MetaDataController {
     }
 
     private void sanitizeExcludeFromPush(@RequestBody @Validated MetaData metaData, boolean excludeFromPushRequired) {
-        Map metaDataFields = Map.class.cast(metaData.getData().get("metaDataFields"));
-        boolean excludeFromPush = "1".equals(metaDataFields.get("coin:exclude_from_push"));
-        if (excludeFromPushRequired && !excludeFromPush) {
+        Map metaDataFields = metaData.metaDataFields();
+        if (excludeFromPushRequired && !"1".equals(metaDataFields.get("coin:exclude_from_push"))) {
             metaDataFields.put("coin:exclude_from_push", "1");
         }
     }
@@ -376,16 +377,16 @@ public class MetaDataController {
     @Transactional
     public MetaData putInternal(@Validated @RequestBody MetaData metaData, APIUser apiUser) throws
             JsonProcessingException {
-        return doPut(metaData, apiUser.getName(), !apiUser.getScopes().contains("TEST"));
+        return doPut(metaData, apiUser.getName(), !apiUser.getScopes().contains(TEST));
     }
 
     private MetaData doPut(@Validated @RequestBody MetaData metaData, String updatedBy, boolean excludeFromPushRequired) throws JsonProcessingException {
         sanitizeExcludeFromPush(metaData, excludeFromPushRequired);
-        validate(metaData);
         String id = metaData.getId();
         MetaData previous = metaDataRepository.findById(id, metaData.getType());
 
         metaData = metaDataHook.prePut(previous, metaData);
+        validate(metaData);
 
         previous.revision(UUID.randomUUID().toString());
         metaDataRepository.save(previous);
