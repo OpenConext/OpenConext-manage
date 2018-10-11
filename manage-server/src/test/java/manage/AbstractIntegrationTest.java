@@ -32,7 +32,7 @@ import static org.awaitility.Awaitility.await;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-    properties = "spring.data.mongodb.uri=mongodb://localhost:27017/metadata_test")
+    properties = {"spring.data.mongodb.uri=mongodb://localhost:27017/metadata_test","oidc.feature=false"})
 @ActiveProfiles("dev")
 public abstract class AbstractIntegrationTest implements TestUtils {
 
