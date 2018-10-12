@@ -6,9 +6,6 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.toList;
 
 public class CompositeMetaDataHook implements MetaDataHook {
 
@@ -26,9 +23,7 @@ public class CompositeMetaDataHook implements MetaDataHook {
 
     @Override
     public MetaData postGet(MetaData metaData) {
-        AtomicReference<MetaData> ref = new AtomicReference<>(metaData);
-        hooks.stream().filter(hook -> hook.appliesForMetaData(metaData)).forEach(hook -> ref.set(hook.postGet(ref.get())));
-        return ref.get();
+        return this.callback(metaData, (md, hook) -> hook.postGet(md));
     }
 
     @Override
@@ -40,16 +35,22 @@ public class CompositeMetaDataHook implements MetaDataHook {
 
     @Override
     public MetaData prePost(MetaData metaData) {
-        AtomicReference<MetaData> ref = new AtomicReference<>(metaData);
-        hooks.stream().filter(hook -> hook.appliesForMetaData(metaData)).forEach(hook -> ref.set(hook.prePost(ref.get())));
-        return ref.get();
+        return this.callback(metaData, (md, hook) -> hook.prePost(md));
     }
 
     @Override
     public MetaData preDelete(MetaData metaData) {
+        return this.callback(metaData, (md, hook) -> hook.preDelete(md));
+    }
+
+    private MetaData callback(MetaData metaData, Callback callback) {
         AtomicReference<MetaData> ref = new AtomicReference<>(metaData);
-        hooks.stream().filter(hook -> hook.appliesForMetaData(metaData)).forEach(hook -> ref.set(hook.preDelete(ref.get())));
+        hooks.stream().filter(hook -> hook.appliesForMetaData(metaData)).forEach(hook -> ref.set(callback.doHook(ref.get(), hook)));
         return ref.get();
+    }
+
+    interface Callback {
+        MetaData doHook(MetaData metaData, MetaDataHook hook);
     }
 
 }
