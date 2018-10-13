@@ -187,7 +187,7 @@ export default class Import extends React.Component {
             window.scrollTo(0, 0);
             if (json.errors) {
                 newState[errorsName] = json.errors;
-                newState.entityType = json.entityType;
+                newState.entityType = this.props.entityType;
                 newState.results = undefined;
                 this.setState({...newState});
             } else {
@@ -473,7 +473,7 @@ export default class Import extends React.Component {
                 <p>{I18n.t("import.validationErrors", {type: this.props.metaData.type || this.state.entityType})}</p>
                 <ul>
                     {errors.map((msg, index) =>
-                        <li key={index}>{msg}</li>)}
+                        <li key={index}>{msg === "java.io.FileNotFoundException" ? "The URL returned a 404." : msg}</li>)}
                 </ul>
             </section>
         );
