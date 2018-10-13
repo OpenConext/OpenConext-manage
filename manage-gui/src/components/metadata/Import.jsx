@@ -490,7 +490,7 @@ export default class Import extends React.Component {
                             value: s,
                             label: I18n.t(`metadata.${s}_single`)
                         }))}
-                        value={this.state.entityType}
+                        value={this.state.entityType || "saml20_sp"}
                         disabled={this.props.guest || !this.props.newEntity}/>
                 {!this.props.guest && <a onClick={action} className="button green large">
                     {I18n.t("import.fetch")}<i className="fa fa-cloud-download"></i></a>}
@@ -502,7 +502,7 @@ export default class Import extends React.Component {
         <section className="import-footer">
             <Select onChange={this.changeType}
                     options={["saml20_idp", "saml20_sp"].map(s => ({value: s, label: I18n.t(`metadata.${s}_single`)}))}
-                    value={this.state.entityType}
+                    value={this.state.entityType || "saml20_sp"}
                     disabled={this.props.guest || !this.props.newEntity}/>
             {!this.props.guest && <a onClick={action} className="button green footer">
                 {I18n.t("import.fetch")}<i className="fa fa-cloud-download"></i></a>}
