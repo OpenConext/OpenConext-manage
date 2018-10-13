@@ -38,7 +38,7 @@ public class MetaDataFeedParser {
 
     public List<Map<String, Object>> importFeed(Resource xml,
                                                 MetaDataAutoConfiguration metaDataAutoConfiguration) throws
-        XMLStreamException, IOException {
+            XMLStreamException, IOException {
         //despite it's name, the XMLInputFactoryImpl is not thread safe
         XMLInputFactory factory = getFactory();
 
@@ -47,7 +47,7 @@ public class MetaDataFeedParser {
 
         while (reader.hasNext()) {
             Map<String, Object> entity = parseEntity(EntityType.SP, Optional.empty(), metaDataAutoConfiguration,
-                reader, true);
+                    reader, true);
             results.add(entity);
         }
         return results;
@@ -64,7 +64,7 @@ public class MetaDataFeedParser {
                                          EntityType entityType,
                                          Optional<String> entityIDOptional,
                                          MetaDataAutoConfiguration metaDataAutoConfiguration) throws
-        XMLStreamException, IOException {
+            XMLStreamException, IOException {
         //despite it's name, the XMLInputFactoryImpl is not thread safe
         XMLInputFactory factory = getFactory();
 
@@ -116,19 +116,20 @@ public class MetaDataFeedParser {
                             break;
                         case "SPSSODescriptor":
                             if (inCorrectEntityDescriptor) {
-                                if (!isSp) {
+                                if (isSp) {
+                                    arpKeys = arpKeys(EntityType.SP, metaDataAutoConfiguration, isSp);
+                                    arpAliases = arpAliases(EntityType.SP, metaDataAutoConfiguration, isSp);
+
+                                    Map<String, Object> arp = new TreeMap<>();
+                                    arp.put("enabled", false);
+                                    Map<String, Object> attributes = new TreeMap<>();
+
+                                    arp.put(ATTRIBUTES, attributes);
+                                    result.put(ARP, arp);
+                                } else {
                                     //This should not happen, but an exception breaks reading the feed
                                     typeMismatch = true;
                                 }
-                                arpKeys = arpKeys(EntityType.SP, metaDataAutoConfiguration, isSp);
-                                arpAliases = arpAliases(EntityType.SP, metaDataAutoConfiguration, isSp);
-
-                                Map<String, Object> arp = new TreeMap<>();
-                                arp.put("enabled", false);
-                                Map<String, Object> attributes = new TreeMap<>();
-
-                                arp.put(ATTRIBUTES, attributes);
-                                result.put(ARP, arp);
                             }
                             break;
                         case "IDPSSODescriptor":
@@ -168,16 +169,16 @@ public class MetaDataFeedParser {
                             if (inCorrectEntityDescriptor && isSp) {
                                 Optional<String> bindingOpt = getAttributeValue(reader, "Binding");
                                 bindingOpt.ifPresent(binding ->
-                                    addMultiplicity(metaDataFields, "AssertionConsumerService:%s:Binding",
-                                        10, binding));
+                                        addMultiplicity(metaDataFields, "AssertionConsumerService:%s:Binding",
+                                                10, binding));
                                 Optional<String> locationOpt = getAttributeValue(reader, "Location");
                                 locationOpt.ifPresent(location ->
-                                    addMultiplicity(metaDataFields, "AssertionConsumerService:%s:Location",
-                                        10, location));
+                                        addMultiplicity(metaDataFields, "AssertionConsumerService:%s:Location",
+                                                10, location));
                                 Optional<String> indexOpt = getAttributeValue(reader, "index");
                                 indexOpt.ifPresent(index ->
-                                    addMultiplicity(metaDataFields, "AssertionConsumerService:%s:index",
-                                        10, index));
+                                        addMultiplicity(metaDataFields, "AssertionConsumerService:%s:index",
+                                                10, index));
                             }
                             break;
                         case "SingleSignOnService":
@@ -186,12 +187,12 @@ public class MetaDataFeedParser {
                             }
                             Optional<String> bindingOpt = getAttributeValue(reader, "Binding");
                             bindingOpt.ifPresent(binding ->
-                                addMultiplicity(metaDataFields, "SingleSignOnService:%s:Binding",
-                                    10, binding));
+                                    addMultiplicity(metaDataFields, "SingleSignOnService:%s:Binding",
+                                            10, binding));
                             Optional<String> locationOpt = getAttributeValue(reader, "Location");
                             locationOpt.ifPresent(location ->
-                                addMultiplicity(metaDataFields, "SingleSignOnService:%s:Location",
-                                    10, location));
+                                    addMultiplicity(metaDataFields, "SingleSignOnService:%s:Location",
+                                            10, location));
                             break;
                         case "RegistrationInfo": {
                             if (inCorrectEntityDescriptor) {
@@ -286,13 +287,13 @@ public class MetaDataFeedParser {
                         case "EmailAddress":
                             if (inCorrectEntityDescriptor && inContact) {
                                 addMultiplicity(metaDataFields, "contacts:%s:emailAddress", 4,
-                                    reader.getElementText().replaceAll(Pattern.quote("mailto:"), ""));
+                                        reader.getElementText().replaceAll(Pattern.quote("mailto:"), ""));
                             }
                             break;
                         case "TelephoneNumber":
                             if (inCorrectEntityDescriptor && inContact) {
                                 addMultiplicity(metaDataFields, "contacts:%s:telephoneNumber", 4, reader
-                                    .getElementText());
+                                        .getElementText());
                             }
                             break;
                         case "EntityAttributes":
@@ -301,7 +302,7 @@ public class MetaDataFeedParser {
                         case "AttributeValue":
                             if (inEntityAttributes) {
                                 addCoinEntityCategories(entityType, metaDataFields, metaDataAutoConfiguration,
-                                    reader.getElementText());
+                                        reader.getElementText());
                             }
                             break;
                     }
@@ -321,8 +322,8 @@ public class MetaDataFeedParser {
                         case "EntityDescriptor":
                             if (inCorrectEntityDescriptor) {
                                 //we got what we came for
-                                return typeMismatch && enforceTypeStrictness ? Collections.emptyMap() :
-                                    this.enrichMetaData(result);
+                                return typeMismatch && enforceTypeStrictness ? new HashMap<>() :
+                                        this.enrichMetaData(result);
                             }
                             break;
                         case "EntityAttributes":
@@ -332,7 +333,7 @@ public class MetaDataFeedParser {
                     break;
             }
         }
-        return Collections.emptyMap();
+        return new HashMap<>();
     }
 
     private Map<String, Object> enrichMetaData(Map<String, Object> metaData) {
@@ -354,11 +355,11 @@ public class MetaDataFeedParser {
                                            boolean isSp) {
         Map<String, Object> arp = arpAttributes(type, metaDataAutoConfiguration, isSp);
         return arp.entrySet().stream()
-            .filter(entry -> Map.class.cast(entry.getValue()).containsKey("alias"))
-            .collect(toMap(
-                entry -> (String) Map.class.cast(entry.getValue()).get("alias"),
-                entry -> entry.getKey(),
-                (alias1, alias2) -> alias1));
+                .filter(entry -> Map.class.cast(entry.getValue()).containsKey("alias"))
+                .collect(toMap(
+                        entry -> (String) Map.class.cast(entry.getValue()).get("alias"),
+                        entry -> entry.getKey(),
+                        (alias1, alias2) -> alias1));
     }
 
     private Map<String, Object> arpAttributes(EntityType type, MetaDataAutoConfiguration metaDataAutoConfiguration,
@@ -414,7 +415,7 @@ public class MetaDataFeedParser {
     }
 
     private void addLanguageElement(Map<String, String> metaDataFields, XMLStreamReader reader, String elementName)
-        throws XMLStreamException {
+            throws XMLStreamException {
         String language = getAttributeValue(reader, "lang").orElse("en");
         if (languages.contains(language)) {
             metaDataFields.put(String.format("%s:%s", elementName, language), reader.getElementText());
@@ -424,7 +425,7 @@ public class MetaDataFeedParser {
 
     private void addMultiplicity(Map<String, String> result, String format, int multiplicity, String value) {
         List<String> keys = IntStream.range(0, multiplicity).mapToObj(nbr -> String.format(format, nbr))
-            .collect(toList());
+                .collect(toList());
         long count = result.keySet().stream().filter(key -> keys.contains(key)).count();
         if (count < keys.size()) {
             result.put(keys.get((int) count), value);
@@ -445,9 +446,9 @@ public class MetaDataFeedParser {
 
     private void addLogo(Map<String, String> metaDataFields, XMLStreamReader reader) throws XMLStreamException {
         getAttributeValue(reader, "width")
-            .ifPresent(width -> metaDataFields.put("logo:0:width", width));
+                .ifPresent(width -> metaDataFields.put("logo:0:width", width));
         getAttributeValue(reader, "height")
-            .ifPresent(height -> metaDataFields.put("logo:0:height", height));
+                .ifPresent(height -> metaDataFields.put("logo:0:height", height));
         metaDataFields.put("logo:0:url", reader.getElementText());
     }
 
@@ -466,7 +467,7 @@ public class MetaDataFeedParser {
                                          MetaDataAutoConfiguration metaDataAutoConfiguration, String elementText) {
         Map<String, Object> schema = metaDataAutoConfiguration.schemaRepresentation(entityType);
         Map<String, Object> schemaPart = this.unpack(schema,
-            Arrays.asList("properties", "metaDataFields", "patternProperties", "^coin:entity_categories:"));
+                Arrays.asList("properties", "metaDataFields", "patternProperties", "^coin:entity_categories:"));
         List<String> enumeration = (List<String>) schemaPart.get("enum");
         String strippedValue = elementText.replaceAll("\n", "").trim();
         if (!enumeration.contains(strippedValue)) {
@@ -475,9 +476,9 @@ public class MetaDataFeedParser {
         String entityCategoryKey = "coin:entity_categories:";
         //do not add the same entity category twice as we limit the number
         List<String> categories = metaDataFields.entrySet().stream()
-            .filter(e -> e.getKey().startsWith(entityCategoryKey))
-            .map(Map.Entry::getValue)
-            .collect(toList());
+                .filter(e -> e.getKey().startsWith(entityCategoryKey))
+                .map(Map.Entry::getValue)
+                .collect(toList());
         if (categories.contains(strippedValue)) {
             return;
         }
@@ -486,20 +487,20 @@ public class MetaDataFeedParser {
         int startIndex = (int) schemaPart.get("startIndex");
 
         metaDataFields.keySet().stream()
-            .filter(s -> s.startsWith(entityCategoryKey))
-            .map(s -> Integer.valueOf(s.substring(entityCategoryKey.length())))
-            .max(Integer::compareTo)
-            .map(i -> multiplicity >= startIndex + i ? "put returns null" + metaDataFields.put(entityCategoryKey + ++i,
-                strippedValue) : "")
-            .orElseGet(() -> metaDataFields.put(entityCategoryKey + startIndex, strippedValue));
+                .filter(s -> s.startsWith(entityCategoryKey))
+                .map(s -> Integer.valueOf(s.substring(entityCategoryKey.length())))
+                .max(Integer::compareTo)
+                .map(i -> multiplicity >= startIndex + i ? "put returns null" + metaDataFields.put(entityCategoryKey + ++i,
+                        strippedValue) : "")
+                .orElseGet(() -> metaDataFields.put(entityCategoryKey + startIndex, strippedValue));
     }
 
     private Map<String, Object> unpack(Map<String, Object> schema, List<String> keys) {
         return keys.stream().sequential().reduce(schema, (map, s) -> s.startsWith("^") ?
-                Map.class.cast(map.get(map.keySet().stream().filter(k -> k.startsWith(s)).findAny()
-                    .orElseThrow(() -> new IllegalArgumentException("Key not present: " + s)))) :
-                Map.class.cast(map.get(s)),
-            (acc, com) -> com);
+                        Map.class.cast(map.get(map.keySet().stream().filter(k -> k.startsWith(s)).findAny()
+                                .orElseThrow(() -> new IllegalArgumentException("Key not present: " + s)))) :
+                        Map.class.cast(map.get(s)),
+                (acc, com) -> com);
     }
 
 }
