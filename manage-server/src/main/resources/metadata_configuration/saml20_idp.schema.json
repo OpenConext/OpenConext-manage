@@ -225,7 +225,7 @@
         },
         "coin:institution_id": {
           "type": "string",
-          "info": "The defined client code."
+          "info": "The defined client code. Generally an abbreviation of the name of the client."
         },
         "coin:institution_guid": {
           "type": "string",
@@ -234,7 +234,6 @@
         },
         "coin:institution_type": {
           "type": "string",
-          "format": "string",
           "info": "Client category this institution belongs to."
         },
         "coin:guest_qualifier": {
@@ -273,7 +272,7 @@
             "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"
           ],
           "default": "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256",
-          "info": "Select the Secure Hash Algorithm (SHA) to use for requests sent by Engineblock to this identity provider."
+          "info": "Select the Secure Hash Algorithm (SHA) to use for signed authentication requests sent by Engineblock to this identity provider."
         },
         "coin:exclude_from_push": {
           "type": "string",
