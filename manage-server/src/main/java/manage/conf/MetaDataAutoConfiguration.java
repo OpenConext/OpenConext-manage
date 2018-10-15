@@ -154,7 +154,6 @@ public class MetaDataAutoConfiguration {
                     } else {
                         source.put(name, value);
                     }
-
                 }
             }
         );
