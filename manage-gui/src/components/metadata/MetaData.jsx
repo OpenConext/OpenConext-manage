@@ -98,7 +98,11 @@ export default class MetaData extends React.Component {
         const ref = keyConf["$ref"];
         if (ref) {
             //"#/definitions/AssertionConsumerServiceBinding"
-            keyConf = configuration.definitions[ref.substring(ref.lastIndexOf("/") + 1)]
+            const keyConfRef = {...configuration.definitions[ref.substring(ref.lastIndexOf("/") + 1)]};
+            if (keyConf.info) {
+                keyConfRef.info = keyConf.info;
+            }
+            return keyConfRef;
         }
         return keyConf;
     };
