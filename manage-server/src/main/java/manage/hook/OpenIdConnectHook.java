@@ -65,10 +65,10 @@ public class OpenIdConnectHook implements MetaDataHook{
         }
         Client client = new Client();
         syncClient(metaData, clientMap, client);
-
-        client.setClientSecret((String) clientMap.get("clientSecret"));
         openIdConnect.createClient(client);
+
         metaData.getData().remove(OIDC_CLIENT_KEY);
+
         metaData.metaDataFields().put("AssertionConsumerService:0:Binding", "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST");
         metaData.metaDataFields().put("AssertionConsumerService:0:Location", oidcAcsLocation);
         return metaData;
@@ -88,6 +88,10 @@ public class OpenIdConnectHook implements MetaDataHook{
         String grantType = String.class.cast(clientMap.get("grantType"));
         if (StringUtils.hasText(grantType)) {
             client.setGrantTypes(Collections.singleton(grantType));
+        }
+        String secret = (String) clientMap.get("clientSecret");
+        if (StringUtils.hasText(secret)) {
+            client.setClientSecret(secret);
         }
     }
 
