@@ -1,0 +1,137 @@
+<?xml version="1.0"?>
+<EntityDescriptor xmlns="urn:oasis:names:tc:SAML:2.0:metadata"
+                  entityID="https://sp.tshhosting.com/shibboleth">
+    <SPSSODescriptor
+            protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol urn:oasis:names:tc:SAML:1.1:protocol">
+        <Extensions>
+            <idpdisc:DiscoveryResponse
+                    xmlns:idpdisc="urn:oasis:names:tc:SAML:profiles:SSO:idp-discovery-protocol"
+                    Binding="urn:oasis:names:tc:SAML:profiles:SSO:idp-discovery-protocol"
+                    Location="https://www.webofknowledge.com/" index="1"/>
+            <idpdisc:DiscoveryResponse
+                    xmlns:idpdisc="urn:oasis:names:tc:SAML:profiles:SSO:idp-discovery-protocol"
+                    Binding="urn:oasis:names:tc:SAML:profiles:SSO:idp-discovery-protocol"
+                    Location="https://www.webofknowledge.com/" index="2"/>
+            <idpdisc:DiscoveryResponse
+                    xmlns:idpdisc="urn:oasis:names:tc:SAML:profiles:SSO:idp-discovery-protocol"
+                    Binding="urn:oasis:names:tc:SAML:profiles:SSO:idp-discovery-protocol"
+                    Location="https://admin-router.webofknowledge.com/" index="3"/>
+            <idpdisc:DiscoveryResponse
+                    xmlns:idpdisc="urn:oasis:names:tc:SAML:profiles:SSO:idp-discovery-protocol"
+                    Binding="urn:oasis:names:tc:SAML:profiles:SSO:idp-discovery-protocol"
+                    Location="https://login.incites.thomsonreuters.com/" index="4"/>
+        </Extensions>
+        <KeyDescriptor>
+            <ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+                <ds:KeyName>shib.tshhosting.com</ds:KeyName>
+                <ds:X509Data>
+                    <ds:X509Certificate>MIIGfzCCBWegAwIBAgIQC3+QK/n8nfWMt8LGUplQSzANBgkqhkiG9w0BAQsFADBg
+                        MQswCQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3
+                        d3cuZGlnaWNlcnQuY29tMR8wHQYDVQQDExZHZW9UcnVzdCBUTFMgUlNBIENBIEcx
+                        MB4XDTE4MDQwMjAwMDAwMFoXDTIwMDMxNTEyMDAwMFowbDELMAkGA1UEBhMCR0Ix
+                        DzANBgNVBAcTBkxvbmRvbjEhMB8GA1UEChMYQ2FtZWxvdCBVSyBCaWRjbyBMaW1p
+                        dGVkMQswCQYDVQQLEwJDQTEcMBoGA1UEAxMTc2hpYi50c2hob3N0aW5nLmNvbTCC
+                        ASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMlt+O/KQrgMSi1lcZ+kQwjr
+                        J0RzeBj/WddBlobhPQkwnvmfebH3jIcMG6WIHJV9MoGL/GU7A6n7ui5+/EQ4P+Ru
+                        B+nHgNHYIhOxU98lgkf6biG/JFmIGquVw+Y6vntHAllni4ZC/N+g/Cw7iDsCl722
+                        82kapd/EcSY+fZYP1wEXO4+lHTFD3CnCa5EnrjK5+oMOtuseMi9NUebhHObPlbsK
+                        HS6NYU4kbHsAjsn19Dexb9eo/G8RHnGbU3xjki+RaMXI14wH9yUHBaCq+++iGOSJ
+                        j8TZ0tb8H8fOLVjdJv+PNYaP0Pax9eYwoRf0F7yBDQrvy1H1ETtFGo4x7MhgA3UC
+                        AwEAAaOCAycwggMjMB8GA1UdIwQYMBaAFJRP1F2L5KTipoD+/dj5AO+jvgJXMB0G
+                        A1UdDgQWBBReDEjG7LvCpKWqHVn4BH2d0ZbUbTAeBgNVHREEFzAVghNzaGliLnRz
+                        aGhvc3RpbmcuY29tMA4GA1UdDwEB/wQEAwIFoDAdBgNVHSUEFjAUBggrBgEFBQcD
+                        AQYIKwYBBQUHAwIwPwYDVR0fBDgwNjA0oDKgMIYuaHR0cDovL2NkcC5nZW90cnVz
+                        dC5jb20vR2VvVHJ1c3RUTFNSU0FDQUcxLmNybDBMBgNVHSAERTBDMDcGCWCGSAGG
+                        /WwBATAqMCgGCCsGAQUFBwIBFhxodHRwczovL3d3dy5kaWdpY2VydC5jb20vQ1BT
+                        MAgGBmeBDAECAjB2BggrBgEFBQcBAQRqMGgwJgYIKwYBBQUHMAGGGmh0dHA6Ly9z
+                        dGF0dXMuZ2VvdHJ1c3QuY29tMD4GCCsGAQUFBzAChjJodHRwOi8vY2FjZXJ0cy5n
+                        ZW90cnVzdC5jb20vR2VvVHJ1c3RUTFNSU0FDQUcxLmNydDAJBgNVHRMEAjAAMIIB
+                        fgYKKwYBBAHWeQIEAgSCAW4EggFqAWgAdwCkuQmQtBhYFIe7E6LMZ3AKPDWYBPkb
+                        37jjd80OyA3cEAAAAWKGc7M9AAAEAwBIMEYCIQD+3dB+0uW1osS43iJI0UxzTE3+
+                        M9TKCAna8eRMQyIyuAIhAIhdW6f4ve1ejtmnorN/2MO9XjCURHavfjATbeeKr+OO
+                        AHYAb1N2rDHwMRnYmQCkURX/dxUcEdkCwQApBo2yCJo32RMAAAFihnO0rwAABAMA
+                        RzBFAiAY2BN8gTgN/HSaMuirYYkLITB9o2Oqe1LtD9czqPpJ3wIhAL7bkN6WBjqD
+                        sBeXbA2qtJ18TfoZ6r8k/0ZjNsfiFlfeAHUAu9nfvB+KcbWTlCOXqpJ7RzhXlQqr
+                        UugakJZkNo4e0YUAAAFihnO0EAAABAMARjBEAiA//JSnAmkGoPQChRD1NkgrXFH5
+                        p5dymMnV0oc3HZIqjAIgbtjXRV9E0Z0QxyEWh3dxPn6WJbmi1XHa/YYjADu/O8cw
+                        DQYJKoZIhvcNAQELBQADggEBAJtXdZ/Rs1XN/5OD7CPwY8K8PcvEy5tkJwj6IfEX
+                        DpKixOGOo+28pAR1pG0sdyEAob5+MezTkpQI1rg3XfQszLVIm3ufE/7cOw6XgVd3
+                        ebt36BLwRxugCQC9PD8RK2gYmjX8zBduaKqAID8UZjXmwZs5+Rh9RkuBnWsxiK3I
+                        pQRrwOKhnkPMVIdM1rZSsXQtdYPuwB50P6hO8JPESyJYmQ2MLeHwLoD8pBYhXfCP
+                        BZYm6HJbVA/OHGIexGQw0Ot5ecjWqNwkXBrHBigSTMhDx7TguoT5yahQVQ+wKK1T
+                        LBUTq0ydKZRDiZHCiXihNC4VcUdYqRiJ98JhmYORLNdU8Sg=
+                    </ds:X509Certificate>
+                </ds:X509Data>
+            </ds:KeyInfo>
+        </KeyDescriptor>
+        <NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</NameIDFormat>
+        <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
+        <AssertionConsumerService
+                Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+                Location="https://login.incites.thomsonreuters.com/?DestApp=IC2&amp;auth=Shibboleth"
+                index="111"/>
+        <AssertionConsumerService
+                Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+                Location="https://login.incites.thomsonreuters.com/?DestApp=PROF&amp;auth=Shibboleth"
+                index="112"/>
+        <AssertionConsumerService
+                Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+                Location="https://login.incites.thomsonreuters.com/?DestApp=IC2ESI&amp;auth=Shibboleth"
+                index="113"/>
+        <AssertionConsumerService
+                Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+                Location="https://login.incites.thomsonreuters.com/?DestApp=IC2JCR&amp;auth=Shibboleth"
+                index="114"/>
+        <AssertionConsumerService
+                Binding="urn:oasis:names:tc:SAML:1.0:profiles:browser-post"
+                Location="https://login.incites.thomsonreuters.com/?auth=Shibboleth1_IC2"
+                index="115"/>
+        <AssertionConsumerService
+                Binding="urn:oasis:names:tc:SAML:1.0:profiles:browser-post"
+                Location="https://login.incites.thomsonreuters.com/?auth=Shibboleth1_IC2ESI"
+                index="116"/>
+        <AssertionConsumerService
+                Binding="urn:oasis:names:tc:SAML:1.0:profiles:browser-post"
+                Location="https://login.incites.thomsonreuters.com/?auth=Shibboleth1_IC2JCR"
+                index="117"/>
+        <AssertionConsumerService
+                Binding="urn:oasis:names:tc:SAML:1.0:profiles:browser-post"
+                Location="https://login.incites.thomsonreuters.com/?auth=Shibboleth1_PROF"
+                index="118"/>
+        <AssertionConsumerService
+                Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+                Location="https://www.thomsoninnovation.com/tip-innovation/sso/saml2/idpresponse.do"
+                index="127"/>
+        <AssertionConsumerService
+                Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+                Location="https://subscriptions.techstreet.com/sso_sessions"
+                index="130"/>
+        <AssertionConsumerService
+                Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+                Location="https://www.derwentinnovation.com/tip-innovation/sso/saml2/idpresponse.do"
+                index="131"/>
+        <AssertionConsumerService
+                Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+                Location="https://www.derwentinnovation.com/tip-innovation/sso/saml2/idpresponse.da"
+                index="132"/>
+    </SPSSODescriptor>
+    <Organization>
+        <OrganizationName xml:lang="en">Clarivate Analytics</OrganizationName>
+        <OrganizationDisplayName xml:lang="en">Clarivate
+            Analytics
+        </OrganizationDisplayName>
+        <OrganizationURL xml:lang="en">http://www.clarivate.com</OrganizationURL>
+    </Organization>
+    <ContactPerson contactType="administrative">
+        <SurName>Sanjay Lahurikar</SurName>
+        <EmailAddress>sanjay.lahurikar@clarivate.com</EmailAddress>
+    </ContactPerson>
+    <ContactPerson contactType="technical">
+        <SurName>Satya Rath</SurName>
+        <EmailAddress>satyaprakash.rath@clarivate.com</EmailAddress>
+    </ContactPerson>
+    <ContactPerson contactType="technical">
+        <SurName>Technical Support</SurName>
+        <EmailAddress>science.ShibbolethSupport@clarivate.com</EmailAddress>
+    </ContactPerson>
+</EntityDescriptor>

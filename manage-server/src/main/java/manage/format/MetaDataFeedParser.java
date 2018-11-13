@@ -97,6 +97,10 @@ public class MetaDataFeedParser {
         Set<String> arpKeys = new HashSet<>();
         Map<String, String> arpAliases = new HashMap<>();
 
+        int assertionConsumerServiceMultiplicity = getMultiplicity(metaDataAutoConfiguration.schemaRepresentation(EntityType.SP), "^AssertionConsumerService:([0-9]{1}):index$");
+        int singleSignOnServiceMultiplicity = getMultiplicity(metaDataAutoConfiguration.schemaRepresentation(EntityType.IDP), "^SingleSignOnService:([0-9]{1}):Binding$");
+        int contactsMultiplicity = getMultiplicity(metaDataAutoConfiguration.schemaRepresentation(EntityType.IDP), "^contacts:([0-3]{1}):contactType$");
+
         while (reader.hasNext()) {
             int next = reader.next();
             switch (next) {
@@ -170,15 +174,15 @@ public class MetaDataFeedParser {
                                 Optional<String> bindingOpt = getAttributeValue(reader, "Binding");
                                 bindingOpt.ifPresent(binding ->
                                         addMultiplicity(metaDataFields, "AssertionConsumerService:%s:Binding",
-                                                10, binding));
+                                                assertionConsumerServiceMultiplicity, binding));
                                 Optional<String> locationOpt = getAttributeValue(reader, "Location");
                                 locationOpt.ifPresent(location ->
                                         addMultiplicity(metaDataFields, "AssertionConsumerService:%s:Location",
-                                                10, location));
+                                                assertionConsumerServiceMultiplicity, location));
                                 Optional<String> indexOpt = getAttributeValue(reader, "index");
                                 indexOpt.ifPresent(index ->
                                         addMultiplicity(metaDataFields, "AssertionConsumerService:%s:index",
-                                                10, index));
+                                                assertionConsumerServiceMultiplicity, index));
                             }
                             break;
                         case "SingleSignOnService":
@@ -188,11 +192,11 @@ public class MetaDataFeedParser {
                             Optional<String> bindingOpt = getAttributeValue(reader, "Binding");
                             bindingOpt.ifPresent(binding ->
                                     addMultiplicity(metaDataFields, "SingleSignOnService:%s:Binding",
-                                            10, binding));
+                                            singleSignOnServiceMultiplicity, binding));
                             Optional<String> locationOpt = getAttributeValue(reader, "Location");
                             locationOpt.ifPresent(location ->
                                     addMultiplicity(metaDataFields, "SingleSignOnService:%s:Location",
-                                            10, location));
+                                            singleSignOnServiceMultiplicity, location));
                             break;
                         case "RegistrationInfo": {
                             if (inCorrectEntityDescriptor) {
@@ -271,28 +275,28 @@ public class MetaDataFeedParser {
                                 break;
                             }
                             String contactType = getAttributeValue(reader, "contactType").orElse("other");
-                            addMultiplicity(metaDataFields, "contacts:%s:contactType", 4, contactType);
+                            addMultiplicity(metaDataFields, "contacts:%s:contactType", contactsMultiplicity, contactType);
                             inContact = true;
                             break;
                         case "GivenName":
                             if (inCorrectEntityDescriptor && inContact) {
-                                addMultiplicity(metaDataFields, "contacts:%s:givenName", 4, reader.getElementText());
+                                addMultiplicity(metaDataFields, "contacts:%s:givenName", contactsMultiplicity, reader.getElementText());
                             }
                             break;
                         case "SurName":
                             if (inCorrectEntityDescriptor && inContact) {
-                                addMultiplicity(metaDataFields, "contacts:%s:surName", 4, reader.getElementText());
+                                addMultiplicity(metaDataFields, "contacts:%s:surName", contactsMultiplicity, reader.getElementText());
                             }
                             break;
                         case "EmailAddress":
                             if (inCorrectEntityDescriptor && inContact) {
-                                addMultiplicity(metaDataFields, "contacts:%s:emailAddress", 4,
+                                addMultiplicity(metaDataFields, "contacts:%s:emailAddress", contactsMultiplicity,
                                         reader.getElementText().replaceAll(Pattern.quote("mailto:"), ""));
                             }
                             break;
                         case "TelephoneNumber":
                             if (inCorrectEntityDescriptor && inContact) {
-                                addMultiplicity(metaDataFields, "contacts:%s:telephoneNumber", 4, reader
+                                addMultiplicity(metaDataFields, "contacts:%s:telephoneNumber", contactsMultiplicity, reader
                                         .getElementText());
                             }
                             break;
@@ -334,6 +338,10 @@ public class MetaDataFeedParser {
             }
         }
         return new HashMap<>();
+    }
+
+    private int getMultiplicity(Map<String, Object> spSchema, String key) {
+        return (int) Map.class.cast(Map.class.cast(Map.class.cast(Map.class.cast(spSchema.get("properties")).get("metaDataFields")).get("patternProperties")).get(key)).get("multiplicity");
     }
 
     private Map<String, Object> enrichMetaData(Map<String, Object> metaData) {
