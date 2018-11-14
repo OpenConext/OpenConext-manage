@@ -114,6 +114,22 @@
                 Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
                 Location="https://www.derwentinnovation.com/tip-innovation/sso/saml2/idpresponse.da"
                 index="132"/>
+        <AssertionConsumerService
+                Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+                Location="https://subscriptions.techstreet.com/sso_sessions"
+                index="250"/>
+        <AssertionConsumerService
+                Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+                Location="https://www.derwentinnovation.com/tip-innovation/sso/saml2/idpresponse.do"
+                index="251"/>
+        <AssertionConsumerService
+                Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+                Location="https://www.derwentinnovation.com/tip-innovation/sso/saml2/idpresponse.da"
+                index="252"/>
+        <AssertionConsumerService
+                Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+                Location="https://www.derwentinnovation.com/tip-innovation/sso/saml2/idpresponse.da"
+                index="253"/>
     </SPSSODescriptor>
     <Organization>
         <OrganizationName xml:lang="en">Clarivate Analytics</OrganizationName>

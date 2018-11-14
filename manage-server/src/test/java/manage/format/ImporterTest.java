@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
@@ -145,6 +146,23 @@ public class ImporterTest implements TestUtils {
         Set<String> arpAttributes = Map.class.cast(Map.class.cast(metaData.get("arp")).get("attributes")).keySet();
         //urn:mace:dir:attribute-def:eduPersonTargetedID is alias for urn:oid:1.3.6.1.4.1.5923.1.1.1.10
         assertTrue(arpAttributes.contains("urn:mace:dir:attribute-def:eduPersonTargetedID"));
+    }
+
+    @Test
+    public void testMultiplicity() throws IOException, XMLStreamException {
+        MetaDataAutoConfiguration metaDataAutoConfiguration = new MetaDataAutoConfiguration(objectMapper, new ClassPathResource("metadata_configuration"), new ClassPathResource("metadata_templates"));
+        Map<String, Object> spSchema = metaDataAutoConfiguration.schemaRepresentation(EntityType.SP);
+        Map.class.cast(Map.class.cast(Map.class.cast(Map.class.cast(spSchema.get("properties")).get("metaDataFields")).get("patternProperties")).get("^AssertionConsumerService:([0-9]{1}):index$")).put("multiplicity",15);
+        Importer alteredSubject = new Importer(metaDataAutoConfiguration);
+        Map<String, Object> metaData = alteredSubject.importXML(new ClassPathResource("import_xml/assertion_consumer_service.15.xml"), EntityType.SP, Optional.empty());
+        Set<Map.Entry> metaDataFields = Map.class.cast(metaData.get("metaDataFields"))
+                .entrySet();
+        List<String> assertionConsumerServiceList = metaDataFields.stream().filter(entry -> entry.getKey().toString().startsWith("AssertionConsumerService") && entry.getKey().toString().contains(":index")).map(entry -> entry.getValue().toString()).sorted().collect(Collectors.toList());
+        assertEquals(15, assertionConsumerServiceList.size());
+
+        String indexes = String.join(", ", assertionConsumerServiceList);
+        assertEquals("111, 112, 113, 114, 115, 116, 117, 118, 127, 130, 131, 132, 250, 251, 252", indexes);
+
     }
 
 }
