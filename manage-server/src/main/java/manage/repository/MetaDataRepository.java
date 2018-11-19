@@ -32,7 +32,6 @@ public class MetaDataRepository {
     @Autowired
     public MetaDataRepository(MongoTemplate mongoTemplate) {
         this.mongoTemplate = mongoTemplate;
-        //MappingMongoConverter.class.cast( mongoTemplate.getConverter()).conversions .getConversionService().
     }
 
     public MetaData findById(String id, String type) {

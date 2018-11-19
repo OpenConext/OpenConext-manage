@@ -56,13 +56,13 @@ export default class Support extends React.PureComponent {
         }
     };
 
-    confirmIncludeInPush = entity => {
+    confirmIncludeInPush = (entityId, name) => {
         this.setState({
             confirmationDialogOpen: true,
-            confirmationQuestion: I18n.t("support.includeConfirmation", {name: entity.name}),
+            confirmationQuestion: I18n.t("support.includeConfirmation", {name: name}),
             confirmationDialogAction: () => {
                 this.setState({confirmationDialogOpen: false});
-                includeInPush(entity.id).then(() => this.componentDidMount())
+                includeInPush(entityId).then(() => this.componentDidMount())
             }
         })
     };
@@ -101,8 +101,8 @@ export default class Support extends React.PureComponent {
                             {isEmpty(entity.notes) ? <span></span> :
                                 <NotesTooltip identifier={entity.entityid} notes={entity.notes}/>}
                         </td>
-                        <td><CheckBox name="excluded" value={true}
-                                      onChange={() => this.confirmIncludeInPush(entity)}/>
+                        <td><CheckBox name={entity.id} value={true}
+                                      onChange={() => this.confirmIncludeInPush(entity.id, entity.name)}/>
                         </td>
                     </tr>)}
                     </tbody>
