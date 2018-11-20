@@ -104,10 +104,14 @@ public class MetaDataController {
     @GetMapping({"/client/metadata/{type}/{id}", "/internal/metadata/{type}/{id}"})
     public MetaData get(@PathVariable("type") String type, @PathVariable("id") String id) {
         MetaData metaData = metaDataRepository.findById(id, type);
+        checkNull(type, id, metaData);
+        return metaDataHook.postGet(metaData);
+    }
+
+    private void checkNull(@PathVariable("type") String type, @PathVariable("id") String id, MetaData metaData) {
         if (metaData == null) {
             throw new ResourceNotFoundException(String.format("MetaData type %s with id %s does not exist", type, id));
         }
-        return metaDataHook.postGet(metaData);
     }
 
     @GetMapping("/client/metadata/configuration")
@@ -355,9 +359,7 @@ public class MetaDataController {
 
     private boolean doRemove(@PathVariable("type") String type, @PathVariable("id") String id, String uid) {
         MetaData current = metaDataRepository.findById(id, type);
-        if (current == null) {
-            throw new ResourceNotFoundException(String.format("MetaData type %s with id %s does not exist", type, id));
-        }
+        checkNull(type, id, current);
         current = metaDataHook.preDelete(current);
         metaDataRepository.remove(current);
 
@@ -388,9 +390,7 @@ public class MetaDataController {
         sanitizeExcludeFromPush(metaData, excludeFromPushRequired);
         String id = metaData.getId();
         MetaData previous = metaDataRepository.findById(id, metaData.getType());
-        if (previous == null) {
-            throw new ResourceNotFoundException(String.format("MetaData type %s with id %s does not exist", metaData.getType(), id));
-        }
+        checkNull(metaData.getType(), id, previous);
 
         metaData = metaDataHook.prePut(previous, metaData);
         validate(metaData);
@@ -419,9 +419,7 @@ public class MetaDataController {
             throws JsonProcessingException {
         String id = metaDataUpdate.getId();
         MetaData previous = metaDataRepository.findById(id, metaDataUpdate.getType());
-        if (previous == null) {
-            throw new ResourceNotFoundException(String.format("MetaData type %s with id %s does not exist", metaDataUpdate.getType(), id));
-        }
+        checkNull(metaDataUpdate.getType(), id, previous);
         previous.revision(UUID.randomUUID().toString());
 
         MetaData metaData = metaDataRepository.findById(id, metaDataUpdate.getType());
