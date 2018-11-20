@@ -113,6 +113,14 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         assertNull(metaData);
     }
 
+    @Test
+    public void removeNonExistent() throws Exception {
+        given()
+                .when()
+                .delete("manage/api/client/metadata/saml20_sp/99999")
+                .then()
+                .statusCode(SC_NOT_FOUND);
+    }
 
     @Test
     public void configuration() throws Exception {
@@ -193,6 +201,23 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 .body("data.metaDataFields.'description:en'", equalTo("New description"))
                 .body("data.allowedEntities[0].name", equalTo("https://allow-me"));
     }
+
+    @Test
+    public void updateNonExistent() throws Exception {
+        MetaDataUpdate metaDataUpdate = new MetaDataUpdate("99999", EntityType.SP.getType(), Collections.emptyMap());
+
+        given()
+                .auth()
+                .preemptive()
+                .basic("sp-portal", "secret")
+                .body(metaDataUpdate)
+                .header("Content-type", "application/json")
+                .when()
+                .put("/manage/api/internal/merge")
+                .then()
+                .statusCode(SC_NOT_FOUND);
+    }
+
 
     @Test
     public void updateWithValidationErrors() throws Exception {

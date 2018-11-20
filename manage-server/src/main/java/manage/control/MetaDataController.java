@@ -355,6 +355,9 @@ public class MetaDataController {
 
     private boolean doRemove(@PathVariable("type") String type, @PathVariable("id") String id, String uid) {
         MetaData current = metaDataRepository.findById(id, type);
+        if (current == null) {
+            throw new ResourceNotFoundException(String.format("MetaData type %s with id %s does not exist", type, id));
+        }
         current = metaDataHook.preDelete(current);
         metaDataRepository.remove(current);
 
@@ -385,6 +388,9 @@ public class MetaDataController {
         sanitizeExcludeFromPush(metaData, excludeFromPushRequired);
         String id = metaData.getId();
         MetaData previous = metaDataRepository.findById(id, metaData.getType());
+        if (previous == null) {
+            throw new ResourceNotFoundException(String.format("MetaData type %s with id %s does not exist", metaData.getType(), id));
+        }
 
         metaData = metaDataHook.prePut(previous, metaData);
         validate(metaData);
@@ -413,6 +419,9 @@ public class MetaDataController {
             throws JsonProcessingException {
         String id = metaDataUpdate.getId();
         MetaData previous = metaDataRepository.findById(id, metaDataUpdate.getType());
+        if (previous == null) {
+            throw new ResourceNotFoundException(String.format("MetaData type %s with id %s does not exist", metaDataUpdate.getType(), id));
+        }
         previous.revision(UUID.randomUUID().toString());
 
         MetaData metaData = metaDataRepository.findById(id, metaDataUpdate.getType());
