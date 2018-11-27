@@ -536,11 +536,11 @@
         }
       },
       "patternProperties": {
-        "^name:(en|nl)$": {
+        "^name:(en|nl|pt)$": {
           "type": "string",
           "info": "Set the name of the service. Format: 'Service Name | Supplier'"
         },
-        "^displayName:(en|nl)$": {
+        "^displayName:(en|nl|pt)$": {
           "type": "string",
           "info": "Name as displayed in applications."
         },
@@ -549,7 +549,7 @@
           "format": "url",
           "info": "Add the URL to the SURF wiki for additional information of this service."
         },
-        "^description:(en|nl)$": {
+        "^description:(en|nl|pt)$": {
           "type": "string",
           "info": "The description of the service."
         },
@@ -624,20 +624,20 @@
           "sibblingIndependent": true,
           "info": "From the pull down, select the type of contact."
         },
-        "^OrganizationName:(en|nl)$": {
+        "^OrganizationName:(en|nl|pt)$": {
           "type": "string",
           "info": "The formal name of the organization. e.g. Service by University of Harderwijk."
         },
-        "^OrganizationDisplayName:(en|nl)$": {
+        "^OrganizationDisplayName:(en|nl|pt)$": {
           "type": "string",
           "info": "The friendly name of the organization. e.g. University of Harderwijk."
         },
-        "^OrganizationURL:(en|nl)$": {
+        "^OrganizationURL:(en|nl|pt)$": {
           "type": "string",
           "format": "url",
           "info": "The URL to the website of the service e.g. http://www.example-service.nl/en/."
         },
-        "^url:(en|nl)$": {
+        "^url:(en|nl|pt)$": {
           "type": "string",
           "format": "url",
           "info": "The URL to the support site of the service."

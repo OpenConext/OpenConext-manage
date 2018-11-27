@@ -6,7 +6,7 @@ import static org.junit.Assert.*;
 
 public class MetaDataRepositoryTest {
 
-    private MetaDataRepository subject = new MetaDataRepository(null);
+    private MetaDataRepository subject = new MetaDataRepository(null, "en,nl,pt");
 
     @Test
     public void escapeSpecialChars() {

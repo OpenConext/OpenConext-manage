@@ -53,6 +53,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 .statusCode(SC_OK)
                 .body("id", equalTo("1"))
                 .body("revision.number", equalTo(0))
+                .body("data.metaDataFields.'name:pt'", equalTo("OpenConext PT"))
                 .body("data.entityid", equalTo("Duis ad do"));
     }
 

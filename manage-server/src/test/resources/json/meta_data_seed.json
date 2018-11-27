@@ -19,7 +19,8 @@
       ],
       "metaDataFields": {
         "name:en": "OpenConext Valid SP",
-        "name:nl": "OpenConext Valid SP ",
+        "name:nl": "OpenConext Valid SP",
+        "name:pt": "OpenConext PT",
         "description:en": "OpenConext Service Registry, register all SPs and IdPs here",
         "description:nl": "OpenConext Service Registry, register all SPs and IdPs here",
         "displayName:en": "OpenConext ServiceRegistry",

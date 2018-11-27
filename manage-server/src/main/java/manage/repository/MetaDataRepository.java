@@ -4,19 +4,20 @@ import manage.model.EntityType;
 import manage.model.MetaData;
 import manage.mongo.Sequence;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
-import org.springframework.data.mongodb.core.query.BasicQuery;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.CriteriaDefinition;
-import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.data.mongodb.core.query.*;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * We can't use the Spring JPA repositories as we at runtime need to decide which collection to use. We only have one
@@ -28,10 +29,13 @@ public class MetaDataRepository {
     private static final int AUTOCOMPLETE_LIMIT = 16;
 
     private MongoTemplate mongoTemplate;
+    private List<String> supportedLanguages;
 
     @Autowired
-    public MetaDataRepository(MongoTemplate mongoTemplate) {
+    public MetaDataRepository(MongoTemplate mongoTemplate,
+                              @Value("${product.supported_languages}") String supportedLanguages) {
         this.mongoTemplate = mongoTemplate;
+        this.supportedLanguages = Stream.of(supportedLanguages.split(",")).map(String::trim).collect(toList());
     }
 
     public MetaData findById(String id, String type) {
@@ -65,26 +69,27 @@ public class MetaDataRepository {
         if ("*".equals(search)) {
             return mongoTemplate.find(query, Map.class, type);
         }
-        search = escapeSpecialChars(search);
+        String escapedSearch = escapeSpecialChars(search);
         query.limit(AUTOCOMPLETE_LIMIT);
         Criteria criteria = new Criteria();
-        query.addCriteria(criteria.orOperator(
-            regex("data.entityid", search),
-            regex("data.metaDataFields.name:en", search),
-            regex("data.metaDataFields.name:nl", search),
-            regex("data.metaDataFields.keywords:en", search),
-            regex("data.metaDataFields.keywords:nl", search)));
+        List<Criteria> orCriterias = new ArrayList<>();
+        orCriterias.add(regex("data.entityid", search));
+        this.supportedLanguages.forEach(lang -> {
+            orCriterias.add(regex("data.metaDataFields.name:" + lang, escapedSearch));
+            orCriterias.add(regex("data.keywords.name:" + lang, escapedSearch));
+        });
+        query.addCriteria(criteria.orOperator(orCriterias.toArray(new Criteria[orCriterias.size()])));
         return mongoTemplate.find(query, Map.class, type);
     }
 
     public List<Map> allServiceProviderEntityIds() {
         Query query = new Query();
         query
-            .fields()
-            .include("data.entityid")
-            .include("data.metaDataFields.name:en")
-            .include("data.metaDataFields.coin:imported_from_edugain")
-            .include("data.metaDataFields.coin:publish_in_edugain");
+                .fields()
+                .include("data.entityid")
+                .include("data.metaDataFields.name:en")
+                .include("data.metaDataFields.coin:imported_from_edugain")
+                .include("data.metaDataFields.coin:publish_in_edugain");
         return mongoTemplate.find(query, Map.class, EntityType.SP.getType());
     }
 
@@ -115,18 +120,18 @@ public class MetaDataRepository {
     private String escapeMetaDataField(String key) {
         if (key.startsWith("metaDataFields")) {
             return "metaDataFields." + key.substring("metaDataFields.".length())
-                .replaceAll("\\.", "@");
+                    .replaceAll("\\.", "@");
         }
         if (key.startsWith("arp.attributes")) {
             return "arp.attributes." + key.substring("arp.attributes.".length())
-                .replaceAll("\\.", "@");
+                    .replaceAll("\\.", "@");
         }
         return key;
 
     }
 
     public List<Map> search(String type, Map<String, Object> properties, List<String> requestedAttributes, Boolean
-        allAttributes, Boolean logicalOperatorIsAnd) {
+            allAttributes, Boolean logicalOperatorIsAnd) {
         Query query = allAttributes ? new Query() : queryWithSamlFields();
         if (!allAttributes) {
             requestedAttributes.forEach(requestedAttribute -> {
@@ -177,8 +182,8 @@ public class MetaDataRepository {
     public List<Map> whiteListing(String type) {
         Query query = queryWithSamlFields();
         query.fields()
-            .include("data.allowedall")
-            .include("data.allowedEntities");
+                .include("data.allowedall")
+                .include("data.allowedEntities");
         return mongoTemplate.find(query, Map.class, type);
     }
 
@@ -192,14 +197,14 @@ public class MetaDataRepository {
     private Query queryWithSamlFields() {
         Query query = new Query();
         //When we have multiple types then we need to delegate depending on the type.
-        query
-            .fields()
-            .include("version")
-            .include("data.state")
-            .include("data.entityid")
-            .include("data.notes")
-            .include("data.metaDataFields.name:en")
-            .include("data.metaDataFields.name:nl");
+        Field fields = query
+                .fields();
+        fields
+                .include("version")
+                .include("data.state")
+                .include("data.entityid")
+                .include("data.notes");
+        this.supportedLanguages.forEach(lang -> fields.include("data.metaDataFields.name:" + lang));
         return query;
     }
 }

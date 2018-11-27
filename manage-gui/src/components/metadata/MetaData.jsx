@@ -184,7 +184,8 @@ export default class MetaData extends React.Component {
     };
 
     renderMetaDataSearch = (metaDataFields, configuration) =>
-        <SelectNewMetaDataField metaDataFields={metaDataFields} configuration={configuration}
+        <SelectNewMetaDataField metaDataFields={metaDataFields}
+                                configuration={configuration}
                                 placeholder={I18n.t("metaDataFields.placeholder")}
                                 onChange={value => {
                                     this.doChange(value, this.getDefaultValueForKey(value, configuration));

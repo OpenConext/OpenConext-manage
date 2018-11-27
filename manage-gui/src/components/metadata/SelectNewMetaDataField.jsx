@@ -5,7 +5,7 @@ import "react-select/dist/react-select.css";
 import "./SelectNewMetaDataField.css";
 
 const patternPropertyRegex = /\^(.*)(\(.*?\))(.*)\$/g;
-const enumPropertyRegex = /\^(.*)(\(en\|nl\))(.*)\$/g;
+const languagePropertyRegex = /\^(.*):\(([a-z|]{0,24})\)\$/g;
 const multiplicityRegex = /.*:(\d)[:]{0,1}.*/;
 
 export default class SelectNewMetaDataField extends React.PureComponent {
@@ -41,12 +41,12 @@ export default class SelectNewMetaDataField extends React.PureComponent {
 
     addMissingProperty = (accumulator, patternPropertyKey, patternProperty, metaDataKeys) => {
         patternPropertyRegex.lastIndex = 0;
-        enumPropertyRegex.lastIndex = 0;
+        languagePropertyRegex.lastIndex = 0;
         multiplicityRegex.lastIndex = 0;
 
         const regExp = new RegExp(patternPropertyKey);
         const existingMetaDataKeys = metaDataKeys.filter(metaDataKey => regExp.test(metaDataKey));
-        const enumExec = enumPropertyRegex.exec(patternPropertyKey);
+        const languagePropertyExec = languagePropertyRegex.exec(patternPropertyKey);
         if (existingMetaDataKeys.length === 0) {
             //translate the patternPropertyKey to a metaDataKey and add it to the accumulator
             if (patternProperty.multiplicity) {
@@ -62,9 +62,9 @@ export default class SelectNewMetaDataField extends React.PureComponent {
                     const newMetaDataKey = patternPropertyKey.replace(patternPropertyRegex, `$1${patternProperty.startIndex || 0}$3`);
                     accumulator.push(newMetaDataKey);
                 }
-            } else if (enumExec) {
-                accumulator.push(`${enumExec[1]}nl`);
-                accumulator.push(`${enumExec[1]}en`);
+            } else if (languagePropertyExec) {
+                const languages = languagePropertyExec[2].split("|");
+                languages.forEach(lang => accumulator.push(`${languagePropertyExec[1]}:${lang}`))
             } else {
                 throw new Error("Not supported patternProperty " + patternPropertyKey);
             }
@@ -96,11 +96,11 @@ export default class SelectNewMetaDataField extends React.PureComponent {
                         }
                     }
                 }
-            } else if (enumExec) {
-                if (existingMetaDataKeys.length < 2) {
-                    const missingLang = existingMetaDataKeys[0].indexOf(":en") > 0 ? "nl" : "en";
-                    accumulator.push(`${enumExec[1]}${missingLang}`);
-                }
+            } else if (languagePropertyExec) {
+                const languages = languagePropertyExec[2].split("|");
+                languages
+                    .filter(lang => !existingMetaDataKeys.includes(`${languagePropertyExec[1]}:${lang}`))
+                    .map(lang => accumulator.push(`${languagePropertyExec[1]}:${lang}`));
             } else {
                 throw new Error("Not supported patternProperty " + patternPropertyKey);
             }

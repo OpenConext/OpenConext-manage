@@ -359,15 +359,22 @@ export default class Detail extends React.PureComponent {
                                    guest={guest} isNew={isNew} originalEntityId={originalEntityId}
                                    configuration={configuration}/>;
             case "whitelist" :
-                return <WhiteList whiteListing={whiteListing} name={name}
+                return <WhiteList whiteListing={whiteListing}
+                                  name={name}
                                   allowedEntities={metaData.data.allowedEntities}
-                                  allowedAll={metaData.data.allowedall} type={metaData.type}
+                                  allowedAll={metaData.data.allowedall}
+                                  type={metaData.type}
                                   onChange={this.onChange("whitelist")}
-                                  entityId={metaData.data.entityid} guest={guest}/>;
+                                  entityId={metaData.data.entityid}
+                                  guest={guest}/>;
             case "metadata":
-                return <MetaData metaDataFields={metaData.data.metaDataFields} configuration={configuration}
-                                 onChange={this.onChange("metadata")} name={name} onError={this.onError("metadata")}
-                                 errors={this.state.errors["metadata"]} guest={guest}/>;
+                return <MetaData metaDataFields={metaData.data.metaDataFields}
+                                 configuration={configuration}
+                                 onChange={this.onChange("metadata")}
+                                 name={name}
+                                 onError={this.onError("metadata")}
+                                 errors={this.state.errors["metadata"]}
+                                 guest={guest}/>;
             case "arp":
                 return <ARP arp={metaData.data.arp} arpConfiguration={configuration.properties.arp}
                             onChange={this.onChange("arp")} guest={guest}/>;

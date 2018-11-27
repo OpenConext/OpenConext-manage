@@ -323,8 +323,10 @@ export default class API extends React.PureComponent {
                                     configuration={configuration}
                                     state={selectedType}/>
                 {hasSearchAttributes && this.renderSearchTable(searchAttributes, errorAttributes)}
-                <SelectNewMetaDataField configuration={conf} onChange={this.addSearchKey}
-                                        metaDataFields={searchAttributes} placeholder={"Search and add metadata keys"}/>
+                <SelectNewMetaDataField configuration={conf}
+                                        onChange={this.addSearchKey}
+                                        metaDataFields={searchAttributes}
+                                        placeholder={"Search and add metadata keys"}/>
                 <p>Add non-Metadata fields to search for. Type <span className="code">true</span> or <span
                     className="code">false</span> for boolean fields
                     including the <span className="code">arp.attributes</span>. You can use the <span
