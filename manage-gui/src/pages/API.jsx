@@ -12,6 +12,7 @@ import Select from "react-select";
 import "react-select/dist/react-select.css";
 import NotesTooltip from "../components/NotesTooltip";
 import SelectNewEntityAttribute from "../components/metadata/SelectNewEntityAttribute";
+import CheckBox from "../components/CheckBox";
 
 export default class API extends React.PureComponent {
 
@@ -23,6 +24,7 @@ export default class API extends React.PureComponent {
             globalSearchAttributes: {},
             errorAttributes: {},
             globalErrorAttributes: {},
+            logicalOperatorIsAnd: true,
             searchResults: undefined,
             newMetaDataFieldKey: null,
             newGlobalAttributeKey: null,
@@ -126,7 +128,7 @@ export default class API extends React.PureComponent {
 
     doSearch = e => {
         stop(e);
-        const {selectedType, searchAttributes, globalSearchAttributes, errorAttributes} = this.state;
+        const {selectedType, searchAttributes, globalSearchAttributes, errorAttributes, logicalOperatorIsAnd} = this.state;
         if (this.isValidInput(errorAttributes)) {
             const metaDataSearch = {};
             const keys = Object.keys(searchAttributes);
@@ -146,6 +148,7 @@ export default class API extends React.PureComponent {
             if (!isEmpty(searchAttributes) || !isEmpty(globalSearchAttributes)) {
                 metaDataSearch.REQUESTED_ATTRIBUTES = Object.keys(metaDataSearch);
             }
+            metaDataSearch.LOGICAL_OPERATOR_IS_AND = logicalOperatorIsAnd;
             search(metaDataSearch, selectedType)
                 .then(json => this.setState({searchResults: json}));
         }
@@ -155,8 +158,16 @@ export default class API extends React.PureComponent {
     reset = e => {
         stop(e);
         this.setState({
-            searchAttributes: {}, globalSearchAttributes: {}, errorAttributes: {}, globalErrorAttributes: {}
-            , searchResults: undefined, newMetaDataFieldKey: null, newGlobalAttributeKey: null, status: "all"
+            searchAttributes: {},
+            globalSearchAttributes: {},
+            errorAttributes: {},
+            globalErrorAttributes: {}
+            ,
+            searchResults: undefined,
+            logicalOperatorIsAnd: true,
+            newMetaDataFieldKey: null,
+            newGlobalAttributeKey: null,
+            status: "all"
         });
     };
 
@@ -304,7 +315,7 @@ export default class API extends React.PureComponent {
         const {configuration} = this.props;
         const {
             selectedType, searchAttributes, errorAttributes, searchResults, status, copiedToClipboardClassName,
-            globalSearchAttributes, globalErrorAttributes
+            globalSearchAttributes, globalErrorAttributes, logicalOperatorIsAnd
         } = this.state;
         const conf = configuration.find(conf => conf.title === selectedType);
         const hasSearchAttributes = Object.keys(searchAttributes).length > 0;
@@ -315,8 +326,8 @@ export default class API extends React.PureComponent {
         const showResults = searchResults && !hasNoResults;
         return (
             <section className="extended-search">
-                <p>Select a Metadata type and metadata fields. The query will AND the different inputs.
-                    Wildcards like <span className="code">.*surf.*</span> are translated to a regular expression search.
+                <p>Select a Metadata type and metadata fields. Wildcards like <span className="code">.*surf.*</span> are
+                    translated to a regular expression search.
                     Specify booleans with <span className="code">0</span> or <span className="code">1</span> and
                     leave the value empty for a <span className="code">does not exists</span> query.</p>
                 <SelectMetaDataType onChange={value => this.setState({selectedType: value})}
@@ -335,6 +346,9 @@ export default class API extends React.PureComponent {
                                           attributes={globalSearchAttributes}
                                           placeholder={"Search and add global attributes"}/>
                 {hasGlobalSearchAttributes && this.renderGlobalSearchTable(globalSearchAttributes, globalErrorAttributes)}
+                <CheckBox name="logicalOperatorIsAnd" value={logicalOperatorIsAnd}
+                          info="Use the logical operater AND (instead of OR) for the different search criteria"
+                          onChange={() => this.setState({logicalOperatorIsAnd: !this.state.logicalOperatorIsAnd})}/>
                 <section className="options">
                     <a className="reset button" onClick={this.reset}>Reset<i className="fa fa-times"></i></a>
                     <a className={`button ${valid ? "green" : "disabled grey"}`} onClick={this.doSearch}>Search<i
