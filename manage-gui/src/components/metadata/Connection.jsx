@@ -41,6 +41,10 @@ export default class Connection extends React.PureComponent {
     };
 
     validateEntityId = e => {
+        if (isEmpty(e) || isEmpty(e.target)) {
+            this.props.onError("entityid", true);
+            return;
+        }
         const entityid = e.target.value;
         const {type} = this.props.metaData;
         if (isEmpty(entityid)) {

@@ -6,7 +6,7 @@ import "./SelectNewMetaDataField.css";
 
 const patternPropertyRegex = /\^(.*)(\(.*?\))(.*)\$/g;
 const languagePropertyRegex = /\^(.*):\(([a-z|]{0,24})\)\$/g;
-const multiplicityRegex = /.*:(\d)[:]{0,1}.*/;
+const multiplicityRegex = /.*:(\d{1,2})[:]{0,1}.*/;
 
 export default class SelectNewMetaDataField extends React.PureComponent {
 
@@ -40,6 +40,9 @@ export default class SelectNewMetaDataField extends React.PureComponent {
     };
 
     addMissingProperty = (accumulator, patternPropertyKey, patternProperty, metaDataKeys) => {
+        if (patternPropertyKey === "^AssertionConsumerService:([0-3]{0,1}[0-9]{1}):Location$") {
+            console.log("debugger");
+        }
         patternPropertyRegex.lastIndex = 0;
         languagePropertyRegex.lastIndex = 0;
         multiplicityRegex.lastIndex = 0;
@@ -81,7 +84,19 @@ export default class SelectNewMetaDataField extends React.PureComponent {
                         }
                     } else {
                         //add the missing in-between one's and the highest new one - 'Raoul's theorem'
-                        const highestMetaDataKey = existingMetaDataKeys.sort()[existingMetaDataKeys.length - 1];
+                        let highestMetaDataKey;
+                        if (existingMetaDataKeys.length > 9) {
+                            const sortedMetaDataKeys = existingMetaDataKeys.sort((a,b)=> {
+                                const aParsed = multiplicityRegex.exec(a);
+                                const bParsed = multiplicityRegex.exec(b);
+                                const aInt = parseInt(aParsed[1], 10);
+                                const bInt = parseInt(bParsed[1], 10);
+                                return aInt - bInt;
+                            });
+                            highestMetaDataKey = sortedMetaDataKeys[existingMetaDataKeys.length - 1];
+                        } else {
+                            highestMetaDataKey = existingMetaDataKeys.sort()[existingMetaDataKeys.length - 1];
+                        }
                         const multiplicityParsed = multiplicityRegex.exec(highestMetaDataKey);
                         const currentlyHighest = parseInt(multiplicityParsed[1], 10);
 

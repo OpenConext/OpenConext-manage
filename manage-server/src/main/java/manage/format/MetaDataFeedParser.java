@@ -97,9 +97,9 @@ public class MetaDataFeedParser {
         Set<String> arpKeys = new HashSet<>();
         Map<String, String> arpAliases = new HashMap<>();
 
-        int assertionConsumerServiceMultiplicity = getMultiplicity(metaDataAutoConfiguration.schemaRepresentation(EntityType.SP), "^AssertionConsumerService:([0-9]{1}):index$");
-        int singleSignOnServiceMultiplicity = getMultiplicity(metaDataAutoConfiguration.schemaRepresentation(EntityType.IDP), "^SingleSignOnService:([0-9]{1}):Binding$");
-        int contactsMultiplicity = getMultiplicity(metaDataAutoConfiguration.schemaRepresentation(EntityType.IDP), "^contacts:([0-3]{1}):contactType$");
+        int assertionConsumerServiceMultiplicity = getMultiplicity(metaDataAutoConfiguration.schemaRepresentation(EntityType.SP), "^AssertionConsumerService:", ":index$");
+        int singleSignOnServiceMultiplicity = getMultiplicity(metaDataAutoConfiguration.schemaRepresentation(EntityType.IDP), "^SingleSignOnService:", ":Binding$");
+        int contactsMultiplicity = getMultiplicity(metaDataAutoConfiguration.schemaRepresentation(EntityType.IDP), "^contacts:", ":contactType$");
 
         while (reader.hasNext()) {
             int next = reader.next();
@@ -340,8 +340,12 @@ public class MetaDataFeedParser {
         return new HashMap<>();
     }
 
-    private int getMultiplicity(Map<String, Object> spSchema, String key) {
-        return (int) Map.class.cast(Map.class.cast(Map.class.cast(Map.class.cast(spSchema.get("properties")).get("metaDataFields")).get("patternProperties")).get(key)).get("multiplicity");
+    private int getMultiplicity(Map<String, Object> spSchema, String... keyParts) {
+        List<String> keyPartsList = Arrays.asList(keyParts);
+        Map<String, Object> patternProperties = (Map) ((Map) ((Map) spSchema.get("properties")).get("metaDataFields")).get("patternProperties");
+        Optional<String> optionalKey = patternProperties.keySet().stream().filter(key -> keyPartsList.stream().allMatch(part -> key.contains(part))).findAny();
+        String key = optionalKey.orElseThrow(() -> new IllegalArgumentException(String.format("No key %s in schema %s", keyPartsList, patternProperties)));
+        return (int) ((Map) patternProperties.get(key)).get("multiplicity");
     }
 
     private Map<String, Object> enrichMetaData(Map<String, Object> metaData) {
