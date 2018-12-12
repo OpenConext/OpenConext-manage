@@ -370,7 +370,8 @@
         "coin:no_consent_required": {
           "type": "string",
           "format": "boolean",
-          "info": "Select this option to skip the consent for a user."
+          "info": "Select this option to skip the consent for a user.",
+          "default": "1"
         },
         "coin:eula": {
           "type": "string",
@@ -387,7 +388,7 @@
           "format": "boolean",
           "info": "Set to indicate the service in the dashboard for institutions is marked as to have disagreed to sign the aansluitovereenkomst."
         },
-        "coin:ss:hidden":{
+        "coin:ss:hidden": {
           "type": "string",
           "format": "boolean",
           "info": "Set to make invisible in the dashboard for identity providers."

@@ -175,12 +175,12 @@ export default class MetaData extends React.Component {
             return keyConf.default || "";
         }
         if (keyConf.format === "boolean") {
-            return "0";
+            return keyConf.default || "0";
         }
         if (keyConf.format === "date-time") {
             return new Date().toISOString();
         }
-        return "";
+        return keyConf.default || "";
     };
 
     renderMetaDataSearch = (metaDataFields, configuration) =>
