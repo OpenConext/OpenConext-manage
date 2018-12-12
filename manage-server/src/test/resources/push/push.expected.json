@@ -475,12 +475,19 @@
     "8": {
       "allow_all_entities": true,
       "allowed_connections": [],
+      "arp_attributes": {},
       "metadata": {
+        "AssertionConsumerService": [
+          {
+            "Binding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
+            "Location": "https://acs0"
+          }
+        ],
         "name": {
           "en": "OIDC SP"
         }
       },
-      "name": "https://oidc.client",
+      "name": "https://oidc.test.client",
       "state": "testaccepted",
       "type": "saml20-sp"
     }

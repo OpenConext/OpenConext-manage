@@ -1,6 +1,7 @@
 package manage.hook;
 
 import manage.model.MetaData;
+import manage.model.MetaDataUpdate;
 
 public interface MetaDataHook {
 
@@ -13,5 +14,4 @@ public interface MetaDataHook {
     MetaData prePost(MetaData metaData);
 
     MetaData preDelete(MetaData metaData);
-
 }

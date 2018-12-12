@@ -280,7 +280,7 @@ public class MetaDataController {
         Map<String, Object> pathUpdates = new HashMap<>();
         metaDataFields.forEach((k, v) -> pathUpdates.put("metaDataFields.".concat(k), v));
         pathUpdates.put("metadataurl", feedUrl);
-        MetaDataUpdate metaDataUpdate = new MetaDataUpdate(id, entityType.getType(), pathUpdates);
+        MetaDataUpdate metaDataUpdate = new MetaDataUpdate(id, entityType.getType(), pathUpdates, Collections.emptyMap());
         return metaDataUpdate;
     }
 
@@ -420,11 +420,17 @@ public class MetaDataController {
         String id = metaDataUpdate.getId();
         MetaData previous = metaDataRepository.findById(id, metaDataUpdate.getType());
         checkNull(metaDataUpdate.getType(), id, previous);
+
         previous.revision(UUID.randomUUID().toString());
 
         MetaData metaData = metaDataRepository.findById(id, metaDataUpdate.getType());
         metaData.promoteToLatest(name);
         metaData.merge(metaDataUpdate);
+
+        if (!CollectionUtils.isEmpty(metaDataUpdate.getExternalReferenceData())) {
+            metaData.getData().putAll(metaDataUpdate.getExternalReferenceData());
+        }
+        metaDataHook.prePut(previous, metaData);
 
         //Only save and update if there are changes
         boolean somethingChanged = !metaData.getData().equals(previous.getData());
@@ -437,7 +443,7 @@ public class MetaDataController {
 
             LOG.info("Merging new metaData {} by {}", metaData.getId(), name);
 
-            return Optional.of(metaData);
+            return Optional.of(this.get(metaData.getType(), metaData.getId()));
         } else {
             return Optional.empty();
         }

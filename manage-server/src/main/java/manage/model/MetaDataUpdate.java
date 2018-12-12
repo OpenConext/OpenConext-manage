@@ -25,4 +25,5 @@ public class MetaDataUpdate implements Serializable {
     @NotNull
     private Map<String, Object> pathUpdates;
 
+    private Map<String, Object> externalReferenceData;
 }

@@ -16,17 +16,14 @@ import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 
 import static io.restassured.RestAssured.given;
 import static manage.control.MetaDataController.ALL_ATTRIBUTES;
 import static manage.control.MetaDataController.LOGICAL_OPERATOR_IS_AND;
 import static manage.control.MetaDataController.REQUESTED_ATTRIBUTES;
+import static manage.hook.OpenIdConnectHook.OIDC_CLIENT_KEY;
 import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
 import static org.apache.http.HttpStatus.SC_FORBIDDEN;
 import static org.apache.http.HttpStatus.SC_NOT_FOUND;
@@ -183,7 +180,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         pathUpdates.put("metaDataFields.description:en", "New description");
         pathUpdates.put("allowedall", false);
         pathUpdates.put("allowedEntities", Arrays.asList(Collections.singletonMap("name", "https://allow-me")));
-        MetaDataUpdate metaDataUpdate = new MetaDataUpdate(id, EntityType.SP.getType(), pathUpdates);
+        MetaDataUpdate metaDataUpdate = new MetaDataUpdate(id, EntityType.SP.getType(), pathUpdates, Collections.emptyMap());
 
         given()
                 .auth()
@@ -205,7 +202,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void updateNonExistent() throws Exception {
-        MetaDataUpdate metaDataUpdate = new MetaDataUpdate("99999", EntityType.SP.getType(), Collections.emptyMap());
+        MetaDataUpdate metaDataUpdate = new MetaDataUpdate("99999", EntityType.SP.getType(), Collections.emptyMap(), Collections.emptyMap());
 
         given()
                 .auth()
@@ -225,7 +222,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         String id = createServiceProviderMetaData(true);
         Map<String, Object> pathUpdates = new HashMap<>();
         pathUpdates.put("metaDataFields.NameIDFormats:0", "bogus");
-        MetaDataUpdate metaDataUpdate = new MetaDataUpdate(id, EntityType.SP.getType(), pathUpdates);
+        MetaDataUpdate metaDataUpdate = new MetaDataUpdate(id, EntityType.SP.getType(), pathUpdates, Collections.emptyMap());
 
         given()
                 .auth()
@@ -246,7 +243,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 .auth()
                 .preemptive()
                 .basic("pdp", "secret")
-                .body(new MetaDataUpdate("id", EntityType.SP.getType(), new HashMap<>()))
+                .body(new MetaDataUpdate("id", EntityType.SP.getType(), new HashMap<>(), Collections.emptyMap()))
                 .header("Content-type", "application/json")
                 .when()
                 .put("/manage/api/internal/merge")
@@ -779,7 +776,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         Map data = objectMapper.readValue(json, Map.class);
 
         OidcClient oidcClient = new OidcClient("http://client_id", "secret", Collections.singleton("http://redirect"), "authorization_code", Collections.singleton("openid"));
-        data.put(OpenIdConnectHook.OIDC_CLIENT_KEY, oidcClient);
+        data.put(OIDC_CLIENT_KEY, oidcClient);
 
         MetaData metaData = new MetaData(EntityType.SP.getType(), data);
         metaData.metaDataFields().remove("AssertionConsumerService:0:Binding");
@@ -796,7 +793,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 .post("manage/api/internal/metadata")
                 .getBody().as(Map.class);
 
-        Map oidcClientMap = Map.class.cast(Map.class.cast(map.get("data")).get(OpenIdConnectHook.OIDC_CLIENT_KEY));
+        Map oidcClientMap = Map.class.cast(Map.class.cast(map.get("data")).get(OIDC_CLIENT_KEY));
         assertEquals("http@//oidc_client", oidcClientMap.get("clientId"));
 
         Map results = given()
@@ -804,9 +801,40 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 .get("manage/api/client/metadata/saml20_sp/" + map.get("id"))
                 .getBody().as(Map.class);
 
-        oidcClientMap = Map.class.cast(Map.class.cast(results.get("data")).get(OpenIdConnectHook.OIDC_CLIENT_KEY));
+        oidcClientMap = Map.class.cast(Map.class.cast(results.get("data")).get(OIDC_CLIENT_KEY));
         assertEquals("http@//oidc_client", oidcClientMap.get("clientId"));
+    }
 
+    @Test
+    public void updateOicdClient() throws Exception {
+        MetaData metaData = given()
+                .when()
+                .get("manage/api/client/metadata/saml20_sp/8")
+                .getBody().as(MetaData.class);
+
+        Map<String, Object> pathUpdates = new HashMap<>();
+        pathUpdates.put("metaDataFields.name:en", "New name");
+
+        Map<String, Object> externalReferenceData = new HashMap<>();
+        Map<String, Object> oidcClient = (Map<String, Object>) metaData.getData().get(OIDC_CLIENT_KEY);
+        List<String> rediredctUris = Collections.singletonList("http://new-redirect");
+        oidcClient.put("redirectUris", rediredctUris);
+        externalReferenceData.put(OIDC_CLIENT_KEY, oidcClient);
+
+        MetaDataUpdate metaDataUpdate = new MetaDataUpdate("8", EntityType.SP.getType(), pathUpdates, externalReferenceData);
+
+        MetaData result = given()
+                .auth()
+                .preemptive()
+                .basic("sp-portal", "secret")
+                .body(metaDataUpdate)
+                .header("Content-type", "application/json")
+                .when()
+                .put("/manage/api/internal/merge")
+                .getBody()
+                .as(MetaData.class);
+        oidcClient = (Map<String, Object>) result.getData().get(OIDC_CLIENT_KEY);
+        assertEquals(rediredctUris, oidcClient.get("redirectUris"));
 
     }
 

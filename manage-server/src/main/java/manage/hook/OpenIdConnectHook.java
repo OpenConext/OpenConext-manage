@@ -84,6 +84,7 @@ public class OpenIdConnectHook implements MetaDataHook{
         List<String> redirectUris = List.class.cast(clientMap.get("redirectUris"));
         if (!CollectionUtils.isEmpty(redirectUris)) {
             client.setRedirectUris(new HashSet<>(redirectUris));
+            client.setRegisteredRedirectUri(new HashSet<>());
         }
         String grantType = String.class.cast(clientMap.get("grantType"));
         if (StringUtils.hasText(grantType)) {
