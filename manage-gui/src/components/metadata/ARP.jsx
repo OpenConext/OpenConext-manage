@@ -237,7 +237,6 @@ export default class ARP extends React.Component {
             <td colSpan={3}><input
                 ref={ref => {
                     if (this.state.newArpAttributeAddedKey === attributeKey) {
-                        console.log("time out requested");
                         setTimeout(() => ref.focus(), 75);
                     }
                 }}

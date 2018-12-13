@@ -40,9 +40,6 @@ export default class SelectNewMetaDataField extends React.PureComponent {
     };
 
     addMissingProperty = (accumulator, patternPropertyKey, patternProperty, metaDataKeys) => {
-        if (patternPropertyKey === "^AssertionConsumerService:([0-3]{0,1}[0-9]{1}):Location$") {
-            console.log("debugger");
-        }
         patternPropertyRegex.lastIndex = 0;
         languagePropertyRegex.lastIndex = 0;
         multiplicityRegex.lastIndex = 0;
