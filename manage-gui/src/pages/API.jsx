@@ -255,7 +255,7 @@ export default class API extends React.PureComponent {
         );
     };
 
-    renderSearchResultsTable = (searchResults, selectedType, searchAttributes, globalSearchAttributes, status) => {
+    renderSearchResultsTable = (searchResults, selectedType, searchAttributes, globalSearchAttributes, status, fullTextSearch) => {
         const searchHeaders = ["status", "name", "entityid", "notes"].concat(Object.keys(searchAttributes)).concat(Object.keys(globalSearchAttributes));
         searchResults = status === "all" ? searchResults : searchResults.filter(entity => entity.data.state === status);
         return (
@@ -272,7 +272,7 @@ export default class API extends React.PureComponent {
                     {searchResults.map((entity, index) => <tr key={`${entity.data.entityid}_${index}`}>
                         <td className="state">{I18n.t(`metadata.${entity.data.state}`)}</td>
                         <td className="name">
-                            <Link to={`/metadata/${selectedType}/${entity["_id"]}`}
+                            <Link to={`/metadata/${selectedType}/${isEmpty(fullTextSearch) ? entity["_id"] : entity.id}`}
                                   target="_blank">{entity.data.metaDataFields["name:en"] || entity.data.metaDataFields["name:nl"]}</Link>
                         </td>
                         <td className="entityId">{entity.data.entityid}</td>
@@ -374,7 +374,7 @@ export default class API extends React.PureComponent {
                                             .map(s => ({value: s, label: I18n.t(`metadata.${s}`)}))}
                                         value={status}
                                         className="status-select"/>}
-                {showResults && this.renderSearchResultsTable(searchResults, selectedType, searchAttributes, globalSearchAttributes, status)}
+                {showResults && this.renderSearchResultsTable(searchResults, selectedType, searchAttributes, globalSearchAttributes, status, fullTextSearch)}
                 {showResults && this.renderSearchResultsTablePrintable(searchResults)}
             </section>
         );

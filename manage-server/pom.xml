@@ -13,7 +13,7 @@
     <artifactId>manage-server</artifactId>
     <packaging>jar</packaging>
     <name>manage-server</name>
-    <version>3.2.7</version>
+    <version>3.2.8</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
