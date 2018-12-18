@@ -44,7 +44,14 @@
     background-color: white;
     padding: 15px 15px 150px 15px;
     p {
-      padding: 15px 0;
+      padding: 15px 0 0 0;
+    }
+    input.fullTextSearch {
+      width: 100%;
+      border: 1px solid $lighter-grey;
+      padding: 6px;
+      border-radius: $br;
+      font-size: 14px;
     }
   }
 

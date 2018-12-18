@@ -24,6 +24,7 @@ import org.springframework.data.mongodb.core.convert.CustomConversions;
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.index.IndexDefinition;
+import org.springframework.data.mongodb.core.index.TextIndexDefinition;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.CriteriaDefinition;
 import org.springframework.data.mongodb.core.query.Query;
@@ -31,6 +32,7 @@ import org.springframework.util.Assert;
 
 import javax.annotation.PostConstruct;
 import java.time.Instant;
+import java.time.chrono.HijrahDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -38,6 +40,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Configuration
 @ChangeLog
@@ -138,6 +141,16 @@ public class MongobeeConfiguration {
                     LOG.info("Nullified empty manipulation for {}", data.get("entityid"));
                 }
             });
+        });
+    }
+
+    @ChangeSet(order = "025", id = "addTextIndexes", author = "Okke Harsta")
+    public void addTextIndexes(MongoTemplate mongoTemplate) {
+        Stream.of(EntityType.values()).forEach(entityType -> {
+            TextIndexDefinition textIndexDefinition = new TextIndexDefinition.TextIndexDefinitionBuilder()
+                    .onField("$**")
+                    .build();
+            mongoTemplate.indexOps(entityType.getType()).ensureIndex(textIndexDefinition);
         });
     }
 

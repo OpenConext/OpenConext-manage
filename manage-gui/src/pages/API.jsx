@@ -2,7 +2,7 @@ import React from "react";
 import I18n from "i18n-js";
 import PropTypes from "prop-types";
 import {Link} from "react-router-dom";
-import {ping, search, validation} from "../api";
+import {ping, rawSearch, search, validation} from "../api";
 import {copyToClip, isEmpty, stop} from "../utils/Utils";
 import SelectMetaDataType from "../components/metadata/SelectMetaDataType";
 import "./API.css";
@@ -25,6 +25,7 @@ export default class API extends React.PureComponent {
             errorAttributes: {},
             globalErrorAttributes: {},
             logicalOperatorIsAnd: true,
+            fullTextSearch: "",
             searchResults: undefined,
             newMetaDataFieldKey: null,
             newGlobalAttributeKey: null,
@@ -128,8 +129,13 @@ export default class API extends React.PureComponent {
 
     doSearch = e => {
         stop(e);
-        const {selectedType, searchAttributes, globalSearchAttributes, errorAttributes, logicalOperatorIsAnd} = this.state;
-        if (this.isValidInput(errorAttributes)) {
+        const {selectedType, searchAttributes, globalSearchAttributes, errorAttributes, logicalOperatorIsAnd, fullTextSearch} = this.state;
+        if (!isEmpty(fullTextSearch.trim())) {
+            const terms = logicalOperatorIsAnd ? fullTextSearch.split(" ").map(part => `\\"${part.trim()}\\"`).join(" ") : fullTextSearch;
+            const query = `{ $text: { $search: "${terms}" } }`;
+            rawSearch(query, selectedType).then(json => this.setState({searchResults: json}));
+        }
+        else if (this.isValidInput(errorAttributes)) {
             const metaDataSearch = {};
             const keys = Object.keys(searchAttributes);
             keys.forEach(key => metaDataSearch[`metaDataFields.${key}`] = searchAttributes[key]);
@@ -161,8 +167,8 @@ export default class API extends React.PureComponent {
             searchAttributes: {},
             globalSearchAttributes: {},
             errorAttributes: {},
-            globalErrorAttributes: {}
-            ,
+            globalErrorAttributes: {},
+            fullTextSearch: "",
             searchResults: undefined,
             logicalOperatorIsAnd: true,
             newMetaDataFieldKey: null,
@@ -315,7 +321,7 @@ export default class API extends React.PureComponent {
         const {configuration} = this.props;
         const {
             selectedType, searchAttributes, errorAttributes, searchResults, status, copiedToClipboardClassName,
-            globalSearchAttributes, globalErrorAttributes, logicalOperatorIsAnd
+            globalSearchAttributes, globalErrorAttributes, logicalOperatorIsAnd, fullTextSearch
         } = this.state;
         const conf = configuration.find(conf => conf.title === selectedType);
         const hasSearchAttributes = Object.keys(searchAttributes).length > 0;
@@ -346,6 +352,10 @@ export default class API extends React.PureComponent {
                                           attributes={globalSearchAttributes}
                                           placeholder={"Search and add global attributes"}/>
                 {hasGlobalSearchAttributes && this.renderGlobalSearchTable(globalSearchAttributes, globalErrorAttributes)}
+                <p>Full text search to find all metadata containing any or all - depending on the logical operator - space separated terms.</p>
+                <input className="fullTextSearch" type="text" value={fullTextSearch}
+                       onChange={e => this.setState({fullTextSearch: e.target.value})}
+                       onKeyPress={e => e.key === "Enter" ? this.doSearch(e) : false}/>
                 <CheckBox name="logicalOperatorIsAnd" value={logicalOperatorIsAnd}
                           info="Use the logical operater AND (instead of OR) for the different search criteria"
                           onChange={() => this.setState({logicalOperatorIsAnd: !this.state.logicalOperatorIsAnd})}/>

@@ -169,6 +169,10 @@ export function search(options, type) {
     return postPutJson(`search/${type}`, options, "post");
 }
 
+export function rawSearch(query, type) {
+    return fetchJson(`rawSearch/${type}?query=${encodeURIComponent(query)}`)
+}
+
 export function me() {
     return fetchJson("users/me", {}, {}, false);
 }
