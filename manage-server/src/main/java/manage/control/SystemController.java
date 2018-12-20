@@ -94,6 +94,22 @@ public class SystemController {
         this.metaDataValidator = metaDataValidator;
     }
 
+    @SuppressWarnings("unchecked")
+    public void filterOutNullDisableConsentExplanations(List<MetaData> identityProviders) {
+        identityProviders.forEach(idp -> {
+            Object disableConsentData = idp.getData().get("disableConsent");
+            if (disableConsentData != null && disableConsentData instanceof List) {
+                List disableConsent = List.class.cast(disableConsentData);
+                disableConsent.forEach(disableConsentEntry -> {
+                    if (disableConsentEntry instanceof Map) {
+                        Map<String, Object> disableConsentMap = Map.class.cast(disableConsentEntry);
+                        disableConsentMap.entrySet().removeIf(entry -> entry.getValue() == null);
+                    }
+                });
+            }
+        });
+    }
+
     @GetMapping("/client/playground/pushPreview")
     public Map<String, Map<String, Map<String, Object>>> pushPreview() {
         EngineBlockFormatter formatter = new EngineBlockFormatter();
@@ -117,6 +133,10 @@ public class SystemController {
                 .collect(toMap(sp -> sp.getId(), sp -> formatter.parseServiceProvider(sp)));
 
         List<MetaData> identityProviders = metaDataRepository.getMongoTemplate().findAll(MetaData.class, "saml20_idp");
+
+        //Explicit only filter out 'null' objects in the disableConsent as generically filtering out 'nulls' can break things
+        filterOutNullDisableConsentExplanations(identityProviders);
+
         Map<String, Map<String, Object>> identityProvidersToPush = identityProviders.stream()
                 .filter(metaData -> {
                     Map metaDataFields = metaData.metaDataFields();
@@ -126,6 +146,8 @@ public class SystemController {
                 .collect(toMap(idp -> idp.getId(), idp -> formatter.parseIdentityProvider(idp)));
 
         serviceProvidersToPush.putAll(identityProvidersToPush);
+
+
         Map<String, Map<String, Map<String, Object>>> results = new HashMap<>();
         results.put("connections", serviceProvidersToPush);
 
@@ -153,6 +175,7 @@ public class SystemController {
                 "sso_provider_roles_eb5 ORDER BY id ASC");
 
         Map<String, Map<String, Map<String, Object>>> json = this.pushPreview();
+
         ResponseEntity<String> response;
         HttpStatus statusCode = HttpStatus.OK;
         if (!environment.acceptsProfiles("dev")) {

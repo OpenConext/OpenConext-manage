@@ -330,7 +330,9 @@
       ],
       "disableConsent": [
         {
-          "name": "http://disableConsent1"
+          "name": "http://disableConsent1",
+          "explanation:nl": null,
+          "explanation:en": null
         },
         {
           "name": "http://mock-sp",
