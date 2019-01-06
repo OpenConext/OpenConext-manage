@@ -272,8 +272,9 @@ export default class API extends React.PureComponent {
                     {searchResults.map((entity, index) => <tr key={`${entity.data.entityid}_${index}`}>
                         <td className="state">{I18n.t(`metadata.${entity.data.state}`)}</td>
                         <td className="name">
-                            <Link to={`/metadata/${selectedType}/${isEmpty(fullTextSearch) ? entity["_id"] : entity.id}`}
-                                  target="_blank">{entity.data.metaDataFields["name:en"] || entity.data.metaDataFields["name:nl"]}</Link>
+                            <Link
+                                to={`/metadata/${selectedType}/${isEmpty(fullTextSearch) ? entity["_id"] : entity.id}`}
+                                target="_blank">{entity.data.metaDataFields["name:en"] || entity.data.metaDataFields["name:nl"]}</Link>
                         </td>
                         <td className="entityId">{entity.data.entityid}</td>
                         <td className="notes">
@@ -352,7 +353,8 @@ export default class API extends React.PureComponent {
                                           attributes={globalSearchAttributes}
                                           placeholder={"Search and add global attributes"}/>
                 {hasGlobalSearchAttributes && this.renderGlobalSearchTable(globalSearchAttributes, globalErrorAttributes)}
-                <p>Full text search to find all metadata containing any or all - depending on the logical operator - space separated terms.</p>
+                <p>Full text search to find all metadata containing any or all - depending on the logical operator -
+                    space separated terms.</p>
                 <input className="fullTextSearch" type="text" value={fullTextSearch}
                        onChange={e => this.setState({fullTextSearch: e.target.value})}
                        onKeyPress={e => e.key === "Enter" ? this.doSearch(e) : false}/>
