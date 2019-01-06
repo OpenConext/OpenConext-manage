@@ -49,7 +49,7 @@ public class OpenIdConnectService implements OpenIdConnect {
     @Override
     public void deleteClient(String clientId) {
         try {
-            restTemplate.delete(String.format("%s/clientId=%s", url, clientId));
+            restTemplate.delete(String.format("%s?clientId=%s", url, clientId));
         } catch (HttpClientErrorException e) {
             LOG.error("Error in deleting client " + clientId + " from OIDC", e);
         }

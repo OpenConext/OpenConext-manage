@@ -10,7 +10,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.*;
 
-public class OpenIdConnectHook implements MetaDataHook{
+public class OpenIdConnectHook implements MetaDataHook {
 
     public final static String OIDC_CLIENT_KEY = "oidcClient";
 
@@ -42,10 +42,10 @@ public class OpenIdConnectHook implements MetaDataHook{
 
     @Override
     public MetaData prePut(MetaData previous, MetaData newMetaData) {
-        Map<String, Object> clientMap = (Map<String, Object>) newMetaData.getData().get(OIDC_CLIENT_KEY);
-        if (CollectionUtils.isEmpty(clientMap)) {
+        if (ignoreForOIDC(newMetaData)) {
             return newMetaData;
         }
+        Map<String, Object> clientMap = (Map<String, Object>) newMetaData.getData().get(OIDC_CLIENT_KEY);
         String openIdClientId = translateServiceProviderEntityId((String) previous.getData().get("entityid"));
         Optional<Client> clientOptional = openIdConnect.getClient(openIdClientId);
         if (clientOptional.isPresent()) {
@@ -59,10 +59,10 @@ public class OpenIdConnectHook implements MetaDataHook{
 
     @Override
     public MetaData prePost(MetaData metaData) {
-        Map<String, Object> clientMap = (Map<String, Object>) metaData.getData().get(OIDC_CLIENT_KEY);
-        if (CollectionUtils.isEmpty(clientMap)) {
+        if (ignoreForOIDC(metaData)) {
             return metaData;
         }
+        Map<String, Object> clientMap = (Map<String, Object>) metaData.getData().get(OIDC_CLIENT_KEY);
         Client client = new Client();
         syncClient(metaData, clientMap, client);
         openIdConnect.createClient(client);
@@ -72,6 +72,12 @@ public class OpenIdConnectHook implements MetaDataHook{
         metaData.metaDataFields().put("AssertionConsumerService:0:Binding", "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST");
         metaData.metaDataFields().put("AssertionConsumerService:0:Location", oidcAcsLocation);
         return metaData;
+    }
+
+    private boolean ignoreForOIDC(MetaData metaData) {
+        Map<String, Object> clientMap = (Map<String, Object>) metaData.getData().get(OIDC_CLIENT_KEY);
+        boolean excludeFromPush = "1".equals(metaData.metaDataFields().get("coin:exclude_from_push"));
+        return excludeFromPush || CollectionUtils.isEmpty(clientMap);
     }
 
     private void syncClient(MetaData metaData, Map<String, Object> clientMap, Client client) {

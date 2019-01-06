@@ -1,7 +1,5 @@
 package manage.oidc;
 
-import manage.model.MetaData;
-
 import java.util.Optional;
 
 public interface OpenIdConnect {
