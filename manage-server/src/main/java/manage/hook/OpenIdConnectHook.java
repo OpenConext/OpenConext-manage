@@ -76,8 +76,7 @@ public class OpenIdConnectHook implements MetaDataHook {
 
     private boolean ignoreForOIDC(MetaData metaData) {
         Map<String, Object> clientMap = (Map<String, Object>) metaData.getData().get(OIDC_CLIENT_KEY);
-        boolean excludeFromPush = "1".equals(metaData.metaDataFields().get("coin:exclude_from_push"));
-        return excludeFromPush || CollectionUtils.isEmpty(clientMap);
+        return CollectionUtils.isEmpty(clientMap);
     }
 
     private void syncClient(MetaData metaData, Map<String, Object> clientMap, Client client) {
