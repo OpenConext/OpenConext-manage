@@ -90,6 +90,7 @@ public class MetaDataFeedParser {
         boolean inAttributeConsumingService = false;
         boolean inEntityAttributes = false;
         boolean typeMismatch = false;
+        boolean inCorrectTypeDescriptor = false;
 
         result.put("type", entityType.getJanusDbValue());
         boolean isSp = entityType.equals(EntityType.SP);
@@ -120,6 +121,7 @@ public class MetaDataFeedParser {
                             break;
                         case "SPSSODescriptor":
                             if (inCorrectEntityDescriptor) {
+                                inCorrectTypeDescriptor = isSp;
                                 if (isSp) {
                                     arpKeys = arpKeys(EntityType.SP, metaDataAutoConfiguration, isSp);
                                     arpAliases = arpAliases(EntityType.SP, metaDataAutoConfiguration, isSp);
@@ -138,6 +140,7 @@ public class MetaDataFeedParser {
                             break;
                         case "IDPSSODescriptor":
                             if (inCorrectEntityDescriptor) {
+                                inCorrectTypeDescriptor = !isSp;
                                 if (isSp) {
                                     //This should not happen, but an exception breaks reading the feed
                                     typeMismatch = true;
@@ -145,7 +148,7 @@ public class MetaDataFeedParser {
                             }
                             break;
                         case "KeyDescriptor":
-                            if (!inCorrectEntityDescriptor) {
+                            if (!inCorrectEntityDescriptor || !inCorrectTypeDescriptor) {
                                 break;
                             }
                             Optional<String> use = getAttributeValue(reader, "use");
@@ -322,6 +325,10 @@ public class MetaDataFeedParser {
                             break;
                         case "UIInfo":
                             inUIInfo = false;
+                            break;
+                        case "IDPSSODescriptor":
+                        case "SPSSODescriptor":
+                            inCorrectTypeDescriptor = false;
                             break;
                         case "EntityDescriptor":
                             if (inCorrectEntityDescriptor) {

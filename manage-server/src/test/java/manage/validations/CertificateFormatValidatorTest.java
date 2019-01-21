@@ -39,4 +39,38 @@ public class CertificateFormatValidatorTest {
         Optional<String> result = subject.validate("nope");
         assertTrue(result.isPresent());
     }
+
+    @Test
+    public void validateCertJavaStrictness() throws Exception {
+        Optional<String> result = subject.validate
+                ("MIIEsTCCApmgAwIBAgIDAO7zMA0GCSqGSIb3DQEBCwUAMAAwHhcNMTgxMTA3MTQz" +
+                        "ODAzWhcNMjgxMTA0MTQzODAzWjAYMRYwFAYDVQQDDA1oa3UuZWR1dnBuLm5sMIIC" +
+                        "IjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAyDkFqRDUThNSqPgiXTrLwWvv" +
+                        "o+ce8t9ga2jnwh/i/c402Im3ISQbzeyz3n9RUKqM/UDgSVJiSrYwvDlapw/8sN9t" +
+                        "TOa4fYwrCj7xT7i4VLnmZpzk71PzObXcTtbnz2YndmpaBaJXs1na6MyrBZZ46jGK" +
+                        "dOv0tMjTjAnqc3LsfX08CzVLy0Ek9bScMlBCGCW6POjX9fxgZxUXrVH9RLqYeKV6" +
+                        "EU/SYv4RrZ9kx3gm/CWrMFstV87g3Bl3Kx1MLyQ3HOpbjObGUT0fRXUQV1FPdNoj" +
+                        "IKTCbd4P51GX1da43578NRr4dAof+iuL+fORlP+ONiQITpZJwPdN/v87eUPc3UOB" +
+                        "+Rdbdge0ei5nXN5X1KOGYp4Zi75A089EQfecBTTDCmlCBhEykFkloX3UA/NcAs6M" +
+                        "Y9eqWvpE23fFOS6z/Tzq7Tmk20FQQdC24HLuqfLLApo0gMCpq9egUrzgfoWXKc2S" +
+                        "5Z5sc+6eUvkih2xdGPNTOI2eanidxdCYCNMpHFtPX6aRyoeG8QiCppEauYV64gbH" +
+                        "4cqVJQq2fSjWLqav93ZRZnZweFEDtVAlrIr+H7nVRfBsZm4a71r4RO6V6Tvs71Q7" +
+                        "uUMLo2GEMd2mRtKMWtn5AUwpSoeSZ9bDvgXn8084foUHDhXUzu+Pr6/c9KXr1j6z" +
+                        "t5TEAgXD+mZ6FF8+SzkCAwEAAaMcMBowGAYDVR0RBBEwD4INaGt1LmVkdXZwbi5u" +
+                        "bDANBgkqhkiG9w0BAQsFAAOCAgEACtt/KzCUrTuFUnfBQvlyubO5xgn3KxN16vJP" +
+                        "yvfmZD46eIvutXmh2Ua7np2g3tdVBUcEP7+1hZOxoNCLR2BvMa/7ZE4N3UI9ViPU" +
+                        "PzOZtZ2VcXGlfKG5de8dYthOvHEPazHA3QoXgfCsOqvCJbNFF/tP4Spj/OQIgd6N" +
+                        "wGhJonhUIKE14XJTpZ31fu29uZhOEiDoq0S8dSt1NCNfK5IuD9O7rCBvgH+E2CdR" +
+                        "aHbGmPHJNU0ArGiuK3Bbx9LiKQsY7kzrELCFGnaEE3tHpi87d8hmwqpOh4IwQriL" +
+                        "gpN/OmJSa8tgadbo980cxmKKBoq/9Cc3i1xHqpQcjdEN6W6pIho7vj1aOOSXhRR2" +
+                        "wzdiHhy0LbYAUFJ6pCd+MGXy7fWukzTeDWkKtOVDa2uzqT4QeehwtJ1+c1GjG3tO" +
+                        "E+L35WWIK7HQx/bHMCirYX58Lf4OLNDMlzBIB5R6slfGI1nbLBN7DG03JvKHjfaL" +
+                        "Jv9rcgFdCRjeuFynPxzfo5mE2U+MXW59fWKl20BTGdnXhsEDYVu8uUqc0FbvRtNJ" +
+                        "lHRcEN4TuIrmjfxMvKr2lEWM0aoTxm39uzJ5wkDjd58LY7mwdbMkleWcZoXrl0aN" +
+                        "1E2MG8xXk9vCIwiDFUYej4tqqxbCTvyriao9fyTvDIl0tqNMnJhpQEgIw/cQWYZt" +
+                        "MV9V3JI=");
+        assertTrue(result.isPresent());
+        assertEquals(result.get(),"Invalid certificate: Empty issuer DN not allowed in X509Certificates");
+    }
+
 }
