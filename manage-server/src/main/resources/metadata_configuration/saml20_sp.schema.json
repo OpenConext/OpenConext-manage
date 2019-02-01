@@ -411,7 +411,7 @@
         "coin:do_not_add_attribute_aliases": {
           "type": "string",
           "format": "boolean",
-          "info": "Only send the SAML 2.0 name scheme. "
+          "info": "Only send the SAML 2.0 name scheme."
         },
         "coin:display_unconnected_idps_wayf": {
           "type": "string",
