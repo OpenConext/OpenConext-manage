@@ -24,10 +24,7 @@ import static manage.control.MetaDataController.ALL_ATTRIBUTES;
 import static manage.control.MetaDataController.LOGICAL_OPERATOR_IS_AND;
 import static manage.control.MetaDataController.REQUESTED_ATTRIBUTES;
 import static manage.hook.OpenIdConnectHook.OIDC_CLIENT_KEY;
-import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
-import static org.apache.http.HttpStatus.SC_FORBIDDEN;
-import static org.apache.http.HttpStatus.SC_NOT_FOUND;
-import static org.apache.http.HttpStatus.SC_OK;
+import static org.apache.http.HttpStatus.*;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.is;
@@ -198,6 +195,38 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 .body("data.allowedall", equalTo(false))
                 .body("data.metaDataFields.'description:en'", equalTo("New description"))
                 .body("data.allowedEntities[0].name", equalTo("https://allow-me"));
+    }
+
+    @Test
+    public void updateWithOIDC() throws Exception {
+        String body = readFile("oidc/post_path_update.json");
+
+        given()
+                .auth()
+                .preemptive()
+                .basic("sp-portal", "secret")
+                .body(body)
+                .header("Content-type", "application/json")
+                .when()
+                .put("/manage/api/internal/merge")
+                .then()
+                .statusCode(SC_OK);
+    }
+
+    @Test
+    public void updateWithOIDCWithRedirectUriMap() throws Exception {
+        String body = readFile("oidc/post_path_update_redirect_uri_map.json");
+
+        given()
+                .auth()
+                .preemptive()
+                .basic("sp-portal", "secret")
+                .body(body)
+                .header("Content-type", "application/json")
+                .when()
+                .put("/manage/api/internal/merge")
+                .then()
+                .statusCode(SC_INTERNAL_SERVER_ERROR);
     }
 
     @Test
