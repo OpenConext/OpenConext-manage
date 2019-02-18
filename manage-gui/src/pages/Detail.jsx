@@ -187,6 +187,12 @@ export default class Detail extends React.PureComponent {
         }
         const changes = {...this.state.changes};
         changes[component] = true;
+        if (component === "whitelist" && (name === "data.allowedall" || (Array.isArray(name) && name.includes("data.allowedall")))) {
+            this.setState({
+                addedWhiteListedEntities: [],
+                removedWhiteListedEntities: []
+            });
+        }
         this.setState({metaData: metaData, changes: changes});
 
     };
