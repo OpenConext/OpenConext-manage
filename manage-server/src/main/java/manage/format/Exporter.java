@@ -17,13 +17,7 @@ import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.TimeZone;
-import java.util.TreeMap;
+import java.util.*;
 
 /*
  * Thread-safe
@@ -38,11 +32,13 @@ public class Exporter {
     private final String metadataExportPath;
     private final Clock clock;
     private final List<String> validMetadataExportTypes = Arrays.asList("saml20_idp", "saml20_sp", "single_tenant_template");
+    private final List<String> languages;
 
-    public Exporter(Clock clock, ResourceLoader resourceLoader, String metadataExportPath) {
+    public Exporter(Clock clock, ResourceLoader resourceLoader, String metadataExportPath, List<String> languages) {
         this.clock = clock;
         this.resourceLoader = resourceLoader;
         this.metadataExportPath = metadataExportPath;
+        this.languages = languages;
     }
 
     public String exportToXml(MetaData metaData) throws IOException {
@@ -141,14 +137,15 @@ public class Exporter {
 
     private void addOrganizationName(Map data) {
         Map metaDataFields = Map.class.cast(data.get("metaDataFields"));
-        String name = String.class.cast(metaDataFields.computeIfAbsent("OrganizationName:en", key -> metaDataFields
-                .get("OrganizationName:nl")));
-        String displayName = String.class.cast(metaDataFields.computeIfAbsent("OrganizationDisplayName:en", key ->
-                metaDataFields.get("OrganizationDisplayName:nl")));
-        String url = String.class.cast(metaDataFields.computeIfAbsent("OrganizationURL:en", key -> metaDataFields.get
-                ("OrganizationURL:nl")));
-        metaDataFields.put("OrganizationInfo", StringUtils.hasText(name) || StringUtils.hasText(displayName) ||
-                StringUtils.hasText(url));
+        this.languages.forEach(language -> {
+            String name = (String) metaDataFields.get("OrganizationName:" + language);
+            String displayName = (String) metaDataFields.get("OrganizationDisplayName:" + language);
+            String url = (String) metaDataFields.get("OrganizationURL:" + language);
+            if (!metaDataFields.containsKey("OrganizationInfo") || !Boolean.class.cast(metaDataFields.get("OrganizationInfo"))) {
+                metaDataFields.put("OrganizationInfo", StringUtils.hasText(name) || StringUtils.hasText(displayName) ||
+                        StringUtils.hasText(url));
+            }
+        });
     }
 
     private void addAttributeConsumingService(Map data) {
@@ -181,12 +178,13 @@ public class Exporter {
 
     private void addUIInfoExtension(Map data) {
         Map metaDataFields = Map.class.cast(data.get("metaDataFields"));
-        String name = String.class.cast(metaDataFields.computeIfAbsent("name:en", key -> metaDataFields.get
-                ("name:nl")));
-        String description = String.class.cast(metaDataFields.computeIfAbsent("description:en", key -> metaDataFields
-                .get("description:nl")));
-
-        data.put("UIInfoExtension", StringUtils.hasText(name) || StringUtils.hasText(description));
+        this.languages.forEach(language -> {
+            String name = (String) metaDataFields.get("name:" + language);
+            String description = (String) metaDataFields.get("description:" + language);
+            if (!data.containsKey("UIInfoExtension") || !Boolean.class.cast(data.get("UIInfoExtension"))) {
+                data.put("UIInfoExtension", StringUtils.hasText(name) || StringUtils.hasText(description));
+            }
+        });
     }
 
     private void addUILogo(Map data) {

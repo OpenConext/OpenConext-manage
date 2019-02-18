@@ -51,7 +51,9 @@ export default class Detail extends React.PureComponent {
             originalEntityId: undefined,
             type: type,
             id: id,
-            revisionNoteError: false
+            revisionNoteError: false,
+            addedWhiteListedEntities: [],
+            removedWhiteListedEntities: []
         };
     }
 
@@ -187,6 +189,30 @@ export default class Detail extends React.PureComponent {
         changes[component] = true;
         this.setState({metaData: metaData, changes: changes});
 
+    };
+
+    onChangeWhiteListedEntity = (added, entity) => {
+        const removedWhiteListedEntities = [...this.state.removedWhiteListedEntities];
+        const addedWhiteListedEntities = [...this.state.addedWhiteListedEntities];
+        if (added) {
+            const newRemovedWhiteListedEntities = removedWhiteListedEntities.filter(e => e.entityid !== entity.entityid);
+            if (newRemovedWhiteListedEntities.length === removedWhiteListedEntities.length) {
+                addedWhiteListedEntities.push(entity);
+            }
+            this.setState({
+                addedWhiteListedEntities: addedWhiteListedEntities,
+                removedWhiteListedEntities: newRemovedWhiteListedEntities
+            });
+        } else {
+            const newAddedWhiteListedEntities = addedWhiteListedEntities.filter(e => e.entityid !== entity.entityid);
+            if (newAddedWhiteListedEntities.length === addedWhiteListedEntities.length) {
+                removedWhiteListedEntities.push(entity);
+            }
+            this.setState({
+                addedWhiteListedEntities: newAddedWhiteListedEntities,
+                removedWhiteListedEntities: removedWhiteListedEntities
+            });
+        }
     };
 
     changeValueReference = (metaData, name, value, replaceAtSignWithDotsInName) => {
@@ -349,7 +375,7 @@ export default class Detail extends React.PureComponent {
     renderCurrentTab = (tab, metaData, whiteListing, revisions) => {
         const configuration = this.props.configuration.find(conf => conf.title === this.state.type);
         const guest = this.props.currentUser.guest;
-        const {isNew, originalEntityId, type} = this.state;
+        const {isNew, originalEntityId, type, removedWhiteListedEntities, addedWhiteListedEntities} = this.state;
         const name = metaData.data.metaDataFields["name:en"] || metaData.data.metaDataFields["name:nl"] || "this service";
         switch (tab) {
             case "connection" :
@@ -366,7 +392,10 @@ export default class Detail extends React.PureComponent {
                                   type={metaData.type}
                                   onChange={this.onChange("whitelist")}
                                   entityId={metaData.data.entityid}
-                                  guest={guest}/>;
+                                  guest={guest}
+                                  removedWhiteListedEntities={removedWhiteListedEntities}
+                                  addedWhiteListedEntities={addedWhiteListedEntities}
+                                  onChangeWhiteListedEntity={this.onChangeWhiteListedEntity}/>;
             case "metadata":
                 return <MetaData metaDataFields={metaData.data.metaDataFields}
                                  configuration={configuration}

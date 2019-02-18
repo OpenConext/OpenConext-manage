@@ -10,6 +10,7 @@ import manage.model.XML;
 import org.apache.commons.io.IOUtils;
 import org.everit.json.schema.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
@@ -29,9 +30,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static java.util.Collections.singletonList;
 import static java.util.Collections.singletonMap;
+import static java.util.stream.Collectors.toList;
 
 @RestController
 public class ImportController {
@@ -41,9 +44,12 @@ public class ImportController {
     private Environment environment;
 
     @Autowired
-    public ImportController(MetaDataAutoConfiguration metaDataAutoConfiguration, ObjectMapper objectMapper,
-                            Environment environment) {
-        this.importer = new Importer(metaDataAutoConfiguration);
+    public ImportController(MetaDataAutoConfiguration metaDataAutoConfiguration,
+                            ObjectMapper objectMapper,
+                            Environment environment,
+                            @Value("${product.supported_languages}") String supportedLanguages) {
+        List<String> languages = Stream.of(supportedLanguages.split(",")).map(String::trim).collect(toList());
+        this.importer = new Importer(metaDataAutoConfiguration, languages);
         this.objectMapper = objectMapper;
         this.environment = environment;
     }

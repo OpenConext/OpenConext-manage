@@ -11,16 +11,11 @@ import org.springframework.core.io.Resource;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @SuppressWarnings("unchecked")
 public class ImporterTest implements TestUtils {
@@ -32,7 +27,8 @@ public class ImporterTest implements TestUtils {
             subject = new Importer(new MetaDataAutoConfiguration(
                     objectMapper,
                     new ClassPathResource("metadata_configuration"),
-                    new ClassPathResource("metadata_templates")));
+                    new ClassPathResource("metadata_templates")),
+                    Arrays.asList("nl", "en", "pt"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -153,7 +149,7 @@ public class ImporterTest implements TestUtils {
         MetaDataAutoConfiguration metaDataAutoConfiguration = new MetaDataAutoConfiguration(objectMapper, new ClassPathResource("metadata_configuration"), new ClassPathResource("metadata_templates"));
         Map<String, Object> spSchema = metaDataAutoConfiguration.schemaRepresentation(EntityType.SP);
         Map.class.cast(Map.class.cast(Map.class.cast(Map.class.cast(spSchema.get("properties")).get("metaDataFields")).get("patternProperties")).get("^AssertionConsumerService:([0-3]{0,1}[0-9]{1}):index$")).put("multiplicity", 15);
-        Importer alteredSubject = new Importer(metaDataAutoConfiguration);
+        Importer alteredSubject = new Importer(metaDataAutoConfiguration, Arrays.asList("nl", "en", "pt"));
         Map<String, Object> metaData = alteredSubject.importXML(new ClassPathResource("import_xml/assertion_consumer_service.15.xml"), EntityType.SP, Optional.empty());
         Set<Map.Entry> metaDataFields = Map.class.cast(metaData.get("metaDataFields"))
                 .entrySet();

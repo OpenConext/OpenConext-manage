@@ -18,12 +18,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.toList;
 
 @RestController
 public class ExportController {
 
     private List<String> excludeMetaDataOnlyKeys = Arrays.asList("allowedEntities", "arp", "disableConsent",
-        "active", "manipulation");
+            "active", "manipulation");
 
     private Exporter exporter;
 
@@ -31,9 +34,11 @@ public class ExportController {
 
     @Autowired
     public ExportController(ObjectMapper objectMapper, ResourceLoader resourceLoader,
-                            @Value("${metadata_export_path}") String metadataExportPath) {
+                            @Value("${metadata_export_path}") String metadataExportPath,
+                            @Value("${product.supported_languages}") String supportedLanguages) {
         this.objectMapper = objectMapper;
-        this.exporter = new Exporter(Clock.systemDefaultZone(), resourceLoader, metadataExportPath);
+        List<String> languages = Stream.of(supportedLanguages.split(",")).map(String::trim).collect(toList());
+        this.exporter = new Exporter(Clock.systemDefaultZone(), resourceLoader, metadataExportPath, languages);
     }
 
     @PostMapping(value = "/client/export")

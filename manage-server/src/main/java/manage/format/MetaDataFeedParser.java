@@ -32,9 +32,12 @@ import static manage.format.Importer.META_DATA_FIELDS;
 @SuppressWarnings("unchecked")
 public class MetaDataFeedParser {
 
-    private static final List<String> languages = Arrays.asList("en", "nl");
     private static final String ATTRIBUTES = "attributes";
+    private List<String> languages;
 
+    public MetaDataFeedParser(List<String> languages) {
+        this.languages = languages;
+    }
 
     public List<Map<String, Object>> importFeed(Resource xml,
                                                 MetaDataAutoConfiguration metaDataAutoConfiguration) throws
@@ -357,12 +360,11 @@ public class MetaDataFeedParser {
 
     private Map<String, Object> enrichMetaData(Map<String, Object> metaData) {
         Map<String, String> metaDataFields = (Map<String, String>) metaData.get(META_DATA_FIELDS);
-        if (!metaDataFields.containsKey("name:en") && metaDataFields.containsKey("OrganizationName:en")) {
-            metaDataFields.put("name:en", metaDataFields.get("OrganizationName:en"));
-        }
-        if (!metaDataFields.containsKey("name:nl") && metaDataFields.containsKey("OrganizationName:nl")) {
-            metaDataFields.put("name:nl", metaDataFields.get("OrganizationName:nl"));
-        }
+        this.languages.forEach(language -> {
+            if (!metaDataFields.containsKey("name:" + language) && metaDataFields.containsKey("OrganizationName:" + language)) {
+                metaDataFields.put("name:" + language, metaDataFields.get("OrganizationName:" + language));
+            }
+        });
         return metaData;
     }
 

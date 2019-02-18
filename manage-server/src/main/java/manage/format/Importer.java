@@ -25,10 +25,11 @@ public class Importer {
 
     private MetaDataAutoConfiguration metaDataAutoConfiguration;
 
-    private MetaDataFeedParser metaDataFeedParser = new MetaDataFeedParser();
+    private MetaDataFeedParser metaDataFeedParser ;
 
-    public Importer(MetaDataAutoConfiguration metaDataAutoConfiguration) {
+    public Importer(MetaDataAutoConfiguration metaDataAutoConfiguration, List<String> supportedLanguages) {
         this.metaDataAutoConfiguration = metaDataAutoConfiguration;
+        this.metaDataFeedParser = new MetaDataFeedParser(supportedLanguages);
     }
 
     public Map<String, Object> importXML(Resource resource, EntityType entityType, Optional<String> entityId) throws

@@ -7,6 +7,7 @@ import manage.repository.MetaDataRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -18,15 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 import static manage.mongo.MongobeeConfiguration.REVISION_POSTFIX;
@@ -36,11 +30,14 @@ public class StatsController {
 
     private static final Logger LOG = LoggerFactory.getLogger(StatsController.class);
 
+    private List<String> languages;
     private MetaDataRepository metaDataRepository;
 
     @Autowired
-    public StatsController(MetaDataRepository metaDataRepository) {
+    public StatsController(MetaDataRepository metaDataRepository,
+                           @Value("${product.supported_languages}") String supportedLanguages) {
         this.metaDataRepository = metaDataRepository;
+        this.languages = Stream.of(supportedLanguages.split(",")).map(String::trim).collect(toList());
     }
 
     @GetMapping("/internal/stats/revisions")
@@ -50,9 +47,9 @@ public class StatsController {
 
         List<Map> providers = new ArrayList<>();
         Arrays.asList(EntityType.values()).forEach(type -> Arrays.asList(new String[]{type.getType(), type.getType()
-            .concat(REVISION_POSTFIX)}).forEach
-            (collectionName -> providers.addAll(metaDataRepository.getMongoTemplate().find(query, Map.class,
-                collectionName))));
+                .concat(REVISION_POSTFIX)}).forEach
+                (collectionName -> providers.addAll(metaDataRepository.getMongoTemplate().find(query, Map.class,
+                        collectionName))));
         this.sortProvidersByEidRevisionNumber(providers);
 
         LOG.info("Revisions request by {} returning {} providers", apiUser.getName(), providers.size());
@@ -64,13 +61,13 @@ public class StatsController {
         LOG.info("Uniques request for type {} by {}", type, apiUser.getName());
         List<EntityType> entityTypes = Arrays.asList(EntityType.values());
         Assert.isTrue(entityTypes.stream().anyMatch(entityType -> entityType.getType().equals
-            (type)), String.format("Unknown type metadata, allowed are %s", entityTypes.stream().map
-            (EntityType::getType).collect(toList())));
+                (type)), String.format("Unknown type metadata, allowed are %s", entityTypes.stream().map
+                (EntityType::getType).collect(toList())));
 
         List<Map> result = new ArrayList<>();
 
         List<Map> providers = metaDataRepository.getMongoTemplate().find(getQueryWithDefaultFields(new Query()), Map
-            .class, type);
+                .class, type);
         providers.forEach(provider -> {
             result.add(provider);
 
@@ -80,15 +77,15 @@ public class StatsController {
 
             String parentId = String.class.cast(provider.get("_id"));
             Query query = getQueryWithDefaultFields(new Query(Criteria.where("revision.parentId").is(parentId)).with
-                (new Sort(Sort.Direction.ASC, "revision.number")));
+                    (new Sort(Sort.Direction.ASC, "revision.number")));
             List<Map> revisions = metaDataRepository.getMongoTemplate().find(query, Map.class, type.concat
-                (REVISION_POSTFIX));
+                    (REVISION_POSTFIX));
 
             //Traditional for loop to set the end date
             for (int i = 0; i < revisions.size(); i++) {
                 Map revision = revisions.get(i);
                 Object ended = (revisions.size() == i + 1) ? revision(provider).get("created") :
-                    revision(revisions.get(i + 1)).get("created");
+                        revision(revisions.get(i + 1)).get("created");
                 revision(revision).put("ended", ended);
 
                 ProviderIdentifier providerIdentifier = new ProviderIdentifier(revision);
@@ -111,7 +108,7 @@ public class StatsController {
                 return simpleDateFormat.parse(fromDateString);
             } catch (ParseException e) {
                 throw new IllegalArgumentException(String.format("Illegal date format %s, required format %s",
-                    fromDateString, "yyyy-MM-dd"));
+                        fromDateString, "yyyy-MM-dd"));
             }
         }).orElse(new Date());
         String dateString = simpleDateFormat.format(date);
@@ -135,12 +132,12 @@ public class StatsController {
                 spCandidates = serviceProviders;
             } else {
                 List<String> allowedEntities = (List<String>) List.class.cast(idpData.getOrDefault("allowedEntities",
-                    new ArrayList<>())).stream()
-                    .map(m -> Map.class.cast(m).get("name"))
-                    .collect(toList());
+                        new ArrayList<>())).stream()
+                        .map(m -> Map.class.cast(m).get("name"))
+                        .collect(toList());
 
                 spCandidates = serviceProviders.stream().filter(sp -> allowedEntities.contains(Map.class.cast(sp.get
-                    ("data")).get("entityid"))).collect(toList());
+                        ("data")).get("entityid"))).collect(toList());
             }
             List<Map> connectedServiceProviders = spCandidates.stream().filter(sp -> {
                 /**
@@ -154,16 +151,16 @@ public class StatsController {
                 Map spData = Map.class.cast(sp.get("data"));
                 Boolean spAllowedAll = Boolean.class.cast(spData.get("allowedall"));
                 List<String> allowedEntities = (List<String>) List.class.cast(spData.getOrDefault("allowedEntities",
-                    new ArrayList()))
-                    .stream().map(m -> Map.class.cast(m).get("name"))
-                    .collect(toList());
+                        new ArrayList()))
+                        .stream().map(m -> Map.class.cast(m).get("name"))
+                        .collect(toList());
                 boolean whiteListed = allowedEntities.contains(idpData.get("entityid"));
                 return (spAllowedAll || whiteListed) &&
-                    (spData.get("state").equals(idpData.get("state"))) &&
-                    (spTerminated == null || spTerminated > idpCreated) &&
-                    (spEnded == null || spEnded > idpCreated) &&
-                    (idpEnded == null || idpEnded > spCreated) &&
-                    (idpTerminated == null || idpTerminated > spCreated);
+                        (spData.get("state").equals(idpData.get("state"))) &&
+                        (spTerminated == null || spTerminated > idpCreated) &&
+                        (spEnded == null || spEnded > idpCreated) &&
+                        (idpEnded == null || idpEnded > spCreated) &&
+                        (idpTerminated == null || idpTerminated > spCreated);
             }).map(sp -> {
                 Map<String, String> subResult = new ProviderIdentifier(idp).toMap(EntityType.IDP, Optional.empty());
                 Map entry = new ProviderIdentifier(sp).toMap(EntityType.SP, Optional.of(subResult));
@@ -174,15 +171,15 @@ public class StatsController {
         });
 
         LOG.info("Connections request for {} by {} returning {} connections", dateString, apiUser.getName(), result
-            .size());
+                .size());
         return result;
     }
 
     private List<Map> filterByCreate(Date date, List<Map> providers) {
         long millis = date.getTime();
         return providers.stream().filter(provider -> Date.class.cast(Map.class.cast(provider.get("revision")).get
-            ("created")).getTime() < millis)
-            .collect(toList());
+                ("created")).getTime() < millis)
+                .collect(toList());
     }
 
     private Long getTime(Map revision, String name) {
@@ -199,9 +196,9 @@ public class StatsController {
 
         List<Map> providers = new ArrayList<>();
         Arrays.asList(EntityType.values()).forEach(type -> Arrays.asList(new String[]{type.getType(), type.getType()
-            .concat(REVISION_POSTFIX)}).forEach
-            (collectionName -> providers.addAll(metaDataRepository.getMongoTemplate().find(query, Map.class,
-                collectionName))));
+                .concat(REVISION_POSTFIX)}).forEach
+                (collectionName -> providers.addAll(metaDataRepository.getMongoTemplate().find(query, Map.class,
+                        collectionName))));
 
         LOG.info("Providers without eid request by {} returning {} providers", apiUser.getName(), providers.size());
         return providers;
@@ -213,23 +210,23 @@ public class StatsController {
         Query query = new Query();
         query.addCriteria(Criteria.where("data.allowedall").is(false));
         query.addCriteria((new Criteria().orOperator(Criteria.where("data.allowedEntities").exists(false), Criteria
-            .where("data.allowedEntities").size(0))));
+                .where("data.allowedEntities").size(0))));
         query.fields()
-            .include("_id")
-            .include("revision.parentId")
-            .include("type")
-            .include("data.entityid")
-            .include("data.allowedall")
-            .include("data.allowedEntities");
+                .include("_id")
+                .include("revision.parentId")
+                .include("type")
+                .include("data.entityid")
+                .include("data.allowedall")
+                .include("data.allowedEntities");
 
         List<Map> providers = new ArrayList<>();
         Arrays.asList(EntityType.values()).forEach(type -> Arrays.asList(new String[]{type.getType(), type.getType()
-            .concat(REVISION_POSTFIX)}).forEach
-            (collectionName -> providers.addAll(metaDataRepository.getMongoTemplate().find(query, Map.class,
-                collectionName))));
+                .concat(REVISION_POSTFIX)}).forEach
+                (collectionName -> providers.addAll(metaDataRepository.getMongoTemplate().find(query, Map.class,
+                        collectionName))));
 
         LOG.info("Providers without any connections request by {} returning {} providers", apiUser.getName(),
-            providers.size());
+                providers.size());
         return providers;
     }
 
@@ -239,20 +236,20 @@ public class StatsController {
 
     private Query getQueryWithDefaultFields(Query query) {
         query
-            .fields()
-            .include("type")
-            .include("revision.number")
-            .include("revision.parentId")
-            .include("revision.created")
-            .include("revision.terminated")
-            .include("data.eid")
-            .include("data.state")
-            .include("data.entityid")
-            .include("data.allowedall")
-            .include("data.allowedEntities")
-            .include("data.metaDataFields.name:en")
-            .include("data.metaDataFields.name:nl")
-            .include("data.metaDataFields.coin:institution_id");
+                .fields()
+                .include("type")
+                .include("revision.number")
+                .include("revision.parentId")
+                .include("revision.created")
+                .include("revision.terminated")
+                .include("data.eid")
+                .include("data.state")
+                .include("data.entityid")
+                .include("data.allowedall")
+                .include("data.allowedEntities")
+                .include("data.metaDataFields.coin:institution_id");
+        this.languages.forEach(language -> query.fields().include("data.metaDataFields.name" + language));
+
         return query;
     }
 
@@ -281,7 +278,7 @@ public class StatsController {
             throw new RuntimeException(String.format("Identifier %s does not exists in Map %s", identifier, map));
         }
         throw new RuntimeException(String.format("Identifier %s exists in Map %s but is of type %s", identifier, map,
-            id.getClass().getName()));
+                id.getClass().getName()));
     }
 
 }

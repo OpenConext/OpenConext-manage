@@ -144,6 +144,7 @@ I18n.translations.en = {
         description: "Add only those {{type}} which are allowed to access {{name}}.",
         searchPlaceHolder_saml20_idp: "Search for whitelisted Service Providers...",
         searchPlaceHolder_saml20_sp: "Search for whitelisted Identity Providers...",
+        removedWhiteListedEntities: "Removed entities from the whitelist",
         allowedEntries: {
             blocked: "Blocked",
             status: "Status",

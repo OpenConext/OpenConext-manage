@@ -55,6 +55,10 @@ export default class WhiteList extends React.Component {
 
     enrichAllowedEntry = (allowedEntry, entityId, whiteListing) => {
         const moreInfo = whiteListing.find(entry => entry.data.entityid === allowedEntry.name);
+        return this.doEnrichEntity(moreInfo, allowedEntry.name);
+    };
+
+    doEnrichEntity = (moreInfo, entityId) => {
         if (moreInfo === undefined) {
             //this can happen as SP's are deleted
             return null;
@@ -63,7 +67,7 @@ export default class WhiteList extends React.Component {
             "blocked": !moreInfo.data.allowedall && !(moreInfo.data.allowedEntities || [])
                 .some(allowed => allowed.name === entityId),
             "status": I18n.t(`metadata.${moreInfo.data.state}`),
-            "entityid": allowedEntry.name,
+            "entityid": entityId,
             "name": moreInfo.data.metaDataFields["name:en"] || moreInfo.data.metaDataFields["name:nl"] || "",
             "id": moreInfo["_id"],
             "notes": moreInfo.data.notes
@@ -118,27 +122,31 @@ export default class WhiteList extends React.Component {
     };
 
     addAllowedEntry = allowedEntryEntityId => {
-        const {allowedAll, allowedEntities = [], entityId, whiteListing} = this.props;
-        const newState = [...allowedEntities].concat({name: allowedEntryEntityId});
+        const {allowedAll, allowedEntities = [], entityId, whiteListing, onChangeWhiteListedEntity} = this.props;
+        const newState = [...allowedEntities];
+        newState.unshift({name: allowedEntryEntityId});
         if (allowedAll) {
             this.props.onChange(["data.allowedEntities", "data.allowedall"], [newState, false]);
         } else {
             this.props.onChange("data.allowedEntities", newState);
         }
 
-        const newAllowedEntries = [...this.state.enrichedAllowedEntries]
-            .concat(this.enrichAllowedEntry({name: allowedEntryEntityId}, entityId, whiteListing));
+        const newAllowedEntries = [...this.state.enrichedAllowedEntries];
+        const newEntry = this.enrichAllowedEntry({name: allowedEntryEntityId}, entityId, whiteListing);
+        newAllowedEntries.unshift(newEntry);
         this.setAllowedEntryState(newAllowedEntries);
+        onChangeWhiteListedEntity(true, newEntry);
     };
 
     removeAllowedEntry = allowedEntry => {
-        const {allowedEntities = []} = this.props;
+        const {allowedEntities = [], onChangeWhiteListedEntity} = this.props;
         const newState = [...allowedEntities].filter(entity => entity.name !== allowedEntry.entityid);
         this.props.onChange("data.allowedEntities", newState);
 
         const newAllowedEntries = [...this.state.enrichedAllowedEntries]
             .filter(entity => entity.entityid !== allowedEntry.entityid);
         this.setAllowedEntryState(newAllowedEntries);
+        onChangeWhiteListedEntity(false, allowedEntry);
     };
 
     onChange = name => value => {
@@ -150,7 +158,7 @@ export default class WhiteList extends React.Component {
     };
 
     allowAllChanged = e => {
-        const {allowedEntities = [], name, type} = this.props;
+        const {allowedEntities = [], name, type, onChange} = this.props;
         const allowedEntitiesLength = allowedEntities.length;
         const typeS = type === "saml20_sp" ? "Identity Providers" : "Service Providers";
         if (e.target.checked) {
@@ -161,7 +169,7 @@ export default class WhiteList extends React.Component {
                     confirmationValue: true
                 });
             } else {
-                this.props.onChange(["data.allowedEntities", "data.allowedall"], [[], true]);
+                onChange(["data.allowedEntities", "data.allowedall"], [[], true]);
             }
         } else if (allowedEntitiesLength > 0) {
             this.setState({
@@ -170,7 +178,7 @@ export default class WhiteList extends React.Component {
                 confirmationValue: false
             });
         } else {
-            this.props.onChange("data.allowedall", false);
+            onChange("data.allowedall", false);
         }
     };
 
@@ -186,8 +194,9 @@ export default class WhiteList extends React.Component {
         this.setState({enrichedAllowedEntriesFiltered: sorted, sorted: name, reverse: reverse});
     };
 
-    renderAllowedEntity = (entity, type, guest) => {
-        return <tr key={entity.entityid}>
+    renderAllowedEntity = (entity, type, guest, addedWhiteListedEntities) => {
+        const className = addedWhiteListedEntities.some(e => e.entityid === entity.entityid) ? "added" : "";
+        return <tr key={entity.entityid} className={className}>
             <td className="remove">
                 {!guest && <span><a onClick={e => {
                     stop(e);
@@ -213,7 +222,37 @@ export default class WhiteList extends React.Component {
         </tr>
     };
 
-    renderAllowedEntitiesTable = (enrichedAllowedEntries, type, guest) => {
+    renderRemovedEntities = (removedWhiteListedEntities, whiteListing, type) => {
+        const entityType = type === "saml20_sp" ? "saml20_idp" : "saml20_sp";
+        return (
+            <section className="removed-entities">
+                <p>{I18n.t("whitelisting.removedWhiteListedEntities")}</p>
+                <table>
+                    <tbody>
+                    {removedWhiteListedEntities.map(entity =>
+                        <tr key={entity.entityid}>
+                            <td>
+                                <Link to={`/metadata/${entityType}/${entity.id}`} target="_blank">{entity.name}</Link>
+                            </td>
+                            <td>
+                                {entity.status}
+                            </td>
+                            <td>
+                                {entity.entityid}
+                            </td>
+                            <td className="info">
+                                {isEmpty(entity.notes) ? <span></span> :
+                                    <NotesTooltip identifier={entity.entityid} notes={entity.notes}/>}
+                            </td>
+                        </tr>
+                    )}
+                    </tbody>
+                </table>
+            </section>
+        );
+    };
+
+    renderAllowedEntitiesTable = (enrichedAllowedEntries, type, guest, addedWhiteListedEntities) => {
         const {sorted, reverse} = this.state;
         const icon = name => {
             return name === sorted ? (reverse ? <i className="fa fa-arrow-up reverse"></i> :
@@ -224,6 +263,7 @@ export default class WhiteList extends React.Component {
             <th key={name} className={name}
                 onClick={this.sortTable(enrichedAllowedEntries, name)}>{I18n.t(`whitelisting.allowedEntries.${name}`)}{icon(name)}</th>
         const names = ["blocked", "status", "name", "entityid", "notes"];
+        const entityType = type === "saml20_sp" ? "saml20_idp" : "saml20_sp";
         return <section className="allowed-entities">
             <table>
                 <thead>
@@ -233,7 +273,8 @@ export default class WhiteList extends React.Component {
                 </tr>
                 </thead>
                 <tbody>
-                {enrichedAllowedEntries.map(entity => this.renderAllowedEntity(entity, type === "saml20_sp" ? "saml20_idp" : "saml20_sp", guest))}
+                {enrichedAllowedEntries
+                    .map(entity => this.renderAllowedEntity(entity, entityType, guest, addedWhiteListedEntities))}
                 </tbody>
             </table>
 
@@ -250,7 +291,8 @@ export default class WhiteList extends React.Component {
             }</section>;
 
     render() {
-        const {allowedAll, allowedEntities = [], whiteListing, name, type, guest} = this.props;
+        const {allowedAll, allowedEntities = [], whiteListing, name, type, guest, addedWhiteListedEntities, removedWhiteListedEntities}
+            = this.props;
         const providerType = type === "saml20_sp" ? "Identity Providers" : "Service Providers";
         const {
             confirmationDialogOpen, confirmationDialogQuestion, enrichedAllowedEntriesFiltered,
@@ -279,6 +321,8 @@ export default class WhiteList extends React.Component {
                     <h2>{I18n.t("whitelisting.title", {type: providerType})}</h2>
                     {!guest && <p>{I18n.t("whitelisting.description", {type: providerType, name: name})}</p>}
                 </div>
+                {removedWhiteListedEntities.length > 0 && this.renderRemovedEntities(removedWhiteListedEntities, whiteListing, type)}
+
                 {!guest && <SelectEntities whiteListing={whiteListing} allowedEntities={allowedEntities}
                                            onChange={this.addAllowedEntry} placeholder={placeholder}/>}
                 <div className="search-input-container">
@@ -289,7 +333,8 @@ export default class WhiteList extends React.Component {
                            value={query}/>
                     <i className="fa fa-search"></i>
                 </div>
-                {enrichedAllowedEntriesFiltered.length > 0 && this.renderAllowedEntitiesTable(enrichedAllowedEntriesFiltered, type, guest)}
+                {enrichedAllowedEntriesFiltered.length > 0
+                && this.renderAllowedEntitiesTable(enrichedAllowedEntriesFiltered, type, guest, addedWhiteListedEntities)}
                 {this.renderAllowedEntitiesTablePrintable(enrichedAllowedEntriesFiltered)}
             </div>
         );
@@ -304,6 +349,9 @@ WhiteList.propTypes = {
     allowedEntities: PropTypes.array.isRequired,
     allowedAll: PropTypes.bool.isRequired,
     onChange: PropTypes.func.isRequired,
-    guest: PropTypes.bool.isRequired
+    guest: PropTypes.bool.isRequired,
+    addedWhiteListedEntities: PropTypes.array.isRequired,
+    removedWhiteListedEntities: PropTypes.array.isRequired,
+    onChangeWhiteListedEntity: PropTypes.func.isRequired
 };
 

@@ -55,10 +55,12 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Collections.singletonMap;
+import static java.util.stream.Collectors.toList;
 import static manage.api.Scope.TEST;
 import static manage.mongo.MongobeeConfiguration.REVISION_POSTFIX;
 
@@ -85,12 +87,15 @@ public class MetaDataController {
                               ResourceLoader resourceLoader,
                               MetaDataHook metaDataHook,
                               Environment environment,
-                              @Value("${metadata_export_path}") String metadataExportPath) {
+                              @Value("${metadata_export_path}") String metadataExportPath,
+                              @Value("${product.supported_languages}") String supportedLanguages) {
         this.metaDataRepository = metaDataRepository;
         this.metaDataAutoConfiguration = metaDataAutoConfiguration;
         this.metaDataHook = metaDataHook;
-        this.importer = new Importer(metaDataAutoConfiguration);
-        this.exporter = new Exporter(Clock.systemDefaultZone(), resourceLoader, metadataExportPath);
+        List<String> languages = Stream.of(supportedLanguages.split(",")).map(String::trim).collect(toList());
+
+        this.importer = new Importer(metaDataAutoConfiguration, languages);
+        this.exporter = new Exporter(Clock.systemDefaultZone(), resourceLoader, metadataExportPath, languages);
         this.environment = environment;
 
     }
@@ -192,7 +197,7 @@ public class MetaDataController {
 
             List<Map<String, Object>> allImports = this.importer.importFeed(resource);
             List<Map<String, Object>> imports =
-                    allImports.stream().filter(m -> !m.isEmpty()).collect(Collectors.toList());
+                    allImports.stream().filter(m -> !m.isEmpty()).collect(toList());
 
             Map<String, List> results = new HashMap<>();
             EntityType entityType = EntityType.SP;
@@ -243,11 +248,11 @@ public class MetaDataController {
             List<ServiceProvider> notInFeedAnymore = serviceProviderMap.values().stream()
                     .filter(sp -> sp.isImportedFromEduGain() &&
                             !imports.stream().anyMatch(map -> sp.getEntityId().equals(map.get("entityid"))))
-                    .collect(Collectors.toList());
+                    .collect(toList());
             notInFeedAnymore.forEach(sp -> this.doRemove(entityType.getType(), sp.getId(), "edugain-import"));
 
             List deleted = results.computeIfAbsent("deleted", s -> new ArrayList());
-            deleted.addAll(notInFeedAnymore.stream().map(sp -> sp.getEntityId()).collect(Collectors.toList()));
+            deleted.addAll(notInFeedAnymore.stream().map(sp -> sp.getEntityId()).collect(toList()));
 
             results.put("total", Collections.singletonList(imports.size()));
 
@@ -532,7 +537,7 @@ public class MetaDataController {
         properties.remove(LOGICAL_OPERATOR_IS_AND);
         List<Map> search = metaDataRepository.search(type, properties, requestedAttributes, allAttributes,
                 logicalOperatorIsAnd);
-        return nested ? search.stream().map(m -> exporter.nestMetaData(m, type)).collect(Collectors.toList()) : search;
+        return nested ? search.stream().map(m -> exporter.nestMetaData(m, type)).collect(toList()) : search;
     }
 
     @GetMapping({"/client/rawSearch/{type}", "/internal/rawSearch/{type}"})

@@ -22,9 +22,11 @@ import static org.junit.Assert.assertTrue;
 @SuppressWarnings("unchecked")
 public class ExporterTest implements TestUtils {
 
-    private Exporter subject = new Exporter(Clock.fixed(Instant.from(DateTimeFormatter.ISO_OFFSET_DATE_TIME.parse
-        ("2017-07-14T11:15:56.857+02:00")), ZoneId.systemDefault()),
-        new DefaultResourceLoader(), "classpath:/metadata_export");
+    private Exporter subject = new Exporter(
+            Clock.fixed(Instant.from(DateTimeFormatter.ISO_OFFSET_DATE_TIME.parse("2017-07-14T11:15:56.857+02:00")), ZoneId.systemDefault()),
+            new DefaultResourceLoader(),
+            "classpath:/metadata_export",
+            Arrays.asList("nl", "en", "pt"));
 
     @Test
     public void exportToXml() throws Exception {
@@ -53,16 +55,6 @@ public class ExporterTest implements TestUtils {
     }
 
     @Test
-    public void exportToXmlWithOnlyNlOrganization() throws Exception {
-        MetaData metaData = this.metaData();
-        Map<String, Object> metaDataFields = (Map<String, Object>) metaData.getData().get("metaDataFields");
-        Arrays.asList(new String[]{"OrganizationName:en", "OrganizationURL:en", "OrganizationDisplayName:en"})
-            .forEach(s -> metaDataFields.remove(s));
-
-        doExportToXml(metaData, "/xml/expected_metadata_export_saml20_sp_org_nl.xml");
-    }
-
-    @Test
     public void exportToXmlWithClassCastExceptionAttributeConsumingService() throws IOException {
         MetaData metaData = objectMapper.readValue(readFile("/json/export_attribute_consumer.json"), MetaData.class);
         String xml = subject.exportToXml(metaData);
@@ -84,7 +76,7 @@ public class ExporterTest implements TestUtils {
 
     private MetaData metaData() throws IOException {
         return objectMapper.readValue(new ClassPathResource("/json/exported_metadata_saml20_sp.json").getInputStream
-            (), MetaData.class);
+                (), MetaData.class);
     }
 
 

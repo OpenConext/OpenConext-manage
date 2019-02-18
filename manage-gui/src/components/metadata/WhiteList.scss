@@ -58,7 +58,7 @@
     section.allowed-entities-printable {
         display: none;
     }
-    section.allowed-entities {
+    section.allowed-entities, section.removed-entities {
         margin-top: 15px;
         table {
             width: 100%;
@@ -93,8 +93,19 @@
                     text-align: center;
                 }
             }
-            tbody tr:nth-child(odd) {
-                background-color: $lightest-grey;
+            tbody tr {
+                &:nth-child(odd) {
+                    background-color: $lightest-grey;
+                }
+                &.added {
+                    background-color: #e2ffde;
+                    color:$dark-grey;
+                }
+                &.removed {
+                    background-color: #ffced1;
+                    color:$dark-grey;
+                    font-weight: bolder;
+                }
             }
             td {
                 vertical-align: middle;
@@ -110,6 +121,13 @@
                     }
                 }
             }
+        }
+    }
+    section.removed-entities {
+        margin-bottom: 25px;
+        p {
+            color: $red;
+            margin-bottom: 10px;
         }
     }
 
