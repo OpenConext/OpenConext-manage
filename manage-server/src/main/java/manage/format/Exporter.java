@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 /*
  * Thread-safe
@@ -137,15 +138,11 @@ public class Exporter {
 
     private void addOrganizationName(Map data) {
         Map metaDataFields = Map.class.cast(data.get("metaDataFields"));
-        this.languages.forEach(language -> {
-            String name = (String) metaDataFields.get("OrganizationName:" + language);
-            String displayName = (String) metaDataFields.get("OrganizationDisplayName:" + language);
-            String url = (String) metaDataFields.get("OrganizationURL:" + language);
-            if (!metaDataFields.containsKey("OrganizationInfo") || !Boolean.class.cast(metaDataFields.get("OrganizationInfo"))) {
-                metaDataFields.put("OrganizationInfo", StringUtils.hasText(name) || StringUtils.hasText(displayName) ||
-                        StringUtils.hasText(url));
-            }
-        });
+        String name = this.addLanguageFallbackValue(metaDataFields, "OrganizationName");
+        String displayName = this.addLanguageFallbackValue(metaDataFields, "OrganizationDisplayName");
+        String url = this.addLanguageFallbackValue(metaDataFields, "OrganizationName");
+        metaDataFields.put("OrganizationInfo", StringUtils.hasText(name) || StringUtils.hasText(displayName) ||
+                StringUtils.hasText(url));
     }
 
     private void addAttributeConsumingService(Map data) {
@@ -178,13 +175,22 @@ public class Exporter {
 
     private void addUIInfoExtension(Map data) {
         Map metaDataFields = Map.class.cast(data.get("metaDataFields"));
-        this.languages.forEach(language -> {
-            String name = (String) metaDataFields.get("name:" + language);
-            String description = (String) metaDataFields.get("description:" + language);
-            if (!data.containsKey("UIInfoExtension") || !Boolean.class.cast(data.get("UIInfoExtension"))) {
-                data.put("UIInfoExtension", StringUtils.hasText(name) || StringUtils.hasText(description));
+        String name = this.addLanguageFallbackValue(metaDataFields, "name");
+        String description = this.addLanguageFallbackValue(metaDataFields, "description");
+        data.put("UIInfoExtension", StringUtils.hasText(name) || StringUtils.hasText(description));
+    }
+
+    private String addLanguageFallbackValue(Map metaDataFields, String attribute) {
+        AtomicReference<String> reference = new AtomicReference<>();
+        this.languages.forEach(lang -> {
+            if (StringUtils.isEmpty(reference.get())) {
+                reference.set((String) metaDataFields.get(attribute + ":" + lang));
             }
         });
+        if (StringUtils.hasText(reference.get())) {
+            this.languages.forEach(lang -> metaDataFields.computeIfAbsent(attribute + ":" + lang, key -> reference.get()));
+        }
+        return reference.get();
     }
 
     private void addUILogo(Map data) {

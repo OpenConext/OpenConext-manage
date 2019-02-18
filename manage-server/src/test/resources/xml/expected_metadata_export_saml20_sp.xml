@@ -8,8 +8,10 @@
             <mdui:UIInfo>
                 <mdui:DisplayName xml:lang="en">SURFconext Teams | SURFnet</mdui:DisplayName>
                 <mdui:DisplayName xml:lang="nl">SURFconext Teams | SURFnet</mdui:DisplayName>
+                <mdui:DisplayName xml:lang="pt">SURFconext Teams | SURFnet</mdui:DisplayName>
                 <mdui:Description xml:lang="en">Teams for SURFconext.</mdui:Description>
                 <mdui:Description xml:lang="nl">Teams voor SURFconext.</mdui:Description>
+                <mdui:Description xml:lang="pt">Teams voor SURFconext.</mdui:Description>
                 <mdui:Logo width="500" height="300" xml:lang="en">https://static.surfconext.nl/media/sp/SURFnetdienst.png</mdui:Logo>
             </mdui:UIInfo>
         </md:Extensions>
@@ -40,8 +42,10 @@
         <md:AttributeConsumingService index="0">
             <md:ServiceName xml:lang="en">SURFconext Teams | SURFnet</md:ServiceName>
             <md:ServiceName xml:lang="nl">SURFconext Teams | SURFnet</md:ServiceName>
+            <md:ServiceName xml:lang="pt">SURFconext Teams | SURFnet</md:ServiceName>
             <md:ServiceDescription xml:lang="en">Teams for SURFconext.</md:ServiceDescription>
             <md:ServiceDescription xml:lang="nl">Teams voor SURFconext.</md:ServiceDescription>
+            <md:ServiceDescription xml:lang="pt">Teams voor SURFconext.</md:ServiceDescription>
             <md:RequestedAttribute Name="urn:mace:dir:attribute-def:displayName"/>
             <md:RequestedAttribute Name="urn:mace:dir:attribute-def:mail"/>
             <md:RequestedAttribute Name="urn:mace:dir:attribute-def:isMemberOf"/>
@@ -52,8 +56,10 @@
     <md:Organization>
         <md:OrganizationName xml:lang="en">SURFnet BV</md:OrganizationName>
         <md:OrganizationName xml:lang="nl">SURFnet BV</md:OrganizationName>
+        <md:OrganizationName xml:lang="pt">SURFnet BV</md:OrganizationName>
         <md:OrganizationDisplayName xml:lang="en">SURFnet</md:OrganizationDisplayName>
         <md:OrganizationDisplayName xml:lang="nl">SURFnet</md:OrganizationDisplayName>
+        <md:OrganizationDisplayName xml:lang="pt">SURFnet</md:OrganizationDisplayName>
         <md:OrganizationURL xml:lang="en">https://www.surfnet.nl/en/</md:OrganizationURL>
         <md:OrganizationURL xml:lang="nl">https://www.surfnet.nl/</md:OrganizationURL>
     </md:Organization>

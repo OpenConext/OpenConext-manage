@@ -55,6 +55,16 @@ public class ExporterTest implements TestUtils {
     }
 
     @Test
+    public void exportToXmlWithOnlyNlOrganization() throws Exception {
+        MetaData metaData = this.metaData();
+        Map<String, Object> metaDataFields = (Map<String, Object>) metaData.getData().get("metaDataFields");
+        Arrays.asList(new String[]{"OrganizationName:en", "OrganizationURL:en", "OrganizationDisplayName:en"})
+                .forEach(s -> metaDataFields.remove(s));
+
+        doExportToXml(metaData, "/xml/expected_metadata_export_saml20_sp_org_nl.xml");
+    }
+
+    @Test
     public void exportToXmlWithClassCastExceptionAttributeConsumingService() throws IOException {
         MetaData metaData = objectMapper.readValue(readFile("/json/export_attribute_consumer.json"), MetaData.class);
         String xml = subject.exportToXml(metaData);
