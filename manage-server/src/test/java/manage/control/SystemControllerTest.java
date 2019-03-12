@@ -1,24 +1,14 @@
 package manage.control;
 
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import io.restassured.specification.RequestSpecification;
 import manage.AbstractIntegrationTest;
-import manage.model.OrphanMetaData;
-import org.junit.Rule;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static io.restassured.RestAssured.given;
 import static org.apache.http.HttpStatus.SC_OK;
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 
