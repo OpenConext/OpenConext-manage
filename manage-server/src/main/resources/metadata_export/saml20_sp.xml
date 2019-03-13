@@ -162,6 +162,81 @@
                                      Location="{{metaDataFields.AssertionConsumerService:15:Location}}"
                                      index="{{metaDataFields.AssertionConsumerService:15:index}}{{^metaDataFields.AssertionConsumerService:15:index}}15{{/metaDataFields.AssertionConsumerService:15:index}}"/>
         {{/metaDataFields.AssertionConsumerService:15:Location}}
+        {{#metaDataFields.AssertionConsumerService:16:Location}}
+        <md:AssertionConsumerService Binding="{{metaDataFields.AssertionConsumerService:16:Binding}}"
+                                     Location="{{metaDataFields.AssertionConsumerService:16:Location}}"
+                                     index="{{metaDataFields.AssertionConsumerService:16:index}}{{^metaDataFields.AssertionConsumerService:16:index}}16{{/metaDataFields.AssertionConsumerService:16:index}}"/>
+        {{/metaDataFields.AssertionConsumerService:16:Location}}
+        {{#metaDataFields.AssertionConsumerService:17:Location}}
+        <md:AssertionConsumerService Binding="{{metaDataFields.AssertionConsumerService:17:Binding}}"
+                                     Location="{{metaDataFields.AssertionConsumerService:17:Location}}"
+                                     index="{{metaDataFields.AssertionConsumerService:17:index}}{{^metaDataFields.AssertionConsumerService:17:index}}17{{/metaDataFields.AssertionConsumerService:17:index}}"/>
+        {{/metaDataFields.AssertionConsumerService:17:Location}}
+        {{#metaDataFields.AssertionConsumerService:18:Location}}
+        <md:AssertionConsumerService Binding="{{metaDataFields.AssertionConsumerService:18:Binding}}"
+                                     Location="{{metaDataFields.AssertionConsumerService:18:Location}}"
+                                     index="{{metaDataFields.AssertionConsumerService:18:index}}{{^metaDataFields.AssertionConsumerService:18:index}}18{{/metaDataFields.AssertionConsumerService:18:index}}"/>
+        {{/metaDataFields.AssertionConsumerService:18:Location}}
+        {{#metaDataFields.AssertionConsumerService:19:Location}}
+        <md:AssertionConsumerService Binding="{{metaDataFields.AssertionConsumerService:19:Binding}}"
+                                     Location="{{metaDataFields.AssertionConsumerService:19:Location}}"
+                                     index="{{metaDataFields.AssertionConsumerService:19:index}}{{^metaDataFields.AssertionConsumerService:19:index}}19{{/metaDataFields.AssertionConsumerService:19:index}}"/>
+        {{/metaDataFields.AssertionConsumerService:19:Location}}
+        {{#metaDataFields.AssertionConsumerService:20:Location}}
+        <md:AssertionConsumerService Binding="{{metaDataFields.AssertionConsumerService:20:Binding}}"
+                                     Location="{{metaDataFields.AssertionConsumerService:20:Location}}"
+                                     index="{{metaDataFields.AssertionConsumerService:20:index}}{{^metaDataFields.AssertionConsumerService:20:index}}20{{/metaDataFields.AssertionConsumerService:20:index}}"/>
+        {{/metaDataFields.AssertionConsumerService:20:Location}}
+        {{#metaDataFields.AssertionConsumerService:21:Location}}
+        <md:AssertionConsumerService Binding="{{metaDataFields.AssertionConsumerService:21:Binding}}"
+                                     Location="{{metaDataFields.AssertionConsumerService:21:Location}}"
+                                     index="{{metaDataFields.AssertionConsumerService:21:index}}{{^metaDataFields.AssertionConsumerService:21:index}}21{{/metaDataFields.AssertionConsumerService:21:index}}"/>
+        {{/metaDataFields.AssertionConsumerService:21:Location}}
+        {{#metaDataFields.AssertionConsumerService:22:Location}}
+        <md:AssertionConsumerService Binding="{{metaDataFields.AssertionConsumerService:22:Binding}}"
+                                     Location="{{metaDataFields.AssertionConsumerService:22:Location}}"
+                                     index="{{metaDataFields.AssertionConsumerService:22:index}}{{^metaDataFields.AssertionConsumerService:22:index}}22{{/metaDataFields.AssertionConsumerService:22:index}}"/>
+        {{/metaDataFields.AssertionConsumerService:22:Location}}
+        {{#metaDataFields.AssertionConsumerService:23:Location}}
+        <md:AssertionConsumerService Binding="{{metaDataFields.AssertionConsumerService:23:Binding}}"
+                                     Location="{{metaDataFields.AssertionConsumerService:23:Location}}"
+                                     index="{{metaDataFields.AssertionConsumerService:23:index}}{{^metaDataFields.AssertionConsumerService:23:index}}23{{/metaDataFields.AssertionConsumerService:23:index}}"/>
+        {{/metaDataFields.AssertionConsumerService:23:Location}}
+        {{#metaDataFields.AssertionConsumerService:24:Location}}
+        <md:AssertionConsumerService Binding="{{metaDataFields.AssertionConsumerService:24:Binding}}"
+                                     Location="{{metaDataFields.AssertionConsumerService:24:Location}}"
+                                     index="{{metaDataFields.AssertionConsumerService:24:index}}{{^metaDataFields.AssertionConsumerService:24:index}}24{{/metaDataFields.AssertionConsumerService:24:index}}"/>
+        {{/metaDataFields.AssertionConsumerService:24:Location}}
+        {{#metaDataFields.AssertionConsumerService:25:Location}}
+        <md:AssertionConsumerService Binding="{{metaDataFields.AssertionConsumerService:25:Binding}}"
+                                     Location="{{metaDataFields.AssertionConsumerService:25:Location}}"
+                                     index="{{metaDataFields.AssertionConsumerService:25:index}}{{^metaDataFields.AssertionConsumerService:25:index}}25{{/metaDataFields.AssertionConsumerService:25:index}}"/>
+        {{/metaDataFields.AssertionConsumerService:25:Location}}
+        {{#metaDataFields.AssertionConsumerService:26:Location}}
+        <md:AssertionConsumerService Binding="{{metaDataFields.AssertionConsumerService:26:Binding}}"
+                                     Location="{{metaDataFields.AssertionConsumerService:26:Location}}"
+                                     index="{{metaDataFields.AssertionConsumerService:26:index}}{{^metaDataFields.AssertionConsumerService:26:index}}26{{/metaDataFields.AssertionConsumerService:26:index}}"/>
+        {{/metaDataFields.AssertionConsumerService:26:Location}}
+        {{#metaDataFields.AssertionConsumerService:27:Location}}
+        <md:AssertionConsumerService Binding="{{metaDataFields.AssertionConsumerService:27:Binding}}"
+                                     Location="{{metaDataFields.AssertionConsumerService:27:Location}}"
+                                     index="{{metaDataFields.AssertionConsumerService:27:index}}{{^metaDataFields.AssertionConsumerService:27:index}}27{{/metaDataFields.AssertionConsumerService:27:index}}"/>
+        {{/metaDataFields.AssertionConsumerService:27:Location}}
+        {{#metaDataFields.AssertionConsumerService:28:Location}}
+        <md:AssertionConsumerService Binding="{{metaDataFields.AssertionConsumerService:28:Binding}}"
+                                     Location="{{metaDataFields.AssertionConsumerService:28:Location}}"
+                                     index="{{metaDataFields.AssertionConsumerService:28:index}}{{^metaDataFields.AssertionConsumerService:28:index}}28{{/metaDataFields.AssertionConsumerService:28:index}}"/>
+        {{/metaDataFields.AssertionConsumerService:28:Location}}
+        {{#metaDataFields.AssertionConsumerService:29:Location}}
+	<md:AssertionConsumerService Binding="{{metaDataFields.AssertionConsumerService:29:Binding}}"
+                                     Location="{{metaDataFields.AssertionConsumerService:29:Location}}"
+                                     index="{{metaDataFields.AssertionConsumerService:29:index}}{{^metaDataFields.AssertionConsumerService:29:index}}29{{/metaDataFields.AssertionConsumerService:29:index}}"/>
+        {{/metaDataFields.AssertionConsumerService:29:Location}}
+        {{#metaDataFields.AssertionConsumerService:30:Location}}
+        <md:AssertionConsumerService Binding="{{metaDataFields.AssertionConsumerService:30:Binding}}"
+                                     Location="{{metaDataFields.AssertionConsumerService:30:Location}}"
+                                     index="{{metaDataFields.AssertionConsumerService:30:index}}{{^metaDataFields.AssertionConsumerService:30:index}}30{{/metaDataFields.AssertionConsumerService:30:index}}"/>
+        {{/metaDataFields.AssertionConsumerService:30:Location}}
         {{#AttributeConsumingService}}
         <md:AttributeConsumingService index="0">
             {{#metaDataFields.name:en}}
