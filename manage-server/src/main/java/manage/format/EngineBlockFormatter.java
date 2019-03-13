@@ -321,7 +321,7 @@ public class EngineBlockFormatter {
         final Map<String, Object> metadata = (Map<String, Object>) result.computeIfAbsent("metadata", key -> new
             TreeMap<>());
         Map<String, String> metaDataFields = (Map<String, String>) source.get("metaDataFields");
-        IntStream.range(0, 10).forEach(i -> {
+        IntStream.range(0, 30).forEach(i -> {
             String binding = metaDataFields.get("AssertionConsumerService:" + i + ":Binding");
             String location = metaDataFields.get("AssertionConsumerService:" + i + ":Location");
             String index = metaDataFields.get("AssertionConsumerService:" + i + ":index");
