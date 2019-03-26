@@ -296,7 +296,7 @@ public class EngineBlockFormatter {
         final Map<String, Object> metadata = (Map<String, Object>) result.computeIfAbsent("metadata", key -> new
             TreeMap<>());
         Map<String, Object> metaDataFields = (Map<String, Object>) source.get("metaDataFields");
-        IntStream.range(0, 5).forEach(i -> {
+        IntStream.range(0, 10).forEach(i -> {
             String allowed = String.class.cast(metaDataFields.get("shibmd:scope:" + i + ":allowed"));
             String regexp = String.class.cast(metaDataFields.get("shibmd:scope:" + i + ":regexp"));
 
