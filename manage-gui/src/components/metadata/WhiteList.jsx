@@ -63,9 +63,10 @@ export default class WhiteList extends React.Component {
             //this can happen as SP's are deleted
             return null;
         }
+        const thisEntityId = this.props.entityId;
         return {
             "blocked": !moreInfo.data.allowedall && !(moreInfo.data.allowedEntities || [])
-                .some(allowed => allowed.name === entityId),
+                .some(allowed => allowed.name === thisEntityId),
             "status": I18n.t(`metadata.${moreInfo.data.state}`),
             "entityid": entityId,
             "name": moreInfo.data.metaDataFields["name:en"] || moreInfo.data.metaDataFields["name:nl"] || "",
