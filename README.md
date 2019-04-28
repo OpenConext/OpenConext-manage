@@ -39,7 +39,7 @@ The client is build with react and to get initially started:
 ```
 cd manage-gui`
 yarn install
-arn start
+yarn start
 ```
 Browse to the [application homepage](http://localhost:3000/).
 
