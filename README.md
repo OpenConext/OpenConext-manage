@@ -15,11 +15,10 @@ Note that the original migration from Janus was removed in version 3.0.0. If you
 
 - Java 8
 - Maven 3
-- MongoDB 3.4.4
+- MongoDB 3.4.x
 - yarn 1.2.1
-- NodeJS v8.9.0 (best managed with `nvm`, current version in [.nvmrc](manage-gui/.nvmrc) or do `brew switch node 8.9.0`)
-- ansible 2.3.2.0
-- create-react-app
+- NodeJS v8.12.0 (best managed with `nvm`, current version in [.nvmrc](manage-gui/.nvmrc) or do `brew switch node 8.9.0`)
+- ansible
 
 ## [Building and running](#building-and-running)
 
@@ -37,16 +36,11 @@ to set the active profile to dev.
 ### [The manage-gui](#manage-gui)
 
 The client is build with react and to get initially started:
-
-`cd manage-gui`
-`brew install yarn;`
-`yarn install -g create-react-app`
-
-
-To run locally:
-
-`yarn start`
-
+```
+cd manage-gui`
+yarn install
+arn start
+```
 Browse to the [application homepage](http://localhost:3000/).
 
 To add new dependencies:
