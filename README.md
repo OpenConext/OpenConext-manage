@@ -28,6 +28,13 @@ Note that the original migration from Janus was removed in version 3.0.0. If you
 
 ## [Building and running](#building-and-running)
 
+### Run server and gui
+
+```
+gem install foreman
+foreman s
+```
+
 ### [The manage-server](#manage-server)
 
 This project uses Spring Boot and Maven. To run locally, type:
@@ -42,11 +49,13 @@ to set the active profile to dev.
 ### [The manage-gui](#manage-gui)
 
 The client is build with react and to get initially started:
+
 ```
-cd manage-gui`
+cd manage-gui
 yarn install
 yarn start
 ```
+
 Browse to the [application homepage](http://localhost:3000/).
 
 To add new dependencies:
