@@ -47,7 +47,7 @@ spring:
     port: 3025
   data:
     mongodb:
-      uri: mongodb://localhost:27017/metadata
+      uri: mongodb://localhost:27017/metadata_test
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
     url: jdbc:mysql://localhost/eb?autoReconnect=true&useSSL=false
