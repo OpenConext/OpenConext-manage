@@ -19,6 +19,12 @@ Note that the original migration from Janus was removed in version 3.0.0. If you
 - yarn 1.2.1
 - NodeJS v8.12.0 (best managed with `nvm`, current version in [.nvmrc](manage-gui/.nvmrc) or do `brew switch node 8.9.0`)
 - ansible
+- mysql
+
+```
+  mysql -uroot
+  create database IF NOT EXISTS eb;
+```
 
 ## [Building and running](#building-and-running)
 
