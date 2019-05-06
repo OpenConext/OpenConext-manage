@@ -81,10 +81,10 @@ public class WebSecurityConfigurer {
         @Value("${security.backdoor_password}")
         private String password;
 
-        @Value("${push.url}")
+        @Value("${push.eb.url}")
         private String pushUrl;
 
-        @Value("${push.name}")
+        @Value("${push.eb.name}")
         private String pushName;
 
         @Override

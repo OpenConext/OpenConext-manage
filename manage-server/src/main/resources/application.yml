@@ -12,11 +12,19 @@ server:
 features: push, validation, push_preview, orphans, find_my_data, bogus
 
 push:
-  url: http://localhost:9898/api/connections
-  name: OpenConext EngineBlock
-  user: user
-  password: password
-  exclude_edugain_imports: true
+  eb:
+    url: http://localhost:9898/api/connections
+    name: OpenConext EngineBlock
+    user: user
+    password: password
+    exclude_edugain_imports: true
+  oidc:
+    url: http://localhost:9898/manage/connections
+    user: manage
+    name: OpenConext OIDC-NG
+    password: secret
+    acs_location: http://localhost:9898/
+
 
 product:
   name: Manage

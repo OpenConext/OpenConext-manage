@@ -416,26 +416,39 @@
         },
         "redirectUrls": {
           "type": "array",
+          "items": {
+            "type": "string",
+            "format": "url"
+          },
           "info": "The redirect URLS of this Relying Party."
         },
         "scopes": {
           "type": "array",
+          "items": {
+            "type": "string"
+          },
           "info": "The allowed scopes for this Relying Party."
         },
         "grants": {
           "type": "array",
-          "format": "list",
+          "items": {
+            "type": "string",
+            "enum": [
+              "authorization_code",
+              "implicit",
+              "refresh_token",
+              "client_credentials"
+            ]
+          },
           "info": "The authorisation grant type's of this Relying Party."
         },
         "isResourceServer": {
-          "type": "string",
-          "format": "boolean",
+          "type": "boolean",
           "default": false,
           "info": "Must be set for this Relying Party to be marked as a Resource Server to explicitly grant access to the Introspect endpoint."
         },
         "isPublicClient": {
-          "type": "string",
-          "format": "boolean",
+          "type": "boolean",
           "default": false,
           "info": "Must be set for this Relying Party to be marked as a Public Client to explicitly allow the Proof Key for Code Exchange (PKCE) flow."
         },

@@ -15,10 +15,10 @@ import static org.junit.Assert.assertEquals;
 @SuppressWarnings("unchecked")
 public class SystemControllerTest extends AbstractIntegrationTest {
 
-    @Value("${push.user}")
+    @Value("${push.eb.user}")
     private String pushUser;
 
-    @Value("${push.password}")
+    @Value("${push.eb.password}")
     private String pushPassword;
 
     @Test

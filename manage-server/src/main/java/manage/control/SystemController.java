@@ -78,10 +78,10 @@ public class SystemController {
     public SystemController(MetaDataRepository metaDataRepository,
                             MetaDataValidator metaDataValidator,
                             DataSource ebDataSource,
-                            @Value("${push.url}") String pushUri,
-                            @Value("${push.user}") String user,
-                            @Value("${push.password}") String password,
-                            @Value("${push.exclude_edugain_imports}") boolean excludeEduGainImported,
+                            @Value("${push.eb.url}") String pushUri,
+                            @Value("${push.eb.user}") String user,
+                            @Value("${push.eb.password}") String password,
+                            @Value("${push.eb.exclude_edugain_imports}") boolean excludeEduGainImported,
                             Environment environment) throws MalformedURLException {
         this.metaDataRepository = metaDataRepository;
         this.pushUri = pushUri;
