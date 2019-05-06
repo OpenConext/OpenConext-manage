@@ -318,7 +318,6 @@ public class EngineBlockFormatter {
                 }
                 scopeContainer.add(scope);
             }
-
         });
     }
 
