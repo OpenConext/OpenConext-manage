@@ -2,7 +2,7 @@ language: java
 jdk:
 - oraclejdk8
 node_js:
-- '7'
+- '8'
 services:
 - mysql
 
@@ -21,7 +21,7 @@ before_install:
 - tar xzf mongodb-linux-x86_64-${MONGODB}.tgz
 - ${PWD}/mongodb-linux-x86_64-${MONGODB}/bin/mongod --version
 - pip install --user codecov
-- nvm install 7
+- nvm install 8
 - npm install -g yarn
 - yarn install
 install:
