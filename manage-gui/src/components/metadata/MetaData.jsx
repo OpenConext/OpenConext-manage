@@ -61,7 +61,7 @@ export default class MetaData extends React.Component {
   renderMetaDataValue = (key, value, keyConfiguration, guest) => {
     const autoFocus = this.state.newMetaDataFieldKey === key;
 
-    const stringInput = (
+    const stringInput = () => (
       <input
         ref={ref => this.newMetaDataFieldRendered(ref, autoFocus)}
         type="text"
@@ -72,7 +72,7 @@ export default class MetaData extends React.Component {
       />
     );
 
-    const multipleStringsInput = (
+    const multipleStringsInput = () => (
       <MultipleStrings
         autofocus={autoFocus}
         onChange={values => this.doChange(key, values)}
@@ -81,7 +81,7 @@ export default class MetaData extends React.Component {
       />
     );
 
-    const selectInput = (options, multiple = false) => (
+    const selectInput = () => (options, multiple = false) => (
       <SelectEnum
         multiple={multiple}
         autofocus={autoFocus}
@@ -92,7 +92,7 @@ export default class MetaData extends React.Component {
       />
     );
 
-    const formatInput = (
+    const formatInput = () => (
       <FormatInput
         autofocus={autoFocus}
         name={key}
@@ -105,7 +105,7 @@ export default class MetaData extends React.Component {
       />
     );
 
-    const booleanInput = (
+    const booleanInput = () => (
       <CheckBox
         autofocus={autoFocus}
         onChange={e => this.doChange(key, e.target.checked)}
@@ -117,15 +117,15 @@ export default class MetaData extends React.Component {
 
     switch (keyConfiguration.type) {
       case "boolean":
-        return booleanInput;
+        return booleanInput();
       case "array":
         return keyConfiguration.items.enum
           ? selectInput(keyConfiguration.items.enum, true)
-          : multipleStringsInput;
+          : multipleStringsInput();
       default:
         if (keyConfiguration.enum) return selectInput(keyConfiguration.enum);
-        if (keyConfiguration.format) return formatInput;
-        return stringInput;
+        if (keyConfiguration.format) return formatInput();
+        return stringInput();
     }
   };
 
