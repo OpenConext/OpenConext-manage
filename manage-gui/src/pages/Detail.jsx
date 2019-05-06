@@ -2,15 +2,18 @@ import React from "react";
 import I18n from "i18n-js";
 import PropTypes from "prop-types";
 
-import ARP from "../components/metadata/ARP";
-import Connection from "../components/metadata/Connection";
-import ConsentDisabling from "../components/metadata/ConsentDisabling";
-import Manipulation from "../components/metadata/Manipulation";
-import MetaData from "../components/metadata/MetaData";
-import WhiteList from "../components/metadata/WhiteList";
-import Revisions from "../components/metadata/Revisions";
-import Export from "../components/metadata/Export";
-import Import from "../components/metadata/Import";
+import {
+  ARP,
+  ConnectedIdps,
+  Connection,
+  ConsentDisabling,
+  Export,
+  Import,
+  Manipulation,
+  MetaData,
+  Revisions,
+  WhiteList
+} from "../components/metadata";
 
 import ConfirmationDialog from "../components/ConfirmationDialog";
 
@@ -27,7 +30,6 @@ import { isEmpty, stop } from "../utils/Utils";
 import { setFlash } from "../utils/Flash";
 
 import "./Detail.css";
-import ConnectedIdps from "../components/metadata/ConnectedIdps";
 
 const tabsSp = [
   "connection",
