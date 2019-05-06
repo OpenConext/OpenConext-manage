@@ -33,8 +33,10 @@ I18n.translations.en = {
     metadata: {
         saml20_sp: "Service Providers",
         saml20_idp: "Identity Providers",
+        oidc10_rp: "OpenID Connect Providers",
         saml20_sp_single: "Service Provider",
         saml20_idp_single: "Identity Provider",
+        oidc10_rp_single: "OpenID Connect Provider",
         saml20_sp_revision_single: "Service Provider",
         saml20_idp_revision_single: "Identity Provider",
         single_tenant_template: "Single Tenant Templates",
