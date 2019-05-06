@@ -416,12 +416,10 @@
         },
         "redirectUrls": {
           "type": "array",
-          "format": "list",
           "info": "The redirect URLS of this Relying Party."
         },
         "scopes": {
           "type": "array",
-          "format": "list",
           "info": "The allowed scopes for this Relying Party."
         },
         "grants": {

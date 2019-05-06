@@ -41,7 +41,8 @@ export default class Autocomplete extends React.PureComponent {
                 }
                 {showSuggestions &&
                 <div>
-                    {moreToShow && <em className="resultsLimited">{I18n.t("metadata_autocomplete.results_limited")}</em>}
+                    {moreToShow &&
+                    <em className="resultsLimited">{I18n.t("metadata_autocomplete.results_limited")}</em>}
                     <table className="result">
                         <thead>
                         <tr>
