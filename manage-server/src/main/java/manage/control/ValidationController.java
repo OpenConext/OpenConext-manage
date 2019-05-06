@@ -8,6 +8,7 @@ import manage.validations.ListFormatValidator;
 import manage.validations.LocalEmailFormatValidator;
 import manage.validations.NoopFormatValidator;
 import manage.validations.NumberFormatValidator;
+import manage.validations.PasswordFormatValidator;
 import manage.validations.PatternFormatValidator;
 import manage.validations.URLFormatValidator;
 import manage.validations.UUIDFormatValidator;
@@ -43,7 +44,8 @@ public class ValidationController {
                 new UUIDFormatValidator(),
                 new NoopFormatValidator(),
                 new PatternFormatValidator(),
-                new ListFormatValidator())
+                new ListFormatValidator(),
+                new PasswordFormatValidator())
                 .stream()
                 .collect(toMap(FormatValidator::formatName, Function.identity()));
     }

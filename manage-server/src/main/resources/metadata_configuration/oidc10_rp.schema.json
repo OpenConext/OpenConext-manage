@@ -415,17 +415,17 @@
           "info": "The secret of this Relying Party for authentication purposes."
         },
         "redirectUrls": {
-          "type": "string",
+          "type": "array",
           "format": "list",
           "info": "The redirect URLS of this Relying Party."
         },
         "scopes": {
-          "type": "string",
+          "type": "array",
           "format": "list",
           "info": "The allowed scopes for this Relying Party."
         },
         "grants": {
-          "type": "string",
+          "type": "array",
           "format": "list",
           "info": "The authorisation grant type's of this Relying Party."
         },
@@ -442,13 +442,13 @@
           "info": "Must be set for this Relying Party to be marked as a Public Client to explicitly allow the Proof Key for Code Exchange (PKCE) flow."
         },
         "accessTokenValidity": {
-          "type": "string",
+          "type": "number",
           "format": "number",
           "default": 3600,
           "info": "The number of seconds that a new access token is valid for this Relying Party."
         },
         "refreshTokenValidity": {
-          "type": "string",
+          "type": "number",
           "format": "number",
           "default": 3600,
           "info": "The number of seconds that a new refresh token is valid for this Relying Party."
