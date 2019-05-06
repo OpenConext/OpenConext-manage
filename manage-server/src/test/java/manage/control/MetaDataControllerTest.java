@@ -3,7 +3,6 @@ package manage.control;
 import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 import manage.AbstractIntegrationTest;
-import manage.hook.OpenIdConnectHook;
 import manage.model.EntityType;
 import manage.model.Import;
 import manage.model.MetaData;
@@ -16,7 +15,11 @@ import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import static io.restassured.RestAssured.given;
@@ -24,7 +27,11 @@ import static manage.control.MetaDataController.ALL_ATTRIBUTES;
 import static manage.control.MetaDataController.LOGICAL_OPERATOR_IS_AND;
 import static manage.control.MetaDataController.REQUESTED_ATTRIBUTES;
 import static manage.hook.OpenIdConnectHook.OIDC_CLIENT_KEY;
-import static org.apache.http.HttpStatus.*;
+import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
+import static org.apache.http.HttpStatus.SC_FORBIDDEN;
+import static org.apache.http.HttpStatus.SC_INTERNAL_SERVER_ERROR;
+import static org.apache.http.HttpStatus.SC_NOT_FOUND;
+import static org.apache.http.HttpStatus.SC_OK;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.is;
@@ -461,6 +468,23 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 .then()
                 .statusCode(SC_OK)
                 .body("size()", is(3));
+    }
+
+    @Test
+    public void searchOidcRp() throws Exception {
+        Map<String, Object> searchOptions = new HashMap<>();
+        searchOptions.put("entityid", "https@//oidc.rp");
+        searchOptions.put(ALL_ATTRIBUTES, true);
+
+        given()
+                .when()
+                .body(searchOptions)
+                .header("Content-type", "application/json")
+                .post("manage/api/client/search/oidc10_rp")
+                .then()
+                .statusCode(SC_OK)
+                .body("size()", is(1))
+                .body("[0].data.metaDataFields.'scopes'", hasItems("oidc", "groups"));
     }
 
     @Test
