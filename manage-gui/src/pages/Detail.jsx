@@ -31,35 +31,22 @@ import { setFlash } from "../utils/Flash";
 
 import "./Detail.css";
 
+const tabDefaults = ["connection", "metadata", "revisions", "import", "export"];
+
 const tabsSp = [
-  "connection",
+  ...tabDefaults,
   "connected_idps",
-  "metadata",
   "arp",
   "whitelist",
-  "manipulation",
-  "revisions",
-  "import",
-  "export"
-];
-const tabsSingleTenant = [
-  "connection",
-  "metadata",
-  "arp",
-  "revisions",
-  "import",
-  "export"
+  "manipulation"
 ];
 const tabsIdP = [
-  "connection",
+  ...tabDefaults,
   "whitelist",
   "consent_disabling",
-  "metadata",
-  "manipulation",
-  "revisions",
-  "import",
-  "export"
+  "manipulation"
 ];
+const tabsSingleTenant = [...tabDefaults, "arp"];
 
 export default class Detail extends React.PureComponent {
   constructor(props) {
