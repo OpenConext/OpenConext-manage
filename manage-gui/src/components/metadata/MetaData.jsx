@@ -36,15 +36,7 @@ export default class MetaData extends React.Component {
     }
   };
 
-  onChange = key => value => this.doChange(key, value);
-
   onError = key => value => this.props.onError(key, value);
-
-  onChangeInputEvent = key => e => this.doChange(key, e.target.value);
-
-  //Legacy issue with current metadata
-  onChangeCheckEvent = key => e =>
-    this.doChange(key, e.target.checked ? "1" : "0");
 
   doChange = (key, value) => {
     this.props.onChange(`data.metaDataFields.${key}`, value);
@@ -64,67 +56,60 @@ export default class MetaData extends React.Component {
 
   renderMetaDataValue = (key, value, keyConfiguration, guest) => {
     const autoFocus = this.state.newMetaDataFieldKey === key;
-    const isError = (this.props.errors[key] && !isEmpty(value)) || false;
-    if (
-      keyConfiguration.type === "string" &&
-      keyConfiguration.format !== "boolean"
-    ) {
-      if (!keyConfiguration.format && !keyConfiguration.enum) {
-        return (
-          <input
-            ref={ref => this.newMetaDataFieldRendered(ref, autoFocus)}
-            type="text"
-            name={key}
-            value={value}
-            onChange={this.onChangeInputEvent(key)}
-            disabled={guest}
-          />
-        );
-      } else if (keyConfiguration.enum) {
-        return (
-          <SelectEnum
-            autofocus={autoFocus}
-            onChange={this.onChange(key)}
-            state={value}
-            enumValues={keyConfiguration.enum}
-            disabled={guest}
-          />
-        );
-      } else if (keyConfiguration.format) {
-        return (
-          <FormatInput
-            autofocus={autoFocus}
-            name={key}
-            input={value}
-            format={keyConfiguration.format}
-            onChange={this.onChange(key)}
-            onError={this.onError(key)}
-            isError={isError}
-            readOnly={guest}
-          />
-        );
-      }
-    } else if (keyConfiguration.format === "boolean") {
-      return (
-        <CheckBox
-          autofocus={autoFocus}
-          onChange={this.onChangeCheckEvent(key)}
-          value={value === "1" ? true : false}
-          name={key}
-          readOnly={guest}
-        />
-      );
-    }
-    return (
+
+    const stringInput = (
       <input
-        ref={ref => this.newMetaDataFieldRendered(ref, false)}
+        ref={ref => this.newMetaDataFieldRendered(ref, autoFocus)}
         type="text"
         name={key}
         value={value}
-        onChange={this.onChangeInputEvent(key)}
+        onChange={e => this.doChange(key, e.target.value)}
         disabled={guest}
       />
     );
+
+    const selectInput = (
+      <SelectEnum
+        autofocus={autoFocus}
+        onChange={value => this.doChange(key, value)}
+        state={value}
+        enumValues={keyConfiguration.enum}
+        disabled={guest}
+      />
+    );
+
+    const formatInput = (
+      <FormatInput
+        autofocus={autoFocus}
+        name={key}
+        input={value}
+        format={keyConfiguration.format}
+        onChange={value => this.doChange(key, value)}
+        onError={this.onError(key)}
+        isError={(this.props.errors[key] && !isEmpty(value)) || false}
+        readOnly={guest}
+      />
+    );
+
+    const booleanInput = (
+      <CheckBox
+        autofocus={autoFocus}
+        onChange={e => this.doChange(key, e.target.checked)}
+        value={value}
+        name={key}
+        readOnly={guest}
+      />
+    );
+
+    switch (keyConfiguration.type) {
+      case "boolean":
+        return booleanInput;
+      case "string":
+        if (keyConfiguration.enum) return selectInput;
+        if (keyConfiguration.format) return formatInput;
+      default:
+        return stringInput;
+    }
   };
 
   metaDataFieldConfiguration = (key, configuration) => {
@@ -259,15 +244,10 @@ export default class MetaData extends React.Component {
 
   getDefaultValueForKey = (key, configuration) => {
     const keyConf = this.metaDataFieldConfiguration(key, configuration);
-    if (keyConf.enum) {
-      return keyConf.default || "";
-    }
-    if (keyConf.format === "boolean") {
-      return keyConf.default || "0";
-    }
-    if (keyConf.format === "date-time") {
-      return new Date().toISOString();
-    }
+
+    if (keyConf.type === "boolean") return keyConf.default;
+    if (keyConf.format === "date-time") return new Date().toISOString();
+
     return keyConf.default || "";
   };
 

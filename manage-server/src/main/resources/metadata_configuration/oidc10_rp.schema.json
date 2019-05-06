@@ -241,20 +241,17 @@
           "info": "The height of the logo found at logo:0:url in pixels."
         },
         "coin:push_enabled": {
-          "type": "string",
-          "format": "boolean",
+          "type": "boolean",
           "default": false,
           "info": "Must be set for this Service Provider to be included in the EB push despite being imported from eduGAIN."
         },
         "coin:exclude_from_push": {
-          "type": "string",
-          "format": "boolean",
+          "type": "boolean",
           "default": false,
           "info": "Must be set for this Service Provider to be excluded in the EB push."
         },
         "coin:additional_logging": {
-          "type": "string",
-          "format": "boolean",
+          "type": "boolean",
           "info": "Set to get an extended form of logging."
         },
         "coin:institution_id": {
@@ -267,10 +264,9 @@
           "info": "This is a 128 bit number also known as a globally unique identifier (GUID or UUID) for this service."
         },
         "coin:no_consent_required": {
-          "type": "string",
-          "format": "boolean",
+          "type": "boolean",
           "info": "Select this option to skip the consent for a user.",
-          "default": "1"
+          "default": true
         },
         "coin:eula": {
           "type": "string",
@@ -278,18 +274,15 @@
           "info": "The URL to the end-user license agreement (EULA) of the service provider."
         },
         "coin:ss:idp_visible_only": {
-          "type": "string",
-          "format": "boolean",
+          "type": "boolean",
           "info": "Set to make invisible in the dashboard for institutions that are not connected to this service."
         },
         "coin:ss:aansluitovereenkomst_refused": {
-          "type": "string",
-          "format": "boolean",
+          "type": "boolean",
           "info": "Set to indicate the service in the dashboard for institutions is marked as to have disagreed to sign the aansluitovereenkomst."
         },
         "coin:ss:hidden": {
-          "type": "string",
-          "format": "boolean",
+          "type": "boolean",
           "info": "Set to make invisible in the dashboard for identity providers."
         },
         "coin:application_url": {
@@ -298,28 +291,23 @@
           "info": "The URL of the service used to log on."
         },
         "coin:supports_idp_init_login": {
-          "type": "string",
-          "format": "boolean",
+          "type": "boolean",
           "info": "The service provider supports IDP initiated login."
         },
         "coin:transparant_issuer": {
-          "type": "string",
-          "format": "boolean",
+          "type": "boolean",
           "info": "Set this to let the Engineblock use the EntityID of the IdP in stead of the EntityID of the Engineblock."
         },
         "coin:display_unconnected_idps_wayf": {
-          "type": "string",
-          "format": "boolean",
+          "type": "boolean",
           "info": "Display unconnected IdPs in the WAYF."
         },
         "coin:policy_enforcement_decision_required": {
-          "type": "string",
-          "format": "boolean",
+          "type": "boolean",
           "info": "Set to activate the user policy engine (PDP)."
         },
         "coin:attribute_aggregation_required": {
-          "type": "string",
-          "format": "boolean",
+          "type": "boolean",
           "info": "Set to activate attribute aggregation for this service."
         },
         "coin:service_team_id": {
@@ -343,8 +331,7 @@
           "info": "Explains what security measures are taken to protect data. You can also link to a page describing this."
         },
         "coin:privacy:certification": {
-          "type": "string",
-          "format": "boolean",
+          "type": "boolean",
           "info": "Can a Third Party Memorandum (TPM) be supplied? e.g. ISO27001/2, ISAE3402, etc."
         },
         "coin:privacy:certification_location": {
@@ -362,13 +349,11 @@
           "info": "The date until the Third Party Memorandum (TPM) is valid."
         },
         "coin:privacy:surfmarket_dpa_agreement": {
-          "type": "string",
-          "format": "boolean",
+          "type": "boolean",
           "info": "Has the service provider agreed a Data Processing Agreement (DPA) with SURFmarket?"
         },
         "coin:privacy:surfnet_dpa_agreement": {
-          "type": "string",
-          "format": "boolean",
+          "type": "boolean",
           "info": "Is the service provider willing to sign the SURF model Data Processing Agreement (DPA)?"
         },
         "coin:privacy:sn_dpa_why_not": {
@@ -376,8 +361,7 @@
           "info": "Explains why the SP answered no on the subject of the SURFmarket DPA."
         },
         "coin:privacy:privacy_policy": {
-          "type": "string",
-          "format": "boolean",
+          "type": "boolean",
           "info": "Does the SP publish an applicable privacy policy on a web page?"
         },
         "coin:privacy:privacy_policy_url": {
@@ -390,13 +374,11 @@
           "info": "Other data privacy and security information that helps the institution decide whether it is OK to connect the service."
         },
         "coin:ss:supports_strong_authentication": {
-          "type": "string",
-          "format": "boolean",
+          "type": "boolean",
           "info": "Set if StepUp is supported."
         },
         "coin:privacy:gdpr_is_in_wiki": {
-          "type": "string",
-          "format": "boolean",
+          "type": "boolean",
           "info": "Set if the 'General Data Protection Regulation' (GDPR) is available on the SURF wiki. In Dutch known as 'Algemene Verordening Gegevensbescherming' (AVG). "
         },
         "coin:ss:license_status": {
@@ -518,8 +500,7 @@
           "info": "The telephone number of the contact."
         },
         "^contacts:([0-3]{1}):isSirtfiSecurityContact$": {
-          "type": "string",
-          "format": "boolean",
+          "type": "boolean",
           "multiplicity": 4,
           "sibblingIndependent": true,
           "info": "Set the security contact for this service."
