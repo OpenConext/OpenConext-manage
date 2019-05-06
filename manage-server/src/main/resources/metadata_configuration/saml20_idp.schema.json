@@ -204,13 +204,11 @@
           "info": "The height of the logo found at logo:0:url in pixels."
         },
         "redirect.sign": {
-          "type": "string",
-          "format": "boolean",
+          "type": "boolean",
           "info": "Whether authentication request, logout requests and logout responses should be signed. The default is FALSE. This is generally set for trusted proxies like OpenID Connect Gateway."
         },
         "coin:publish_in_edugain": {
-          "type": "string",
-          "format": "boolean",
+          "type": "boolean",
           "info": "Set this for Identity Providers published in eduGAIN."
         },
         "coin:publish_in_edugain_date": {
@@ -219,8 +217,7 @@
           "info": "When to add the metadata to the eduGAIN feed. Usually the current time."
         },
         "coin:additional_logging": {
-          "type": "string",
-          "format": "boolean",
+          "type": "boolean",
           "info": "Set to get an extended form of logging."
         },
         "coin:institution_id": {
@@ -255,13 +252,11 @@
           "info": "The format in which the service expects the response. This can be transient, transparent or unspecified."
         },
         "coin:disable_scoping": {
-          "type": "string",
-          "format": "boolean",
+          "type": "boolean",
           "info": "Set to disable sending a scoping element in het authentication request to Active Directory Federation Services (ADFS) servers. Set for ADFS servers lower than 4.0."
         },
         "coin:hidden": {
-          "type": "string",
-          "format": "boolean",
+          "type": "boolean",
           "info": "Set to make the IdP hidden in the dashboard when the IdP is not connected to a service."
         },
         "coin:signature_method": {
@@ -275,8 +270,7 @@
           "info": "Select the Secure Hash Algorithm (SHA) to use for signed authentication requests sent by Engineblock to this identity provider."
         },
         "coin:exclude_from_push": {
-          "type": "string",
-          "format": "boolean",
+          "type": "boolean",
           "default": false,
           "info": "Must be set for this Identity Provider to be excluded in the EB push."
         }
@@ -320,8 +314,7 @@
           "info": "The telephoneNumber of the contact."
         },
         "^contacts:([0-3]{1}):isSirtfiSecurityContact$": {
-          "type": "string",
-          "format": "boolean",
+          "type": "boolean",
           "multiplicity": 4,
           "sibblingIndependent": true,
           "info": "Set if the contact for this Identity Provider is responsible for security."
@@ -389,8 +382,7 @@
           "info": "Select the allowed permissible attribute scope for the role. The scope is an attribute-specific concept used in Shibboleth to enhance the functionality of the attribute acceptance policy features."
         },
         "^shibmd:scope:([0-9]{1}):regexp$": {
-          "type": "string",
-          "format": "boolean",
+          "type": "boolean",
           "multiplicity": 10,
           "info": "If not set or absent, the text content of the shibmd:Scope is interpreted as the literal scope value.  If not set the scope component of each scoped attribute value processed by the service provider MUST exactly match the value of <shibmd:Scope> element. If set, the text content of the shibmd:Scope is interpreted as specifying a regular expression.  If set, the scope component of each scoped attribute value processed by the service provider MUST match the regular expression."
         }
