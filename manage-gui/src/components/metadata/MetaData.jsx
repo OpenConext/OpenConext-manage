@@ -4,10 +4,14 @@ import PropTypes from "prop-types";
 import ReactTooltip from "react-tooltip";
 import scrollIntoView from "scroll-into-view";
 
-import SelectEnum from "./SelectEnum";
+import {
+  MultipleStrings,
+  SelectEnum,
+  SelectNewMetaDataField
+} from "../metadata";
+
 import FormatInput from "./../FormatInput";
 import CheckBox from "./../CheckBox";
-import SelectNewMetaDataField from "./SelectNewMetaDataField";
 
 import { isEmpty } from "../../utils/Utils";
 import "./MetaData.css";
@@ -68,12 +72,22 @@ export default class MetaData extends React.Component {
       />
     );
 
-    const selectInput = (
+    const multipleStringsInput = (
+      <MultipleStrings
+        autofocus={autoFocus}
+        onChange={values => this.doChange(key, values)}
+        values={value}
+        disabled={guest}
+      />
+    );
+
+    const selectInput = (options, multiple = false) => (
       <SelectEnum
+        multiple={multiple}
         autofocus={autoFocus}
         onChange={value => this.doChange(key, value)}
         state={value}
-        enumValues={keyConfiguration.enum}
+        enumValues={options}
         disabled={guest}
       />
     );
@@ -104,10 +118,13 @@ export default class MetaData extends React.Component {
     switch (keyConfiguration.type) {
       case "boolean":
         return booleanInput;
-      case "string":
-        if (keyConfiguration.enum) return selectInput;
-        if (keyConfiguration.format) return formatInput;
+      case "array":
+        return keyConfiguration.items.enum
+          ? selectInput(keyConfiguration.items.enum, true)
+          : multipleStringsInput;
       default:
+        if (keyConfiguration.enum) return selectInput(keyConfiguration.enum);
+        if (keyConfiguration.format) return formatInput;
         return stringInput;
     }
   };

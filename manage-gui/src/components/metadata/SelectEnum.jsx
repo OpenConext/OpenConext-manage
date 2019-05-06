@@ -14,7 +14,14 @@ export default class SelectEnum extends React.PureComponent {
   };
 
   render() {
-    const { autofocus, disabled, enumValues, onChange, state } = this.props;
+    const {
+      autofocus,
+      disabled,
+      enumValues,
+      multiple,
+      onChange,
+      state
+    } = this.props;
     const options = enumValues.map(s => ({ value: s, label: s }));
 
     return (
@@ -22,6 +29,7 @@ export default class SelectEnum extends React.PureComponent {
         autoFocus={autofocus}
         className="select-state"
         disabled={disabled || false}
+        isMulti={multiple}
         onChange={option => option && onChange(option.value)}
         optionRenderer={this.renderOption}
         options={options}
@@ -37,6 +45,7 @@ SelectEnum.propTypes = {
   autofocus: PropTypes.bool,
   disabled: PropTypes.bool,
   enumValues: PropTypes.array.isRequired,
+  multiple: PropTypes.bool,
   onChange: PropTypes.func.isRequired,
   state: PropTypes.string.isRequired
 };
