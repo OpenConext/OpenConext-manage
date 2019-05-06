@@ -3,8 +3,6 @@ package manage.mongo;
 import com.github.mongobee.Mongobee;
 import com.github.mongobee.changeset.ChangeLog;
 import com.github.mongobee.changeset.ChangeSet;
-import com.mongodb.Mongo;
-import com.mongodb.MongoClient;
 import manage.conf.IndexConfiguration;
 import manage.conf.MetaDataAutoConfiguration;
 import manage.model.EntityType;
@@ -15,12 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
 import org.springframework.data.mongodb.core.IndexOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.convert.CustomConversions;
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.index.IndexDefinition;
@@ -31,8 +26,6 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.util.Assert;
 
 import javax.annotation.PostConstruct;
-import java.time.Instant;
-import java.time.chrono.HijrahDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -75,39 +68,7 @@ public class MongobeeConfiguration {
 
     @ChangeSet(order = "001", id = "createCollections", author = "Okke Harsta")
     public void createCollections(MongoTemplate mongoTemplate) {
-        Set<String> schemaNames = staticMetaDataAutoConfiguration.schemaNames();
-        schemaNames.forEach(schema -> {
-            if (!mongoTemplate.collectionExists(schema)) {
-                mongoTemplate.createCollection(schema);
-                staticMetaDataAutoConfiguration.indexConfigurations(schema).stream()
-                        .map(this::indexDefinition)
-                        .forEach(mongoTemplate.indexOps(schema)::ensureIndex);
-
-                String revision = schema.concat(REVISION_POSTFIX);
-                mongoTemplate.createCollection(revision);
-                mongoTemplate.indexOps(revision).ensureIndex(new Index("revision.parentId", Sort.Direction.ASC));
-            }
-        });
-        Arrays.asList("saml20_sp", "saml20_idp").forEach(collection -> {
-            IndexOperations indexOps = mongoTemplate.indexOps(collection);
-            indexOps.getIndexInfo().stream()
-                    .filter(indexInfo -> indexInfo.getName().contains("data.eid"))
-                    .forEach(indexInfo -> indexOps.dropIndex(indexInfo.getName()));
-            indexOps.ensureIndex(new Index("data.eid", Sort.Direction.ASC).unique());
-            if (indexOps.getIndexInfo().stream().anyMatch(indexInfo -> indexInfo.getName().equals("field_entityid"))) {
-                indexOps.dropIndex("field_entityid");
-            }
-            indexOps.ensureIndex(new Index("data.entityid", Sort.Direction.ASC).unique());
-            indexOps.ensureIndex(new Index("data.state", Sort.Direction.ASC));
-            indexOps.ensureIndex(new Index("data.allowedall", Sort.Direction.ASC));
-            indexOps.ensureIndex(new Index("data.allowedEntities.name", Sort.Direction.ASC));
-            indexOps.ensureIndex(new Index("metaDataFields.coin:institution_id", Sort.Direction.ASC));
-        });
-        Arrays.asList("saml20_sp_revision", "saml20_idp_revision").forEach(collection -> {
-            IndexOperations indexOps = mongoTemplate.indexOps(collection);
-            indexOps.ensureIndex(new Index("revision.parentId", Sort.Direction.ASC));
-        });
-
+        this.doCreateSchemas(mongoTemplate, Arrays.asList("saml20_sp", "saml20_idp"));
         long max = Math.max(highestEid(mongoTemplate, "saml20_idp"), highestEid(mongoTemplate, "saml20_sp"));
 
         if (mongoTemplate.collectionExists("sequences")) {
@@ -151,6 +112,54 @@ public class MongobeeConfiguration {
                     .onField("$**")
                     .build();
             mongoTemplate.indexOps(entityType.getType()).ensureIndex(textIndexDefinition);
+        });
+    }
+
+    @ChangeSet(order = "026", id = "createOIDCSchema", author = "Okke Harsta")
+    public void createOIDCSchema(MongoTemplate mongoTemplate) {
+        doCreateSchemas(mongoTemplate, Arrays.asList("oidc10_rp"));
+    }
+
+    @ChangeSet(order = "027", id = "addOidcTextIndexes", author = "Okke Harsta")
+    public void addOidcTextIndexes(MongoTemplate mongoTemplate) {
+        TextIndexDefinition textIndexDefinition = new TextIndexDefinition.TextIndexDefinitionBuilder()
+                .onField("$**")
+                .build();
+        mongoTemplate.indexOps("oidc10_rp").ensureIndex(textIndexDefinition);
+    }
+
+    private void doCreateSchemas(MongoTemplate mongoTemplate, List<String> connectionTypes) {
+        Set<String> schemaNames = staticMetaDataAutoConfiguration.schemaNames();
+        schemaNames.forEach(schema -> {
+            if (!mongoTemplate.collectionExists(schema)) {
+                mongoTemplate.createCollection(schema);
+                staticMetaDataAutoConfiguration.indexConfigurations(schema).stream()
+                        .map(this::indexDefinition)
+                        .forEach(mongoTemplate.indexOps(schema)::ensureIndex);
+
+                String revision = schema.concat(REVISION_POSTFIX);
+                mongoTemplate.createCollection(revision);
+                mongoTemplate.indexOps(revision).ensureIndex(new Index("revision.parentId", Sort.Direction.ASC));
+            }
+        });
+        connectionTypes.forEach(collection -> {
+            IndexOperations indexOps = mongoTemplate.indexOps(collection);
+            indexOps.getIndexInfo().stream()
+                    .filter(indexInfo -> indexInfo.getName().contains("data.eid"))
+                    .forEach(indexInfo -> indexOps.dropIndex(indexInfo.getName()));
+            indexOps.ensureIndex(new Index("data.eid", Sort.Direction.ASC).unique());
+            if (indexOps.getIndexInfo().stream().anyMatch(indexInfo -> indexInfo.getName().equals("field_entityid"))) {
+                indexOps.dropIndex("field_entityid");
+            }
+            indexOps.ensureIndex(new Index("data.entityid", Sort.Direction.ASC).unique());
+            indexOps.ensureIndex(new Index("data.state", Sort.Direction.ASC));
+            indexOps.ensureIndex(new Index("data.allowedall", Sort.Direction.ASC));
+            indexOps.ensureIndex(new Index("data.allowedEntities.name", Sort.Direction.ASC));
+            indexOps.ensureIndex(new Index("metaDataFields.coin:institution_id", Sort.Direction.ASC));
+        });
+        connectionTypes.stream().map(s -> s + "_revision").forEach(collection -> {
+            IndexOperations indexOps = mongoTemplate.indexOps(collection);
+            indexOps.ensureIndex(new Index("revision.parentId", Sort.Direction.ASC));
         });
     }
 

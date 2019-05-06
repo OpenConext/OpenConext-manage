@@ -22,5 +22,13 @@
     "referencedCollectionName": "allowedEntities",
     "id": "1",
     "collection": "saml20_sp"
+  },
+  {
+    "missingEntityId": "http://allowed2",
+    "referencedByEntityId": "Duis ad do",
+    "referencedByName": "OpenConext Valid SP",
+    "referencedCollectionName": "allowedEntities",
+    "id": "1",
+    "collection": "saml20_sp"
   }
 ]

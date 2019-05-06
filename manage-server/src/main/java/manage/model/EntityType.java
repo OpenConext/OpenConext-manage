@@ -7,7 +7,9 @@ import java.util.regex.Pattern;
 public enum EntityType {
 
     IDP("saml20_idp"),
-    SP("saml20_sp");
+    SP("saml20_sp"),
+    RP("saml20_sp");
+
 
     private final String type;
     private final String janusDbValue;
