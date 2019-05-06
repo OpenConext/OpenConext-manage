@@ -6,7 +6,7 @@ import SelectEntities from "./../SelectEntities";
 import Select from "react-select";
 import {stop} from "../../utils/Utils";
 
-import "react-select/dist/react-select.css";
+
 import "./ConsentDisabling.css";
 
 export default class ConsentDisabling extends React.Component {

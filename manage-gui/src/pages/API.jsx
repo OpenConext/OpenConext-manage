@@ -9,7 +9,7 @@ import "./API.css";
 import SelectNewMetaDataField from "../components/metadata/SelectNewMetaDataField";
 import debounce from "lodash.debounce";
 import Select from "react-select";
-import "react-select/dist/react-select.css";
+
 import NotesTooltip from "../components/NotesTooltip";
 import SelectNewEntityAttribute from "../components/metadata/SelectNewEntityAttribute";
 import CheckBox from "../components/CheckBox";

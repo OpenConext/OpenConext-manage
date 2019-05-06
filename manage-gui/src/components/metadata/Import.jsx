@@ -18,7 +18,7 @@ import CheckBox from "../../components/CheckBox";
 import "codemirror/lib/codemirror.css";
 import "./Import.css";
 import Select from "react-select";
-import "react-select/dist/react-select.css";
+
 
 
 export default class Import extends React.Component {

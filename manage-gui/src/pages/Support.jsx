@@ -6,7 +6,7 @@ import {includeInPush, search} from "../api";
 import {copyToClip, isEmpty, stop} from "../utils/Utils";
 import "./Support.css";
 import Select from "react-select";
-import "react-select/dist/react-select.css";
+
 import NotesTooltip from "../components/NotesTooltip";
 import CheckBox from "../components/CheckBox";
 import ConfirmationDialog from "../components/ConfirmationDialog";
