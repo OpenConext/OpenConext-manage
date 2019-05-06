@@ -42,6 +42,7 @@ import javax.sql.DataSource;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -63,9 +64,11 @@ public class SystemController {
     private static final Logger LOG = LoggerFactory.getLogger(SystemController.class);
 
     private RestTemplate restTemplate;
-    private String pushUser;
-    private String pushPassword;
     private String pushUri;
+
+    private RestTemplate oidcRestTemplate;
+    private String oidcPushUri;
+
     private boolean excludeEduGainImported;
     private MetaDataRepository metaDataRepository;
     private JdbcTemplate ebJdbcTemplate;
@@ -82,13 +85,18 @@ public class SystemController {
                             @Value("${push.eb.user}") String user,
                             @Value("${push.eb.password}") String password,
                             @Value("${push.eb.exclude_edugain_imports}") boolean excludeEduGainImported,
+                            @Value("${push.oidc.url}") String oidcPushUri,
+                            @Value("${push.oidc.user}") String oidcUser,
+                            @Value("${push.oidc.password}") String oidcPassword,
                             Environment environment) throws MalformedURLException {
         this.metaDataRepository = metaDataRepository;
         this.pushUri = pushUri;
-        this.pushUser = user;
-        this.pushPassword = password;
+        this.restTemplate = new RestTemplate(getRequestFactory(user, password));
         this.excludeEduGainImported = excludeEduGainImported;
-        this.restTemplate = new RestTemplate(getRequestFactory());
+
+        this.oidcRestTemplate = new RestTemplate(getRequestFactory(oidcUser, oidcPassword));
+        this.oidcPushUri = oidcPushUri;
+
         this.ebJdbcTemplate = new JdbcTemplate(ebDataSource);
         this.environment = environment;
         this.metaDataValidator = metaDataValidator;
@@ -125,11 +133,7 @@ public class SystemController {
                         }) : serviceProviders.stream();
 
         Map<String, Map<String, Object>> serviceProvidersToPush = metaDataStream
-                .filter(metaData -> {
-                    Map metaDataFields = metaData.metaDataFields();
-                    boolean excludeFromPush = "1".equals(metaDataFields.get("coin:exclude_from_push"));
-                    return !excludeFromPush;
-                })
+                .filter(metaData -> !excludeFromPush(metaData.metaDataFields()))
                 .collect(toMap(sp -> sp.getId(), sp -> formatter.parseServiceProvider(sp)));
 
         List<MetaData> identityProviders = metaDataRepository.getMongoTemplate().findAll(MetaData.class, "saml20_idp");
@@ -138,20 +142,29 @@ public class SystemController {
         filterOutNullDisableConsentExplanations(identityProviders);
 
         Map<String, Map<String, Object>> identityProvidersToPush = identityProviders.stream()
-                .filter(metaData -> {
-                    Map metaDataFields = metaData.metaDataFields();
-                    boolean excludeFromPush = "1".equals(metaDataFields.get("coin:exclude_from_push"));
-                    return !excludeFromPush;
-                })
+                .filter(metaData -> !excludeFromPush(metaData.metaDataFields()))
                 .collect(toMap(idp -> idp.getId(), idp -> formatter.parseIdentityProvider(idp)));
 
-        serviceProvidersToPush.putAll(identityProvidersToPush);
+        List<MetaData> oidcClients = metaDataRepository.getMongoTemplate().findAll(MetaData.class, "oidc10_rp");
+        Map<String, Map<String, Object>> oidcClientsToPush = oidcClients.stream()
+                .filter(metaData -> !excludeFromPush(metaData.metaDataFields()))
+                .collect(toMap(oidc -> oidc.getId(), oidc -> formatter.parseOidcClient(oidc)));
 
+        serviceProvidersToPush.putAll(identityProvidersToPush);
+        serviceProvidersToPush.putAll(oidcClientsToPush);
 
         Map<String, Map<String, Map<String, Object>>> results = new HashMap<>();
         results.put("connections", serviceProvidersToPush);
 
         return results;
+    }
+
+    private boolean excludeFromPush(Map metaDataFields) {
+        Object excludeFromPush = metaDataFields.getOrDefault("coin:exclude_from_push", false);
+        if (excludeFromPush instanceof String) {
+            return "1".equals(excludeFromPush);
+        }
+        return (boolean) excludeFromPush;
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -171,19 +184,17 @@ public class SystemController {
     }
 
     private ResponseEntity<Map> doPush() {
+        if (environment.acceptsProfiles("dev")) {
+            return new ResponseEntity<>(Collections.singletonMap("status", 200), HttpStatus.OK);
+        }
+
         List<Map<String, Object>> preProvidersData = ebJdbcTemplate.queryForList("SELECT * FROM " +
                 "sso_provider_roles_eb5 ORDER BY id ASC");
 
         Map<String, Map<String, Map<String, Object>>> json = this.pushPreview();
 
-        ResponseEntity<String> response;
-        HttpStatus statusCode = HttpStatus.OK;
-        if (!environment.acceptsProfiles("dev")) {
-            response = this.restTemplate.postForEntity(pushUri, json, String.class);
-            statusCode = response.getStatusCode();
-        } else {
-            response = new ResponseEntity<String>("No performed push because of dev environment", HttpStatus.OK);
-        }
+        ResponseEntity<String> response = this.restTemplate.postForEntity(pushUri, json, String.class);
+        HttpStatus statusCode = response.getStatusCode();
 
         List<Map<String, Object>> postProvidersData = ebJdbcTemplate.queryForList("SELECT * FROM " +
                 "sso_provider_roles_eb5 ORDER BY id ASC");
@@ -198,6 +209,12 @@ public class SystemController {
         result.put("status", statusCode);
         result.put("response", response);
         result.put("deltas", realDeltas);
+
+        // Now push all oidc_rp metadata to OIDC proxy
+        List<MetaData> oidcClients = metaDataRepository.getMongoTemplate().findAll(MetaData.class, "oidc10_rp");
+        if (!environment.acceptsProfiles("dev")) {
+            this.oidcRestTemplate.postForEntity(oidcPushUri, oidcClients, Void.class);
+        }
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
@@ -295,11 +312,11 @@ public class SystemController {
                 .flatMap(Function.identity());
     }
 
-    private ClientHttpRequestFactory getRequestFactory() throws MalformedURLException {
+    private ClientHttpRequestFactory getRequestFactory(String user, String password) throws MalformedURLException {
         HttpClientBuilder httpClientBuilder = HttpClientBuilder.create().evictExpiredConnections()
                 .evictIdleConnections(10l, TimeUnit.SECONDS);
         BasicCredentialsProvider basicCredentialsProvider = new BasicCredentialsProvider();
-        basicCredentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(pushUser, pushPassword));
+        basicCredentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(user, password));
         httpClientBuilder.setDefaultCredentialsProvider(basicCredentialsProvider);
         CloseableHttpClient httpClient = httpClientBuilder.build();
         return new PreemptiveAuthenticationHttpComponentsClientHttpRequestFactory(httpClient, pushUri);

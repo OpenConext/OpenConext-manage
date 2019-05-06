@@ -124,6 +124,10 @@ public class EngineBlockFormatter {
         return identityProvider;
     }
 
+    public Map<String, Object> parseOidcClient(MetaData metaDataContainer) {
+        return parseServiceProvider(metaDataContainer);
+    }
+
     private void addCommonProviderAttributes(Map<String, Object> source, Map<String, Object> result) {
         commonAttributes.forEach((key, value) -> this.addToResult(source, result, key, value));
         addLogo(source, result);
@@ -133,7 +137,7 @@ public class EngineBlockFormatter {
 
         List<Map<String, String>> allowedEntities = (List<Map<String, String>>) source.get("allowedEntities");
         result.put("allowed_connections", allowedEntities == null ? new ArrayList<>() : allowedEntities);
-        result.put("allow_all_entities", source.get("allowedall"));
+        result.put("allow_all_entities", source.getOrDefault("allowedall", false));
     }
 
     private void addLogo(Map<String, Object> source, Map<String, Object> result) {

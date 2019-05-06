@@ -1,6 +1,7 @@
 package manage.control;
 
 import manage.model.Validation;
+import manage.validations.BasicAuthenticationUsernameFormatValidator;
 import manage.validations.BooleanFormatValidator;
 import manage.validations.CertificateFormatValidator;
 import manage.validations.JSONFormatValidator;
@@ -45,7 +46,8 @@ public class ValidationController {
                 new NoopFormatValidator(),
                 new PatternFormatValidator(),
                 new ListFormatValidator(),
-                new PasswordFormatValidator())
+                new PasswordFormatValidator(),
+                new BasicAuthenticationUsernameFormatValidator())
                 .stream()
                 .collect(toMap(FormatValidator::formatName, Function.identity()));
     }

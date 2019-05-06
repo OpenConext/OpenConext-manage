@@ -37,7 +37,8 @@
       "type": "number"
     },
     "entityid": {
-      "type": "string"
+      "type": "string",
+      "format": "basic-authentication-user"
     },
     "type": {
       "type": "string",

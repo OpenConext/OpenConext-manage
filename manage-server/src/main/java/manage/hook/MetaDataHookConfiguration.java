@@ -19,8 +19,8 @@ public class MetaDataHookConfiguration {
                                 @Value("${oidc.acsLocation}") String acsLocation) {
         EntityIdReconcilerHook entityIdReconcilerHook = new EntityIdReconcilerHook(metaDataRepository);
         OpenIdConnectHook openIdConnectHook = new OpenIdConnectHook(openIdConnect, acsLocation);
-
-        return new CompositeMetaDataHook(Arrays.asList(entityIdReconcilerHook, openIdConnectHook));
+        SecretHook secretHook = new SecretHook();
+        return new CompositeMetaDataHook(Arrays.asList(entityIdReconcilerHook, openIdConnectHook, secretHook));
     }
 
 

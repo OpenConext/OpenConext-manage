@@ -490,6 +490,32 @@
       "name": "https://oidc.test.client",
       "state": "testaccepted",
       "type": "saml20-sp"
+    },
+    "9": {
+      "allow_all_entities": true,
+      "allowed_connections": [],
+      "arp_attributes": {},
+      "metadata": {
+        "name": {
+          "en": "OIDC SP"
+        }
+      },
+      "name": "https@//oidc.rp",
+      "state": "testaccepted",
+      "type": "saml20-sp"
+    },
+    "10": {
+      "allow_all_entities": true,
+      "allowed_connections": [],
+      "arp_attributes": {},
+      "metadata": {
+        "name": {
+          "en": "OIDC ResourceServer"
+        }
+      },
+      "name": "https@//oidc.rp.resourceServer",
+      "state": "testaccepted",
+      "type": "saml20-sp"
     }
   }
 }
