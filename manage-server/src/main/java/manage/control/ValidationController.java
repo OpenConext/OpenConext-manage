@@ -4,6 +4,7 @@ import manage.model.Validation;
 import manage.validations.BooleanFormatValidator;
 import manage.validations.CertificateFormatValidator;
 import manage.validations.JSONFormatValidator;
+import manage.validations.ListFormatValidator;
 import manage.validations.LocalEmailFormatValidator;
 import manage.validations.NoopFormatValidator;
 import manage.validations.NumberFormatValidator;
@@ -13,7 +14,6 @@ import manage.validations.UUIDFormatValidator;
 import manage.validations.XMLFormatValidator;
 import org.everit.json.schema.FormatValidator;
 import org.everit.json.schema.internal.DateTimeFormatValidator;
-import org.everit.json.schema.internal.EmailFormatValidator;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,17 +32,20 @@ public class ValidationController {
 
     public ValidationController() {
         this.validators = Arrays.asList(
-            new BooleanFormatValidator(),
-            new CertificateFormatValidator(),
-            new DateTimeFormatValidator(),
-            new LocalEmailFormatValidator(),
-            new NumberFormatValidator(),
-            new URLFormatValidator(),
-            new XMLFormatValidator(),
-            new JSONFormatValidator(),
-            new UUIDFormatValidator(),
-            new NoopFormatValidator(),
-            new PatternFormatValidator()).stream().collect(toMap(FormatValidator::formatName, Function.identity()));
+                new BooleanFormatValidator(),
+                new CertificateFormatValidator(),
+                new DateTimeFormatValidator(),
+                new LocalEmailFormatValidator(),
+                new NumberFormatValidator(),
+                new URLFormatValidator(),
+                new XMLFormatValidator(),
+                new JSONFormatValidator(),
+                new UUIDFormatValidator(),
+                new NoopFormatValidator(),
+                new PatternFormatValidator(),
+                new ListFormatValidator())
+                .stream()
+                .collect(toMap(FormatValidator::formatName, Function.identity()));
     }
 
     @PostMapping("/client/validation")
