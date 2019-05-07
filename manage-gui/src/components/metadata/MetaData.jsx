@@ -72,6 +72,17 @@ export default class MetaData extends React.Component {
       />
     );
 
+    const numberInput = () => (
+      <input
+        ref={ref => this.newMetaDataFieldRendered(ref, autoFocus)}
+        type="number"
+        name={key}
+        value={value}
+        onChange={e => this.doChange(key, parseInt(e.target.value, 10))}
+        disabled={guest}
+      />
+    );
+
     const multipleStringsInput = () => (
       <MultipleStrings
         autofocus={autoFocus}
@@ -105,19 +116,28 @@ export default class MetaData extends React.Component {
       />
     );
 
-    const booleanInput = () => (
-      <CheckBox
-        autofocus={autoFocus}
-        onChange={e => this.doChange(key, e.target.checked)}
-        value={value}
-        name={key}
-        readOnly={guest}
-      />
-    );
+    const booleanInput = () => {
+      // backwards compatibility
+      if (!(typeof value === 'boolean')) {
+        value = ['1', 1, 'true'].includes(value);
+      }
+
+      return (
+        <CheckBox
+          autofocus={autoFocus}
+          onChange={e => this.doChange(key, e.target.checked)}
+          value={value}
+          name={key}
+          readOnly={guest}
+          />
+      )
+    };
 
     switch (keyConfiguration.type) {
       case "boolean":
         return booleanInput();
+      case "number":
+        return numberInput();
       case "array":
         return keyConfiguration.items.enum
           ? selectInput(keyConfiguration.items.enum, true)
