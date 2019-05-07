@@ -18,7 +18,7 @@ export default class FormatInput extends React.PureComponent {
     }
 
     componentDidMount () {
-        if (this.props.autofocus) this.input.focus();
+        if (this.props.autoFocus) this.input.focus();
     }
 
     onBlur = e => {
@@ -77,7 +77,7 @@ FormatInput.propTypes = {
     onChange: PropTypes.func.isRequired,
     onError: PropTypes.func.isRequired,
     isError: PropTypes.bool.isRequired,
-    autofocus: PropTypes.bool,
+    autoFocus: PropTypes.bool,
     isRequired: PropTypes.bool,
     readOnly: PropTypes.bool
 };

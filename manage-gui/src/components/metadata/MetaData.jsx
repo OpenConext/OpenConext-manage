@@ -4,14 +4,19 @@ import PropTypes from "prop-types";
 import ReactTooltip from "react-tooltip";
 import scrollIntoView from "scroll-into-view";
 
-import {
-  MultipleStrings,
-  SelectEnum,
-  SelectNewMetaDataField
-} from "../metadata";
+import { validation } from "./../../api";
 
-import FormatInput from "./../FormatInput";
-import CheckBox from "./../CheckBox";
+import {
+  Boolean,
+  Number,
+  SelectMulti,
+  SelectOne,
+  String,
+  Strings,
+  StringWithFormat
+} from "../form";
+
+import { SelectNewMetaDataField } from "../metadata";
 
 import { isEmpty } from "../../utils/Utils";
 import "./MetaData.css";
@@ -40,112 +45,80 @@ export default class MetaData extends React.Component {
     }
   };
 
-  onError = key => value => this.props.onError(key, value);
+  validFormat(format, value) {
+    return isEmpty(value) ? true : validation(format, value);
+  }
 
-  doChange = (key, value) => {
-    this.props.onChange(`data.metaDataFields.${key}`, value);
-    this.props.onError(key, this.isRequired(key, value));
-  };
-
-  newMetaDataFieldRendered = (ref, autoFocus) => {
-    if (autoFocus) {
-      this.newMetaDataField = ref;
-    }
-  };
-
-  isRequired = (key, value) =>
-    isEmpty(value) &&
-    this.props.configuration.properties.metaDataFields.required.indexOf(key) >
+  validPresence(key, value) {
+    const isRequired =
+      this.props.configuration.properties.metaDataFields.required.indexOf(key) >
       -1;
+
+    return !isRequired || (isRequired && !isEmpty(value));
+  }
+
+  validValue(key, value, format) {
+    let valid = this.validPresence(key, value);
+
+    if (format) {
+      valid = valid && this.validFormat(format, value);
+    }
+
+    return valid;
+  }
+
+  async doChange(key, value, format = null) {
+    const valid = await this.validValue(key, value, format);
+
+    this.props.onError(key, !valid);
+    this.props.onChange(`data.metaDataFields.${key}`, value);
+  }
 
   renderMetaDataValue = (key, value, keyConfiguration, guest) => {
     const autoFocus = this.state.newMetaDataFieldKey === key;
 
-    const stringInput = () => (
-      <input
-        ref={ref => this.newMetaDataFieldRendered(ref, autoFocus)}
-        type="text"
-        name={key}
-        value={value}
-        onChange={e => this.doChange(key, e.target.value)}
-        disabled={guest}
-      />
-    );
-
-    const numberInput = () => (
-      <input
-        ref={ref => this.newMetaDataFieldRendered(ref, autoFocus)}
-        type="number"
-        name={key}
-        value={value}
-        onChange={e => this.doChange(key, parseInt(e.target.value, 10))}
-        disabled={guest}
-      />
-    );
-
-    const multipleStringsInput = () => (
-      <MultipleStrings
-        autofocus={autoFocus}
-        onChange={values => this.doChange(key, values)}
-        values={value}
-        disabled={guest}
-      />
-    );
-
-    const selectInput = (options, multiple = false) => (
-      <SelectEnum
-        multiple={multiple}
-        autofocus={autoFocus}
-        onChange={value => this.doChange(key, value)}
-        state={value}
-        enumValues={options}
-        disabled={guest}
-      />
-    );
-
-    const formatInput = () => (
-      <FormatInput
-        autofocus={autoFocus}
-        name={key}
-        input={value}
-        format={keyConfiguration.format}
-        onChange={value => this.doChange(key, value)}
-        onError={this.onError(key)}
-        isError={(this.props.errors[key] && !isEmpty(value)) || false}
-        readOnly={guest}
-      />
-    );
-
-    const booleanInput = () => {
-      // backwards compatibility
-      if (!(typeof value === 'boolean')) {
-        value = ['1', 1, 'true'].includes(value);
-      }
-
-      return (
-        <CheckBox
-          autofocus={autoFocus}
-          onChange={e => this.doChange(key, e.target.checked)}
-          value={value}
-          name={key}
-          readOnly={guest}
-          />
-      )
+    const defaultProps = {
+      disabled: guest,
+      name: key,
+      onChange: value => this.doChange(key, value),
+      value: value || "",
+      autoFocus
     };
 
     switch (keyConfiguration.type) {
       case "boolean":
-        return booleanInput();
+        return <Boolean {...defaultProps} />;
       case "number":
-        return numberInput();
+        return <Number {...defaultProps} />;
       case "array":
-        return keyConfiguration.items.enum
-          ? selectInput(keyConfiguration.items.enum, true)
-          : multipleStringsInput();
+        let options = keyConfiguration.items.enum;
+
+        if (options) {
+          return <SelectMulti {...defaultProps} enumValues={options} />;
+        }
+
+        return <Strings {...defaultProps} />;
+      case "string":
+        if (keyConfiguration.enum) {
+          return (
+            <SelectOne {...defaultProps} enumValues={keyConfiguration.enum} />
+          );
+        }
+        if (keyConfiguration.format) {
+          return (
+            <StringWithFormat
+              {...defaultProps}
+              format={keyConfiguration.format}
+              hasFormatError={!isEmpty(value) && this.props.errors[key]}
+              onChange={value =>
+                this.doChange(key, value, keyConfiguration.format)
+              }
+            />
+          );
+        }
+        return <String {...defaultProps} />;
       default:
-        if (keyConfiguration.enum) return selectInput(keyConfiguration.enum);
-        if (keyConfiguration.format) return formatInput();
-        return stringInput();
+        return <String {...defaultProps} />;
     }
   };
 
@@ -186,7 +159,7 @@ export default class MetaData extends React.Component {
     const extraneous = keyConfiguration === "unknown_key_conf";
     const toolTip = keyConfiguration.info;
     const value = metaDataFields[key];
-    const required = this.isRequired(key, value);
+
     return (
       <tr key={key}>
         <td className={`key ${extraneous ? "extraneous" : ""}`}>
@@ -207,7 +180,7 @@ export default class MetaData extends React.Component {
         </td>
         <td colSpan={guest ? 2 : 1} className="value">
           {this.renderMetaDataValue(key, value, keyConfiguration, guest)}
-          {required && (
+          {!this.validPresence(key, value) && (
             <div className="error">
               {I18n.t("metadata.required", { name: key })}
             </div>

@@ -7,7 +7,7 @@ import "./SelectSource.css";
 export default class SelectSource extends React.PureComponent {
 
     render() {
-        const {onChange, source, sources, disabled, autofocus = false} = this.props;
+        const {onChange, source, sources, disabled, autoFocus = false} = this.props;
         const options = sources.map(s => {
             return {value: s, label: s};
         });
@@ -19,7 +19,7 @@ export default class SelectSource extends React.PureComponent {
                        }}
                        options={options}
                        value={source}
-                       autoFocus={autofocus}
+                       autoFocus={autoFocus}
                        searchable={false}
                        disabled={disabled || false}/>;
     }
@@ -30,7 +30,7 @@ SelectSource.propTypes = {
     source: PropTypes.string.isRequired,
     sources: PropTypes.array.isRequired,
     disabled: PropTypes.bool,
-    autofocus: PropTypes.bool
+    autoFocus: PropTypes.bool
 };
 
 

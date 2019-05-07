@@ -6,8 +6,6 @@ export { default as Export } from "./Export";
 export { default as Import } from "./Import";
 export { default as Manipulation } from "./Manipulation";
 export { default as MetaData } from "./MetaData";
-export { default as MultipleStrings } from "./MultipleStrings";
 export { default as Revisions } from "./Revisions";
-export { default as SelectEnum } from "./SelectEnum";
 export { default as SelectNewMetaDataField } from "./SelectNewMetaDataField";
 export { default as WhiteList } from "./WhiteList";
