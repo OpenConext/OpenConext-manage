@@ -81,7 +81,7 @@ export default class MetaData extends React.Component {
       />
     );
 
-    const selectInput = () => (options, multiple = false) => (
+    const selectInput = (options, multiple = false) => (
       <SelectEnum
         multiple={multiple}
         autofocus={autoFocus}

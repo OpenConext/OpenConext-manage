@@ -47,5 +47,5 @@ SelectEnum.propTypes = {
   enumValues: PropTypes.array.isRequired,
   multiple: PropTypes.bool,
   onChange: PropTypes.func.isRequired,
-  state: PropTypes.string.isRequired
+  state: PropTypes.oneOfType([PropTypes.string, PropTypes.array]).isRequired
 };
