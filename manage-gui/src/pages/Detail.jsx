@@ -31,22 +31,47 @@ import { setFlash } from "../utils/Flash";
 
 import "./Detail.css";
 
-const tabDefaults = ["connection", "metadata", "revisions", "import", "export"];
-
 const tabsSp = [
-  ...tabDefaults,
+  "connection",
   "connected_idps",
+  "metadata",
   "arp",
   "whitelist",
-  "manipulation"
+  "manipulation",
+  "revisions",
+  "import",
+  "export"
 ];
+
 const tabsIdP = [
-  ...tabDefaults,
+  "connection",
   "whitelist",
   "consent_disabling",
-  "manipulation"
+  "metadata",
+  "manipulation",
+  "revisions",
+  "import",
+  "export"
 ];
-const tabsSingleTenant = [...tabDefaults, "arp"];
+
+const tabsOIDC = [
+  "connection",
+  "connected_idps",
+  "metadata",
+  "arp",
+  "whitelist",
+  "manipulation",
+  "revisions"
+];
+
+const tabsSingleTenant = [
+  "connection",
+  "metadata",
+  "arp",
+  "revisions",
+  "import",
+  "export"
+];
 
 export default class Detail extends React.PureComponent {
   constructor(props) {
@@ -673,13 +698,18 @@ export default class Detail extends React.PureComponent {
       isNew,
       errors
     } = this.state;
+
     const type = metaData.type;
-    const tabs =
-      type === "saml20_sp"
-        ? tabsSp
-        : type === "saml20_idp"
-        ? tabsIdP
-        : tabsSingleTenant;
+
+    const tabs = (() => {
+      switch (type) {
+          case 'saml20_sp': return tabsSp;
+          case 'saml20_idp': return tabsIdP;
+          case 'oidc10_rp': return tabsOIDC;
+          case 'single_tenant_template': return tabsSingleTenant;
+          default: return [];
+      }
+    })()
 
     const renderNotFound = loaded && notFound;
     const renderContent = loaded && !notFound;
