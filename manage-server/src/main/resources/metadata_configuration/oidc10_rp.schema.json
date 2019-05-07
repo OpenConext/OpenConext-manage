@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
   "title": "oidc10_rp",
-  "order": 1,
+  "order": 3,
   "definitions": {
     "NameIDFormat": {
       "type": "string",
