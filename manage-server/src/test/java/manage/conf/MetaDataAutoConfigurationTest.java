@@ -30,36 +30,36 @@ public class MetaDataAutoConfigurationTest implements TestUtils {
     }
 
     @Test
-    public void testSpDashBaord() {
+    public void testSpDashBaord() throws IOException {
         testErrors("json/validation_error_dashboard_sp.json", EntityType.SP, 2);
     }
 
     @Test
-    public void testSpSchema() {
-        String json = readFile("json/valid_service_provider.json");
-        subject.validate(json, EntityType.SP.getType());
+    public void testSpSchema() throws IOException {
+        Map<String, Object>  data = objectMapper.readValue(readFile("json/valid_service_provider.json"), mapTypeRef);
+        subject.validate(data, EntityType.SP.getType());
     }
 
     @Test
-    public void testSchemaSpInvalid() {
+    public void testSchemaSpInvalid() throws IOException {
         testErrors("json/invalid_service_provider.json", EntityType.SP, 3);
     }
 
     @Test
-    public void testSchemaSpForUpdateIsValid() {
-        String json = readFile("json/updated_metadata.json");
+    public void testSchemaSpForUpdateIsValid() throws IOException {
+        Map<String, Object> json = objectMapper.readValue( readFile("json/updated_metadata.json"), mapTypeRef);
         subject.validate(json, EntityType.SP.getType());
     }
 
     @Test
-    public void testIdpSchema() {
-        String json = readFile("json/valid_identity_provider.json");
+    public void testIdpSchema() throws IOException {
+        Map<String, Object> json = objectMapper.readValue( readFile("json/valid_identity_provider.json"), mapTypeRef);
         subject.validate(json, EntityType.IDP.getType());
     }
 
     @Test
-    public void testSchemaIdpInvalid() {
-        testErrors("json/invalid_identity_provider.json", EntityType.IDP, 13);
+    public void testSchemaIdpInvalid() throws IOException {
+        testErrors("json/invalid_identity_provider.json", EntityType.IDP, 6);
     }
 
     @Test
@@ -73,10 +73,10 @@ public class MetaDataAutoConfigurationTest implements TestUtils {
         assertEquals("The USP of the Service.", patternProperties.get("^usp:(en|nl)$").get("info"));
     }
 
-    private void testErrors(String path, EntityType type, int errorsExpected) {
-        String json = readFile(path);
+    private void testErrors(String path, EntityType type, int errorsExpected) throws IOException {
+        Map<String, Object> data = objectMapper.readValue( readFile(path), mapTypeRef);
         try {
-            subject.validate(json, type.getType());
+            subject.validate(data, type.getType());
             fail();
         } catch (ValidationException e) {
             assertEquals(errorsExpected, e.getAllMessages().size());

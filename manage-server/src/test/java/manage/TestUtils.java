@@ -1,11 +1,14 @@
 package manage;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.nio.charset.Charset;
+import java.util.Map;
 
 public interface TestUtils {
 
@@ -16,6 +19,8 @@ public interface TestUtils {
             throw new IllegalArgumentException(e);
         }
     }
+
+    TypeReference<Map<String, Object>> mapTypeRef = new TypeReference<Map<String, Object>>() {};
 
     ObjectMapper objectMapper = ObjectMapperWrapper.init();
 

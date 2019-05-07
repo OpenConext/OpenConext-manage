@@ -8,7 +8,7 @@ public enum EntityType {
 
     IDP("saml20_idp"),
     SP("saml20_sp"),
-    RP("saml20_sp");
+    RP("oidc10_rp", SP.getJanusDbValue());
 
 
     private final String type;
@@ -17,6 +17,11 @@ public enum EntityType {
     EntityType(String type) {
         this.type = type;
         this.janusDbValue = type.replaceAll("_", "-");
+    }
+
+    EntityType(String type, String janusDbValue) {
+        this.type = type;
+        this.janusDbValue = janusDbValue;
     }
 
     public String getType() {
@@ -30,7 +35,8 @@ public enum EntityType {
     public static EntityType fromType(String type) {
         type = type.replaceAll(Pattern.quote("-"), "_");
         EntityType entityType = EntityType.IDP.getType().equals(type) ?
-            EntityType.IDP : EntityType.SP.getType().equals(type) ? EntityType.SP : null;
+                EntityType.IDP : EntityType.SP.getType().equals(type) ? EntityType.SP :
+                EntityType.RP.getType().equals(type) ? EntityType.RP : null;
         Assert.notNull(entityType, "Invalid EntityType " + type);
         return entityType;
     }

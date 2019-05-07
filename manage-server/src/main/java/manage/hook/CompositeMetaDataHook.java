@@ -43,6 +43,11 @@ public class CompositeMetaDataHook implements MetaDataHook {
         return this.callback(metaData, (md, hook) -> hook.preDelete(md));
     }
 
+    @Override
+    public MetaData preValidate(MetaData metaData) {
+        return this.callback(metaData, (md, hook) -> hook.preValidate(md));
+    }
+
     private MetaData callback(MetaData metaData, Callback callback) {
         AtomicReference<MetaData> ref = new AtomicReference<>(metaData);
         hooks.stream().filter(hook -> hook.appliesForMetaData(metaData)).forEach(hook -> ref.set(callback.doHook(ref.get(), hook)));

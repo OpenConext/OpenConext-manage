@@ -24,9 +24,21 @@ public class ServiceProvider {
         this.entityId = (String) data.get("entityid");
         Map metaDataFields = (Map) data.getOrDefault("metaDataFields", new HashMap<>());
         this.name = (String) metaDataFields.get("name:en");
-        this.importedFromEduGain =
-            String.class.cast(metaDataFields.getOrDefault("coin:imported_from_edugain", "0")).equals("1");
-        this.publishedInEduGain =
-            String.class.cast(metaDataFields.getOrDefault("coin:publish_in_edugain", "0")).equals("1");
+        this.importedFromEduGain = parseBoolean(metaDataFields.get("coin:imported_from_edugain"));
+        this.publishedInEduGain = parseBoolean(metaDataFields.get("coin:publish_in_edugain"));
+    }
+
+    private boolean parseBoolean(Object o) {
+        if (o == null) {
+            return false;
+        }
+        if (o instanceof String) {
+            return "1".equals(o);
+        }
+        if (o instanceof Boolean) {
+            return Boolean.class.cast(o);
+        }
+        return false;
+
     }
 }

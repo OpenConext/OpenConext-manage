@@ -24,12 +24,12 @@
     "description:nl": "OpenConext SSO Proxy",
     "displayName:en": "OpenConext Engine",
     "displayName:nl": "OpenConext Engine",
-    "logo:0:height": "96",
+    "logo:0:height": 96,
     "logo:0:url": "https://static.test2.surfconext.nl/media/conext_logo.png",
-    "logo:0:width": "96",
+    "logo:0:width": 96,
     "name:en": "OpenConext Engine",
     "name:nl": "OpenConext Engine",
-    "NameIDFormats:0": "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
+    "NameIDFormats:0": "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"
   },
   "allowedEntities": []
 }

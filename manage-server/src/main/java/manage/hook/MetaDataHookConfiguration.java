@@ -1,5 +1,6 @@
 package manage.hook;
 
+import manage.conf.MetaDataAutoConfiguration;
 import manage.oidc.OpenIdConnect;
 import manage.repository.MetaDataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,11 +17,13 @@ public class MetaDataHookConfiguration {
     @Autowired
     CompositeMetaDataHook hooks(MetaDataRepository metaDataRepository,
                                 OpenIdConnect openIdConnect,
+                                MetaDataAutoConfiguration metaDataAutoConfiguration,
                                 @Value("${oidc.acsLocation}") String acsLocation) {
         EntityIdReconcilerHook entityIdReconcilerHook = new EntityIdReconcilerHook(metaDataRepository);
         OpenIdConnectHook openIdConnectHook = new OpenIdConnectHook(openIdConnect, acsLocation);
         SecretHook secretHook = new SecretHook();
-        return new CompositeMetaDataHook(Arrays.asList(entityIdReconcilerHook, openIdConnectHook, secretHook));
+        TypeSafetyHook typeSafetyHook = new TypeSafetyHook(metaDataAutoConfiguration);
+        return new CompositeMetaDataHook(Arrays.asList(typeSafetyHook, entityIdReconcilerHook, openIdConnectHook, secretHook));
     }
 
 

@@ -7,7 +7,7 @@ import org.springframework.util.CollectionUtils;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-public class SecretHook implements MetaDataHook {
+public class SecretHook extends MetaDataHookAdapter {
 
     private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     private Pattern pattern = Pattern.compile("^\\$2[ayb]\\$.{56}$");
@@ -18,11 +18,6 @@ public class SecretHook implements MetaDataHook {
     }
 
     @Override
-    public MetaData postGet(MetaData metaData) {
-        return metaData;
-    }
-
-    @Override
     public MetaData prePut(MetaData previous, MetaData newMetaData) {
         return encryptSecret(newMetaData);
     }
@@ -30,15 +25,6 @@ public class SecretHook implements MetaDataHook {
     @Override
     public MetaData prePost(MetaData metaData) {
         return encryptSecret(metaData);
-    }
-
-    @Override
-    public MetaData preDelete(MetaData metaData) {
-        return metaData;
-    }
-
-    protected BCryptPasswordEncoder getPasswordEncoder() {
-        return passwordEncoder;
     }
 
     private MetaData encryptSecret(MetaData newMetaData) {
@@ -53,7 +39,7 @@ public class SecretHook implements MetaDataHook {
         return newMetaData;
     }
 
-    protected boolean isBCryptEncoded(String secret) {
+    boolean isBCryptEncoded(String secret) {
         return pattern.matcher(secret).matches();
     }
 }

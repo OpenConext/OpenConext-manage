@@ -2,7 +2,9 @@ package manage.format;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import manage.conf.MetaDataAutoConfiguration;
+import manage.hook.TypeSafetyHook;
 import manage.model.EntityType;
+import manage.model.MetaData;
 import org.springframework.core.io.Resource;
 
 import javax.xml.stream.XMLStreamException;
@@ -27,9 +29,12 @@ public class Importer {
 
     private MetaDataFeedParser metaDataFeedParser ;
 
+    private TypeSafetyHook metaDataHook;
+
     public Importer(MetaDataAutoConfiguration metaDataAutoConfiguration, List<String> supportedLanguages) {
         this.metaDataAutoConfiguration = metaDataAutoConfiguration;
         this.metaDataFeedParser = new MetaDataFeedParser(supportedLanguages);
+        this.metaDataHook = new TypeSafetyHook(metaDataAutoConfiguration);
     }
 
     public Map<String, Object> importXML(Resource resource, EntityType entityType, Optional<String> entityId) throws
@@ -49,8 +54,7 @@ public class Importer {
         Map<String, Object> json = new ConcurrentHashMap<>(data);
         Object metaDataFieldsMap = json.get(META_DATA_FIELDS);
         if (metaDataFieldsMap == null || !(metaDataFieldsMap instanceof Map)) {
-            metaDataAutoConfiguration.validate(metaDataAutoConfiguration.getObjectMapper().writeValueAsString(json),
-                entityType.getType());
+            metaDataAutoConfiguration.validate(json, entityType.getType());
             return Collections.EMPTY_MAP;
         }
         Map<String, Object> metaDataFields = new ConcurrentHashMap<>((Map<String, Object>) metaDataFieldsMap);
@@ -87,10 +91,13 @@ public class Importer {
             json.put(META_DATA_FIELDS, flattened);
         }
         Exporter.excludedDataFields.forEach(excluded -> json.remove(excluded));
-        metaDataAutoConfiguration.validate(metaDataAutoConfiguration.getObjectMapper().writeValueAsString(json),
-            entityType.getType());
 
-        return new TreeMap<>(json);
+        MetaData metaData = metaDataHook.preValidate(new MetaData(entityType.getType(), json));
+        Map<String, Object> migratedData = metaData.getData();
+
+        metaDataAutoConfiguration.validate(migratedData, entityType.getType());
+
+        return new TreeMap<>(migratedData);
     }
 
     private void flatten(String keyPrefix, Map<String, Object> value, Map<String, Object> target) {

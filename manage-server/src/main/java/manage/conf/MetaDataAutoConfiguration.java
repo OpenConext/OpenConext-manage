@@ -1,5 +1,6 @@
 package manage.conf;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import manage.model.EntityType;
 import manage.validations.BooleanFormatValidator;
@@ -65,11 +66,13 @@ public class MetaDataAutoConfiguration {
     }
 
 
-    public void validate(String json, String type) {
-        JSONObject jsonObject = new JSONObject(new JSONTokener(json));
+    public void validate(Map<String, Object> data, String type) throws JsonProcessingException {
         Schema schema = schemas.computeIfAbsent(type, key -> {
             throw new IllegalArgumentException(String.format("No schema defined for %s", key));
         });
+
+        String json = objectMapper.writeValueAsString(data);
+        JSONObject jsonObject = new JSONObject(new JSONTokener(json));
         schema.validate(jsonObject);
     }
 

@@ -324,7 +324,7 @@ public class MetaDataController {
         sanitizeExcludeFromPush(metaData, excludeFromPushRequired);
         metaData = metaDataHook.prePost(metaData);
 
-        validate(metaData);
+        metaData = validate(metaData);
         Long eid = metaDataRepository.incrementEid();
         metaData.initial(UUID.randomUUID().toString(), uid, eid);
 
@@ -398,7 +398,7 @@ public class MetaDataController {
         checkNull(metaData.getType(), id, previous);
 
         metaData = metaDataHook.prePut(previous, metaData);
-        validate(metaData);
+        metaData = validate(metaData);
 
         previous.revision(UUID.randomUUID().toString());
         metaDataRepository.save(previous);
@@ -435,13 +435,13 @@ public class MetaDataController {
         if (!CollectionUtils.isEmpty(metaDataUpdate.getExternalReferenceData())) {
             metaData.getData().putAll(metaDataUpdate.getExternalReferenceData());
         }
-        metaDataHook.prePut(previous, metaData);
-
+        metaData = metaDataHook.prePut(previous, metaData);
+        metaData = validate(metaData);
         //Only save and update if there are changes
         boolean somethingChanged = !metaData.getData().equals(previous.getData());
 
         if (somethingChanged || forceNewRevision) {
-            validate(metaData);
+
 
             metaDataRepository.save(previous);
             metaDataRepository.update(metaData);
@@ -475,7 +475,7 @@ public class MetaDataController {
         revision.restoreToLatest(newId, 0L, federatedUser.getUid(),
                 revision.getRevision().getNumber(), revisionRestore.getParentType());
         //It might be that the revision is no longer valid as metaData configuration has changed
-        validate(revision);
+        revision = validate(revision);
         metaDataRepository.save(revision);
 
         LOG.info("Restored deleted revision {} with Id {} by {}", revisionRestore, revision.getId(), federatedUser
@@ -498,7 +498,7 @@ public class MetaDataController {
         revision.restoreToLatest(parent.getId(), parent.getVersion(), federatedUser.getUid(),
                 parent.getRevision().getNumber(), revisionRestore.getParentType());
         //It might be that the revision is no longer valid as metaData configuration has changed
-        validate(revision);
+        revision = validate(revision);
         metaDataRepository.update(revision);
 
         parent.revision(UUID.randomUUID().toString());
@@ -549,9 +549,10 @@ public class MetaDataController {
         return metaDataRepository.findRaw(type, query);
     }
 
-    private void validate(MetaData metaData) throws JsonProcessingException {
-        String json = metaDataAutoConfiguration.getObjectMapper().writeValueAsString(metaData.getData());
-        metaDataAutoConfiguration.validate(json, metaData.getType());
+    private MetaData validate(MetaData metaData) throws JsonProcessingException {
+        metaData = metaDataHook.preValidate(metaData);
+        metaDataAutoConfiguration.validate(metaData.getData(), metaData.getType());
+        return metaData;
     }
 
 }

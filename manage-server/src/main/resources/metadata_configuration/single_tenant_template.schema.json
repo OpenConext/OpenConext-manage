@@ -263,13 +263,11 @@
           "info": "Enter the URL to the logo used for this service. e.g. https://static.example-logo.nl/media/sp/logo.png."
         },
         "logo:0:width": {
-          "type": "string",
-          "format": "number",
+          "type": "number",
           "info": "The width of the logo found at logo:0:url in pixels."
         },
         "logo:0:height": {
-          "type": "string",
-          "format": "number",
+          "type": "number",
           "info": "The height of the logo found at logo:0:url in pixels."
         },
         "redirect.sign": {
@@ -485,8 +483,7 @@
           "info": "An Assertion Consumer Service (or ACS) is the location at a ServiceProvider that accepts <samlp:Response> messages. A typical ACS location for an SP might look like this: https://data.example-service.nl/saml/saml2_acs/"
         },
         "^AssertionConsumerService:([0-9]{1}):index$": {
-          "type": "string",
-          "format": "number",
+          "type": "number",
           "multiplicity": 10,
           "info": "An Assertion Consumer Service (or ACS) is the location at a ServiceProvider that accepts <samlp:Response> messages. With the index you can include additional <md:AssertionConsumerService> elements in the SAML 2.0 SP metadata with the same binding, each with its own unique index."
         },

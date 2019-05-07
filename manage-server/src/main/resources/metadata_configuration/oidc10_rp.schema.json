@@ -232,13 +232,11 @@
           "info": "Enter the URL to the logo used for this service. e.g. https://static.example-logo.nl/media/sp/logo.png."
         },
         "logo:0:width": {
-          "type": "string",
-          "format": "number",
+          "type": "number",
           "info": "The width of the logo found at logo:0:url in pixels."
         },
         "logo:0:height": {
-          "type": "string",
-          "format": "number",
+          "type": "number",
           "info": "The height of the logo found at logo:0:url in pixels."
         },
         "coin:push_enabled": {
@@ -437,13 +435,11 @@
         },
         "accessTokenValidity": {
           "type": "number",
-          "format": "number",
           "default": 3600,
           "info": "The number of seconds that a new access token is valid for this Relying Party."
         },
         "refreshTokenValidity": {
           "type": "number",
-          "format": "number",
           "default": 3600,
           "info": "The number of seconds that a new refresh token is valid for this Relying Party."
         }

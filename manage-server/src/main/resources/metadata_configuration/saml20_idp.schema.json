@@ -194,13 +194,11 @@
           "info": "Enter the URL to the logo used for this service. e.g. https://static.example-logo.nl/media/sp/logo.png."
         },
         "logo:0:width": {
-          "type": "string",
-          "format": "number",
+          "type": "number",
           "info": "The width of the logo found at logo:0:url in pixels."
         },
         "logo:0:height": {
-          "type": "string",
-          "format": "number",
+          "type": "number",
           "info": "The height of the logo found at logo:0:url in pixels."
         },
         "redirect.sign": {

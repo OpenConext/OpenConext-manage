@@ -14,4 +14,6 @@ public interface MetaDataHook {
     MetaData prePost(MetaData metaData);
 
     MetaData preDelete(MetaData metaData);
+
+    MetaData preValidate(MetaData metaData);
 }

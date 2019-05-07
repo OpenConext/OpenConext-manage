@@ -10,7 +10,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.*;
 
-public class OpenIdConnectHook implements MetaDataHook {
+public class OpenIdConnectHook extends MetaDataHookAdapter {
 
     public final static String OIDC_CLIENT_KEY = "oidcClient";
 
@@ -24,7 +24,11 @@ public class OpenIdConnectHook implements MetaDataHook {
 
     @Override
     public boolean appliesForMetaData(MetaData metaData) {
-        return EntityType.SP.getType().equals(metaData.getType()) && "1".equals(metaData.metaDataFields().get("coin:oidc_client"));
+        if (EntityType.SP.getType().equals(metaData.getType())) {
+            Object o = metaData.metaDataFields().get("coin:oidc_client");
+            return (o instanceof String && "1".equals(o)) || (o instanceof Boolean && Boolean.class.cast(o));
+        }
+        return false;
     }
 
     @Override

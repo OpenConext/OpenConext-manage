@@ -104,7 +104,7 @@ public class ImporterTest implements TestUtils {
 
         Map metaDataFields = Map.class.cast(result.get("metaDataFields"));
         assertEquals(50, metaDataFields.size());
-        assertTrue(metaDataFields.values().stream().allMatch(value -> value instanceof String));
+        assertTrue(metaDataFields.values().stream().allMatch(value -> value instanceof String || value instanceof Boolean || value instanceof Number));
 
     }
 
