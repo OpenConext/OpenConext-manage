@@ -3,7 +3,7 @@
   "title": "saml20_idp",
   "order": 2,
   "definitions": {
-    "SingleSignOnService": {
+    "SingleSignOnService_Binding": {
       "type": "string",
       "enum": [
         "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect",
@@ -15,6 +15,19 @@
       ],
       "default": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect",
       "info": "Select the binding the IdP claims support for. A binding specifies the technical method of a connection."
+    },
+    "SingleLogoutService_Binding": {
+      "type": "string",
+      "enum": [
+        "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect",
+        "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
+        "urn:oasis:names:tc:SAML:2.0:bindings:SOAP",
+        "urn:oasis:names:tc:SAML:2.0:bindings:PAOS",
+        "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Artifact",
+        "urn:oasis:names:tc:SAML:2.0:bindings:URI"
+      ],
+      "default": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect",
+      "info": "SingleLogoutService is not supported by the Engine Block. Select the SingleLogoutService binding an IdP claims support for. A binding specifies the protocol to access the service."
     },
     "NameIDFormat": {
       "type": "string",
@@ -167,16 +180,7 @@
           "info": "Up to three certificates per service can be defined. This is the third and last field for certificates you can enter. This must be a PEM encoded certificate. DER, CRT or CER are not supported."
         },
         "SingleLogoutService_Binding": {
-          "type": "string",
-          "enum": [
-            "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect",
-            "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
-            "urn:oasis:names:tc:SAML:2.0:bindings:SOAP",
-            "urn:oasis:names:tc:SAML:2.0:bindings:PAOS",
-            "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Artifact",
-            "urn:oasis:names:tc:SAML:2.0:bindings:URI"
-          ],
-          "default": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect",
+          "$ref": "#/definitions/SingleLogoutService_Binding",
           "info": "SingleLogoutService is not supported by the Engine Block. Select the SingleLogoutService binding an IdP claims support for. A binding specifies the protocol to access the service."
         },
         "SingleLogoutService_Location": {
@@ -360,7 +364,7 @@
           "info": "Select one of the entity categories applicable to this service. Entity Categories group federation entities that share common criteria."
         },
         "^SingleSignOnService:([0-9]{1}):Binding$": {
-          "$ref": "#/definitions/SingleSignOnService",
+          "$ref": "#/definitions/SingleSignOnService_Binding",
           "multiplicity": 10,
           "info": "Select the binding the IdP claims support for. A binding specifies the technical method of a connection."
         },

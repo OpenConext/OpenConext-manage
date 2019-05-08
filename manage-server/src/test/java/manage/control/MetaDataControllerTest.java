@@ -653,19 +653,6 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void updateSpWithWrongValues() throws Exception {
-        MetaData metaData = metaDataRepository.findById("1", EntityType.SP.getType());
-        String xml = readFile("sp_portal/sp_xml.xml");
-        xml = xml.replace("urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST", "bogus");
-        Map<String, String> body = Collections.singletonMap("xml", xml);
-        doUpdateSp(body, metaData)
-                .statusCode(SC_BAD_REQUEST)
-                .body("validations", equalTo("#/metaDataFields/AssertionConsumerService:0:Binding: bogus is not a valid " +
-                        "enum value"));
-
-    }
-
-    @Test
     public void exportToXml() throws Exception {
         String xml = given()
                 .auth()

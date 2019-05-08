@@ -11,7 +11,6 @@ import javax.xml.stream.XMLStreamReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -89,11 +88,12 @@ public class MetaDataFeedParser {
         boolean inKeyDescriptor = false;
         boolean inContact = true;
         boolean inUIInfo = false;
-        boolean inCorrectEntityDescriptor = !entityIDOptional.isPresent();
+        boolean inCorrectEntityDescriptor = false;
         boolean inAttributeConsumingService = false;
         boolean inEntityAttributes = false;
         boolean typeMismatch = false;
         boolean inCorrectTypeDescriptor = false;
+        boolean multipleEntityDescriptors = false;
 
         result.put("type", entityType.getJanusDbValue());
         boolean isSp = entityType.equals(EntityType.SP);
@@ -101,9 +101,17 @@ public class MetaDataFeedParser {
         Set<String> arpKeys = new HashSet<>();
         Map<String, String> arpAliases = new HashMap<>();
 
-        int assertionConsumerServiceMultiplicity = getMultiplicity(metaDataAutoConfiguration.schemaRepresentation(EntityType.SP), "^AssertionConsumerService:", ":index$");
-        int singleSignOnServiceMultiplicity = getMultiplicity(metaDataAutoConfiguration.schemaRepresentation(EntityType.IDP), "^SingleSignOnService:", ":Binding$");
-        int contactsMultiplicity = getMultiplicity(metaDataAutoConfiguration.schemaRepresentation(EntityType.IDP), "^contacts:", ":contactType$");
+        Map<String, Object> spSchema = metaDataAutoConfiguration.schemaRepresentation(EntityType.SP);
+
+        int assertionConsumerServiceMultiplicity = getMultiplicity(spSchema, "^AssertionConsumerService:", ":index$");
+        Map<String, Object> idpSchema = metaDataAutoConfiguration.schemaRepresentation(EntityType.IDP);
+
+        int singleSignOnServiceMultiplicity = getMultiplicity(idpSchema, "^SingleSignOnService:", ":Binding$");
+        int contactsMultiplicity = getMultiplicity(idpSchema, "^contacts:", ":contactType$");
+
+        List<String> validSingleSignOnServiceBindings = getValidBindings(idpSchema, "SingleSignOnService_Binding");
+        List<String> validSingleLogoutServiceBindings = getValidBindings(spSchema, "SingleLogoutService_Binding");
+        List<String> validAssertionConsumerServiceBindings = getValidBindings(spSchema, "AssertionConsumerService_Binding");
 
         while (reader.hasNext()) {
             int next = reader.next();
@@ -111,18 +119,24 @@ public class MetaDataFeedParser {
                 case START_ELEMENT:
                     String startLocalName = reader.getLocalName();
                     switch (startLocalName) {
+                        case "EntitiesDescriptor":
+                            multipleEntityDescriptors = true;
+                            break;
                         case "EntityDescriptor":
                             Optional<String> optional = getAttributeValue(reader, "entityID");
                             if (optional.isPresent()) {
                                 if (entityIDOptional.isPresent()) {
                                     inCorrectEntityDescriptor = entityIDOptional.get().equalsIgnoreCase(optional.get());
                                 }
-                                if (inCorrectEntityDescriptor) {
+                                if (inCorrectEntityDescriptor || !entityIDOptional.isPresent()) {
                                     result.put("entityid", optional.get());
                                 }
                             }
                             break;
                         case "SPSSODescriptor":
+                            if (isSp && !entityIDOptional.isPresent()) {
+                                inCorrectEntityDescriptor = true;
+                            }
                             if (inCorrectEntityDescriptor) {
                                 inCorrectTypeDescriptor = isSp;
                                 if (isSp) {
@@ -142,6 +156,9 @@ public class MetaDataFeedParser {
                             }
                             break;
                         case "IDPSSODescriptor":
+                            if (!isSp && !entityIDOptional.isPresent()) {
+                                inCorrectEntityDescriptor = true;
+                            }
                             if (inCorrectEntityDescriptor) {
                                 inCorrectTypeDescriptor = !isSp;
                                 if (isSp) {
@@ -171,24 +188,34 @@ public class MetaDataFeedParser {
                             break;
                         case "SingleLogoutService":
                             if (inCorrectEntityDescriptor && isSp) {
-                                addMetaDataField(metaDataFields, reader, "Binding", "SingleLogoutService_Binding");
-                                addMetaDataField(metaDataFields, reader, "Location", "SingleLogoutService_Location");
+                                Optional<String> bindingOpt = getAttributeValue(reader, "Binding");
+                                if (bindingOpt.isPresent()) {
+                                    String binding = bindingOpt.get();
+                                    if (validSingleLogoutServiceBindings.contains(binding)) {
+                                        addMetaDataField(metaDataFields, reader, "Binding", "SingleLogoutService_Binding");
+                                        addMetaDataField(metaDataFields, reader, "Location", "SingleLogoutService_Location");
+                                    }
+                                }
                             }
                             break;
                         case "AssertionConsumerService":
                             if (inCorrectEntityDescriptor && isSp) {
                                 Optional<String> bindingOpt = getAttributeValue(reader, "Binding");
-                                bindingOpt.ifPresent(binding ->
+                                if (bindingOpt.isPresent()) {
+                                    String binding = bindingOpt.get();
+                                    if (validAssertionConsumerServiceBindings.contains(binding)) {
                                         addMultiplicity(metaDataFields, "AssertionConsumerService:%s:Binding",
-                                                assertionConsumerServiceMultiplicity, binding));
-                                Optional<String> locationOpt = getAttributeValue(reader, "Location");
-                                locationOpt.ifPresent(location ->
-                                        addMultiplicity(metaDataFields, "AssertionConsumerService:%s:Location",
-                                                assertionConsumerServiceMultiplicity, location));
-                                Optional<String> indexOpt = getAttributeValue(reader, "index");
-                                indexOpt.ifPresent(index ->
-                                        addMultiplicity(metaDataFields, "AssertionConsumerService:%s:index",
-                                                assertionConsumerServiceMultiplicity, index));
+                                                assertionConsumerServiceMultiplicity, binding);
+                                        Optional<String> locationOpt = getAttributeValue(reader, "Location");
+                                        locationOpt.ifPresent(location ->
+                                                addMultiplicity(metaDataFields, "AssertionConsumerService:%s:Location",
+                                                        assertionConsumerServiceMultiplicity, location));
+                                        Optional<String> indexOpt = getAttributeValue(reader, "index");
+                                        indexOpt.ifPresent(index ->
+                                                addMultiplicity(metaDataFields, "AssertionConsumerService:%s:index",
+                                                        assertionConsumerServiceMultiplicity, index));
+                                    }
+                                }
                             }
                             break;
                         case "SingleSignOnService":
@@ -196,13 +223,17 @@ public class MetaDataFeedParser {
                                 break;
                             }
                             Optional<String> bindingOpt = getAttributeValue(reader, "Binding");
-                            bindingOpt.ifPresent(binding ->
+                            if (bindingOpt.isPresent()) {
+                                String binding = bindingOpt.get();
+                                if (validSingleSignOnServiceBindings.contains(binding)) {
                                     addMultiplicity(metaDataFields, "SingleSignOnService:%s:Binding",
-                                            singleSignOnServiceMultiplicity, binding));
-                            Optional<String> locationOpt = getAttributeValue(reader, "Location");
-                            locationOpt.ifPresent(location ->
-                                    addMultiplicity(metaDataFields, "SingleSignOnService:%s:Location",
-                                            singleSignOnServiceMultiplicity, location));
+                                            singleSignOnServiceMultiplicity, binding);
+                                    Optional<String> locationOpt = getAttributeValue(reader, "Location");
+                                    locationOpt.ifPresent(location ->
+                                            addMultiplicity(metaDataFields, "SingleSignOnService:%s:Location",
+                                                    singleSignOnServiceMultiplicity, location));
+                                }
+                            }
                             break;
                         case "RegistrationInfo": {
                             if (inCorrectEntityDescriptor) {
@@ -330,8 +361,10 @@ public class MetaDataFeedParser {
                             inUIInfo = false;
                             break;
                         case "IDPSSODescriptor":
+                            inCorrectTypeDescriptor = !isSp;
+                            break;
                         case "SPSSODescriptor":
-                            inCorrectTypeDescriptor = false;
+                            inCorrectTypeDescriptor = isSp;
                             break;
                         case "EntityDescriptor":
                             if (inCorrectEntityDescriptor) {
@@ -350,12 +383,16 @@ public class MetaDataFeedParser {
         return new HashMap<>();
     }
 
-    private int getMultiplicity(Map<String, Object> spSchema, String... keyParts) {
+    private int getMultiplicity(Map<String, Object> schema, String... keyParts) {
         List<String> keyPartsList = Arrays.asList(keyParts);
-        Map<String, Object> patternProperties = (Map) ((Map) ((Map) spSchema.get("properties")).get("metaDataFields")).get("patternProperties");
+        Map<String, Object> patternProperties = (Map) ((Map) ((Map) schema.get("properties")).get("metaDataFields")).get("patternProperties");
         Optional<String> optionalKey = patternProperties.keySet().stream().filter(key -> keyPartsList.stream().allMatch(part -> key.contains(part))).findAny();
         String key = optionalKey.orElseThrow(() -> new IllegalArgumentException(String.format("No key %s in schema %s", keyPartsList, patternProperties)));
         return (int) ((Map) patternProperties.get(key)).get("multiplicity");
+    }
+
+    private List<String> getValidBindings(Map<String, Object> schema, String key) {
+        return (List<String>) ((Map<String, Map<String, Object>>) schema.get("definitions")).get(key).get("enum");
     }
 
     private Map<String, Object> enrichMetaData(Map<String, Object> metaData) {

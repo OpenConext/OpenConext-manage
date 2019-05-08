@@ -11,11 +11,18 @@ import org.springframework.core.io.Resource;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 @SuppressWarnings("unchecked")
 public class ImporterTest implements TestUtils {
@@ -74,17 +81,17 @@ public class ImporterTest implements TestUtils {
     @Test
     public void importSpMetaDataWithARP() throws IOException, XMLStreamException {
         Resource resource = new GZIPClassPathResource("/xml/eduGain.xml.gz");
-        Map<String, Object> result = subject.importXML(resource, EntityType.SP, Optional.of("https://wayf.nikhef" +
-                ".nl/wayf/sp"));
+        Map<String, Object> result = subject.importXML(resource, EntityType.SP,
+                Optional.of("https://wayf.nikhef.nl/wayf/sp"));
 
         String json = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(result);
         String expected = readFile("json/expected_imported_metadata_edugain.json");
-        assertEquals(expected, json);
 
+        assertEquals(expected, json);
     }
 
     @Test
-    public void testImportSpJSONInvalid() throws IOException {
+    public void importSpJSONInvalid() throws IOException {
         String json = this.readFile("/json/metadata_import_saml20_sp_invalid_nested.json");
         Map map = objectMapper.readValue(json, Map.class);
         try {
@@ -95,7 +102,7 @@ public class ImporterTest implements TestUtils {
     }
 
     @Test
-    public void testImportSpJSON() throws IOException {
+    public void importSpJSON() throws IOException {
         String json = this.readFile("/json/metadata_import_saml20_sp_nested.json");
         Map map = objectMapper.readValue(json, Map.class);
         Map result = subject.importJSON(EntityType.SP, map);
@@ -145,7 +152,7 @@ public class ImporterTest implements TestUtils {
     }
 
     @Test
-    public void testMultiplicity() throws IOException, XMLStreamException {
+    public void multiplicity() throws IOException, XMLStreamException {
         MetaDataAutoConfiguration metaDataAutoConfiguration = new MetaDataAutoConfiguration(objectMapper, new ClassPathResource("metadata_configuration"), new ClassPathResource("metadata_templates"));
         Map<String, Object> spSchema = metaDataAutoConfiguration.schemaRepresentation(EntityType.SP);
         Map.class.cast(Map.class.cast(Map.class.cast(Map.class.cast(spSchema.get("properties")).get("metaDataFields")).get("patternProperties")).get("^AssertionConsumerService:([0-3]{0,1}[0-9]{1}):index$")).put("multiplicity", 15);
@@ -161,9 +168,45 @@ public class ImporterTest implements TestUtils {
     }
 
     @Test
-    public void testMultipleCerts() throws IOException, XMLStreamException {
+    public void multipleCerts() throws IOException, XMLStreamException {
         Map<String, Object> metaData = this.subject.importXML(new ClassPathResource("/import_xml/metadata_with_attribute_authority_cert.xml"), EntityType.IDP, Optional.empty());
         assertEquals(1l, Map.class.cast(metaData.get("metaDataFields")).keySet().stream().filter(key -> String.class.cast(key).startsWith("certData")).count());
+    }
+
+    @Test
+    public void ignoreNonSaml20IdpBindings() throws IOException, XMLStreamException {
+        Map<String, Object> metaData = this.subject.importXML(new ClassPathResource("/import_xml/saml1.x_providers.xml"), EntityType.IDP, Optional.empty());
+        Pattern binding = Pattern.compile("^SingleSignOnService:([0-9]{1}):Binding$");
+        List<String> singleSignOnServices = ((Map<String, String>) metaData.get("metaDataFields"))
+                .entrySet().stream()
+                .filter(entry -> binding.matcher(entry.getKey()).matches())
+                .map(entry -> entry.getValue())
+                .collect(Collectors.toList());
+        assertEquals(Arrays.asList("urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
+                "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect",
+                "urn:oasis:names:tc:SAML:2.0:bindings:SOAP"), singleSignOnServices);
+    }
+
+    @Test
+    public void ignoreNonSaml20SPBindings() throws IOException, XMLStreamException {
+        Map<String, Object> metaData = this.subject.importXML(new ClassPathResource("/import_xml/saml1.x_providers.xml"), EntityType.SP, Optional.empty());
+        Pattern binding = Pattern.compile("^AssertionConsumerService:([0-3]{0,1}[0-9]{1}):Binding$");
+        List<String> assertionConsumerServices = ((Map<String, String>) metaData.get("metaDataFields"))
+                .entrySet().stream()
+                .filter(entry -> binding.matcher(entry.getKey()).matches())
+                .map(entry -> entry.getValue())
+                .collect(Collectors.toList());
+        assertEquals(Arrays.asList("urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
+                "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST-SimpleSign",
+                "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Artifact",
+                "urn:oasis:names:tc:SAML:2.0:bindings:PAOS"), assertionConsumerServices);
+
+        List<String> singleLogoutService = ((Map<String, String>) metaData.get("metaDataFields"))
+                .entrySet().stream()
+                .filter(entry -> entry.getKey().startsWith("SingleLogoutService_Binding"))
+                .map(entry -> entry.getValue())
+                .collect(Collectors.toList());
+        assertEquals(Arrays.asList("urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Artifact"), singleLogoutService);
     }
 
 }

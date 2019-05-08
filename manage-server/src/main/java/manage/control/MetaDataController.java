@@ -205,7 +205,7 @@ public class MetaDataController {
                 String entityId = (String) sp.get("entityid");
                 sp.put("metadataurl", feedUrl);
                 Map metaDataFields = Map.class.cast(sp.get("metaDataFields"));
-                metaDataFields.put("coin:imported_from_edugain", "1");
+                metaDataFields.put("coin:imported_from_edugain", true);
                 metaDataFields.put("coin:interfed_source", "eduGAIN");
 
                 ServiceProvider existingServiceProvider = serviceProviderMap.get(entityId);
@@ -281,7 +281,7 @@ public class MetaDataController {
 
     private MetaDataUpdate importToMetaDataUpdate(String id, EntityType entityType, Map<String, Object> m,
                                                   String feedUrl) {
-        Map<String, String> metaDataFields = Map.class.cast(m.get("metaDataFields"));
+        Map<String, Object> metaDataFields = Map.class.cast(m.get("metaDataFields"));
         Map<String, Object> pathUpdates = new HashMap<>();
         metaDataFields.forEach((k, v) -> pathUpdates.put("metaDataFields.".concat(k), v));
         pathUpdates.put("metadataurl", feedUrl);

@@ -3,7 +3,7 @@
   "title": "saml20_sp",
   "order": 1,
   "definitions": {
-    "AssertionConsumerServiceBinding": {
+    "AssertionConsumerService_Binding": {
       "type": "string",
       "enum": [
         "urn:oasis:names:tc:SAML:1.0:profiles:browser-post",
@@ -18,6 +18,20 @@
       ],
       "default": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
       "info": "Select the binding the SP claims support for. A binding specifies the technical method of a connection."
+    },
+    "SingleLogoutService_Binding": {
+      "type": "string",
+      "enum": [
+        "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect",
+        "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
+        "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST-SimpleSign",
+        "urn:oasis:names:tc:SAML:2.0:bindings:SOAP",
+        "urn:oasis:names:tc:SAML:2.0:bindings:PAOS",
+        "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Artifact",
+        "urn:oasis:names:tc:SAML:2.0:bindings:URI"
+      ],
+      "default": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect",
+      "info": "*** SingleLogoutService is not supported by the Engine Block. Import for future compatibility. *** Selects the SingleLogoutService binding an SP claims support for. A binding specifies the protocol to access the service."
     },
     "NameIDFormat": {
       "type": "string",
@@ -262,17 +276,7 @@
           "info": "Up to three certificates per service can be defined. This is the third and last field for certificates you can enter. This must be a PEM encoded certificate. DER, CRT or CER are not supported."
         },
         "SingleLogoutService_Binding": {
-          "type": "string",
-          "enum": [
-            "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect",
-            "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
-            "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST-SimpleSign",
-            "urn:oasis:names:tc:SAML:2.0:bindings:SOAP",
-            "urn:oasis:names:tc:SAML:2.0:bindings:PAOS",
-            "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Artifact",
-            "urn:oasis:names:tc:SAML:2.0:bindings:URI"
-          ],
-          "default": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect",
+          "$ref": "#/definitions/SingleLogoutService_Binding",
           "info": "*** SingleLogoutService is not supported by the Engine Block. Import for future compatibility. *** Selects the SingleLogoutService binding an SP claims support for. A binding specifies the protocol to access the service."
         },
         "SingleLogoutService_Location": {
@@ -533,7 +537,7 @@
           "info": "The type of service used in the facet search in dashboard."
         },
         "^AssertionConsumerService:([0-3]{0,1}[0-9]{1}):Binding$": {
-          "$ref": "#/definitions/AssertionConsumerServiceBinding",
+          "$ref": "#/definitions/AssertionConsumerService_Binding",
           "multiplicity": 30,
           "info": "An Assertion Consumer Service (or ACS) the location at a ServiceProvider that accepts <samlp:Response> messages. The type of binding for this location can be selected from the pull-down."
         },
