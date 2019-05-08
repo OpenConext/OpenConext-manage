@@ -29,5 +29,5 @@ Select.propTypes = {
   options: PropTypes.array.isRequired,
   name: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
-  value: PropTypes.array.isRequired
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.array])
 };
