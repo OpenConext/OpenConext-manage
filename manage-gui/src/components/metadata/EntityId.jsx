@@ -29,9 +29,7 @@ export default class EntityId extends React.PureComponent {
     });
   }
 
-  validPresence(entityId) {
-    return !isEmpty(entityId);
-  }
+  validPresence = entityId => !isEmpty(entityId);
 
   validUniqueness(entityId) {
     const isNewValue = this.props.originalEntityId !== entityId;
@@ -47,11 +45,11 @@ export default class EntityId extends React.PureComponent {
   validFormat(entityId) {
     const { entityIdFormat } = this.props;
 
-    if (!entityIdFormat) return true;
+    if (!entityIdFormat) {
+      return true;
+    }
 
-    return validation(entityIdFormat, entityId).then(valid => {
-      return valid ? true : this.notFormatted() & false;
-    });
+    return validation(entityIdFormat, entityId).then(valid => valid || this.notFormatted());
   }
 
   async validateEntityId(entityId) {
