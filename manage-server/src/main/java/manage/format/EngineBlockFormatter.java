@@ -125,7 +125,19 @@ public class EngineBlockFormatter {
     }
 
     public Map<String, Object> parseOidcClient(MetaData metaDataContainer) {
-        return parseServiceProvider(metaDataContainer);
+        Map<String, Object> result = parseServiceProvider(metaDataContainer);
+        Map<String, Object> metadata = (Map<String, Object>) result.computeIfAbsent("metadata", s -> new TreeMap<String, Object>());
+
+        ArrayList<Object> assertionConsumerServiceContainer = new ArrayList<>();
+        Map<String, String> assertionConsumerService = new TreeMap<>();
+        //OpenIDIDConnect Relaying Parties entities do not have an ACS location, but we need to be backward compatible for EB
+        assertionConsumerService.put("Binding", "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST");
+        assertionConsumerService.put("Location", "https://trusted.proxy.acs.location.rules");
+        assertionConsumerService.put("Index", "1");
+
+        assertionConsumerServiceContainer.add(assertionConsumerService);
+        metadata.put("AssertionConsumerService", assertionConsumerServiceContainer);
+        return result;
     }
 
     private void addCommonProviderAttributes(Map<String, Object> source, Map<String, Object> result) {

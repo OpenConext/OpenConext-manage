@@ -496,6 +496,13 @@
       "allowed_connections": [],
       "arp_attributes": {},
       "metadata": {
+        "AssertionConsumerService": [
+          {
+            "Binding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
+            "Index": "1",
+            "Location": "https://trusted.proxy.acs.location.rules"
+          }
+        ],
         "name": {
           "en": "OIDC SP"
         }
@@ -509,6 +516,13 @@
       "allowed_connections": [],
       "arp_attributes": {},
       "metadata": {
+        "AssertionConsumerService": [
+          {
+            "Binding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
+            "Index": "1",
+            "Location": "https://trusted.proxy.acs.location.rules"
+          }
+        ],
         "name": {
           "en": "OIDC ResourceServer"
         }

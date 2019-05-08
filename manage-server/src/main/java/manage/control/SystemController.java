@@ -134,7 +134,7 @@ public class SystemController {
 
         Map<String, Map<String, Object>> serviceProvidersToPush = metaDataStream
                 .filter(metaData -> !excludeFromPush(metaData.metaDataFields()))
-                .collect(toMap(sp -> sp.getId(), sp -> formatter.parseServiceProvider(sp)));
+                .collect(toMap(MetaData::getId, formatter::parseServiceProvider));
 
         List<MetaData> identityProviders = metaDataRepository.getMongoTemplate().findAll(MetaData.class, "saml20_idp");
 
@@ -143,12 +143,12 @@ public class SystemController {
 
         Map<String, Map<String, Object>> identityProvidersToPush = identityProviders.stream()
                 .filter(metaData -> !excludeFromPush(metaData.metaDataFields()))
-                .collect(toMap(idp -> idp.getId(), idp -> formatter.parseIdentityProvider(idp)));
+                .collect(toMap(MetaData::getId, formatter::parseIdentityProvider));
 
         List<MetaData> oidcClients = metaDataRepository.getMongoTemplate().findAll(MetaData.class, "oidc10_rp");
         Map<String, Map<String, Object>> oidcClientsToPush = oidcClients.stream()
                 .filter(metaData -> !excludeFromPush(metaData.metaDataFields()))
-                .collect(toMap(oidc -> oidc.getId(), oidc -> formatter.parseOidcClient(oidc)));
+                .collect(toMap(MetaData::getId, formatter::parseOidcClient));
 
         serviceProvidersToPush.putAll(identityProvidersToPush);
         serviceProvidersToPush.putAll(oidcClientsToPush);
