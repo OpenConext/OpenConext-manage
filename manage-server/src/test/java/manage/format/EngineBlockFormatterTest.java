@@ -43,6 +43,9 @@ public class EngineBlockFormatterTest implements TestUtils {
         subject.addToResult(source, result, "metadata:OrganizationDisplayName:nl", empty());
         subject.addToResult(source, result, "metadata:OrganizationDisplayName:en", empty());
         subject.addToResult(source, result, "metadata:coin:bogus", empty());
+        subject.addToResult(source, result, "metadata:coin:bogus", empty());
+        subject.addToResult(source, result, "metadata:coin:no_consent_required", empty());
+        subject.addToResult(source, result, "metadata:logo:0:height", empty());
 
         assertAttribute("name", "https://teams.surfconext.nl/shibboleth", result);
         assertAttribute("metadata:certData",
@@ -51,6 +54,9 @@ public class EngineBlockFormatterTest implements TestUtils {
         assertAttribute("metadata:OrganizationDisplayName:nl", "SURFnet", result);
         assertAttribute("metadata:OrganizationDisplayName:en", "SURFnet", result);
         assertAttribute("metadata:OrganizationDisplayName:bogus", null, result);
+        assertAttribute("metadata:OrganizationDisplayName:bogus", null, result);
+        assertAttribute("metadata:coin:no_consent_required", "1", result);
+        assertAttribute("metadata:logo:0:height", "300", result);
     }
 
     @Test

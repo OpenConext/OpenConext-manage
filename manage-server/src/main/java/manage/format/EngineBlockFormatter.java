@@ -369,24 +369,24 @@ public class EngineBlockFormatter {
         if (parts.size() == 1) {
             Object o = source.get(compoundName);
             if (o != null) {
-                result.put(convertTo.orElse(compoundName), o);
+                result.put(convertTo.orElse(compoundName), parseValueToString(o));
             }
             return;
         }
         Iterator<String> iterator = parts.iterator();
-        String value = null;
+        Object value = null;
         while (iterator.hasNext()) {
             String part = iterator.next();
             if (part.equals("metadata")) {
                 result = (Map<String, Object>) result.computeIfAbsent(part, key -> new TreeMap<String, Map<String,
                     Object>>());
-                value = (String) ((Map) source.get("metaDataFields")).get(compoundName.substring(BEGIN_INDEX));
+                value = ((Map) source.get("metaDataFields")).get(compoundName.substring(BEGIN_INDEX));
             } else {
                 if (iterator.hasNext()) {
                     result = (Map<String, Object>) result.computeIfAbsent(part, key -> new TreeMap<String,
                         Map<String, Object>>());
                 } else if (value != null) {
-                    result.put(convertTo.orElse(part), value);
+                    result.put(convertTo.orElse(part), parseValueToString(value));
                 }
             }
         }
