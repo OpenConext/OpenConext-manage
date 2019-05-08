@@ -1,4 +1,7 @@
+import {options} from "../../../utils/MetaDataConfiguration";
+
 test("Do not show already selected metadata", () => {
-    const todo = "wip";
-    expect(todo).toBe("wip");
+    //WIP
+    const res = () => options({},[]);
+    expect(res).toThrow(TypeError);
 });

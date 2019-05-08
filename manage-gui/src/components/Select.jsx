@@ -9,17 +9,11 @@ export default class Select extends React.PureComponent {
     disabled: false
   };
 
-  valueToOption(value) {
-    return { value: value, label: value };
-  }
+  valueToOption = value => ({ value: value, label: value });
 
   render() {
     const { name, value, ...rest } = this.props;
-    let valueAsOption = value;
-
-    if (typeof value === 'string') {
-      valueAsOption = this.valueToOption(value)
-    }
+    const valueAsOption = typeof value === "string" ? this.valueToOption(value) : value;
 
     return (
       <ReactSelect
