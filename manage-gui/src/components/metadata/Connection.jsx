@@ -2,31 +2,15 @@ import React from "react";
 import PropTypes from "prop-types";
 import I18n from "i18n-js";
 
-import {search} from "../../api";
-
-import InlineEditable from "./InlineEditable";
+import EntityId from "./EntityId";
 import SelectState from "./SelectState";
 import FormatInput from "./../FormatInput";
 
 import "./Connection.css";
-import {isEmpty} from "../../utils/Utils";
 
 export default class Connection extends React.PureComponent {
-
-    constructor(props) {
-        super(props);
-        this.state = {
-            entityIdAlreadyExists: false
-        };
-    }
-
     componentDidMount() {
         window.scrollTo(0, 0);
-        const {isNew, metaData} = this.props;
-        const {entityid} = metaData.data;
-        if (isNew && !isEmpty(entityid)) {
-            this.validateEntityId({target: {value: entityid}});
-        }
     }
 
     onError = key => value => this.props.onError(key, value);
@@ -40,44 +24,20 @@ export default class Connection extends React.PureComponent {
 
     };
 
-    validateEntityId = e => {
-        if (isEmpty(e) || isEmpty(e.target)) {
-            this.props.onError("entityid", true);
-            return;
-        }
-        const entityid = e.target.value;
-        const {type} = this.props.metaData;
-        if (isEmpty(entityid)) {
-            this.props.onError("entityid", true);
-        } else {
-            const {originalEntityId} = this.props;
-            const entityIdChanged = (originalEntityId !== entityid);
-            if (entityIdChanged) {
-                search({"entityid": entityid}, type).then(json => {
-                    const {isNew} = this.props;
-                    const entityIdAlreadyExists =
-                        (entityIdChanged && json.length > 0 && !isNew) ||
-                        (!entityIdChanged && json.length > 1 && !isNew) ||
-                        (json.length > 0 && isNew);
-                    this.setState({entityIdAlreadyExists: entityIdAlreadyExists});
-                    this.props.onError("entityid", entityIdAlreadyExists);
-                });
-            }
-        }
-    };
-
     render() {
-        const {configuration} = this.props;
-        const {type, revision, data, id} = this.props.metaData;
+        const {
+          guest,
+          originalEntityId,
+          metaData: { type, revision, data, id }
+        } = this.props;
+        const entityIdFormat = this.props.configuration.properties.entityid.format;
+
         const logo = data.metaDataFields["logo:0:url"];
         const name = data.metaDataFields["name:en"] || data.metaDataFields["name:nl"] || "";
         const fullName = I18n.t(`metadata.${type}_single`) + " - " + name;
-        const {guest} = this.props;
-        const {entityIdAlreadyExists} = this.state;
-        const entityIdRequired = configuration.required.indexOf("entityid") > 0;
+
         return (
             <div className="metadata-connection">
-
                 <table className="data">
                     <tbody>
                     {logo &&
@@ -88,15 +48,14 @@ export default class Connection extends React.PureComponent {
                     <tr>
                         <td className="key">{I18n.t("metadata.entityId")}</td>
                         <td className="value">
-                            <InlineEditable name="EntityId" mayEdit={!guest}
-                                            value={data.entityid || ""}
-                                            onChange={this.onChange("data.entityid")}
-                                            required={entityIdRequired}
-                                            onError={this.onError("entityid")}
-                                            onBlur={this.validateEntityId}
+                            <EntityId
+                                name="EntityId"
+                                mayEdit={!guest}
+                                value={data.entityid || ""}
+                                onChange={this.onChange("data.entityid")}
+                                onError={this.onError("entityid")}
+                                {...{ originalEntityId, type, entityIdFormat }}
                             />
-                            {entityIdAlreadyExists &&
-                            <p className="error">{I18n.t("metadata.entityIdAlreadyExists", {entityid: data.entityid})}</p>}
                         </td>
                     </tr>
                     <tr>
@@ -161,4 +120,3 @@ Connection.propTypes = {
     configuration: PropTypes.object.isRequired,
     originalEntityId: PropTypes.string.isRequired
 };
-
