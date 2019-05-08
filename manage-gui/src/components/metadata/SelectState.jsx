@@ -25,6 +25,7 @@ export default class SelectState extends React.PureComponent {
             return {value: s, label: I18n.t(`metadata.${s}`)};
         });
         return <Select className="select-state"
+                       name="react-select-state"
                        onChange={option => {
                            if (option) {
                                onChange(option.value);
@@ -46,5 +47,3 @@ SelectState.propTypes = {
     state: PropTypes.string.isRequired,
     disabled: PropTypes.bool
 };
-
-
