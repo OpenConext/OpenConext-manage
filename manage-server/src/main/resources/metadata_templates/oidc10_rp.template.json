@@ -10,8 +10,8 @@
     "name:en": "",
     "secret": "",
     "redirectUrls": [],
-    "scopes": [],
-    "grants": []
+    "scopes": ["oidc"],
+    "grants": ["authorization_code"]
   },
   "allowedEntities": []
 }
