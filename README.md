@@ -19,8 +19,21 @@ Note that the original migration from Janus was removed in version 3.0.0. If you
 - yarn 1.2.1
 - NodeJS v8.12.0 (best managed with `nvm`, current version in [.nvmrc](manage-gui/.nvmrc) or do `brew switch node 8.9.0`)
 - ansible
+- mysql
+
+```
+  mysql -uroot
+  create database IF NOT EXISTS eb;
+```
 
 ## [Building and running](#building-and-running)
+
+### Run server and gui
+
+```
+gem install foreman
+foreman s
+```
 
 ### [The manage-server](#manage-server)
 
@@ -36,11 +49,13 @@ to set the active profile to dev.
 ### [The manage-gui](#manage-gui)
 
 The client is build with react and to get initially started:
+
 ```
-cd manage-gui`
+cd manage-gui
 yarn install
 yarn start
 ```
+
 Browse to the [application homepage](http://localhost:3000/).
 
 To add new dependencies:
