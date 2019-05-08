@@ -33,12 +33,13 @@ I18n.translations.en = {
     metadata: {
         saml20_sp: "Service Providers",
         saml20_idp: "Identity Providers",
-        oidc10_rp: "OpenID Connect Providers",
+        oidc10_rp: "OIDC Relying Parties",
         saml20_sp_single: "Service Provider",
         saml20_idp_single: "Identity Provider",
-        oidc10_rp_single: "OpenID Connect Provider",
+        oidc10_rp_single: "OpenID Connect Relying Party",
         saml20_sp_revision_single: "Service Provider",
         saml20_idp_revision_single: "Identity Provider",
+        oidc10_rp_revision_single: "OpenID Connect Relying Parties",
         single_tenant_template: "Single Tenant Templates",
         single_tenant_template_single: "Single Tenant Template",
         searchPlaceHolder: "Search for metadata",
@@ -146,6 +147,7 @@ I18n.translations.en = {
         description: "Add only those {{type}} which are allowed to access {{name}}.",
         searchPlaceHolder_saml20_idp: "Search for whitelisted Service Providers...",
         searchPlaceHolder_saml20_sp: "Search for whitelisted Identity Providers...",
+        searchPlaceHolder_oidc10_rp: "Search for whitelisted OIDC Relying Parties...",
         removedWhiteListedEntities: "Removed entities from the whitelist",
         allowedEntries: {
             blocked: "Blocked",
