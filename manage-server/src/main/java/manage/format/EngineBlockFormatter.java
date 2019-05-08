@@ -142,13 +142,13 @@ public class EngineBlockFormatter {
 
     private void addLogo(Map<String, Object> source, Map<String, Object> result) {
         result = (Map<String, Object>) result.computeIfAbsent("metadata", key -> new TreeMap<>());
-        Map<String, String> metaDataFields = (Map<String, String>) source.get("metaDataFields");
+        Map<String, Object> metaDataFields = (Map<String, Object>) source.get("metaDataFields");
 
-        String height = metaDataFields.get("logo:0:height");
-        String url = metaDataFields.get("logo:0:url");
-        String width = metaDataFields.get("logo:0:width");
+        Object height = metaDataFields.get("logo:0:height");
+        String url = (String) metaDataFields.get("logo:0:url");
+        Object width = metaDataFields.get("logo:0:width");
 
-        if (hasText(height) || hasText(url) || hasText(width)) {
+        if (height != null || hasText(url) || width != null) {
             ArrayList<Object> logoContainer = new ArrayList<>();
             Map<String, String> logo = new HashMap<>();
             putIfHasText("height", height, logo);
@@ -173,13 +173,13 @@ public class EngineBlockFormatter {
     private void addContactPersons(Map<String, Object> source, Map<String, Object> result) {
         final Map<String, Object> metadata = (Map<String, Object>) result.computeIfAbsent("metadata", key -> new
             TreeMap<>());
-        Map<String, String> metaDataFields = (Map<String, String>) source.get("metaDataFields");
+        Map<String, Object> metaDataFields = (Map<String, Object>) source.get("metaDataFields");
         IntStream.range(0, 4).forEach(i -> {
-            String contactType = metaDataFields.get("contacts:" + i + ":contactType");
-            String emailAddress = metaDataFields.get("contacts:" + i + ":emailAddress");
-            String telephoneNumber = metaDataFields.get("contacts:" + i + ":telephoneNumber");
-            String givenName = metaDataFields.get("contacts:" + i + ":givenName");
-            String surName = metaDataFields.get("contacts:" + i + ":surName");
+            String contactType = (String) metaDataFields.get("contacts:" + i + ":contactType");
+            String emailAddress = (String) metaDataFields.get("contacts:" + i + ":emailAddress");
+            String telephoneNumber = (String) metaDataFields.get("contacts:" + i + ":telephoneNumber");
+            String givenName = (String) metaDataFields.get("contacts:" + i + ":givenName");
+            String surName = (String) metaDataFields.get("contacts:" + i + ":surName");
 
             if (hasText(contactType) || hasText(emailAddress) || hasText(telephoneNumber) || hasText(givenName) || hasText(surName)) {
                 ArrayList<Object> contactsContainer = (ArrayList<Object>) metadata.computeIfAbsent(
@@ -196,18 +196,35 @@ public class EngineBlockFormatter {
         });
     }
 
-    private void putIfHasText(String key, String value, Map<String, String> result) {
-        if (hasText(value)) {
-            result.put(key, value);
+    private void putIfHasText(String key, Object value, Map<String, String> result) {
+        String sValue = parseValueToString(value);
+        if (hasText(sValue)) {
+            result.put(key, sValue);
         }
+    }
+
+    private String parseValueToString(Object value) {
+        if (value == null) {
+            return null;
+        }
+        if (value instanceof String) {
+            return (String) value;
+        }
+        if (value instanceof Boolean) {
+            return Boolean.class.cast(value) ? "1" : "0";
+        }
+        if (value instanceof Integer) {
+            return Integer.class.cast(value).toString();
+        }
+        return value.toString();
     }
 
     private void addSingleLogOutService(Map<String, Object> source, Map<String, Object> result) {
         result = (Map<String, Object>) result.computeIfAbsent("metadata", key -> new TreeMap<>());
-        Map<String, String> metaDataFields = (Map<String, String>) source.get("metaDataFields");
+        Map<String, Object> metaDataFields = (Map<String, Object>) source.get("metaDataFields");
 
-        String location = metaDataFields.get("SingleLogoutService_Location");
-        String binding = metaDataFields.get("SingleLogoutService_Binding");
+        String location = (String) metaDataFields.get("SingleLogoutService_Location");
+        String binding = (String) metaDataFields.get("SingleLogoutService_Binding");
         if (!hasText(location) && !hasText(binding)) {
             return;
         }
@@ -221,9 +238,9 @@ public class EngineBlockFormatter {
 
     private void addRedirectSign(Map<String, Object> source, Map<String, Object> result) {
         result = (Map<String, Object>) result.computeIfAbsent("metadata", key -> new TreeMap<>());
-        Map<String, String> metaDataFields = (Map<String, String>) source.get("metaDataFields");
+        Map<String, Object> metaDataFields = (Map<String, Object>) source.get("metaDataFields");
 
-        String redirectSign = metaDataFields.get("redirect.sign");
+        String redirectSign = parseValueToString(metaDataFields.get("redirect.sign"));
         if (hasText(redirectSign)) {
             Map<String, Boolean> redirect = new HashMap<>();
             redirect.put("sign", redirectSign.equalsIgnoreCase("1"));
@@ -234,10 +251,10 @@ public class EngineBlockFormatter {
     private void addNameIDFormats(Map<String, Object> source, Map<String, Object> result) {
         final Map<String, Object> metadata = (Map<String, Object>) result.computeIfAbsent("metadata", key -> new
             TreeMap<>());
-        Map<String, String> metaDataFields = (Map<String, String>) source.get("metaDataFields");
+        Map<String, Object> metaDataFields = (Map<String, Object>) source.get("metaDataFields");
 
         IntStream.range(0, 3).forEach(i -> {
-            String nameIdFormat = metaDataFields.get("NameIDFormats:" + i);
+            String nameIdFormat = (String)metaDataFields.get("NameIDFormats:" + i);
             if (hasText(nameIdFormat)) {
                 Set<String> nameIDFormats = (Set<String>) metadata.computeIfAbsent(
                     "NameIDFormats", key -> new HashSet<>());
@@ -280,10 +297,10 @@ public class EngineBlockFormatter {
     private void addSingleSignOnService(Map<String, Object> source, Map<String, Object> result) {
         final Map<String, Object> metadata = (Map<String, Object>) result.computeIfAbsent("metadata", key -> new
             TreeMap<>());
-        Map<String, String> metaDataFields = (Map<String, String>) source.get("metaDataFields");
+        Map<String, Object> metaDataFields = (Map<String, Object>) source.get("metaDataFields");
         IntStream.range(0, 10).forEach(i -> {
-            String binding = metaDataFields.get("SingleSignOnService:" + i + ":Binding");
-            String location = metaDataFields.get("SingleSignOnService:" + i + ":Location");
+            String binding = (String) metaDataFields.get("SingleSignOnService:" + i + ":Binding");
+            String location = (String) metaDataFields.get("SingleSignOnService:" + i + ":Location");
 
             if (hasText(binding) || hasText(location)) {
                 ArrayList<Object> singleSignOnServiceContainer = (ArrayList<Object>) metadata.computeIfAbsent(
@@ -302,8 +319,8 @@ public class EngineBlockFormatter {
             TreeMap<>());
         Map<String, Object> metaDataFields = (Map<String, Object>) source.get("metaDataFields");
         IntStream.range(0, 10).forEach(i -> {
-            String allowed = String.class.cast(metaDataFields.get("shibmd:scope:" + i + ":allowed"));
-            String regexp = String.class.cast(metaDataFields.get("shibmd:scope:" + i + ":regexp"));
+            String allowed = parseValueToString(metaDataFields.get("shibmd:scope:" + i + ":allowed"));
+            String regexp = parseValueToString(metaDataFields.get("shibmd:scope:" + i + ":regexp"));
 
             if (hasText(allowed) || hasText(regexp)) {
                 Map<String, List<Object>> shibmdContainer = (Map<String, List<Object>>) metadata.computeIfAbsent(
@@ -324,11 +341,11 @@ public class EngineBlockFormatter {
     private void addAssertionConsumerService(Map<String, Object> source, Map<String, Object> result) {
         final Map<String, Object> metadata = (Map<String, Object>) result.computeIfAbsent("metadata", key -> new
             TreeMap<>());
-        Map<String, String> metaDataFields = (Map<String, String>) source.get("metaDataFields");
+        Map<String, Object> metaDataFields = (Map<String, Object>) source.get("metaDataFields");
         IntStream.range(0, 30).forEach(i -> {
-            String binding = metaDataFields.get("AssertionConsumerService:" + i + ":Binding");
-            String location = metaDataFields.get("AssertionConsumerService:" + i + ":Location");
-            String index = metaDataFields.get("AssertionConsumerService:" + i + ":index");
+            String binding = (String) metaDataFields.get("AssertionConsumerService:" + i + ":Binding");
+            String location = (String) metaDataFields.get("AssertionConsumerService:" + i + ":Location");
+            String index = parseValueToString(metaDataFields.get("AssertionConsumerService:" + i + ":index"));
 
             if (hasText(binding) || hasText(location)) {
                 ArrayList<Object> assertionConsumerServiceContainer = (ArrayList<Object>) metadata.computeIfAbsent(
