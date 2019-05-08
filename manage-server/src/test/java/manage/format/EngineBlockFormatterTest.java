@@ -63,7 +63,7 @@ public class EngineBlockFormatterTest implements TestUtils {
     public void emptySource() {
         MetaData metaDataContainer = new MetaData("oidc10_rp", singletonMap("metaDataFields", new HashMap<String, Object>()));
         Map<String, Object> rp = subject.parseOidcClient(metaDataContainer);
-        assertEquals(Stream.of("allow_all_entities", "allowed_connections", "arp_attributes", "type").collect(Collectors.toSet()), rp.keySet());
+        assertEquals(Stream.of("allow_all_entities", "metadata", "allowed_connections", "arp_attributes", "type").collect(Collectors.toSet()), rp.keySet());
     }
 
     private void assertAttribute(String path, String value, Map<String, Object> result) {
