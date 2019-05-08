@@ -4,15 +4,10 @@ import PropTypes from "prop-types";
 import {Link} from "react-router-dom";
 import {ping, rawSearch, search, validation} from "../api";
 import {copyToClip, isEmpty, stop} from "../utils/Utils";
-import SelectMetaDataType from "../components/metadata/SelectMetaDataType";
 import "./API.css";
-import SelectNewMetaDataField from "../components/metadata/SelectNewMetaDataField";
 import debounce from "lodash.debounce";
-import Select from "react-select";
-
-import NotesTooltip from "../components/NotesTooltip";
-import SelectNewEntityAttribute from "../components/metadata/SelectNewEntityAttribute";
-import CheckBox from "../components/CheckBox";
+import { Select, CheckBox, NotesTooltip } from '../components'
+import { SelectNewEntityAttribute, SelectNewMetaDataField, SelectMetaDataType} from "../components/metadata"
 
 export default class API extends React.PureComponent {
 
@@ -395,4 +390,3 @@ API.propTypes = {
     history: PropTypes.object.isRequired,
     configuration: PropTypes.array.isRequired
 };
-

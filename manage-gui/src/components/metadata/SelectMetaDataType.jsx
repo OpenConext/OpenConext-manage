@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import Select from "react-select";
+import { Select } from "./../../components";
 
 import I18n from "i18n-js";
 import "./SelectMetaDataType.css";
@@ -29,5 +29,3 @@ SelectMetaDataType.propTypes = {
     configuration: PropTypes.array.isRequired,
     defaultToFirst: PropTypes.bool
 };
-
-

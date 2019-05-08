@@ -3,7 +3,7 @@ import I18n from "i18n-js";
 import PropTypes from "prop-types";
 import {Link} from "react-router-dom";
 import SelectEntities from "./../SelectEntities";
-import Select from "react-select";
+import { Select } from "./../../components";
 import {stop} from "../../utils/Utils";
 
 
@@ -219,4 +219,3 @@ ConsentDisabling
     onChange: PropTypes.func.isRequired,
     guest: PropTypes.bool.isRequired
 };
-

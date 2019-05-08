@@ -1,12 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
-import Select from "react-select";
+import { Select } from "./../../components";
 
 export default class SelectMulti extends React.PureComponent {
-  static defaultProps = {
-    disabled: false
-  };
-
   valuesToOptions(values) {
     return values.map(value => ({ value: value, label: value }));
   }
@@ -16,7 +12,7 @@ export default class SelectMulti extends React.PureComponent {
   }
 
   render() {
-    const { enumValues, onChange, value, name, ...rest } = this.props;
+    const { enumValues, onChange, value, ...rest } = this.props;
 
     const selectedOptions = this.valuesToOptions(value);
     const options = this.valuesToOptions(enumValues);
@@ -24,7 +20,6 @@ export default class SelectMulti extends React.PureComponent {
     return (
       <Select
         {...rest}
-        inputId={`react-select-${name}`}
         isMulti={true}
         onChange={options => onChange(this.optionsToValues(options))}
         optionRenderer={option => option.label}
@@ -36,10 +31,5 @@ export default class SelectMulti extends React.PureComponent {
 }
 
 SelectMulti.propTypes = {
-  autoFocus: PropTypes.bool,
-  disabled: PropTypes.bool,
-  enumValues: PropTypes.array.isRequired,
-  name: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired,
-  value: PropTypes.array.isRequired
+  enumValues: PropTypes.array.isRequired
 };

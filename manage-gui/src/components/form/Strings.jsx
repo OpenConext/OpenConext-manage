@@ -2,6 +2,8 @@ import React from "react";
 import PropTypes from "prop-types";
 import Creatable from "react-select/lib/Creatable";
 
+import reactSelectStyles from "./../reactSelectStyles.js";
+
 export default class Strings extends React.PureComponent {
   render() {
     const { onChange, value, name, ...rest } = this.props;
@@ -10,6 +12,7 @@ export default class Strings extends React.PureComponent {
     return (
       <Creatable
         {...rest}
+        styles={reactSelectStyles}
         inputId={`react-select-${name}`}
         isMulti={true}
         onChange={options => onChange(options.map(o => o.value))}

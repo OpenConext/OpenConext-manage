@@ -1,12 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
-import Select from "react-select";
+import { Select } from "./../../components";
 
 export default class SelectOne extends React.PureComponent {
-  static defaultProps = {
-    disabled: false
-  };
-
   valueToOption(value) {
     return { value: value, label: value };
   }
@@ -16,12 +12,11 @@ export default class SelectOne extends React.PureComponent {
   }
 
   render() {
-    const { enumValues, onChange, value, name, ...rest } = this.props;
+    const { enumValues, onChange, value, ...rest } = this.props;
 
     return (
       <Select
         {...rest}
-        inputId={`react-select-${name}`}
         onChange={option => onChange(option.value)}
         optionRenderer={option => option.label}
         options={this.valuesToOptions(enumValues)}
@@ -32,10 +27,5 @@ export default class SelectOne extends React.PureComponent {
 }
 
 SelectOne.propTypes = {
-  autoFocus: PropTypes.bool,
-  disabled: PropTypes.bool,
-  enumValues: PropTypes.array.isRequired,
-  name: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired,
-  value: PropTypes.string.isRequired
+  enumValues: PropTypes.array.isRequired
 };

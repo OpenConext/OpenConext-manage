@@ -37,6 +37,9 @@
             td {
                 word-wrap: break-word;
                 padding: 3px;
+                &.value {
+                  padding: 8px 0;
+                }
                 &.trash {
                     text-align: center;
                     cursor: pointer;
@@ -54,7 +57,6 @@
                     padding: 0 10px;
                     border-radius: 3px;
                     border: 1px solid #d9d9d8;
-                    margin-top: 5px;
                     line-height: 33px;
                     &.error {
                         border: solid 1px $red;
@@ -83,7 +85,7 @@
                 }
                 div.error {
                     color: $red;
-                    margin-top: 10px;
+                    margin-top: 5px;
                 }
 
             }

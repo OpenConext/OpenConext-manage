@@ -7,5 +7,7 @@ export { default as Import } from "./Import";
 export { default as Manipulation } from "./Manipulation";
 export { default as MetaData } from "./MetaData";
 export { default as Revisions } from "./Revisions";
+export { default as SelectMetaDataType } from "./SelectMetaDataType";
+export { default as SelectNewEntityAttribute } from "./SelectNewEntityAttribute";
 export { default as SelectNewMetaDataField } from "./SelectNewMetaDataField";
 export { default as WhiteList } from "./WhiteList";

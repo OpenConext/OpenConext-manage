@@ -12,13 +12,11 @@ import {
     importMetaDataXmlUrl,
     validation
 } from "../../api";
+import { Select, CheckBox } from "./../../components"
 
-import CheckBox from "../../components/CheckBox";
 
 import "codemirror/lib/codemirror.css";
 import "./Import.css";
-import Select from "react-select";
-
 
 
 export default class Import extends React.Component {
@@ -631,4 +629,3 @@ Import.propTypes = {
     newEntity: PropTypes.bool.isRequired,
     applyImportChanges: PropTypes.func.isRequired
 };
-

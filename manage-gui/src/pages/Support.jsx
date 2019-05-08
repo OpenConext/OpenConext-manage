@@ -5,7 +5,7 @@ import {Link} from "react-router-dom";
 import {includeInPush, search} from "../api";
 import {copyToClip, isEmpty, stop} from "../utils/Utils";
 import "./Support.css";
-import Select from "react-select";
+import { Select } from "../components";
 
 import NotesTooltip from "../components/NotesTooltip";
 import CheckBox from "../components/CheckBox";
@@ -180,4 +180,3 @@ export default class Support extends React.PureComponent {
 Support.propTypes = {
     history: PropTypes.object.isRequired
 };
-

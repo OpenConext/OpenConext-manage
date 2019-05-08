@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import Select from "react-select";
+import { Select } from "../components";
 
 import "./SelectEntities.css";
 
@@ -53,5 +53,3 @@ SelectEntities.propTypes = {
     allowedEntities: PropTypes.array.isRequired,
     placeholder: PropTypes.string
 };
-
-
