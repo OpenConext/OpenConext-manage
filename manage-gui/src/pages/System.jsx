@@ -258,7 +258,9 @@ export default class System extends React.PureComponent {
                        confirmationDialogOpen: true,
                        confirmationQuestion: I18n.t("playground.pushConfirmation", {
                            url: currentUser.push.url,
-                           name: currentUser.push.name
+                           name: currentUser.push.name,
+                           oidcName: currentUser.push.oidcName,
+                           oidcUrl: currentUser.push.oidcUrl
                        }),
                        confirmationDialogAction: action
                    })}>{I18n.t("playground.runPush")}

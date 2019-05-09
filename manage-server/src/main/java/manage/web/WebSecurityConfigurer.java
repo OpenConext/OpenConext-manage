@@ -87,6 +87,12 @@ public class WebSecurityConfigurer {
         @Value("${push.eb.name}")
         private String pushName;
 
+        @Value("${push.oidc.url}")
+        private String pushOidcUrl;
+
+        @Value("${push.oidc.name}")
+        private String pushOidcName;
+
         @Override
         public void configure(WebSecurity web) throws Exception {
             web.ignoring().antMatchers("/client/users/disclaimer");
@@ -104,7 +110,7 @@ public class WebSecurityConfigurer {
                 .collect(toList());
 
             Product product = new Product(productOrganization, productName, serviceProviderFeedUrl);
-            Push push = new Push(pushUrl, pushName);
+            Push push = new Push(pushUrl, pushName, pushOidcUrl, pushOidcName);
 
             BasicAuthenticationEntryPoint authenticationEntryPoint = new BasicAuthenticationEntryPoint();
             authenticationEntryPoint.setRealmName("manage");

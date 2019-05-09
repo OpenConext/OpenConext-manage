@@ -109,7 +109,7 @@ I18n.translations.en = {
         deleteOrphans: "DELETE REFERENCES",
         orphanConfirmation: "Are you sure you want to delete the above references?",
         orphansDeleted: "References to deleted / renamed MetaData removed",
-        pushConfirmation: "Are you sure you want to push all metadata to {{name}} with endpoint {{url}}?",
+        pushConfirmation: "Are you sure you want to push all metadata to {{name}} and {{oidcName}} to the endpoints {{url}} and {{oidcUrl}}?",
         headers: {
             status: "Status",
             entityid: "Entity ID",
