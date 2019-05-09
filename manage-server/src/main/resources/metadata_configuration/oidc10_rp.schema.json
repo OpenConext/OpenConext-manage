@@ -406,7 +406,19 @@
         "scopes": {
           "type": "array",
           "items": {
-            "type": "string"
+            "type": "string",
+            "enum": [
+              "oidc",
+              "members",
+              "groups",
+              "actions",
+              "cross-idp-services",
+              "stats",
+              "pdp",
+              "test",
+              "email",
+              "profile"
+            ]
           },
           "info": "The allowed scopes for this Relying Party."
         },
