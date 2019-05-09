@@ -23,8 +23,7 @@ push:
     user: manage
     name: OpenConext OIDC-NG
     password: secret
-    acs_location: http://localhost:9898/
-
+    enabled: false
 
 product:
   name: Manage

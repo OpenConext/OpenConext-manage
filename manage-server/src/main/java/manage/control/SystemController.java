@@ -68,6 +68,7 @@ public class SystemController {
 
     private RestTemplate oidcRestTemplate;
     private String oidcPushUri;
+    private boolean oidcEnabled;
 
     private boolean excludeEduGainImported;
     private MetaDataRepository metaDataRepository;
@@ -88,6 +89,7 @@ public class SystemController {
                             @Value("${push.oidc.url}") String oidcPushUri,
                             @Value("${push.oidc.user}") String oidcUser,
                             @Value("${push.oidc.password}") String oidcPassword,
+                            @Value("${push.oidc.enabled}") boolean oidcEnabled,
                             Environment environment) throws MalformedURLException {
         this.metaDataRepository = metaDataRepository;
         this.pushUri = pushUri;
@@ -96,6 +98,7 @@ public class SystemController {
 
         this.oidcRestTemplate = new RestTemplate(getRequestFactory(oidcUser, oidcPassword));
         this.oidcPushUri = oidcPushUri;
+        this.oidcEnabled = oidcEnabled;
 
         this.ebJdbcTemplate = new JdbcTemplate(ebDataSource);
         this.environment = environment;
@@ -212,7 +215,7 @@ public class SystemController {
 
         // Now push all oidc_rp metadata to OIDC proxy
         List<MetaData> oidcClients = metaDataRepository.getMongoTemplate().findAll(MetaData.class, "oidc10_rp");
-        if (!environment.acceptsProfiles("dev")) {
+        if (!environment.acceptsProfiles("dev") && oidcEnabled) {
             this.oidcRestTemplate.postForEntity(oidcPushUri, oidcClients, Void.class);
         }
 
