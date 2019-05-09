@@ -31,28 +31,27 @@ export default class EntityId extends React.PureComponent {
 
   validPresence = entityId => !isEmpty(entityId);
 
-  validUniqueness(entityId) {
+  async validUniqueness(entityId) {
     const isNewValue = this.props.originalEntityId !== entityId;
     if (!isNewValue) return true;
 
-    return search({ entityid: entityId }, this.props.type).then(json => {
-      const isUnique = isNewValue && json.length === 0;
+    const json = await search({ entityid: entityId }, this.props.type);
+    const isUnique = isNewValue && json.length === 0;
 
-      return isUnique ? true : this.notUnique() & false;
-    });
+    return isUnique || this.notUnique();
   }
 
-  validFormat(entityId) {
+  async validFormat(entityId) {
     const { entityIdFormat } = this.props;
 
     if (!entityIdFormat) {
       return true;
     }
-
-    return validation(entityIdFormat, entityId).then(valid => valid || this.notFormatted());
+    const valid = await validation(entityIdFormat, entityId);
+    return valid || this.notFormatted();
   }
 
-  async validateEntityId(entityId) {
+   validateEntityId(entityId) {
     this.setState({
       hasError: false,
       errorMessage: ""
@@ -60,8 +59,8 @@ export default class EntityId extends React.PureComponent {
 
     const valid =
       this.validPresence(entityId) &&
-      (await this.validFormat(entityId)) &&
-      (await this.validUniqueness(entityId));
+      (this.validFormat(entityId)) &&
+      (this.validUniqueness(entityId));
 
     if (!valid) this.props.onError(true);
   }
