@@ -106,11 +106,11 @@ public class SystemController {
     public void filterOutNullDisableConsentExplanations(List<MetaData> identityProviders) {
         identityProviders.forEach(idp -> {
             Object disableConsentData = idp.getData().get("disableConsent");
-            if (disableConsentData != null && disableConsentData instanceof List) {
-                List disableConsent = List.class.cast(disableConsentData);
+            if (disableConsentData instanceof List) {
+                List disableConsent = (List) disableConsentData;
                 disableConsent.forEach(disableConsentEntry -> {
                     if (disableConsentEntry instanceof Map) {
-                        Map<String, Object> disableConsentMap = Map.class.cast(disableConsentEntry);
+                        Map<String, Object> disableConsentMap = (Map) disableConsentEntry;
                         disableConsentMap.entrySet().removeIf(entry -> entry.getValue() == null);
                     }
                 });

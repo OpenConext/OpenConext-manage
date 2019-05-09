@@ -183,6 +183,7 @@ public class ImporterTest implements TestUtils {
                 .map(entry -> entry.getValue())
                 .collect(Collectors.toList());
         assertEquals(Arrays.asList("urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
+                "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST-SimpleSign",
                 "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect",
                 "urn:oasis:names:tc:SAML:2.0:bindings:SOAP"), singleSignOnServices);
     }

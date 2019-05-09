@@ -140,6 +140,7 @@
         "sab",
         "voot",
         "pseudo_email",
+        "sbs",
         "surfmarket_entitlements"
       ],
       "properties": {
@@ -305,15 +306,24 @@
           "type": "boolean",
           "info": "Whether authentication request, logout requests and logout responses should be signed. The default is FALSE. This is generally set for trusted proxies like OpenID Connect Gateway or Stepup authentication gateway."
         },
+        "coin:sp_specific_metadata": {
+          "type": "boolean",
+          "default": false,
+          "info": "Publish SP-specific metadata containing only whitelisted IdPs."
+        },
         "coin:publish_in_edugain": {
           "type": "boolean",
           "default": false,
-          "info": "Set this for service providers published in eduGAIN."
+          "info": "Set this for service providers that we publish in eduGAIN. When set, this entity also needs to have a value for coin:publish_in_edugain_date."
         },
         "coin:publish_in_edugain_date": {
           "type": "string",
           "format": "date-time",
-          "info": "When to add metadata to the eduGAIN feed. Usually the current time."
+          "info": "When this entity first appeared in the eduGAIN feed. Usually the current time."
+        },
+        "coin:publish_in_edugain_allow_rns": {
+          "type": "boolean",
+          "info": "Whether we have approved that this SP may use the Research & Scholarship entity category."
         },
         "coin:imported_from_edugain": {
           "type": "boolean",
@@ -495,6 +505,10 @@
           "default": "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256",
           "info": "Select the Secure Hash Algorithm (SHA) to use for assertions sent by Engineblock to this service provider."
         },
+        "coin:sign_response": {
+          "type": "boolean",
+          "info": "Set to also directly sign the SAML Response element, in addition to the Assertion element that will always be signed."
+        },
         "coin:ss:supports_strong_authentication": {
           "type": "boolean",
           "info": "Set if StepUp is supported."
@@ -528,7 +542,7 @@
           "format": "url",
           "info": "Add the URL to the SURF wiki for additional information of this service."
         },
-        "^description:(en|nl|pt)$": {
+        "^description:(en|nl)$": {
           "type": "string",
           "info": "The description of the service."
         },
@@ -601,20 +615,20 @@
           "sibblingIndependent": true,
           "info": "From the pull down, select the type of contact."
         },
-        "^OrganizationName:(en|nl|pt)$": {
+        "^OrganizationName:(en|nl)$": {
           "type": "string",
           "info": "The formal name of the organization. e.g. Service by University of Harderwijk."
         },
-        "^OrganizationDisplayName:(en|nl|pt)$": {
+        "^OrganizationDisplayName:(en|nl)$": {
           "type": "string",
           "info": "The friendly name of the organization. e.g. University of Harderwijk."
         },
-        "^OrganizationURL:(en|nl|pt)$": {
+        "^OrganizationURL:(en|nl)$": {
           "type": "string",
           "format": "url",
           "info": "The URL to the website of the service e.g. http://www.example-service.nl/en/."
         },
-        "^url:(en|nl|pt)$": {
+        "^url:(en|nl)$": {
           "type": "string",
           "format": "url",
           "info": "The URL to the support site of the service."
