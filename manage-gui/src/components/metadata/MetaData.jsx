@@ -45,8 +45,22 @@ export default class MetaData extends React.Component {
     }
   };
 
-  validFormat(format, value) {
-    return isEmpty(value) ? true : validation(format, value);
+  async validFormat(format, value) {
+    if (isEmpty(value)) {
+      return true;
+    }
+
+    if (typeof value === "string") {
+      return await validation(format, value);
+    }
+
+    if (Array.isArray(value)) {
+      const validationValues = await Promise.all(
+        value.map(val => validation(format, val))
+      );
+
+      return isEmpty(validationValues.filter(val => !val));
+    }
   }
 
   validPresence(key, value) {
@@ -57,11 +71,11 @@ export default class MetaData extends React.Component {
     return !isRequired || (isRequired && !isEmpty(value));
   }
 
-  validValue(key, value, format) {
+  async validValue(key, value, format) {
     let valid = this.validPresence(key, value);
 
     if (format) {
-      valid = valid && this.validFormat(format, value);
+      valid = valid && (await this.validFormat(format, value));
     }
 
     return valid;
@@ -75,14 +89,12 @@ export default class MetaData extends React.Component {
   }
 
   renderMetaDataValue = (key, value, keyConfiguration, guest) => {
-    const autoFocus = this.state.newMetaDataFieldKey === key;
-
     const defaultProps = {
+      autoFocus: this.state.newMetaDataFieldKey === key,
       disabled: guest,
       name: key,
       onChange: value => this.doChange(key, value),
-      value: value || "",
-      autoFocus
+      value: value || ""
     };
 
     switch (keyConfiguration.type) {
@@ -97,7 +109,16 @@ export default class MetaData extends React.Component {
           return <SelectMulti {...defaultProps} enumValues={options} />;
         }
 
-        return <Strings {...defaultProps} />;
+        const itemFormat = keyConfiguration.items.format;
+
+        return (
+          <Strings
+            {...defaultProps}
+            format={itemFormat}
+            hasFormatError={!isEmpty(value) && this.props.errors[key]}
+            onChange={value => this.doChange(key, value, itemFormat)}
+          />
+        );
       case "string":
         if (keyConfiguration.enum) {
           return (
