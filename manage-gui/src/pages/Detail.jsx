@@ -60,7 +60,6 @@ const tabsOIDC = [
   "metadata",
   "arp",
   "whitelist",
-  "manipulation",
   "revisions"
 ];
 

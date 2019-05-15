@@ -30,6 +30,7 @@ export default class Connection extends React.PureComponent {
           originalEntityId,
           metaData: { type, revision, data, id }
         } = this.props;
+        const isRelyingParty = type === "oidc10_rp";
         const entityIdFormat = this.props.configuration.properties.entityid.format;
 
         const logo = data.metaDataFields["logo:0:url"];
@@ -58,7 +59,19 @@ export default class Connection extends React.PureComponent {
                             />
                         </td>
                     </tr>
-                    <tr>
+                    {isRelyingParty && <tr>
+                        <td className="key">{I18n.t("metadata.discoveryUrl")}</td>
+                        <td className="value">
+                            <FormatInput name="discoveryUrl"
+                                         input={data.discoveryurl || ""} format="url"
+                                         onChange={this.onChange("data.discoveryurl")}
+                                         onError={this.onError("discoveryUrl")}
+                                         isError={this.props.errors["discoveryUrl"] || false}
+                                         readOnly={guest}
+                                         isRequired={false}/>
+                        </td>
+                    </tr>}
+                    {!isRelyingParty && <tr>
                         <td className="key">{I18n.t("metadata.metaDataUrl")}</td>
                         <td className="value">
                             <FormatInput name="metaDataUrl"
@@ -69,7 +82,7 @@ export default class Connection extends React.PureComponent {
                                          readOnly={guest}
                                          isRequired={false}/>
                         </td>
-                    </tr>
+                    </tr>}
                     <tr>
                         <td className="key">{I18n.t("metadata.state")}</td>
                         <td className="value">

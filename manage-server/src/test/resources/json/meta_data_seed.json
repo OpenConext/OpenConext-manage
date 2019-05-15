@@ -454,6 +454,7 @@
       "entityid": "https@//oidc.rp",
       "eid": 9,
       "state": "testaccepted",
+      "discoveryurl": "https://well_known_configuration",
       "allowedall": true,
       "metaDataFields": {
         "name:en": "OIDC SP",
@@ -463,7 +464,7 @@
           "http://localhost:8080/redirect2"
         ],
         "scopes": [
-          "oidc",
+          "openid",
           "groups"
         ],
         "grants": [
@@ -498,7 +499,7 @@
           "http://localhost:8080/redirect2"
         ],
         "scopes": [
-          "oidc",
+          "openid",
           "groups"
         ],
         "grants": [

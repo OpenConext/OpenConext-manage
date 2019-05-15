@@ -61,6 +61,7 @@ I18n.translations.en = {
         entityId: "Entity ID",
         entityIdAlreadyExists: "Entity ID {{entityid}} is already taken.",
         metaDataUrl: "Metadata URL",
+        discoveryUrl: "Discovery URL",
         state: "State",
         prodaccepted: "prodaccepted",
         testaccepted: "testaccepted",
