@@ -23,7 +23,8 @@ public class MetaDataHookConfiguration {
         OpenIdConnectHook openIdConnectHook = new OpenIdConnectHook(openIdConnect, acsLocation);
         SecretHook secretHook = new SecretHook();
         TypeSafetyHook typeSafetyHook = new TypeSafetyHook(metaDataAutoConfiguration);
-        return new CompositeMetaDataHook(Arrays.asList(typeSafetyHook, entityIdReconcilerHook, openIdConnectHook, secretHook));
+        ValidationHook validationHook = new ValidationHook(metaDataAutoConfiguration);
+        return new CompositeMetaDataHook(Arrays.asList(validationHook, typeSafetyHook, entityIdReconcilerHook, openIdConnectHook, secretHook));
     }
 
 

@@ -6,6 +6,7 @@ import org.everit.json.schema.ValidationException;
 import org.everit.json.schema.internal.URIFormatValidator;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.IOException;
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -105,4 +107,13 @@ public class MetaDataAutoConfigurationTest implements TestUtils {
         assertFalse(uriFormatValidator.validate(uri.trim()).isPresent());
     }
 
+    @Test
+    public void schema() {
+        assertNotNull(subject.schema(EntityType.RP.getType()));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void schemaNotExists() {
+        subject.schema("bogus");
+    }
 }

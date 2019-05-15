@@ -565,7 +565,6 @@
       "required": [
         "name:en",
         "secret",
-        "redirectUrls",
         "scopes",
         "grants"
       ],

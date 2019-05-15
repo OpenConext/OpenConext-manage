@@ -103,6 +103,13 @@ public class MetaDataAutoConfiguration {
 
     }
 
+    public Schema schema(String type) {
+        if (!this.schemas.containsKey(type)) {
+            throw new IllegalArgumentException(String.format("The %s schema does not exists", type));
+        }
+        return this.schemas.get(type);
+    }
+
     public ObjectMapper getObjectMapper() {
         return objectMapper;
     }
