@@ -2,14 +2,11 @@
 @import "../stylesheets/mixins.scss";
 
 div.format-input {
-
-    span {
-        color: $red;
-        padding: 5px 5px 0 5px;
-        display: block;
-        i.fa {
-            margin-right: 10px;
-        }
+  span {
+    color: $red;
+    display: block;
+    i.fa {
+      margin-right: 10px;
     }
-
+  }
 }

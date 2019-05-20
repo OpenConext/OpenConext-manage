@@ -1,40 +1,37 @@
 import React from "react";
 import PropTypes from "prop-types";
 import I18n from "i18n-js";
+import { Password } from "../form";
 
 export default class StringWithFormat extends React.PureComponent {
-  getInputType() {
-    switch (this.props.format) {
-      case "password":
-        return "password";
-      default:
-        return "text";
-    }
-  }
-
-  renderErrorMessage() {
-    return I18n.t("metaDataFields.error", { format: this.props.format });
-  }
-
-  render() {
-    const { onChange, hasFormatError, ...rest } = this.props;
+  renderInput() {
+    const { onChange, hasFormatError, format, ...rest } = this.props;
 
     return (
       <div className="format-input">
         <input
           {...rest}
           className={hasFormatError && "error"}
-          type={this.getInputType()}
+          type="text"
           onChange={e => onChange(e.target.value)}
         />
         {hasFormatError && (
           <span>
             <i className="fa fa-warning" />
-            {this.renderErrorMessage()}
+            {I18n.t("metaDataFields.error", { format })}
           </span>
         )}
       </div>
     );
+  }
+
+  render() {
+    switch (this.props.format) {
+      case "password":
+        return <Password {...this.props} />;
+      default:
+        return this.renderInput();
+    }
   }
 }
 
