@@ -54,8 +54,9 @@ public class ExportController {
 
         result.put("json", objectWriter.writeValueAsString(nested));
         result.put("jsonFlat", objectWriter.writeValueAsString(flat));
-        result.put("xml", exporter.exportToXml(metaData));
-
+        if (Exporter.validMetadataExportTypes.contains(metaData.getType())) {
+            result.put("xml", exporter.exportToXml(metaData));
+        }
         Map<String, Object> metaDataOnlyNested = new TreeMap<>(nested);
         excludeMetaDataOnlyKeys.forEach(metaDataOnlyNested::remove);
         result.put("jsonMetaDataOnly", objectWriter.writeValueAsString(metaDataOnlyNested));

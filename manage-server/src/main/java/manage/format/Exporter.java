@@ -26,13 +26,14 @@ import java.util.concurrent.atomic.AtomicReference;
 @SuppressWarnings("unchecked")
 public class Exporter {
 
-    final static List<String> excludedDataFields = Arrays.asList("id", "eid", "revisionid", "user", "created", "ip",
+    public static final List<String> validMetadataExportTypes = Arrays.asList("saml20_idp", "saml20_sp", "single_tenant_template");
+    static List<String> excludedDataFields = Arrays.asList("id", "eid", "revisionid", "user", "created", "ip",
             "revisionnote", "notes");
     private final static MustacheFactory MUSTACHE_FACTORY = new DefaultMustacheFactory();
     private final ResourceLoader resourceLoader;
     private final String metadataExportPath;
     private final Clock clock;
-    private final List<String> validMetadataExportTypes = Arrays.asList("saml20_idp", "saml20_sp", "single_tenant_template");
+
     private final List<String> languages;
 
     public Exporter(Clock clock, ResourceLoader resourceLoader, String metadataExportPath, List<String> languages) {
