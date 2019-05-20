@@ -60,7 +60,9 @@ const tabsOIDC = [
   "metadata",
   "arp",
   "whitelist",
-  "revisions"
+  "revisions",
+  "import",
+  "export"
 ];
 
 const tabsSingleTenant = [

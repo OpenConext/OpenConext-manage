@@ -8,11 +8,11 @@ div.flash {
   top: 0;
   z-index: 6;
   opacity: .9;
-  translate: (0, -40px)
+  translate: (0, -40px);
 
   &.hide {
     transition: translate 1000ms ease-in-out;
-    translate: (0, 0px)
+    translate: (0, 0px);
   }
 
   &.info {
