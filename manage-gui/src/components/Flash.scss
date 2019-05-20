@@ -8,13 +8,11 @@ div.flash {
   top: 0;
   z-index: 6;
   opacity: .9;
-
-  transition: top 150ms ease-in-out;
+  translate: (0, -40px)
 
   &.hide {
-    transition: top 1000ms ease-in-out;
-    top: -80px;
-
+    transition: translate 1000ms ease-in-out;
+    translate: (0, 0px)
   }
 
   &.info {
@@ -47,7 +45,4 @@ div.flash {
       padding: 6px;
     }
   }
-
-
-
 }

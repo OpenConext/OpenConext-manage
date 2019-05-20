@@ -2,28 +2,19 @@
 @import "../stylesheets/mixins.scss";
 @import "../stylesheets/media_queries.scss";
 
-.flash.hide + div.header-container {
-  .header {
-    margin: 0 auto;
-    transition: margin-top 500ms ease-in-out;
-  }
-}
-
 .header-container {
 
   background-color: white;
 
   .header {
     max-width: $medium;
-    margin: 40px auto 0 auto;
+    margin: 0 auto;
     padding: 19px 15px 40px 15px;
     position: relative;
-    transition: margin 150ms ease-in-out;
 
     @include phone {
-      margin: 85px auto 0 auto;
+      margin: 0 auto;
     }
-
 
     a {
       color: $blue;
@@ -134,8 +125,3 @@
   }
 
 }
-
-
-
-
-
