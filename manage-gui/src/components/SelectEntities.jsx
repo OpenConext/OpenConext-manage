@@ -30,7 +30,7 @@ export default class SelectEntities extends React.PureComponent {
 
     render() {
         const {onChange, whiteListing, allowedEntities = [], placeholder} = this.props;
-        return <Select className="select-state"
+        return <Select name="select-entities"
                        onChange={option => {
                            if (option) {
                                onChange(option.value);

@@ -97,6 +97,8 @@ export default class MetaData extends React.Component {
       value: value || ""
     };
 
+    const hasFormatError = !isEmpty(value) && !isEmpty(this.props.errors[key])
+
     switch (keyConfiguration.type) {
       case "boolean":
         return <Boolean {...defaultProps} />;
@@ -115,7 +117,7 @@ export default class MetaData extends React.Component {
           <Strings
             {...defaultProps}
             format={itemFormat}
-            hasFormatError={!isEmpty(value) && this.props.errors[key]}
+            hasFormatError={hasFormatError}
             onChange={value => this.doChange(key, value, itemFormat)}
           />
         );
@@ -130,7 +132,7 @@ export default class MetaData extends React.Component {
             <StringWithFormat
               {...defaultProps}
               format={keyConfiguration.format}
-              hasFormatError={!isEmpty(value) && this.props.errors[key]}
+              hasFormatError={hasFormatError}
               onChange={value =>
                 this.doChange(key, value, keyConfiguration.format)
               }

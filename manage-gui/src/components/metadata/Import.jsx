@@ -24,9 +24,7 @@ export default class Import extends React.Component {
     constructor(props) {
         super(props);
         const {newEntity, metaData} = this.props;
-        if (!newEntity) {
-            this.setState({})
-        }
+
         this.state = {
             url: newEntity ? "" : metaData.data.metadataurl,
             jsonUrl: "",
@@ -484,6 +482,7 @@ export default class Import extends React.Component {
             <section className="import-header">
                 <h2>{info}</h2>
                 <Select onChange={this.changeType}
+                        name="select-entity-type"
                         options={["saml20_sp", "saml20_idp"].map(s => ({
                             value: s,
                             label: I18n.t(`metadata.${s}_single`)
@@ -499,6 +498,7 @@ export default class Import extends React.Component {
     renderImportFooter = (action) =>
         <section className="import-footer">
             <Select onChange={this.changeType}
+                    name="select-entity-type"
                     options={["saml20_idp", "saml20_sp"].map(s => ({value: s, label: I18n.t(`metadata.${s}_single`)}))}
                     value={this.state.entityType || "saml20_sp"}
                     disabled={this.props.guest || !this.props.newEntity}/>

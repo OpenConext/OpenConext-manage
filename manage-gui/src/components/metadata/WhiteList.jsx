@@ -33,7 +33,7 @@ export default class WhiteList extends React.Component {
 
     initialiseAllowedEntities(whiteListing) {
         window.scrollTo(0, 0);
-        const {allowedEntities = [], entityId} = this.props;
+        const {allowedEntities, entityId} = this.props;
         this.enrichAllowedEntries(allowedEntities, entityId, whiteListing);
     }
 
@@ -46,7 +46,7 @@ export default class WhiteList extends React.Component {
         }
     }
 
-    enrichAllowedEntries = (allowedEntities = [], entityId, whiteListing) => {
+    enrichAllowedEntries = (allowedEntities, entityId, whiteListing) => {
         const enrichedAllowedEntries = allowedEntities
             .map(entity => this.enrichAllowedEntry(entity, entityId, whiteListing))
             .filter(enriched => enriched !== null);
@@ -65,7 +65,7 @@ export default class WhiteList extends React.Component {
         }
         const thisEntityId = this.props.entityId;
         return {
-            "blocked": !moreInfo.data.allowedall && !(moreInfo.data.allowedEntities || [])
+            "blocked": !moreInfo.data.allowedall && !(moreInfo.data.allowedEntities)
                 .some(allowed => allowed.name === thisEntityId),
             "status": I18n.t(`metadata.${moreInfo.data.state}`),
             "entityid": entityId,
@@ -123,7 +123,7 @@ export default class WhiteList extends React.Component {
     };
 
     addAllowedEntry = allowedEntryEntityId => {
-        const {allowedAll, allowedEntities = [], entityId, whiteListing, onChangeWhiteListedEntity} = this.props;
+        const {allowedAll, allowedEntities, entityId, whiteListing, onChangeWhiteListedEntity} = this.props;
         const newState = [...allowedEntities];
         newState.unshift({name: allowedEntryEntityId});
         if (allowedAll) {
@@ -140,7 +140,7 @@ export default class WhiteList extends React.Component {
     };
 
     removeAllowedEntry = allowedEntry => {
-        const {allowedEntities = [], onChangeWhiteListedEntity} = this.props;
+        const {allowedEntities, onChangeWhiteListedEntity} = this.props;
         const newState = [...allowedEntities].filter(entity => entity.name !== allowedEntry.entityid);
         this.props.onChange("data.allowedEntities", newState);
 
@@ -159,7 +159,7 @@ export default class WhiteList extends React.Component {
     };
 
     allowAllChanged = e => {
-        const {allowedEntities = [], name, type, onChange} = this.props;
+        const {allowedEntities, name, type, onChange} = this.props;
         const allowedEntitiesLength = allowedEntities.length;
         const typeS = type === "saml20_sp" ? "Identity Providers" : "Service Providers";
         if (e.target.checked) {
@@ -292,7 +292,7 @@ export default class WhiteList extends React.Component {
             }</section>;
 
     render() {
-        const {allowedAll, allowedEntities = [], whiteListing, name, type, guest, addedWhiteListedEntities, removedWhiteListedEntities}
+        const {allowedAll, allowedEntities, whiteListing, name, type, guest, addedWhiteListedEntities, removedWhiteListedEntities}
             = this.props;
         const providerType = type === "saml20_sp" ? "Identity Providers" : "Service Providers";
         const {
@@ -342,12 +342,16 @@ export default class WhiteList extends React.Component {
     }
 }
 
+WhiteList.defaultProps = {
+  allowedEntities: []
+}
+
 WhiteList.propTypes = {
     whiteListing: PropTypes.array.isRequired,
     name: PropTypes.string.isRequired,
     type: PropTypes.string.isRequired,
     entityId: PropTypes.string.isRequired,
-    allowedEntities: PropTypes.array.isRequired,
+    allowedEntities: PropTypes.array,
     allowedAll: PropTypes.bool.isRequired,
     onChange: PropTypes.func.isRequired,
     guest: PropTypes.bool.isRequired,
@@ -355,4 +359,3 @@ WhiteList.propTypes = {
     removedWhiteListedEntities: PropTypes.array.isRequired,
     onChangeWhiteListedEntity: PropTypes.func.isRequired
 };
-

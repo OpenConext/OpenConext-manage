@@ -22,7 +22,6 @@ export default class Boolean extends React.PureComponent {
 Boolean.propTypes = {
   autoFocus: PropTypes.bool,
   disabled: PropTypes.bool,
-  enumValues: PropTypes.array.isRequired,
   onChange: PropTypes.func.isRequired,
-  value: PropTypes.string.isRequired
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]).isRequired
 };

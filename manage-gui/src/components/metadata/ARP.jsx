@@ -310,10 +310,13 @@ export default class ARP extends React.Component {
 
 }
 
+ARP.defaultProps = {
+  arp: {}
+}
+
 ARP.propTypes = {
-    arp: PropTypes.object.isRequired,
+    arp: PropTypes.object,
     onChange: PropTypes.func.isRequired,
     arpConfiguration: PropTypes.object.isRequired,
     guest: PropTypes.bool.isRequired
 };
-
