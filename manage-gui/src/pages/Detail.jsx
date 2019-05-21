@@ -627,6 +627,7 @@ export default class Detail extends React.PureComponent {
         return (
           <ConsentDisabling
             disableConsent={metaData.data.disableConsent}
+            allowedEntities={metaData.data.allowedEntities}
             name={name}
             whiteListing={whiteListing}
             onChange={this.onChange("consent_disabling")}

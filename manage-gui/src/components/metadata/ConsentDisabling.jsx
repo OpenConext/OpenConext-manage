@@ -22,12 +22,6 @@ export default class ConsentDisabling extends React.Component {
     this.initialiseDisableConsent(this.props.whiteListing);
   }
 
-  initialiseDisableConsent(whiteListing) {
-    window.scrollTo(0, 0);
-    const { disableConsent } = this.props;
-    this.enrichDisableConsent(disableConsent, whiteListing);
-  }
-
   componentWillReceiveProps(nextProps) {
     if (
       nextProps.whiteListing &&
@@ -38,12 +32,16 @@ export default class ConsentDisabling extends React.Component {
     }
   }
 
-  enrichDisableConsent = (disableConsent, whiteListing) => {
+  initialiseDisableConsent(whiteListing) {
+    window.scrollTo(0, 0);
+    const { disableConsent } = this.props;
+
     const enrichedDisableConsent = disableConsent
       .map(entity => this.enrichSingleDisableConsent(entity, whiteListing))
       .filter(enriched => enriched !== null);
+
     this.setDisableConsentState(enrichedDisableConsent);
-  };
+  }
 
   enrichSingleDisableConsent = (disableConsent, whiteListing) => {
     const moreInfo = whiteListing.find(
@@ -67,12 +65,13 @@ export default class ConsentDisabling extends React.Component {
     };
   };
 
-  setDisableConsentState = newDisableConsent =>
+  setDisableConsentState = newDisableConsent => {
     this.setState({
       enrichedDisableConsent: newDisableConsent.sort(
         this.sortByAttribute(this.state.sorted, this.state.reverse)
       )
     });
+  };
 
   addDisableConsent = entityid => {
     const entity = {
@@ -88,6 +87,7 @@ export default class ConsentDisabling extends React.Component {
     const newDisableConsent = [...this.state.enrichedDisableConsent].concat(
       this.enrichSingleDisableConsent(entity, whiteListing)
     );
+
     this.setDisableConsentState(newDisableConsent);
   };
 
@@ -274,8 +274,16 @@ export default class ConsentDisabling extends React.Component {
     );
   };
 
+  filterEntityOptions() {
+    const allowedEntityNames = this.props.allowedEntities.map(ent => ent.name);
+
+    return this.props.whiteListing.filter(entry =>
+      allowedEntityNames.includes(entry.data.entityid)
+    );
+  }
+
   render() {
-    const { disableConsent, whiteListing, name, guest } = this.props;
+    const { disableConsent, name, guest } = this.props;
     const placeholder = I18n.t("consentDisabling.placeholder");
     const { enrichedDisableConsent } = this.state;
 
@@ -289,7 +297,7 @@ export default class ConsentDisabling extends React.Component {
         </div>
         {!guest && (
           <SelectEntities
-            whiteListing={whiteListing}
+            whiteListing={this.filterEntityOptions()}
             allowedEntities={disableConsent}
             onChange={this.addDisableConsent}
             placeholder={placeholder}

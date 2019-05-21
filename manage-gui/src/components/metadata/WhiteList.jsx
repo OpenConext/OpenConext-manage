@@ -30,12 +30,6 @@ export default class WhiteList extends React.Component {
     this.initialiseAllowedEntities(this.props.whiteListing);
   }
 
-  initialiseAllowedEntities(whiteListing) {
-    window.scrollTo(0, 0);
-    const { allowedEntities, entityId } = this.props;
-    this.enrichAllowedEntries(allowedEntities, entityId, whiteListing);
-  }
-
   componentWillReceiveProps(nextProps) {
     if (nextProps.allowedAll) {
       this.setState({
@@ -51,39 +45,39 @@ export default class WhiteList extends React.Component {
     }
   }
 
-  enrichAllowedEntries = (allowedEntities, entityId, whiteListing) => {
+  initialiseAllowedEntities(whiteListing) {
+    window.scrollTo(0, 0);
+    const { allowedEntities, entityId } = this.props;
+
     const enrichedAllowedEntries = allowedEntities
       .map(entity => this.enrichAllowedEntry(entity, entityId, whiteListing))
       .filter(enriched => enriched !== null);
     this.setAllowedEntryState(enrichedAllowedEntries);
-  };
+  }
 
   enrichAllowedEntry = (allowedEntry, entityId, whiteListing) => {
     const moreInfo = whiteListing.find(
       entry => entry.data.entityid === allowedEntry.name
     );
-    return this.doEnrichEntity(moreInfo, allowedEntry.name);
-  };
 
-  doEnrichEntity = (moreInfo, entityId) => {
     if (moreInfo === undefined) {
       //this can happen as SP's are deleted
       return null;
     }
-    const thisEntityId = this.props.entityId;
+
     return {
-      blocked:
-        !moreInfo.data.allowedall &&
-        !moreInfo.data.allowedEntities.some(
-          allowed => allowed.name === thisEntityId
-        ),
       status: I18n.t(`metadata.${moreInfo.data.state}`),
-      entityid: entityId,
+      entityid: allowedEntry.name,
       name:
         moreInfo.data.metaDataFields["name:en"] ||
         moreInfo.data.metaDataFields["name:nl"] ||
         "",
       id: moreInfo["_id"],
+      blocked:
+        !moreInfo.data.allowedall &&
+        !moreInfo.data.allowedEntities.some(
+          allowed => allowed.name === this.props.entityId
+        ),
       notes: moreInfo.data.notes
     };
   };
