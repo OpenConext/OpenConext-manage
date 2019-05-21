@@ -627,6 +627,7 @@ export default class Detail extends React.PureComponent {
         return (
           <ConsentDisabling
             disableConsent={metaData.data.disableConsent}
+            allowedEntities={metaData.data.allowedEntities}
             name={name}
             whiteListing={whiteListing}
             onChange={this.onChange("consent_disabling")}
@@ -704,13 +705,18 @@ export default class Detail extends React.PureComponent {
 
     const tabs = (() => {
       switch (type) {
-          case 'saml20_sp': return tabsSp;
-          case 'saml20_idp': return tabsIdP;
-          case 'oidc10_rp': return tabsOIDC;
-          case 'single_tenant_template': return tabsSingleTenant;
-          default: return [];
+        case "saml20_sp":
+          return tabsSp;
+        case "saml20_idp":
+          return tabsIdP;
+        case "oidc10_rp":
+          return tabsOIDC;
+        case "single_tenant_template":
+          return tabsSingleTenant;
+        default:
+          return [];
       }
-    })()
+    })();
 
     const renderNotFound = loaded && notFound;
     const renderContent = loaded && !notFound;
