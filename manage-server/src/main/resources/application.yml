@@ -18,12 +18,13 @@ push:
     user: user
     password: password
     exclude_edugain_imports: true
+    exclude_oidc_rp: false
   oidc:
     url: http://localhost:9898/manage/connections
     user: manage
     name: OpenConext OIDC-NG
     password: secret
-    enabled: false
+    enabled: true
 
 product:
   name: Manage
@@ -31,6 +32,7 @@ product:
 #  service_provider_feed_url: http://mds.edugain.org/
   service_provider_feed_url: http://localhost:8000/edugain.xml
   supported_languages: en,nl,pt
+  show_oidc_rp: true
 
 metadata_configuration_path: classpath:/metadata_configuration
 metadata_templates_path: classpath:/metadata_templates

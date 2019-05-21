@@ -14,7 +14,11 @@ export default class Search extends React.PureComponent {
     constructor(props) {
         super(props);
         const configuration = props.configuration;
-        const tabs = configuration.sort((a, b) => a.order > b.order ? 1 : -1).map(metaData => metaData.title);
+        const showOidcRp = props.currentUser.product.showOidcRp;
+        const tabs = configuration
+          .sort((a, b) => a.order > b.order ? 1 : -1)
+          .map(metaData => metaData.title)
+          .filter(title => showOidcRp || title !== "oidc10_rp")
         this.state = {
             selected: -1,
             suggestions: [],

@@ -75,6 +75,9 @@ public class WebSecurityConfigurer {
         @Value("${product.service_provider_feed_url}")
         private String serviceProviderFeedUrl;
 
+        @Value("${product.show_oidc_rp}")
+        private boolean showOidcRp;
+
         @Value("${security.backdoor_user_name}")
         private String user;
 
@@ -109,7 +112,7 @@ public class WebSecurityConfigurer {
                 .map(feature -> Features.valueOf(feature.trim().toUpperCase()))
                 .collect(toList());
 
-            Product product = new Product(productOrganization, productName, serviceProviderFeedUrl);
+            Product product = new Product(productOrganization, productName, serviceProviderFeedUrl, showOidcRp);
             Push push = new Push(pushUrl, pushName, pushOidcUrl, pushOidcName);
 
             BasicAuthenticationEntryPoint authenticationEntryPoint = new BasicAuthenticationEntryPoint();

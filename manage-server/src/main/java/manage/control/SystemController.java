@@ -71,6 +71,8 @@ public class SystemController {
     private boolean oidcEnabled;
 
     private boolean excludeEduGainImported;
+    private boolean excludeOidcRP;
+
     private MetaDataRepository metaDataRepository;
     private JdbcTemplate ebJdbcTemplate;
     private Environment environment;
@@ -86,6 +88,7 @@ public class SystemController {
                             @Value("${push.eb.user}") String user,
                             @Value("${push.eb.password}") String password,
                             @Value("${push.eb.exclude_edugain_imports}") boolean excludeEduGainImported,
+                            @Value("${push.eb.exclude_oidc_rp}") boolean excludeOidcRP,
                             @Value("${push.oidc.url}") String oidcPushUri,
                             @Value("${push.oidc.user}") String oidcUser,
                             @Value("${push.oidc.password}") String oidcPassword,
@@ -95,6 +98,7 @@ public class SystemController {
         this.pushUri = pushUri;
         this.restTemplate = new RestTemplate(getRequestFactory(user, password));
         this.excludeEduGainImported = excludeEduGainImported;
+        this.excludeOidcRP = excludeOidcRP;
 
         this.oidcRestTemplate = new RestTemplate(getRequestFactory(oidcUser, oidcPassword));
         this.oidcPushUri = oidcPushUri;
@@ -148,13 +152,16 @@ public class SystemController {
                 .filter(metaData -> !excludeFromPush(metaData.metaDataFields()))
                 .collect(toMap(MetaData::getId, formatter::parseIdentityProvider));
 
-        List<MetaData> oidcClients = metaDataRepository.getMongoTemplate().findAll(MetaData.class, "oidc10_rp");
-        Map<String, Map<String, Object>> oidcClientsToPush = oidcClients.stream()
-                .filter(metaData -> !excludeFromPush(metaData.metaDataFields()))
-                .collect(toMap(MetaData::getId, formatter::parseOidcClient));
+        if (!excludeOidcRP) {
+            List<MetaData> oidcClients = metaDataRepository.getMongoTemplate().findAll(MetaData.class, "oidc10_rp");
+            Map<String, Map<String, Object>> oidcClientsToPush = oidcClients.stream()
+                    .filter(metaData -> !excludeFromPush(metaData.metaDataFields()))
+                    .collect(toMap(MetaData::getId, formatter::parseOidcClient));
+
+            serviceProvidersToPush.putAll(oidcClientsToPush);
+        }
 
         serviceProvidersToPush.putAll(identityProvidersToPush);
-        serviceProvidersToPush.putAll(oidcClientsToPush);
 
         Map<String, Map<String, Map<String, Object>>> results = new HashMap<>();
         results.put("connections", serviceProvidersToPush);
