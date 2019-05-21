@@ -11,7 +11,7 @@ export default class StringWithFormat extends React.PureComponent {
       <div className="format-input">
         <input
           {...rest}
-          className={hasFormatError && "error"}
+          className={hasFormatError ? "error" : ""}
           type="text"
           onChange={e => onChange(e.target.value)}
         />

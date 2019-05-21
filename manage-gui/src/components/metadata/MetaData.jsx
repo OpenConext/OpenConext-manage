@@ -76,7 +76,7 @@ export default class MetaData extends React.Component {
   async doChange(key, value, format = null) {
     const valid = await this.validValue(key, value, format);
 
-    this.props.onError(key, !valid);
+    this.props.onError(key, valid ? undefined : true);
     this.props.onChange(`data.metaDataFields.${key}`, value);
   }
 

@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import {Select} from "./../../components";
 
 export default class SelectMulti extends React.PureComponent {
+
   valuesToOptions(values) {
     return values.map(value => ({value: value, label: value}));
   }
