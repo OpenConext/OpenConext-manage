@@ -105,7 +105,7 @@ export default class Export extends React.Component {
                 }
               />
             )}
-            {showJson && (
+            {xml && showJson && (
               <CheckBox
                 className="checkbox last"
                 name="json-metadata-only"
