@@ -5,58 +5,46 @@ import { Select } from "../components";
 import "./SelectEntities.css";
 
 export default class SelectEntities extends React.PureComponent {
-  renderOption = option => {
-    return (
-      <span className="select-option">
-        <span className="select-label">
-          {`${option.label}  -  ${option.value} (${option.state})`}
-        </span>
-      </span>
-    );
-  };
+  options() {
+    const { whiteListing, allowedEntities } = this.props;
+    const allowedEntityNames = allowedEntities.map(entity => entity.name);
 
-  options = (whiteListing, allowedEntities = []) =>
-    whiteListing
+    return whiteListing
       .map(entry => {
-        const metaDataFields = entry.data.metaDataFields;
-        const value = entry.data.entityid;
+        const {
+          metaDataFields: { "name:en": eng, "name:nl": nl },
+          entityid: value,
+          state
+        } = entry.data;
+
         return {
-          value: value,
-          label:
-            metaDataFields["name:en"] || metaDataFields["name:nl"] || value,
-          state: entry.data.state
+          label: `${eng || nl || value} - ${value} (${state})`,
+          state,
+          value
         };
       })
-      .filter(entry => allowedEntities.indexOf(entry.value) === -1);
+      .filter(entry => !allowedEntityNames.includes(entry.value));
+  }
 
   render() {
-    const {
-      onChange,
-      whiteListing,
-      allowedEntities = [],
-      placeholder
-    } = this.props;
+    const { onChange, placeholder } = this.props;
+
     return (
       <Select
         name="select-entities"
-        onChange={option => {
-          if (option) {
-            onChange(option.value);
-          }
-        }}
-        optionRenderer={this.renderOption}
-        options={this.options(
-          whiteListing,
-          allowedEntities.map(entity => entity.name)
-        )}
-        value={null}
-        searchable={true}
-        valueRenderer={this.renderOption}
+        onChange={option => onChange(option.value)}
+        options={this.options()}
         placeholder={placeholder || "Select..."}
+        searchable={true}
+        value={null}
       />
     );
   }
 }
+
+SelectEntities.defaultProps = {
+  allowedEntities: []
+};
 
 SelectEntities.propTypes = {
   onChange: PropTypes.func.isRequired,
