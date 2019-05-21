@@ -22,37 +22,53 @@ export default class Import extends React.Component {
     super(props);
     const { newEntity, metaData } = this.props;
 
-    const sharedTabs = ["import_json", "results"];
-    const tabs =
-      metaData.type === "oidc10_rp"
-        ? sharedTabs
-        : ["import_xml_url", "import_xml", "import_json_url", ...sharedTabs];
-
     this.state = {
-      url: newEntity ? "" : metaData.data.metadataurl,
-      jsonUrl: "",
+      applyChangesFor: {},
       entityId: newEntity ? "" : metaData.data.entityid,
-      invalidUrl: false,
+      entityType: props.entityType,
+      errorsJson: undefined,
+      errorsJsonUrl: false,
+      errorsUrl: undefined,
+      errorsXml: undefined,
+      invalidJson: false,
       invalidJsonUrl: false,
-      xml: "",
+      invalidUrl: false,
       invalidXml: false,
       json: "",
-      entityType: props.entityType,
-      invalidJson: false,
+      jsonUrl: "",
       results: undefined,
       resultsMap: undefined,
-      errorsUrl: undefined,
-      errorsJsonUrl: false,
-      errorsJson: undefined,
-      errorsXml: undefined,
-      tabs: tabs,
-      selectedTab: tabs[0],
-      applyChangesFor: {}
+      url: newEntity ? "" : metaData.data.metadataurl,
+      xml: "",
+      ...this.stateForType(metaData.type)
+    };
+  }
+
+  stateForType(type) {
+    if (type === "oidc10_rp") {
+      return {
+        tabs: ["import_json", "results"],
+        selectedTab: "import_json",
+        entityTypeOptions: ["oidc10_rp"]
+      };
+    }
+
+    return {
+      tabs: [
+        "import_xml_url",
+        "import_xml",
+        "import_json_url",
+        "import_json",
+        "results"
+      ],
+      selectedTab: "import_json",
+      entityTypeOptions: ["saml20_sp", "saml20_idp"]
     };
   }
 
   componentDidMount() {
     window.scrollTo(0, 0);
+
     if (this.importUrlField) {
       this.importUrlField.focus();
     }
@@ -632,23 +648,31 @@ export default class Import extends React.Component {
     );
   };
 
-  changeType = option =>
-    this.setState({ entityType: option ? option.value : null });
+  renderEntityTypeSelect() {
+    const { entityTypeOptions, entityType } = this.state;
+    const { guest, newEntity } = this.props;
+
+    const options = entityTypeOptions.map(value => ({
+      label: I18n.t(`metadata.${value}_single`),
+      value
+    }));
+
+    return (
+      <Select
+        disabled={guest || !newEntity}
+        name="select-entity-type"
+        onChange={opt => this.setState({ entityType: opt.value })}
+        options={options}
+        value={options.find(opt => opt.value === entityType)}
+      />
+    );
+  }
 
   renderImportHeader = (info, action, errors) => (
     <section>
       <section className="import-header">
         <h2>{info}</h2>
-        <Select
-          onChange={this.changeType}
-          name="select-entity-type"
-          options={["saml20_sp", "saml20_idp"].map(s => ({
-            value: s,
-            label: I18n.t(`metadata.${s}_single`)
-          }))}
-          value={this.state.entityType || "saml20_sp"}
-          disabled={this.props.guest || !this.props.newEntity}
-        />
+        {this.renderEntityTypeSelect()}
         {!this.props.guest && (
           <a onClick={action} className="button green large">
             {I18n.t("import.fetch")}
@@ -662,16 +686,7 @@ export default class Import extends React.Component {
 
   renderImportFooter = action => (
     <section className="import-footer">
-      <Select
-        onChange={this.changeType}
-        name="select-entity-type"
-        options={["saml20_idp", "saml20_sp"].map(s => ({
-          value: s,
-          label: I18n.t(`metadata.${s}_single`)
-        }))}
-        value={this.state.entityType || "saml20_sp"}
-        disabled={this.props.guest || !this.props.newEntity}
-      />
+      {this.renderEntityTypeSelect()}
       {!this.props.guest && (
         <a onClick={action} className="button green footer">
           {I18n.t("import.fetch")}
