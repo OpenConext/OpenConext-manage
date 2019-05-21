@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import CodeMirror from "react-codemirror";
 import "codemirror/mode/javascript/javascript";
 import "codemirror/mode/xml/xml";
-import { isEmpty, stop } from "../../utils/Utils";
+import {isEmpty, stop} from "../../utils/Utils";
 import {
   importMetaDataJSON,
   importMetaDataJsonUrl,
@@ -12,7 +12,7 @@ import {
   importMetaDataXmlUrl,
   validation
 } from "../../api";
-import { Select, CheckBox } from "./../../components";
+import {CheckBox, Select} from "./../../components";
 
 import "codemirror/lib/codemirror.css";
 import "./Import.css";
@@ -20,7 +20,7 @@ import "./Import.css";
 export default class Import extends React.Component {
   constructor(props) {
     super(props);
-    const { newEntity, metaData } = this.props;
+    const {newEntity, metaData} = this.props;
 
     this.state = {
       applyChangesFor: {},
@@ -201,22 +201,22 @@ export default class Import extends React.Component {
   };
 
   changeMetaPropertySelected = (group, name) => e => {
-    const newResults = { ...this.state.results };
+    const newResults = {...this.state.results};
     newResults[group][name].selected = e.target.checked;
     if (e.target.checked) {
-      const newApplyChangesFor = { ...this.state.applyChangesFor };
+      const newApplyChangesFor = {...this.state.applyChangesFor};
       newApplyChangesFor[group] = true;
       this.setState({
         results: newResults,
         applyChangesFor: newApplyChangesFor
       });
     } else {
-      this.setState({ results: newResults });
+      this.setState({results: newResults});
     }
   };
 
   doImport = (promise, errorsName) => {
-    const newState = { ...this.state };
+    const newState = {...this.state};
 
     promise.then(json => {
       window.scrollTo(0, 0);
@@ -224,7 +224,7 @@ export default class Import extends React.Component {
         newState[errorsName] = json.errors;
         newState.entityType = this.props.entityType;
         newState.results = undefined;
-        this.setState({ ...newState });
+        this.setState({...newState});
       } else {
         this.resultsToMap(json);
         this.setState({
@@ -247,7 +247,7 @@ export default class Import extends React.Component {
 
   importUrl = e => {
     stop(e);
-    const { url, entityId, entityType } = this.state;
+    const {url, entityId, entityType} = this.state;
     validation("url", url).then(result => {
       this.setState({
         invalidUrl: !result
@@ -263,7 +263,7 @@ export default class Import extends React.Component {
 
   importJsonUrl = e => {
     stop(e);
-    const { jsonUrl, entityId, entityType } = this.state;
+    const {jsonUrl, entityId, entityType} = this.state;
     validation("url", jsonUrl).then(result => {
       this.setState({
         invalidJsonUrl: !result
@@ -279,7 +279,7 @@ export default class Import extends React.Component {
 
   importJson = e => {
     stop(e);
-    const { json, entityType } = this.state;
+    const {json, entityType} = this.state;
     validation("json", json).then(result => {
       this.setState({
         invalidJson: !result
@@ -295,7 +295,7 @@ export default class Import extends React.Component {
 
   importXml = e => {
     stop(e);
-    const { xml, entityType } = this.state;
+    const {xml, entityType} = this.state;
     validation("xml", xml).then(result => {
       this.setState({
         invalidXml: !result
@@ -307,15 +307,15 @@ export default class Import extends React.Component {
   };
 
   changeApplyChangesFor = (name, cascade = false) => e => {
-    const newApplyChangesFor = { ...this.state.applyChangesFor };
+    const newApplyChangesFor = {...this.state.applyChangesFor};
     newApplyChangesFor[name] = e.target.checked;
-    this.setState({ applyChangesFor: newApplyChangesFor });
+    this.setState({applyChangesFor: newApplyChangesFor});
     if (cascade) {
-      const newResults = { ...this.state.results };
+      const newResults = {...this.state.results};
       Object.keys(newResults[name]).forEach(
         key => (newResults[name][key].selected = e.target.checked)
       );
-      this.setState({ results: newResults });
+      this.setState({results: newResults});
     }
   };
 
@@ -325,44 +325,44 @@ export default class Import extends React.Component {
     return (
       <table>
         <thead>
-          <tr>
-            <th className="title" colSpan={4}>
-              <CheckBox
-                name={name}
-                value={applyChangesFor}
-                onChange={this.changeApplyChangesFor(name, true)}
-                info={I18n.t(`import.${prefix}${name}`)}
-              />
+        <tr>
+          <th className="title" colSpan={4}>
+            <CheckBox
+              name={name}
+              value={applyChangesFor}
+              onChange={this.changeApplyChangesFor(name, true)}
+              info={I18n.t(`import.${prefix}${name}`)}
+            />
+          </th>
+        </tr>
+        <tr>
+          {headers.map(header => (
+            <th key={header} className={header}>
+              {I18n.t(`import.headers.${header}`)}
             </th>
-          </tr>
-          <tr>
-            {headers.map(header => (
-              <th key={header} className={header}>
-                {I18n.t(`import.headers.${header}`)}
-              </th>
-            ))}
-          </tr>
+          ))}
+        </tr>
         </thead>
         <tbody>
-          {Object.keys(keyValues).map(key => {
-            const prop = keyValues[key];
-            return (
-              <tr key={key}>
-                <td className="isCheckBox">
-                  {
-                    <CheckBox
-                      name={key}
-                      value={prop.selected}
-                      onChange={this.changeMetaPropertySelected(name, key)}
-                    />
-                  }
-                </td>
-                <td>{key}</td>
-                <td>{prop.current ? prop.current.toString() : ""}</td>
-                <td>{prop.value ? prop.value.toString() : ""}</td>
-              </tr>
-            );
-          })}
+        {Object.keys(keyValues).map(key => {
+          const prop = keyValues[key];
+          return (
+            <tr key={key}>
+              <td className="isCheckBox">
+                {
+                  <CheckBox
+                    name={key}
+                    value={prop.selected}
+                    onChange={this.changeMetaPropertySelected(name, key)}
+                  />
+                }
+              </td>
+              <td>{key}</td>
+              <td>{prop.current ? prop.current.toString() : ""}</td>
+              <td>{prop.value ? prop.value.toString() : ""}</td>
+            </tr>
+          );
+        })}
         </tbody>
       </table>
     );
@@ -379,42 +379,42 @@ export default class Import extends React.Component {
     return (
       <table>
         <thead>
-          <tr>
-            <th className="title" colSpan={2}>
-              <CheckBox
-                name={name}
-                value={this.state.applyChangesFor[name]}
-                onChange={this.changeApplyChangesFor(name)}
-                info={I18n.t(`import.${prefix}${name}`)}
-              />
-            </th>
-          </tr>
-          <tr>
-            <th className="left">
-              {I18n.t("import.currentEntries", { name: entryName })}
-            </th>
-            <th className="right">
-              {I18n.t("import.newEntries", { name: entryName })}
-            </th>
-          </tr>
+        <tr>
+          <th className="title" colSpan={2}>
+            <CheckBox
+              name={name}
+              value={this.state.applyChangesFor[name]}
+              onChange={this.changeApplyChangesFor(name)}
+              info={I18n.t(`import.${prefix}${name}`)}
+            />
+          </th>
+        </tr>
+        <tr>
+          <th className="left">
+            {I18n.t("import.currentEntries", {name: entryName})}
+          </th>
+          <th className="right">
+            {I18n.t("import.newEntries", {name: entryName})}
+          </th>
+        </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>
-              <ul className="entities">
-                {currentEntities.map(entity => (
-                  <li key={entity.name}>{entity.name}</li>
-                ))}
-              </ul>
-            </td>
-            <td>
-              <ul className="entities">
-                {entities.map(entity => (
-                  <li key={entity.name}>{entity.name}</li>
-                ))}
-              </ul>
-            </td>
-          </tr>
+        <tr>
+          <td>
+            <ul className="entities">
+              {currentEntities.map(entity => (
+                <li key={entity.name}>{entity.name}</li>
+              ))}
+            </ul>
+          </td>
+          <td>
+            <ul className="entities">
+              {entities.map(entity => (
+                <li key={entity.name}>{entity.name}</li>
+              ))}
+            </ul>
+          </td>
+        </tr>
         </tbody>
       </table>
     );
@@ -429,41 +429,41 @@ export default class Import extends React.Component {
     if (isEmpty(arpValues)) {
       return (
         <tbody key={key}>
-          <tr>
+        <tr>
+          <td className="arpKey" colSpan="2">
+            <i className={`fa fa-trash-o ${currentValue ? "old" : ""}`}/>
+          </td>
+        </tr>
+        {emptyRows.map((val, index) => (
+          <tr key={index} className="spacer">
             <td className="arpKey" colSpan="2">
-              <i className={`fa fa-trash-o ${currentValue ? "old" : ""}`} />
+              <i className="fa fa-trash-o old"/>
             </td>
           </tr>
-          {emptyRows.map((val, index) => (
-            <tr key={index} className="spacer">
-              <td className="arpKey" colSpan="2">
-                <i className="fa fa-trash-o old" />
-              </td>
-            </tr>
-          ))}
+        ))}
         </tbody>
       );
     }
     return (
       <tbody key={key}>
-        <tr>
-          <td className="arpKey">{this.nameOfArpKey(key)}</td>
-          <td className="arpAttribute">
-            <table className="arpValues">
-              <tbody>
-                {arpValues.map(arpValue => (
-                  <tr key={`${arpValue.source}-${arpValue.value}`}>
-                    <td>
-                      <span className="arpSource">{arpValue.source}</span>
-                      <i className="fa fa-arrow-right" />
-                      <span className="arpValue">{arpValue.value}</span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </td>
-        </tr>
+      <tr>
+        <td className="arpKey">{this.nameOfArpKey(key)}</td>
+        <td className="arpAttribute">
+          <table className="arpValues">
+            <tbody>
+            {arpValues.map(arpValue => (
+              <tr key={`${arpValue.source}-${arpValue.value}`}>
+                <td>
+                  <span className="arpSource">{arpValue.source}</span>
+                  <i className="fa fa-arrow-right"/>
+                  <span className="arpValue">{arpValue.value}</span>
+                </td>
+              </tr>
+            ))}
+            </tbody>
+          </table>
+        </td>
+      </tr>
       </tbody>
     );
   };
@@ -477,66 +477,66 @@ export default class Import extends React.Component {
     return (
       <table>
         <thead>
-          <tr>
-            <th className="title" colSpan={2}>
-              <CheckBox
-                name="arp_changes"
-                value={this.state.applyChangesFor.arp}
-                onChange={this.changeApplyChangesFor("arp")}
-                info={I18n.t("import.arp")}
-              />
-            </th>
-          </tr>
-          <tr>
-            <th>{I18n.t("import.currentEntries", { name: "ARP" })}</th>
-            <th>{I18n.t("import.newEntries", { name: "ARP" })}</th>
-          </tr>
+        <tr>
+          <th className="title" colSpan={2}>
+            <CheckBox
+              name="arp_changes"
+              value={this.state.applyChangesFor.arp}
+              onChange={this.changeApplyChangesFor("arp")}
+              info={I18n.t("import.arp")}
+            />
+          </th>
+        </tr>
+        <tr>
+          <th>{I18n.t("import.currentEntries", {name: "ARP"})}</th>
+          <th>{I18n.t("import.newEntries", {name: "ARP"})}</th>
+        </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>
-              <CheckBox
-                name="current_arp"
-                value={currentArp.enabled}
-                readOnly={true}
-                info={I18n.t("import.arpEnabled")}
-              />
-            </td>
-            <td>
-              <CheckBox
-                name="new_arp"
-                value={arp.enabled}
-                readOnly={true}
-                info={I18n.t("import.arpEnabled")}
-              />
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <table className="arp">
-                {uniqueKeys.map(key =>
-                  this.renderArpAttribute(
-                    key,
-                    currentArp.attributes[key],
-                    arp.attributes[key],
-                    true
-                  )
-                )}
-              </table>
-            </td>
-            <td>
-              <table className="arp">
-                {uniqueKeys.map(key =>
-                  this.renderArpAttribute(
-                    key,
-                    arp.attributes[key],
-                    currentArp.attributes[key],
-                    false
-                  )
-                )}
-              </table>
-            </td>
-          </tr>
+        <tr>
+          <td>
+            <CheckBox
+              name="current_arp"
+              value={currentArp.enabled}
+              readOnly={true}
+              info={I18n.t("import.arpEnabled")}
+            />
+          </td>
+          <td>
+            <CheckBox
+              name="new_arp"
+              value={arp.enabled}
+              readOnly={true}
+              info={I18n.t("import.arpEnabled")}
+            />
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <table className="arp">
+              {uniqueKeys.map(key =>
+                this.renderArpAttribute(
+                  key,
+                  currentArp.attributes[key],
+                  arp.attributes[key],
+                  true
+                )
+              )}
+            </table>
+          </td>
+          <td>
+            <table className="arp">
+              {uniqueKeys.map(key =>
+                this.renderArpAttribute(
+                  key,
+                  arp.attributes[key],
+                  currentArp.attributes[key],
+                  false
+                )
+              )}
+            </table>
+          </td>
+        </tr>
         </tbody>
       </table>
     );
@@ -550,7 +550,7 @@ export default class Import extends React.Component {
       errorsJson,
       applyChangesFor
     } = this.state;
-    const { newEntity } = this.props;
+    const {newEntity} = this.props;
     const prefix = newEntity ? "new_" : "";
     const metaData = this.props.metaData.data;
 
@@ -575,35 +575,35 @@ export default class Import extends React.Component {
           <p>{I18n.t(`import.${prefix}resultsSubInfo`)}</p>
         </div>
         {results.metaDataFields &&
-          this.renderKeyValueTable(
-            results.metaDataFields,
-            headers,
-            "metaDataFields",
-            newEntity
-          )}
+        this.renderKeyValueTable(
+          results.metaDataFields,
+          headers,
+          "metaDataFields",
+          newEntity
+        )}
         {results.connection &&
-          this.renderKeyValueTable(
-            results.connection,
-            headers,
-            "connection",
-            newEntity
-          )}
+        this.renderKeyValueTable(
+          results.connection,
+          headers,
+          "connection",
+          newEntity
+        )}
         {results.allowedEntities &&
-          this.renderAllowedEntitiesDisableContentTable(
-            results.allowedEntities,
-            metaData.allowedEntities,
-            "allowedEntities",
-            "whitelist",
-            newEntity
-          )}
+        this.renderAllowedEntitiesDisableContentTable(
+          results.allowedEntities,
+          metaData.allowedEntities,
+          "allowedEntities",
+          "whitelist",
+          newEntity
+        )}
         {results.disableConsent &&
-          this.renderAllowedEntitiesDisableContentTable(
-            results.disableConsent,
-            metaData.disableConsent,
-            "disableConsent",
-            "disabled consent",
-            newEntity
-          )}
+        this.renderAllowedEntitiesDisableContentTable(
+          results.disableConsent,
+          metaData.disableConsent,
+          "disableConsent",
+          "disabled consent",
+          newEntity
+        )}
         {results.arp && this.renderArpTable(results.arp, metaData.arp)}
         <div className="result-actions">
           <span>{I18n.t(`import.${prefix}applyImportChangesInfo`)}</span>
@@ -620,7 +620,7 @@ export default class Import extends React.Component {
             }}
           >
             {I18n.t(`import.${prefix}applyImportChanges`)}
-            <i className="fa fa-cloud-upload" />
+            <i className="fa fa-cloud-upload"/>
           </a>
         </div>
       </section>
@@ -649,8 +649,8 @@ export default class Import extends React.Component {
   };
 
   renderEntityTypeSelect() {
-    const { entityTypeOptions, entityType } = this.state;
-    const { guest, newEntity } = this.props;
+    const {entityTypeOptions, entityType} = this.state;
+    const {guest, newEntity} = this.props;
 
     const options = entityTypeOptions.map(value => ({
       label: I18n.t(`metadata.${value}_single`),
@@ -661,7 +661,7 @@ export default class Import extends React.Component {
       <Select
         disabled={guest || !newEntity}
         name="select-entity-type"
-        onChange={opt => this.setState({ entityType: opt.value })}
+        onChange={opt => this.setState({entityType: opt.value})}
         options={options}
         value={options.find(opt => opt.value === entityType)}
       />
@@ -676,7 +676,7 @@ export default class Import extends React.Component {
         {!this.props.guest && (
           <a onClick={action} className="button green large">
             {I18n.t("import.fetch")}
-            <i className="fa fa-cloud-download" />
+            <i className="fa fa-cloud-download"/>
           </a>
         )}
       </section>
@@ -690,7 +690,7 @@ export default class Import extends React.Component {
       {!this.props.guest && (
         <a onClick={action} className="button green footer">
           {I18n.t("import.fetch")}
-          <i className="fa fa-cloud-download" />
+          <i className="fa fa-cloud-download"/>
         </a>
       )}
     </section>
@@ -706,13 +706,13 @@ export default class Import extends React.Component {
           {this.state.errorsUrl && this.renderErrors(this.state.errorsUrl)}
         </section>
         {this.state.invalidUrl && (
-          <p className="invalid">{I18n.t("import.invalid", { type: "URL" })}</p>
+          <p className="invalid">{I18n.t("import.invalid", {type: "URL"})}</p>
         )}
         <input
           ref={ref => (this.importUrlField = ref)}
           type="text"
           value={this.state.url}
-          onChange={e => this.setState({ url: e.target.value })}
+          onChange={e => this.setState({url: e.target.value})}
         />
       </section>
       <section className="import-entity-id">
@@ -720,7 +720,7 @@ export default class Import extends React.Component {
         <input
           type="text"
           value={this.state.entityId}
-          onChange={e => this.setState({ entityId: e.target.value })}
+          onChange={e => this.setState({entityId: e.target.value})}
         />
       </section>
       {this.renderImportFooter(this.importUrl)}
@@ -735,15 +735,15 @@ export default class Import extends React.Component {
             <h2>{I18n.t("import.jsonUrl")}</h2>
           </section>
           {this.state.errorsJsonUrl &&
-            this.renderErrors(this.state.errorsJsonUrl)}
+          this.renderErrors(this.state.errorsJsonUrl)}
         </section>
         {this.state.invalidJsonUrl && (
-          <p className="invalid">{I18n.t("import.invalid", { type: "URL" })}</p>
+          <p className="invalid">{I18n.t("import.invalid", {type: "URL"})}</p>
         )}
         <input
           type="text"
           value={this.state.jsonUrl}
-          onChange={e => this.setState({ jsonUrl: e.target.value })}
+          onChange={e => this.setState({jsonUrl: e.target.value})}
         />
       </section>
       {this.renderImportFooter(this.importJsonUrl)}
@@ -752,7 +752,7 @@ export default class Import extends React.Component {
 
   renderImportJson = () => {
     const jsonOptions = {
-      mode: { name: "javascript", json: true },
+      mode: {name: "javascript", json: true},
       lineWrapping: true,
       lineNumbers: true,
       scrollbarStyle: null
@@ -766,14 +766,14 @@ export default class Import extends React.Component {
         )}
         {this.state.invalidJson && (
           <p className="invalid">
-            {I18n.t("import.invalid", { type: "JSON" })}
+            {I18n.t("import.invalid", {type: "JSON"})}
           </p>
         )}
         <CodeMirror
           key="json"
           name="json"
           value={this.state.json}
-          onChange={newJson => this.setState({ json: newJson })}
+          onChange={newJson => this.setState({json: newJson})}
           options={jsonOptions}
           autoFocus={true}
         />
@@ -784,7 +784,7 @@ export default class Import extends React.Component {
 
   renderImportXml = () => {
     const xmlOptions = {
-      mode: { name: "xml" },
+      mode: {name: "xml"},
       lineWrapping: true,
       lineNumbers: true,
       scrollbarStyle: null
@@ -797,13 +797,13 @@ export default class Import extends React.Component {
           this.state.errorsXml
         )}
         {this.state.invalidXml && (
-          <p className="invalid">{I18n.t("import.invalid", { type: "XML" })}</p>
+          <p className="invalid">{I18n.t("import.invalid", {type: "XML"})}</p>
         )}
         <CodeMirror
           key="xml"
           name="xml"
           value={this.state.xml}
-          onChange={newXml => this.setState({ xml: newXml })}
+          onChange={newXml => this.setState({xml: newXml})}
           options={xmlOptions}
           autoFocus={true}
         />
@@ -831,7 +831,7 @@ export default class Import extends React.Component {
 
   switchTab = tab => e => {
     stop(e);
-    this.setState({ selectedTab: tab });
+    this.setState({selectedTab: tab});
   };
 
   renderTab = (tab, selectedTab) => (
@@ -845,7 +845,7 @@ export default class Import extends React.Component {
   );
 
   render() {
-    const { tabs, selectedTab } = this.state;
+    const {tabs, selectedTab} = this.state;
     return (
       <div className="metadata-import">
         <section className="sub-tabs">

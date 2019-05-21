@@ -1,10 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Select } from "./../../components";
+import {Select} from "./../../components";
 
 export default class SelectMulti extends React.PureComponent {
   valuesToOptions(values) {
-    return values.map(value => ({ value: value, label: value }));
+    return values.map(value => ({value: value, label: value}));
   }
 
   optionsToValues(options) {
@@ -12,7 +12,7 @@ export default class SelectMulti extends React.PureComponent {
   }
 
   render() {
-    const { enumValues, onChange, value, ...rest } = this.props;
+    const {enumValues, onChange, value, ...rest} = this.props;
 
     const selectedOptions = this.valuesToOptions(value);
     const options = this.valuesToOptions(enumValues);

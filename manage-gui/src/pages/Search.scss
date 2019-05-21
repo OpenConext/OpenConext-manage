@@ -1,62 +1,67 @@
 @import "../stylesheets/mixins.scss";
 
 .search-metadata {
-    @include page;
+  @include page;
 
-    section.tabs {
-        display: flex;
-        margin-top: 15px;
-        padding: 0;
-        span {
-            text-align: center;
-            cursor: pointer;
-            padding: 15px;
-            background-color: $light-grey;
-            color: $dark-grey;
-            text-transform: uppercase;
-            border-right: 1px solid white;
+  section.tabs {
+    display: flex;
+    margin-top: 15px;
+    padding: 0;
 
-            &.active {
-                background-color: white;
-                color: $darker-blue;
-                border-top: 2px solid $blue;
-                border-right: none;
-            }
+    span {
+      text-align: center;
+      cursor: pointer;
+      padding: 15px;
+      background-color: $light-grey;
+      color: $dark-grey;
+      text-transform: uppercase;
+      border-right: 1px solid white;
 
-            &:last-child {
-                border-right: none;
-            }
-        }
-    }
-
-    section.search {
-        display: flex;
-        padding: 30px;
+      &.active {
         background-color: white;
+        color: $darker-blue;
+        border-top: 2px solid $blue;
+        border-right: none;
+      }
 
-        .search-input-container {
-            flex-grow: 2;
-            position: relative;
-        }
-        .search-input {
-            padding: 10px;
-            font-size: larger;
-            width: 100%;
-        }
-        .fa-search {
-            position: absolute;
-            right: 15px;
-            top: 10px;
-            font-size: 20px;
-            color: $blue;
-        }
-        a.new {
-            padding-left: 30px;
-            i.fa-plus {
-                margin-left: 35px;
-            }
-        }
-
+      &:last-child {
+        border-right: none;
+      }
     }
+  }
+
+  section.search {
+    display: flex;
+    padding: 30px;
+    background-color: white;
+
+    .search-input-container {
+      flex-grow: 2;
+      position: relative;
+    }
+
+    .search-input {
+      padding: 10px;
+      font-size: larger;
+      width: 100%;
+    }
+
+    .fa-search {
+      position: absolute;
+      right: 15px;
+      top: 10px;
+      font-size: 20px;
+      color: $blue;
+    }
+
+    a.new {
+      padding-left: 30px;
+
+      i.fa-plus {
+        margin-left: 35px;
+      }
+    }
+
+  }
 }
 

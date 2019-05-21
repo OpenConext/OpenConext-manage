@@ -1,76 +1,89 @@
 @import "../../stylesheets/mixins.scss";
 
 .metadata-manipulation {
-    background-color: white;
+  background-color: white;
 
-    section.sub-tabs {
-        margin-top: 15px;
-        display: flex;
-        padding: 0;
-        background: $background;
-        span {
-            text-align: center;
-            cursor: pointer;
-            padding: 15px 50px;
-            background-color: $light-grey;
-            color: $dark-grey;
-            text-transform: uppercase;
-            border-right: 1px solid white;
+  section.sub-tabs {
+    margin-top: 15px;
+    display: flex;
+    padding: 0;
+    background: $background;
 
-            &.active {
-                background-color: white;
-                color: $darker-blue;
-                border-top: 2px solid $blue;
-                border-right: none;
-            }
+    span {
+      text-align: center;
+      cursor: pointer;
+      padding: 15px 50px;
+      background-color: $light-grey;
+      color: $dark-grey;
+      text-transform: uppercase;
+      border-right: 1px solid white;
 
-            &:last-child {
-                border-right: none;
-            }
-        }
+      &.active {
+        background-color: white;
+        color: $darker-blue;
+        border-top: 2px solid $blue;
+        border-right: none;
+      }
+
+      &:last-child {
+        border-right: none;
+      }
     }
-    section.notes {
-        display: flex;
-        margin-bottom: 15px;
-        .MDEditor_toolbarButton--quote {
-            display: none;
-        }
-        .MDEditor {
-            width: 50%;
-        }
-        div.preview {
-            width: 50%;
-            margin: 51px 0 0 25px;
-            list-style: inside;
-        }
+  }
+
+  section.notes {
+    display: flex;
+    margin-bottom: 15px;
+
+    .MDEditor_toolbarButton--quote {
+      display: none;
     }
-    .manipulation-info {
-        padding: 0 20px ;
-        h1 {
-            font-size: 20px;
-            margin: 10px 0;
-        }
-        h2 {
-            font-size: 18px;
-            margin: 10px 0;
-            a {
-                color: $blue;
-                &:visited {
-                    color: $blue;
-                }
-                @include no-text-decoration;
-            }
-        }
-        h3 {
-            font-size: 16px;
-            margin: 10px 0;
+
+    .MDEditor {
+      width: 50%;
+    }
+
+    div.preview {
+      width: 50%;
+      margin: 51px 0 0 25px;
+      list-style: inside;
+    }
+  }
+
+  .manipulation-info {
+    padding: 0 20px;
+
+    h1 {
+      font-size: 20px;
+      margin: 10px 0;
+    }
+
+    h2 {
+      font-size: 18px;
+      margin: 10px 0;
+
+      a {
+        color: $blue;
+
+        &:visited {
+          color: $blue;
         }
 
+        @include no-text-decoration;
+      }
     }
-    .comments {
-        .CodeMirror {
-            height: auto;
-            background-color: $lightest-grey;
-        }
+
+    h3 {
+      font-size: 16px;
+      margin: 10px 0;
     }
+
+  }
+
+  .comments {
+    .CodeMirror {
+      height: auto;
+      background-color: $lightest-grey;
+    }
+  }
 }

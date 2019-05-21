@@ -1,18 +1,18 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Select } from "../components";
+import {Select} from "../components";
 
 import "./SelectEntities.css";
 
 export default class SelectEntities extends React.PureComponent {
   options() {
-    const { whiteListing, allowedEntities } = this.props;
+    const {whiteListing, allowedEntities} = this.props;
     const allowedEntityNames = allowedEntities.map(entity => entity.name);
 
     return whiteListing
       .map(entry => {
         const {
-          metaDataFields: { "name:en": eng, "name:nl": nl },
+          metaDataFields: {"name:en": eng, "name:nl": nl},
           entityid: value,
           state
         } = entry.data;
@@ -27,7 +27,7 @@ export default class SelectEntities extends React.PureComponent {
   }
 
   render() {
-    const { onChange, placeholder } = this.props;
+    const {onChange, placeholder} = this.props;
 
     return (
       <Select

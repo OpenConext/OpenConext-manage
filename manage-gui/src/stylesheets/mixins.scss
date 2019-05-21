@@ -1,120 +1,120 @@
 @import "vars.scss";
 
 @mixin card {
-    background-color: white;
-    border-bottom-left-radius: $br;
-    border-bottom-right-radius: $br;
-    padding: 0 15px;
-    border-top: 2px solid $blue;
-    box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.05);
+  background-color: white;
+  border-bottom-left-radius: $br;
+  border-bottom-right-radius: $br;
+  padding: 0 15px;
+  border-top: 2px solid $blue;
+  box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.05);
 }
 
 @mixin page {
-    max-width: $medium;
-    margin: 0 auto 15px auto;
-    padding: 0 15px;
+  max-width: $medium;
+  margin: 0 auto 15px auto;
+  padding: 0 15px;
 }
 
 @mixin tool-tip {
-    box-shadow: 1px 2px 6px 1px $lighter-grey;
-    padding: 10px !important;
-    font-size: 14px !important;
-    pointer-events: auto !important;
-    color: $dark-grey !important;
-    background-color: white !important;
-    &.show {
-        opacity: 1 !important;
-    }
-    max-width: 390px;
-    @include phone {
-        max-width: 200px;
-    }
+  box-shadow: 1px 2px 6px 1px $lighter-grey;
+  padding: 10px !important;
+  font-size: 14px !important;
+  pointer-events: auto !important;
+  color: $dark-grey !important;
+  background-color: white !important;
+  &.show {
+    opacity: 1 !important;
+  }
+  max-width: 390px;
+  @include phone {
+    max-width: 200px;
+  }
 }
 
 @mixin info-icon {
-    color: $blue;
-    margin-left: 5px;
-    font-size: 16px;
-    font-weight: bold;
+  color: $blue;
+  margin-left: 5px;
+  font-size: 16px;
+  font-weight: bold;
 }
 
 @mixin select-dropdown {
 
-    span.Select-clear-zone {
-        display: none;
-    }
+  span.Select-clear-zone {
+    display: none;
+  }
 
-    div.Select-control {
-        border-radius: $br;
-        border: 1px solid $lighter-grey;
-        margin-top: 5px;
-        display: table;
-        border-spacing: 0;
-        border-collapse: separate;
-        outline: none;
-        overflow: hidden;
-        position: relative;
-    }
+  div.Select-control {
+    border-radius: $br;
+    border: 1px solid $lighter-grey;
+    margin-top: 5px;
+    display: table;
+    border-spacing: 0;
+    border-collapse: separate;
+    outline: none;
+    overflow: hidden;
+    position: relative;
+  }
 
-    span.Select-arrow-zone {
-        padding: 0 12px;
-        background-color: $light-grey;
-    }
+  span.Select-arrow-zone {
+    padding: 0 12px;
+    background-color: $light-grey;
+  }
 
+  span.select-option {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  &.is-disabled {
     span.select-option {
-        display: flex;
-        align-items: center;
-        cursor: pointer;
+      cursor: not-allowed;
     }
-
-    &.is-disabled {
-        span.select-option {
-            cursor: not-allowed;
-        }
-    }
+  }
 
 }
 
 @mixin copy-icon-pulse {
-    i.copied {
-        animation: pulse 1s;
-        animation-iteration-count: 1;
-        border-radius: 50%;
-        position: relative;
-    }
+  i.copied {
+    animation: pulse 1s;
+    animation-iteration-count: 1;
+    border-radius: 50%;
+    position: relative;
+  }
 
-    @keyframes pulse {
-        0% {
-            box-shadow: 0 0 0 0 white;
-        }
-        70% {
-            box-shadow: 0 0 10px 8px lighten($blue, 15%);
-        }
-        100% {
-            box-shadow: 0 0 0 0 white;
-        }
+  @keyframes pulse {
+    0% {
+      box-shadow: 0 0 0 0 white;
     }
+    70% {
+      box-shadow: 0 0 10px 8px lighten($blue, 15%);
+    }
+    100% {
+      box-shadow: 0 0 0 0 white;
+    }
+  }
 
 }
 
 @mixin no-text-decoration {
+  text-decoration: none;
+  &:hover, &:visited {
     text-decoration: none;
-    &:hover, &:visited {
-        text-decoration: none;
-    }
+  }
 }
 
 @mixin inputField {
-    width: 100%;
-    font-size: 14px;
-    padding: 0 10px;
-    border-radius: 3px;
-    border: 1px solid #d9d9d8;
-    margin-top: 5px;
-    line-height: 33px;
+  width: 100%;
+  font-size: 14px;
+  padding: 0 10px;
+  border-radius: 3px;
+  border: 1px solid #d9d9d8;
+  margin-top: 5px;
+  line-height: 33px;
 
-    &.error {
-        border: solid 1px $red;
-    }
+  &.error {
+    border: solid 1px $red;
+  }
 }
 

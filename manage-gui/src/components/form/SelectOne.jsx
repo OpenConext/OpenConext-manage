@@ -1,10 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Select } from "./../../components";
+import {Select} from "./../../components";
 
 export default class SelectOne extends React.PureComponent {
   valueToOption(value) {
-    return { value: value, label: value };
+    return {value: value, label: value};
   }
 
   valuesToOptions(values) {
@@ -12,7 +12,7 @@ export default class SelectOne extends React.PureComponent {
   }
 
   render() {
-    const { enumValues, onChange, value, ...rest } = this.props;
+    const {enumValues, onChange, value, ...rest} = this.props;
 
     return (
       <Select

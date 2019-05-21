@@ -1,55 +1,58 @@
 @import "../stylesheets/mixins.scss";
 
 .import-metadata {
-    @include page;
+  @include page;
 
-    section.tabs {
-        display: flex;
-        margin-top: 15px;
-        padding: 0;
-        span {
-            text-align: center;
-            cursor: pointer;
-            padding: 15px;
-            background-color: $light-grey;
-            color: $dark-grey;
-            text-transform: uppercase;
-            border-right: 1px solid white;
+  section.tabs {
+    display: flex;
+    margin-top: 15px;
+    padding: 0;
 
-            &.active {
-                background-color: white;
-                color: $darker-blue;
-                border-top: 2px solid $blue;
-                border-right: none;
-            }
+    span {
+      text-align: center;
+      cursor: pointer;
+      padding: 15px;
+      background-color: $light-grey;
+      color: $dark-grey;
+      text-transform: uppercase;
+      border-right: 1px solid white;
 
-            &:last-child {
-                border-right: none;
-            }
-        }
-    }
-
-    section.import {
-        display: flex;
-        padding: 30px;
+      &.active {
         background-color: white;
+        color: $darker-blue;
+        border-top: 2px solid $blue;
+        border-right: none;
+      }
 
-        .entity-id-input-container {
-            flex-grow: 2;
-            position: relative;
-        }
-        .entity-id-input {
-            padding: 8px;
-            font-size: larger;
-            width: 100%;
-        }
-        .fa-search {
-            position: absolute;
-            right: 15px;
-            top: 10px;
-            font-size: 20px;
-            color: $blue;
-        }
+      &:last-child {
+        border-right: none;
+      }
     }
+  }
+
+  section.import {
+    display: flex;
+    padding: 30px;
+    background-color: white;
+
+    .entity-id-input-container {
+      flex-grow: 2;
+      position: relative;
+    }
+
+    .entity-id-input {
+      padding: 8px;
+      font-size: larger;
+      width: 100%;
+    }
+
+    .fa-search {
+      position: absolute;
+      right: 15px;
+      top: 10px;
+      font-size: 20px;
+      color: $blue;
+    }
+  }
 }
 

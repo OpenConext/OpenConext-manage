@@ -46,11 +46,12 @@
         display: inline-block;
         margin-right: 15px;
 
-        i  {
+        i {
           &.fa-caret-up, &.fa-caret-down {
             margin-left: 10px;
             margin-right: 30px;
           }
+
           &.fa-user-circle-o {
             font-size: larger;
             margin-right: 10px;
@@ -86,6 +87,7 @@
 
 
       }
+
       a.welcome-link {
         position: relative;
       }

@@ -6,14 +6,14 @@ export const emitter = new EventEmitter();
 let flash = {};
 
 export function getFlash() {
-    return {...flash};
+  return {...flash};
 }
 
 export function setFlash(message, type) {
-    flash = {message, type: type || "info"};
-    emitter.emit("flash", flash);
+  flash = {message, type: type || "info"};
+  emitter.emit("flash", flash);
 }
 
 export function clearFlash() {
-    emitter.emit("flash", {});
+  emitter.emit("flash", {});
 }

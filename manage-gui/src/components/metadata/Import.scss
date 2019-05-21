@@ -27,6 +27,7 @@
     background: $background;
     display: flex;
     padding: 0;
+
     span {
       flex: 1;
       text-align: center;
@@ -49,32 +50,40 @@
       }
     }
   }
+
   section.content {
     padding: 20px;
   }
+
   section.import-url-container, section.import-xml, section.import-json {
     section.import-footer {
       margin-top: $item-offset
     }
+
     section.import-header, section.import-footer {
       display: flex;
+
       a.button {
         margin-left: $item-offset;
         flex: 0 0 auto;
+
         &.green {
           i.fa-cloud-download {
             margin-left: 65px;
           }
         }
       }
+
       > * {
         flex: 1;
       }
     }
+
     p.invalid {
       color: $red;
       font-size: larger;
     }
+
     div.ReactCodeMirror {
       border: 2px solid #f7f7f7;
 
@@ -83,6 +92,7 @@
       }
     }
   }
+
   section.validation-errors {
     background-color: $red;
     color: white;
@@ -90,15 +100,18 @@
     border-radius: $br;
     border: 1px solid $red;
     margin: 15px 0;
+
     ul {
       list-style: none;
       padding: 15px 25px;
     }
   }
+
   h2.no_results {
     margin: 20px 0 10px 0;
     padding-bottom: 25px;
   }
+
   input[type=text], textarea {
     width: 100%;
     font-size: 14px;
@@ -106,58 +119,73 @@
     border-radius: 3px;
     border: 1px solid #d9d9d8;
     line-height: 33px;
+
     &.error {
       border: solid 1px $red;
     }
   }
+
   section.import-results {
     div.import-results-info {
       p {
         margin-top: 10px;
       }
     }
+
     margin: 20px 0 10px 0;
+
     table {
       margin: 35px 0;
       width: 100%;
       text-align: left;
       border: 1px solid $light-grey;
       border-radius: $br;
+
       thead th {
         text-align: left;
         padding: 10px 5px;
+
         &.title {
           color: $blue;
           padding: 15px;
           border-bottom: 1px solid $light-grey;
           font-size: larger;
         }
+
         &.include {
           width: 1%;
         }
+
         &.name {
           width: 25%;
         }
+
         &.current {
           width: 37%;
         }
+
         &.newValue {
           width: 37%;
         }
+
         &.left {
           width: 50%;
         }
+
         &.right {
           width: 50%;
         }
       }
+
       tbody {
         tr:nth-child(odd) {
           background-color: $lightest-grey;
         }
+
         tr.spacer {
           background-color: $lightest-grey;
         }
+
         td {
           word-wrap: break-word;
           padding: 5px;
@@ -167,11 +195,14 @@
           &.include {
             text-align: center;
           }
+
           &.isCheckBox {
             text-align: center;
           }
+
           ul.entities {
             list-style: none;
+
             li {
               padding: 5px 0;
             }
@@ -179,19 +210,23 @@
         }
 
       }
+
       &.arp, &.arpValues {
         margin: 0;
         width: 100%;
         text-align: left;
         border: none;
+
         i.fa-arrow-right {
           margin: 3px 25px 3px 25px;
         }
+
         td.arpKey {
           i.fa-trash-o {
             color: $red;
             font-size: 16px;
             padding: 5px;
+
             &.old {
               color: $lightest-grey;
               background-color: $lightest-grey;
@@ -205,13 +240,16 @@
     div.result-actions {
       display: flex;
       align-items: center;
+
       span {
         color: $orange;
         font-size: 18px;
         font-weight: bold;
       }
+
       a {
         margin: 10px 10px 10px auto;
+
         i {
           margin-left: 35px;
         }

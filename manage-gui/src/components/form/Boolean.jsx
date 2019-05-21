@@ -4,7 +4,7 @@ import CheckBox from "./../CheckBox";
 
 export default class Boolean extends React.PureComponent {
   render() {
-    const { value, onChange, disabled, ...rest } = this.props;
+    const {value, onChange, disabled, ...rest} = this.props;
 
     const backwardCompatibleValue = ["1", 1, "true", true].includes(value);
 

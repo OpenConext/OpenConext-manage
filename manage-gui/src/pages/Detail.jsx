@@ -17,17 +17,9 @@ import {
 
 import ConfirmationDialog from "../components/ConfirmationDialog";
 
-import {
-  detail,
-  remove,
-  revisions,
-  save,
-  template,
-  update,
-  whiteListing
-} from "../api";
-import { isEmpty, stop } from "../utils/Utils";
-import { setFlash } from "../utils/Flash";
+import {detail, remove, revisions, save, template, update, whiteListing} from "../api";
+import {isEmpty, stop} from "../utils/Utils";
+import {setFlash} from "../utils/Flash";
 
 import "./Detail.css";
 
@@ -107,13 +99,13 @@ export default class Detail extends React.PureComponent {
 
   componentDidMount() {
     window.scrollTo(0, 0);
-    const { newMetaData } = this.props;
-    let { type, id } = this.state;
+    const {newMetaData} = this.props;
+    let {type, id} = this.state;
     const isNew = id === "new";
     const promise = isNew ? template(type) : detail(type, id);
     promise
       .then(metaData => {
-        const isSp = type === "saml20_sp";
+        const isSp = (type === "saml20_sp" || type === "oidc10_rp");
         const whiteListingType = isSp ? "saml20_idp" : "saml20_sp";
         const errorKeys = isSp ? tabsSp : tabsIdP;
         if (this.props.clone) {
@@ -168,7 +160,7 @@ export default class Detail extends React.PureComponent {
           this.validate(metaData, this.props.configuration, type);
         }
         whiteListing(whiteListingType).then(whiteListing => {
-          this.setState({ whiteListing: whiteListing });
+          this.setState({whiteListing: whiteListing});
           revisions(type, id).then(revisions => {
             revisions.push(metaData);
             revisions.sort((r1, r2) =>
@@ -178,13 +170,13 @@ export default class Detail extends React.PureComponent {
                 ? -1
                 : 0
             );
-            this.setState({ revisions: revisions });
+            this.setState({revisions: revisions});
           });
         });
       })
       .catch(err => {
         if (err.response && err.response.status === 404) {
-          this.setState({ notFound: true, loaded: true });
+          this.setState({notFound: true, loaded: true});
         } else {
           throw err;
         }
@@ -224,22 +216,22 @@ export default class Detail extends React.PureComponent {
       connection: connectionErrors,
       metadata: metaDataErrors
     };
-    this.setState({ errors: newErrors });
+    this.setState({errors: newErrors});
   };
 
   switchTab = tab => e => {
     stop(e);
-    this.setState({ selectedTab: tab });
-    const { type, id } = this.state;
+    this.setState({selectedTab: tab});
+    const {type, id} = this.state;
     if (!this.props.fromImport) {
       this.props.history.push(`/metadata/${type}/${id}/${tab}`);
     }
   };
 
   onError = name => (key, isError) => {
-    const errors = { ...this.state.errors };
+    const errors = {...this.state.errors};
     errors[name][key] = isError;
-    this.setState({ errors: errors });
+    this.setState({errors: errors});
   };
 
   nameOfMetaData = metaData =>
@@ -255,9 +247,9 @@ export default class Detail extends React.PureComponent {
     const currentState = this.state.metaData;
     const metaData = {
       ...currentState,
-      data: { ...currentState.data },
-      arp: { ...currentState.arp },
-      metaDataFields: { ...currentState.metaDataFields }
+      data: {...currentState.data},
+      arp: {...currentState.arp},
+      metaDataFields: {...currentState.metaDataFields}
     };
     if (Array.isArray(name) && Array.isArray(value)) {
       for (let i = 0; i < name.length; i++) {
@@ -276,7 +268,7 @@ export default class Detail extends React.PureComponent {
         replaceAtSignWithDotsInName
       );
     }
-    const changes = { ...this.state.changes };
+    const changes = {...this.state.changes};
     changes[component] = true;
     if (
       component === "whitelist" &&
@@ -288,7 +280,7 @@ export default class Detail extends React.PureComponent {
         removedWhiteListedEntities: []
       });
     }
-    this.setState({ metaData: metaData, changes: changes });
+    this.setState({metaData: metaData, changes: changes});
   };
 
   onChangeWhiteListedEntity = (added, entity) => {
@@ -350,8 +342,8 @@ export default class Detail extends React.PureComponent {
   };
 
   applyImportChanges = (results, applyChangesFor) => {
-    const newChanges = { ...this.state.changes };
-    const newData = { ...this.state.metaData.data };
+    const newChanges = {...this.state.changes};
+    const newData = {...this.state.metaData.data};
     ["allowedEntities", "disableConsent", "arp"].forEach(name => {
       if (applyChangesFor[name] && results[name]) {
         newData[name] = results[name];
@@ -391,7 +383,7 @@ export default class Detail extends React.PureComponent {
     );
     const prefix = isEmpty(this.props.newMetaData) ? "" : "new_";
 
-    const newMetaData = { ...this.state.metaData, data: newData };
+    const newMetaData = {...this.state.metaData, data: newData};
     this.setState(
       {
         selectedTab: "connection",
@@ -414,10 +406,10 @@ export default class Detail extends React.PureComponent {
 
   submit = e => {
     stop(e);
-    const { errors, revisionNote } = this.state;
+    const {errors, revisionNote} = this.state;
     const hasErrors = this.hasGlobalErrors(errors);
     if (isEmpty(revisionNote)) {
-      this.setState({ revisionNoteError: true }, () =>
+      this.setState({revisionNoteError: true}, () =>
         this.revisionNote.focus()
       );
       return false;
@@ -425,7 +417,7 @@ export default class Detail extends React.PureComponent {
     if (hasErrors) {
       return false;
     }
-    this.setState({ revisionNoteError: false });
+    this.setState({revisionNoteError: false});
     const promise = this.state.isNew ? save : update;
     const metaData = this.state.metaData;
     metaData.data.revisionnote = revisionNote;
@@ -459,7 +451,7 @@ export default class Detail extends React.PureComponent {
     if (this.props.currentUser.guest) {
       return null;
     }
-    const { errors, revisionNoteError } = this.state;
+    const {errors, revisionNoteError} = this.state;
     const hasErrors = this.hasGlobalErrors(errors);
     const revisionNoteRequired = revisionNoteError && isEmpty(revisionNote);
     return (
@@ -475,7 +467,7 @@ export default class Detail extends React.PureComponent {
               value={revisionNote}
               ref={ref => (this.revisionNote = ref)}
               onKeyPress={e => (e.key === "Enter" ? this.submit(e) : false)}
-              onChange={e => this.setState({ revisionNote: e.target.value })}
+              onChange={e => this.setState({revisionNote: e.target.value})}
             />
           </section>
           {revisionNoteRequired && (
@@ -490,7 +482,7 @@ export default class Detail extends React.PureComponent {
               this.setState({
                 cancelDialogAction: () => this.props.history.replace("/search"),
                 confirmationDialogAction: () =>
-                  this.setState({ confirmationDialogOpen: false }),
+                  this.setState({confirmationDialogOpen: false}),
                 confirmationDialogOpen: true,
                 leavePage: true
               });
@@ -530,8 +522,8 @@ export default class Detail extends React.PureComponent {
         onClick={this.switchTab(tab)}
       >
         {I18n.t(`metadata.tabs.${tab}`)}
-        {hasErrors && <i className="fa fa-warning" />}
-        {!hasErrors && tabChanges && <i className="fa fa-asterisk" />}
+        {hasErrors && <i className="fa fa-warning"/>}
+        {!hasErrors && tabChanges && <i className="fa fa-asterisk"/>}
       </span>
     );
   };
@@ -644,7 +636,7 @@ export default class Detail extends React.PureComponent {
           />
         );
       case "export":
-        return <Export metaData={metaData} />;
+        return <Export metaData={metaData}/>;
       case "import":
         return (
           <Import
@@ -661,7 +653,7 @@ export default class Detail extends React.PureComponent {
   };
 
   renderErrors = errors => {
-    const allErrors = { ...errors };
+    const allErrors = {...errors};
     const errorKeys = Object.keys(allErrors).filter(
       err => !isEmpty(allErrors[err])
     );
@@ -734,7 +726,7 @@ export default class Detail extends React.PureComponent {
           question={
             leavePage
               ? undefined
-              : I18n.t("metadata.deleteConfirmation", { name: name })
+              : I18n.t("metadata.deleteConfirmation", {name: name})
           }
           leavePage={leavePage}
         />
@@ -753,12 +745,12 @@ export default class Detail extends React.PureComponent {
                         this.props.history.replace("/search");
                         const name = this.nameOfMetaData(this.state.metaData);
                         setFlash(
-                          I18n.t("metadata.flash.deleted", { name: name })
+                          I18n.t("metadata.flash.deleted", {name: name})
                         );
                       });
                     },
                     cancelDialogAction: () =>
-                      this.setState({ confirmationDialogOpen: false }),
+                      this.setState({confirmationDialogOpen: false}),
                     confirmationDialogOpen: true,
                     leavePage: false
                   });
@@ -778,7 +770,7 @@ export default class Detail extends React.PureComponent {
                       metaData.data.metaDataFields["name:en"] ||
                       metaData.data.metaDataFields["name:nl"] ||
                       "this service";
-                    setFlash(I18n.t("metadata.flash.cloned", { name: name }));
+                    setFlash(I18n.t("metadata.flash.cloned", {name: name}));
                     this.props.history.replace(`/clone/${type}/${metaData.id}`);
                   }, 50);
                 }}
@@ -795,7 +787,7 @@ export default class Detail extends React.PureComponent {
           </section>
         )}
         {renderContent &&
-          this.renderCurrentTab(selectedTab, metaData, whiteListing, revisions)}
+        this.renderCurrentTab(selectedTab, metaData, whiteListing, revisions)}
         {renderContent && this.renderActions(revisionNote)}
       </div>
     );

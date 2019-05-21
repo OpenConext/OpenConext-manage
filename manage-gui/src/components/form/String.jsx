@@ -1,8 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-const String = ({ onChange, ...rest }) => (
-  <input {...rest} onChange={e => onChange(e.target.value)} type="text" />
+const String = ({onChange, ...rest}) => (
+  <input {...rest} onChange={e => onChange(e.target.value)} type="text"/>
 );
 
 String.propTypes = {

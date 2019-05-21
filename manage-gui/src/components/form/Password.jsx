@@ -43,7 +43,7 @@ export default class Password extends React.PureComponent {
   renderDisabledIcon() {
     return (
       <div className="password-icon" onClick={() => this.handleEdit()}>
-        <i className="fa fa-pencil edit" />
+        <i className="fa fa-pencil edit"/>
       </div>
     );
   }
@@ -52,21 +52,21 @@ export default class Password extends React.PureComponent {
     return (
       <div className="password-icon-container">
         <div className="password-icon" onClick={() => this.handleUndo()}>
-          <i className="fa fa-undo undo" />
+          <i className="fa fa-undo undo"/>
         </div>
 
-        <span className="separator" />
+        <span className="separator"/>
 
         <div className="password-icon" onClick={() => this.handleSave()}>
-          <i className="fa fa-save save" />
+          <i className="fa fa-save save"/>
         </div>
       </div>
     );
   }
 
   render() {
-    const { value, type, showSaveWarning } = this.state;
-    const { hasFormatError, onChange, ...rest } = this.props;
+    const {value, type, showSaveWarning} = this.state;
+    const {hasFormatError, onChange, ...rest} = this.props;
 
     const disabled = this.state.disabled || this.props.disabled;
 
@@ -74,26 +74,26 @@ export default class Password extends React.PureComponent {
       <div>
         <div
           className={"password-field " + (disabled ? "disabled" : "")}
-          onBlur={() => this.setState({ showSaveWarning: true })}
-          onFocus={() => this.setState({ showSaveWarning: true })}
+          onBlur={() => this.setState({showSaveWarning: true})}
+          onFocus={() => this.setState({showSaveWarning: true})}
         >
           <input
             {...rest}
-            {...{ value, type, disabled }}
+            {...{value, type, disabled}}
             className="password-input"
-            onChange={e => this.setState({ value: e.target.value })}
+            onChange={e => this.setState({value: e.target.value})}
             ref={el => {
               this.passwordInput = el;
             }}
           />
 
-          <span className="separator" />
+          <span className="separator"/>
           {disabled ? this.renderDisabledIcon() : this.renderEnabledIcons()}
         </div>
 
         {showSaveWarning && (
           <span className="error">
-            <i className="fa fa-warning" />
+            <i className="fa fa-warning"/>
             Save the new submission inline for it to be saved on submit
           </span>
         )}

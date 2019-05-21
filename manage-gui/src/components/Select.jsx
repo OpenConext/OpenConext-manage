@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { default as ReactSelect } from "react-select";
+import {default as ReactSelect} from "react-select";
 
 import reactSelectStyles from "./reactSelectStyles.js";
 
@@ -9,10 +9,10 @@ export default class Select extends React.PureComponent {
     disabled: false
   };
 
-  valueToOption = value => ({ value: value, label: value });
+  valueToOption = value => ({value: value, label: value});
 
   render() {
-    const { name, value, ...rest } = this.props;
+    const {name, value, ...rest} = this.props;
     const valueAsOption = typeof value === "string" ? this.valueToOption(value) : value;
 
     return (

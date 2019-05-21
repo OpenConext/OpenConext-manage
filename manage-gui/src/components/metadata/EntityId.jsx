@@ -1,9 +1,9 @@
 import React from "react";
 import I18n from "i18n-js";
 
-import { search, validation } from "../../api";
+import {search, validation} from "../../api";
 import InlineEditable from "./InlineEditable";
-import { isEmpty } from "../../utils/Utils";
+import {isEmpty} from "../../utils/Utils";
 
 export default class EntityId extends React.PureComponent {
   state = {
@@ -35,14 +35,14 @@ export default class EntityId extends React.PureComponent {
     const isNewValue = this.props.originalEntityId !== entityId;
     if (!isNewValue) return true;
 
-    const json = await search({ entityid: entityId }, this.props.type);
+    const json = await search({entityid: entityId}, this.props.type);
     const isUnique = isNewValue && json.length === 0;
 
     return isUnique || this.notUnique();
   }
 
   async validFormat(entityId) {
-    const { entityIdFormat } = this.props;
+    const {entityIdFormat} = this.props;
 
     if (!entityIdFormat) {
       return true;
@@ -51,7 +51,7 @@ export default class EntityId extends React.PureComponent {
     return valid || this.notFormatted();
   }
 
-   validateEntityId(entityId) {
+  validateEntityId(entityId) {
     this.setState({
       hasError: false,
       errorMessage: ""
@@ -66,8 +66,8 @@ export default class EntityId extends React.PureComponent {
   }
 
   render() {
-    const { hasError, errorMessage } = this.state;
-    const { entityIdFormat, value, ...rest } = this.props;
+    const {hasError, errorMessage} = this.state;
+    const {entityIdFormat, value, ...rest} = this.props;
 
     return (
       <span>

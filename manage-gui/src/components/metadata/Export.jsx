@@ -3,7 +3,7 @@ import I18n from "i18n-js";
 import PropTypes from "prop-types";
 import Highlight from "react-highlight";
 
-import { exportMetaData } from "../../api";
+import {exportMetaData} from "../../api";
 
 import CheckBox from "./../CheckBox";
 import ClipBoardCopy from "./../ClipBoardCopy";
@@ -65,9 +65,9 @@ export default class Export extends React.Component {
                 name="xml-export"
                 value={showXml}
                 info={I18n.t("export.showXml")}
-                onChange={e => this.setState({ showXml: e.target.checked })}
+                onChange={e => this.setState({showXml: e.target.checked})}
               />
-              <ClipBoardCopy identifier="xml-export" text={xml} />
+              <ClipBoardCopy identifier="xml-export" text={xml}/>
             </div>
             {showXml && <Highlight className="XML">{xml}</Highlight>}
           </section>
@@ -79,15 +79,15 @@ export default class Export extends React.Component {
                 name="json-export"
                 value={showJson}
                 info={I18n.t("export.showJson")}
-                onChange={e => this.setState({ showJson: e.target.checked })}
+                onChange={e => this.setState({showJson: e.target.checked})}
               />
               <ClipBoardCopy
                 identifier="json-export"
                 text={
                   showJsonFlat
                     ? showJsonMetaDataOnly
-                      ? jsonMetaDataOnlyFlat
-                      : jsonFlat
+                    ? jsonMetaDataOnlyFlat
+                    : jsonFlat
                     : showJsonMetaDataOnly
                     ? jsonMetaDataOnly
                     : json
@@ -101,7 +101,7 @@ export default class Export extends React.Component {
                 value={showJsonFlat}
                 info={I18n.t("export.showJsonFlat")}
                 onChange={e =>
-                  this.setState({ showJsonFlat: e.target.checked })
+                  this.setState({showJsonFlat: e.target.checked})
                 }
               />
             )}
@@ -112,7 +112,7 @@ export default class Export extends React.Component {
                 value={showJsonMetaDataOnly}
                 info={I18n.t("export.showMetaDataOnly")}
                 onChange={e =>
-                  this.setState({ showJsonMetaDataOnly: e.target.checked })
+                  this.setState({showJsonMetaDataOnly: e.target.checked})
                 }
               />
             )}
@@ -123,8 +123,8 @@ export default class Export extends React.Component {
                     ? jsonMetaDataOnlyFlat
                     : jsonFlat
                   : showJsonMetaDataOnly
-                  ? jsonMetaDataOnly
-                  : json}
+                    ? jsonMetaDataOnly
+                    : json}
               </Highlight>
             )}
           </section>

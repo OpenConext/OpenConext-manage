@@ -2,103 +2,124 @@
 @import "../../stylesheets/mixins.scss";
 
 .metadata-metadata {
-    background-color: white;
-    padding: 20px;
+  background-color: white;
+  padding: 20px;
 
-    .metadata-info {
-        margin: 15px 0;
-        h2 {
+  .metadata-info {
+    margin: 15px 0;
+
+    h2 {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+  }
+
+  table.metadata-fields-table {
+    width: 100%;
+
+    thead th {
+      text-align: left;
+      padding: 5px;
+      font-size: larger;
+
+      &.key {
+        width: 30%;
+      }
+
+      &.value {
+        width: 65%;
+      }
+
+      &.trash {
+        width: 5%;
+      }
+    }
+
+    tbody {
+      tr:nth-child(odd) {
+        background-color: $lightest-grey;
+      }
+
+      td {
+        word-wrap: break-word;
+        padding: 3px;
+
+        &.value {
+          padding: 8px 0;
+        }
+
+        &.trash {
+          text-align: center;
+          cursor: pointer;
+
+          i.fa {
+            color: $red;
             font-size: 18px;
-            margin-bottom: 10px;
+          }
         }
 
-    }
-    table.metadata-fields-table {
-        width: 100%;
-        thead th {
-            text-align: left;
-            padding: 5px;
-            font-size: larger;
+        &.extraneous {
+          color: $red;
+        }
 
-            &.key {
-                width: 30%;
-            }
-            &.value {
-                width: 65%;
-            }
-            &.trash {
-                width: 5%;
-            }
-        }
-        tbody {
-            tr:nth-child(odd) {
-                background-color: $lightest-grey;
-            }
-            td {
-                word-wrap: break-word;
-                padding: 3px;
-                &.value {
-                  padding: 8px 0;
-                }
-                &.trash {
-                    text-align: center;
-                    cursor: pointer;
-                    i.fa {
-                        color: $red;
-                        font-size: 18px;
-                    }
-                }
-                &.extraneous {
-                    color: $red;
-                }
-                input, textarea {
-                    width: 100%;
-                    font-size: 14px;
-                    padding: 0 10px;
-                    border-radius: 3px;
-                    border: 1px solid #d9d9d8;
-                    line-height: 33px;
-                    &.error {
-                        border: solid 1px $red;
-                    }
-                }
-                .fa-info-circle {
-                    color: $blue;
-                    margin-left: 15px;
-                }
-                .tool-tip {
-                    box-shadow: 1px 2px 6px 1px $lighter-grey;
-                    padding: 10px !important;
-                    font-size: 14px !important;
-                    pointer-events: auto !important;
-                    color: white !important;
-                    background-color: $blue !important;
-                    &.show {
-                        opacity: 1 !important;
-                    }
-                    max-width: 390px;
-                    &:after {
-                        border-top-color: $blue !important;
-                        border-top-style: solid !important;
-                        border-top-width: 6px !important;
-                    }
-                }
-                div.error {
-                    color: $red;
-                    margin-top: 5px;
-                }
+        input, textarea {
+          width: 100%;
+          font-size: 14px;
+          padding: 0 10px;
+          border-radius: 3px;
+          border: 1px solid #d9d9d8;
+          line-height: 33px;
 
-            }
+          &.error {
+            border: solid 1px $red;
+          }
         }
+
+        .fa-info-circle {
+          color: $blue;
+          margin-left: 15px;
+        }
+
+        .tool-tip {
+          box-shadow: 1px 2px 6px 1px $lighter-grey;
+          padding: 10px !important;
+          font-size: 14px !important;
+          pointer-events: auto !important;
+          color: white !important;
+          background-color: $blue !important;
+
+          &.show {
+            opacity: 1 !important;
+          }
+
+          max-width: 390px;
+
+          &:after {
+            border-top-color: $blue !important;
+            border-top-style: solid !important;
+            border-top-width: 6px !important;
+          }
+        }
+
+        div.error {
+          color: $red;
+          margin-top: 5px;
+        }
+
+      }
     }
-    div.select-new-metadata {
-        .Select-menu-outer {
-            margin-bottom: 50px;
-            max-height: 300px;
-        }
-        .Select-menu {
-            max-height: 298px;
-        }
+  }
+
+  div.select-new-metadata {
+    .Select-menu-outer {
+      margin-bottom: 50px;
+      max-height: 300px;
     }
+
+    .Select-menu {
+      max-height: 298px;
+    }
+  }
 
 }

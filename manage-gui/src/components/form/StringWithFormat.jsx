@@ -1,11 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
 import I18n from "i18n-js";
-import { Password } from "../form";
+import {Password} from "../form";
 
 export default class StringWithFormat extends React.PureComponent {
   renderInput() {
-    const { onChange, hasFormatError, format, ...rest } = this.props;
+    const {onChange, hasFormatError, format, ...rest} = this.props;
 
     return (
       <div className="format-input">
@@ -17,8 +17,8 @@ export default class StringWithFormat extends React.PureComponent {
         />
         {hasFormatError && (
           <span>
-            <i className="fa fa-warning" />
-            {I18n.t("metaDataFields.error", { format })}
+            <i className="fa fa-warning"/>
+            {I18n.t("metaDataFields.error", {format})}
           </span>
         )}
       </div>

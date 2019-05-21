@@ -545,7 +545,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 .get("manage/api/client/whiteListing/saml20_sp")
                 .then()
                 .statusCode(SC_OK)
-                .body("size()", is(6))
+                .body("size()", is(8))
                 .body("data.allowedall", hasItems(true, false));
     }
 

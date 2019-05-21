@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-const Number = ({ onChange, ...rest }) => (
+const Number = ({onChange, ...rest}) => (
   <input
     {...rest}
     onChange={e => onChange(parseInt(e.target.value, 10))}

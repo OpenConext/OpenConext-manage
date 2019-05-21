@@ -31,7 +31,7 @@ export default class CheckBox extends React.PureComponent {
         />
         <label htmlFor={name}>
           <span ref={ref => (this.input = ref)} tabIndex="0">
-            <i className="fa fa-check" />
+            <i className="fa fa-check"/>
           </span>
         </label>
         {info && (

@@ -1,30 +1,30 @@
 @import "../../stylesheets/vars.scss";
 
 span.Select-clear-zone {
-    display: none;
+  display: none;
 }
 
 div.Select-control {
-    border-radius: $br;
-    border: 1px solid $lighter-grey;
-    margin-top: 5px;
-    display: table;
-    border-spacing: 0;
-    border-collapse: separate;
-    outline: none;
-    overflow: hidden;
-    position: relative;
+  border-radius: $br;
+  border: 1px solid $lighter-grey;
+  margin-top: 5px;
+  display: table;
+  border-spacing: 0;
+  border-collapse: separate;
+  outline: none;
+  overflow: hidden;
+  position: relative;
 }
 
 span.Select-arrow-zone {
-    padding: 0 12px;
-    background-color: $light-grey;
+  padding: 0 12px;
+  background-color: $light-grey;
 }
 
 .is-disabled {
-    span.select-option {
-        cursor: not-allowed;
-    }
+  span.select-option {
+    cursor: not-allowed;
+  }
 }
 
 

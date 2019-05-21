@@ -1,86 +1,96 @@
 @import "../stylesheets/vars.scss";
 
 section.metadata-autocomplete {
-    width: 95%;
-    position: absolute;
-    z-index: 3;
-    top: 40px;
-    border-radius: $br;
-    background-color: white;
-    box-shadow: 1px 4px 12px 1px $medium-grey;
-    margin-bottom: 25px;
+  width: 95%;
+  position: absolute;
+  z-index: 3;
+  top: 40px;
+  border-radius: $br;
+  background-color: white;
+  box-shadow: 1px 4px 12px 1px $medium-grey;
+  margin-bottom: 25px;
 
-    div.no-results {
-        padding: 10px 15px;
-        font-style: italic;
+  div.no-results {
+    padding: 10px 15px;
+    font-style: italic;
+  }
+
+  em.resultsLimited {
+    margin: 5px 10px;
+    display: inline-block;
+    color: $orange;
+  }
+
+  table.result {
+    width: 100%;
+    word-break: break-all;
+
+    thead th {
+      color: $medium-grey;
+      font-size: larger;
+      font-weight: bold;
+      text-transform: uppercase;
+      padding: 10px;
+      text-align: left;
+
+      &.name {
+        width: 30%;
+      }
+
+      &.state {
+        text-align: center;
+        width: 15%;
+      }
+
+      &.entity_id {
+        width: 40%;
+      }
+
+      &.info {
+        text-align: center;
+        width: 8%;
+      }
+
+      &.link {
+        text-align: center;
+        width: 7%;
+      }
     }
-    em.resultsLimited {
-        margin: 5px 10px;
-        display: inline-block;
-        color: $orange;
-    }
-    table.result {
-        width: 100%;
-        word-break: break-all;
 
-        thead th {
-            color: $medium-grey;
-            font-size: larger;
-            font-weight: bold;
-            text-transform: uppercase;
-            padding: 10px;
-            text-align: left;
+    tbody tr {
+      border-top: 1px solid $light-grey;
+      cursor: pointer;
 
-            &.name {
-                width: 30%;
-            }
-            &.state {
-                text-align: center;
-                width: 15%;
-            }
-            &.entity_id {
-                width: 40%;
-            }
-            &.info {
-                text-align: center;
-                width: 8%;
-            }
-            &.link {
-                text-align: center;
-                width: 7%;
-            }
+      &.active, &:hover {
+        background-color: $light-grey;
+      }
+
+      td {
+        padding: 5px 10px;
+        vertical-align: middle;
+
+        &.state, &.info, &.link {
+          text-align: center;
         }
-        tbody tr {
-            border-top: 1px solid $light-grey;
-            cursor: pointer;
 
-            &.active, &:hover {
-                background-color: $light-grey;
-            }
-            td {
-                padding: 5px 10px;
-                vertical-align: middle;
-
-                &.state, &.info, &.link {
-                    text-align: center;
-                }
-                i.fa-external-link {
-                    padding: 5px 10px;
-                    font-size: 16px;
-                }
-                i.fa-info-circle {
-                    color: $blue;
-                    font-size: 16px;
-                }
-            }
-
-            span {
-                &.matched {
-                    font-weight: bold;
-                    text-decoration: underline;
-                }
-            }
-
+        i.fa-external-link {
+          padding: 5px 10px;
+          font-size: 16px;
         }
+
+        i.fa-info-circle {
+          color: $blue;
+          font-size: 16px;
+        }
+      }
+
+      span {
+        &.matched {
+          font-weight: bold;
+          text-decoration: underline;
+        }
+      }
+
     }
+  }
 }

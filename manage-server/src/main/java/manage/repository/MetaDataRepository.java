@@ -184,7 +184,12 @@ public class MetaDataRepository {
         query.fields()
                 .include("data.allowedall")
                 .include("data.allowedEntities");
-        return mongoTemplate.find(query, Map.class, type);
+        List<Map> metaData = mongoTemplate.find(query, Map.class, type);
+        if (type.equals(EntityType.SP.getType())) {
+            List<Map> oidcMetaData = mongoTemplate.find(query, Map.class, EntityType.RP.getType());
+            metaData.addAll(oidcMetaData);
+        }
+        return metaData;
     }
 
     public Long incrementEid() {

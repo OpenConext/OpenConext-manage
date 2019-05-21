@@ -18,9 +18,11 @@ div.flash {
   &.info {
     background-color: darken($green, 15%);
   }
+
   &.warning {
     background-color: $orange;
   }
+
   &.error {
     background-color: $red;
   }
@@ -35,6 +37,7 @@ div.flash {
       text-transform: uppercase;
       font-weight: bold;
     }
+
     a.close {
       text-decoration: none;
       position: absolute;

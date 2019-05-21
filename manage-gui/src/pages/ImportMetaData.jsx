@@ -7,65 +7,65 @@ import "./ImportMetaData.css";
 
 export default class ImportMetaData extends React.PureComponent {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            showDetails: false,
-            results: {}
-        };
-    }
-
-    componentDidMount() {
-        ping().then(() => this);
-    }
-
-    applyImportChanges = (results, applyImportChanges) => {
-        Object.keys(applyImportChanges).forEach(applyImport => {
-            if (!applyImportChanges[applyImport]) {
-                delete results[applyImport];
-            }
-        });
-        this.setState({showDetails: true, results: results});
+  constructor(props) {
+    super(props);
+    this.state = {
+      showDetails: false,
+      results: {}
     };
+  }
 
-    render() {
-        const {showDetails, results} = this.state;
-        const {history,currentUser,configuration} = this.props;
-        if (showDetails) {
-            return (
-                <Detail history={history}
-                        currentUser={currentUser}
-                        fromImport={true}
-                        configuration={configuration}
-                        newMetaData={results}/>
-            );
-        }
-        const metaData = {
-            data: {
-                allowedEntities: [],
-                disableConsent: [],
-                arp: {
-                    enabled: false,
-                    attributes: {}
-                },
-                metaDataFields: {},
-            }
-        };
-        return (
-            <div className="import-metadata">
-                <Import metaData={metaData}
-                        guest={false}
-                        newEntity={true}
-                        entityType="saml20_sp"
-                        applyImportChanges={this.applyImportChanges}/>
-            </div>
-        );
+  componentDidMount() {
+    ping().then(() => this);
+  }
+
+  applyImportChanges = (results, applyImportChanges) => {
+    Object.keys(applyImportChanges).forEach(applyImport => {
+      if (!applyImportChanges[applyImport]) {
+        delete results[applyImport];
+      }
+    });
+    this.setState({showDetails: true, results: results});
+  };
+
+  render() {
+    const {showDetails, results} = this.state;
+    const {history, currentUser, configuration} = this.props;
+    if (showDetails) {
+      return (
+        <Detail history={history}
+                currentUser={currentUser}
+                fromImport={true}
+                configuration={configuration}
+                newMetaData={results}/>
+      );
     }
+    const metaData = {
+      data: {
+        allowedEntities: [],
+        disableConsent: [],
+        arp: {
+          enabled: false,
+          attributes: {}
+        },
+        metaDataFields: {},
+      }
+    };
+    return (
+      <div className="import-metadata">
+        <Import metaData={metaData}
+                guest={false}
+                newEntity={true}
+                entityType="saml20_sp"
+                applyImportChanges={this.applyImportChanges}/>
+      </div>
+    );
+  }
 }
 
 ImportMetaData.propTypes = {
-    history: PropTypes.object.isRequired,
-    currentUser: PropTypes.object.isRequired,
-    configuration: PropTypes.array.isRequired
+  history: PropTypes.object.isRequired,
+  currentUser: PropTypes.object.isRequired,
+  configuration: PropTypes.array.isRequired
 };
 
