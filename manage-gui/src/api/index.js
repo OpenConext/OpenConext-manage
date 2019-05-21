@@ -123,6 +123,10 @@ export function validation(format, value) {
   return postPutJson("validation", {type: format, value: value}, "post");
 }
 
+export function secret() {
+  return fetchJson("secret");
+}
+
 export function whiteListing(type) {
   return fetchJson(`whiteListing/${type}`);
 }

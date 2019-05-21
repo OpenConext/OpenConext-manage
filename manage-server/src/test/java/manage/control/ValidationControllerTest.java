@@ -4,9 +4,13 @@ import manage.AbstractIntegrationTest;
 import manage.model.Validation;
 import org.junit.Test;
 
+import java.util.Map;
+
 import static io.restassured.RestAssured.given;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class ValidationControllerTest extends AbstractIntegrationTest {
 
@@ -67,6 +71,15 @@ public class ValidationControllerTest extends AbstractIntegrationTest {
         doValidation("uuid", "nope", false);
     }
 
+    @Test
+    public void secret() {
+        Map<String, String> res = given()
+                .when()
+                .header("Content-type", "application/json")
+                .get("manage/api/client/secret")
+                .as(Map.class);
+        assertEquals(24, res.get("secret").length());
+    }
 
     private void doValidation(String type, String value, boolean valid) throws Exception {
         given()
