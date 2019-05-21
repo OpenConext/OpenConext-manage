@@ -142,7 +142,7 @@ export default class ConsentDisabling extends React.Component {
                 {entity.name}
             </td>
             <td>
-                <Select className="select-consent-value"
+                <Select name="select-consent-value"
                         onChange={option => this.onChangeSelectConsentValue(entity, option.value)}
                         options={[{label: I18n.t("consentDisabling.entries.no_consent"), value: "no_consent"},
                             {label: I18n.t("consentDisabling.entries.minimal_consent"), value: "minimal_consent"},
