@@ -22,11 +22,11 @@ export default class Import extends React.Component {
     super(props);
     const { newEntity, metaData } = this.props;
 
-    const sharedTabs = ["import_json_url", "import_json", "results"];
+    const sharedTabs = ["import_json", "results"];
     const tabs =
       metaData.type === "oidc10_rp"
         ? sharedTabs
-        : ["import_xml_url", "import_xml", ...sharedTabs];
+        : ["import_xml_url", "import_xml", "import_json_url", ...sharedTabs];
 
     this.state = {
       url: newEntity ? "" : metaData.data.metadataurl,
@@ -46,7 +46,7 @@ export default class Import extends React.Component {
       errorsJson: undefined,
       errorsXml: undefined,
       tabs: tabs,
-      selectedTab: "import_xml_url",
+      selectedTab: tabs[0],
       applyChangesFor: {}
     };
   }
