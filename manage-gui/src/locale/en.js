@@ -359,6 +359,14 @@ I18n.translations.en = {
     new_attribute_motivation: "The motivation for the release of {{key}}",
     new_attribute_motivation_placeholder: "Motivation..."
   },
+
+  password: {
+    copy: "Copy to clipboard",
+    edit: "Edit secret",
+    key: "Generate new secret",
+    undo: "Undo changes",
+    save: "Save new secret"
+  },
   not_found: {
     title: "404",
     description_html: "The requested page could not be found"

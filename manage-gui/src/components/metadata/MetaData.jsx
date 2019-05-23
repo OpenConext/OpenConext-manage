@@ -174,16 +174,17 @@ export default class MetaData extends React.Component {
     const extraneous = keyConfiguration === "unknown_key_conf";
     const toolTip = keyConfiguration.info;
     const value = metaDataFields[key];
-
+    //id's need to be unique for our checkboxes to work
+    const reactTooltipId = `${key}_tooltip`;
     return (
       <tr key={key}>
         <td className={`key ${extraneous ? "extraneous" : ""}`}>
           {key}
           {toolTip && (
             <span>
-              <i className="fa fa-info-circle" data-for={key} data-tip/>
+              <i className="fa fa-info-circle" data-for={reactTooltipId} data-tip/>
               <ReactTooltip
-                id={key}
+                id={reactTooltipId}
                 type="info"
                 class="tool-tip"
                 effect="solid"

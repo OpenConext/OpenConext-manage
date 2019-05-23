@@ -1,8 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
+import I18n from "i18n-js";
 import "./Password.css";
 import {secret} from "../../api";
 import CopyToClipboard from "react-copy-to-clipboard";
+import ReactTooltip from "react-tooltip";
 
 export default class Password extends React.PureComponent {
   state = {
@@ -38,7 +40,7 @@ export default class Password extends React.PureComponent {
       value: json.secret,
       disabled: true,
       showSaveWarning: false
-    }));
+    }, () => this.props.onChange(this.state.value)));
 
   }
 
@@ -51,20 +53,34 @@ export default class Password extends React.PureComponent {
     });
   }
 
+  renderIcon = (id, className, tooltipKey) =>
+      <span>
+          <i className={className} data-for={id} data-tip/>
+          <ReactTooltip
+            id={id}
+            type="info"
+            class="tool-tip"
+            effect="solid">
+            <span>{I18n.t(`password.${tooltipKey}`)}</span>
+          </ReactTooltip>
+      </span>;
+
+
+
   renderDisabledIcon(copied) {
     const classNameCopy = copied ? "copy copied" : "copy";
     return (
       <div className="password-icon-container">
         <div className="password-icon">
           <CopyToClipboard text={this.state.value} onCopy={this.handleCopy}>
-            <i className={`fa fa-copy ${classNameCopy}`}/>
+            {this.renderIcon("copy-icon", `fa fa-copy ${classNameCopy}`,"copy" )}
           </CopyToClipboard>
         </div>
 
         <span className="separator"/>
 
         <div className="password-icon" onClick={() => this.handleEdit()}>
-          <i className="fa fa-pencil edit"/>
+          {this.renderIcon("edit-icon", "fa fa-pencil edit","edit" )}
         </div>
       </div>
     );
@@ -74,19 +90,19 @@ export default class Password extends React.PureComponent {
     return (
       <div className="password-icon-container">
         <div className="password-icon" onClick={() => this.handleGenerate()}>
-          <i className="fa fa-key key"/>
+          {this.renderIcon("key-icon", "fa fa-key key","key" )}
         </div>
 
         <span className="separator"/>
 
         <div className="password-icon" onClick={() => this.handleUndo()}>
-          <i className="fa fa-undo undo"/>
+          {this.renderIcon("undo-icon", "fa fa-undo undo","undo" )}
         </div>
 
         <span className="separator"/>
 
         <div className="password-icon" onClick={() => this.handleSave()}>
-          <i className="fa fa-save save"/>
+          {this.renderIcon("save-icon", "fa fa-save save","save" )}
         </div>
       </div>
     );

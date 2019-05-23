@@ -3,16 +3,17 @@
 div.flash {
   color: white;
 
-  position: fixed;
+  position: absolute;
   width: 100%;
   top: 0;
   z-index: 6;
   opacity: .9;
-  translate: (0, -40px);
+
+  transition: top 150ms ease-in-out;
 
   &.hide {
-    transition: translate 1000ms ease-in-out;
-    translate: (0, 0px);
+    transition: top 1000ms ease-in-out;
+    top: -80px;
   }
 
   &.info {
