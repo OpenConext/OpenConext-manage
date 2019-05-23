@@ -13,5 +13,6 @@
     "scopes": ["openid"],
     "grants": ["authorization_code"]
   },
-  "allowedEntities": []
+  "allowedEntities": [],
+  "allowedResourceServers": []
 }

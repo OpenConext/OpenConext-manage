@@ -169,6 +169,10 @@ export function countFeed() {
   return fetchJson("count/feed");
 }
 
+export function allResourceServers() {
+  return search({"metaDataFields.isResourceServer": true}, "oidc10_rp")
+}
+
 export function search(options, type) {
   return postPutJson(`search/${type}`, options, "post");
 }

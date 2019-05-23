@@ -17,11 +17,12 @@ import {
 
 import ConfirmationDialog from "../components/ConfirmationDialog";
 
-import {detail, remove, revisions, save, template, update, whiteListing} from "../api";
+import {allResourceServers, detail, remove, revisions, save, template, update, whiteListing} from "../api";
 import {isEmpty, stop} from "../utils/Utils";
 import {setFlash} from "../utils/Flash";
 
 import "./Detail.css";
+import ResourceServers from "../components/metadata/ResourceServers";
 
 const tabsSp = [
   "connection",
@@ -50,6 +51,7 @@ const tabsOIDC = [
   "connection",
   "connected_idps",
   "metadata",
+  "resource_servers",
   "arp",
   "whitelist",
   "revisions",
@@ -76,6 +78,7 @@ export default class Detail extends React.PureComponent {
     this.state = {
       metaData: {},
       whiteListing: [],
+      resourceServers: [],
       revisions: [],
       notFound: false,
       loaded: false,
@@ -106,6 +109,7 @@ export default class Detail extends React.PureComponent {
     promise
       .then(metaData => {
         const isSp = (type === "saml20_sp" || type === "oidc10_rp");
+        const isOidcRP = type === "oidc10_rp";
         const whiteListingType = isSp ? "saml20_idp" : "saml20_sp";
         const errorKeys = isSp ? tabsSp : tabsIdP;
         if (this.props.clone) {
@@ -161,6 +165,9 @@ export default class Detail extends React.PureComponent {
         }
         whiteListing(whiteListingType).then(whiteListing => {
           this.setState({whiteListing: whiteListing});
+          if (isOidcRP) {
+            allResourceServers().then(json => this.setState({resourceServers: json}));
+          }
           revisions(type, id).then(revisions => {
             revisions.push(metaData);
             revisions.sort((r1, r2) =>
@@ -270,11 +277,7 @@ export default class Detail extends React.PureComponent {
     }
     const changes = {...this.state.changes};
     changes[component] = true;
-    if (
-      component === "whitelist" &&
-      (name === "data.allowedall" ||
-        (Array.isArray(name) && name.includes("data.allowedall")))
-    ) {
+    if (component === "whitelist" && (name === "data.allowedall" || (Array.isArray(name) && name.includes("data.allowedall")))) {
       this.setState({
         addedWhiteListedEntities: [],
         removedWhiteListedEntities: []
@@ -528,7 +531,7 @@ export default class Detail extends React.PureComponent {
     );
   };
 
-  renderCurrentTab = (tab, metaData, whiteListing, revisions) => {
+  renderCurrentTab = (tab, metaData, resourceServers, whiteListing, revisions) => {
     const configuration = this.props.configuration.find(
       conf => conf.title === this.state.type
     );
@@ -592,6 +595,17 @@ export default class Detail extends React.PureComponent {
             arp={metaData.data.arp}
             arpConfiguration={configuration.properties.arp}
             onChange={this.onChange("arp")}
+            guest={guest}
+          />
+        );
+      case "resource_servers":
+        return (
+          <ResourceServers
+            allowedResourceServers={metaData.data.allowedResourceServers}
+            name={name}
+            onChange={this.onChange("resource_servers")}
+            entityId={metaData.data.entityid}
+            resourceServers={resourceServers}
             guest={guest}
           />
         );
@@ -681,6 +695,7 @@ export default class Detail extends React.PureComponent {
       loaded,
       notFound,
       metaData,
+      resourceServers,
       whiteListing,
       revisions,
       selectedTab,
@@ -787,7 +802,7 @@ export default class Detail extends React.PureComponent {
           </section>
         )}
         {renderContent &&
-        this.renderCurrentTab(selectedTab, metaData, whiteListing, revisions)}
+        this.renderCurrentTab(selectedTab, metaData, resourceServers, whiteListing, revisions)}
         {renderContent && this.renderActions(revisionNote)}
       </div>
     );

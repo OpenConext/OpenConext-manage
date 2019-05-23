@@ -196,10 +196,10 @@ public class Exporter {
 
     private void addUILogo(Map data) {
         Map metaDataFields = Map.class.cast(data.get("metaDataFields"));
-        String height = (String) metaDataFields.get("logo:0:height");
-        String width = (String) metaDataFields.get("logo:0:width");
+        Object height = metaDataFields.get("logo:0:height");
+        Object width = metaDataFields.get("logo:0:width");
         String url = (String) metaDataFields.get("logo:0:url");
-        data.put("Logo", StringUtils.hasText(height) && StringUtils.hasText(width) && StringUtils.hasText(url));
+        data.put("Logo", height != null && width != null && StringUtils.hasText(url));
     }
 
 

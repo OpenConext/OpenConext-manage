@@ -50,6 +50,7 @@ I18n.translations.en = {
       metadata: "Metadata",
       metaDataFields: "Metadata fields",
       arp: "ARP",
+      resource_servers: "Resource Servers",
       manipulation: "Manipulation",
       consent_disabling: "Consent Management",
       connected_idps: "Connected IdP's",
@@ -152,6 +153,18 @@ I18n.translations.en = {
     removedWhiteListedEntities: "Removed entities from the whitelist",
     allowedEntries: {
       blocked: "Blocked",
+      status: "Status",
+      entityid: "Entity ID",
+      name: "Name",
+      notes: "Notes"
+    }
+  },
+  resource_servers: {
+    placeholder: "Search, select and add {{type}} to the Resource Servers",
+    title: "{{type}}",
+    description: "Add only {{type}} which {{name}} is allowed to use the API.",
+    searchPlaceHolder: "Search for OIDC Resource Servers...",
+    allowedEntries: {
       status: "Status",
       entityid: "Entity ID",
       name: "Name",
