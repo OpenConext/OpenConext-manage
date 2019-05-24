@@ -221,8 +221,8 @@ public class SystemController {
         result.put("deltas", realDeltas);
 
         // Now push all oidc_rp metadata to OIDC proxy
-        List<MetaData> oidcClients = metaDataRepository.getMongoTemplate().findAll(MetaData.class, "oidc10_rp");
         if (!environment.acceptsProfiles("dev") && oidcEnabled) {
+            List<MetaData> oidcClients = metaDataRepository.getMongoTemplate().findAll(MetaData.class, "oidc10_rp");
             this.oidcRestTemplate.postForEntity(oidcPushUri, oidcClients, Void.class);
         }
 
