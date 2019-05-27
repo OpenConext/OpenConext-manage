@@ -54,7 +54,7 @@ public class SystemControllerTest extends AbstractIntegrationTest {
             .statusCode(SC_OK)
             .extract().as(List.class);
         List expected = objectMapper.readValue(readFile("json/expected_orphans.json"), List.class);
-        System.out.println(objectMapper.writeValueAsString(orphans));
+
         assertEquals(expected, orphans);
 
         given()
