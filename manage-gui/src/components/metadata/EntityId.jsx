@@ -1,73 +1,84 @@
 import React from "react";
 import I18n from "i18n-js";
 
-import {search, validation} from "../../api";
+import { search, validation } from "../../api";
 import InlineEditable from "./InlineEditable";
-import {isEmpty} from "../../utils/Utils";
+import { isEmpty } from "../../utils/Utils";
 
 export default class EntityId extends React.PureComponent {
   state = {
-    hasError: false,
     errorMessage: ""
   };
 
-  notUnique() {
-    this.setState({
-      hasError: true,
-      errorMessage: I18n.t("metadata.entityIdAlreadyExists", {
-        entityid: this.props.value
-      })
-    });
+  setErrorMessage(errorType) {
+    let errorMessage;
+
+    switch (errorType) {
+      case "notPresent":
+        errorMessage = I18n.t("metadata.required", {
+          name: "Entity ID"
+        });
+        break;
+      case "notUnique":
+        errorMessage = I18n.t("metadata.entityIdAlreadyExists", {
+          entityid: this.props.value
+        });
+        break;
+      case "notFormatted":
+        errorMessage = I18n.t("metaDataFields.error", {
+          format: this.props.entityIdFormat
+        });
+        break;
+      default:
+        errorMessage = "";
+    }
+
+    this.setState({ errorMessage });
+    return false;
   }
 
-  notFormatted() {
-    this.setState({
-      hasError: true,
-      errorMessage: I18n.t("metaDataFields.error", {
-        format: this.props.entityIdFormat
-      })
-    });
+  validPresence(entityId) {
+    return !isEmpty(entityId) || this.setErrorMessage("notPresent");
   }
 
-  validPresence = entityId => !isEmpty(entityId);
+  async validUniqueness(entityid) {
+    const { originalEntityId, type } = this.props;
 
-  async validUniqueness(entityId) {
-    const isNewValue = this.props.originalEntityId !== entityId;
-    if (!isNewValue) return true;
+    if (originalEntityId === entityid) {
+      return true;
+    }
 
-    const json = await search({entityid: entityId}, this.props.type);
-    const isUnique = isNewValue && json.length === 0;
+    const isUnique = (await search({ entityid }, type)).length === 0;
 
-    return isUnique || this.notUnique();
+    return isUnique || this.setErrorMessage("notUnique");
   }
 
   async validFormat(entityId) {
-    const {entityIdFormat} = this.props;
+    const { entityIdFormat } = this.props;
 
     if (!entityIdFormat) {
       return true;
     }
+
     const valid = await validation(entityIdFormat, entityId);
-    return valid || this.notFormatted();
+    return valid || this.setErrorMessage("notFormatted");
   }
 
-  validateEntityId(entityId) {
-    this.setState({
-      hasError: false,
-      errorMessage: ""
-    });
-
+  async validateEntityId(entityId) {
     const valid =
       this.validPresence(entityId) &&
-      (this.validFormat(entityId)) &&
-      (this.validUniqueness(entityId));
+      (await this.validFormat(entityId)) &&
+      (await this.validUniqueness(entityId));
 
     if (!valid) this.props.onError(true);
   }
 
+  componentDidMount() {
+    this.validateEntityId(this.props.value);
+  }
+
   render() {
-    const {hasError, errorMessage} = this.state;
-    const {entityIdFormat, value, ...rest} = this.props;
+    const { value, hasError, ...rest } = this.props;
 
     return (
       <span>
@@ -76,7 +87,7 @@ export default class EntityId extends React.PureComponent {
           value={value}
           onBlur={e => this.validateEntityId(e.target.value)}
         />
-        {hasError && <p className="error">{errorMessage}</p>}
+        {hasError && <span className="error">{this.state.errorMessage}</span>}
       </span>
     );
   }
