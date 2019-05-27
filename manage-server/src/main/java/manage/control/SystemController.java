@@ -4,6 +4,7 @@ import manage.api.APIUser;
 import manage.conf.Features;
 import manage.exception.EndpointNotAllowed;
 import manage.format.EngineBlockFormatter;
+import manage.hook.EntityIdReconcilerHook;
 import manage.model.EntityType;
 import manage.model.MetaData;
 import manage.model.OrphanMetaData;
@@ -283,17 +284,19 @@ public class SystemController {
                 .include("type")
                 .include("data.metaDataFields.name:en")
                 .include("data.allowedEntities.name")
+                .include("data.allowedResourceServers.name")
                 .include("data.disableConsent.name");
 
         query.addCriteria(new Criteria().orOperator(
                 Criteria.where("data.allowedEntities").exists(true),
-                Criteria.where("data.disableConsent").exists(true)));
+                Criteria.where("data.disableConsent").exists(true),
+                Criteria.where("data.allowedResourceServers").exists(true)));
 
         MongoTemplate mongoTemplate = metaDataRepository.getMongoTemplate();
         List<MetaData> metaDataWithReferences = mongoTemplate.find(query, MetaData.class, type.getType());
 
         Map<String, Map<String, List<MetaData>>> groupedByEntityIdReference = new HashMap<>();
-        Stream.of("allowedEntities", "disableConsent").forEach(propertyName -> {
+        Stream.of("allowedEntities", "disableConsent", "allowedResourceServers").forEach(propertyName -> {
             metaDataWithReferences.stream().forEach(metaData -> {
                 List<Map<String, Object>> entries = (List<Map<String, Object>>) metaData.getData().get(propertyName);
                 if (!CollectionUtils.isEmpty(entries)) {
@@ -304,11 +307,10 @@ public class SystemController {
                 }
             });
         });
-        String oppositeCollectionName = type.equals(EntityType.IDP) ? EntityType.SP.getType() :
-                EntityType.IDP.getType();
+        List<String> types = EntityIdReconcilerHook.metaDataTypesToReconcile(type.getType());
         return groupedByEntityIdReference.entrySet().stream()
-                .filter(entry -> !mongoTemplate.exists(new BasicQuery("{\"data.entityid\":\"" + entry.getKey() + "\"}"),
-                        oppositeCollectionName))
+                .filter(entry -> types.stream()
+                        .noneMatch(entityType -> mongoTemplate.exists(new BasicQuery("{\"data.entityid\":\"" + entry.getKey() + "\"}"), entityType)))
                 .map(entry -> entry.getValue().entrySet().stream().map(m ->
                         m.getValue().stream().map(metaData -> new OrphanMetaData(
                                 entry.getKey(),

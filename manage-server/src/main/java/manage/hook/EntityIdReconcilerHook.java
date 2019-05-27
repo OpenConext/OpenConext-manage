@@ -1,15 +1,19 @@
 package manage.hook;
 
-import manage.model.EntityType;
 import manage.model.MetaData;
 import manage.repository.MetaDataRepository;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
+import static manage.model.EntityType.IDP;
+import static manage.model.EntityType.RP;
+import static manage.model.EntityType.SP;
 
 @SuppressWarnings("unchecked")
 public class EntityIdReconcilerHook extends MetaDataHookAdapter {
@@ -22,8 +26,7 @@ public class EntityIdReconcilerHook extends MetaDataHookAdapter {
 
     @Override
     public boolean appliesForMetaData(MetaData metaData) {
-        return EntityType.SP.getType().equals(metaData.getType()) ||
-                EntityType.IDP.getType().equals(metaData.getType());
+        return true;
     }
 
     @Override
@@ -34,20 +37,23 @@ public class EntityIdReconcilerHook extends MetaDataHookAdapter {
         if (oldEntityId.equals(newEntityId)) {
             return newMetaData;
         }
+        String metaDataType = newMetaData.getType();
+        asList("allowedEntities", "disableConsent", "allowedResourceServers").forEach(name -> {
+            List<String> types = metaDataTypesToReconcile(metaDataType);
+            types.forEach(type -> {
+                List<MetaData> references = metaDataRepository.findRaw(type,
+                        String.format("{\"data.%s.name\" : \"%s\"}", name, oldEntityId));
 
-        Arrays.asList("allowedEntities", "disableConsent").forEach(name -> {
-            List<MetaData> references = metaDataRepository.findRaw(oppositeProviderType(newMetaData),
-                    String.format("{\"data.%s.name\" : \"%s\"}", name, oldEntityId));
+                String revisionNote = String.format("Updated after entityId rename of %s to %s", oldEntityId, newEntityId);
 
-            String revisionNote = String.format("Updated after entityId rename of %s to %s", oldEntityId, newEntityId);
-
-            references.forEach(metaData -> {
-                List<Map<String, String>> entities = (List<Map<String, String>>) metaData.getData().get(name);
-                entities.stream().filter(entry -> oldEntityId.equals(entry.get("name")))
-                        .findAny()
-                        .ifPresent(entry -> entry.put("name", newEntityId));
-                metaData.getData().put("revisionnote", revisionNote);
-                this.revision(metaData);
+                references.forEach(metaData -> {
+                    List<Map<String, String>> entities = (List<Map<String, String>>) metaData.getData().getOrDefault(name, new ArrayList<>());
+                    entities.stream().filter(entry -> oldEntityId.equals(entry.get("name")))
+                            .findAny()
+                            .ifPresent(entry -> entry.put("name", newEntityId));
+                    metaData.getData().put("revisionnote", revisionNote);
+                    this.revision(metaData);
+                });
             });
         });
         return newMetaData;
@@ -56,30 +62,37 @@ public class EntityIdReconcilerHook extends MetaDataHookAdapter {
     @Override
     public MetaData preDelete(MetaData metaDataToBeDeleted) {
         String entityId = entityId(metaDataToBeDeleted);
-        Arrays.asList("allowedEntities", "disableConsent").forEach(name -> {
-            List<MetaData> references = metaDataRepository.findRaw(oppositeProviderType(metaDataToBeDeleted),
-                    String.format("{\"data.%s.name\" : \"%s\"}", name, entityId));
+        String metaDataType = metaDataToBeDeleted.getType();
 
-            String revisionNote = String.format("Updated after deletion of entityId %s", entityId);
+        asList("allowedEntities", "disableConsent").forEach(name -> {
+            List<String> types = metaDataTypesToReconcile(metaDataType);
+            types.forEach(type -> {
+                List<MetaData> references = metaDataRepository.findRaw(type,
+                        String.format("{\"data.%s.name\" : \"%s\"}", name, entityId));
 
-            references.forEach(metaData -> {
-                List<Map<String, String>> entities = (List<Map<String, String>>) metaData.getData().get(name);
-                entities = entities.stream().filter(entry -> !entityId.equals(entry.get("name"))).collect(toList());
-                metaData.getData().put(name, entities);
-                metaData.getData().put("revisionnote", revisionNote);
-                this.revision(metaData);
+                String revisionNote = String.format("Updated after deletion of entityId %s", entityId);
+
+                references.forEach(metaData -> {
+                    List<Map<String, String>> entities = (List<Map<String, String>>) metaData.getData().getOrDefault(name, new ArrayList<>());
+                    entities = entities.stream().filter(entry -> !entityId.equals(entry.get("name"))).collect(toList());
+                    metaData.getData().put(name, entities);
+                    metaData.getData().put("revisionnote", revisionNote);
+                    this.revision(metaData);
+                });
             });
         });
         return metaDataToBeDeleted;
     }
 
-    private String oppositeProviderType(MetaData metaData) {
-        String type = metaData.getType();
-        if (type.equals(EntityType.SP.getType())) {
-            return EntityType.IDP.getType();
+    public static List<String> metaDataTypesToReconcile(String type) {
+        if (type.equals(SP.getType())) {
+            return singletonList(IDP.getType());
         }
-        if (type.equals(EntityType.IDP.getType())) {
-            return EntityType.SP.getType();
+        if (type.equals(IDP.getType())) {
+            return asList(SP.getType(), RP.getType());
+        }
+        if (type.equals(RP.getType())) {
+            return asList(IDP.getType(), RP.getType());
         }
         throw new IllegalArgumentException("Not supported MetaData type " + type);
     }

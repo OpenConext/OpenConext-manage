@@ -456,6 +456,10 @@
       "state": "testaccepted",
       "discoveryurl": "https://well_known_configuration",
       "allowedall": true,
+      "allowedResourceServers": [
+        {"name": "https@//oidc.rp.resourceServer"},
+        {"name": "https@//nope"}
+      ],
       "metaDataFields": {
         "name:en": "OIDC SP",
         "secret": "secret",
