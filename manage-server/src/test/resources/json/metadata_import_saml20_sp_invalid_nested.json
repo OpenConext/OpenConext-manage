@@ -1,131 +1,92 @@
 {
-  "active" : true,
-  "allowedEntities" : [ "https://sso.eur.nl/opensso", "https://login.uaccess.leidenuniv.nl/nidp/saml2/metadata" ],
-  "allowedall" : false,
-  "bogus": "bogus",
-  "arp" : {
-    "attributes" : {
-      "urn:mace:dir:attribute-def:displayName" : [ {
-        "value" : "*",
-        "source" : "idp"
-      } ],
-      "urn:mace:dir:attribute-def:isMemberOf" : [ {
-        "value" : "urn:collab:org:surf.nl",
-        "source" : "voot"
-      } ],
-      "urn:mace:dir:attribute-def:mail" : [ {
-        "value" : "*",
-        "source" : "idp"
-      } ],
-      "urn:mace:dir:attribute-def:uid" : [ {
-        "value" : "*",
-        "source" : "idp"
-      } ],
-      "urn:mace:terena@org:attribute-def:schacHomeOrganization" : [ {
-        "value" : "*",
-        "source" : "idp"
-      } ]
+  "arp": {
+    "attributes": {
+      "urn:mace:dir:attribute-def:displayName": [
+        {
+          "source": "idp",
+          "value": "*"
+        }
+      ],
+      "urn:mace:dir:attribute-def:eduPersonPrincipalName": [
+        {
+          "source": "idp",
+          "value": "*"
+        }
+      ],
+      "urn:mace:dir:attribute-def:eduPersonTargetedID": [
+        {
+          "source": "idp",
+          "value": "*"
+        }
+      ],
+      "urn:mace:dir:attribute-def:givenName": [
+        {
+          "source": "idp",
+          "value": "*"
+        }
+      ],
+      "urn:mace:dir:attribute-def:mail": [
+        {
+          "source": "idp",
+          "value": "*"
+        }
+      ],
+      "urn:mace:dir:attribute-def:sn": [
+        {
+          "source": "idp",
+          "value": "*"
+        }
+      ],
+      "urn:mace:terena.org:attribute-def:schacHomeOrganization": [
+        {
+          "source": "idp",
+          "value": "*"
+        }
+      ]
     },
-    "enabled" : true
+    "enabled": true
   },
-  "disableConsent" : [ ],
-  "entityid" : "https://teams.surfconext.nl/shibboleth",
-  "manipulation" : "",
-  "metaDataFields" : {
-    "bogus2": "bogus2",
-    "AssertionConsumerService" : {
-      "0" : {
-        "Binding" : "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
-        "Location" : "https://teams.surfconext.nl/Shibboleth.sso/SAML2/POST",
-        "index" : "1"
-      },
-      "1" : {
-        "Binding" : "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Artifact",
-        "Location" : "https://teams.surfconext.nl/Shibboleth.sso/SAML2/Artifact",
-        "index" : "3"
-      },
-      "2" : {
-        "Binding" : "urn:oasis:names:tc:SAML:2.0:bindings:PAOS",
-        "Location" : "https://teams.surfconext.nl/Shibboleth.sso/SAML2/ECP",
-        "index" : "4"
-      }
-    },
-    "NameIDFormat" : "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
-    "NameIDFormats" : {
-      "0" : "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent",
-      "1" : "urn:oasis:names:tc:SAML:2.0:nameid-format:transient",
-      "2" : "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"
-    },
-    "OrganizationDisplayName" : {
-      "en" : "SURFnet",
-      "nl" : "SURFnet"
-    },
-    "OrganizationName" : {
-      "en" : "SURFnet BV",
-      "nl" : "SURFnet BV"
-    },
-    "OrganizationURL" : {
-      "en" : "https://www.surfnet.nl/en/",
-      "nl" : "https://www.surfnet.nl/"
-    },
-    "certData" : "MIIEdjCCA16gAwIBAgIRALcDQnHscLnQAL4GULGaHsIwDQYJKoZIhvcNAQEFBQAwNjELMAkGA1UEBhMCTkwxDzANBgNVBAoTBlRFUkVOQTEWMBQGA1UEAxMNVEVSRU5BIFNTTCBDQTAeFw0wOTEwMjYwMDAwMDBaFw0xMjEwMjUyMzU5NTlaMFExCzAJBgNVBAYTAk5MMRUwEwYDVQQKEwxTVVJGbmV0IEIuVi4xETAPBgNVBAsTCFNlcnZpY2VzMRgwFgYDVQQDEw9iZXRhLnN1cmZuZXQubmwwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC7D6V4dl41AF70veMMQqL7kpk+p06qU9EW2YUuJAnwhRO1SfbiqPweitLE7ReXfK/vSPvdFG194gZjJ4JS7M7pP00eolfEK6ljLhMoUrzbBuEc5LoQB6HsOogod7YrJiVRXLzM4bV2LzbyjAwBgForoM4l576CjbN/NDAPO3YvbktodR5DH/nPiw/5L7w2KS3x55xUd8clY7Nji9W7XbviMUAugSkkC2ethl0AMpdmk6BI5pjyr6KCUrGz9bKl101yUGhrkHy1NpHagOoxakkgVDgi2Erf8aDnkCe8A419m2mBD1WA9uQWF5eMpiY8fDMwjwSFDFoSUlJPhiKN8vpnAgMBAAGjggFiMIIBXjAfBgNVHSMEGDAWgBQMvZNoDPPeq6NJays3V0fqkOO57TAdBgNVHQ4EFgQUrCpeMIzTW5M13G4ib1B+yq7Fm60wDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMBgGA1UdIAQRMA8wDQYLKwYBBAGyMQECAh0wOgYDVR0fBDMwMTAvoC2gK4YpaHR0cDovL2NybC50Y3MudGVyZW5hLm9yZy9URVJFTkFTU0xDQS5jcmwwbQYIKwYBBQUHAQEEYTBfMDUGCCsGAQUFBzAChilodHRwOi8vY3J0LnRjcy50ZXJlbmEub3JnL1RFUkVOQVNTTENBLmNydDAmBggrBgEFBQcwAYYaaHR0cDovL29jc3AudGNzLnRlcmVuYS5vcmcwGgYDVR0RBBMwEYIPYmV0YS5zdXJmbmV0Lm5sMA0GCSqGSIb3DQEBBQUAA4IBAQC8iCICDbP4/8JTDeLPfo/n6roOvpMsteQt7X5oN2Ka1xgKflpBGqJO5o3PcnfP437kcLRTnp6XDyTfS4eyZdxCqCECR2Pb8nbULVFv9hyF6asIWUfbJ67CFcRIpcuaD5habSrg8+rT86DjKdtYQKwbKL+rNbOsg6/ROR7vJgbSqrBLraXvl8HDUq5+lSF/II4LHVzNM8TpQlMY4ynRP6GEjcNUTH3IFKPQk+NwBYQqJ83Uil/36kbXsHQ81o/Vp6it7tlvLBOP1EN9jNGUXZuAqvFphNkwEJpABx1x4ukY8bZVl6QzQ79P48oGxOaIy27/g1FVkGqRtA4UPABcn0sJ",
-    "coin" : {
-      "application_url" : "https://teams.surfconext.nl/",
-      "eula" : "https://wiki.surfnetlabs.nl/display/conextsupport/Terms+of+Service+%28EN%29",
-      "institution_guid" : "ad93daef-0911-e511-80d0-005056956c1a",
-      "institution_id" : "SURFNET",
-      "no_consent_required" : "1",
-      "ss" : {
-        "idp_visible_only" : "1"
-      }
-    },
-    "contacts" : {
-      "0" : {
-        "contactType" : "support",
-        "emailAddress" : "help@surfconext.nl",
-        "givenName" : "SURFconext",
-        "surName" : "Support"
-      },
-      "1" : {
-        "contactType" : "administrative",
-        "emailAddress" : "conext-beheer@surfnet.nl",
-        "givenName" : "SURF",
-        "surName" : "net"
-      },
-      "2" : {
-        "contactType" : "technical",
-        "emailAddress" : "conext-beheer@surfnet.nl",
-        "givenName" : "Conext",
-        "surName" : "Beheer"
-      },
-      "3" : {
-        "contactType" : "technical"
-      }
-    },
-    "description" : {
-      "en" : "Teams for SURFconext.",
-      "nl" : "Teams voor SURFconext."
-    },
-    "displayName" : {
-      "en" : "SURFconext Teams | SURFnet",
-      "nl" : "SURFconext Teams | SURFnet"
-    },
-    "logo" : {
-      "0" : {
-        "height" : "300",
-        "url" : "https://static.surfconext.nl/media/sp/SURFnetdienst.png",
-        "width" : "500"
-      }
-    },
-    "name" : {
-      "en" : "SURFconext Teams | SURFnet",
-      "nl" : "SURFconext Teams | SURFnet"
-    },
-    "url" : {
-      "en" : "https://www.surfnet.nl/",
-      "nl" : "https://www.surfnet.nl/"
-    }
+  "entityid": "https://wayf.nikhef.nl/wayf/sp",
+  "metaDataFields": {
+    "AssertionConsumerService:0:Binding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
+    "AssertionConsumerService:0:Location": "https://wayf.nikhef.nl/sso/module.php/saml/sp/saml2-acs.php/default-sp",
+    "AssertionConsumerService:0:index": "0",
+    "AssertionConsumerService:1:Binding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Artifact",
+    "AssertionConsumerService:1:Location": "https://wayf.nikhef.nl/sso/module.php/saml/sp/saml2-acs.php/default-sp",
+    "AssertionConsumerService:1:index": "2",
+    "OrganizationDisplayName:en": "Nikhef",
+    "OrganizationDisplayName:nl": "Nikhef",
+    "OrganizationName:en": "Nikhef - Dutch National Institute for Subatomic Physics",
+    "OrganizationName:nl": "Nikhef - Nationaal instituut voor subatomaire fysica",
+    "OrganizationURL:en": "http://www.nikhef.nl/en/",
+    "OrganizationURL:nl": "http://www.nikhef.nl/",
+    "SingleLogoutService_Binding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect",
+    "SingleLogoutService_Location": "https://wayf.nikhef.nl/sso/module.php/saml/sp/saml2-logout.php/default-sp",
+    "certData": "MIIDoTCCAomgAwIBAgIJAITGJ+f/Nl2xMA0GCSqGSIb3DQEBCwUAMGcxEjAQBgoJkiaJk/IsZAEZFgJubDEWMBQGCgmSJomT8ixkARkWBm5pa2hlZjEdMBsGA1UECwwUQ29tcHV0ZXIgVGVjaG5vbG9naWUxGjAYBgNVBAMMEXNwcHJveHkubmlraGVmLm5sMB4XDTE2MDYwODE4MzY1MFoXDTI2MDcwODE4MzY1MFowZzESMBAGCgmSJomT8ixkARkWAm5sMRYwFAYKCZImiZPyLGQBGRYGbmlraGVmMR0wGwYDVQQLDBRDb21wdXRlciBUZWNobm9sb2dpZTEaMBgGA1UEAwwRc3Bwcm94eS5uaWtoZWYubmwwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDGLn7gmoMoAqXz8JM2mf20iFWTKz4F95hxxutAA/aX7UYQ8M6VNUPC6nHRcS0oiGEgG0SJiZ5qcofe89rZd9udQ84jgezO5CYHo5+nnXvV7+PRK5t5BvmvkceK0gMfRZ9PuMxwEuDTp8/tYqxm0z3pCC5Ndo6sgoZUUPUZ3BKOeoGwOgu3PSs9fGNg2zfendL6pKw3ouZxRLZFuV224gY/C8nK1JbS6iwJHqTFzVDsbLb+Qx6EGZw4Y1I6d+nnKtrKsP5qmBQkDqwIUMR4ASjN7Cr0gQVj8GLYXKYSJgdTdBGhzuVhDqBWXGbc4PaP1884UDJ3ZjV3Y3bUe4c1fl/ZAgMBAAGjUDBOMB0GA1UdDgQWBBSbeUFvE/ac4TA+TziT0ksby9tdpzAfBgNVHSMEGDAWgBSbeUFvE/ac4TA+TziT0ksby9tdpzAMBgNVHRMEBTADAQH/MA0GCSqGSIb3DQEBCwUAA4IBAQCxF/5gNHD5a1vFHdrOvGhDxWbMRJaU6vLu582urYXVD9aV2hdKFhNnvMU0QLmcJ30prxgg9v9G7ygFyxqqtrfWw3+yeSNk4MLYdegjLoLwWNAcUO8gxKLTS0/YN6tXvNs/5DopVT1h+zaB/G77FcpxY64MGEv7F65JjdzIOmwrS3oWqNR3B+EYhMHAp0UwD/Dz77GMOGhCG3NEc4BySAa8/BgANosyyGT9XNU9L8pa9PGPdaF2cJ6aaCzIzDon1CwNpu8pj7RMkWHqdLf5famI4AzqJinBzZwKjazo1TGQ+hWKY1jhcB5Vcm6szO5fnru5/jBhfGqOX9xeOOyvjwOX",
+    "coin:entity_categories:1": "http://refeds.org/category/research-and-scholarship",
+    "contacts:0:contactType": "technical",
+    "contacts:0:emailAddress": "federation-admin@nikhef.nl",
+    "contacts:0:givenName": "Nikhef",
+    "contacts:0:surName": "Helpdesk",
+    "contacts:0:telephoneNumber": "+31205925090",
+    "contacts:1:contactType": "other",
+    "contacts:1:emailAddress": "security@nikhef.nl",
+    "contacts:1:givenName": "CSIRT",
+    "contacts:1:surName": "Nikhef",
+    "contacts:1:telephoneNumber": "+31205922000",
+    "contacts:2:contactType": "administrative",
+    "contacts:2:emailAddress": "nikidm-admin@nikhef.nl",
+    "contacts:2:surName": "Nikhef",
+    "contacts:2:telephoneNumber": "+31205922200",
+    "contacts:3:contactType": "support",
+    "contacts:3:emailAddress": "federation-support@nikhef.nl",
+    "contacts:3:surName": "Nikhef",
+    "description:en": "Proxy connecting services offer by Nikhef, the Dutch research institute for subatomic physics, to the global research and educational community. Services include collaboration tools, systems management, and access to compute and data services. This proxy request your identity information in order to grant you access to these services operated by or on behalf of Nikhef, its funding body, and partners.",
+    "description:nl": "Schakelpunt voor de diensten die Nikhef - het nationaal instituut voor subatomaire fysica - aanbied in de wereldwijde onderzoeks en onderwijsgemeenschap. Diensten omvatten samenwerkingstools (wikis en web sites), infrastructuurdiensten, en toegang tot rekencapaciteit en data opslag. Dit schakelpunt vraagt om persoonsgegevens om u toegang tot deze diensten te kunnen bieden. De diensten worden beheerd door of namens Nikhef, haar financiers, en samenwerkende instituten.",
+    "mdrpi:RegistrationInfo": "http://www.surfconext.nl/",
+    "mdrpi:RegistrationPolicy:en": "https://wiki.surfnet.nl/display/eduGAIN/EduGAIN",
+    "name:en": "Nikhef Service Proxy",
+    "name:nl": "Nikhef schakelpunt voor diensten"
   },
-  "metadataurl" : "https://teams.surfconext.nl/Shibboleth.sso/MetadataChanged",
-  "state" : "prodaccepted"
+  "type": "saml20-sp"
 }

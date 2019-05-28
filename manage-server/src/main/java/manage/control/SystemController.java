@@ -225,6 +225,7 @@ public class SystemController {
         if (!environment.acceptsProfiles("dev") && oidcEnabled) {
             List<MetaData> oidcClients = metaDataRepository.getMongoTemplate().findAll(MetaData.class, "oidc10_rp");
             this.oidcRestTemplate.postForEntity(oidcPushUri, oidcClients, Void.class);
+            result.put("oidc", true);
         }
 
         return new ResponseEntity<>(result, HttpStatus.OK);

@@ -93,7 +93,6 @@ public class MetaDataFeedParser {
         boolean inEntityAttributes = false;
         boolean typeMismatch = false;
         boolean inCorrectTypeDescriptor = false;
-        boolean multipleEntityDescriptors = false;
 
         result.put("type", entityType.getJanusDbValue());
         boolean isSp = entityType.equals(EntityType.SP);
@@ -120,7 +119,6 @@ public class MetaDataFeedParser {
                     String startLocalName = reader.getLocalName();
                     switch (startLocalName) {
                         case "EntitiesDescriptor":
-                            multipleEntityDescriptors = true;
                             break;
                         case "EntityDescriptor":
                             Optional<String> optional = getAttributeValue(reader, "entityID");

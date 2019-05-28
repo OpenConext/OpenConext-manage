@@ -59,7 +59,8 @@ export default class Navigation extends React.PureComponent {
       this.setState({loading: false, pushResults: json.deltas});
       const ok = json.status === "OK";
       const msg = ok ? "playground.pushedOk" : "playground.pushedNotOk";
-      setFlash(I18n.t(msg, {name: this.props.currentUser.push.name}), ok ? "info" : "error");
+      setFlash(I18n.t(msg, {name: this.props.currentUser.push.name,
+        oidcName: this.props.currentUser.push.oidcName}), ok ? "info" : "error");
     });
   };
 

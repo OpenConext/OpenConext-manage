@@ -11,11 +11,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public class ValidationHook extends MetaDataHookAdapter {
+public class OidcValidationHook extends MetaDataHookAdapter {
 
     private MetaDataAutoConfiguration metaDataAutoConfiguration;
 
-    public ValidationHook(MetaDataAutoConfiguration metaDataAutoConfiguration) {
+    public OidcValidationHook(MetaDataAutoConfiguration metaDataAutoConfiguration) {
         this.metaDataAutoConfiguration = metaDataAutoConfiguration;
     }
 
@@ -45,6 +45,14 @@ public class ValidationHook extends MetaDataHookAdapter {
                 redirectUrls.isEmpty()) {
             Schema schema = metaDataAutoConfiguration.schema(EntityType.RP.getType());
             throw new ValidationException(schema, "Redirect URI is required with selected grant types", "redirectUris");
+        }
+        if (grants.size() == 1 && grants.get(0).equals("client_credentials") && redirectUrls.size() > 0) {
+            Schema schema = metaDataAutoConfiguration.schema(EntityType.RP.getType());
+            throw new ValidationException(schema, "Redirect URI is not allowed with selected grant type", "redirectUris");
+        }
+        if (grants.size() == 1 && grants.get(0).equals("refresh_token")) {
+            Schema schema = metaDataAutoConfiguration.schema(EntityType.RP.getType());
+            throw new ValidationException(schema, "Refresh token grant must be combined with another grant type", "grants");
         }
     }
 

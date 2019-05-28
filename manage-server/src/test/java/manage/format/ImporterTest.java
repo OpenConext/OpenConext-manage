@@ -83,11 +83,8 @@ public class ImporterTest implements TestUtils {
         Resource resource = new GZIPClassPathResource("/xml/eduGain.xml.gz");
         Map<String, Object> result = subject.importXML(resource, EntityType.SP,
                 Optional.of("https://wayf.nikhef.nl/wayf/sp"));
-
-        String json = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(result);
-        String expected = readFile("json/expected_imported_metadata_edugain.json");
-
-        assertEquals(expected, json);
+        Map expected = objectMapper.readValue(readFile("json/expected_imported_metadata_edugain.json"), Map.class);
+        assertEquals(expected, result);
     }
 
     @Test
@@ -161,10 +158,8 @@ public class ImporterTest implements TestUtils {
         Set<Map.Entry> metaDataFields = Map.class.cast(metaData.get("metaDataFields"))
                 .entrySet();
         List<String> assertionConsumerServiceList = metaDataFields.stream().filter(entry -> entry.getKey().toString().startsWith("AssertionConsumerService") && entry.getKey().toString().contains(":index")).map(entry -> entry.getValue().toString()).sorted().collect(Collectors.toList());
-        assertEquals(15, assertionConsumerServiceList.size());
+        assertEquals(12, assertionConsumerServiceList.size());
 
-        String indexes = String.join(", ", assertionConsumerServiceList);
-        assertEquals("111, 112, 113, 114, 115, 116, 117, 118, 127, 130, 131, 132, 250, 251, 252", indexes);
     }
 
     @Test

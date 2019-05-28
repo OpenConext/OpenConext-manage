@@ -34,7 +34,6 @@ export default class ResourceServers extends React.Component {
   initialiseAllowedResourceServers(resourceServers) {
     window.scrollTo(0, 0);
     const {allowedResourceServers, entityId} = this.props;
-
     const enrichedResourceServers = allowedResourceServers
       .map(entity => this.enrichResourceServer(entity, entityId, resourceServers))
       .filter(enriched => enriched !== null);
@@ -264,14 +263,7 @@ export default class ResourceServers extends React.Component {
   );
 
   render() {
-    const {
-      allowedResourceServers,
-      resourceServers,
-      name,
-      type,
-      entityId,
-      guest,
-    } = this.props;
+    const {allowedResourceServers, resourceServers, name, type, entityId, guest} = this.props;
     const providerType = "Resource Servers";
     const {
       enrichedResourceServersFiltered,

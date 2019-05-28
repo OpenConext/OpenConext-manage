@@ -102,8 +102,8 @@ I18n.translations.en = {
     findMyDataNoResults: "No results based on the entityID part",
     pushPreviewInfo: "Collect all relevant metadata and perform a simulation of the {{name}} push",
     pushInfo: "Collect all relevant metadata and push the metadata to {{name}}. The metadata will be pushed to {{url}}.",
-    pushedOk: "Metadata successfully pushed to {{name}}",
-    pushedNotOk: "Error during the push of the Metadata to {{name}}",
+    pushedOk: "Metadata successfully pushed to {{name}} and {{oidcName}}",
+    pushedNotOk: "Error during the push of the Metadata to {{name}} and {{oidcName}}. Check the logs for the details.",
     runPushPreview: "Preview MetaData",
     runPush: "Push MetaData",
     runValidation: "VALIDATE METADATA",
@@ -149,7 +149,7 @@ I18n.translations.en = {
     description: "Add only those {{type}} which are allowed to access {{name}}.",
     searchPlaceHolder_saml20_idp: "Search for whitelisted Service Providers...",
     searchPlaceHolder_saml20_sp: "Search for whitelisted Identity Providers...",
-    searchPlaceHolder_oidc10_rp: "Search for whitelisted OIDC Relying Parties...",
+    searchPlaceHolder_oidc10_rp: "Search for whitelisted Identity Providers...",
     removedWhiteListedEntities: "Removed entities from the whitelist",
     allowedEntries: {
       blocked: "Blocked",
@@ -162,7 +162,7 @@ I18n.translations.en = {
   resource_servers: {
     placeholder: "Search, select and add {{type}} to the Resource Servers",
     title: "{{type}}",
-    description: "Add only {{type}} which {{name}} is allowed to use the API.",
+    description: "Add only {{type}} that are allowed to be accessed from the client {{name}}.",
     searchPlaceHolder: "Search for OIDC Resource Servers...",
     allowedEntries: {
       status: "Status",
