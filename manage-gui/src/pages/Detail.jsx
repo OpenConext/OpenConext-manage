@@ -201,6 +201,21 @@ export default class Detail extends React.PureComponent {
       });
   }
 
+  refreshWhiteListing = () => {
+    const { type, metaData } = this.state;
+    const isSp = type === "saml20_sp" || type === "oidc10_rp";
+    const isOidcRP = type === "oidc10_rp";
+    const whiteListingType = isSp ? "saml20_idp" : "saml20_sp";
+    whiteListing(whiteListingType, metaData.data.state).then(whiteListing => {
+      this.setState({whiteListing: whiteListing});
+      if (isOidcRP) {
+        allResourceServers(metaData.data.state).then(json =>
+          this.setState({ resourceServers: json })
+        );
+      }
+    });
+  };
+
   validate = (metaData, configurations, type) => {
     const configuration = configurations.find(conf => conf.title === type);
     const requiredMetaData = configuration.properties.metaDataFields.required;
@@ -298,7 +313,11 @@ export default class Detail extends React.PureComponent {
         removedWhiteListedEntities: []
       });
     }
-    this.setState({ metaData: metaData, changes: changes });
+    this.setState({ metaData: metaData, changes: changes }, () => {
+      if (component === "connection" && name === "data.state") {
+        this.refreshWhiteListing();
+      }
+    });
   };
 
   onChangeWhiteListedEntity = (added, entity) => {
