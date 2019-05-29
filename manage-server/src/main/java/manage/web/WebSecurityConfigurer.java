@@ -90,6 +90,9 @@ public class WebSecurityConfigurer {
         @Value("${push.eb.name}")
         private String pushName;
 
+        @Value("${push.eb.exclude_oidc_rp}")
+        private boolean excludeOidcRP;
+
         @Value("${push.oidc.url}")
         private String pushOidcUrl;
 
@@ -113,7 +116,7 @@ public class WebSecurityConfigurer {
                 .collect(toList());
 
             Product product = new Product(productOrganization, productName, serviceProviderFeedUrl, showOidcRp);
-            Push push = new Push(pushUrl, pushName, pushOidcUrl, pushOidcName);
+            Push push = new Push(pushUrl, pushName, pushOidcUrl, pushOidcName, excludeOidcRP);
 
             BasicAuthenticationEntryPoint authenticationEntryPoint = new BasicAuthenticationEntryPoint();
             authenticationEntryPoint.setRealmName("manage");

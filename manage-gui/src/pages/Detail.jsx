@@ -172,8 +172,13 @@ export default class Detail extends React.PureComponent {
         } else {
           this.validate(metaData, this.props.configuration, type);
         }
+<<<<<<< HEAD
         whiteListing(whiteListingType).then(whiteListing => {
           this.setState({ whiteListing: whiteListing });
+=======
+        whiteListing(whiteListingType, metaData.data.state).then(whiteListing => {
+          this.setState({whiteListing: whiteListing});
+>>>>>>> Bugfixes
           if (isOidcRP) {
             allResourceServers(metaData.data.state).then(json =>
               this.setState({ resourceServers: json })

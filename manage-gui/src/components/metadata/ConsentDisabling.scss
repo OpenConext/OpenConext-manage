@@ -81,6 +81,7 @@
             input, textarea {
               @include inputField;
               width: 95%;
+              margin-top: 0;
             }
           }
 

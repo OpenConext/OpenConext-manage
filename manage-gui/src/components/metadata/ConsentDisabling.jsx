@@ -23,11 +23,9 @@ export default class ConsentDisabling extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (
-      nextProps.whiteListing &&
-      this.props.whiteListing &&
-      nextProps.whiteListing.length !== this.props.whiteListing.length
-    ) {
+    if (nextProps.allowedall !== this.props.allowedall ||
+      (nextProps.whiteListing || []).length !== (this.props.whiteListing || []).length ||
+      (nextProps.allowedEntities || []).length !== (this.props.allowedEntities || []).length) {
       this.initialiseDisableConsent(nextProps.whiteListing);
     }
   }
@@ -176,6 +174,7 @@ export default class ConsentDisabling extends React.Component {
         <td>
           <Select
             name="select-consent-value"
+            className="select-consent-value"
             onChange={option =>
               this.onChangeSelectConsentValue(entity, option.value)
             }
@@ -274,20 +273,19 @@ export default class ConsentDisabling extends React.Component {
     );
   };
 
-  filterEntityOptions() {
-    if (this.props.allowedAll) {
-      return this.props.whiteListing;
+  filterEntityOptions(allowedAll, allowedEntities, whiteListing) {
+    if (allowedAll) {
+      return whiteListing;
     }
+    const allowedEntityNames = allowedEntities.map(ent => ent.name);
 
-    const allowedEntityNames = this.props.allowedEntities.map(ent => ent.name);
-
-    return this.props.whiteListing.filter(entry =>
+    return whiteListing.filter(entry =>
       allowedEntityNames.includes(entry.data.entityid)
     );
   }
 
   render() {
-    const { disableConsent, name, guest } = this.props;
+    const {disableConsent, name, guest, allowedAll, allowedEntities, whiteListing} = this.props;
     const placeholder = I18n.t("consentDisabling.placeholder");
     const { enrichedDisableConsent } = this.state;
 
@@ -301,7 +299,7 @@ export default class ConsentDisabling extends React.Component {
         </div>
         {!guest && (
           <SelectEntities
-            whiteListing={this.filterEntityOptions()}
+            whiteListing={this.filterEntityOptions(allowedAll, allowedEntities, whiteListing)}
             allowedEntities={disableConsent}
             onChange={this.addDisableConsent}
             placeholder={placeholder}
@@ -319,9 +317,11 @@ export default class ConsentDisabling extends React.Component {
 }
 
 ConsentDisabling.propTypes = {
-  whiteListing: PropTypes.array.isRequired,
   disableConsent: PropTypes.array.isRequired,
+  allowedEntities: PropTypes.array.isRequired,
   name: PropTypes.string.isRequired,
+  whiteListing: PropTypes.array.isRequired,
   onChange: PropTypes.func.isRequired,
-  guest: PropTypes.bool.isRequired
+  guest: PropTypes.bool.isRequired,
+  allowedAll: PropTypes.bool.isRequired
 };

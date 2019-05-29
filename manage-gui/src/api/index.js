@@ -127,8 +127,8 @@ export function secret() {
   return fetchJson("secret");
 }
 
-export function whiteListing(type) {
-  return fetchJson(`whiteListing/${type}`);
+export function whiteListing(type, state) {
+  return fetchJson(`whiteListing/${type}?state=${encodeURIComponent(state)}`);
 }
 
 export function exportMetaData(metaData) {

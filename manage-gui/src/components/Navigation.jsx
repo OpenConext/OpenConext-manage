@@ -9,7 +9,7 @@ import {NavLink} from "react-router-dom";
 
 import "./Navigation.css";
 import {stop} from "../utils/Utils";
-import {setFlash} from "../utils/Flash";
+import {pushConfirmationFlash, pushFlash, setFlash} from "../utils/Flash";
 import {push} from "../api";
 import ConfirmationDialog from "./ConfirmationDialog";
 
@@ -57,10 +57,8 @@ export default class Navigation extends React.PureComponent {
     this.setState({loading: true});
     push().then(json => {
       this.setState({loading: false, pushResults: json.deltas});
-      const ok = json.status === "OK";
-      const msg = ok ? "playground.pushedOk" : "playground.pushedNotOk";
-      setFlash(I18n.t(msg, {name: this.props.currentUser.push.name,
-        oidcName: this.props.currentUser.push.oidcName}), ok ? "info" : "error");
+      const ok = json.status === "OK"  || json.status === 200;
+      setFlash(pushFlash(ok, this.props.currentUser), ok ? "info" : "error");
     });
   };
 
@@ -77,12 +75,7 @@ export default class Navigation extends React.PureComponent {
     return <a className={`push button ${loading ? "grey disabled" : "white"}`}
               onClick={() => !this.state.loading && this.setState({
                 confirmationDialogOpen: true,
-                confirmationQuestion: I18n.t("playground.pushConfirmation", {
-                  url: currentUser.push.url,
-                  name: currentUser.push.name,
-                  oidcName: currentUser.push.oidcName,
-                  oidcUrl: currentUser.push.oidcUrl
-                }),
+                confirmationQuestion: pushConfirmationFlash(currentUser),
                 confirmationDialogAction: action
               })}>{I18n.t("playground.runPush")}
       <i className="fa fa-refresh"></i>

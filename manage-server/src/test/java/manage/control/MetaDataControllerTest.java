@@ -539,13 +539,26 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void whiteListing() throws Exception {
+    public void whiteListingProdAccepted() throws Exception {
         given()
                 .when()
+                .queryParam("state", "prodaccepted")
                 .get("manage/api/client/whiteListing/saml20_sp")
                 .then()
                 .statusCode(SC_OK)
-                .body("size()", is(8))
+                .body("size()", is(4))
+                .body("data.allowedall", hasItems(true, false));
+    }
+
+    @Test
+    public void whiteListingTestAccepted() throws Exception {
+        given()
+                .when()
+                .queryParam("state", "testaccepted")
+                .get("manage/api/client/whiteListing/saml20_sp")
+                .then()
+                .statusCode(SC_OK)
+                .body("size()", is(4))
                 .body("data.allowedall", hasItems(true, false));
     }
 

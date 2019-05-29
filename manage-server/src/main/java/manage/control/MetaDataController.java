@@ -520,8 +520,9 @@ public class MetaDataController {
     }
 
     @GetMapping("/client/whiteListing/{type}")
-    public List<Map> whiteListing(@PathVariable("type") String type) {
-        return metaDataRepository.whiteListing(type);
+    public List<Map> whiteListing(@PathVariable("type") String type,
+                                  @RequestParam(value = "state") String state) {
+        return metaDataRepository.whiteListing(type, state);
     }
 
     @PostMapping({"/client/search/{type}", "/internal/search/{type}"})

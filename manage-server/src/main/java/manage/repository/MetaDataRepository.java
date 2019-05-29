@@ -179,8 +179,8 @@ public class MetaDataRepository {
         return mongoTemplate.find(new BasicQuery(query), MetaData.class, type);
     }
 
-    public List<Map> whiteListing(String type) {
-        Query query = queryWithSamlFields();
+    public List<Map> whiteListing(String type, String state) {
+        Query query = queryWithSamlFields().addCriteria(Criteria.where("data.state").is(state));
         query.fields()
                 .include("data.allowedall")
                 .include("data.allowedEntities");
