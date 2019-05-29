@@ -1,10 +1,10 @@
 import React from "react";
 import I18n from "i18n-js";
 import PropTypes from "prop-types";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import SelectEntities from "./../SelectEntities";
-import {Select} from "./../../components";
-import {stop} from "../../utils/Utils";
+import { Select } from "./../../components";
+import { stop } from "../../utils/Utils";
 
 import "./ConsentDisabling.css";
 
@@ -34,7 +34,7 @@ export default class ConsentDisabling extends React.Component {
 
   initialiseDisableConsent(whiteListing) {
     window.scrollTo(0, 0);
-    const {disableConsent} = this.props;
+    const { disableConsent } = this.props;
 
     const enrichedDisableConsent = disableConsent
       .map(entity => this.enrichSingleDisableConsent(entity, whiteListing))
@@ -80,7 +80,7 @@ export default class ConsentDisabling extends React.Component {
       "explanation:nl": "",
       "explanation:en": ""
     };
-    const {disableConsent, whiteListing} = this.props;
+    const { disableConsent, whiteListing } = this.props;
     const newState = [...disableConsent].concat(entity);
     this.props.onChange("data.disableConsent", newState);
 
@@ -92,7 +92,7 @@ export default class ConsentDisabling extends React.Component {
   };
 
   removeDisableConsent = entry => {
-    const {disableConsent} = this.props;
+    const { disableConsent } = this.props;
     const newState = [...disableConsent].filter(
       entity => entity.name !== entry.entityid
     );
@@ -166,7 +166,7 @@ export default class ConsentDisabling extends React.Component {
                   this.removeDisableConsent(entity);
                 }}
               >
-                <i className="fa fa-trash-o"/>
+                <i className="fa fa-trash-o" />
               </a>
             </span>
           )}
@@ -225,17 +225,17 @@ export default class ConsentDisabling extends React.Component {
   };
 
   renderDisableConsentTable = (enrichedDisableConsent, type, guest) => {
-    const {sorted, reverse} = this.state;
+    const { sorted, reverse } = this.state;
     const icon = name => {
       if (!(name === sorted)) {
-        return <i className="fa fa-arrow-down"/>;
+        return <i className="fa fa-arrow-down" />;
       }
 
       if (reverse) {
-        return <i className="fa fa-arrow-up reverse"/>;
+        return <i className="fa fa-arrow-up reverse" />;
       }
 
-      return <i className="fa fa-arrow-down current"/>;
+      return <i className="fa fa-arrow-down current" />;
     };
     const th = name => (
       <th
@@ -259,15 +259,15 @@ export default class ConsentDisabling extends React.Component {
       <section className="consent-disabling">
         <table>
           <thead>
-          <tr>
-            <th className="remove"/>
-            {names.map(th)}
-          </tr>
+            <tr>
+              <th className="remove" />
+              {names.map(th)}
+            </tr>
           </thead>
           <tbody>
-          {enrichedDisableConsent.map(entity =>
-            this.renderDisableConsent(entity, type, guest)
-          )}
+            {enrichedDisableConsent.map(entity =>
+              this.renderDisableConsent(entity, type, guest)
+            )}
           </tbody>
         </table>
       </section>
@@ -275,6 +275,10 @@ export default class ConsentDisabling extends React.Component {
   };
 
   filterEntityOptions() {
+    if (this.props.allowedAll) {
+      return this.props.whiteListing;
+    }
+
     const allowedEntityNames = this.props.allowedEntities.map(ent => ent.name);
 
     return this.props.whiteListing.filter(entry =>
@@ -283,16 +287,16 @@ export default class ConsentDisabling extends React.Component {
   }
 
   render() {
-    const {disableConsent, name, guest} = this.props;
+    const { disableConsent, name, guest } = this.props;
     const placeholder = I18n.t("consentDisabling.placeholder");
-    const {enrichedDisableConsent} = this.state;
+    const { enrichedDisableConsent } = this.state;
 
     return (
       <div className="metadata-consent-disabling">
         <div className="consent-disabling-info">
           <h2>{I18n.t("consentDisabling.title")}</h2>
           {!guest && (
-            <p>{I18n.t("consentDisabling.description", {name: name})}</p>
+            <p>{I18n.t("consentDisabling.description", { name: name })}</p>
           )}
         </div>
         {!guest && (
@@ -304,11 +308,11 @@ export default class ConsentDisabling extends React.Component {
           />
         )}
         {enrichedDisableConsent.length > 0 &&
-        this.renderDisableConsentTable(
-          enrichedDisableConsent,
-          "saml20_sp",
-          guest
-        )}
+          this.renderDisableConsentTable(
+            enrichedDisableConsent,
+            "saml20_sp",
+            guest
+          )}
       </div>
     );
   }
