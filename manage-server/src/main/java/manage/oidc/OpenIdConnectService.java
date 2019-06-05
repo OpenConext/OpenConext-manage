@@ -1,13 +1,18 @@
 package manage.oidc;
 
 import manage.control.MetaDataController;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.http.client.support.BasicAuthorizationInterceptor;
+import org.springframework.web.client.DefaultResponseErrorHandler;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.Optional;
 
 public class OpenIdConnectService implements OpenIdConnect {
@@ -20,6 +25,14 @@ public class OpenIdConnectService implements OpenIdConnect {
     public OpenIdConnectService(String user, String password, String url) {
         this.restTemplate = new RestTemplate();
         this.restTemplate.getInterceptors().add(new BasicAuthorizationInterceptor(user, password));
+        this.restTemplate.setErrorHandler(new DefaultResponseErrorHandler(){
+            @Override
+            public void handleError(ClientHttpResponse response) throws IOException {
+                String body = IOUtils.toString(response.getBody(), Charset.defaultCharset());
+                LOG.error(String.format("Error from OIDC: %s", body));
+                super.handleError(response);
+            }
+        });
         this.url = url;
     }
 
