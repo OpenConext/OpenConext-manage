@@ -62,6 +62,7 @@ import static java.util.Collections.singletonList;
 import static java.util.Collections.singletonMap;
 import static java.util.stream.Collectors.toList;
 import static manage.api.Scope.TEST;
+import static manage.hook.OpenIdConnectHook.OIDC_CLIENT_KEY;
 import static manage.mongo.MongobeeConfiguration.REVISION_POSTFIX;
 
 @RestController
@@ -138,6 +139,9 @@ public class MetaDataController {
         MetaData metaData = this.get(type, id);
         Map metaDataFields = metaData.metaDataFields();
         metaDataFields.remove("coin:exclude_from_push");
+        //Bugfix for enriched metadata from the get
+        metaData.getData().remove(OIDC_CLIENT_KEY);
+
         return doPut(metaData, federatedUser.getUid(), false);
     }
 
