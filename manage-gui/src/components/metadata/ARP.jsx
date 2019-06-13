@@ -215,13 +215,15 @@ export default class ARP extends React.Component {
     const renderAction = arpAttribute.multiplicity && !guest;
     const {addInput, keyForNewInput} = this.state;
     const doAddInput = (addInput && keyForNewInput === attributeKey);
+    //id's need to be unique for our checkboxes to work
+    const reactTooltipId = `${attributeKey}_tooltip`;
 
     return <tbody key={attributeKey}>
     <tr>
       <td className={`name ${deprecated ? "deprecated" : ""}`}><span
         className="display-name">{displayKey}</span><i className="fa fa-info-circle"
-                                                       data-for={attributeKey} data-tip></i>
-        <ReactTooltip id={attributeKey} type="info" class="tool-tip" effect="solid">
+                                                       data-for={reactTooltipId} data-tip></i>
+        <ReactTooltip id={reactTooltipId} type="info" class="tool-tip" effect="solid">
           <span>{attributeKey}</span>
         </ReactTooltip>
       </td>
