@@ -1,6 +1,7 @@
 language: java
 jdk:
 - oraclejdk8
+dist: trusty
 node_js:
 - '8'
 services:
