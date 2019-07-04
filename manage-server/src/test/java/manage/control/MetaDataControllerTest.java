@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import static io.restassured.RestAssured.given;
+import static java.util.Collections.singletonMap;
 import static manage.control.MetaDataController.ALL_ATTRIBUTES;
 import static manage.control.MetaDataController.LOGICAL_OPERATOR_IS_AND;
 import static manage.control.MetaDataController.REQUESTED_ATTRIBUTES;
@@ -34,6 +35,7 @@ import static org.apache.http.HttpStatus.SC_NOT_FOUND;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.hamcrest.Matchers.notNullValue;
@@ -155,7 +157,6 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         assertNotNull(revision.getCreated());
     }
 
-
     private String createServiceProviderMetaData(boolean client) throws java.io.IOException {
         String json = readFile("/json/valid_service_provider.json");
         Map data = objectMapper.readValue(json, Map.class);
@@ -183,7 +184,8 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         Map<String, Object> pathUpdates = new HashMap<>();
         pathUpdates.put("metaDataFields.description:en", "New description");
         pathUpdates.put("allowedall", false);
-        pathUpdates.put("allowedEntities", Arrays.asList(Collections.singletonMap("name", "https://allow-me")));
+        pathUpdates.put("allowedEntities", Arrays.asList(singletonMap("name", "https://allow-me"),
+                singletonMap("name", "http://mock-idp")));
         MetaDataUpdate metaDataUpdate = new MetaDataUpdate(id, EntityType.SP.getType(), pathUpdates, Collections.emptyMap());
 
         given()
@@ -201,7 +203,8 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 .body("revision.updatedBy", equalTo("sp-portal"))
                 .body("data.allowedall", equalTo(false))
                 .body("data.metaDataFields.'description:en'", equalTo("New description"))
-                .body("data.allowedEntities[0].name", equalTo("https://allow-me"));
+                .body("data.allowedEntities[0].name", equalTo("http://mock-idp"))
+                .body("data.allowedEntities", hasSize(1));
     }
 
     @Test
@@ -603,7 +606,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     @Test
     public void newSp() throws Exception {
         String xml = readFile("sp_portal/sp_xml.xml");
-        Map<String, String> body = Collections.singletonMap("xml", xml);
+        Map<String, String> body = singletonMap("xml", xml);
 
         doNewSp(body)
                 .statusCode(SC_OK)
@@ -655,7 +658,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     public void updateSp() throws Exception {
         MetaData metaData = metaDataRepository.findById("1", EntityType.SP.getType());
         String xml = readFile("sp_portal/sp_xml.xml");
-        Map<String, String> body = Collections.singletonMap("xml", xml);
+        Map<String, String> body = singletonMap("xml", xml);
         doUpdateSp(body, metaData)
                 .statusCode(SC_OK);
 

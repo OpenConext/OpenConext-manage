@@ -6,13 +6,11 @@ import org.everit.json.schema.ValidationException;
 import org.everit.json.schema.internal.URIFormatValidator;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -24,9 +22,9 @@ import static org.junit.Assert.fail;
 public class MetaDataAutoConfigurationTest implements TestUtils {
 
     private MetaDataAutoConfiguration subject = new MetaDataAutoConfiguration(
-        objectMapper,
-        new ClassPathResource("metadata_configuration"),
-        new ClassPathResource("metadata_templates"));
+            objectMapper,
+            new ClassPathResource("metadata_configuration"),
+            new ClassPathResource("metadata_templates"));
 
     public MetaDataAutoConfigurationTest() throws IOException {
     }
@@ -38,7 +36,7 @@ public class MetaDataAutoConfigurationTest implements TestUtils {
 
     @Test
     public void testSpSchema() throws IOException {
-        Map<String, Object>  data = objectMapper.readValue(readFile("json/valid_service_provider.json"), mapTypeRef);
+        Map<String, Object> data = objectMapper.readValue(readFile("json/valid_service_provider.json"), mapTypeRef);
         subject.validate(data, EntityType.SP.getType());
     }
 
@@ -49,13 +47,13 @@ public class MetaDataAutoConfigurationTest implements TestUtils {
 
     @Test
     public void testSchemaSpForUpdateIsValid() throws IOException {
-        Map<String, Object> json = objectMapper.readValue( readFile("json/updated_metadata.json"), mapTypeRef);
+        Map<String, Object> json = objectMapper.readValue(readFile("json/updated_metadata.json"), mapTypeRef);
         subject.validate(json, EntityType.SP.getType());
     }
 
     @Test
     public void testIdpSchema() throws IOException {
-        Map<String, Object> json = objectMapper.readValue( readFile("json/valid_identity_provider.json"), mapTypeRef);
+        Map<String, Object> json = objectMapper.readValue(readFile("json/valid_identity_provider.json"), mapTypeRef);
         subject.validate(json, EntityType.IDP.getType());
     }
 
@@ -67,7 +65,7 @@ public class MetaDataAutoConfigurationTest implements TestUtils {
     @Test
     public void testAddendumServiceProvider() {
         Map metaDataFields = Map.class.cast(Map.class.cast(subject.schemaRepresentation(EntityType.SP)
-            .get("properties")).get("metaDataFields"));
+                .get("properties")).get("metaDataFields"));
         Map<String, Map> properties = (Map) metaDataFields.get("properties");
         Map<String, Map> patternProperties = (Map) metaDataFields.get("patternProperties");
 
@@ -76,7 +74,7 @@ public class MetaDataAutoConfigurationTest implements TestUtils {
     }
 
     private void testErrors(String path, EntityType type, int errorsExpected) throws IOException {
-        Map<String, Object> data = objectMapper.readValue( readFile(path), mapTypeRef);
+        Map<String, Object> data = objectMapper.readValue(readFile(path), mapTypeRef);
         try {
             subject.validate(data, type.getType());
             fail();
@@ -95,7 +93,7 @@ public class MetaDataAutoConfigurationTest implements TestUtils {
     @Test
     public void testRegularExpression() {
         boolean matches = Pattern.compile("^contacts:([0-3]{1}):emailAddress$").matcher("contacts:0:emailAddress")
-            .matches();
+                .matches();
         assertTrue(matches);
     }
 

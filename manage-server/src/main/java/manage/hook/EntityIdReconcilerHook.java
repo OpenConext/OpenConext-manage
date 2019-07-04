@@ -38,8 +38,8 @@ public class EntityIdReconcilerHook extends MetaDataHookAdapter {
             return newMetaData;
         }
         String metaDataType = newMetaData.getType();
+        List<String> types = metaDataTypesForeignKeyRelations(metaDataType);
         asList("allowedEntities", "disableConsent", "allowedResourceServers").forEach(name -> {
-            List<String> types = metaDataTypesToReconcile(metaDataType);
             types.forEach(type -> {
                 List<MetaData> references = metaDataRepository.findRaw(type,
                         String.format("{\"data.%s.name\" : \"%s\"}", name, oldEntityId));
@@ -65,7 +65,7 @@ public class EntityIdReconcilerHook extends MetaDataHookAdapter {
         String metaDataType = metaDataToBeDeleted.getType();
 
         asList("allowedEntities", "disableConsent").forEach(name -> {
-            List<String> types = metaDataTypesToReconcile(metaDataType);
+            List<String> types = metaDataTypesForeignKeyRelations(metaDataType);
             types.forEach(type -> {
                 List<MetaData> references = metaDataRepository.findRaw(type,
                         String.format("{\"data.%s.name\" : \"%s\"}", name, entityId));
@@ -84,19 +84,6 @@ public class EntityIdReconcilerHook extends MetaDataHookAdapter {
         return metaDataToBeDeleted;
     }
 
-    public static List<String> metaDataTypesToReconcile(String type) {
-        if (type.equals(SP.getType())) {
-            return singletonList(IDP.getType());
-        }
-        if (type.equals(IDP.getType())) {
-            return asList(SP.getType(), RP.getType());
-        }
-        if (type.equals(RP.getType())) {
-            return asList(IDP.getType(), RP.getType());
-        }
-        throw new IllegalArgumentException("Not supported MetaData type " + type);
-    }
-
     private String entityId(MetaData metaData) {
         return (String) metaData.getData().get("entityid");
     }
@@ -111,4 +98,18 @@ public class EntityIdReconcilerHook extends MetaDataHookAdapter {
         metaDataRepository.update(metaData);
 
     }
+
+    public static List<String> metaDataTypesForeignKeyRelations(String type) {
+        if (type.equals(SP.getType())) {
+            return singletonList(IDP.getType());
+        }
+        if (type.equals(IDP.getType())) {
+            return asList(SP.getType(), RP.getType());
+        }
+        if (type.equals(RP.getType())) {
+            return asList(IDP.getType(), RP.getType());
+        }
+        throw new IllegalArgumentException("Not supported MetaData type " + type);
+    }
+
 }

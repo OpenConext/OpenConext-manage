@@ -308,7 +308,7 @@ public class SystemController {
                 }
             });
         });
-        List<String> types = EntityIdReconcilerHook.metaDataTypesToReconcile(type.getType());
+        List<String> types = EntityIdReconcilerHook.metaDataTypesForeignKeyRelations(type.getType());
         return groupedByEntityIdReference.entrySet().stream()
                 .filter(entry -> types.stream()
                         .noneMatch(entityType -> mongoTemplate.exists(new BasicQuery("{\"data.entityid\":\"" + entry.getKey() + "\"}"), entityType)))
