@@ -38,7 +38,6 @@ public class TypeSafetyHook extends MetaDataHookAdapter {
                 metaDataFields.put(key, Integer.parseInt((String) value));
             }
         });
-
         return metaData;
     }
 

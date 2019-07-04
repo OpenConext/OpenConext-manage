@@ -533,10 +533,10 @@ public class MetaDataController {
     public List<Map> searchEntities(@PathVariable("type") String type,
                                     @RequestBody Map<String, Object> properties,
                                     @RequestParam(required = false, defaultValue = "false") boolean nested) {
-        List requestedAttributes = List.class.cast(properties.getOrDefault(REQUESTED_ATTRIBUTES, new
-                ArrayList<String>()));
-        Boolean allAttributes = Boolean.class.cast(properties.getOrDefault(ALL_ATTRIBUTES, false));
-        Boolean logicalOperatorIsAnd = Boolean.class.cast(properties.getOrDefault(LOGICAL_OPERATOR_IS_AND, true));
+        List requestedAttributes = (List) properties.getOrDefault(REQUESTED_ATTRIBUTES, new
+                ArrayList<String>());
+        Boolean allAttributes = (Boolean) properties.getOrDefault(ALL_ATTRIBUTES, false);
+        Boolean logicalOperatorIsAnd = (Boolean) properties.getOrDefault(LOGICAL_OPERATOR_IS_AND, true);
         properties.remove(REQUESTED_ATTRIBUTES);
         properties.remove(ALL_ATTRIBUTES);
         properties.remove(LOGICAL_OPERATOR_IS_AND);

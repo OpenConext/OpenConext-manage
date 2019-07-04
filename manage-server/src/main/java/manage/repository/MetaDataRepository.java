@@ -147,17 +147,22 @@ public class MetaDataRepository {
         properties.forEach((key, value) -> {
             key = escapeMetaDataField(key);
 
-            if (value instanceof Boolean && Boolean.class.cast(value) && key.contains("attributes")) {
+            if (value instanceof Boolean && (Boolean) value && key.contains("attributes")) {
                 criteriaDefinitions.add(Criteria.where("data.".concat(key)).exists(true));
-            } else if (value instanceof String && !StringUtils.hasText(String.class.cast(value))) {
+            } else if (value instanceof String && !StringUtils.hasText((String) value)) {
                 criteriaDefinitions.add(Criteria.where("data.".concat(key)).exists(false));
+            } else if (value instanceof String && StringUtils.hasText((String) value) &&
+                    ("true".equalsIgnoreCase((String)value) || "false".equalsIgnoreCase((String)value))) {
+                criteriaDefinitions.add(Criteria.where("data.".concat(key)).is(Boolean.parseBoolean((String) value)));
+            } else if (value instanceof String && StringUtils.hasText((String) value) && isNumeric((String) value)) {
+                criteriaDefinitions.add(Criteria.where("data.".concat(key)).is(Integer.parseInt((String) value)));
             } else if ("*".equals(value)) {
                 criteriaDefinitions.add(Criteria.where("data.".concat(key)).regex(".*", "i"));
-            } else if (value instanceof String && String.class.cast(value).contains("*")) {
-                String queryString = String.class.cast(value);
+            } else if (value instanceof String && ((String) value).contains("*")) {
+                String queryString = (String) value;
                 criteriaDefinitions.add(Criteria.where("data.".concat(key)).regex(queryString, "i"));
-            } else if (value instanceof List && !List.class.cast(value).isEmpty()) {
-                List l = List.class.cast(value);
+            } else if (value instanceof List && !((List) value).isEmpty()) {
+                List l = (List) value;
                 criteriaDefinitions.add(Criteria.where("data.".concat(key)).in(l));
             } else {
                 criteriaDefinitions.add(Criteria.where("data.".concat(key)).is(value));
@@ -173,6 +178,10 @@ public class MetaDataRepository {
             query.addCriteria(new Criteria().orOperator(criteria));
         }
         return mongoTemplate.find(query, Map.class, type);
+    }
+
+    private boolean isNumeric(String value) {
+        return value.matches("\\d+");
     }
 
     public List<MetaData> findRaw(String type, String query) {

@@ -5,6 +5,7 @@ import com.github.mongobee.changeset.ChangeLog;
 import com.github.mongobee.changeset.ChangeSet;
 import manage.conf.IndexConfiguration;
 import manage.conf.MetaDataAutoConfiguration;
+import manage.hook.TypeSafetyHook;
 import manage.model.EntityType;
 import manage.model.MetaData;
 import org.slf4j.Logger;
@@ -14,9 +15,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.core.IndexOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.convert.CustomConversions;
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
+import org.springframework.data.mongodb.core.convert.MongoConverter;
 import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.index.IndexDefinition;
 import org.springframework.data.mongodb.core.index.TextIndexDefinition;
@@ -24,14 +28,19 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.CriteriaDefinition;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.ReflectionUtils;
 
 import javax.annotation.PostConstruct;
+import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -126,6 +135,44 @@ public class MongobeeConfiguration {
                 .onField("$**")
                 .build();
         mongoTemplate.indexOps("oidc10_rp").ensureIndex(textIndexDefinition);
+    }
+
+    @ChangeSet(order = "028", id = "typeSafetyConversion", author = "Okke Harsta")
+    public void typeSafetyConversion(MongoTemplate mongoTemplate) throws IOException {
+        MongoDbFactory mongoDbFactory = (MongoDbFactory) getField(mongoTemplate, "mongoDbFactory");
+        MappingMongoConverter converter = (MappingMongoConverter) getField(mongoTemplate, "mongoConverter");
+        converter.setCustomConversions(new CustomConversions(Arrays.asList(new EpochConverter())));
+        converter.setMapKeyDotReplacement("@");
+        converter.afterPropertiesSet();
+        final MongoTemplate customMongoTemplate = new MongoTemplate(mongoDbFactory, converter);
+        TypeSafetyHook hook = new TypeSafetyHook(MongobeeConfiguration.staticMetaDataAutoConfiguration);
+        Stream.of(EntityType.values()).map(EntityType::getType).forEach(type -> {
+            List<MetaData> metaDatas = customMongoTemplate.findAll(MetaData.class, type);
+            if (!CollectionUtils.isEmpty(metaDatas)) {
+                metaDatas.forEach(metaData -> {
+                    Map<String, Object> metaDataFields = new HashMap<>(metaData.metaDataFields());
+                    MetaData changeMetaData = hook.preValidate(metaData);
+
+                    if (!changeMetaData.metaDataFields().equals(metaDataFields)) {
+                        MetaData previous = customMongoTemplate.findById(metaData.getId(), MetaData.class, type);
+                        previous.revision(UUID.randomUUID().toString());
+                        customMongoTemplate.insert(previous, previous.getType());
+                        metaData.promoteToLatest("Conversion of String to JSON schema defined type");
+                        customMongoTemplate.save(metaData, metaData.getType());
+                        LOG.info("Migrated {} during conversion of String to JSON schema defined type", metaData.getData().get("entityid"));
+
+                    }
+                });
+            }
+        });
+
+    }
+
+    private Object getField(Object targetObject, String name) {
+        Class<?> targetClass = targetObject.getClass();
+        Field field = ReflectionUtils.findField(targetClass, name);
+        ReflectionUtils.makeAccessible(field);
+        return ReflectionUtils.getField(field, targetObject);
     }
 
     private void doCreateSchemas(MongoTemplate mongoTemplate, List<String> connectionTypes) {

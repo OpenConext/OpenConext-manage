@@ -275,11 +275,13 @@ export default class API extends React.PureComponent {
               {isEmpty(entity.data.notes) ? <span></span> :
                 <NotesTooltip identifier={entity.data.entityid} notes={entity.data.notes}/>}
             </td>
-            {Object.keys(searchAttributes).map(attr =>
-              <td key={attr}>{entity.data.metaDataFields[attr]}</td>)}
+            {Object.keys(searchAttributes).map(attr => {
+              return <td key={attr}>{"" + entity.data.metaDataFields[attr]}</td>
+            })}
             {Object.keys(globalSearchAttributes).map(attr => {
                 //split by dot results in too many parts for
                 // "arp.attributes.urn:mace:terena.org:attribute-def:schacHomeOrganization"
+
                 const arpAttribute = attr.startsWith("arp.attributes");
                 if (arpAttribute) {
                   attr = "arp.attributes." + attr.substring("arp.attributes.".length).replace(/\./g, "@")
@@ -309,8 +311,8 @@ export default class API extends React.PureComponent {
   renderSearchResultsTablePrintable = (searchResults) =>
     <section id={"search-results-printable"}>
       {searchResults
-        .map(entity => `${entity.data.state},${entity.data.entityid},${entity.data.metaDataFields["name:en"] || entity.data.metaDataFields["name:nl"]}`)
-        .join("\n")}</section>
+        .map(entity => `${entity.data.state},${entity.data.metaDataFields["name:en"] || entity.data.metaDataFields["name:nl"]},${entity.data.entityid}`)
+        .join("\n")}</section>;
 
   renderSearch = () => {
     const {configuration} = this.props;
@@ -329,7 +331,7 @@ export default class API extends React.PureComponent {
       <section className="extended-search">
         <p>Select a Metadata type and metadata fields. Wildcards like <span className="code">.*surf.*</span> are
           translated to a regular expression search.
-          Specify booleans with <span className="code">0</span> or <span className="code">1</span> and
+          Specify booleans with <span className="code">true</span> or <span className="code">false</span> and
           leave the value empty for a <span className="code">does not exists</span> query.</p>
         <SelectMetaDataType onChange={value => this.setState({selectedType: value})}
                             configuration={configuration}

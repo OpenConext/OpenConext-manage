@@ -11,8 +11,11 @@ export default class Select extends React.PureComponent {
 
   valueToOption = value => ({value: value, label: value});
 
+  randomName = () => Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+
   render() {
-    const {name, value, className = "", ...rest} = this.props;
+    const {name = this.randomName(), value, className = "", ...rest} = this.props;
+
     const valueAsOption = typeof value === "string" ? this.valueToOption(value) : value;
 
     return (
@@ -32,7 +35,7 @@ Select.propTypes = {
   disabled: PropTypes.bool,
   searchable: PropTypes.bool,
   options: PropTypes.array.isRequired,
-  name: PropTypes.string.isRequired,
+  name: PropTypes.string,
   onChange: PropTypes.func.isRequired,
   value: PropTypes.oneOfType([PropTypes.object, PropTypes.string, PropTypes.array])
 };
