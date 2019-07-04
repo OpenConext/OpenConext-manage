@@ -384,7 +384,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     @Test
     public void search() throws Exception {
         Map<String, Object> searchOptions = new HashMap<>();
-        searchOptions.put("metaDataFields.coin:do_not_add_attribute_aliases", "1");
+        searchOptions.put("metaDataFields.coin:do_not_add_attribute_aliases", true);
         searchOptions.put("metaDataFields.contacts:3:contactType", "technical");
         searchOptions.put("metaDataFields.NameIDFormat", "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified");
 
