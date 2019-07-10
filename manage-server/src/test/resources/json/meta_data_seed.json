@@ -39,6 +39,8 @@
         "redirect.sign": true,
         "coin:transparant_issuer": true,
         "coin:trusted_proxy": true,
+        "coin:stepup:requireloa": "http://test.surfconext.nl/assurance/loa2",
+        "coin:stepup:allow_no_token": true,
         "coin:display_unconnected_idps_wayf": true,
         "coin:eula": "https://eula",
         "coin:do_not_add_attribute_aliases": true,
@@ -201,7 +203,9 @@
         "NameIDFormat": "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
         "NameIDFormats:0": "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
         "NameIDFormats:1": "urn:oasis:names:tc:SAML:2.0:nameid-format:transient",
-        "NameIDFormats:2": "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"
+        "NameIDFormats:2": "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent",
+        "coin:stepup:requireloa": "http://test.surfconext.nl/assurance/loa1",
+        "coin:stepup:allow_no_token": false
       },
       "allowedEntities": [
         {
@@ -453,7 +457,7 @@
     "data": {
       "entityid": "https@//oidc.rp",
       "eid": 9,
-      "state": "testaccepted",
+      "state": "prodaccepted",
       "discoveryurl": "https://well_known_configuration",
       "allowedall": true,
       "allowedResourceServers": [
@@ -478,7 +482,9 @@
           "client_credentials"
         ],
         "accessTokenValidity": 3600,
-        "refreshTokenValidity": 3600
+        "refreshTokenValidity": 3600,
+        "coin:stepup:requireloa": "http://test.surfconext.nl/assurance/loa3",
+        "coin:stepup:allow_no_token": true
       }
     }
   },

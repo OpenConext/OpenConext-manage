@@ -82,7 +82,7 @@ export default class Detail extends React.PureComponent {
     super(props);
     const type = isEmpty(props.newMetaData)
       ? this.props.match.params.type
-      : props.newMetaData.connection.type.value.replace("-", "_");
+      : props.newMetaData.connection.type.value.replace(/-/g, "_");
     const id = isEmpty(props.newMetaData) ? this.props.match.params.id : "new";
     this.state = {
       metaData: {},

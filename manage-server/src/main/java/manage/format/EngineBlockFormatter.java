@@ -80,6 +80,8 @@ public class EngineBlockFormatter {
         spAttributes.put("metadata:coin:attribute_aggregation_required", empty());
         spAttributes.put("metadata:coin:no_consent_required", empty());
         spAttributes.put("metadata:coin:sign_response", empty());
+        spAttributes.put("metadata:coin:stepup:requireloa", empty());
+        spAttributes.put("metadata:coin:stepup:allow_no_token", empty());
 
         idpAttributes.put("metadata:coin:guest_qualifier", empty());
         idpAttributes.put("metadata:coin:schachomeorganization", empty());
