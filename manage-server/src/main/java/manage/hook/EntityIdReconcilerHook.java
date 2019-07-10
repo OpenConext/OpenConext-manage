@@ -14,6 +14,7 @@ import static java.util.stream.Collectors.toList;
 import static manage.model.EntityType.IDP;
 import static manage.model.EntityType.RP;
 import static manage.model.EntityType.SP;
+import static manage.model.EntityType.STT;
 
 @SuppressWarnings("unchecked")
 public class EntityIdReconcilerHook extends MetaDataHookAdapter {
@@ -100,7 +101,7 @@ public class EntityIdReconcilerHook extends MetaDataHookAdapter {
     }
 
     public static List<String> metaDataTypesForeignKeyRelations(String type) {
-        if (type.equals(SP.getType())) {
+        if (type.equals(SP.getType()) || type.equals(STT.getType())) {
             return singletonList(IDP.getType());
         }
         if (type.equals(IDP.getType())) {
