@@ -115,6 +115,32 @@
         }
       }
     },
+    "stepupEntities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "level": {
+            "type": [
+              "string"
+            ],
+            "enum": [
+              "http://test.surfconext.nl/assurance/loa2",
+              "http://test.surfconext.nl/assurance/loa2"
+            ],
+            "default": "no_consent"
+          }
+        }
+      },
+      "required": [
+        "name",
+        "level"
+      ],
+      "additionalProperties": false
+    },
     "disableConsent": {
       "type": "array",
       "items": {
