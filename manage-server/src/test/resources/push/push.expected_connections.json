@@ -146,7 +146,7 @@
           "policy_enforcement_decision_required": "1",
           "stepup": {
             "allow_no_token": "0",
-            "requireloa": "http://test.surfconext.nl/assurance/loa1"
+            "requireloa": "http://test.surfconext.nl/assurance/loa2"
           }
         },
         "contacts": [
