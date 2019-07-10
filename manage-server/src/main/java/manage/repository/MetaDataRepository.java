@@ -215,6 +215,7 @@ public class MetaDataRepository {
                 .fields();
         fields
                 .include("version")
+                .include("type")
                 .include("data.state")
                 .include("data.entityid")
                 .include("data.notes");
