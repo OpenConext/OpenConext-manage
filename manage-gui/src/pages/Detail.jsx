@@ -32,6 +32,7 @@ import { setFlash } from "../utils/Flash";
 
 import "./Detail.css";
 import ResourceServers from "../components/metadata/ResourceServers";
+import Stepup from "../components/metadata/Stepup";
 
 const tabsSp = [
   "connection",
@@ -49,6 +50,7 @@ const tabsIdP = [
   "connection",
   "whitelist",
   "consent_disabling",
+  "stepup_entities",
   "metadata",
   "manipulation",
   "revisions",
@@ -679,6 +681,19 @@ export default class Detail extends React.PureComponent {
             whiteListing={whiteListing}
             onChange={this.onChange("consent_disabling")}
             guest={guest}
+          />
+        );
+      case "stepup_entities":
+        return (
+          <Stepup
+            stepupEntities={metaData.data.stepupEntities || []}
+            allowedEntities={metaData.data.allowedEntities}
+            allowedAll={metaData.data.allowedall}
+            name={name}
+            whiteListing={whiteListing}
+            guest={guest}
+            onChange={this.onChange("stepup_entities")}
+            loaLevels={configuration.properties.stepupEntities.items.properties.level.enum}
           />
         );
       case "revisions":

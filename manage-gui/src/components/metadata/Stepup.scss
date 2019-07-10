@@ -1,10 +1,10 @@
 @import "../../stylesheets/mixins.scss";
 
-.metadata-consent-disabling {
+.metadata-stepup {
   background-color: white;
   padding: 20px;
 
-  .consent-disabling-info {
+  .stepup-info {
     margin: 15px 0;
 
     h2 {
@@ -14,7 +14,7 @@
 
   }
 
-  section.consent-disabling {
+  section.stepup {
     margin-top: 15px;
 
     table {

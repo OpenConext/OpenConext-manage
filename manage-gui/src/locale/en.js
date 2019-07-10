@@ -53,6 +53,7 @@ I18n.translations.en = {
       resource_servers: "Resource Servers",
       manipulation: "Manipulation",
       consent_disabling: "Consent Management",
+      stepup_entities: "Stepup",
       connected_idps: "Connected IdP's",
       revisions: "Revisions",
       import: "Import",
@@ -362,7 +363,17 @@ I18n.translations.en = {
     new_attribute_motivation: "The motivation for the release of {{key}}",
     new_attribute_motivation_placeholder: "Motivation..."
   },
-
+  stepup: {
+    title: "Stepup configuration",
+    description: "Select SAML Service Providers and OIDC Relying Parties and configure their LOA level",
+    placeholder: "Search, select and add Entities to the stepup configuration",
+    entries: {
+      status: "Status",
+      entityid: "Entity ID",
+      name: "Name",
+      loa_level: "LOA level"
+    }
+  },
   password: {
     copy: "Copy to clipboard",
     edit: "Edit secret",

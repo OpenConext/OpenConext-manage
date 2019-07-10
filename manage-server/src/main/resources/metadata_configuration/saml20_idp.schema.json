@@ -129,7 +129,7 @@
             ],
             "enum": [
               "http://test.surfconext.nl/assurance/loa2",
-              "http://test.surfconext.nl/assurance/loa2"
+              "http://test.surfconext.nl/assurance/loa3"
             ],
             "default": "no_consent"
           }
