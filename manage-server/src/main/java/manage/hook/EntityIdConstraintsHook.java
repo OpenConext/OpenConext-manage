@@ -5,10 +5,12 @@ import manage.model.MetaData;
 import manage.repository.MetaDataRepository;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 import static manage.model.EntityType.IDP;
 import static manage.model.EntityType.RP;
@@ -40,24 +42,26 @@ public class EntityIdConstraintsHook extends MetaDataHookAdapter {
 
     private MetaData doPre(MetaData newMetaData) {
         String metaDataType = newMetaData.getType();
-        Map<String, EntityType> relationsToCheck = new HashMap<>();
+        Map<String, List<EntityType>> relationsToCheck = new HashMap<>();
 
-        EntityType reversedEntityType = metaDataType.equals(SP.getType()) || metaDataType.equals(RP.getType()) ? IDP : SP;
+        List<EntityType> reversedEntityType = metaDataType.equals(SP.getType()) || metaDataType.equals(RP.getType()) ?
+                singletonList(IDP) : Arrays.asList(SP, IDP);
         relationsToCheck.put("allowedEntities", reversedEntityType);
         relationsToCheck.put("disableConsent", reversedEntityType);
-        relationsToCheck.put("stepupEntities", IDP);
-        relationsToCheck.put("allowedResourceServers", RP);
+        relationsToCheck.put("stepupEntities", Arrays.asList(SP, RP));
+        relationsToCheck.put("allowedResourceServers", singletonList(RP));
 
-        relationsToCheck.entrySet().forEach(entry -> {
-            String key = entry.getKey();
+        relationsToCheck.forEach((key, value) -> {
             if (newMetaData.getData().containsKey(key)) {
                 List<Map<String, String>> references = (List<Map<String, String>>) newMetaData.getData().get(key);
                 if (!CollectionUtils.isEmpty(references)) {
                     List<Map<String, String>> strippedReferences = references.stream()
-                            .filter(map ->
-                                    !CollectionUtils.isEmpty(metaDataRepository.findRaw(entry.getValue().getType(),
-                                            String.format("{\"data.entityid\" : \"%s\"}", map.get("name")))))
-                            .collect(toList());
+                            .filter(map -> value.stream()
+                                    .anyMatch(entityType ->
+                                            !CollectionUtils.isEmpty(
+                                                    metaDataRepository.findRaw(entityType.getType(),
+                                                            String.format("{\"data.entityid\" : \"%s\"}", map.get("name")))))
+                            ).collect(toList());
                     newMetaData.getData().put(key, strippedReferences);
                 }
             }
