@@ -8,6 +8,14 @@
     "collection": "saml20_idp"
   },
   {
+    "missingEntityId": "http://nope",
+    "referencedByEntityId": "https://idp.test2.surfconext.nl",
+    "referencedByName": "OpenConext ServiceRegistry Mock",
+    "referencedCollectionName": "stepupEntities",
+    "id": "6",
+    "collection": "saml20_idp"
+  },
+  {
     "missingEntityId": "http://disableConsent1",
     "referencedByEntityId": "https://idp.test2.surfconext.nl",
     "referencedByName": "OpenConext ServiceRegistry Mock",

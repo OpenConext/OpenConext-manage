@@ -44,6 +44,8 @@ export default class ImportMetaData extends React.PureComponent {
       data: {
         allowedEntities: [],
         disableConsent: [],
+        stepupEntities: [],
+        allowedResourceServers: [],
         arp: {
           enabled: false,
           attributes: {}

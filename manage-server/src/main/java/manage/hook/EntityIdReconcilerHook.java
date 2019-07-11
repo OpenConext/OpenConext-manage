@@ -40,23 +40,22 @@ public class EntityIdReconcilerHook extends MetaDataHookAdapter {
         }
         String metaDataType = newMetaData.getType();
         List<String> types = metaDataTypesForeignKeyRelations(metaDataType);
-        asList("allowedEntities", "disableConsent", "allowedResourceServers").forEach(name -> {
-            types.forEach(type -> {
-                List<MetaData> references = metaDataRepository.findRaw(type,
-                        String.format("{\"data.%s.name\" : \"%s\"}", name, oldEntityId));
+        asList("allowedEntities", "disableConsent", "allowedResourceServers", "stepupEntities").forEach(name ->
+                types.forEach(type -> {
+                    List<MetaData> references = metaDataRepository.findRaw(type,
+                            String.format("{\"data.%s.name\" : \"%s\"}", name, oldEntityId));
 
-                String revisionNote = String.format("Updated after entityId rename of %s to %s", oldEntityId, newEntityId);
+                    String revisionNote = String.format("Updated after entityId rename of %s to %s", oldEntityId, newEntityId);
 
-                references.forEach(metaData -> {
-                    List<Map<String, String>> entities = (List<Map<String, String>>) metaData.getData().getOrDefault(name, new ArrayList<>());
-                    entities.stream().filter(entry -> oldEntityId.equals(entry.get("name")))
-                            .findAny()
-                            .ifPresent(entry -> entry.put("name", newEntityId));
-                    metaData.getData().put("revisionnote", revisionNote);
-                    this.revision(metaData);
-                });
-            });
-        });
+                    references.forEach(metaData -> {
+                        List<Map<String, String>> entities = (List<Map<String, String>>) metaData.getData().getOrDefault(name, new ArrayList<>());
+                        entities.stream().filter(entry -> oldEntityId.equals(entry.get("name")))
+                                .findAny()
+                                .ifPresent(entry -> entry.put("name", newEntityId));
+                        metaData.getData().put("revisionnote", revisionNote);
+                        this.revision(metaData);
+                    });
+                }));
         return newMetaData;
     }
 

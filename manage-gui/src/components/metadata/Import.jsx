@@ -152,7 +152,8 @@ export default class Import extends React.Component {
     }
     keys.forEach(key => {
       const value = results[key];
-      if (key === "allowedEntities" || key === "disableConsent") {
+      if (key === "allowedEntities" || key === "disableConsent" || key === "stepupEntities" ||
+        key === "allowedResourceServers") {
         const changed = this.allowedEntitiesOrDisableConsentChanged(
           currentMetaData[key],
           value
@@ -237,8 +238,10 @@ export default class Import extends React.Component {
           applyChangesFor: {
             allowedEntities: !isEmpty(json.allowedEntities),
             disableConsent: !isEmpty(json.disableConsent),
+            stepupEntities: !isEmpty(json.stepupEntities),
             arp: !isEmpty(json.arp),
             metaDataFields: !isEmpty(json.metaDataFields),
+            allowedResourceServers: !isEmpty(json.allowedResourceServers),
             connection: !isEmpty(json.connection)
           }
         });
@@ -597,12 +600,28 @@ export default class Import extends React.Component {
           "whitelist",
           newEntity
         )}
+        {results.allowedResourceServers &&
+        this.renderAllowedEntitiesDisableContentTable(
+          results.allowedResourceServers,
+          metaData.allowedResourceServers,
+          "allowedResourceServers",
+          "resource servers",
+          newEntity
+        )}
         {results.disableConsent &&
         this.renderAllowedEntitiesDisableContentTable(
           results.disableConsent,
           metaData.disableConsent,
           "disableConsent",
           "disabled consent",
+          newEntity
+        )}
+        {results.stepupEntities &&
+        this.renderAllowedEntitiesDisableContentTable(
+          results.stepupEntities,
+          metaData.stepupEntities,
+          "stepupEntities",
+          "stepup entities",
           newEntity
         )}
         {results.arp && this.renderArpTable(results.arp, metaData.arp)}

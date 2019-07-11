@@ -115,6 +115,9 @@ public class EngineBlockFormatter {
         List<Map<String, String>> disableConsent = (List<Map<String, String>>) source.get("disableConsent");
         identityProvider.put("disable_consent_connections", disableConsent == null ? new ArrayList<>() : disableConsent);
 
+        List<Map<String, String>> stepupEntities = (List<Map<String, String>>) source.get("stepupEntities");
+        identityProvider.put("stepup_connections", stepupEntities == null ? new ArrayList<>() : stepupEntities);
+
         addCommonProviderAttributes(source, identityProvider);
         addSingleSignOnService(source, identityProvider);
 

@@ -42,8 +42,10 @@ public class EntityIdConstraintsHook extends MetaDataHookAdapter {
         String metaDataType = newMetaData.getType();
         Map<String, EntityType> relationsToCheck = new HashMap<>();
 
-        relationsToCheck.put("allowedEntities", metaDataType.equals(SP.getType()) || metaDataType.equals(RP.getType()) ? IDP : SP);
-        relationsToCheck.put("disableConsent", metaDataType.equals(SP.getType()) || metaDataType.equals(RP.getType()) ? IDP : SP);
+        EntityType reversedEntityType = metaDataType.equals(SP.getType()) || metaDataType.equals(RP.getType()) ? IDP : SP;
+        relationsToCheck.put("allowedEntities", reversedEntityType);
+        relationsToCheck.put("disableConsent", reversedEntityType);
+        relationsToCheck.put("stepupEntities", IDP);
         relationsToCheck.put("allowedResourceServers", RP);
 
         relationsToCheck.entrySet().forEach(entry -> {

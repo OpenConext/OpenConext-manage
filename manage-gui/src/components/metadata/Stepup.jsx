@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import {Link} from "react-router-dom";
 import SelectEntities from "./../SelectEntities";
 import {Select} from "./../../components";
-import {stop} from "../../utils/Utils";
+import {isEmpty, stop} from "../../utils/Utils";
 
 import "./Stepup.css";
 
@@ -40,9 +40,9 @@ export default class Stepup extends React.Component {
     this.setStepupState(enrichedStepup);
   }
 
-  enrichSingleStepup = (stepupEntities, whiteListing) => {
+  enrichSingleStepup = (stepupEntity, whiteListing) => {
     const moreInfo = whiteListing.find(
-      entry => entry.data.entityid === stepupEntities.name
+      entry => entry.data.entityid === stepupEntity.name
     );
     if (moreInfo === undefined) {
       //this can happen as SP's are deleted
@@ -50,13 +50,15 @@ export default class Stepup extends React.Component {
     }
     return {
       status: I18n.t(`metadata.${moreInfo.data.state}`),
-      entityid: stepupEntities.name,
+      entityid: stepupEntity.name,
       name:
         moreInfo.data.metaDataFields["name:en"] ||
         moreInfo.data.metaDataFields["name:nl"] ||
         "",
       id: moreInfo["_id"],
-      level: stepupEntities.level
+      requireloa: moreInfo.data.metaDataFields["coin:stepup:requireloa"] || undefined,
+      type: moreInfo.type,
+      level: stepupEntity.level
     };
   };
 
@@ -128,7 +130,7 @@ export default class Stepup extends React.Component {
     });
   };
 
-  renderStepup = (entity, type, guest) => {
+  renderStepup = (entity, guest) => {
     return (
       <tr key={entity.entityid}>
         <td className="remove">
@@ -149,8 +151,8 @@ export default class Stepup extends React.Component {
         <td>{entity.name}</td>
         <td>
           <Select
-            name="select-consent-value"
-            className="select-consent-value"
+            name="select-loa-level"
+            className="select-loa-level"
             onChange={option =>
               this.onChangeSelectLoaLevel(entity, option.value)
             }
@@ -163,7 +165,7 @@ export default class Stepup extends React.Component {
           />
         </td>
         <td>
-          <Link to={`/metadata/${type}/${entity.id}`} target="_blank">
+          <Link to={`/metadata/${entity.type}/${entity.id}`} target="_blank">
             {entity.entityid}
           </Link>
         </td>
@@ -171,7 +173,7 @@ export default class Stepup extends React.Component {
     );
   };
 
-  renderStepupTable = (enrichedStepup, type, guest) => {
+  renderStepupTable = (enrichedStepup, guest) => {
     const {sorted, reverse} = this.state;
     const icon = name => {
       if (!(name === sorted)) {
@@ -211,7 +213,7 @@ export default class Stepup extends React.Component {
           </thead>
           <tbody>
           {enrichedStepup.map(entity =>
-            this.renderStepup(entity, type, guest)
+            this.renderStepup(entity, guest)
           )}
           </tbody>
         </table>
@@ -220,11 +222,13 @@ export default class Stepup extends React.Component {
   };
 
   filterEntityOptions(allowedAll, allowedEntities, whiteListing) {
+    whiteListing = whiteListing.filter(entity => isEmpty(entity.data.metaDataFields["coin:stepup:requireloa"]));
+
     if (allowedAll) {
       return whiteListing;
     }
-    const allowedEntityNames = allowedEntities.map(ent => ent.name);
 
+    const allowedEntityNames = allowedEntities.map(ent => ent.name);
     return whiteListing.filter(entry =>
       allowedEntityNames.includes(entry.data.entityid)
     );
@@ -253,7 +257,6 @@ export default class Stepup extends React.Component {
         {enrichedStepup.length > 0 &&
         this.renderStepupTable(
           enrichedStepup,
-          "saml20_sp",
           guest
         )}
       </div>

@@ -192,7 +192,8 @@ public class MetaDataRepository {
         Query query = queryWithSamlFields().addCriteria(Criteria.where("data.state").is(state));
         query.fields()
                 .include("data.allowedall")
-                .include("data.allowedEntities");
+                .include("data.allowedEntities")
+                .include("data.metaDataFields.coin:stepup:requireloa");
         List<Map> metaData = mongoTemplate.find(query, Map.class, type);
         if (type.equals(EntityType.SP.getType())) {
             List<Map> oidcMetaData = mongoTemplate.find(query, Map.class, EntityType.RP.getType());

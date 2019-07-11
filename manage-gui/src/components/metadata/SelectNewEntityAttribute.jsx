@@ -11,7 +11,8 @@ export default class SelectNewEntityAttribute extends React.PureComponent {
       ["arp.enabled"].concat(Object.keys(configuration.properties.arp.properties.attributes.properties)
         .map(arpAttr => "arp.attributes." + arpAttr));
     const choosenKeys = Object.keys(attributes);
-    return attr.concat(["active", "allowedEntities.name", "entityid", "manipulation", "manipulationNotes", "metadataurl",
+    return attr.concat(["active", "allowedEntities.name", "disableConsent.name", "allowedResourceServers.name", "stepupEntities.name",
+      "entityid", "manipulation", "manipulationNotes", "metadataurl",
       "allowedall", "notes", "state"])
       .filter(a => choosenKeys.indexOf(a) < 0)
       .map(a => ({value: a, label: a}))

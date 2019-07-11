@@ -60,8 +60,14 @@ public class Importer {
         Map<String, Object> metaDataFields = new ConcurrentHashMap<>((Map<String, Object>) metaDataFieldsMap);
         json.put(META_DATA_FIELDS, metaDataFields);
 
-        if (entityType.equals(EntityType.SP) && json.containsKey("disableConsent")) {
+        if (!entityType.equals(EntityType.IDP) && json.containsKey("disableConsent")) {
             json.remove("disableConsent");
+        }
+        if (!entityType.equals(EntityType.IDP) && json.containsKey("stepupEntities")) {
+            json.remove("stepupEntities");
+        }
+        if (!entityType.equals(EntityType.RP) && json.containsKey("allowedResourceServers")) {
+            json.remove("allowedResourceServers");
         }
 
         if (metaDataFields.values().stream().anyMatch(value -> value instanceof Map)) {
@@ -76,6 +82,11 @@ public class Importer {
                     .map(name -> Collections.singletonMap("name", name)).collect(toList()));
             }
 
+            if (json.containsKey("stepupEntities")) {
+                List<String> stepupEntities = (List<String>) json.get("stepupEntities");
+                json.put("stepupEntities", stepupEntities.stream()
+                        .map(name -> Collections.singletonMap("name", name)).collect(toList()));
+            }
             //if the structure is nested then we need to flatten it
             Map<String, Object> flattened = new ConcurrentHashMap<>();
             metaDataFields.entrySet().stream().forEach(entry -> {

@@ -345,6 +345,21 @@
           "explanation:en": "daarom"
         }
       ],
+      "stepupEntities" : [
+        {
+          "name" : "https://serviceregistry.test2.surfconext.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp",
+          "level" : "http://test.surfconext.nl/assurance/loa3"
+        },
+        {
+          "name" : "http://mock-sp",
+          "level" : "http://test.surfconext.nl/assurance/loa3"
+        },
+        {
+          "name" : "http://nope",
+          "level" : "http://test.surfconext.nl/assurance/loa3"
+        }
+
+      ],
       "manipulation": "PHP code",
       "metaDataFields": {
         "name:en": "OpenConext ServiceRegistry Mock",

@@ -43,19 +43,15 @@
         }
 
         &.name {
-          width: 15%;
+          width: 20%;
         }
 
         &.entityid {
-          width: 25%;
+          width: 40%;
         }
 
-        &.explanationNl, &.explanationEn {
-          width: 20%;
-        }
-
-        &.consent_value {
-          width: 20%;
+        &.loa_level {
+          width: 30%;
         }
       }
 
@@ -78,17 +74,11 @@
             }
           }
 
-          &.explanation {
-            input, textarea {
-              @include inputField;
-              width: 95%;
-              margin-top: 0;
-            }
-          }
-
-          div.select-consent-value {
+          div.select-loa-level {
+            width: 95%;
             margin-right: 10px;
           }
+
         }
 
       }
