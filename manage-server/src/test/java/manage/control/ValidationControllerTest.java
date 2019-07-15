@@ -48,9 +48,15 @@ public class ValidationControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void validationUri() throws Exception {
+    public void validationUrl() throws Exception {
         doValidation("url", "https://www.example.org", true);
         doValidation("url", "nope", false);
+    }
+
+    @Test
+    public void validationUri() throws Exception {
+        doValidation("uri", "nl.uva.myuva://redirect", true);
+        doValidation("uri", "nope", false);
     }
 
     @Test

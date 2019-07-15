@@ -11,6 +11,7 @@ import manage.validations.NoopFormatValidator;
 import manage.validations.NumberFormatValidator;
 import manage.validations.PasswordFormatValidator;
 import manage.validations.PatternFormatValidator;
+import manage.validations.URIFormatValidator;
 import manage.validations.URLFormatValidator;
 import manage.validations.UUIDFormatValidator;
 import manage.validations.XMLFormatValidator;
@@ -57,7 +58,8 @@ public class ValidationController {
                 new PatternFormatValidator(),
                 new ListFormatValidator(),
                 new PasswordFormatValidator(),
-                new BasicAuthenticationUsernameFormatValidator())
+                new BasicAuthenticationUsernameFormatValidator(),
+                new URIFormatValidator())
                 .stream()
                 .collect(toMap(FormatValidator::formatName, Function.identity()));
         this.rules = initPasswordGeneratorRules();
