@@ -7,10 +7,11 @@ import manage.conf.Push;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Getter
-public class FederatedUser extends User {
+public class FederatedUser extends User implements Serializable {
 
     private String uid;
     private String displayName;

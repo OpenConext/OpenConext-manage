@@ -180,7 +180,7 @@ public class MetaDataFeedParser {
                             }
                             if (inKeyDescriptor) {
                                 inKeyDescriptor = false;
-                                String cert = reader.getElementText().replaceAll("[\n\r]", "").trim();
+                                String cert = reader.getElementText().replaceAll("\\s", "");
                                 addCert(metaDataFields, cert);
                             }
                             break;
@@ -489,6 +489,7 @@ public class MetaDataFeedParser {
     }
 
     private void addCert(Map<String, String> result, String cert) {
+
         List<String> certDataKeys = Arrays.asList("certData", "certData2", "certData3");
         long count = result.keySet().stream().filter(certDataKeys::contains).count();
         if (count < certDataKeys.size()) {

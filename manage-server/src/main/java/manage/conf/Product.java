@@ -2,8 +2,10 @@ package manage.conf;
 
 import lombok.AllArgsConstructor;
 
+import java.io.Serializable;
+
 @AllArgsConstructor
-public class Product {
+public class Product implements Serializable {
 
     public final String organization;
     public final String name;

@@ -93,7 +93,7 @@ export default class MetaData extends React.Component {
       disabled: guest,
       name: key,
       onChange: value => this.doChange(key, value),
-      value: value || ""
+      value: isEmpty(value) ? "" : value
     };
 
     const hasFormatError = !isEmpty(value) && !isEmpty(this.props.errors[key]);

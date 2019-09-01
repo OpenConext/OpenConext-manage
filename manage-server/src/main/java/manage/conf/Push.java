@@ -1,8 +1,8 @@
 package manage.conf;
 
-import org.springframework.beans.factory.annotation.Value;
+import java.io.Serializable;
 
-public class Push {
+public class Push implements Serializable {
 
     public final String url;
     public final String name;
