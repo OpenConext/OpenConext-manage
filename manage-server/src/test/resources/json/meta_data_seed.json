@@ -519,10 +519,7 @@
       "metaDataFields": {
         "name:en": "OIDC ResourceServer",
         "secret": "secret",
-        "redirectUrls": [
-          "http://localhost:8080/redirect1",
-          "http://localhost:8080/redirect2"
-        ],
+        "redirectUrls": [],
         "scopes": [
           "openid",
           "groups"

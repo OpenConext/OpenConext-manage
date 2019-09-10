@@ -81,7 +81,7 @@ export default class MetaData extends React.Component {
 
   renderMetaDataValue = (key, value, keyConfiguration, guest) => {
     let valueToUse = isEmpty(value) ? "" : value;
-    if (value === "") {
+    if (valueToUse === "") {
       if (keyConfiguration.type === "array") {
         valueToUse = [];
       } else if (keyConfiguration.type === "boolean") {
