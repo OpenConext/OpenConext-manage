@@ -4,18 +4,10 @@ import PropTypes from "prop-types";
 import ReactTooltip from "react-tooltip";
 import scrollIntoView from "scroll-into-view";
 
-import { validation } from "./../../api";
-import {
-  Boolean,
-  Number,
-  SelectMulti,
-  SelectOne,
-  String,
-  Strings,
-  StringWithFormat
-} from "../form";
-import { SelectNewMetaDataField } from "../metadata";
-import { isEmpty } from "../../utils/Utils";
+import {validation} from "./../../api";
+import {Boolean, Number, SelectMulti, SelectOne, String, Strings, StringWithFormat} from "../form";
+import {SelectNewMetaDataField} from "../metadata";
+import {isEmpty} from "../../utils/Utils";
 
 import "./MetaData.css";
 
@@ -45,7 +37,7 @@ export default class MetaData extends React.Component {
       scrollIntoView(this.newMetaDataField);
       this.newMetaDataField.focus();
       this.newMetaDataField = null;
-      this.setState({ newMetaDataFieldKey: null });
+      this.setState({newMetaDataFieldKey: null});
     }
   };
 
@@ -88,12 +80,21 @@ export default class MetaData extends React.Component {
   }
 
   renderMetaDataValue = (key, value, keyConfiguration, guest) => {
+    let valueToUse = isEmpty(value) ? "" : value;
+    if (value === "") {
+      if (keyConfiguration.type === "array") {
+        valueToUse = [];
+      } else if (keyConfiguration.type === "boolean") {
+        valueToUse = false;
+      }
+    }
+
     const defaultProps = {
       autoFocus: this.state.newMetaDataFieldKey === key,
       disabled: guest,
       name: key,
       onChange: value => this.doChange(key, value),
-      value: isEmpty(value) ? "" : value
+      value: valueToUse
     };
 
     const hasFormatError = !isEmpty(value) && !isEmpty(this.props.errors[key]);
@@ -107,7 +108,7 @@ export default class MetaData extends React.Component {
         const options = keyConfiguration.items.enum;
 
         if (options) {
-          return <SelectMulti {...defaultProps} enumValues={options} />;
+          return <SelectMulti {...defaultProps} enumValues={options}/>;
         }
 
         const itemFormat = keyConfiguration.items.format;
@@ -124,7 +125,7 @@ export default class MetaData extends React.Component {
       case "string":
         if (keyConfiguration.enum) {
           return (
-            <SelectOne {...defaultProps} enumValues={keyConfiguration.enum} />
+            <SelectOne {...defaultProps} enumValues={keyConfiguration.enum}/>
           );
         }
         if (keyConfiguration.format) {
@@ -211,23 +212,23 @@ export default class MetaData extends React.Component {
           {this.renderMetaDataValue(key, value, keyConfiguration, guest)}
           {!this.validPresence(key, value) && (
             <div className="error">
-              {I18n.t("metadata.required", { name: key })}
+              {I18n.t("metadata.required", {name: key})}
             </div>
           )}
           {extraneous && (
             <div className="error">
-              {I18n.t("metadata.extraneous", { name: key })}
+              {I18n.t("metadata.extraneous", {name: key})}
             </div>
           )}
         </td>
         {!guest &&
-          configuration.properties.metaDataFields.required.indexOf(key) < 0 && (
-            <td className="trash">
+        configuration.properties.metaDataFields.required.indexOf(key) < 0 && (
+          <td className="trash">
               <span onClick={this.deleteMetaDataField(key)}>
-                <i className="fa fa-trash-o" />
+                <i className="fa fa-trash-o"/>
               </span>
-            </td>
-          )}
+          </td>
+        )}
       </tr>
     );
   };
@@ -237,7 +238,7 @@ export default class MetaData extends React.Component {
     if (indexOf > -1) {
       const newAddedMetaData = [...this.state.newAddedMetaData];
       newAddedMetaData.splice(indexOf, 1);
-      this.setState({ newAddedMetaData: newAddedMetaData });
+      this.setState({newAddedMetaData: newAddedMetaData});
     }
     this.props.onError(key, false);
     this.doChange(key, null);
@@ -256,26 +257,26 @@ export default class MetaData extends React.Component {
     return (
       <table className="metadata-fields-table">
         <thead>
-          <tr>
-            <th className="key">{I18n.t("metaDataFields.key")}</th>
-            <th className="value">{I18n.t("metaDataFields.value")}</th>
-            <th />
-          </tr>
+        <tr>
+          <th className="key">{I18n.t("metaDataFields.key")}</th>
+          <th className="value">{I18n.t("metaDataFields.value")}</th>
+          <th/>
+        </tr>
         </thead>
         <tbody>
-          {existingKeys.map(key =>
-            this.renderMetaDataRow(key, metaDataFields, configuration, guest)
-          )}
-          {newAddedMetaData.map(key =>
-            this.renderMetaDataRow(key, metaDataFields, configuration, guest)
-          )}
-          <tr>
-            <td colSpan={2}>
-              {!guest &&
-                this.renderMetaDataSearch(metaDataFields, configuration)}
-            </td>
-            <td />
-          </tr>
+        {existingKeys.map(key =>
+          this.renderMetaDataRow(key, metaDataFields, configuration, guest)
+        )}
+        {newAddedMetaData.map(key =>
+          this.renderMetaDataRow(key, metaDataFields, configuration, guest)
+        )}
+        <tr>
+          <td colSpan={2}>
+            {!guest &&
+            this.renderMetaDataSearch(metaDataFields, configuration)}
+          </td>
+          <td/>
+        </tr>
         </tbody>
       </table>
     );
@@ -308,15 +309,15 @@ export default class MetaData extends React.Component {
   );
 
   render() {
-    const { metaDataFields, configuration, name, guest } = this.props;
-    const { newAddedMetaData } = this.state;
+    const {metaDataFields, configuration, name, guest} = this.props;
+    const {newAddedMetaData} = this.state;
     const keys = Object.keys(metaDataFields).sort((a, b) =>
       a.toLowerCase().localeCompare(b.toLowerCase())
     );
     return (
       <div className="metadata-metadata">
         <div className="metadata-info">
-          <h2>{I18n.t("metaDataFields.title", { name: name })}</h2>
+          <h2>{I18n.t("metaDataFields.title", {name: name})}</h2>
         </div>
         {this.renderMetaDataFields(
           keys,
