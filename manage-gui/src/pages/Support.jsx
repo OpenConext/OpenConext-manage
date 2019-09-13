@@ -30,7 +30,7 @@ export default class Support extends React.PureComponent {
   }
 
   componentDidMount() {
-    search({"metaDataFields.coin:exclude_from_push": "1"}, "saml20_sp")
+    search({"metaDataFields.coin:exclude_from_push": "true"}, "saml20_sp")
       .then(json => {
         const result = json.map(entity => ({
           state: entity.data.state,
@@ -124,7 +124,7 @@ export default class Support extends React.PureComponent {
   renderResults = (excludeFromPushServiceProviders, copiedToClipboardClassName, status, query) => <div>
     <section className="explanation">
       <p>Below are all Service Providers with <span className="code">coin:exclude_from_push</span> set to <span
-        className="code">1</span>.</p>
+        className="code">true</span>.</p>
       <p/>
       <p>You can either include them in the push by unchecking the checkbox or view them in a separate tab, review
         and subsequently save the metadata.</p>
