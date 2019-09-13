@@ -154,7 +154,7 @@ export default class Support extends React.PureComponent {
 
   renderNoResults = () => <section className="explanation">
     <p>There are no Service Providers with <span className="code">coin:exclude_from_push</span> set to <span
-      className="code">1</span>.</p>
+      className="code">true</span>.</p>
   </section>;
 
   render() {
