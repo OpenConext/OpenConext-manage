@@ -894,4 +894,27 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
 
     }
 
+    @Test
+    public void updateWithValidationError() throws IOException {
+        String json = readFile("/metadata_templates/oidc10_rp.template.json");
+
+        Map data = objectMapper.readValue(json, Map.class);
+        data.put("entityid", "https://unique_entity_id");
+        List.class.cast(Map.class.cast(data.get("metaDataFields")).get("redirectUrls")).add("http://localhost?q=<script>alert(‘XSS’)</script>");
+
+        MetaData metaData = new MetaData(EntityType.RP.getType(), data);
+        given()
+                .auth()
+                .preemptive()
+                .basic("sp-portal", "secret")
+                .when()
+                .body(metaData)
+                .header("Content-type", "application/json")
+                .post("manage/api/client/metadata")
+                .then()
+                .statusCode(SC_BAD_REQUEST);
+
+
+    }
+
 }
