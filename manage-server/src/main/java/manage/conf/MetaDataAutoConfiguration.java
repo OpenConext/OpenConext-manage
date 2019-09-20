@@ -5,8 +5,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import manage.model.EntityType;
 import manage.validations.BooleanFormatValidator;
 import manage.validations.CertificateFormatValidator;
+import manage.validations.JSONFormatValidator;
 import manage.validations.LocalEmailFormatValidator;
 import manage.validations.NumberFormatValidator;
+import manage.validations.PatternFormatValidator;
+import manage.validations.URIFormatValidator;
+import manage.validations.URLFormatValidator;
+import manage.validations.UUIDFormatValidator;
+import manage.validations.XMLFormatValidator;
 import org.everit.json.schema.FormatValidator;
 import org.everit.json.schema.Schema;
 import org.everit.json.schema.loader.SchemaLoader;
@@ -53,12 +59,18 @@ public class MetaDataAutoConfiguration {
     public MetaDataAutoConfiguration(ObjectMapper objectMapper,
                                      @Value("${metadata_configuration_path}") Resource metadataConfigurationPath,
                                      @Value("${metadata_templates_path}") Resource metadataTemplatesPath) throws
-        IOException {
+            IOException {
         this.schemas = parseConfiguration(metadataConfigurationPath, Arrays.asList(
-            new CertificateFormatValidator(),
-            new NumberFormatValidator(),
-            new BooleanFormatValidator(),
-            new LocalEmailFormatValidator()
+                new CertificateFormatValidator(),
+                new NumberFormatValidator(),
+                new BooleanFormatValidator(),
+                new LocalEmailFormatValidator(),
+                new URIFormatValidator(),
+                new URLFormatValidator(),
+                new JSONFormatValidator(),
+                new PatternFormatValidator(),
+                new XMLFormatValidator(),
+                new UUIDFormatValidator()
         ));
         this.objectMapper = objectMapper;
         this.templates = parseTemplates(metadataTemplatesPath);
@@ -97,9 +109,9 @@ public class MetaDataAutoConfiguration {
 
     public Map<String, Object> schemaRepresentation(EntityType entityType) {
         Optional<Map<String, Object>> schemaRepresentationOptional = schemaRepresentations().stream().filter(map ->
-            map.get("title").equals(entityType.getType())).findFirst();
+                map.get("title").equals(entityType.getType())).findFirst();
         return schemaRepresentationOptional.orElseThrow(() -> new IllegalArgumentException(String.format("The %s " +
-            "schema does not exists", entityType.getType())));
+                "schema does not exists", entityType.getType())));
 
     }
 
@@ -115,31 +127,31 @@ public class MetaDataAutoConfiguration {
     }
 
     private Map<String, Schema> parseConfiguration(Resource metadataConfigurationPath, List<FormatValidator>
-        validators) throws IOException {
+            validators) throws IOException {
         File[] files = metadataConfigurationPath.getFile().listFiles();
 
         List<File> schemaFiles =
-            Stream.of(files).filter(file -> file.getName().endsWith("schema.json")).collect(Collectors.toList());
+                Stream.of(files).filter(file -> file.getName().endsWith("schema.json")).collect(Collectors.toList());
         Assert.notEmpty(schemaFiles, String.format("No schema.json files defined in %s", metadataConfigurationPath
-            .getFilename()));
+                .getFilename()));
         return schemaFiles.stream().map(file -> this.parse(file, validators,
-            Stream.of(files).filter(f -> f.getName().equals(file.getName().replace("schema", "addendum"))).findAny()))
-            .collect(toMap(Schema::getTitle, schema -> schema));
+                Stream.of(files).filter(f -> f.getName().equals(file.getName().replace("schema", "addendum"))).findAny()))
+                .collect(toMap(Schema::getTitle, schema -> schema));
     }
 
 
     private Map<String, File> parseTemplates(Resource metadataTemplatesPath) throws IOException {
         File[] templates = metadataTemplatesPath.getFile().listFiles((dir, name) -> name.endsWith("template.json"));
         Assert.notEmpty(templates, String.format("No template.json files defined in %s", metadataTemplatesPath
-            .getFilename()));
+                .getFilename()));
         return Stream.of(templates).collect(toMap(file -> file.getName().substring(0, file.getName().indexOf(
-            ".template.json")), file -> file));
+                ".template.json")), file -> file));
     }
 
     private Schema parse(File file, List<FormatValidator> validators, Optional<File> addendum) {
         JSONObject jsonObject = new JSONObject(new JSONTokener(this.fileInputStream(file)));
         Optional<JSONObject> optionalAddendum =
-            addendum.map(addendumFile -> new JSONObject(new JSONTokener(this.fileInputStream(addendumFile))));
+                addendum.map(addendumFile -> new JSONObject(new JSONTokener(this.fileInputStream(addendumFile))));
         if (optionalAddendum.isPresent()) {
             jsonObject = this.deepMerge(jsonObject, optionalAddendum.get());
         }
@@ -153,19 +165,19 @@ public class MetaDataAutoConfiguration {
 
     private JSONObject deepMerge(JSONObject source, JSONObject addendum) {
         Stream.of(JSONObject.getNames(addendum)).forEach(name -> {
-                Object value = addendum.get(name);
-                if (!source.has(name)) {
-                    source.put(name, value);
-                } else {
-                    if (value instanceof JSONObject) {
-                        JSONObject addendumValueJson = (JSONObject) value;
-                        JSONObject jsonObject = source.getJSONObject(name);
-                        deepMerge(jsonObject, addendumValueJson);
-                    } else {
+                    Object value = addendum.get(name);
+                    if (!source.has(name)) {
                         source.put(name, value);
+                    } else {
+                        if (value instanceof JSONObject) {
+                            JSONObject addendumValueJson = (JSONObject) value;
+                            JSONObject jsonObject = source.getJSONObject(name);
+                            deepMerge(jsonObject, addendumValueJson);
+                        } else {
+                            source.put(name, value);
+                        }
                     }
                 }
-            }
         );
         return source;
     }
@@ -193,7 +205,7 @@ public class MetaDataAutoConfiguration {
             List<IndexConfiguration> indexConfigurations = indexes.stream().map(obj -> {
                 Map map = Map.class.cast(obj);
                 return new IndexConfiguration((String) map.get("name"), (String) map.get("type"), (List<String>) map
-                    .get("fields"), (Boolean) map.get("unique"));
+                        .get("fields"), (Boolean) map.get("unique"));
             }).collect(toList());
             this.indexConfigurations.put(schemaType, indexConfigurations);
         }

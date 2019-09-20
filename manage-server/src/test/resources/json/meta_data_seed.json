@@ -134,7 +134,7 @@
         "contacts:3:contactType": "technical",
         "OrganizationName:en": "OrgName",
         "OrganizationDisplayName:en": "OrgDisplayName",
-        "OrganizationURL:en": "OrgURL",
+        "OrganizationURL:en": "https://org-url",
         "description:en": "OpenConext Profile management Mock",
         "description:nl": "OpenConext Profile management",
         "displayName:en": "OpenConext Profile",

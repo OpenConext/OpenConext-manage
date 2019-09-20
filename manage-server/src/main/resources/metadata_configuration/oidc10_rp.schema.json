@@ -432,7 +432,7 @@
           "type": "array",
           "items": {
             "type": "string",
-            "format": "uri"
+            "format": "url"
           },
           "info": "The redirect URI's of this Relying Party."
         },

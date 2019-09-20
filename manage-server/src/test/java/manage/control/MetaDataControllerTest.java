@@ -900,7 +900,8 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
 
         Map data = objectMapper.readValue(json, Map.class);
         data.put("entityid", "https://unique_entity_id");
-        List.class.cast(Map.class.cast(data.get("metaDataFields")).get("redirectUrls")).add("http://localhost?q=<script>alert(‘XSS’)</script>");
+
+        List.class.cast(Map.class.cast(data.get("metaDataFields")).get("redirectUrls")).add("javascript:alert(document.domain)");
 
         MetaData metaData = new MetaData(EntityType.RP.getType(), data);
         given()
