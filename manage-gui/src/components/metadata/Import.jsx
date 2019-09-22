@@ -6,11 +6,11 @@ import "codemirror/mode/javascript/javascript";
 import "codemirror/mode/xml/xml";
 import {isEmpty, stop} from "../../utils/Utils";
 import {
-  importMetaDataJSON,
-  importMetaDataJsonUrl,
-  importMetaDataXML,
-  importMetaDataXmlUrl,
-  validation
+    importMetaDataJSON,
+    importMetaDataJsonUrl,
+    importMetaDataXML,
+    importMetaDataXmlUrl,
+    validation
 } from "../../api";
 import {CheckBox, Select} from "./../../components";
 
@@ -360,10 +360,10 @@ export default class Import extends React.Component {
                     onChange={this.changeMetaPropertySelected(name, key)}
                   />
                 }
-              </td>
-              <td>{key}</td>
-              <td>{prop.current ? prop.current.toString() : ""}</td>
-              <td>{prop.value ? prop.value.toString() : ""}</td>
+                </td>
+                <td>{key}</td>
+                <td>{isEmpty(prop.current) ? "" : prop.current.toString()}</td>
+                <td>{isEmpty(prop.value) ? "" : prop.value.toString()}</td>
             </tr>
           );
         })}
