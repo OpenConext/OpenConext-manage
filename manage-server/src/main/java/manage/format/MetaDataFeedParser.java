@@ -81,7 +81,7 @@ public class MetaDataFeedParser {
                                             XMLStreamReader reader,
                                             boolean enforceTypeStrictness) throws XMLStreamException {
         Map<String, Object> result = new TreeMap<>();
-        Map<String, String> metaDataFields = new TreeMap<>();
+        Map<String, Object> metaDataFields = new TreeMap<>();
 
         result.put(META_DATA_FIELDS, metaDataFields);
 
@@ -211,7 +211,7 @@ public class MetaDataFeedParser {
                                         Optional<String> indexOpt = getAttributeValue(reader, "index");
                                         indexOpt.ifPresent(index ->
                                                 addMultiplicity(metaDataFields, "AssertionConsumerService:%s:index",
-                                                        assertionConsumerServiceMultiplicity, index));
+                                                        assertionConsumerServiceMultiplicity, Integer.parseInt(index)));
                                     }
                                 }
                             }
@@ -464,13 +464,13 @@ public class MetaDataFeedParser {
         result.put(ARP, arp);
     }
 
-    private void addMetaDataField(Map<String, String> metaDataFields, XMLStreamReader reader, String attributeName,
+    private void addMetaDataField(Map<String, Object> metaDataFields, XMLStreamReader reader, String attributeName,
                                   String metaDataKey) {
         Optional<String> optional = getAttributeValue(reader, attributeName);
         optional.ifPresent(value -> metaDataFields.put(metaDataKey, value));
     }
 
-    private void addLanguageElement(Map<String, String> metaDataFields, XMLStreamReader reader, String elementName)
+    private void addLanguageElement(Map<String, Object> metaDataFields, XMLStreamReader reader, String elementName)
             throws XMLStreamException {
         String language = getAttributeValue(reader, "lang").orElse("en");
         if (languages.contains(language)) {
@@ -479,7 +479,7 @@ public class MetaDataFeedParser {
 
     }
 
-    private void addMultiplicity(Map<String, String> result, String format, int multiplicity, String value) {
+    private void addMultiplicity(Map<String, Object> result, String format, int multiplicity, Object value) {
         List<String> keys = IntStream.range(0, multiplicity).mapToObj(nbr -> String.format(format, nbr))
                 .collect(toList());
         long count = result.keySet().stream().filter(key -> keys.contains(key)).count();
@@ -488,7 +488,7 @@ public class MetaDataFeedParser {
         }
     }
 
-    private void addCert(Map<String, String> result, String cert) {
+    private void addCert(Map<String, Object> result, String cert) {
 
         List<String> certDataKeys = Arrays.asList("certData", "certData2", "certData3");
         long count = result.keySet().stream().filter(certDataKeys::contains).count();
@@ -501,11 +501,11 @@ public class MetaDataFeedParser {
         }
     }
 
-    private void addLogo(Map<String, String> metaDataFields, XMLStreamReader reader) throws XMLStreamException {
+    private void addLogo(Map<String, Object> metaDataFields, XMLStreamReader reader) throws XMLStreamException {
         getAttributeValue(reader, "width")
-                .ifPresent(width -> metaDataFields.put("logo:0:width", width));
+                .ifPresent(width -> metaDataFields.put("logo:0:width", Integer.parseInt(width)));
         getAttributeValue(reader, "height")
-                .ifPresent(height -> metaDataFields.put("logo:0:height", height));
+                .ifPresent(height -> metaDataFields.put("logo:0:height", Integer.parseInt(height)));
         metaDataFields.put("logo:0:url", reader.getElementText());
     }
 
@@ -520,7 +520,7 @@ public class MetaDataFeedParser {
         return Optional.empty();
     }
 
-    private void addCoinEntityCategories(EntityType entityType, Map<String, String> metaDataFields,
+    private void addCoinEntityCategories(EntityType entityType, Map<String, Object> metaDataFields,
                                          MetaDataAutoConfiguration metaDataAutoConfiguration, String elementText) {
         Map<String, Object> schema = metaDataAutoConfiguration.schemaRepresentation(entityType);
         Map<String, Object> schemaPart = this.unpack(schema,
@@ -534,7 +534,7 @@ public class MetaDataFeedParser {
         //do not add the same entity category twice as we limit the number
         List<String> categories = metaDataFields.entrySet().stream()
                 .filter(e -> e.getKey().startsWith(entityCategoryKey))
-                .map(Map.Entry::getValue)
+                .map(e -> (String) e.getValue())
                 .collect(toList());
         if (categories.contains(strippedValue)) {
             return;
@@ -549,7 +549,7 @@ public class MetaDataFeedParser {
                 .max(Integer::compareTo)
                 .map(i -> multiplicity >= startIndex + i ? "put returns null" + metaDataFields.put(entityCategoryKey + ++i,
                         strippedValue) : "")
-                .orElseGet(() -> metaDataFields.put(entityCategoryKey + startIndex, strippedValue));
+                .orElseGet(() -> (String) metaDataFields.put(entityCategoryKey + startIndex, strippedValue));
     }
 
     private Map<String, Object> unpack(Map<String, Object> schema, List<String> keys) {

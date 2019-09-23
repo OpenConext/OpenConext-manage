@@ -81,13 +81,14 @@ export default class Import extends React.Component {
       : a.source.localeCompare(b.source);
 
   arpChanged = (current, imported) => {
-    if (!current.enabled && !imported.enabled) {
+    const currentSave = current || {enabled : false, attributes:[]};
+    if (!currentSave.enabled && !imported.enabled) {
       return false;
     }
-    if (current.enabled !== imported.enabled) {
+    if (currentSave !== imported.enabled) {
       return true;
     }
-    const currentAttributes = Object.keys(current.attributes);
+    const currentAttributes = Object.keys(currentSave.attributes);
     const importedAttributes = Object.keys(imported.attributes);
     const removed = currentAttributes.some(
       name => imported.attributes[name] === undefined
@@ -96,14 +97,14 @@ export default class Import extends React.Component {
       return true;
     }
     const added = importedAttributes.some(
-      name => current.attributes[name] === undefined
+      name => currentSave.attributes[name] === undefined
     );
     if (added) {
       return true;
     }
     const detailsChanged = currentAttributes.some(name => {
       const imp = imported.attributes[name];
-      const curr = current.attributes[name];
+      const curr = currentSave.attributes[name];
       if (curr.length !== imp.length) {
         return true;
       }
@@ -185,7 +186,7 @@ export default class Import extends React.Component {
         }
       } else if (key !== "connection") {
         const current = currentMetaData[key];
-        if (current === results[key]) {
+        if (current === results[key] || key === "type") {
           delete results[key];
         } else {
           results.connection[key] = {
