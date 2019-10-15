@@ -186,7 +186,7 @@ export default class Import extends React.Component {
         }
       } else if (key !== "connection") {
         const current = currentMetaData[key];
-        if (current === results[key] || key === "type") {
+        if (current === results[key]) {
           delete results[key];
         } else {
           results.connection[key] = {

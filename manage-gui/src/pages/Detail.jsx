@@ -401,7 +401,7 @@ export default class Detail extends React.PureComponent {
     if (applyChangesFor["metaDataFields"] && results["metaDataFields"]) {
       Object.keys(results.metaDataFields).forEach(key => {
         if (results.metaDataFields[key].selected) {
-          if (results.metaDataFields[key].value) {
+          if (!isEmpty(results.metaDataFields[key].value)) {
             newData.metaDataFields[key] = results.metaDataFields[key].value;
           } else {
             delete this.state.metaData.data.metaDataFields[key];

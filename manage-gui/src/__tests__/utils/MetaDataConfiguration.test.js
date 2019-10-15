@@ -1,7 +1,6 @@
-import {options} from "../../utils/MetaDataConfiguration";
+import {isEmpty} from "../../utils/Utils";
 
-test("Do not show already selected metadata", () => {
-  //WIP
-  const res = () => options({}, []);
-  expect(res).toThrow(TypeError);
+test("0 is not empty", () => {
+  const res = isEmpty(0);
+  expect(res).toBe(false);
 });
