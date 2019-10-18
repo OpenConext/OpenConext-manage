@@ -204,7 +204,8 @@ export default class ARP extends React.Component {
 
 
   renderAttributeRow = (sources, attributeKey, attributeValues, configurationAttributes, arpAttributes, guest) => {
-    let displayKey = attributeKey.substring(attributeKey.lastIndexOf(":") + 1);
+    const display = (arpAttributes[attributeKey] || {}).display
+    let displayKey = display || attributeKey.substring(attributeKey.lastIndexOf(":") + 1);
     const arpAttribute = arpAttributes[attributeKey];
     const deprecated = arpAttribute.deprecated;
     const description = arpAttribute.description;
