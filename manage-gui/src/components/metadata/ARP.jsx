@@ -47,7 +47,7 @@ export default class ARP extends React.Component {
 
   };
 
-  nameOfKey = key => key.substring(key.lastIndexOf(":") + 1);
+  nameOfKey = (display, key) => (display || key.substring(key.lastIndexOf(":") + 1)).toLocaleLowerCase();
 
   copyToClipboard = () => {
     copyToClip("arp-attributes-printable");
@@ -66,6 +66,9 @@ export default class ARP extends React.Component {
     const aEnabled = !isEmpty(attributes[aKey]);
     const bEnabled = !isEmpty(attributes[bKey]);
 
+    const nameOfA = this.nameOfKey(a.display, aKey);
+    const nameOfB = this.nameOfKey(b.display, bKey);
+
     if (aEnabled && !bEnabled) {
       return -1;
     }
@@ -73,7 +76,7 @@ export default class ARP extends React.Component {
       return 1;
     }
     if (a.deprecated && b.deprecated) {
-      return this.nameOfKey(aKey).localeCompare(this.nameOfKey(bKey));
+      return nameOfA.localeCompare(nameOfB);
     }
     if (a.deprecated && !b.deprecated) {
       return 1;
@@ -81,7 +84,7 @@ export default class ARP extends React.Component {
     if (!a.deprecated && b.deprecated) {
       return -1;
     }
-    return this.nameOfKey(aKey).localeCompare(this.nameOfKey(bKey));
+    return nameOfA.localeCompare(nameOfB);
   };
 
   onChangeArp = (property, key, index) => value => {
@@ -156,11 +159,11 @@ export default class ARP extends React.Component {
     return true;
   };
 
-  renderValueCellWithInput = (key, index) => {
+  renderValueCellWithInput = (key, index, display) => {
     const {value} = this.state;
     return (<tr className={index % 2 === 0 ? "even" : "odd"}>
       <td className="new-attribute-value"
-          colSpan={2}>{I18n.t("arp.new_attribute_value", {key: this.nameOfKey(key)})}</td>
+          colSpan={2}>{I18n.t("arp.new_attribute_value", {key: this.nameOfKey(key, display)})}</td>
       <td><input ref={ref => this.newAttributeValue = ref}
                  type="text" onKeyUp={this.onKeyUp(key)}
                  onChange={e => this.setState({value: e.target.value})}
@@ -237,7 +240,7 @@ export default class ARP extends React.Component {
     {(!doAddInput && attributeValues.length > 0) &&
     <tr>
       <td className="new-attribute-value"
-          colSpan={2}>{I18n.t("arp.new_attribute_motivation", {key: this.nameOfKey(attributeKey)})}</td>
+          colSpan={2}>{I18n.t("arp.new_attribute_motivation", {key: this.nameOfKey(display, attributeKey)})}</td>
       <td colSpan={3}><input
         ref={ref => {
           if (this.state.newArpAttributeAddedKey === attributeKey) {
@@ -265,14 +268,14 @@ export default class ARP extends React.Component {
         {headers.map(td => <th className={td} key={td}>{I18n.t(`arp.${td}`)}</th>)}
       </tr>
       </thead>
-      {configurationAttributes.map(attrKey => {
+      {configurationAttributes.map((attrKey, index) => {
         const {addInput, keyForNewInput} = this.state;
         const doAddInput = addInput && keyForNewInput === attrKey;
         const rows = [this.renderAttributeRow(
           sources, attrKey, arp.attributes[attrKey] || [],
           configurationAttributes, arpConfAttributes, guest)];
         if (doAddInput) {
-          rows.push(this.renderValueCellWithInput(attrKey));
+          rows.push(this.renderValueCellWithInput(attrKey, index, arpConfAttributes[attrKey].display));
         }
         return rows;
       })}

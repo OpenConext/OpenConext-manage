@@ -366,7 +366,12 @@ export default class Detail extends React.PureComponent {
     let last = parts.pop();
 
     let ref = metaData;
-    parts.forEach(part => (ref = ref[part]));
+    parts.forEach(part => {
+      if (isEmpty(ref[part])) {
+        ref[part] = {};
+      }
+      ref = ref[part];
+    });
     last = replaceAtSignWithDotsInName ? last.replace(/@/g, ".") : last;
     if (value === null) {
       delete ref[last];
