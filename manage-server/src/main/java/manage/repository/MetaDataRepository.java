@@ -94,12 +94,12 @@ public class MetaDataRepository {
     }
 
     public int deleteAllImportedServiceProviders() {
-        Query query = new Query(Criteria.where("data.metaDataFields.coin:imported_from_edugain").is("1"));
+        Query query = new Query(Criteria.where("data.metaDataFields.coin:imported_from_edugain").is(true));
         return mongoTemplate.remove(query, EntityType.SP.getType()).getN();
     }
 
     public long countAllImportedServiceProviders() {
-        Query query = new Query(Criteria.where("data.metaDataFields.coin:imported_from_edugain").is("1"));
+        Query query = new Query(Criteria.where("data.metaDataFields.coin:imported_from_edugain").is(true));
         return mongoTemplate.count(query, EntityType.SP.getType());
     }
 

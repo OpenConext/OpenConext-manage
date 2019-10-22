@@ -135,8 +135,8 @@ public class SystemController {
                 serviceProviders.stream()
                         .filter(metaData -> {
                             Map metaDataFields = metaData.metaDataFields();
-                            boolean importedFromEdugain = "1".equals(metaDataFields.get("coin:imported_from_edugain"));
-                            boolean pushEnabled = "1".equals(metaDataFields.get("coin:push_enabled"));
+                            boolean importedFromEdugain = Boolean.TRUE.equals(metaDataFields.get("coin:imported_from_edugain"));
+                            boolean pushEnabled = Boolean.TRUE.equals(metaDataFields.get("coin:push_enabled"));
                             return !importedFromEdugain || pushEnabled;
                         }) : serviceProviders.stream();
 

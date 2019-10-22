@@ -166,7 +166,7 @@ export default class EduGain extends React.PureComponent {
     <p className="info">The <span className="warning">delete</span> functionality will delete
       <span className="code"> {count} </span>
       service providers with the metadata field <span className="code">coin:imported_from_edugain </span>
-      set to <span className="code"> 1</span>. This flag is set during the import of the metadata feed.
+      set to <span className="code">true</span>. This flag is set during the import of the metadata feed.
     </p>
     <a onClick={this.deleteImport} className={`button large ${deleting ? "disabled grey" : "red"}`}>
       {I18n.t("edugain.delete")}<i className="fa fa-trash"></i></a>
