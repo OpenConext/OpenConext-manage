@@ -77,7 +77,6 @@ public class EngineBlockFormatter {
         spAttributes.put("metadata:coin:eula", empty());
         spAttributes.put("metadata:coin:do_not_add_attribute_aliases", empty());
         spAttributes.put("metadata:coin:policy_enforcement_decision_required", empty());
-        spAttributes.put("metadata:coin:attribute_aggregation_required", empty());
         spAttributes.put("metadata:coin:no_consent_required", empty());
         spAttributes.put("metadata:coin:sign_response", empty());
         spAttributes.put("metadata:coin:stepup:requireloa", empty());

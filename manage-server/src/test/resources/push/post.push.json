@@ -47,7 +47,6 @@
     "policy_enforcement_decision_required": false,
     "support_url_en": null,
     "support_url_nl": null,
-    "attribute_aggregation_required": false,
     "implicit_vo_id": null
   },
   {
@@ -98,7 +97,6 @@
     "policy_enforcement_decision_required": false,
     "support_url_en": null,
     "support_url_nl": null,
-    "attribute_aggregation_required": false,
     "implicit_vo_id": null
   },
   {
@@ -149,7 +147,6 @@
     "policy_enforcement_decision_required": false,
     "support_url_en": null,
     "support_url_nl": null,
-    "attribute_aggregation_required": false,
     "implicit_vo_id": null
   },
   {
@@ -200,7 +197,6 @@
     "policy_enforcement_decision_required": false,
     "support_url_en": null,
     "support_url_nl": null,
-    "attribute_aggregation_required": false,
     "implicit_vo_id": null
   },
   {
@@ -251,7 +247,6 @@
     "policy_enforcement_decision_required": true,
     "support_url_en": null,
     "support_url_nl": null,
-    "attribute_aggregation_required": false,
     "implicit_vo_id": null
   },
   {
@@ -302,7 +297,6 @@
     "policy_enforcement_decision_required": true,
     "support_url_en": null,
     "support_url_nl": null,
-    "attribute_aggregation_required": false,
     "implicit_vo_id": null
   },
   {
@@ -353,7 +347,6 @@
     "policy_enforcement_decision_required": false,
     "support_url_en": null,
     "support_url_nl": null,
-    "attribute_aggregation_required": true,
     "implicit_vo_id": null
   },
   {
@@ -404,7 +397,6 @@
     "policy_enforcement_decision_required": false,
     "support_url_en": null,
     "support_url_nl": null,
-    "attribute_aggregation_required": false,
     "implicit_vo_id": null
   },
   {
@@ -455,7 +447,6 @@
     "policy_enforcement_decision_required": false,
     "support_url_en": null,
     "support_url_nl": null,
-    "attribute_aggregation_required": false,
     "implicit_vo_id": null
   },
   {
@@ -506,7 +497,6 @@
     "policy_enforcement_decision_required": true,
     "support_url_en": null,
     "support_url_nl": null,
-    "attribute_aggregation_required": true,
     "implicit_vo_id": null
   },
   {
@@ -557,7 +547,6 @@
     "policy_enforcement_decision_required": false,
     "support_url_en": null,
     "support_url_nl": null,
-    "attribute_aggregation_required": false,
     "implicit_vo_id": null
   },
   {
@@ -608,7 +597,6 @@
     "policy_enforcement_decision_required": false,
     "support_url_en": null,
     "support_url_nl": null,
-    "attribute_aggregation_required": false,
     "implicit_vo_id": null
   },
   {
@@ -659,7 +647,6 @@
     "policy_enforcement_decision_required": false,
     "support_url_en": null,
     "support_url_nl": null,
-    "attribute_aggregation_required": false,
     "implicit_vo_id": null
   },
   {
@@ -710,7 +697,6 @@
     "policy_enforcement_decision_required": true,
     "support_url_en": null,
     "support_url_nl": null,
-    "attribute_aggregation_required": true,
     "implicit_vo_id": null
   },
   {
@@ -761,7 +747,6 @@
     "policy_enforcement_decision_required": false,
     "support_url_en": null,
     "support_url_nl": null,
-    "attribute_aggregation_required": false,
     "implicit_vo_id": null
   },
   {
@@ -812,7 +797,6 @@
     "policy_enforcement_decision_required": false,
     "support_url_en": null,
     "support_url_nl": null,
-    "attribute_aggregation_required": false,
     "implicit_vo_id": null
   },
   {
@@ -863,7 +847,6 @@
     "policy_enforcement_decision_required": false,
     "support_url_en": null,
     "support_url_nl": null,
-    "attribute_aggregation_required": false,
     "implicit_vo_id": null
   },
   {
@@ -914,7 +897,6 @@
     "policy_enforcement_decision_required": false,
     "support_url_en": null,
     "support_url_nl": null,
-    "attribute_aggregation_required": false,
     "implicit_vo_id": null
   },
   {
@@ -965,7 +947,6 @@
     "policy_enforcement_decision_required": false,
     "support_url_en": null,
     "support_url_nl": null,
-    "attribute_aggregation_required": false,
     "implicit_vo_id": null
   },
   {
@@ -1016,7 +997,6 @@
     "policy_enforcement_decision_required": false,
     "support_url_en": null,
     "support_url_nl": null,
-    "attribute_aggregation_required": false,
     "implicit_vo_id": null
   },
   {
@@ -1067,7 +1047,6 @@
     "policy_enforcement_decision_required": false,
     "support_url_en": null,
     "support_url_nl": null,
-    "attribute_aggregation_required": false,
     "implicit_vo_id": null
   },
   {
@@ -1118,7 +1097,6 @@
     "policy_enforcement_decision_required": false,
     "support_url_en": null,
     "support_url_nl": null,
-    "attribute_aggregation_required": false,
     "implicit_vo_id": null
   },
   {
@@ -1169,7 +1147,6 @@
     "policy_enforcement_decision_required": false,
     "support_url_en": null,
     "support_url_nl": null,
-    "attribute_aggregation_required": true,
     "implicit_vo_id": null
   },
   {
@@ -1220,7 +1197,6 @@
     "policy_enforcement_decision_required": false,
     "support_url_en": null,
     "support_url_nl": null,
-    "attribute_aggregation_required": false,
     "implicit_vo_id": null
   },
   {
@@ -1271,7 +1247,6 @@
     "policy_enforcement_decision_required": false,
     "support_url_en": null,
     "support_url_nl": null,
-    "attribute_aggregation_required": false,
     "implicit_vo_id": null
   },
   {
@@ -1322,7 +1297,6 @@
     "policy_enforcement_decision_required": false,
     "support_url_en": null,
     "support_url_nl": null,
-    "attribute_aggregation_required": false,
     "implicit_vo_id": null
   },
   {
@@ -1373,7 +1347,6 @@
     "policy_enforcement_decision_required": false,
     "support_url_en": null,
     "support_url_nl": null,
-    "attribute_aggregation_required": false,
     "implicit_vo_id": null
   },
   {
@@ -1424,7 +1397,6 @@
     "policy_enforcement_decision_required": false,
     "support_url_en": null,
     "support_url_nl": null,
-    "attribute_aggregation_required": false,
     "implicit_vo_id": null
   },
   {
@@ -1475,7 +1447,6 @@
     "policy_enforcement_decision_required": false,
     "support_url_en": null,
     "support_url_nl": null,
-    "attribute_aggregation_required": false,
     "implicit_vo_id": null
   },
   {
@@ -1526,7 +1497,6 @@
     "policy_enforcement_decision_required": false,
     "support_url_en": null,
     "support_url_nl": null,
-    "attribute_aggregation_required": false,
     "implicit_vo_id": null
   },
   {
@@ -1577,7 +1547,6 @@
     "policy_enforcement_decision_required": false,
     "support_url_en": null,
     "support_url_nl": null,
-    "attribute_aggregation_required": false,
     "implicit_vo_id": null
   },
   {
@@ -1628,7 +1597,6 @@
     "policy_enforcement_decision_required": false,
     "support_url_en": null,
     "support_url_nl": null,
-    "attribute_aggregation_required": false,
     "implicit_vo_id": null
   },
   {
@@ -1679,7 +1647,6 @@
     "policy_enforcement_decision_required": false,
     "support_url_en": null,
     "support_url_nl": null,
-    "attribute_aggregation_required": false,
     "implicit_vo_id": null
   },
   {
@@ -1730,7 +1697,6 @@
     "policy_enforcement_decision_required": null,
     "support_url_en": null,
     "support_url_nl": null,
-    "attribute_aggregation_required": null,
     "implicit_vo_id": null
   },
   {
@@ -1781,7 +1747,6 @@
     "policy_enforcement_decision_required": null,
     "support_url_en": null,
     "support_url_nl": null,
-    "attribute_aggregation_required": null,
     "implicit_vo_id": null
   },
   {
@@ -1832,7 +1797,6 @@
     "policy_enforcement_decision_required": null,
     "support_url_en": null,
     "support_url_nl": null,
-    "attribute_aggregation_required": null,
     "implicit_vo_id": null
   },
   {
@@ -1883,7 +1847,6 @@
     "policy_enforcement_decision_required": null,
     "support_url_en": null,
     "support_url_nl": null,
-    "attribute_aggregation_required": null,
     "implicit_vo_id": null
   },
   {
@@ -1934,7 +1897,6 @@
     "policy_enforcement_decision_required": null,
     "support_url_en": null,
     "support_url_nl": null,
-    "attribute_aggregation_required": null,
     "implicit_vo_id": null
   },
   {
@@ -1985,7 +1947,6 @@
     "policy_enforcement_decision_required": null,
     "support_url_en": null,
     "support_url_nl": null,
-    "attribute_aggregation_required": null,
     "implicit_vo_id": null
   },
   {
@@ -2036,7 +1997,6 @@
     "policy_enforcement_decision_required": null,
     "support_url_en": null,
     "support_url_nl": null,
-    "attribute_aggregation_required": null,
     "implicit_vo_id": null
   },
   {
@@ -2087,7 +2047,6 @@
     "policy_enforcement_decision_required": null,
     "support_url_en": null,
     "support_url_nl": null,
-    "attribute_aggregation_required": null,
     "implicit_vo_id": null
   },
   {
@@ -2138,7 +2097,6 @@
     "policy_enforcement_decision_required": null,
     "support_url_en": null,
     "support_url_nl": null,
-    "attribute_aggregation_required": null,
     "implicit_vo_id": null
   },
   {
@@ -2189,7 +2147,6 @@
     "policy_enforcement_decision_required": true,
     "support_url_en": null,
     "support_url_nl": null,
-    "attribute_aggregation_required": true,
     "implicit_vo_id": null
   },
   {
@@ -2240,7 +2197,6 @@
     "policy_enforcement_decision_required": false,
     "support_url_en": null,
     "support_url_nl": null,
-    "attribute_aggregation_required": false,
     "implicit_vo_id": null
   },
   {
@@ -2291,7 +2247,6 @@
     "policy_enforcement_decision_required": false,
     "support_url_en": null,
     "support_url_nl": null,
-    "attribute_aggregation_required": false,
     "implicit_vo_id": null
   },
   {
@@ -2342,7 +2297,6 @@
     "policy_enforcement_decision_required": false,
     "support_url_en": null,
     "support_url_nl": null,
-    "attribute_aggregation_required": false,
     "implicit_vo_id": null
   },
   {
@@ -2393,7 +2347,6 @@
     "policy_enforcement_decision_required": false,
     "support_url_en": null,
     "support_url_nl": null,
-    "attribute_aggregation_required": false,
     "implicit_vo_id": null
   },
   {
@@ -2444,7 +2397,6 @@
     "policy_enforcement_decision_required": false,
     "support_url_en": null,
     "support_url_nl": null,
-    "attribute_aggregation_required": false,
     "implicit_vo_id": null
   },
   {
@@ -2495,7 +2447,6 @@
     "policy_enforcement_decision_required": false,
     "support_url_en": null,
     "support_url_nl": null,
-    "attribute_aggregation_required": false,
     "implicit_vo_id": null
   },
   {
@@ -2546,7 +2497,6 @@
     "policy_enforcement_decision_required": false,
     "support_url_en": null,
     "support_url_nl": null,
-    "attribute_aggregation_required": false,
     "implicit_vo_id": null
   },
   {
@@ -2597,7 +2547,6 @@
     "policy_enforcement_decision_required": null,
     "support_url_en": null,
     "support_url_nl": null,
-    "attribute_aggregation_required": null,
     "implicit_vo_id": null
   },
   {
@@ -2648,7 +2597,6 @@
     "policy_enforcement_decision_required": false,
     "support_url_en": null,
     "support_url_nl": null,
-    "attribute_aggregation_required": false,
     "implicit_vo_id": null
   },
   {
@@ -2699,7 +2647,6 @@
     "policy_enforcement_decision_required": null,
     "support_url_en": null,
     "support_url_nl": null,
-    "attribute_aggregation_required": null,
     "implicit_vo_id": null
   },
   {
@@ -2750,7 +2697,6 @@
     "policy_enforcement_decision_required": false,
     "support_url_en": null,
     "support_url_nl": null,
-    "attribute_aggregation_required": false,
     "implicit_vo_id": null
   },
   {
@@ -2801,7 +2747,6 @@
     "policy_enforcement_decision_required": false,
     "support_url_en": null,
     "support_url_nl": null,
-    "attribute_aggregation_required": false,
     "implicit_vo_id": null
   },
   {
@@ -2852,7 +2797,6 @@
     "policy_enforcement_decision_required": false,
     "support_url_en": null,
     "support_url_nl": null,
-    "attribute_aggregation_required": false,
     "implicit_vo_id": null
   }
 ]
