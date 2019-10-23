@@ -6,6 +6,7 @@ import manage.AbstractIntegrationTest;
 import manage.model.EntityType;
 import manage.model.Import;
 import manage.model.MetaData;
+import manage.model.MetaDataKeyDelete;
 import manage.model.MetaDataUpdate;
 import manage.model.Revision;
 import manage.model.RevisionRestore;
@@ -891,7 +892,6 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 .as(MetaData.class);
         oidcClient = (Map<String, Object>) result.getData().get(OIDC_CLIENT_KEY);
         assertEquals(rediredctUris, oidcClient.get("redirectUris"));
-
     }
 
     @Test
@@ -914,8 +914,29 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 .post("manage/api/client/metadata")
                 .then()
                 .statusCode(SC_BAD_REQUEST);
-
-
     }
+
+    @Test
+    public void deleteMetaDataKey() {
+        String keyToDelete = "displayName:en";
+        List result = given()
+                .auth()
+                .preemptive()
+                .basic("sp-portal", "secret")
+                .when()
+                .body(new MetaDataKeyDelete("saml20_sp", keyToDelete))
+                .header("Content-type", "application/json")
+                .put("manage/api/internal/delete-metadata-key")
+                .getBody()
+                .as(List.class);
+
+        assertEquals(5, result.size());
+        result.forEach(entityId -> {
+            MetaData metaData = metaDataRepository.findRaw("saml20_sp",
+                    String.format("{\"data.entityid\":\"%s\"}", entityId)).get(0);
+            assertEquals(false, metaData.metaDataFields().containsKey(keyToDelete));
+        });
+    }
+
 
 }

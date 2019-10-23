@@ -12,6 +12,7 @@ import manage.hook.MetaDataHook;
 import manage.model.EntityType;
 import manage.model.Import;
 import manage.model.MetaData;
+import manage.model.MetaDataKeyDelete;
 import manage.model.MetaDataUpdate;
 import manage.model.RevisionRestore;
 import manage.model.ServiceProvider;
@@ -27,6 +28,8 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
@@ -416,6 +419,33 @@ public class MetaDataController {
     }
 
     @PreAuthorize("hasRole('WRITE')")
+    @PutMapping("/internal/delete-metadata-key")
+    @Transactional
+    public List<String> deleteMetaDataKey(@Validated @RequestBody MetaDataKeyDelete metaDataKeyDelete, APIUser apiUser) throws
+            IOException {
+
+        String keyToDelete = metaDataKeyDelete.getMetaDataKey();
+        Query query = Query.query(Criteria.where("data.metaDataFields." + keyToDelete).exists(true));
+        List<MetaData> metaDataList = metaDataRepository.getMongoTemplate().find(query, MetaData.class, metaDataKeyDelete.getType());
+
+        //of we stream then we need to catch all exceptions including validation exception
+        for (MetaData metaData : metaDataList) {
+            metaData.metaDataFields().remove(keyToDelete);
+            metaData = validate(metaData);
+
+            MetaData previous = metaDataRepository.findById(metaData.getId(), metaData.getType());
+            previous.revision(UUID.randomUUID().toString());
+            metaDataRepository.save(previous);
+
+            metaData.promoteToLatest(String.format("API call for deleting %s by %s", keyToDelete, apiUser.getName()));
+            metaDataRepository.update(metaData);
+        }
+
+        return metaDataList.stream().map(metaData -> (String) metaData.getData().get("entityid")).collect(toList());
+    }
+
+
+    @PreAuthorize("hasRole('WRITE')")
     @PutMapping("internal/merge")
     @Transactional
     public MetaData update(@Validated @RequestBody MetaDataUpdate metaDataUpdate, APIUser apiUser) throws
@@ -445,8 +475,6 @@ public class MetaDataController {
         boolean somethingChanged = !metaData.getData().equals(previous.getData());
 
         if (somethingChanged || forceNewRevision) {
-
-
             metaDataRepository.save(previous);
             metaDataRepository.update(metaData);
 
