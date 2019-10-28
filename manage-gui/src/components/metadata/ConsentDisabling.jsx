@@ -58,6 +58,7 @@ export default class ConsentDisabling extends React.Component {
         "",
       id: moreInfo["_id"],
       type: disableConsent.type,
+      entityType: moreInfo.type,
       "explanation:en": disableConsent["explanation:en"],
       "explanation:nl": disableConsent["explanation:nl"]
     };
@@ -152,7 +153,7 @@ export default class ConsentDisabling extends React.Component {
     });
   };
 
-  renderDisableConsent = (entity, type, guest) => {
+  renderDisableConsent = (entity, guest) => {
     return (
       <tr key={entity.entityid}>
         <td className="remove">
@@ -215,7 +216,7 @@ export default class ConsentDisabling extends React.Component {
           />
         </td>
         <td>
-          <Link to={`/metadata/${type}/${entity.id}`} target="_blank">
+          <Link to={`/metadata/${entity.entityType}/${entity.id}`} target="_blank">
             {entity.entityid}
           </Link>
         </td>
@@ -223,7 +224,7 @@ export default class ConsentDisabling extends React.Component {
     );
   };
 
-  renderDisableConsentTable = (enrichedDisableConsent, type, guest) => {
+  renderDisableConsentTable = (enrichedDisableConsent, guest) => {
     const { sorted, reverse } = this.state;
     const icon = name => {
       if (!(name === sorted)) {
@@ -265,7 +266,7 @@ export default class ConsentDisabling extends React.Component {
           </thead>
           <tbody>
             {enrichedDisableConsent.map(entity =>
-              this.renderDisableConsent(entity, type, guest)
+              this.renderDisableConsent(entity, guest)
             )}
           </tbody>
         </table>
@@ -308,7 +309,6 @@ export default class ConsentDisabling extends React.Component {
         {enrichedDisableConsent.length > 0 &&
           this.renderDisableConsentTable(
             enrichedDisableConsent,
-            "saml20_sp",
             guest
           )}
       </div>

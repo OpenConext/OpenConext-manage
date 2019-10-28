@@ -11,6 +11,7 @@ import "./WhiteList.css";
 import NotesTooltip from "../NotesTooltip";
 
 export default class WhiteList extends React.Component {
+
   constructor(props) {
     super(props);
     this.state = {
@@ -45,7 +46,9 @@ export default class WhiteList extends React.Component {
     }
   }
 
-  whiteListEntityType = type => (type === "saml20_sp" || type === "oidc10_rp") ? "saml20_idp" : "saml20_sp";
+  whiteListEntityType = type => {
+    return (type === "saml20_sp" || type === "oidc10_rp") ? "saml20_idp" : "saml20_sp";
+  };
 
   initialiseAllowedEntities(whiteListing) {
     window.scrollTo(0, 0);
@@ -66,7 +69,6 @@ export default class WhiteList extends React.Component {
       //this can happen as SP's are deleted
       return null;
     }
-
     return {
       status: I18n.t(`metadata.${moreInfo.data.state}`),
       entityid: allowedEntry.name,
@@ -80,7 +82,8 @@ export default class WhiteList extends React.Component {
         !moreInfo.data.allowedEntities.some(
           allowed => allowed.name === this.props.entityId
         ),
-      notes: moreInfo.data.notes
+      notes: moreInfo.data.notes,
+      type: moreInfo.type
     };
   };
 
@@ -251,7 +254,7 @@ export default class WhiteList extends React.Component {
     });
   };
 
-  renderAllowedEntity = (entity, type, guest, addedWhiteListedEntities) => {
+  renderAllowedEntity = (entity, guest, addedWhiteListedEntities) => {
     const className = addedWhiteListedEntities.some(
       e => e.entityid === entity.entityid
     )
@@ -278,7 +281,7 @@ export default class WhiteList extends React.Component {
         </td>
         <td>{entity.status}</td>
         <td>
-          <Link to={`/metadata/${type}/${entity.id}`} target="_blank">
+          <Link to={`/metadata/${entity.type}/${entity.id}`} target="_blank">
             {entity.name}
           </Link>
         </td>
@@ -295,7 +298,6 @@ export default class WhiteList extends React.Component {
   };
 
   renderRemovedEntities = (removedWhiteListedEntities, whiteListing, type) => {
-    const entityType = this.whiteListEntityType(type);
     return (
       <section className="removed-entities">
         <p>{I18n.t("whitelisting.removedWhiteListedEntities")}</p>
@@ -305,7 +307,7 @@ export default class WhiteList extends React.Component {
             <tr key={entity.entityid}>
               <td>
                 <Link
-                  to={`/metadata/${entityType}/${entity.id}`}
+                  to={`/metadata/${entity.type}/${entity.id}`}
                   target="_blank"
                 >
                   {entity.name}
@@ -360,7 +362,6 @@ export default class WhiteList extends React.Component {
       </th>
     );
     const names = ["blocked", "status", "name", "entityid", "notes"];
-    const entityType = this.whiteListEntityType(type);
     return (
       <section className="allowed-entities">
         <table>
@@ -374,7 +375,6 @@ export default class WhiteList extends React.Component {
           {enrichedAllowedEntries.map(entity =>
             this.renderAllowedEntity(
               entity,
-              entityType,
               guest,
               addedWhiteListedEntities
             )
@@ -461,11 +461,7 @@ export default class WhiteList extends React.Component {
           )}
         </div>
         {removedWhiteListedEntities.length > 0 &&
-        this.renderRemovedEntities(
-          removedWhiteListedEntities,
-          whiteListing,
-          type
-        )}
+        this.renderRemovedEntities(removedWhiteListedEntities)}
 
         {!guest && (
           <SelectEntities
