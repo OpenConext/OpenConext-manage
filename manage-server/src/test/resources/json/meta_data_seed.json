@@ -382,6 +382,7 @@
         "coin:disable_scoping": true,
         "coin:additional_logging": true,
         "coin:guest_qualifier": "All",
+        "coin:institution_id": "123",
         "coin:schachomeorganization": "schac_home",
         "coin:hidden": true,
         "redirect.sign": true,

@@ -418,6 +418,29 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                         true));
     }
 
+    /**
+     * This is an outstanding bug where Manage cast numeric strings to int. Won't be fixed to
+     * maintain backward compatibility for scrips that assume all metadata values are strings.
+     */
+    @Test
+    public void searchBug() throws Exception {
+        Map<String, Object> searchOptions = new HashMap<>();
+        searchOptions.put("metaDataFields.coin:institution_id", "123");
+
+        searchOptions.put(REQUESTED_ATTRIBUTES, Arrays.asList(
+                "allowedall", "metaDataFields.AssertionConsumerService:0:Location"
+        ));
+
+        given()
+                .when()
+                .body(searchOptions)
+                .header("Content-type", "application/json")
+                .post("manage/api/client/search/saml20_idp")
+                .then()
+                .statusCode(SC_OK)
+                .body("size()", is(0));
+    }
+
     @Test
     public void searchWithLogicalAnd() throws Exception {
         Map<String, Object> searchOptions = new HashMap<>();
