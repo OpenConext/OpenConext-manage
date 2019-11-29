@@ -162,13 +162,6 @@ public class MetaDataController {
             IOException, XMLStreamException {
         Map<String, Object> innerJson = this.importer.importXML(new ByteArrayResource(container.getXml()
                 .getBytes()), EntityType.SP, Optional.empty());
-        String entityId = String.class.cast(innerJson.get("entityid"));
-        List<Map> result = metaDataRepository.search(EntityType.SP.getType(), singletonMap("entityid",
-                entityId), emptyList(), false, true);
-
-        if (!CollectionUtils.isEmpty(result)) {
-            throw new DuplicateEntityIdException(entityId);
-        }
 
         addDefaultSpData(innerJson);
         MetaData metaData = new MetaData(EntityType.SP.getType(), innerJson);
@@ -328,6 +321,12 @@ public class MetaDataController {
 
 
     private MetaData doPost(@Validated @RequestBody MetaData metaData, String uid, boolean excludeFromPushRequired) throws JsonProcessingException {
+        String entityid = (String) metaData.getData().get("entityid");
+        List<Map> result = this.uniqueEntityId(metaData.getType(), singletonMap("entityid",entityid));
+        if (!CollectionUtils.isEmpty(result)) {
+            throw new DuplicateEntityIdException(entityid);
+        }
+
         sanitizeExcludeFromPush(metaData, excludeFromPushRequired);
         metaData = metaDataHook.prePost(metaData);
 
@@ -399,6 +398,12 @@ public class MetaDataController {
     }
 
     private MetaData doPut(@Validated @RequestBody MetaData metaData, String updatedBy, boolean excludeFromPushRequired) throws JsonProcessingException {
+        String entityid = (String) metaData.getData().get("entityid");
+        List<Map> result = this.uniqueEntityId(metaData.getType(), singletonMap("entityid",entityid));
+        if (result.size() > 1) {
+            throw new DuplicateEntityIdException(entityid);
+        }
+
         sanitizeExcludeFromPush(metaData, excludeFromPushRequired);
         String id = metaData.getId();
         MetaData previous = metaDataRepository.findById(id, metaData.getType());
@@ -555,6 +560,20 @@ public class MetaDataController {
     public List<Map> whiteListing(@PathVariable("type") String type,
                                   @RequestParam(value = "state") String state) {
         return metaDataRepository.whiteListing(type, state);
+    }
+
+    @PostMapping({"/client/uniqueEntityId/{type}", "/internal/uniqueEntityId/{type}"})
+    public List<Map> uniqueEntityId(@PathVariable("type") String type,
+                                    @RequestBody Map<String, Object> properties) {
+        EntityType entityType = EntityType.fromType(type);
+        List<Map> results;
+        if (entityType.equals(EntityType.IDP) || entityType.equals(EntityType.STT)) {
+            results = metaDataRepository.search(type, properties, new ArrayList<>(), false,true);
+        } else {
+            results = metaDataRepository.search(entityType.getType(), properties, new ArrayList<>(), false,true);
+            results.addAll(metaDataRepository.search(entityType.equals(EntityType.RP) ? EntityType.SP.getType() : EntityType.RP.getType(), properties, new ArrayList<>(), false,true));
+        }
+        return results;
     }
 
     @PostMapping({"/client/search/{type}", "/internal/search/{type}"})

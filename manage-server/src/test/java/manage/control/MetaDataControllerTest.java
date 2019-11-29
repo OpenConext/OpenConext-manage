@@ -15,6 +15,7 @@ import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.Collections;
@@ -49,7 +50,7 @@ import static org.junit.Assert.assertTrue;
 public class MetaDataControllerTest extends AbstractIntegrationTest {
 
     @Test
-    public void get() throws Exception {
+    public void get()  {
         given()
                 .when()
                 .get("manage/api/client/metadata/saml20_sp/1")
@@ -62,7 +63,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void getNotFound() throws Exception {
+    public void getNotFound()  {
         given()
                 .when()
                 .get("manage/api/client/metadata/saml20_sp/x")
@@ -71,7 +72,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void templateSp() throws Exception {
+    public void templateSp()  {
         given()
                 .when()
                 .get("manage/api/client/template/saml20_sp")
@@ -88,7 +89,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void templateIdp() throws Exception {
+    public void templateIdp()  {
         given()
                 .when()
                 .get("manage/api/client/template/saml20_idp")
@@ -104,7 +105,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void remove() throws Exception {
+    public void remove()  {
         MetaData metaData = metaDataRepository.findById("1", "saml20_sp");
         assertNotNull(metaData);
 
@@ -119,7 +120,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void removeNonExistent() throws Exception {
+    public void removeNonExistent()  {
         given()
                 .when()
                 .delete("manage/api/client/metadata/saml20_sp/99999")
@@ -128,7 +129,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void configuration() throws Exception {
+    public void configuration()  {
         given()
                 .when()
                 .get("manage/api/client/metadata/configuration")
@@ -139,12 +140,12 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void post() throws Exception {
+    public void post() throws IOException {
         doPost(true, "saml2_user.com");
     }
 
     @Test
-    public void postInternal() throws Exception {
+    public void postInternal() throws IOException {
         doPost(false, "sp-portal");
     }
 
@@ -180,7 +181,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void update() throws Exception {
+    public void update() throws IOException {
         String id = createServiceProviderMetaData(true);
         Map<String, Object> pathUpdates = new HashMap<>();
         pathUpdates.put("metaDataFields.description:en", "New description");
@@ -209,7 +210,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void updateWithOIDC() throws Exception {
+    public void updateWithOIDC()  {
         String body = readFile("oidc/post_path_update.json");
 
         given()
@@ -225,7 +226,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void updateWithOIDCWithRedirectUriMap() throws Exception {
+    public void updateWithOIDCWithRedirectUriMap()  {
         String body = readFile("oidc/post_path_update_redirect_uri_map.json");
 
         given()
@@ -241,7 +242,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void updateNonExistent() throws Exception {
+    public void updateNonExistent()  {
         MetaDataUpdate metaDataUpdate = new MetaDataUpdate("99999", EntityType.SP.getType(), Collections.emptyMap(), Collections.emptyMap());
 
         given()
@@ -258,7 +259,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
 
 
     @Test
-    public void updateWithValidationErrors() throws Exception {
+    public void updateWithValidationErrors() throws IOException {
         String id = createServiceProviderMetaData(true);
         Map<String, Object> pathUpdates = new HashMap<>();
         pathUpdates.put("metaDataFields.NameIDFormats:0", "bogus");
@@ -278,7 +279,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void updateWithoutCorrectScope() throws Exception {
+    public void updateWithoutCorrectScope()  {
         given()
                 .auth()
                 .preemptive()
@@ -292,7 +293,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void updateWithoutCorrectUser() throws Exception {
+    public void updateWithoutCorrectUser()  {
         given()
                 .auth()
                 .preemptive()
@@ -306,12 +307,12 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void putClient() throws Exception {
+    public void putClient()  {
         doPut(true, "saml2_user.com");
     }
 
     @Test
-    public void putInternal() throws Exception {
+    public void putInternal()  {
         doPut(false, "sp-portal");
     }
 
@@ -358,7 +359,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void autoComplete() throws Exception {
+    public void autoComplete()  {
         given()
                 .when()
                 .queryParam("query", "mock")
@@ -373,7 +374,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void autoCompleteEscaping() throws Exception {
+    public void autoCompleteEscaping()  {
         given()
                 .when()
                 .queryParam("query", "(test)")
@@ -386,7 +387,22 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void search() throws Exception {
+    public void uniqueEntityId()  {
+        Map<String, Object> searchOptions = new HashMap<>();
+        searchOptions.put("entityid", "https@//oidc.rp");
+        given()
+                .when()
+                .body(searchOptions)
+                .header("Content-type", "application/json")
+                .post("manage/api/client/uniqueEntityId/saml20_sp")
+                .then()
+                .statusCode(SC_OK)
+                .body("size()", is(1));
+    }
+
+
+    @Test
+    public void search()  {
         Map<String, Object> searchOptions = new HashMap<>();
         searchOptions.put("metaDataFields.coin:do_not_add_attribute_aliases", true);
         searchOptions.put("metaDataFields.contacts:3:contactType", "technical");
@@ -423,7 +439,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
      * maintain backward compatibility for scrips that assume all metadata values are strings.
      */
     @Test
-    public void searchBug() throws Exception {
+    public void searchBug()  {
         Map<String, Object> searchOptions = new HashMap<>();
         searchOptions.put("metaDataFields.coin:institution_id", "123");
 
@@ -442,7 +458,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void searchWithLogicalAnd() throws Exception {
+    public void searchWithLogicalAnd()  {
         Map<String, Object> searchOptions = new HashMap<>();
         searchOptions.put("entityid", "Duis ad do");
         searchOptions.put("metaDataFields.AssertionConsumerService:0:Location",
@@ -459,7 +475,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void searchWithLogicalOr() throws Exception {
+    public void searchWithLogicalOr()  {
         Map<String, Object> searchOptions = new HashMap<>();
         searchOptions.put("entityid", "Duis ad do");
         searchOptions.put("metaDataFields.AssertionConsumerService:0:Location",
@@ -481,7 +497,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void searchWithListIn() throws Exception {
+    public void searchWithListIn()  {
         Map<String, Object> searchOptions = new HashMap<>();
         searchOptions.put("entityid", Arrays.asList(
                 "Duis ad do",
@@ -498,7 +514,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void searchOidcRp() throws Exception {
+    public void searchOidcRp()  {
         Map<String, Object> searchOptions = new HashMap<>();
         searchOptions.put("entityid", "https@//oidc.rp");
         searchOptions.put(ALL_ATTRIBUTES, true);
@@ -515,7 +531,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void rawSearch() throws Exception {
+    public void rawSearch()  {
         String query = "{$and: [{$or:[{\"data.allowedEntities.name\": {$in: [\"http://mock-idp\"]}}, {\"data" +
                 ".allowedall\": true}]}, {\"data.state\":\"prodaccepted\"}]}";
         given()
@@ -532,7 +548,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void rawSearchEncoded() throws Exception {
+    public void rawSearchEncoded() throws UnsupportedEncodingException {
         String query = URLEncoder.encode("{$and: [{$or:[{\"data.allowedEntities.name\": {$in: " +
                 "[\"http://mock-idp\"]}}, {\"data" +
                 ".allowedall\": true}]}, {\"data.state\":\"prodaccepted\"}]}", "UTF-8");
@@ -549,7 +565,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void searchWithAllAttributes() throws Exception {
+    public void searchWithAllAttributes()  {
         Map<String, Object> searchOptions = new HashMap<>();
         searchOptions.put(ALL_ATTRIBUTES, true);
 
@@ -566,7 +582,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void whiteListingProdAccepted() throws Exception {
+    public void whiteListingProdAccepted()  {
         given()
                 .when()
                 .queryParam("state", "prodaccepted")
@@ -578,7 +594,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void whiteListingTestAccepted() throws Exception {
+    public void whiteListingTestAccepted()  {
         given()
                 .when()
                 .queryParam("state", "testaccepted")
@@ -628,7 +644,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void newSp() throws Exception {
+    public void newSp()  {
         String xml = readFile("sp_portal/sp_xml.xml");
         Map<String, String> body = singletonMap("xml", xml);
 
@@ -638,7 +654,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void newSpWithDuplicateEntityId() throws Exception {
+    public void newSpWithDuplicateEntityId()  {
         String xml = readFile("sp_portal/sp_xml.xml");
         String entityId = "https://profile.test2.surfconext.nl/authentication/metadata";
         xml = xml.replaceAll(Pattern.quote("https://engine.test2.surfconext.nl/authentication/sp/metadata"),
@@ -654,7 +670,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void newSpWithMissingRequiredFields() throws Exception {
+    public void newSpWithMissingRequiredFields()  {
         String xml = readFile("sp_portal/sp_xml_missing_required_fields.xml");
         Map<String, String> body = new HashMap<>();
         body.put("xml", xml);
@@ -679,7 +695,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void updateSp() throws Exception {
+    public void updateSp()  {
         MetaData metaData = metaDataRepository.findById("1", EntityType.SP.getType());
         String xml = readFile("sp_portal/sp_xml.xml");
         Map<String, String> body = singletonMap("xml", xml);
@@ -693,7 +709,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void exportToXml() throws Exception {
+    public void exportToXml()  {
         String xml = given()
                 .auth()
                 .preemptive()
@@ -704,7 +720,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void putReconcileEntityIdIdP() throws Exception {
+    public void putReconcileEntityIdIdP()  {
         MetaData metaData = metaDataRepository.findById("7", EntityType.IDP.getType());
         Map.class.cast(metaData.getData()).put("entityid", "new-entityid");
         given()
@@ -721,7 +737,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void deleteReconcileEntityIdSP() throws Exception {
+    public void deleteReconcileEntityIdSP()  {
         MetaData idp = metaDataRepository.findById("6", "saml20_idp");
         assertEquals(2, List.class.cast(idp.getData().get("allowedEntities")).size());
         assertEquals(2, List.class.cast(idp.getData().get("disableConsent")).size());
@@ -739,7 +755,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void restoreRevision() throws Exception {
+    public void restoreRevision()  {
         String type = EntityType.SP.getType();
         MetaData metaData = metaDataRepository.findById("1", type);
         Map.class.cast(metaData.getData()).put("entityid", "something changed");
@@ -804,7 +820,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void restoreDeletedRevision() throws Exception {
+    public void restoreDeletedRevision()  {
         String type = EntityType.SP.getType();
         given()
                 .when()
@@ -886,7 +902,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void updateOicdClient() throws Exception {
+    public void updateOicdClient()  {
         MetaData metaData = given()
                 .when()
                 .get("manage/api/client/metadata/saml20_sp/8")

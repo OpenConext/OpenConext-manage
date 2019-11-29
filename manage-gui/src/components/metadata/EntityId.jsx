@@ -1,94 +1,94 @@
 import React from "react";
 import I18n from "i18n-js";
 
-import { search, validation } from "../../api";
+import {uniqueEntityId, validation} from "../../api";
 import InlineEditable from "./InlineEditable";
-import { isEmpty } from "../../utils/Utils";
+import {isEmpty} from "../../utils/Utils";
 
 export default class EntityId extends React.PureComponent {
-  state = {
-    errorMessage: ""
-  };
+    state = {
+        errorMessage: ""
+    };
 
-  setErrorMessage(errorType) {
-    let errorMessage;
+    setErrorMessage(errorType) {
+        let errorMessage;
 
-    switch (errorType) {
-      case "notPresent":
-        errorMessage = I18n.t("metadata.required", {
-          name: "Entity ID"
-        });
-        break;
-      case "notUnique":
-        errorMessage = I18n.t("metadata.entityIdAlreadyExists", {
-          entityid: this.props.value
-        });
-        break;
-      case "notFormatted":
-        errorMessage = I18n.t("metaDataFields.error", {
-          format: this.props.entityIdFormat
-        });
-        break;
-      default:
-        errorMessage = "";
+        switch (errorType) {
+            case "notPresent":
+                errorMessage = I18n.t("metadata.required", {
+                    name: "Entity ID"
+                });
+                break;
+            case "notUnique":
+                errorMessage = I18n.t("metadata.entityIdAlreadyExists", {
+                    entityid: this.props.value
+                });
+                break;
+            case "notFormatted":
+                errorMessage = I18n.t("metaDataFields.error", {
+                    format: this.props.entityIdFormat
+                });
+                break;
+            default:
+                errorMessage = "";
+        }
+
+        this.setState({errorMessage});
+        return false;
     }
 
-    this.setState({ errorMessage });
-    return false;
-  }
-
-  validPresence(entityId) {
-    return !isEmpty(entityId) || this.setErrorMessage("notPresent");
-  }
-
-  async validUniqueness(entityid) {
-    const { originalEntityId, type } = this.props;
-
-    if (originalEntityId === entityid) {
-      return true;
+    validPresence(entityId) {
+        return !isEmpty(entityId) || this.setErrorMessage("notPresent");
     }
 
-    const isUnique = (await search({ entityid }, type)).length === 0;
+    async validUniqueness(entityid) {
+        const {originalEntityId, type} = this.props;
 
-    return isUnique || this.setErrorMessage("notUnique");
-  }
+        if (originalEntityId === entityid) {
+            return true;
+        }
 
-  async validFormat(entityId) {
-    const { entityIdFormat } = this.props;
+        const isUnique = (await uniqueEntityId(entityid, type)).length === 0;
 
-    if (!entityIdFormat) {
-      return true;
+        return isUnique || this.setErrorMessage("notUnique");
     }
 
-    const valid = await validation(entityIdFormat, entityId);
-    return valid || this.setErrorMessage("notFormatted");
-  }
+    async validFormat(entityId) {
+        const {entityIdFormat} = this.props;
 
-  async validateEntityId(entityId) {
-    const valid =
-      this.validPresence(entityId) &&
-      (await this.validFormat(entityId)) &&
-      (await this.validUniqueness(entityId));
+        if (!entityIdFormat) {
+            return true;
+        }
 
-    if (!valid) this.props.onError(true);
-  }
+        const valid = await validation(entityIdFormat, entityId);
+        return valid || this.setErrorMessage("notFormatted");
+    }
 
-  componentDidMount() {
-    this.validateEntityId(this.props.value);
-  }
+    async validateEntityId(entityId) {
+        const valid =
+            this.validPresence(entityId) &&
+            (await this.validFormat(entityId)) &&
+            (await this.validUniqueness(entityId));
 
-  render() {
-    const { value, hasError, ...rest } = this.props;
+        if (!valid) this.props.onError(true);
+    }
 
-    return (
-      <span>
+    componentDidMount() {
+        this.validateEntityId(this.props.value);
+    }
+
+    render() {
+        const {value, hasError, ...rest} = this.props;
+
+        return (
+            <span>
         <InlineEditable
-          {...rest}
-          value={value}
-          onBlur={e => this.validateEntityId(e.target.value)}
+            {...rest}
+            value={value}
+            onBlur={e => this.validateEntityId(e.target.value)}
         />
-        {hasError && <span className="error">{this.state.errorMessage}</span>}
+                {hasError && <span className="error">{this.state.errorMessage}</span>}
       </span>
-    );
-  }
+        );
+    }
 }

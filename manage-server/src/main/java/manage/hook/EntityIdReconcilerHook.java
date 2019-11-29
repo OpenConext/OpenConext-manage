@@ -1,5 +1,6 @@
 package manage.hook;
 
+import manage.model.EntityType;
 import manage.model.MetaData;
 import manage.repository.MetaDataRepository;
 
@@ -27,7 +28,7 @@ public class EntityIdReconcilerHook extends MetaDataHookAdapter {
 
     @Override
     public boolean appliesForMetaData(MetaData metaData) {
-        return true;
+        return !metaData.getType().equals(EntityType.STT.getType());
     }
 
     @Override

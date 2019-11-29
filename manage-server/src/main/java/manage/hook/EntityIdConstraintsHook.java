@@ -27,7 +27,7 @@ public class EntityIdConstraintsHook extends MetaDataHookAdapter {
 
     @Override
     public boolean appliesForMetaData(MetaData metaData) {
-        return true;
+        return !metaData.getType().equals(EntityType.STT.getType());
     }
 
     @Override

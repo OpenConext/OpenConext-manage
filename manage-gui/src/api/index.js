@@ -177,6 +177,10 @@ export function search(options, type) {
   return postPutJson(`search/${type}`, options, "post");
 }
 
+export function uniqueEntityId(entityid, type) {
+  return postPutJson(`uniqueEntityId/${type}`, { entityid }, "post");
+}
+
 export function rawSearch(query, type) {
   return fetchJson(`rawSearch/${type}?query=${encodeURIComponent(query)}`)
 }
