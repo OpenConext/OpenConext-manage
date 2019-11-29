@@ -343,8 +343,9 @@ public class MetaDataController {
 
     private void sanitizeExcludeFromPush(@RequestBody @Validated MetaData metaData, boolean excludeFromPushRequired) {
         Map metaDataFields = metaData.metaDataFields();
-        if (excludeFromPushRequired && !"1".equals(metaDataFields.get("coin:exclude_from_push"))) {
-            metaDataFields.put("coin:exclude_from_push", "1");
+        Object val = metaDataFields.get("coin:exclude_from_push");
+        if (excludeFromPushRequired && ("0".equals(val) || Boolean.FALSE == val)) {
+            metaDataFields.put("coin:exclude_from_push", true);
         }
     }
 
