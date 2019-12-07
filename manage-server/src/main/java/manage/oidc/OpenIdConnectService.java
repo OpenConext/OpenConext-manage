@@ -1,6 +1,5 @@
 package manage.oidc;
 
-import manage.control.MetaDataController;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +24,7 @@ public class OpenIdConnectService implements OpenIdConnect {
     public OpenIdConnectService(String user, String password, String url) {
         this.restTemplate = new RestTemplate();
         this.restTemplate.getInterceptors().add(new BasicAuthorizationInterceptor(user, password));
-        this.restTemplate.setErrorHandler(new DefaultResponseErrorHandler(){
+        this.restTemplate.setErrorHandler(new DefaultResponseErrorHandler() {
             @Override
             public void handleError(ClientHttpResponse response) throws IOException {
                 String body = IOUtils.toString(response.getBody(), Charset.defaultCharset());

@@ -44,7 +44,7 @@ public class DataSourceConfiguration {
 
     private DataSource initDataSource(DataSourceProperties dataSourceProperties) {
         DataSource dataSource = (DataSource) dataSourceProperties.initializeDataSourceBuilder().type(DataSource.class)
-            .build();
+                .build();
         setTypeSpecificProperties(dataSource);
         return dataSource;
     }

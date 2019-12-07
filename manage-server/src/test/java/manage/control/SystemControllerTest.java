@@ -24,11 +24,11 @@ public class SystemControllerTest extends AbstractIntegrationTest {
     @Test
     public void pushPreview() throws Exception {
         Map connections = given()
-            .when()
-            .get("manage/api/client/playground/pushPreview")
-            .then()
-            .statusCode(SC_OK)
-            .extract().as(Map.class);
+                .when()
+                .get("manage/api/client/playground/pushPreview")
+                .then()
+                .statusCode(SC_OK)
+                .extract().as(Map.class);
         Map expected = objectMapper.readValue(readFile("push/push.expected_connections.json"), Map.class);
 
         assertEquals(expected, connections);
@@ -37,37 +37,37 @@ public class SystemControllerTest extends AbstractIntegrationTest {
     @Test
     public void validate() throws Exception {
         String body = given()
-            .when()
-            .get("manage/api/client/playground/validate")
-            .then()
-            .statusCode(SC_OK)
-            .extract().asString();
+                .when()
+                .get("manage/api/client/playground/validate")
+                .then()
+                .statusCode(SC_OK)
+                .extract().asString();
         assertEquals("{}", body);
     }
 
     @Test
     public void orphans() throws Exception {
         List orphans = given()
-            .when()
-            .get("manage/api/client/playground/orphans")
-            .then()
-            .statusCode(SC_OK)
-            .extract().as(List.class);
+                .when()
+                .get("manage/api/client/playground/orphans")
+                .then()
+                .statusCode(SC_OK)
+                .extract().as(List.class);
         List expected = objectMapper.readValue(readFile("json/expected_orphans.json"), List.class);
 
         assertEquals(expected, orphans);
 
         given()
-            .when()
-            .delete("manage/api/client/playground/deleteOrphans")
-            .then()
-            .statusCode(SC_OK);
+                .when()
+                .delete("manage/api/client/playground/deleteOrphans")
+                .then()
+                .statusCode(SC_OK);
 
         given()
-            .when()
-            .get("manage/api/client/playground/orphans")
-            .then()
-            .statusCode(SC_OK)
-            .body("size()", is(0));
+                .when()
+                .get("manage/api/client/playground/orphans")
+                .then()
+                .statusCode(SC_OK)
+                .body("size()", is(0));
     }
 }

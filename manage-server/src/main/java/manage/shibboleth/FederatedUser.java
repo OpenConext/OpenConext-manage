@@ -21,7 +21,7 @@ public class FederatedUser extends User implements Serializable {
     private Push push;
 
     public FederatedUser(String uid, String displayName, String schacHomeOrganization, List<GrantedAuthority>
-        authorities, List<Features> featureToggles, Product product, Push push) {
+            authorities, List<Features> featureToggles, Product product, Push push) {
         super(uid, "N/A", authorities);
         this.uid = uid;
         this.displayName = displayName;
@@ -33,7 +33,7 @@ public class FederatedUser extends User implements Serializable {
 
     public boolean isGuest() {
         return getAuthorities().stream()
-            .noneMatch(authority -> authority.getAuthority().equalsIgnoreCase("ROLE_ADMIN"));
+                .noneMatch(authority -> authority.getAuthority().equalsIgnoreCase("ROLE_ADMIN"));
     }
 
     public boolean featureAllowed(Features feature) {

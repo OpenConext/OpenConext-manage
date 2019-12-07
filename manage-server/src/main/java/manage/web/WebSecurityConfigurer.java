@@ -107,13 +107,13 @@ public class WebSecurityConfigurer {
         @Override
         protected void configure(HttpSecurity http) throws Exception {
             List<String> allFeatures = Arrays.asList(Features.values()).stream()
-                .map(feature -> feature.name())
-                .collect(toList());
+                    .map(feature -> feature.name())
+                    .collect(toList());
 
             List<Features> featuresList = Stream.of(this.features.split(","))
-                .filter(feature -> allFeatures.contains(feature.trim().toUpperCase()))
-                .map(feature -> Features.valueOf(feature.trim().toUpperCase()))
-                .collect(toList());
+                    .filter(feature -> allFeatures.contains(feature.trim().toUpperCase()))
+                    .map(feature -> Features.valueOf(feature.trim().toUpperCase()))
+                    .collect(toList());
 
             Product product = new Product(productOrganization, productName, serviceProviderFeedUrl, showOidcRp);
             Push push = new Push(pushUrl, pushName, pushOidcUrl, pushOidcName, excludeOidcRP);
@@ -122,30 +122,30 @@ public class WebSecurityConfigurer {
             authenticationEntryPoint.setRealmName("manage");
 
             http
-                .requestMatchers().antMatchers("/client/**")
-                .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                .and()
-                .csrf()
-                .requireCsrfProtectionMatcher(new CsrfProtectionMatcher())
-                .and()
-                .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint)
-                .and()
-                .addFilterAfter(new CsrfTokenResponseHeaderBindingFilter(), CsrfFilter.class)
-                .addFilterBefore(new SessionAliveFilter(), CsrfFilter.class)
-                .addFilterBefore(
-                    new ShibbolethPreAuthenticatedProcessingFilter(authenticationManagerBean(), featuresList,
-                        product, push),
-                    AbstractPreAuthenticatedProcessingFilter.class
-                )
-                .addFilterBefore(
-                    new BasicAuthenticationFilter(
-                        new BasicAuthenticationManager(user, password, featuresList, product, push)),
-                    ShibbolethPreAuthenticatedProcessingFilter.class
-                )
-                .authorizeRequests()
-                .antMatchers("/client/**").hasRole("USER");
+                    .requestMatchers().antMatchers("/client/**")
+                    .and()
+                    .sessionManagement()
+                    .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                    .and()
+                    .csrf()
+                    .requireCsrfProtectionMatcher(new CsrfProtectionMatcher())
+                    .and()
+                    .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint)
+                    .and()
+                    .addFilterAfter(new CsrfTokenResponseHeaderBindingFilter(), CsrfFilter.class)
+                    .addFilterBefore(new SessionAliveFilter(), CsrfFilter.class)
+                    .addFilterBefore(
+                            new ShibbolethPreAuthenticatedProcessingFilter(authenticationManagerBean(), featuresList,
+                                    product, push),
+                            AbstractPreAuthenticatedProcessingFilter.class
+                    )
+                    .addFilterBefore(
+                            new BasicAuthenticationFilter(
+                                    new BasicAuthenticationManager(user, password, featuresList, product, push)),
+                            ShibbolethPreAuthenticatedProcessingFilter.class
+                    )
+                    .authorizeRequests()
+                    .antMatchers("/client/**").hasRole("USER");
 
             if (environment.acceptsProfiles("dev")) {
                 //we can't use @Profile, because we need to add it before the real filter
@@ -173,22 +173,22 @@ public class WebSecurityConfigurer {
         @Override
         public void configure(HttpSecurity http) throws Exception {
             APIUserConfiguration apiUserConfiguration = new Yaml()
-                .loadAs(resourceLoader.getResource(configApiUsersFileLocation).getInputStream(), APIUserConfiguration
-                    .class);
+                    .loadAs(resourceLoader.getResource(configApiUsersFileLocation).getInputStream(), APIUserConfiguration
+                            .class);
             http
-                .antMatcher("/internal/**")
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .csrf()
-                .disable()
-                .addFilterBefore(
-                    new BasicAuthenticationFilter(
-                        new APIAuthenticationManager(apiUserConfiguration)
-                    ), BasicAuthenticationFilter.class
-                )
-                .authorizeRequests()
-                .antMatchers("/internal/**").hasRole("READ");
+                    .antMatcher("/internal/**")
+                    .sessionManagement()
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                    .and()
+                    .csrf()
+                    .disable()
+                    .addFilterBefore(
+                            new BasicAuthenticationFilter(
+                                    new APIAuthenticationManager(apiUserConfiguration)
+                            ), BasicAuthenticationFilter.class
+                    )
+                    .authorizeRequests()
+                    .antMatchers("/internal/**").hasRole("READ");
         }
 
     }

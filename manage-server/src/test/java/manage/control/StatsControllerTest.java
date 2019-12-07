@@ -14,14 +14,14 @@ public class StatsControllerTest extends AbstractIntegrationTest {
     @Test
     public void connections() throws Exception {
         List connections = given()
-            .auth()
-            .preemptive()
-            .basic("sysadmin", "secret")
-            .when()
-            .get("manage/api/internal/stats/connections")
-            .then()
-            .statusCode(SC_OK)
-            .extract().response().as(List.class);
+                .auth()
+                .preemptive()
+                .basic("sysadmin", "secret")
+                .when()
+                .get("manage/api/internal/stats/connections")
+                .then()
+                .statusCode(SC_OK)
+                .extract().response().as(List.class);
         assertEquals(5, connections.size());
 
     }

@@ -56,7 +56,7 @@ public class UserController {
 
     @PostMapping("/client/users/error")
     public void error(@RequestBody Map<String, Object> payload, FederatedUser federatedUser) throws
-        JsonProcessingException, UnknownHostException {
+            JsonProcessingException, UnknownHostException {
         payload.put("dateTime", new SimpleDateFormat("yyyyy-mm-dd hh:mm:ss").format(new Date()));
         payload.put("machine", InetAddress.getLocalHost().getHostName());
         payload.put("user", federatedUser);
@@ -68,7 +68,7 @@ public class UserController {
     public void disclaimer(HttpServletResponse response) throws IOException {
         response.setContentType("text/css");
         response.getWriter().write("body::after {background: " + disclaimerBackgroundColor + ";content: \"" +
-            disclaimerContent + "\";}");
+                disclaimerContent + "\";}");
         response.getWriter().flush();
 
     }

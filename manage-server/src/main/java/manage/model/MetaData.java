@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.annotation.Version;
@@ -100,7 +99,7 @@ public class MetaData implements Serializable {
             String property = path;
             while (iterator.hasNext()) {
                 Assert.notNull(reference, String.format("Invalid metadata path %s. %s part does not exists", value,
-                    part));
+                        part));
                 part = iterator.next();
                 if (iterator.hasNext()) {
                     reference = Map.class.cast(reference).get(part);

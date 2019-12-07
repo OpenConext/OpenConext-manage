@@ -62,7 +62,7 @@ public class SecretHookTest {
 
     private MetaData metaData(String secret) {
         Map<String, Object> data = new HashMap<>();
-        Map<String, Object>  metaDataFields = new HashMap<>();
+        Map<String, Object> metaDataFields = new HashMap<>();
         data.put("metaDataFields", metaDataFields);
 
         metaDataFields.put("secret", secret);

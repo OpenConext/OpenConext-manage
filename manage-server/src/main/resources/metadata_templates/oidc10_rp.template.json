@@ -10,8 +10,12 @@
     "name:en": "",
     "secret": "",
     "redirectUrls": [],
-    "scopes": ["openid"],
-    "grants": ["authorization_code"]
+    "scopes": [
+      "openid"
+    ],
+    "grants": [
+      "authorization_code"
+    ]
   },
   "allowedEntities": [],
   "allowedResourceServers": []

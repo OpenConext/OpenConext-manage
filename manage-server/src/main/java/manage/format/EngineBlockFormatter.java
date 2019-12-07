@@ -188,7 +188,7 @@ public class EngineBlockFormatter {
 
     private void addContactPersons(Map<String, Object> source, Map<String, Object> result) {
         final Map<String, Object> metadata = (Map<String, Object>) result.computeIfAbsent("metadata", key -> new
-            TreeMap<>());
+                TreeMap<>());
         Map<String, Object> metaDataFields = (Map<String, Object>) source.get("metaDataFields");
         IntStream.range(0, 4).forEach(i -> {
             String contactType = (String) metaDataFields.get("contacts:" + i + ":contactType");
@@ -199,7 +199,7 @@ public class EngineBlockFormatter {
 
             if (hasText(contactType) || hasText(emailAddress) || hasText(telephoneNumber) || hasText(givenName) || hasText(surName)) {
                 ArrayList<Object> contactsContainer = (ArrayList<Object>) metadata.computeIfAbsent(
-                    "contacts", key -> new ArrayList<>());
+                        "contacts", key -> new ArrayList<>());
                 Map<String, String> contact = new HashMap<>();
                 putIfHasText("contactType", contactType, contact);
                 putIfHasText("emailAddress", emailAddress, contact);
@@ -266,14 +266,14 @@ public class EngineBlockFormatter {
 
     private void addNameIDFormats(Map<String, Object> source, Map<String, Object> result) {
         final Map<String, Object> metadata = (Map<String, Object>) result.computeIfAbsent("metadata", key -> new
-            TreeMap<>());
+                TreeMap<>());
         Map<String, Object> metaDataFields = (Map<String, Object>) source.get("metaDataFields");
 
         IntStream.range(0, 3).forEach(i -> {
-            String nameIdFormat = (String)metaDataFields.get("NameIDFormats:" + i);
+            String nameIdFormat = (String) metaDataFields.get("NameIDFormats:" + i);
             if (hasText(nameIdFormat)) {
                 Set<String> nameIDFormats = (Set<String>) metadata.computeIfAbsent(
-                    "NameIDFormats", key -> new HashSet<>());
+                        "NameIDFormats", key -> new HashSet<>());
                 nameIDFormats.add(nameIdFormat);
             }
 
@@ -302,7 +302,7 @@ public class EngineBlockFormatter {
                 //bugfix for EB not having the knowledge that 'idp' source is special
                 Collection<List<Map<String, String>>> values = attributes.values();
                 values.forEach(arpValues -> arpValues.forEach(map -> map.entrySet()
-                    .removeIf(entry -> entry.getKey().equals("source") && entry.getValue().equals("idp"))));
+                        .removeIf(entry -> entry.getKey().equals("source") && entry.getValue().equals("idp"))));
 
                 result.put("arp_attributes", attributes);
 
@@ -312,7 +312,7 @@ public class EngineBlockFormatter {
 
     private void addSingleSignOnService(Map<String, Object> source, Map<String, Object> result) {
         final Map<String, Object> metadata = (Map<String, Object>) result.computeIfAbsent("metadata", key -> new
-            TreeMap<>());
+                TreeMap<>());
         Map<String, Object> metaDataFields = (Map<String, Object>) source.get("metaDataFields");
         IntStream.range(0, 10).forEach(i -> {
             String binding = (String) metaDataFields.get("SingleSignOnService:" + i + ":Binding");
@@ -320,7 +320,7 @@ public class EngineBlockFormatter {
 
             if (hasText(binding) || hasText(location)) {
                 ArrayList<Object> singleSignOnServiceContainer = (ArrayList<Object>) metadata.computeIfAbsent(
-                    "SingleSignOnService", key -> new ArrayList<>());
+                        "SingleSignOnService", key -> new ArrayList<>());
                 Map<String, String> singleSignOnService = new HashMap<>();
                 putIfHasText("Binding", binding, singleSignOnService);
                 putIfHasText("Location", location, singleSignOnService);
@@ -332,7 +332,7 @@ public class EngineBlockFormatter {
 
     private void addShibMdScopes(Map<String, Object> source, Map<String, Object> result) {
         final Map<String, Object> metadata = (Map<String, Object>) result.computeIfAbsent("metadata", key -> new
-            TreeMap<>());
+                TreeMap<>());
         Map<String, Object> metaDataFields = (Map<String, Object>) source.get("metaDataFields");
         IntStream.range(0, 10).forEach(i -> {
             String allowed = parseValueToString(metaDataFields.get("shibmd:scope:" + i + ":allowed"));
@@ -340,7 +340,7 @@ public class EngineBlockFormatter {
 
             if (hasText(allowed) || hasText(regexp)) {
                 Map<String, List<Object>> shibmdContainer = (Map<String, List<Object>>) metadata.computeIfAbsent(
-                    "shibmd", key -> new HashMap<>());
+                        "shibmd", key -> new HashMap<>());
                 List<Object> scopeContainer = shibmdContainer.computeIfAbsent("scope", key -> new ArrayList<>());
                 Map<String, Object> scope = new HashMap<>();
                 if (hasText(allowed)) {
@@ -356,7 +356,7 @@ public class EngineBlockFormatter {
 
     private void addAssertionConsumerService(Map<String, Object> source, Map<String, Object> result) {
         final Map<String, Object> metadata = (Map<String, Object>) result.computeIfAbsent("metadata", key -> new
-            TreeMap<>());
+                TreeMap<>());
         Map<String, Object> metaDataFields = (Map<String, Object>) source.get("metaDataFields");
         IntStream.range(0, 30).forEach(i -> {
             String binding = (String) metaDataFields.get("AssertionConsumerService:" + i + ":Binding");
@@ -365,7 +365,7 @@ public class EngineBlockFormatter {
 
             if (hasText(binding) || hasText(location)) {
                 ArrayList<Object> assertionConsumerServiceContainer = (ArrayList<Object>) metadata.computeIfAbsent(
-                    "AssertionConsumerService", key -> new ArrayList<>());
+                        "AssertionConsumerService", key -> new ArrayList<>());
                 Map<String, String> assertionConsumerService = new HashMap<>();
                 putIfHasText("Binding", binding, assertionConsumerService);
                 putIfHasText("Location", location, assertionConsumerService);
@@ -395,12 +395,12 @@ public class EngineBlockFormatter {
             String part = iterator.next();
             if (part.equals("metadata")) {
                 result = (Map<String, Object>) result.computeIfAbsent(part, key -> new TreeMap<String, Map<String,
-                    Object>>());
+                        Object>>());
                 value = ((Map) source.get("metaDataFields")).get(compoundName.substring(BEGIN_INDEX));
             } else {
                 if (iterator.hasNext()) {
                     result = (Map<String, Object>) result.computeIfAbsent(part, key -> new TreeMap<String,
-                        Map<String, Object>>());
+                            Map<String, Object>>());
                 } else if (value != null) {
                     result.put(convertTo.orElse(part), parseValueToString(value));
                 }

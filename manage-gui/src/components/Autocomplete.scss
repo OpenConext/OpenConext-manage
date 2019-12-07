@@ -1,7 +1,7 @@
 @import "../stylesheets/vars.scss";
 
 section.metadata-autocomplete {
-  width: 95%;
+  width: 100%;
   position: absolute;
   z-index: 3;
   top: 40px;
@@ -10,15 +10,11 @@ section.metadata-autocomplete {
   box-shadow: 1px 4px 12px 1px $medium-grey;
   margin-bottom: 25px;
 
-  div.no-results {
-    padding: 10px 15px;
+  div.results-info {
+    margin: 10px;
+    font-size: larger;
+    color: #cc6103;
     font-style: italic;
-  }
-
-  em.resultsLimited {
-    margin: 5px 10px;
-    display: inline-block;
-    color: $orange;
   }
 
   table.result {
@@ -34,16 +30,20 @@ section.metadata-autocomplete {
       text-align: left;
 
       &.name {
-        width: 30%;
+        width: 28%;
+      }
+
+      &.type {
+        width: 8%;
       }
 
       &.state {
         text-align: center;
-        width: 15%;
+        width: 12%;
       }
 
       &.entity_id {
-        width: 40%;
+        width: 37%;
       }
 
       &.info {

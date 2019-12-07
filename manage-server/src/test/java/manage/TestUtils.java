@@ -6,7 +6,6 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 import java.util.Map;
 
@@ -20,7 +19,8 @@ public interface TestUtils {
         }
     }
 
-    TypeReference<Map<String, Object>> mapTypeRef = new TypeReference<Map<String, Object>>() {};
+    TypeReference<Map<String, Object>> mapTypeRef = new TypeReference<Map<String, Object>>() {
+    };
 
     ObjectMapper objectMapper = ObjectMapperWrapper.init();
 

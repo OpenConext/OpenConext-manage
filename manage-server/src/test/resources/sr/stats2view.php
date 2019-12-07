@@ -7,30 +7,30 @@ date_default_timezone_set('UTC');
 
 function OpenDatabases($db)
 {
-	# open new database connection
-	$dbh = new PDO( $db['dsn'], $db['user'], $db['password']);
+    # open new database connection
+    $dbh = new PDO($db['dsn'], $db['user'], $db['password']);
 
-	# throw exceptions is queries fail
-	$dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    # throw exceptions is queries fail
+    $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-	# set session settings correctly
-	$dbh->query("SET NAMES 'utf8';");
-	#$dbh->query("SET time_zone = 'Europe/Amsterdam';");
-	$dbh->query("SET storage_engine=InnoDB;");
-	$dbh->query("SET sql_mode='NO_AUTO_VALUE_ON_ZERO';");
+    # set session settings correctly
+    $dbh->query("SET NAMES 'utf8';");
+    #$dbh->query("SET time_zone = 'Europe/Amsterdam';");
+    $dbh->query("SET storage_engine=InnoDB;");
+    $dbh->query("SET sql_mode='NO_AUTO_VALUE_ON_ZERO';");
 
-	return $dbh;
+    return $dbh;
 }
 
 function ClearView()
 {
-	global $CONFIG;
-	/** @var PDO $dbh */
-	$dbh = $CONFIG['dbh-view'];
+    global $CONFIG;
+    /** @var PDO $dbh */
+    $dbh = $CONFIG['dbh-view'];
 
-	print "Clearing database";
+    print "Clearing database";
 
-	$q = "
+    $q = "
 		DROP VIEW IF EXISTS
 			`statsview_v_idp`,
 			`statsview_v_sp`,
@@ -39,10 +39,10 @@ function ClearView()
 			`statsview_v_periodstats_idptotal`,
 			`statsview_v_periodstats_sptotal`
 	";
-	$dbh->query($q);
+    $dbh->query($q);
 
 
-	$q = "
+    $q = "
 		DROP TABLE IF EXISTS
 			`statsview_v_idp`,
 			`statsview_v_sp`,
@@ -55,23 +55,23 @@ function ClearView()
 			`statsview_idp`,
 			`statsview_institution`;
 	";
-	$dbh->query($q);
+    $dbh->query($q);
 
-	$dbh->query("DROP FUNCTION IF EXISTS GetInstitutionId;");
+    $dbh->query("DROP FUNCTION IF EXISTS GetInstitutionId;");
 
-	print "\n";
+    print "\n";
 }
 
 function CreateViewSchema()
 {
-	global $CONFIG;
-	/** @var PDO $dbh */
-	$dbh = $CONFIG['dbh-view'];
+    global $CONFIG;
+    /** @var PDO $dbh */
+    $dbh = $CONFIG['dbh-view'];
 
-	print "Populating database";
+    print "Populating database";
 
-	# table holds institution info from IDD/CRM
-	$dbh->query("
+    # table holds institution info from IDD/CRM
+    $dbh->query("
 		CREATE TABLE IF NOT EXISTS `statsview_institution` (
 			`id`        INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
 			`abbr`      VARCHAR(32) NULL DEFAULT NULL,
@@ -85,12 +85,12 @@ function CreateViewSchema()
 			       INDEX (`type_code`)
 		) CHARACTER SET='utf8';
 	");
-	$dbh->query("
+    $dbh->query("
 		INSERT INTO `statsview_institution`
 			(`id`,`abbr`,`type`,`name`)
 			VALUES (0,NULL,NULL,NULL);
 	");
-	$dbh->query("
+    $dbh->query("
 		CREATE FUNCTION GetInstitutionId(institutionAbbr VARCHAR(32)) RETURNS INT UNSIGNED
 		BEGIN
 			DECLARE InstId INT UNSIGNED;
@@ -103,8 +103,8 @@ function CreateViewSchema()
 		END
 	");
 
-	# table holds list of all IdPs
-	$dbh->query("
+    # table holds list of all IdPs
+    $dbh->query("
 		CREATE TABLE IF NOT EXISTS `statsview_idp` (
 			`id`               INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
 			`name`             VARCHAR(4096) NULL DEFAULT NULL,
@@ -118,9 +118,9 @@ function CreateViewSchema()
 			FOREIGN KEY  (`institution_id`) REFERENCES `statsview_institution` (`id`)
 		) CHARACTER SET='utf8';
 	");
-	# trigger to make sure that we can't have two entries with identical env and entitid and NULL institution_id
-	# as mysql doesn't take into account NULL values in uniqueness
-	$dbh->query('
+    # trigger to make sure that we can't have two entries with identical env and entitid and NULL institution_id
+    # as mysql doesn't take into account NULL values in uniqueness
+    $dbh->query('
 		CREATE TRIGGER statsview_idp_t1 BEFORE INSERT on statsview_idp
 		FOR EACH ROW
 		BEGIN
@@ -130,7 +130,7 @@ function CreateViewSchema()
 			END IF;
 		END
 	');
-	$dbh->query('
+    $dbh->query('
 		CREATE TRIGGER statsview_idp_t2 BEFORE UPDATE on statsview_idp
 		FOR EACH ROW
 		BEGIN
@@ -141,8 +141,8 @@ function CreateViewSchema()
 		END
 	');
 
-	# table holds list of all SPs
-	$dbh->query("
+    # table holds list of all SPs
+    $dbh->query("
 		CREATE TABLE IF NOT EXISTS `statsview_sp` (
 			`id`               INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
 			`name`             VARCHAR(4096) NULL DEFAULT NULL,
@@ -156,7 +156,7 @@ function CreateViewSchema()
 			FOREIGN KEY  (`institution_id`) REFERENCES `statsview_institution` (`id`)
 		) CHARACTER SET='utf8';
 	");
-	$dbh->query('
+    $dbh->query('
 		CREATE TRIGGER statsview_sp_t1 BEFORE INSERT on statsview_sp
 		FOR EACH ROW
 		BEGIN
@@ -166,7 +166,7 @@ function CreateViewSchema()
 			END IF;
 		END
 	');
-	$dbh->query('
+    $dbh->query('
 		CREATE TRIGGER statsview_sp_t2 BEFORE UPDATE on statsview_sp
 		FOR EACH ROW
 		BEGIN
@@ -177,8 +177,8 @@ function CreateViewSchema()
 		END
 	');
 
-	# table holds list of all (effective) IdP-SP connections on certain date
-	$dbh->query("
+    # table holds list of all (effective) IdP-SP connections on certain date
+    $dbh->query("
 		CREATE TABLE IF NOT EXISTS `statsview_idp-sp` (
 			`idp_id`   INT UNSIGNED NOT NULL,
 			`sp_id`    INT UNSIGNED NOT NULL,
@@ -189,9 +189,9 @@ function CreateViewSchema()
 		) CHARACTER SET='utf8';
 	");
 
-	# table holds list of all known periods (weeks, months, quarters, years)
-	# including total number of logins and unique users
-	$dbh->query("
+    # table holds list of all known periods (weeks, months, quarters, years)
+    # including total number of logins and unique users
+    $dbh->query("
 		CREATE TABLE `statsview_period` (
 			`id`          INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
 			`type`        CHAR(1) NOT NULL,
@@ -211,9 +211,9 @@ function CreateViewSchema()
 		) CHARACTER SET='utf8';
 	");
 
-	# table holds total number of logins and unique users for each
-	# IdP-SP combination and period
-	$dbh->query("
+    # table holds total number of logins and unique users for each
+    # IdP-SP combination and period
+    $dbh->query("
 		CREATE TABLE `statsview_periodstats` (
 			`period_id` INT UNSIGNED NOT NULL,
 			`idp_id`    INT UNSIGNED NOT NULL,
@@ -227,9 +227,9 @@ function CreateViewSchema()
 		) CHARACTER SET='utf8';
 	");
 
-	# table holds total number of logins and unique users for each
-	# IdP and period
-	$dbh->query("
+    # table holds total number of logins and unique users for each
+    # IdP and period
+    $dbh->query("
 		CREATE TABLE `statsview_periodstats_idptotal` (
 			`period_id` INT UNSIGNED NOT NULL,
 			`idp_id`    INT UNSIGNED NOT NULL,
@@ -241,9 +241,9 @@ function CreateViewSchema()
 		) CHARACTER SET='utf8';
 	");
 
-	# table holds total number of logins and unique users for each
-	# SP and period
-	$dbh->query("
+    # table holds total number of logins and unique users for each
+    # SP and period
+    $dbh->query("
 		CREATE TABLE `statsview_periodstats_sptotal` (
 			`period_id` INT UNSIGNED NOT NULL,
 			`sp_id`     INT UNSIGNED NOT NULL,
@@ -255,8 +255,8 @@ function CreateViewSchema()
 		) CHARACTER SET='utf8';
 	");
 
-	# view combining idp and institution info
-	$dbh->query("
+    # view combining idp and institution info
+    $dbh->query("
 		CREATE OR REPLACE VIEW `statsview_v_idp`
 		AS
 			SELECT
@@ -269,8 +269,8 @@ function CreateViewSchema()
 				ON a.institution_id = b.id;
 	");
 
-	# view combining sp and institution info
-	$dbh->query("
+    # view combining sp and institution info
+    $dbh->query("
 		CREATE OR REPLACE VIEW `statsview_v_sp`
 		AS
 			SELECT
@@ -283,8 +283,8 @@ function CreateViewSchema()
 				ON a.institution_id = b.id;
 	");
 
-	# view combining connection info
-	$dbh->query("
+    # view combining connection info
+    $dbh->query("
 		CREATE OR REPLACE VIEW `statsview_v_connections`
 		AS
 			SELECT
@@ -300,7 +300,7 @@ function CreateViewSchema()
 			LEFT JOIN statsview_institution as si ON si.id=s.institution_id
 	");
 
-	$dbh->query("
+    $dbh->query("
 		CREATE OR REPLACE VIEW `statsview_v_periodstats`
 		AS
 			SELECT
@@ -318,7 +318,7 @@ function CreateViewSchema()
 			LEFT JOIN statsview_institution as si ON si.id=s.institution_id
 	");
 
-	$dbh->query("
+    $dbh->query("
 		CREATE OR REPLACE VIEW `statsview_v_periodstats_idptotal`
 		AS
 			SELECT
@@ -332,7 +332,7 @@ function CreateViewSchema()
 			LEFT JOIN statsview_institution as ii ON ii.id=i.institution_id
 	");
 
-	$dbh->query("
+    $dbh->query("
 		CREATE OR REPLACE VIEW `statsview_v_periodstats_sptotal`
 		AS
 			SELECT
@@ -346,148 +346,141 @@ function CreateViewSchema()
 			LEFT JOIN statsview_institution as si ON si.id=s.institution_id
 	");
 
-	print "\n";
+    print "\n";
 }
 
-function SaveIDDCache($filename,$klanten)
+function SaveIDDCache($filename, $klanten)
 {
-	$data = array( 'date'=>time(), 'kis_data'=>$klanten );
-	$json = json_encode($data);
-	$fh = fopen($filename,'wb');
-	fwrite($fh,$json);
-	fclose($fh);
+    $data = array('date' => time(), 'kis_data' => $klanten);
+    $json = json_encode($data);
+    $fh = fopen($filename, 'wb');
+    fwrite($fh, $json);
+    fclose($fh);
 }
 
-function LoadIDDCache($filename,$timeout)
+function LoadIDDCache($filename, $timeout)
 {
-	if (!is_file($filename)) return false;
+    if (!is_file($filename)) return false;
 
-	$json = file_get_contents($filename);
-	if ($json===false) return false;
+    $json = file_get_contents($filename);
+    if ($json === false) return false;
 
-	$data = json_decode($json);
-	if ($data===false) return false;
+    $data = json_decode($json);
+    if ($data === false) return false;
 
-	if (!property_exists($data,'date') or !property_exists($data,'kis_data')) return false;
-	if ($data->date+$timeout>time()) return $data->kis_data;
-	return false;
+    if (!property_exists($data, 'date') or !property_exists($data, 'kis_data')) return false;
+    if ($data->date + $timeout > time()) return $data->kis_data;
+    return false;
 }
 
 function FillInstitutions()
 {
-	global $CONFIG;
-	/** @var PDO $view */
-	$view  = $CONFIG['dbh-view'];
+    global $CONFIG;
+    /** @var PDO $view */
+    $view = $CONFIG['dbh-view'];
 
-	# get uid of current user (yes, this is fun, thank you PHP)
-	# can't rely on posix_getuid() as that's non-standard
-	$stat = stat('/proc/self');
-	$uid  = $stat['uid'];
+    # get uid of current user (yes, this is fun, thank you PHP)
+    # can't rely on posix_getuid() as that's non-standard
+    $stat = stat('/proc/self');
+    $uid = $stat['uid'];
 
-	$cache_filename = sys_get_temp_dir()."/stats2view.{$uid}.idd.cache";
-	$cache_timeout  = 24*60*60;
+    $cache_filename = sys_get_temp_dir() . "/stats2view.{$uid}.idd.cache";
+    $cache_timeout = 24 * 60 * 60;
 
-	# lookup table for doelgroep types
-	# https://sofie.surfnet.nl/pages/viewpage.action?spaceKey=Klantinformatie&title=KIS%20Webservices%20-%20enums
-	$doelgroeptable = array(
-		  0 => 'Geen doelgroep', 
-                  1 => 'Academische Ziekenhuizen',
-		  2 => 'Bibliotheken',
-		  4 => 'BVE-instellingen',
-		  9 => 'HBO-instellingen',
-		 11 => 'Internationaal en Netherlight aanbieders',
-		 12 => 'Klant SURFconext',
-		 14 => 'Overig Hoger Onderwijs',
-		 18 => 'Researchinstellingen',
-		 22 => 'Opleidingsziekenhuizen STZ',
-		 23 => 'Universiteiten',
-		 24 => 'Research for profit',
-		100 => 'Overige',
-	);
+    # lookup table for doelgroep types
+    # https://sofie.surfnet.nl/pages/viewpage.action?spaceKey=Klantinformatie&title=KIS%20Webservices%20-%20enums
+    $doelgroeptable = array(
+        0 => 'Geen doelgroep',
+        1 => 'Academische Ziekenhuizen',
+        2 => 'Bibliotheken',
+        4 => 'BVE-instellingen',
+        9 => 'HBO-instellingen',
+        11 => 'Internationaal en Netherlight aanbieders',
+        12 => 'Klant SURFconext',
+        14 => 'Overig Hoger Onderwijs',
+        18 => 'Researchinstellingen',
+        22 => 'Opleidingsziekenhuizen STZ',
+        23 => 'Universiteiten',
+        24 => 'Research for profit',
+        100 => 'Overige',
+    );
 
-	print "Filling Institution data...";
+    print "Filling Institution data...";
 
-	$klanten = LoadIDDCache($cache_filename,$cache_timeout);
+    $klanten = LoadIDDCache($cache_filename, $cache_timeout);
 
-	if ($klanten===false)
-	{
-		# zoek alle klanten op in KIS
-		try
-		{
-			# connectie naar KIS
-			$client = new SoapClient(
-				$CONFIG['KIS']['wsdl'],
-				array(
-					'login'    => $CONFIG['KIS']['user'],
-					'password' => $CONFIG['KIS']['password'],
-					'soap_version' => SOAP_1_1,
-					'trace' => true,
-					'connection_timeout' => 300,
-					'default_socket_timeout' => 300,
-				)
-			);
+    if ($klanten === false) {
+        # zoek alle klanten op in KIS
+        try {
+            # connectie naar KIS
+            $client = new SoapClient(
+                $CONFIG['KIS']['wsdl'],
+                array(
+                    'login' => $CONFIG['KIS']['user'],
+                    'password' => $CONFIG['KIS']['password'],
+                    'soap_version' => SOAP_1_1,
+                    'trace' => true,
+                    'connection_timeout' => 300,
+                    'default_socket_timeout' => 300,
+                )
+            );
 
-			$result =  $client->getKlantenByDienst(array('Dienstafkorting'=>'SURFconext'));
+            $result = $client->getKlantenByDienst(array('Dienstafkorting' => 'SURFconext'));
 
-			if (!$result->getKlantenByDienstResult
-				or !$result->getKlantenByDienstResult->Output->Klant_basic)
-			{
-				/** @noinspection PhpUndefinedFunctionInspection */
-				throw SoapFault("Invalid result: no `getKlantenByDienstResult' found");
-			}
-		}
-		catch (SoapFault $e)
-		{
-			print "Update failed: couldn't complete KIS query getKlantenByDienst\n";
-			print "Error: " . $e->getMessage() . "\n";
-			print getExceptionTraceAsString($e) . "\n";
-			exit(1);
-		}
+            if (!$result->getKlantenByDienstResult
+                or !$result->getKlantenByDienstResult->Output->Klant_basic) {
+                /** @noinspection PhpUndefinedFunctionInspection */
+                throw SoapFault("Invalid result: no `getKlantenByDienstResult' found");
+            }
+        } catch (SoapFault $e) {
+            print "Update failed: couldn't complete KIS query getKlantenByDienst\n";
+            print "Error: " . $e->getMessage() . "\n";
+            print getExceptionTraceAsString($e) . "\n";
+            exit(1);
+        }
 
-		$klanten = $result->getKlantenByDienstResult->Output->Klant_basic;
-		saveIDDCache($cache_filename,$klanten);
-	}
+        $klanten = $result->getKlantenByDienstResult->Output->Klant_basic;
+        saveIDDCache($cache_filename, $klanten);
+    }
 
-	print ".";
+    print ".";
 
-	#
-	# insert institutions into database
-	#
+    #
+    # insert institutions into database
+    #
 
-	$view->beginTransaction();
+    $view->beginTransaction();
 
-	$sth = $view->prepare('
+    $sth = $view->prepare('
 		INSERT INTO `statsview_institution`
 		(`abbr`,`guid`,`type_code`,`type`,`name`) VALUES (:abbr,:guid,:tcode,:type,:name)
 		ON DUPLICATE KEY UPDATE abbr=:abbr, guid=:guid, type_code=:tcode, type=:type, name=:name
 	');
 
-	print ".";
+    print ".";
 
-	/** @noinspection PhpWrongForeachArgumentTypeInspection */
-	foreach ($klanten as $k)
-	{
-		if (!isset($doelgroeptable[$k->DoelgroepValue]))
-		{
-			printf("Onbekende doelgroep %s (%s) gevonden voor instelling %s/%s\n",
-				$k->DoelgroepCode, $k->DoelgroepValue, $k->Organisatiecode, $k->OrganisatieGUID);
-			exit(1);
-		}
-		#printf("'%s'\t'%s'\t'%s'\n",$k->Organisatiecode,$dg,$k->Organisatienaam);
+    /** @noinspection PhpWrongForeachArgumentTypeInspection */
+    foreach ($klanten as $k) {
+        if (!isset($doelgroeptable[$k->DoelgroepValue])) {
+            printf("Onbekende doelgroep %s (%s) gevonden voor instelling %s/%s\n",
+                $k->DoelgroepCode, $k->DoelgroepValue, $k->Organisatiecode, $k->OrganisatieGUID);
+            exit(1);
+        }
+        #printf("'%s'\t'%s'\t'%s'\n",$k->Organisatiecode,$dg,$k->Organisatienaam);
 
-		$sth->execute(array(
-			':abbr'  => $k->Organisatiecode,
-			':guid'  => $k->OrganisatieGUID,
-			':tcode' => $k->DoelgroepValue,
-			':type'  => $doelgroeptable[$k->DoelgroepValue],
-			':name'  => $k->Organisatienaam,
-		));
-		$sth->closeCursor();
-	}
+        $sth->execute(array(
+            ':abbr' => $k->Organisatiecode,
+            ':guid' => $k->OrganisatieGUID,
+            ':tcode' => $k->DoelgroepValue,
+            ':type' => $doelgroeptable[$k->DoelgroepValue],
+            ':name' => $k->Organisatienaam,
+        ));
+        $sth->closeCursor();
+    }
 
-	$view->commit();
+    $view->commit();
 
-	print "\n";
+    print "\n";
 }
 
 /**
@@ -496,18 +489,18 @@ function FillInstitutions()
  */
 function FillEntities($type)
 {
-	global $CONFIG;
-	/** @var PDO $stats */
-	/** @var PDO $view */
-	$stats = $CONFIG['dbh-stats'];
-	$view  = $CONFIG['dbh-view'];
+    global $CONFIG;
+    /** @var PDO $stats */
+    /** @var PDO $view */
+    $stats = $CONFIG['dbh-stats'];
+    $view = $CONFIG['dbh-view'];
 
-	if ($type!='idp' and $type!='sp') throw new Exception("Unknown type $type");
+    if ($type != 'idp' and $type != 'sp') throw new Exception("Unknown type $type");
 
-	print "Filling $type data...";
+    print "Filling $type data...";
 
-	# insert query for entities
-	$q_insert = $view->prepare("
+    # insert query for entities
+    $q_insert = $view->prepare("
 		INSERT INTO `statsview_{$type}`
 			(`name`,`entityid`,`environment`,`from`,`to`,`institution_id`)
 		VALUES (:name,:entity,:env,:from,:to,GetInstitutionId(:inst))
@@ -517,8 +510,8 @@ function FillEntities($type)
 			`to`=:to
 	");
 
-	# update query for entities
-	$q_update = $view->prepare("
+    # update query for entities
+    $q_update = $view->prepare("
 		UPDATE `statsview_{$type}`
 		SET `name`=:name,
 		    `from`=:from,
@@ -526,8 +519,8 @@ function FillEntities($type)
 		WHERE id=:id
 	");
 
-	# mysql is kind of braindead, so we need to check for duplicates manually
-	$q_check = $view->prepare("
+    # mysql is kind of braindead, so we need to check for duplicates manually
+    $q_check = $view->prepare("
 		SELECT e.id
 		FROM `statsview_{$type}` as e
 		LEFT JOIN statsview_institution as i on i.id=e.institution_id
@@ -535,11 +528,11 @@ function FillEntities($type)
 	");
 
 
-	$view->beginTransaction();
+    $view->beginTransaction();
 
-	# fetch entity data from stats
-	# complicated query, because we want to find the first date a certain entity was recorded
-	$q = "
+    # fetch entity data from stats
+    # complicated query, because we want to find the first date a certain entity was recorded
+    $q = "
 		SELECT
 			e.`{$type}_name`        as 'name',
 			e.`{$type}_entityid`    as 'entityid',
@@ -552,45 +545,42 @@ function FillEntities($type)
 		LEFT JOIN log_analyze_day        AS d  ON d.day_id=de.day{$type}_day_id
 		GROUP BY {$type}_id
 	";
-	foreach ($stats->query($q) as $p)
-	{
-		#print_r($p);
+    foreach ($stats->query($q) as $p) {
+        #print_r($p);
 
-		# manually check for duplicates
-		$q_check->execute(array(
-				':entity' => $p['entityid'],
-				':env'    => $p['environment'],
-				':inst'   => $p['iafko'],
-		));
+        # manually check for duplicates
+        $q_check->execute(array(
+            ':entity' => $p['entityid'],
+            ':env' => $p['environment'],
+            ':inst' => $p['iafko'],
+        ));
 
-		if ($oldentry = $q_check->fetch(PDO::FETCH_ASSOC)) {
-			# update entry
-			$q_update->execute(array(
-					':id'     => $oldentry['id'],
-					':name'   => $p['name'],
-					':from'   => $p['datefrom'],
-					':to'     => $p['dateto'],
-			));
-		}
-		else
-		{
-			# insert entry
-			$q_insert->execute(array(
-					':name'   => $p['name'],
-					':entity' => $p['entityid'],
-					':env'    => $p['environment'],
-					':from'   => $p['datefrom'],
-					':to'     => $p['dateto'],
-					':inst'   => $p['iafko'],
-			));
-		}
-	}
+        if ($oldentry = $q_check->fetch(PDO::FETCH_ASSOC)) {
+            # update entry
+            $q_update->execute(array(
+                ':id' => $oldentry['id'],
+                ':name' => $p['name'],
+                ':from' => $p['datefrom'],
+                ':to' => $p['dateto'],
+            ));
+        } else {
+            # insert entry
+            $q_insert->execute(array(
+                ':name' => $p['name'],
+                ':entity' => $p['entityid'],
+                ':env' => $p['environment'],
+                ':from' => $p['datefrom'],
+                ':to' => $p['dateto'],
+                ':inst' => $p['iafko'],
+            ));
+        }
+    }
 
-	# done
-	$q_insert->closeCursor();
-	$view->commit();
+    # done
+    $q_insert->closeCursor();
+    $view->commit();
 
-	print "\n";
+    print "\n";
 
 }
 
@@ -599,24 +589,24 @@ function FillEntities($type)
 # direct INSERT..SELECT statement, whcih should be quite a bit faster than the queries below.
 function FillConnections($datum = "now")
 {
-	global $CONFIG;
-	/** @var PDO $sr */
-	/** @var PDO $view */
-	$sr    = $CONFIG['dbh-sr'];
-	$view  = $CONFIG['dbh-view'];
-	$tmp   = $CONFIG['db-sr']['temp'];
+    global $CONFIG;
+    /** @var PDO $sr */
+    /** @var PDO $view */
+    $sr = $CONFIG['dbh-sr'];
+    $view = $CONFIG['dbh-view'];
+    $tmp = $CONFIG['db-sr']['temp'];
 
-	$date = new DateTime($datum);
-	$datestr = $date->format('Y-m-d');
+    $date = new DateTime($datum);
+    $datestr = $date->format('Y-m-d');
 
-	print "Filling SPxIdP connection data for date '{$datestr}'...";
+    print "Filling SPxIdP connection data for date '{$datestr}'...";
 
-	# prepare data in sr database
-	$sr->exec("SET @tz = 'Europe/Amsterdam'");
-	$sr->exec("SET @date = '$datestr'");
-	$sr->exec("SET time_zone = @tz");
-	$sr->exec("DROP TABLE IF EXISTS {$tmp}.tmp_con1, {$tmp}.tmp_con2, {$tmp}.tmp_connections;");
-	$sr->exec("
+    # prepare data in sr database
+    $sr->exec("SET @tz = 'Europe/Amsterdam'");
+    $sr->exec("SET @date = '$datestr'");
+    $sr->exec("SET time_zone = @tz");
+    $sr->exec("DROP TABLE IF EXISTS {$tmp}.tmp_con1, {$tmp}.tmp_con2, {$tmp}.tmp_connections;");
+    $sr->exec("
 		# note that dates in janus tables are stored as string, so we need to do an explicit and ugly conversion
 		CREATE TEMPORARY TABLE IF NOT EXISTS {$tmp}.tmp_con1
 		SELECT *,CONVERT_TZ(SUBSTR(created,1,19),SUBSTR(created,20),@tz) as created2
@@ -630,17 +620,17 @@ function FillConnections($datum = "now")
 		)
 		ORDER BY eid;
 	");
-	# fix `created` column (was CHAR, will be TIMESTAMP)
-	$sr->exec("ALTER TABLE {$tmp}.tmp_con1 DROP   COLUMN created");
+    # fix `created` column (was CHAR, will be TIMESTAMP)
+    $sr->exec("ALTER TABLE {$tmp}.tmp_con1 DROP   COLUMN created");
     $sr->exec("ALTER TABLE {$tmp}.tmp_con1 CHANGE COLUMN created2 created TIMESTAMP");
 
-	$sr->exec("
+    $sr->exec("
 		# mysql can't open a temp table more than once in a query
 		# yeah, pretty braindead
 		CREATE TEMPORARY TABLE IF NOT EXISTS {$tmp}.tmp_con2
 			SELECT * FROM {$tmp}.tmp_con1;
 	");
-	$sr->exec("
+    $sr->exec("
 		# calculate the cross table IdP x SP
 		# and calculate if a connection is allowed (based on allow_all and whitelist)
 		# blacklist is ignored here, as we don't use it in SURFconext
@@ -669,19 +659,19 @@ function FillConnections($datum = "now")
 		;
 	");
 
-	$view->beginTransaction();
+    $view->beginTransaction();
 
-	# clear any old data from the connection table
-	$numrows = $view->exec("
+    # clear any old data from the connection table
+    $numrows = $view->exec("
 		DELETE FROM `statsview_idp-sp` WHERE `date`='$datestr';
 	");
-	# query to insert
-	# idp_id and sp_id are search for dynamically from the specified (eid,rev)
-	# vars
-	# for the revision, we search for the latest version recorded by
-	# log_analyze (which only records a new revision if the state, entityid,
-	# or institution_id changes)
-	$insert = $view->prepare("
+    # query to insert
+    # idp_id and sp_id are search for dynamically from the specified (eid,rev)
+    # vars
+    # for the revision, we search for the latest version recorded by
+    # log_analyze (which only records a new revision if the state, entityid,
+    # or institution_id changes)
+    $insert = $view->prepare("
 		INSERT INTO `statsview_idp-sp` (`date`,`idp_id`,`sp_id`)
 		VALUES (DATE(:date), (
 			SELECT id FROM `statsview_idp`
@@ -694,9 +684,9 @@ function FillConnections($datum = "now")
 		))
 	");
 
-	# ok, jump through loops to prevent the AUTO_INC counter to increment on each NxM failed insert
-	# so make sure inserts are only attempted for data that will not fail uniqueness requirements
-	$insert_idp = $view->prepare("
+    # ok, jump through loops to prevent the AUTO_INC counter to increment on each NxM failed insert
+    # so make sure inserts are only attempted for data that will not fail uniqueness requirements
+    $insert_idp = $view->prepare("
 		INSERT INTO statsview_idp (entityid,environment,institution_id)
 			SELECT *
 			FROM ( SELECT :entity AS 'entityid', :env AS 'env', GetInstitutionId(:inst) as 'inst' ) t
@@ -705,7 +695,7 @@ function FillConnections($datum = "now")
 		        WHERE i.entityid=t.entityid AND i.environment=t.env AND i.institution_id=t.inst
 			)=0
 	");
-	$insert_sp = $view->prepare("
+    $insert_sp = $view->prepare("
 		INSERT INTO statsview_sp (entityid,environment,institution_id)
 			SELECT *
 			FROM ( SELECT :entity AS 'entityid', :env AS 'env', GetInstitutionId(:inst) as 'inst' ) t
@@ -715,8 +705,8 @@ function FillConnections($datum = "now")
 			)=0
 	");
 
-	# select all connections
-	$q = "
+    # select all connections
+    $q = "
 		SELECT
 			idp_entityid,idp_env,idp_inst,
 			sp_entityid ,sp_env ,sp_inst,
@@ -724,145 +714,141 @@ function FillConnections($datum = "now")
 		FROM ${tmp}.tmp_connections
 		WHERE connected>0
 	";
-	foreach ( $sr->query($q) as $row )
-	{
-		if     ($row['idp_env']=='prodaccepted') $idp_env='PA';
-		elseif ($row['idp_env']=='testaccepted') $idp_env='TA';
-		else throw new Exception("Unknown state {$row['idp_env']}");
+    foreach ($sr->query($q) as $row) {
+        if ($row['idp_env'] == 'prodaccepted') $idp_env = 'PA';
+        elseif ($row['idp_env'] == 'testaccepted') $idp_env = 'TA';
+        else throw new Exception("Unknown state {$row['idp_env']}");
 
-		if     ($row['sp_env']=='prodaccepted') $sp_env='PA';
-		elseif ($row['sp_env']=='testaccepted') $sp_env='TA';
-		else throw new Exception("Unknown state {$row['sp_env']}");
+        if ($row['sp_env'] == 'prodaccepted') $sp_env = 'PA';
+        elseif ($row['sp_env'] == 'testaccepted') $sp_env = 'TA';
+        else throw new Exception("Unknown state {$row['sp_env']}");
 
-		try {
-			# make sure IdP and SP exist in the DB: there might not have bene any logins
-			# from/to/the SP/IdP, so they won't be registered in teh stats db
-			$insert_idp->execute(array(
-					':entity' => $row['idp_entityid'],
-					':env'    => $idp_env,
-					':inst'   => $row['idp_inst'],
-			));
-			$insert_sp->execute(array(
-					':entity' => $row['sp_entityid'],
-					':env'    => $sp_env,
-					':inst'   => $row['sp_inst'],
-			));
+        try {
+            # make sure IdP and SP exist in the DB: there might not have bene any logins
+            # from/to/the SP/IdP, so they won't be registered in teh stats db
+            $insert_idp->execute(array(
+                ':entity' => $row['idp_entityid'],
+                ':env' => $idp_env,
+                ':inst' => $row['idp_inst'],
+            ));
+            $insert_sp->execute(array(
+                ':entity' => $row['sp_entityid'],
+                ':env' => $sp_env,
+                ':inst' => $row['sp_inst'],
+            ));
 
-			# insert the actual connection
-			$insert->execute(array(
-				':date'       => $datestr,
-				':idp_entity' => $row['idp_entityid'],
-				':idp_env'    => $idp_env,
-				':idp_inst'   => $row['idp_inst'],
-				':sp_entity'  => $row['sp_entityid'],
-				':sp_env'     => $sp_env,
-				':sp_inst'    => $row['sp_inst'],
-			));
-		} catch (PDOException $e)
-		{
-			print "\n";
-			print "query failed:\n";
-			print_r($row);
-			print $e;
-			print "\n";
-			exit();
-		}
-	}
+            # insert the actual connection
+            $insert->execute(array(
+                ':date' => $datestr,
+                ':idp_entity' => $row['idp_entityid'],
+                ':idp_env' => $idp_env,
+                ':idp_inst' => $row['idp_inst'],
+                ':sp_entity' => $row['sp_entityid'],
+                ':sp_env' => $sp_env,
+                ':sp_inst' => $row['sp_inst'],
+            ));
+        } catch (PDOException $e) {
+            print "\n";
+            print "query failed:\n";
+            print_r($row);
+            print $e;
+            print "\n";
+            exit();
+        }
+    }
 
-	$view->commit();
-	$sr->exec("DROP TABLE IF EXISTS {$tmp}.tmp_con1, {$tmp}.tmp_con2, {$tmp}.tmp_connections;");
+    $view->commit();
+    $sr->exec("DROP TABLE IF EXISTS {$tmp}.tmp_con1, {$tmp}.tmp_con2, {$tmp}.tmp_connections;");
 
-	print "\n";
+    print "\n";
 
 }
 
 function FillPeriods()
 {
-	global $CONFIG;
-	/** @var PDO $stats */
-	/** @var PDO $view */
-	$stats = $CONFIG['dbh-stats'];
-	$view  = $CONFIG['dbh-view'];
+    global $CONFIG;
+    /** @var PDO $stats */
+    /** @var PDO $view */
+    $stats = $CONFIG['dbh-stats'];
+    $view = $CONFIG['dbh-view'];
 
-	print "Filling Period data...";
+    print "Filling Period data...";
 
-	# insert period data from log_analyze
-	$view->beginTransaction();
+    # insert period data from log_analyze
+    $view->beginTransaction();
 
-	# insert query for periods
-	$q_insert = $view->prepare('
+    # insert query for periods
+    $q_insert = $view->prepare('
 		INSERT INTO `statsview_period`
 			(`type`,`period`,`year`,`environment`,`from`,`to`,`logins`,`users`,`created`,`updated`)
 		VALUES (:type,:period,:year,:env,:from,:to,:logins,:users,:created,:updated)
 		ON DUPLICATE KEY UPDATE updated=:updated, logins=:logins, users=:users
 	');
 
-	# first select multi-day periods
-	$q = "
+    # first select multi-day periods
+    $q = "
 		SELECT *
 		FROM `log_analyze_period`;
 	";
-	foreach ($stats->query($q) as $period)
-	{
-		# insert data
-		$q_insert->execute(array(
-			':type'    => $period['period_type'],
-			':period'  => $period['period_period'],
-			':year'    => $period['period_year'],
-			':env'     => $period['period_environment'],
-			':from'    => $period['period_from'],
-			':to'      => $period['period_to'],
-			':logins'  => $period['period_logins'],
-			':users'   => $period['period_users'],
-			':created' => $period['period_created'],
-			':updated' => $period['period_updated'],
-		));
-	}
+    foreach ($stats->query($q) as $period) {
+        # insert data
+        $q_insert->execute(array(
+            ':type' => $period['period_type'],
+            ':period' => $period['period_period'],
+            ':year' => $period['period_year'],
+            ':env' => $period['period_environment'],
+            ':from' => $period['period_from'],
+            ':to' => $period['period_to'],
+            ':logins' => $period['period_logins'],
+            ':users' => $period['period_users'],
+            ':created' => $period['period_created'],
+            ':updated' => $period['period_updated'],
+        ));
+    }
 
-	# and then insert the individual days
-	$q = "
+    # and then insert the individual days
+    $q = "
 		SELECT *
 		FROM `log_analyze_day`;
 	";
-	foreach ($stats->query($q) as $day)
-	{
-		$dt = new DateTime($day['day_day']);
+    foreach ($stats->query($q) as $day) {
+        $dt = new DateTime($day['day_day']);
 
-		# insert data
-		$q_insert->execute(array(
-			':type'    => 'd',
-			':period'  => intval($dt->format('z'))+1,
-			':year'    => $dt->format('Y'),
-			':env'     => $day['day_environment'],
-			':from'    => $dt->format('Y-m-d 00:00:00'),
-			':to'      => $dt->format('Y-m-d 23:59:59'),
-			':logins'  => $day['day_logins'],
-			':users'   => $day['day_users'],
-			':created' => $day['day_created'],
-			':updated' => $day['day_updated'],
-		));
-	}
+        # insert data
+        $q_insert->execute(array(
+            ':type' => 'd',
+            ':period' => intval($dt->format('z')) + 1,
+            ':year' => $dt->format('Y'),
+            ':env' => $day['day_environment'],
+            ':from' => $dt->format('Y-m-d 00:00:00'),
+            ':to' => $dt->format('Y-m-d 23:59:59'),
+            ':logins' => $day['day_logins'],
+            ':users' => $day['day_users'],
+            ':created' => $day['day_created'],
+            ':updated' => $day['day_updated'],
+        ));
+    }
 
-	$view->commit();
+    $view->commit();
 
-	print "\n";
+    print "\n";
 }
 
 function FillPeriodStats()
 {
-	global $CONFIG;
-	/** @var PDO $stats */
-	/** @var PDO $view */
-	$stats = $CONFIG['dbh-stats'];
-	$view  = $CONFIG['dbh-view'];
+    global $CONFIG;
+    /** @var PDO $stats */
+    /** @var PDO $view */
+    $stats = $CONFIG['dbh-stats'];
+    $view = $CONFIG['dbh-view'];
 
-	print "Filling PeriodStats data...";
+    print "Filling PeriodStats data...";
 
-	# insert logins/users per (IdP,SP)from log_analyze
-	$view->beginTransaction();
+    # insert logins/users per (IdP,SP)from log_analyze
+    $view->beginTransaction();
 
-	# insert query
-	$q_insert = $view->prepare('
+    # insert query
+    $q_insert = $view->prepare('
 		INSERT INTO `statsview_periodstats`
 			(`period_id`,`idp_id`,`sp_id`,`logins`,`users`)
 			VALUES ((
@@ -879,9 +865,9 @@ function FillPeriodStats()
 		ON DUPLICATE KEY UPDATE logins=:logins, users=:users
 	');
 
-	# first insert data from multi-day periods (weeks, months, etc)
-	print "periods...";
-	$q = "
+    # first insert data from multi-day periods (weeks, months, etc)
+    print "periods...";
+    $q = "
         SELECT
 			periodstats_logins, periodstats_users,
 			period_type, period_period, period_year, period_environment,
@@ -893,29 +879,28 @@ function FillPeriodStats()
 		LEFT JOIN log_analyze_sp     AS `s` ON s.sp_id=ps.periodstats_sp_id
 		WHERE periodstats_idp_id IS NOT NULL AND periodstats_sp_id IS NOT NULL;
 	";
-	foreach ($stats->query($q,PDO::FETCH_ASSOC) as $ps)
-	{
-		# insert data
-		$q_insert->execute(array(
-			':type'       => $ps['period_type'],
-			':period'     => $ps['period_period'],
-			':year'       => $ps['period_year'],
-			':env'        => $ps['period_environment'],
-			':idp_entity' => $ps['idp_entityid'],
-			':idp_env'    => $ps['idp_environment'],
-			':idp_inst'   => $ps['idp_m_coin:institution_id'],
-			':sp_entity'  => $ps['sp_entityid'],
-			':sp_env'     => $ps['sp_environment'],
-			':sp_inst'    => $ps['sp_m_coin:institution_id'],
-			':logins'     => $ps['periodstats_logins'],
-			':users'      => $ps['periodstats_users'],
-		));
-	}
+    foreach ($stats->query($q, PDO::FETCH_ASSOC) as $ps) {
+        # insert data
+        $q_insert->execute(array(
+            ':type' => $ps['period_type'],
+            ':period' => $ps['period_period'],
+            ':year' => $ps['period_year'],
+            ':env' => $ps['period_environment'],
+            ':idp_entity' => $ps['idp_entityid'],
+            ':idp_env' => $ps['idp_environment'],
+            ':idp_inst' => $ps['idp_m_coin:institution_id'],
+            ':sp_entity' => $ps['sp_entityid'],
+            ':sp_env' => $ps['sp_environment'],
+            ':sp_inst' => $ps['sp_m_coin:institution_id'],
+            ':logins' => $ps['periodstats_logins'],
+            ':users' => $ps['periodstats_users'],
+        ));
+    }
 
 
-	# then insert data from individual days
-	print "days...";
-	$q = "
+    # then insert data from individual days
+    print "days...";
+    $q = "
 		SELECT
 			d.day_day, d.day_environment,
 			i.idp_entityid, i.idp_environment, i.`idp_m_coin:institution_id`,
@@ -927,49 +912,48 @@ function FillPeriodStats()
 		LEFT JOIN log_analyze_idp      AS `i` ON i.idp_id=p.provider_idp_id
 		LEFT JOIN log_analyze_sp       AS `s` ON s.sp_id=p.provider_sp_id
 	";
-	foreach ($stats->query($q) as $ps)
-	{
-		$dt = new DateTime($ps['day_day']);
+    foreach ($stats->query($q) as $ps) {
+        $dt = new DateTime($ps['day_day']);
 
-		# insert data
-		$q_insert->execute(array(
-			':type'       => 'd',
-			':period'     => intval($dt->format('z'))+1,
-			':year'       => $dt->format('Y'),
-			':env'        => $ps['day_environment'],
-			':idp_entity' => $ps['idp_entityid'],
-			':idp_env'    => $ps['idp_environment'],
-			':idp_inst'   => $ps['idp_m_coin:institution_id'],
-			':sp_entity'  => $ps['sp_entityid'],
-			':sp_env'     => $ps['sp_environment'],
-			':sp_inst'    => $ps['sp_m_coin:institution_id'],
-			':logins'     => $ps['stats_logins'],
-			':users'      => $ps['stats_users'],
-		));
-	}
+        # insert data
+        $q_insert->execute(array(
+            ':type' => 'd',
+            ':period' => intval($dt->format('z')) + 1,
+            ':year' => $dt->format('Y'),
+            ':env' => $ps['day_environment'],
+            ':idp_entity' => $ps['idp_entityid'],
+            ':idp_env' => $ps['idp_environment'],
+            ':idp_inst' => $ps['idp_m_coin:institution_id'],
+            ':sp_entity' => $ps['sp_entityid'],
+            ':sp_env' => $ps['sp_environment'],
+            ':sp_inst' => $ps['sp_m_coin:institution_id'],
+            ':logins' => $ps['stats_logins'],
+            ':users' => $ps['stats_users'],
+        ));
+    }
 
-	$view->commit();
+    $view->commit();
 
-	print "\n";
+    print "\n";
 }
 
 function FillPeriodStatsTotals($type)
 {
-	global $CONFIG;
-	/** @var PDO $stats */
-	/** @var PDO $view */
-	$stats = $CONFIG['dbh-stats'];
-	$view  = $CONFIG['dbh-view'];
+    global $CONFIG;
+    /** @var PDO $stats */
+    /** @var PDO $view */
+    $stats = $CONFIG['dbh-stats'];
+    $view = $CONFIG['dbh-view'];
 
-	if ($type!='idp' and $type!='sp') throw new Exception("Unknown type $type");
+    if ($type != 'idp' and $type != 'sp') throw new Exception("Unknown type $type");
 
-	print "Filling PeriodStats {$type} totals data...";
+    print "Filling PeriodStats {$type} totals data...";
 
-	# insert IdP data from log_analyze
-	$view->beginTransaction();
+    # insert IdP data from log_analyze
+    $view->beginTransaction();
 
-	# insert query
-	$q_insert = $view->prepare("
+    # insert query
+    $q_insert = $view->prepare("
 		INSERT INTO `statsview_periodstats_{$type}total`
 			(`period_id`,`{$type}_id`,`logins`,`users`)
 			VALUES ((
@@ -983,9 +967,9 @@ function FillPeriodStatsTotals($type)
 		ON DUPLICATE KEY UPDATE logins=:logins, users=:users
 	");
 
-	# first do longer periods
-	print "periods...";
-	$q = "
+    # first do longer periods
+    print "periods...";
+    $q = "
 		SELECT
 			period{$type}_logins as 'logins',
 			period{$type}_users  as 'users',
@@ -997,25 +981,24 @@ function FillPeriodStatsTotals($type)
 		LEFT JOIN log_analyze_period     AS `p` ON p.period_id=ps.period{$type}_period_id
 		LEFT JOIN log_analyze_{$type}    AS `i` ON i.{$type}_id=ps.period{$type}_{$type}_id
 	";
-	foreach ($stats->query($q) as $ps)
-	{
-		# insert data
-		$q_insert->execute(array(
-			':type'       => $ps['period_type'],
-			':period'     => $ps['period_period'],
-			':year'       => $ps['period_year'],
-			':env'        => $ps['period_environment'],
-			':entity'     => $ps['entity_id'],
-			':entityenv'  => $ps['entity_env'],
-			':inst'       => $ps['entity_inst'],
-			':logins'     => $ps['logins'],
-			':users'      => $ps['users'],
-		));
-	}
+    foreach ($stats->query($q) as $ps) {
+        # insert data
+        $q_insert->execute(array(
+            ':type' => $ps['period_type'],
+            ':period' => $ps['period_period'],
+            ':year' => $ps['period_year'],
+            ':env' => $ps['period_environment'],
+            ':entity' => $ps['entity_id'],
+            ':entityenv' => $ps['entity_env'],
+            ':inst' => $ps['entity_inst'],
+            ':logins' => $ps['logins'],
+            ':users' => $ps['users'],
+        ));
+    }
 
-	# then handle individual days
-	print "days...";
-	$q = "
+    # then handle individual days
+    print "days...";
+    $q = "
 		SELECT
 			day{$type}_logins as 'logins',
 			day{$type}_users as 'users',
@@ -1028,25 +1011,24 @@ function FillPeriodStatsTotals($type)
 		LEFT JOIN log_analyze_{$type} AS `i` ON i.{$type}_id=ps.day{$type}_{$type}_id
         order by DATE(day_day)
 	";
-	foreach ($stats->query($q) as $ps)
-	{
-		# insert data
-		$q_insert->execute(array(
-			':type'       => 'd',
-			':period'     => $ps['day'],
-			':year'       => $ps['year'],
-			':env'        => $ps['day_environment'],
-			':entity'     => $ps['entity_id'],
-			':entityenv'  => $ps['entity_env'],
-			':inst'       => $ps['entity_inst'],
-			':logins'     => $ps['logins'],
-			':users'      => $ps['users'],
-		));
-	}
+    foreach ($stats->query($q) as $ps) {
+        # insert data
+        $q_insert->execute(array(
+            ':type' => 'd',
+            ':period' => $ps['day'],
+            ':year' => $ps['year'],
+            ':env' => $ps['day_environment'],
+            ':entity' => $ps['entity_id'],
+            ':entityenv' => $ps['entity_env'],
+            ':inst' => $ps['entity_inst'],
+            ':logins' => $ps['logins'],
+            ':users' => $ps['users'],
+        ));
+    }
 
-	$view->commit();
+    $view->commit();
 
-	print "\n";
+    print "\n";
 }
 
 
@@ -1056,8 +1038,9 @@ function FillPeriodStatsTotals($type)
  * @param array $keys
  * @return array
  */
-function _array_slice_assoc($array,$keys) {
-	return array_intersect_key($array,array_flip($keys));
+function _array_slice_assoc($array, $keys)
+{
+    return array_intersect_key($array, array_flip($keys));
 }
 
 /**
@@ -1067,97 +1050,93 @@ function _array_slice_assoc($array,$keys) {
  * @param $fieldlist array
  * @return array(array,array,array)
  */
-function _dedup_array($array1,$array2,$fieldlist)
+function _dedup_array($array1, $array2, $fieldlist)
 {
-	$array1_only = array();
-	$array2_only = array();
-	$array_both  = array();
-	$array1_lookup = array();
-	$array2_lookup = array();
-	$all_keys      = array();
+    $array1_only = array();
+    $array2_only = array();
+    $array_both = array();
+    $array1_lookup = array();
+    $array2_lookup = array();
+    $all_keys = array();
 
-	# build an index of keys in the two input arrays
-	# the key consists of a concatenation of the fields specified in $fieldlist
-	foreach ($array1 as $a1)
-	{
-		$key = implode('|', _array_slice_assoc($a1,$fieldlist));
-		$array1_lookup[$key] = $a1;
-		$all_keys[$key] = 1;
-	}
-	foreach ($array2 as $a2)
-	{
-		$key = implode('|', _array_slice_assoc($a2,$fieldlist));
-		$array2_lookup[$key] = $a2;
-		$all_keys[$key] = 1;
-	}
+    # build an index of keys in the two input arrays
+    # the key consists of a concatenation of the fields specified in $fieldlist
+    foreach ($array1 as $a1) {
+        $key = implode('|', _array_slice_assoc($a1, $fieldlist));
+        $array1_lookup[$key] = $a1;
+        $all_keys[$key] = 1;
+    }
+    foreach ($array2 as $a2) {
+        $key = implode('|', _array_slice_assoc($a2, $fieldlist));
+        $array2_lookup[$key] = $a2;
+        $all_keys[$key] = 1;
+    }
 
-	if (0)
-	{
-		print "---\n";
-		print "a1_lookup: ";
-		print_r($array1_lookup);
-		print "a2_lookup: ";
-		print_r($array2_lookup);
-		print "keys:      ";
-		print_r($all_keys);
-		print "---\n";
-	}
+    if (0) {
+        print "---\n";
+        print "a1_lookup: ";
+        print_r($array1_lookup);
+        print "a2_lookup: ";
+        print_r($array2_lookup);
+        print "keys:      ";
+        print_r($all_keys);
+        print "---\n";
+    }
 
-	# now loop over all keys and sort the entries into the correct output array
-	foreach (array_keys($all_keys) as $key)
-	{
-		if     (!isset($array1_lookup[$key])) $array2_only[] = $array2_lookup[$key];
-		elseif (!isset($array2_lookup[$key])) $array1_only[] = $array1_lookup[$key];
-		else                                  $array_both[]  = array_merge($array2_lookup[$key],$array1_lookup[$key]);
-	}
+    # now loop over all keys and sort the entries into the correct output array
+    foreach (array_keys($all_keys) as $key) {
+        if (!isset($array1_lookup[$key])) $array2_only[] = $array2_lookup[$key];
+        elseif (!isset($array2_lookup[$key])) $array1_only[] = $array1_lookup[$key];
+        else                                  $array_both[] = array_merge($array2_lookup[$key], $array1_lookup[$key]);
+    }
 
-	return array($array_both,$array1_only,$array2_only);
+    return array($array_both, $array1_only, $array2_only);
 }
 
 function __test_dedup_array()
 {
-	$a1 = array(
-			array("hoi" => 'hoi 0', "bla" => 0, "foo" => 2),
-			array("hoi" => 'hoi 1', "bla" => 1, "foo" => 2),
-			array("hoi" => 'hoi 2', "bla" => 2, "foo" => 2),
-	);
-	$a2 = array(
-			array('hoi' => 'hoi 2', "bla" => 22, "baz" => 4),
-			array('hoi' => 'hoi 3', "bla" => 3, "baz" => 4),
-			array('hoi' => 'hoi 4', "bla" => 4, "baz" => 4),
-	);
+    $a1 = array(
+        array("hoi" => 'hoi 0', "bla" => 0, "foo" => 2),
+        array("hoi" => 'hoi 1', "bla" => 1, "foo" => 2),
+        array("hoi" => 'hoi 2', "bla" => 2, "foo" => 2),
+    );
+    $a2 = array(
+        array('hoi' => 'hoi 2', "bla" => 22, "baz" => 4),
+        array('hoi' => 'hoi 3', "bla" => 3, "baz" => 4),
+        array('hoi' => 'hoi 4', "bla" => 4, "baz" => 4),
+    );
 
-	print "a1: ";
-	print_r($a1);
-	print "a2: ";
-	print_r($a2);
-	print "=====\n";
-	list($a12_both, $a1_only, $a2_only,) = _dedup_array($a1, $a2, array("hoi", "bla"));
-	print "both:    ";
-	print_r($a12_both);
-	print "a1 only: ";
-	print_r($a1_only);
-	print "a2 only: ";
-	print_r($a2_only);
-	exit(0);
+    print "a1: ";
+    print_r($a1);
+    print "a2: ";
+    print_r($a2);
+    print "=====\n";
+    list($a12_both, $a1_only, $a2_only,) = _dedup_array($a1, $a2, array("hoi", "bla"));
+    print "both:    ";
+    print_r($a12_both);
+    print "a1 only: ";
+    print_r($a1_only);
+    print "a2 only: ";
+    print_r($a2_only);
+    exit(0);
 }
 
 function SyncEntitiesAndSR($type)
 {
-	global $CONFIG;
-	/** @var PDO $sr */
-	/** @var PDO $view */
-	$sr    = $CONFIG['dbh-sr'];
-	$view  = $CONFIG['dbh-view'];
+    global $CONFIG;
+    /** @var PDO $sr */
+    /** @var PDO $view */
+    $sr = $CONFIG['dbh-sr'];
+    $view = $CONFIG['dbh-view'];
 
-	print "Syncing with Service Registry ($type)";
+    print "Syncing with Service Registry ($type)";
 
-	# prepare data in sr database
-	$sr->exec("SET @tz = '+00:00'");
-	$sr->exec("SET time_zone = @tz");
+    # prepare data in sr database
+    $sr->exec("SET @tz = '+00:00'");
+    $sr->exec("SET time_zone = @tz");
 
-	# list of all current entities in SR
-	$q = "
+    # list of all current entities in SR
+    $q = "
 		SELECT
 			cr.entityid,
 			CASE cr.state WHEN 'prodaccepted' THEN 'PA' WHEN 'testaccepted' THEN 'TA' ELSE '?' END AS 'environment',
@@ -1176,19 +1155,18 @@ function SyncEntitiesAndSR($type)
 		LEFT JOIN janus__metadata           AS m3  ON m3.connectionRevisionId=cr.id AND m3.`key`='name:nl' AND m3.`value`!=''
 		WHERE cr.`type`='saml20-{$type}'
 	";
-	$sr_entities = $sr->query($q)->fetchAll(PDO::FETCH_ASSOC);
+    $sr_entities = $sr->query($q)->fetchAll(PDO::FETCH_ASSOC);
 
-	# check that all institution abbrs are correct
-	$select = $view->prepare('SELECT GetInstitutionId(:abbr)');
-	foreach ($sr_entities as &$e)
-	{
-		if ($e['inst']===null) continue;
-		$select->execute(array( ':abbr' => $e['inst'] ));
-		if ($select->fetchColumn(0)==0) $e['inst'] = null;
-	}
+    # check that all institution abbrs are correct
+    $select = $view->prepare('SELECT GetInstitutionId(:abbr)');
+    foreach ($sr_entities as &$e) {
+        if ($e['inst'] === null) continue;
+        $select->execute(array(':abbr' => $e['inst']));
+        if ($select->fetchColumn(0) == 0) $e['inst'] = null;
+    }
 
-	# list of all current entities in stats-view, including the last time we recorded a login
-	$q = "
+    # list of all current entities in stats-view, including the last time we recorded a login
+    $q = "
 		SELECT entityid, environment, abbr AS 'inst', (
 			SELECT MAX(p.`to`)
 			FROM      statsview_periodstats_{$type}total AS t
@@ -1198,148 +1176,142 @@ function SyncEntitiesAndSR($type)
 		FROM statsview_{$type} AS e
 		LEFT JOIN statsview_institution AS i ON i.id=e.institution_id
 	";
-	$view_entities = $view->query($q)->fetchAll(PDO::FETCH_ASSOC);
+    $view_entities = $view->query($q)->fetchAll(PDO::FETCH_ASSOC);
 
-	list($entities_both,$entities_only_sr,$entities_only_sv) = _dedup_array($sr_entities,$view_entities,array('entityid','environment','inst'));
+    list($entities_both, $entities_only_sr, $entities_only_sv) = _dedup_array($sr_entities, $view_entities, array('entityid', 'environment', 'inst'));
 
-	if (0)
-	{
-		print "ServiceRegistry: ";   print_r($sr_entities);
-		print "Stats-view: ";        print_r($view_entities);
-		print "both: ";              print_r($entities_both);
-		print "sv-only: ";           print_r($entities_only_sv);
-		print "sr-only: ";           print_r($entities_only_sr);
-	}
+    if (0) {
+        print "ServiceRegistry: ";
+        print_r($sr_entities);
+        print "Stats-view: ";
+        print_r($view_entities);
+        print "both: ";
+        print_r($entities_both);
+        print "sv-only: ";
+        print_r($entities_only_sv);
+        print "sr-only: ";
+        print_r($entities_only_sr);
+    }
 
-	print ".";
+    print ".";
 
-	$view->query('START TRANSACTION');
+    $view->query('START TRANSACTION');
 
-	# entities present in both SR and stats-view need to have the end_date set to null and the sr_active flag to true
-	$q = "
+    # entities present in both SR and stats-view need to have the end_date set to null and the sr_active flag to true
+    $q = "
 		UPDATE statsview_{$type}
 		SET `sr_active`=:active,`to`=:to, `name`=:name
 		WHERE entityid=:entityid AND environment=:env AND institution_id=GetInstitutionId(:inst)
 	";
-	$update = $view->prepare($q);
-	print ".";
-	foreach ($entities_both as $e)
-	{
-		#print " - {$e['entityid']}-{$e['environment']}-{$e['inst']}\n";
-		$update->execute(array(
-			':active'   => 1,
-			':to'       => null,
-			':entityid' => $e['entityid'],
-			':name'     => $e['name'],
-			':env'      => $e['environment'],
-			':inst'     => $e['inst'],
-		));
-	}
+    $update = $view->prepare($q);
+    print ".";
+    foreach ($entities_both as $e) {
+        #print " - {$e['entityid']}-{$e['environment']}-{$e['inst']}\n";
+        $update->execute(array(
+            ':active' => 1,
+            ':to' => null,
+            ':entityid' => $e['entityid'],
+            ':name' => $e['name'],
+            ':env' => $e['environment'],
+            ':inst' => $e['inst'],
+        ));
+    }
 
-	# entities present only in SR are introduced in stats-view, too
-	$q = "
+    # entities present only in SR are introduced in stats-view, too
+    $q = "
 		INSERT INTO statsview_{$type}
 		(`entityid`,`environment`,`institution_id`,`name`,`sr_active`,`from`,`to`)
 		VALUES (:entityid,:env,GetInstitutionId(:inst),:name,:active,:from,:to)
 	";
-	$update = $view->prepare($q);
-	print ".";
-	foreach ($entities_only_sr as $e)
-	{
-		#print " - {$e['entityid']}-{$e['environment']}-{$e['inst']}\n";
-		$update->execute(array(
-				':entityid' => $e['entityid'],
-				':env'      => $e['environment'],
-				':inst'     => $e['inst'],
-				':name'     => $e['name'],
-				':active'   => 1,
-				':from'     => $e['from'],
-				':to'       => null,
-		));
-	}
+    $update = $view->prepare($q);
+    print ".";
+    foreach ($entities_only_sr as $e) {
+        #print " - {$e['entityid']}-{$e['environment']}-{$e['inst']}\n";
+        $update->execute(array(
+            ':entityid' => $e['entityid'],
+            ':env' => $e['environment'],
+            ':inst' => $e['inst'],
+            ':name' => $e['name'],
+            ':active' => 1,
+            ':from' => $e['from'],
+            ':to' => null,
+        ));
+    }
 
-	# entities present only in statsview are deactivated
-	$q = "
+    # entities present only in statsview are deactivated
+    $q = "
 		UPDATE statsview_{$type}
 		SET `sr_active`=:active,`to`=:to
 		WHERE entityid=:entityid AND environment=:env AND institution_id=GetInstitutionId(:inst)
 	";
-	$update = $view->prepare($q);
-	$now = new DateTime('now',new DateTimeZone('UTC'));
-	$nowstr = $now->format('Y-m-d H:M:S');
-	print ".";
-	foreach ($entities_only_sv as $e)
-	{
-		#print " - {$e['entityid']}-{$e['environment']}-{$e['inst']}\n";
-		$update->execute(array(
-				':entityid' => $e['entityid'],
-				':env'      => $e['environment'],
-				':inst'     => $e['inst'],
-				':active'   => 0,
-				':to'       => $e['lastseen'],
-		));
-	}
+    $update = $view->prepare($q);
+    $now = new DateTime('now', new DateTimeZone('UTC'));
+    $nowstr = $now->format('Y-m-d H:M:S');
+    print ".";
+    foreach ($entities_only_sv as $e) {
+        #print " - {$e['entityid']}-{$e['environment']}-{$e['inst']}\n";
+        $update->execute(array(
+            ':entityid' => $e['entityid'],
+            ':env' => $e['environment'],
+            ':inst' => $e['inst'],
+            ':active' => 0,
+            ':to' => $e['lastseen'],
+        ));
+    }
 
-	$view->query('COMMIT');
+    $view->query('COMMIT');
 
-	print "\n";
+    print "\n";
 }
 
 ### main
 function main()
 {
-	global $CONFIG;
+    global $CONFIG;
 
-	# INPUT
-	$ARGS = getopt('c::si');
+    # INPUT
+    $ARGS = getopt('c::si');
 
-	if (!isset($ARGS['c']) and !isset($ARGS['s']) and !isset($ARGS['i']))
-	{
-		print "Please specify:\n";
-		print " -s  update statsview database\n";
-		print " -c  record connections table\n";
-		print " -i  clean and reinitialize database\n";
-		exit(1);
-	}
+    if (!isset($ARGS['c']) and !isset($ARGS['s']) and !isset($ARGS['i'])) {
+        print "Please specify:\n";
+        print " -s  update statsview database\n";
+        print " -c  record connections table\n";
+        print " -i  clean and reinitialize database\n";
+        exit(1);
+    }
 
-	$CONFIG['dbh-sr'   ] = OpenDatabases( $CONFIG['db-sr'   ] );
-	$CONFIG['dbh-stats'] = OpenDatabases( $CONFIG['db-stats'] );
-	$CONFIG['dbh-view' ] = OpenDatabases( $CONFIG['db-view' ] );
+    $CONFIG['dbh-sr'] = OpenDatabases($CONFIG['db-sr']);
+    $CONFIG['dbh-stats'] = OpenDatabases($CONFIG['db-stats']);
+    $CONFIG['dbh-view'] = OpenDatabases($CONFIG['db-view']);
 
-	if (isset($ARGS['s']))
-	{
-		FillInstitutions();
-		FillEntities('idp');
-		FillEntities('sp');
-		FillPeriods();
-		FillPeriodStats();
-		FillPeriodStatsTotals('idp');
-		FillPeriodStatsTotals('sp');
-		SyncEntitiesAndSR('idp');
-		SyncEntitiesAndSR('sp');
-	}
-	elseif (isset($ARGS['c']))
-	{
-		$date = "now";
-		if ($ARGS['c']) $date=$ARGS['c'];
-		FillInstitutions();
-		FillConnections($date);
-		SyncEntitiesAndSR('idp');
-		SyncEntitiesAndSR('sp');
-	}
-	elseif (isset($ARGS['i']))
-	{
-		$res = readline("Do you really want to delete all data?!!");
-		if (strtolower($res)!='y')
-		{
-			print "Ok, bailing out.\n";
-			exit(2);
-		}
+    if (isset($ARGS['s'])) {
+        FillInstitutions();
+        FillEntities('idp');
+        FillEntities('sp');
+        FillPeriods();
+        FillPeriodStats();
+        FillPeriodStatsTotals('idp');
+        FillPeriodStatsTotals('sp');
+        SyncEntitiesAndSR('idp');
+        SyncEntitiesAndSR('sp');
+    } elseif (isset($ARGS['c'])) {
+        $date = "now";
+        if ($ARGS['c']) $date = $ARGS['c'];
+        FillInstitutions();
+        FillConnections($date);
+        SyncEntitiesAndSR('idp');
+        SyncEntitiesAndSR('sp');
+    } elseif (isset($ARGS['i'])) {
+        $res = readline("Do you really want to delete all data?!!");
+        if (strtolower($res) != 'y') {
+            print "Ok, bailing out.\n";
+            exit(2);
+        }
 
-		ClearView();
-		CreateViewSchema();
+        ClearView();
+        CreateViewSchema();
 
-	}
+    }
 }
 
 main();

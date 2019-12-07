@@ -12,7 +12,7 @@ public class CsrfProtectionMatcher implements RequestMatcher {
     @Override
     public boolean matches(HttpServletRequest request) {
         return request.getServletPath().startsWith("/client")
-            && !allowedMethods.matcher(request.getMethod().toUpperCase()).matches();
+                && !allowedMethods.matcher(request.getMethod().toUpperCase()).matches();
     }
 
 }

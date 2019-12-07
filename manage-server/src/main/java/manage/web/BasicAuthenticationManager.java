@@ -29,7 +29,7 @@ public class BasicAuthenticationManager implements AuthenticationManager {
 
 
     public BasicAuthenticationManager(String userName, String password, List<Features> featureToggles, Product
-        product, Push push) {
+            product, Push push) {
         Assert.notNull(userName, "userName is required");
         Assert.notNull(password, "password is required");
 
@@ -51,15 +51,15 @@ public class BasicAuthenticationManager implements AuthenticationManager {
         }
         String name = String.class.cast(authentication.getPrincipal());
         return new UsernamePasswordAuthenticationToken(
-            new FederatedUser(
-                name,
-                name,
-                name,
-                createAuthorityList("ROLE_USER", "ROLE_ADMIN"),
-                featureToggles,
-                product,
-                push
-            ), authentication.getCredentials(), createAuthorityList("ROLE_USER", "ROLE_ADMIN"));
+                new FederatedUser(
+                        name,
+                        name,
+                        name,
+                        createAuthorityList("ROLE_USER", "ROLE_ADMIN"),
+                        featureToggles,
+                        product,
+                        push
+                ), authentication.getCredentials(), createAuthorityList("ROLE_USER", "ROLE_ADMIN"));
     }
 
 }

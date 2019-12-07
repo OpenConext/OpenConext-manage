@@ -18,7 +18,7 @@ public class ProviderIdentifier {
         Map data = Map.class.cast(provider.get("data"));
         this.entityId = String.class.cast(data.get("entityid"));
         this.institutionId = (String) Map.class.cast(data.getOrDefault("metaDataFields", new HashMap<>())).get
-            ("coin:institution_id");
+                ("coin:institution_id");
         this.state = String.class.cast(data.get("state"));
     }
 

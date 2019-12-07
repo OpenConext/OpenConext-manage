@@ -32,7 +32,7 @@ import static org.awaitility.Awaitility.await;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-    properties = {"spring.data.mongodb.uri=mongodb://localhost:27017/metadata_test","oidc.feature=false"})
+        properties = {"spring.data.mongodb.uri=mongodb://localhost:27017/metadata_test", "oidc.feature=false"})
 @ActiveProfiles("dev")
 public abstract class AbstractIntegrationTest implements TestUtils {
 
@@ -58,23 +58,23 @@ public abstract class AbstractIntegrationTest implements TestUtils {
         if (insertSeedData()) {
             if (metaDataList == null) {
                 metaDataList = objectMapper.readValue(readFile("json/meta_data_seed.json"), new
-                    TypeReference<List<MetaData>>() {
-                });
+                        TypeReference<List<MetaData>>() {
+                        });
             }
             MongoTemplate mongoTemplate = metaDataRepository.getMongoTemplate();
             metaDataAutoConfiguration.schemaNames().forEach(schema -> {
                 int removed = mongoTemplate.remove(new Query(Criteria.where("type").is(schema)), schema).getN();
                 String revisionsSchema = schema.concat(REVISION_POSTFIX);
                 int removedRevisions = mongoTemplate.remove(new Query(Criteria.where("type").is(revisionsSchema)),
-                    revisionsSchema).getN();
+                        revisionsSchema).getN();
                 LOG.debug("Removed {} records from {} and removed {} records from {}", removed, schema,
-                    removedRevisions, revisionsSchema);
+                        removedRevisions, revisionsSchema);
             });
             metaDataList.forEach(metaDataRepository::save);
 
             metaDataList.stream().collect(Collectors.groupingBy(MetaData::getType))
-                .forEach((type, metaData) -> await().until(() -> mongoTemplate.count(new Query(), type) == metaData
-                    .size()));
+                    .forEach((type, metaData) -> await().until(() -> mongoTemplate.count(new Query(), type) == metaData
+                            .size()));
         }
     }
 

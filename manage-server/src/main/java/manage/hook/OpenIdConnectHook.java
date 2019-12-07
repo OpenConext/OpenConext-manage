@@ -8,7 +8,11 @@ import manage.oidc.OpenIdConnect;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 public class OpenIdConnectHook extends MetaDataHookAdapter {
 

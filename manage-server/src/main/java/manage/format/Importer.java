@@ -9,7 +9,6 @@ import org.springframework.core.io.Resource;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +26,7 @@ public class Importer {
 
     private MetaDataAutoConfiguration metaDataAutoConfiguration;
 
-    private MetaDataFeedParser metaDataFeedParser ;
+    private MetaDataFeedParser metaDataFeedParser;
 
     private TypeSafetyHook metaDataHook;
 
@@ -38,17 +37,17 @@ public class Importer {
     }
 
     public Map<String, Object> importXML(Resource resource, EntityType entityType, Optional<String> entityId) throws
-        IOException, XMLStreamException {
+            IOException, XMLStreamException {
         return metaDataFeedParser.importXML(resource, entityType, entityId, metaDataAutoConfiguration);
     }
 
     public List<Map<String, Object>> importFeed(Resource resource) throws IOException,
-        XMLStreamException {
+            XMLStreamException {
         return metaDataFeedParser.importFeed(resource, metaDataAutoConfiguration);
     }
 
     public Map<String, Object> importJSON(EntityType entityType, Map<String, Object> data) throws
-        JsonProcessingException {
+            JsonProcessingException {
         data.entrySet().removeIf(entry -> entry.getValue() == null);
 
         Map<String, Object> json = new ConcurrentHashMap<>(data);
@@ -74,12 +73,12 @@ public class Importer {
             if (json.containsKey("allowedEntities")) {
                 List<String> allowedEntities = (List<String>) json.get("allowedEntities");
                 json.put("allowedEntities", allowedEntities.stream()
-                    .map(name -> Collections.singletonMap("name", name)).collect(toList()));
+                        .map(name -> Collections.singletonMap("name", name)).collect(toList()));
             }
             if (json.containsKey("disableConsent")) {
                 List<String> disableConsent = (List<String>) json.get("disableConsent");
                 json.put("disableConsent", disableConsent.stream()
-                    .map(name -> Collections.singletonMap("name", name)).collect(toList()));
+                        .map(name -> Collections.singletonMap("name", name)).collect(toList()));
             }
 
             if (json.containsKey("stepupEntities")) {

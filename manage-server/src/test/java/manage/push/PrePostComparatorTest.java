@@ -1,6 +1,5 @@
 package manage.push;
 
-import groovy.transform.stc.ClosureParams;
 import manage.TestUtils;
 import org.junit.Test;
 

@@ -51,6 +51,7 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.time.Clock;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -60,7 +61,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Collections.singletonMap;
 import static java.util.stream.Collectors.toList;
@@ -77,6 +77,10 @@ public class MetaDataController {
     static final String LOGICAL_OPERATOR_IS_AND = "LOGICAL_OPERATOR_IS_AND";
 
     private static final Logger LOG = LoggerFactory.getLogger(MetaDataController.class);
+
+    private static final List<String> entityTypesSuggestions = Arrays.asList(
+            EntityType.RP.getType(), EntityType.SP.getType()
+    );
 
     private MetaDataRepository metaDataRepository;
     private MetaDataAutoConfiguration metaDataAutoConfiguration;
@@ -322,7 +326,7 @@ public class MetaDataController {
 
     private MetaData doPost(@Validated @RequestBody MetaData metaData, String uid, boolean excludeFromPushRequired) throws JsonProcessingException {
         String entityid = (String) metaData.getData().get("entityid");
-        List<Map> result = this.uniqueEntityId(metaData.getType(), singletonMap("entityid",entityid));
+        List<Map> result = this.uniqueEntityId(metaData.getType(), singletonMap("entityid", entityid));
         if (!CollectionUtils.isEmpty(result)) {
             throw new DuplicateEntityIdException(entityid);
         }
@@ -400,7 +404,7 @@ public class MetaDataController {
 
     private MetaData doPut(@Validated @RequestBody MetaData metaData, String updatedBy, boolean excludeFromPushRequired) throws JsonProcessingException {
         String entityid = (String) metaData.getData().get("entityid");
-        List<Map> result = this.uniqueEntityId(metaData.getType(), singletonMap("entityid",entityid));
+        List<Map> result = this.uniqueEntityId(metaData.getType(), singletonMap("entityid", entityid));
         if (result.size() > 1) {
             throw new DuplicateEntityIdException(entityid);
         }
@@ -552,9 +556,19 @@ public class MetaDataController {
         return metaDataRepository.revisions(type.concat(REVISION_POSTFIX), parentId);
     }
 
+
     @GetMapping("/client/autocomplete/{type}")
-    public List<Map> autoCompleteEntities(@PathVariable("type") String type, @RequestParam("query") String query) {
-        return metaDataRepository.autoComplete(type, query);
+    public Map<String, List<Map>> autoCompleteEntities(@PathVariable("type") String type, @RequestParam("query") String query) {
+        List<Map> suggestions = metaDataRepository.autoComplete(type, query);
+        Map<String, List<Map>> results = new HashMap<>();
+        results.put("suggestions", suggestions);
+        if (suggestions.isEmpty() && entityTypesSuggestions.contains(type)) {
+            List<Map> alternatives = new ArrayList<>();
+            entityTypesSuggestions.stream().filter(s -> !s.equals(type))
+                    .forEach(s -> alternatives.addAll(metaDataRepository.autoComplete(s, query)));
+            results.put("alternatives", alternatives);
+        }
+        return results;
     }
 
     @GetMapping("/client/whiteListing/{type}")
@@ -569,10 +583,10 @@ public class MetaDataController {
         EntityType entityType = EntityType.fromType(type);
         List<Map> results;
         if (entityType.equals(EntityType.IDP) || entityType.equals(EntityType.STT)) {
-            results = metaDataRepository.search(type, properties, new ArrayList<>(), false,true);
+            results = metaDataRepository.search(type, properties, new ArrayList<>(), false, true);
         } else {
-            results = metaDataRepository.search(entityType.getType(), properties, new ArrayList<>(), false,true);
-            results.addAll(metaDataRepository.search(entityType.equals(EntityType.RP) ? EntityType.SP.getType() : EntityType.RP.getType(), properties, new ArrayList<>(), false,true));
+            results = metaDataRepository.search(entityType.getType(), properties, new ArrayList<>(), false, true);
+            results.addAll(metaDataRepository.search(entityType.equals(EntityType.RP) ? EntityType.SP.getType() : EntityType.RP.getType(), properties, new ArrayList<>(), false, true));
         }
         return results;
     }

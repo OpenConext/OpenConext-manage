@@ -3,6 +3,8 @@ package manage.shibboleth;
 import manage.conf.Features;
 import manage.conf.Product;
 import manage.conf.Push;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
@@ -11,9 +13,6 @@ import org.springframework.util.StringUtils;
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static org.springframework.security.core.authority.AuthorityUtils.createAuthorityList;
 
@@ -28,7 +27,7 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
     private static final Logger LOG = LoggerFactory.getLogger(ShibbolethPreAuthenticatedProcessingFilter.class);
 
     public ShibbolethPreAuthenticatedProcessingFilter(AuthenticationManager authenticationManager, List<Features>
-        featureToggles, Product product, Push push) {
+            featureToggles, Product product, Push push) {
         super();
         setAuthenticationManager(authenticationManager);
         this.featureToggles = featureToggles;
@@ -49,7 +48,7 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
         }
         List<GrantedAuthority> authorityList = createAuthorityList("ROLE_USER", "ROLE_ADMIN");
         return new FederatedUser(uid, displayName, schacHomeOrganization,
-            authorityList, featureToggles, product, push);
+                authorityList, featureToggles, product, push);
     }
 
     @Override
@@ -61,7 +60,7 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
         String header = request.getHeader(name);
         try {
             return StringUtils.hasText(header) ?
-                new String(header.getBytes("ISO8859-1"), "UTF-8") : header;
+                    new String(header.getBytes("ISO8859-1"), "UTF-8") : header;
         } catch (UnsupportedEncodingException e) {
             throw new IllegalArgumentException(e);
         }

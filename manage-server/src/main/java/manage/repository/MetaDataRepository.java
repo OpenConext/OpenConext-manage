@@ -6,13 +6,16 @@ import manage.mongo.Sequence;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
-import org.springframework.data.mongodb.core.query.*;
+import org.springframework.data.mongodb.core.query.BasicQuery;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.CriteriaDefinition;
+import org.springframework.data.mongodb.core.query.Field;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -152,7 +155,7 @@ public class MetaDataRepository {
             } else if (value instanceof String && !StringUtils.hasText((String) value)) {
                 criteriaDefinitions.add(Criteria.where("data.".concat(key)).exists(false));
             } else if (value instanceof String && StringUtils.hasText((String) value) &&
-                    ("true".equalsIgnoreCase((String)value) || "false".equalsIgnoreCase((String)value))) {
+                    ("true".equalsIgnoreCase((String) value) || "false".equalsIgnoreCase((String) value))) {
                 criteriaDefinitions.add(Criteria.where("data.".concat(key)).is(Boolean.parseBoolean((String) value)));
             } else if (value instanceof String && StringUtils.hasText((String) value) && isNumeric((String) value)) {
                 criteriaDefinitions.add(Criteria.where("data.".concat(key)).is(Integer.parseInt((String) value)));

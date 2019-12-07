@@ -20,12 +20,12 @@ import java.net.URL;
  * support this: https://jira.spring.io/browse/SPR-8367
  */
 public class PreemptiveAuthenticationHttpComponentsClientHttpRequestFactory extends
-    HttpComponentsClientHttpRequestFactory {
+        HttpComponentsClientHttpRequestFactory {
 
     private HttpContext httpContext;
 
     public PreemptiveAuthenticationHttpComponentsClientHttpRequestFactory(HttpClient httpClient, String url) throws
-        MalformedURLException {
+            MalformedURLException {
         super(httpClient);
         this.httpContext = this.initHttpContext(url);
     }

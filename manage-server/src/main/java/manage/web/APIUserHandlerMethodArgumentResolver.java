@@ -12,7 +12,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import java.security.Principal;
 
 public class APIUserHandlerMethodArgumentResolver implements
-    HandlerMethodArgumentResolver {
+        HandlerMethodArgumentResolver {
 
     public boolean supportsParameter(MethodParameter methodParameter) {
         return methodParameter.getParameterType().equals(APIUser.class);

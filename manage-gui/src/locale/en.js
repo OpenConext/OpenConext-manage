@@ -345,9 +345,12 @@ I18n.translations.en = {
     entity_id: "Entity ID",
     name: "Name",
     state: "Production",
+    type: "Type",
     notes: "Notes",
     link: "Link",
-    no_results: "No results",
+    no_results: "No results and no alternatives found in the other collections",
+    no_results_alternatives: "No results, but alternatives found in other collections",
+    no_results_alternatives_limited: "No results, but alternatives found in other collections (results limited)",
     results_limited: "More entries matched than can be shown, please narrow your search term..."
   },
 
