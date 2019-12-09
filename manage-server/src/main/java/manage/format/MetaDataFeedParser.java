@@ -390,7 +390,10 @@ public class MetaDataFeedParser {
     }
 
     private List<String> getValidBindings(Map<String, Object> schema, String key) {
-        return (List<String>) ((Map<String, Map<String, Object>>) schema.get("definitions")).get(key).get("enum");
+        return (List<String>) ((Map<String, Map<String, Object>>)
+                schema.getOrDefault("definitions", new HashMap<>()))
+                .getOrDefault(key, new HashMap<>())
+                .getOrDefault("enum", new ArrayList<>());
     }
 
     private Map<String, Object> enrichMetaData(Map<String, Object> metaData) {
