@@ -16,8 +16,10 @@ public class URIFormatValidatorTest extends URLFormatValidatorTest {
         assertFalse(subject.validate("").isPresent());
         assertFalse(subject.validate("http://test").isPresent());
         assertFalse(subject.validate("https://test").isPresent());
-        assertFalse(subject.validate("ftp://test").isPresent());
+        assertFalse(subject.validate("ftp://test-test").isPresent());
         assertFalse(subject.validate("custom:test").isPresent());
+        assertFalse(subject.validate("net.dns-cloud.goalsetting://callback").isPresent());
+
 
         assertTrue(subject.validate(" ").isPresent());
         assertTrue(subject.validate("xxx").isPresent());
