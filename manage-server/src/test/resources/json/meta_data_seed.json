@@ -518,7 +518,7 @@
       "metaDataFields": {
         "name:en": "OIDC ResourceServer",
         "secret": "secret",
-        "redirectUrls": [],
+        "redirectUrls": ["https://redirect.org"],
         "scopes": [
           "openid",
           "groups"
@@ -532,7 +532,8 @@
         "accessTokenValidity": 3600,
         "refreshTokenValidity": 3600,
         "isPublicClient": true,
-        "isResourceServer": true
+        "isResourceServer": true,
+        "coin:exclude_from_push": true
       }
     }
   }

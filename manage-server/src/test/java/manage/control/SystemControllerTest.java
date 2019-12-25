@@ -31,7 +31,7 @@ public class SystemControllerTest extends AbstractIntegrationTest {
                 .extract().as(Map.class);
         Map expected = objectMapper.readValue(readFile("push/push.expected_connections.json"), Map.class);
 
-        assertEquals(expected, connections);
+            assertEquals(expected, connections);
     }
 
     @Test

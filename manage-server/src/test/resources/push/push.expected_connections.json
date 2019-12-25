@@ -537,26 +537,6 @@
       "name": "https@//oidc.rp",
       "state": "prodaccepted",
       "type": "saml20-sp"
-    },
-    "10": {
-      "allow_all_entities": true,
-      "allowed_connections": [],
-      "arp_attributes": {},
-      "metadata": {
-        "AssertionConsumerService": [
-          {
-            "Binding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
-            "Index": "1",
-            "Location": "https://trusted.proxy.acs.location.rules"
-          }
-        ],
-        "name": {
-          "en": "OIDC ResourceServer"
-        }
-      },
-      "name": "https@//oidc.rp.resourceServer",
-      "state": "testaccepted",
-      "type": "saml20-sp"
     }
   }
 }

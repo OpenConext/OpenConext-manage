@@ -217,7 +217,7 @@ export function deleteOrphanedReferences() {
   return fetchDelete("playground/deleteOrphans");
 }
 
-export function includeInPush(id) {
-  const path = `includeInPush/saml20_sp/${id}`;
+export function includeInPush(id, type) {
+  const path = `includeInPush/${type}/${id}`;
   return postPutJson(path, {}, "put");
 }
