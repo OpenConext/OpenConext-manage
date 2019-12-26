@@ -99,6 +99,7 @@ I18n.translations.en = {
     push: "Push",
     push_preview: "Push Preview",
     find_my_data: "Find my MetaData",
+    stats: "Stats",
     findMyDataInfo: "Find your 'lost' MetaData. Enter part of the entityId, specify the type of MetaData and search in the revisions where all deleted MetaData still exists.",
     findMyDataNoResults: "No results based on the entityID part",
     pushPreviewInfo: "Collect all relevant metadata and perform a simulation of the {{name}} push",

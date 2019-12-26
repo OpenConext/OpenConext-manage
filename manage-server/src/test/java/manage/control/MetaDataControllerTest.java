@@ -140,6 +140,16 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void stats() {
+        Map result = given()
+                .when()
+                .contentType("application/json")
+                .get("manage/api/client/metadata/stats")
+                .as(Map.class);
+        assertEquals(12, result.size());
+    }
+
+    @Test
     public void post() throws IOException {
         doPost(true, "saml2_user.com");
     }
@@ -508,6 +518,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                         "Duis ad do",
                         "https://profile.test2.surfconext.nl/authentication/metadata"));
     }
+
 
     @Test
     public void searchWithListIn() {

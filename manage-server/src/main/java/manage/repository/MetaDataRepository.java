@@ -18,9 +18,11 @@ import org.springframework.util.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 
 /**
  * We can't use the Spring JPA repositories as we at runtime need to decide which collection to use. We only have one
@@ -210,6 +212,11 @@ public class MetaDataRepository {
         updateInc.inc("value", 1L);
         Sequence res = mongoTemplate.findAndModify(new BasicQuery("{\"_id\":\"sequence\"}"), updateInc, Sequence.class);
         return res.getValue();
+    }
+
+    public Map<String, Long> stats() {
+        Set<String> collectionNames = mongoTemplate.getCollectionNames();
+        return collectionNames.stream().collect(toMap(s -> s, s -> mongoTemplate.count(new Query(), s)));
     }
 
     private Query queryWithSamlFields() {

@@ -152,6 +152,10 @@ public class MetaDataController {
         return doPut(metaData, federatedUser.getUid(), false);
     }
 
+    @GetMapping("/client/metadata/stats")
+    public Map<String, Long> stats() {
+        return metaDataRepository.stats();
+    }
 
     @PreAuthorize("hasRole('WRITE')")
     @PostMapping("/internal/metadata")

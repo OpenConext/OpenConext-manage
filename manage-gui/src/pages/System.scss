@@ -31,7 +31,7 @@
     }
   }
 
-  section.validate, section.migrate, section.push, section.orphans, section.find-my-data {
+  section.validate, section.migrate, section.push, section.orphans, section.find-my-data, section.stats {
     background-color: white;
     padding: 15px 15px 150px 15px;
 
@@ -97,7 +97,7 @@
     }
   }
 
-  table.find-my-data-results {
+  table.find-my-data-results, table.stats {
     width: 100%;
 
     th {

@@ -11,7 +11,8 @@ import {
   pushPreview,
   restoreDeletedRevision,
   search,
-  validate
+  validate,
+    stats
 } from "../api";
 import {isEmpty, stop} from "../utils/Utils";
 import ConfirmationDialog from "../components/ConfirmationDialog";
@@ -28,6 +29,7 @@ export default class System extends React.PureComponent {
   constructor(props) {
     super(props);
     const tabs = props.currentUser.featureToggles.map(feature => feature.toLowerCase());
+    tabs.push("stats");
     this.state = {
       tabs: tabs,
       selectedTab: tabs[0],
@@ -39,6 +41,7 @@ export default class System extends React.PureComponent {
       pushPreviewResults: undefined,
       pushResults: undefined,
       showNonRestorable: true,
+      statistics: {},
       loading: false,
       copiedToClipboardClassName: "",
       confirmationDialogOpen: false,
@@ -79,6 +82,9 @@ export default class System extends React.PureComponent {
     }
     if (tab !== "push") {
       this.setState({pushResults: undefined, pushPreviewResults: undefined});
+    }
+    if (tab === "stats") {
+      stats().then(json => this.setState({statistics: json}));
     }
   };
 
@@ -388,6 +394,29 @@ export default class System extends React.PureComponent {
     );
   };
 
+  renderStats = () => {
+    const {statistics} = this.state;
+    return (
+        <section className="stats">
+          <p>Overview off all collections and the size of the collection.</p>
+          <table className="stats">
+            <thead>
+            <tr>
+              <th>Name</th>
+              <th>Count</th>
+            </tr>
+            </thead>
+            <tbody>
+            {Object.keys(statistics).map(k => <tr>
+              <td>{k}</td>
+              <td>{statistics[k]}</td>
+            </tr>)}
+            </tbody>
+          </table>
+        </section>
+    );
+  };
+
   renderCurrentTab = selectedTab => {
     switch (selectedTab) {
       case "validation" :
@@ -400,6 +429,8 @@ export default class System extends React.PureComponent {
         return this.renderPushPreview();
       case "find_my_data":
         return this.renderFindMyData();
+      case "stats":
+        return this.renderStats();
       default :
         throw new Error(`Unknown tab: ${selectedTab}`);
     }

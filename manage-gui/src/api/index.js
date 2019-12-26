@@ -115,6 +115,10 @@ export function configuration() {
   return fetchJson("metadata/configuration");
 }
 
+export function stats() {
+  return fetchJson("metadata/stats");
+}
+
 export function revisions(type, parentId) {
   return fetchJson(`revisions/${type}/${parentId}`);
 }
