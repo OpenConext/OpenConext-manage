@@ -183,6 +183,22 @@
     }
   }
 
+  table.stats {
+    th {
+      text-align: left;
+      cursor: pointer;
+
+      i {
+        margin-left: 15px;
+        color: $lighter-grey;
+
+        &.current, &.reverse {
+          color: $blue;
+        }
+      }
+    }
+  }
+
   section.results {
     padding: 30px;
     background-color: white;

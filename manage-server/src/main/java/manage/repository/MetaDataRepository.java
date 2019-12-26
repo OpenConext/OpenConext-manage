@@ -2,6 +2,7 @@ package manage.repository;
 
 import manage.model.EntityType;
 import manage.model.MetaData;
+import manage.model.StatsEntry;
 import manage.mongo.Sequence;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -214,9 +216,11 @@ public class MetaDataRepository {
         return res.getValue();
     }
 
-    public Map<String, Long> stats() {
+    public List<StatsEntry> stats() {
         Set<String> collectionNames = mongoTemplate.getCollectionNames();
-        return collectionNames.stream().collect(toMap(s -> s, s -> mongoTemplate.count(new Query(), s)));
+        return collectionNames.stream()
+                .map(name -> new StatsEntry(name, mongoTemplate.count(new Query(), name)))
+                .collect(toList());
     }
 
     private Query queryWithSamlFields() {

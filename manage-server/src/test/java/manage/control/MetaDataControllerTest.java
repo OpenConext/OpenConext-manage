@@ -141,12 +141,13 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void stats() {
-        Map result = given()
+        given()
                 .when()
                 .contentType("application/json")
                 .get("manage/api/client/metadata/stats")
-                .as(Map.class);
-        assertEquals(12, result.size());
+                .then()
+                .statusCode(SC_OK)
+                .body("size()", is(12));
     }
 
     @Test

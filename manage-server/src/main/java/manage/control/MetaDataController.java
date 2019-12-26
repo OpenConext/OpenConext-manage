@@ -16,6 +16,7 @@ import manage.model.MetaDataKeyDelete;
 import manage.model.MetaDataUpdate;
 import manage.model.RevisionRestore;
 import manage.model.ServiceProvider;
+import manage.model.StatsEntry;
 import manage.model.XML;
 import manage.repository.MetaDataRepository;
 import manage.shibboleth.FederatedUser;
@@ -153,7 +154,7 @@ public class MetaDataController {
     }
 
     @GetMapping("/client/metadata/stats")
-    public Map<String, Long> stats() {
+    public List<StatsEntry> stats() {
         return metaDataRepository.stats();
     }
 
