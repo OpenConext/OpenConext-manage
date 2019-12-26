@@ -42,8 +42,8 @@ export default class System extends React.PureComponent {
             pushResults: undefined,
             showNonRestorable: true,
             statistics: [],
-            statsSorted: "name",
-            statsSortedReverse: false,
+            statsSorted: "count",
+            statsSortedReverse: true,
             loading: false,
             copiedToClipboardClassName: "",
             confirmationDialogOpen: false,
@@ -411,7 +411,7 @@ export default class System extends React.PureComponent {
                 <table className="stats">
                     <thead>
                     <tr>{
-                        columns.map(name => <th onClick={() => this.setState({
+                        columns.map(name => <th key={name} onClick={() => this.setState({
                             statsSorted: name,
                             statsSortedReverse: statsSorted === name ? !statsSortedReverse : false
                         })}>
@@ -421,7 +421,7 @@ export default class System extends React.PureComponent {
                     </tr>
                     </thead>
                     <tbody>
-                    {sortedStatistics.map(statsEntry => <tr>
+                    {sortedStatistics.map((statsEntry, i) => <tr key={i}>
                         <td>{statsEntry.name}</td>
                         <td>{statsEntry.count}</td>
                     </tr>)}
