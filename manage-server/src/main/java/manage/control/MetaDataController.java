@@ -258,7 +258,7 @@ public class MetaDataController {
                     .filter(sp -> sp.isImportedFromEduGain() &&
                             !imports.stream().anyMatch(map -> sp.getEntityId().equals(map.get("entityid"))))
                     .collect(toList());
-            notInFeedAnymore.forEach(sp -> this.doRemove(entityType.getType(), sp.getId(), "edugain-import"));
+            notInFeedAnymore.forEach(sp -> this.doRemove(entityType.getType(), sp.getId(), "edugain-import", "Removed from eduGain feed"));
 
             List deleted = results.computeIfAbsent("deleted", s -> new ArrayList());
             deleted.addAll(notInFeedAnymore.stream().map(sp -> sp.getEntityId()).collect(toList()));
@@ -367,18 +367,20 @@ public class MetaDataController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/client/metadata/{type}/{id}")
-    public boolean remove(@PathVariable("type") String type, @PathVariable("id") String id, FederatedUser user) {
-        return doRemove(type, id, user.getUid());
+    @PutMapping("/client/metadata/{type}/{id}")
+    public boolean remove(@PathVariable("type") String type, @PathVariable("id") String id, @RequestBody(required=false) Map body, FederatedUser user) {
+        String defaultValue = "Deleted by " + user.getUid();
+        String revisionNote = body != null ? (String) body.getOrDefault("revisionNote", defaultValue) : defaultValue;
+        return doRemove(type, id, user.getUid(), revisionNote);
     }
 
     @PreAuthorize("hasRole('WRITE')")
     @DeleteMapping("/internal/metadata/{type}/{id}")
     public boolean removeInternal(@PathVariable("type") String type, @PathVariable("id") String id, APIUser apiUser) {
-        return doRemove(type, id, apiUser.getName());
+        return doRemove(type, id, apiUser.getName(), "Deleted by APIUser " + apiUser.getName());
     }
 
-    private boolean doRemove(@PathVariable("type") String type, @PathVariable("id") String id, String uid) {
+    private boolean doRemove(@PathVariable("type") String type, @PathVariable("id") String id, String uid, String revisionNote) {
         MetaData current = metaDataRepository.findById(id, type);
         checkNull(type, id, current);
         current = metaDataHook.preDelete(current);
@@ -386,7 +388,7 @@ public class MetaDataController {
 
         LOG.info("Deleted metaData {} by {}", current.getId(), uid);
 
-        current.terminate(UUID.randomUUID().toString());
+        current.terminate(UUID.randomUUID().toString(), revisionNote);
         metaDataRepository.save(current);
         return true;
     }

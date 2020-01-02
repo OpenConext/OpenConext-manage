@@ -818,7 +818,7 @@ export default class Detail extends React.PureComponent {
                   stop(e);
                   this.setState({
                     confirmationDialogAction: () => {
-                      remove(this.state.metaData).then(res => {
+                      remove(this.state.metaData, this.state.revisionNote).then(res => {
                         this.props.history.replace("/search");
                         const name = this.nameOfMetaData(this.state.metaData);
                         setFlash(

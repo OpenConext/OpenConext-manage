@@ -109,21 +109,31 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         MetaData metaData = metaDataRepository.findById("1", "saml20_sp");
         assertNotNull(metaData);
 
+        String reasonForDeletion = "Reason for deletion";
         given()
                 .when()
-                .delete("manage/api/client/metadata/saml20_sp/1")
+                .header("Content-type", "application/json")
+                .body(Collections.singletonMap("revisionNote", reasonForDeletion))
+                .put("manage/api/client/metadata/saml20_sp/1")
                 .then()
                 .statusCode(SC_OK);
 
         metaData = metaDataRepository.findById("1", "saml20_sp");
         assertNull(metaData);
+
+        List<MetaData> revisions = metaDataRepository.findRaw("saml20_sp_revision", "{\"revision.parentId\": \"1\"}");
+        assertEquals(1, revisions.size());
+
+        MetaData revision = revisions.get(0);
+        assertEquals(revision.getData().get("revisionnote"), reasonForDeletion);
     }
 
     @Test
     public void removeNonExistent() {
         given()
                 .when()
-                .delete("manage/api/client/metadata/saml20_sp/99999")
+                .header("Content-type", "application/json")
+                .put("manage/api/client/metadata/saml20_sp/99999")
                 .then()
                 .statusCode(SC_NOT_FOUND);
     }
@@ -769,7 +779,8 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
 
         given()
                 .when()
-                .delete("manage/api/client/metadata/saml20_sp/3")
+                .header("Content-type", "application/json")
+                .put("manage/api/client/metadata/saml20_sp/3")
                 .then()
                 .statusCode(SC_OK);
 
@@ -849,7 +860,8 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         String type = EntityType.SP.getType();
         given()
                 .when()
-                .delete("manage/api/client/metadata/saml20_sp/1")
+                .header("Content-type", "application/json")
+                .put("manage/api/client/metadata/saml20_sp/1")
                 .then()
                 .statusCode(SC_OK);
 

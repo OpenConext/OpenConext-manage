@@ -56,8 +56,9 @@ public class MetaData implements Serializable {
         this.id = newId;
     }
 
-    public void terminate(String newId) {
+    public void terminate(String newId, String revisionNote) {
         this.revision(newId);
+        this.getData().put("revisionnote", revisionNote);
         this.revision.terminate();
     }
 

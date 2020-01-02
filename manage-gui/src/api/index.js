@@ -95,8 +95,8 @@ export function save(metaData) {
   return postPutJson("metadata", metaData, "post");
 }
 
-export function remove(metaData) {
-  return fetchDelete(`metadata/${metaData.type}/${metaData.id}`, metaData);
+export function remove(metaData, revisionNote) {
+  return postPutJson(`metadata/${metaData.type}/${metaData.id}`, {revisionNote}, "put");
 }
 
 export function update(metaData) {

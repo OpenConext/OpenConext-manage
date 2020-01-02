@@ -228,10 +228,13 @@ export default class System extends React.PureComponent {
                         <td className="terminated">{this.terminationDate(revision)}</td>
                         <td className="revisionNumber">{revision.number}</td>
                         <td className="updatedBy">{revision.updatedBy}</td>
-                        <td className="revisionNote">{entity.data.revisionnote}</td>
+                        <td className="revisionNote">
+                            {isEmpty(entity.data.revisionnote) ? <span></span> :
+                                <NotesTooltip identifier={entity.data.entityid + "/revisionNotes/" + index} notes={entity.data.revisionnote}/>}
+                        </td>
                         <td className="notes">
                             {isEmpty(entity.data.notes) ? <span></span> :
-                                <NotesTooltip identifier={entity.data.entityid} notes={entity.data.notes}/>}
+                                <NotesTooltip identifier={entity.data.entityid + "/notes/" + index} notes={entity.data.notes}/>}
                         </td>
                         <td><a className={restoreClassName} href={`/restore/${entity._id}`}
                                onClick={this.restoreDeleted(entity, revision.number,

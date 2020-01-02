@@ -87,7 +87,7 @@ I18n.translations.en = {
     },
     required: "{{name}} is required",
     extraneous: "{{name}} is an unknown / extraneous key. Remove it as this can not be saved.",
-    deleteConfirmation: "Are you sure you want to delete {{name}}?",
+    deleteConfirmation: "Are you sure you want to delete {{name}}?<br/><br/>You can optional specify the reason for deletion in the revision notes.",
     errors: "There are validation errors:"
 
   },
