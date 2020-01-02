@@ -8,8 +8,10 @@ import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.http.client.support.BasicAuthorizationInterceptor;
 import org.springframework.web.client.DefaultResponseErrorHandler;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Optional;
@@ -40,7 +42,7 @@ public class OpenIdConnectService implements OpenIdConnect {
         String url = String.format("%s?clientId=%s", this.url, clientId);
         try {
             return Optional.ofNullable(restTemplate.getForEntity(url, Client.class).getBody());
-        } catch (HttpClientErrorException e) {
+        } catch (RestClientException e) {
             LOG.error("Error in retrieving client " + clientId + " from OIDC", e);
             return Optional.empty();
         }
@@ -62,7 +64,7 @@ public class OpenIdConnectService implements OpenIdConnect {
     public void deleteClient(String clientId) {
         try {
             restTemplate.delete(String.format("%s?clientId=%s", url, clientId));
-        } catch (HttpClientErrorException e) {
+        } catch (RestClientException e) {
             LOG.error("Error in deleting client " + clientId + " from OIDC", e);
         }
 
