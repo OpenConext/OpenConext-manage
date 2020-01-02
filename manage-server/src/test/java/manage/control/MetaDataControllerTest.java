@@ -421,6 +421,17 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void autoAlternativesWildcards() {
+        given()
+                .when()
+                .queryParam("query", "Duis do")
+                .get("manage/api/client/autocomplete/saml20_sp")
+                .then()
+                .statusCode(SC_OK)
+                .body("suggestions.size()", is(1));
+    }
+
+    @Test
     public void uniqueEntityId() {
         Map<String, Object> searchOptions = new HashMap<>();
         searchOptions.put("entityid", "https@//oidc.rp");

@@ -17,14 +17,13 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
 
 /**
  * We can't use the Spring JPA repositories as we at runtime need to decide which collection to use. We only have one
@@ -79,13 +78,18 @@ public class MetaDataRepository {
         String escapedSearch = escapeSpecialChars(search);
         query.limit(AUTOCOMPLETE_LIMIT);
         Criteria criteria = new Criteria();
-        List<Criteria> orCriterias = new ArrayList<>();
-        orCriterias.add(regex("data.entityid", search));
-        this.supportedLanguages.forEach(lang -> {
-            orCriterias.add(regex("data.metaDataFields.name:" + lang, escapedSearch));
-            orCriterias.add(regex("data.keywords.name:" + lang, escapedSearch));
-        });
-        query.addCriteria(criteria.orOperator(orCriterias.toArray(new Criteria[orCriterias.size()])));
+
+        List<String> parts = Arrays.asList(escapedSearch.split(" "));
+        criteria.andOperator(parts.stream().map(part -> {
+            List<Criteria> orCriterias = new ArrayList<>();
+            orCriterias.add(regex("data.entityid", part));
+            this.supportedLanguages.forEach(lang -> {
+                orCriterias.add(regex("data.metaDataFields.name:" + lang, part));
+                orCriterias.add(regex("data.metaDataFields.keywords:" + lang, part));
+            });
+            return new Criteria().orOperator(orCriterias.toArray(new Criteria[orCriterias.size()]));
+        }).toArray(Criteria[]::new));
+        query.addCriteria(criteria);
         return mongoTemplate.find(query, Map.class, type);
     }
 
