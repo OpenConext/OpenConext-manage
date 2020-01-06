@@ -10,6 +10,7 @@ import manage.shibboleth.ShibbolethUserDetailService;
 import manage.shibboleth.mock.MockShibbolethFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
@@ -26,6 +27,8 @@ import org.springframework.security.web.authentication.preauth.PreAuthenticatedA
 import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CsrfFilter;
+import org.springframework.security.web.firewall.DefaultHttpFirewall;
+import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.yaml.snakeyaml.Yaml;
@@ -202,6 +205,11 @@ public class WebSecurityConfigurer {
             argumentResolvers.add(new APIUserHandlerMethodArgumentResolver());
         }
 
+    }
+
+    @Bean
+    public HttpFirewall httpFirewall() {
+        return new DefaultHttpFirewall();
     }
 
 }
