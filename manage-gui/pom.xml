@@ -12,7 +12,8 @@
     <artifactId>manage-gui</artifactId>
     <packaging>pom</packaging>
     <name>manage-gui</name>
-    <version>4.0.15-SNAPSHOT</version>
+    <version>4.0.16</version>
+
     <build>
         <plugins>
             <plugin>

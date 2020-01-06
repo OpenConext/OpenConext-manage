@@ -51,13 +51,13 @@ public class MetaData implements Serializable {
     }
 
     public void revision(String newId) {
-        this.type = this.type.concat(REVISION_POSTFIX);
+        this.type = this.type.contains(REVISION_POSTFIX) ? this.type : this.type.concat(REVISION_POSTFIX);
         this.getNonNullRevision().setParentId(this.id);
         this.id = newId;
     }
 
     public void terminate(String newId, String revisionNote) {
-        this.revision(newId);
+        this.id = newId;
         this.getData().put("revisionnote", revisionNote);
         this.revision.terminate();
     }

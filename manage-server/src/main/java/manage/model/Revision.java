@@ -28,6 +28,7 @@ public class Revision {
 
     public void terminate() {
         this.terminated = Instant.now();
+        ++this.number;
     }
 
     public void deTerminate(String newId) {

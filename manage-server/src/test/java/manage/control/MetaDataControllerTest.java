@@ -122,9 +122,9 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         assertNull(metaData);
 
         List<MetaData> revisions = metaDataRepository.findRaw("saml20_sp_revision", "{\"revision.parentId\": \"1\"}");
-        assertEquals(1, revisions.size());
+        assertEquals(2, revisions.size());
 
-        MetaData revision = revisions.get(0);
+        MetaData revision = revisions.get(1);
         assertEquals(revision.getData().get("revisionnote"), reasonForDeletion);
     }
 
@@ -880,7 +880,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         assertNull(metaData);
 
         List<MetaData> revisions = metaDataRepository.getMongoTemplate().findAll(MetaData.class, "saml20_sp_revision");
-        assertEquals(1, revisions.size());
+        assertEquals(2, revisions.size());
         RevisionRestore revisionRestore = new RevisionRestore(revisions.get(0).getId(),
                 type.concat("_revision"), type);
 
@@ -896,7 +896,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         assertNotNull(metaData);
 
         revisions = metaDataRepository.getMongoTemplate().findAll(MetaData.class, "saml20_sp_revision");
-        assertEquals(1, revisions.size());
+        assertEquals(2, revisions.size());
         revisions.forEach(rev -> assertEquals(rev.getRevision().getParentId(), "1"));
 
     }

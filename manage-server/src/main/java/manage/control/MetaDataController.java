@@ -388,6 +388,9 @@ public class MetaDataController {
 
         LOG.info("Deleted metaData {} by {}", current.getId(), uid);
 
+        current.revision(UUID.randomUUID().toString());
+        metaDataRepository.save(current);
+
         current.terminate(UUID.randomUUID().toString(), revisionNote);
         metaDataRepository.save(current);
         return true;
