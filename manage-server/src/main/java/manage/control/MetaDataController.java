@@ -32,6 +32,7 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -632,4 +633,19 @@ public class MetaDataController {
         return metaData;
     }
 
+    @Secured("WRITE")
+    @GetMapping(value = "/internal/connectWithoutInteraction")
+    public String connectWithoutInteraction(@RequestParam Map<String, String> connectionData) {
+        LOG.debug("connectWithoutInteraction, " + "idpId: " + connectionData.get("idpId") + " spId: " + connectionData.get("spId") + " type: " + connectionData.get("type"));
+        MetaData metaData = metaDataRepository.findById(connectionData.get("idpId"), connectionData.get("type"));
+        Map<String, Object> data = metaData.getData();
+        List<Map<String, String>> allowedEntities = (List<Map<String, String>>) data.get("allowedEntities");
+        Map<String, String> newAllowedEntity = new HashMap<>();
+        newAllowedEntity.put("name", connectionData.get("spId"));
+        allowedEntities.add(newAllowedEntity);
+        data.put("allowedEntities", allowedEntities);
+        metaData.setData(data);
+        metaDataRepository.update(metaData);
+        return "Success"; // TODO: can it fail?
+    }
 }
