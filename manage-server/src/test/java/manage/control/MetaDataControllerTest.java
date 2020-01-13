@@ -1047,5 +1047,24 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         fail();
     }
 
-
+    @Test
+    public void connectInvalidSpWithoutInteraction() {
+        Map<String, String> connectionData = new HashMap<>();
+        connectionData.put("username", "testUsername");
+        connectionData.put("idpId", "Duis ad do");
+        connectionData.put("spId", null);
+        connectionData.put("type", "saml20_sp");
+        String res = given()
+                .auth()
+                .preemptive()
+                .basic("sp-portal", "secret")
+                .body(connectionData)
+                .header("Content-type", "application/json")
+                .put("manage/api/internal/connectWithoutInteraction/")
+                .then()
+                .extract()
+                .body()
+                .asString();
+        assertEquals("failure", res);
+    }
 }
