@@ -634,7 +634,7 @@ public class MetaDataController {
     }
 
     @Secured("WRITE")
-    @GetMapping(value = "/internal/connectWithoutInteraction")
+    @PutMapping(value = "/internal/connectWithoutInteraction")
     public String connectWithoutInteraction(@RequestBody Map<String, String> connectionData) {
         LOG.debug("connectWithoutInteraction, " + "idpId: " + connectionData.get("idpId") + " spId: " + connectionData.get("spId") + " type: " + connectionData.get("type"));
         MetaData metaData = metaDataRepository.findById(connectionData.get("idpId"), connectionData.get("type"));
