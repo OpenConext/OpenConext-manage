@@ -635,7 +635,7 @@ public class MetaDataController {
 
     @Secured("WRITE")
     @PutMapping(value = "/internal/connectWithoutInteraction")
-    public String connectWithoutInteraction(@RequestBody Map<String, String> connectionData) {
+    public String connectWithoutInteraction(@RequestBody Map<String, String> connectionData) throws JsonProcessingException {
         LOG.debug("connectWithoutInteraction, " + "idpId: " + connectionData.get("idpId") + " spId: " + connectionData.get("spId") + " type: " + connectionData.get("type"));
         MetaData metaData = metaDataRepository.findById(connectionData.get("idpId"), connectionData.get("type"));
         Map<String, Object> data = metaData.getData();
@@ -645,7 +645,7 @@ public class MetaDataController {
         allowedEntities.add(newAllowedEntity);
         data.put("allowedEntities", allowedEntities);
         metaData.setData(data);
-        metaDataRepository.update(metaData);
+        doPut(metaData, connectionData.get("username"), false);
         return "Success"; // TODO: can it fail?
     }
 }
