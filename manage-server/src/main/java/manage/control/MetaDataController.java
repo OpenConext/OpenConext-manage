@@ -636,16 +636,33 @@ public class MetaDataController {
     @Secured("WRITE")
     @PutMapping(value = "/internal/connectWithoutInteraction")
     public String connectWithoutInteraction(@RequestBody Map<String, String> connectionData) throws JsonProcessingException {
-        LOG.debug("connectWithoutInteraction, " + "idpId: " + connectionData.get("idpId") + " spId: " + connectionData.get("spId") + " type: " + connectionData.get("type"));
+        LOG.debug("connectWithoutInteraction, username: " + connectionData.get("username") + " idpId: " + connectionData.get("idpId") + " spId: " + connectionData.get("spId") + " type: " + connectionData.get("type"));
+
+        String spId = connectionData.get("spId");
+        List<String> validServiceProviders = metaDataRepository.allServiceProviderEntityIds().stream()
+                .map(ServiceProvider::new)
+                .map(ServiceProvider::getEntityId)
+                .collect(Collectors.toList());;
+        if (spId != null && !validServiceProviders.contains(spId)){
+            return "failure";
+        }
+
         MetaData metaData = metaDataRepository.findById(connectionData.get("idpId"), connectionData.get("type"));
         Map<String, Object> data = metaData.getData();
-        List<Map<String, String>> allowedEntities = (List<Map<String, String>>) data.get("allowedEntities");
+        List<Map<String, String>> allowedEntities = (List<Map<String, String>>) data.getOrDefault("allowedEntities", new ArrayList<Map<String, String>>());
+
+        for (Map<String, String> allowedEntity : allowedEntities) {
+            if (allowedEntity.get("name").equals(connectionData.get("spId"))){
+                return "failure";
+            }
+        }
+
         Map<String, String> newAllowedEntity = new HashMap<>();
         newAllowedEntity.put("name", connectionData.get("spId"));
         allowedEntities.add(newAllowedEntity);
         data.put("allowedEntities", allowedEntities);
         metaData.setData(data);
         doPut(metaData, connectionData.get("username"), false);
-        return "Success"; // TODO: can it fail?
+        return "success";
     }
 }
