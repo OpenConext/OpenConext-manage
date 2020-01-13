@@ -17,11 +17,7 @@ import org.springframework.core.io.ClassPathResource;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 
 import static io.restassured.RestAssured.given;
@@ -1023,6 +1019,35 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                     String.format("{\"data.entityid\":\"%s\"}", entityId)).get(0);
             assertEquals(false, metaData.metaDataFields().containsKey(keyToDelete));
         });
+    }
+
+    @Test
+    public void connectValidSpWithoutInteraction() {
+        Map<String, String> connectionData = new HashMap<>();
+        connectionData.put("username", "testUsername");
+        connectionData.put("idpId", "Duis ad do");
+        connectionData.put("spId", "myTestSpId");
+        connectionData.put("type", "saml20_sp");
+
+        given()
+                .auth()
+                .preemptive()
+                .basic("sp-portal", "secret")
+                .body(connectionData)
+                .header("Content-type", "application/json")
+                .put("manage/api/internal/connectWithoutInteraction/")
+                .then();
+
+        MetaData res = metaDataRepository.findById("testIdpId", "testType");
+        Map<String, Object> data = res.getData();
+        List<Map<String, String>> allowedEntities = (List<Map<String, String>>) data.get("allowedEntities");
+
+        for (Map<String, String> allowedEntity : allowedEntities) {
+            if (allowedEntity.get("name").equals(connectionData.get("spId"))){
+                assert true;
+            }
+        }
+        assert false;
     }
 
 
