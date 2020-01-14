@@ -1038,7 +1038,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 .body(connectionData)
                 .put("manage/api/internal/connectWithoutInteraction/")
                 .then()
-                .log();
+                .statusCode(SC_OK);
 
         MetaData idp = metaDataRepository.findById(idUId, EntityType.IDP.getType());
         Map<String, Object> data = idp.getData();
@@ -1047,25 +1047,22 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         assert this.listOfMapsContainsValue(allowedEntities, spId);
     }
 
-//    @Test
-//    public void connectInvalidSpWithoutInteraction() {
-//        Map<String, String> connectionData = new HashMap<>();
-//        connectionData.put("username", "testUsername");
-//        connectionData.put("idpId", "Duis ad do");
-//        connectionData.put("spId", null);
-//        connectionData.put("type", "saml20_sp");
-////        HttpEntity<String> getRespLink = given()
-////                .auth()
-////                .preemptive()
-////                .basic("sp-portal", "secret")
-////                .header("Content-type", "application/json")
-////                .body(connectionData)
-////                .put("manage/api/internal/connectWithoutInteraction/")
-////                .then()
-////                .extract();
-////        res = getRespLink.ge
-////        assertEquals("failure", res);
-//    }
+    @Test
+    public void connectInvalidSpWithoutInteraction() {
+        Map<String, String> connectionData = new HashMap<>();
+        connectionData.put("idpId", "Duis ad do");
+        connectionData.put("spId", null);
+        connectionData.put("type", "saml20_sp");
+        given()
+                .auth()
+                .preemptive()
+                .basic("sp-portal", "secret")
+                .header("Content-type", "application/json")
+                .body(connectionData)
+                .put("manage/api/internal/connectWithoutInteraction/")
+                .then()
+                .statusCode(SC_NOT_FOUND);
+    }
 
     public boolean listOfMapsContainsValue(List<Map> l, Object o) {
         for (Map m : l) {
