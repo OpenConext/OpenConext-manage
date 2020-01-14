@@ -1035,7 +1035,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 .put("manage/api/internal/connectWithoutInteraction/")
                 .then();
 
-        MetaData res = metaDataRepository.findById("testIdpId", "testType");
+        MetaData res = metaDataRepository.findById(connectionData.get("idpId"), connectionData.get("type"));
         Map<String, Object> data = res.getData();
         List<Map<String, String>> allowedEntities = (List<Map<String, String>>) data.get("allowedEntities");
 

@@ -635,7 +635,7 @@ public class MetaDataController {
 
     @Secured("WRITE")
     @PutMapping(value = "/internal/connectWithoutInteraction")
-    public String connectWithoutInteraction(@RequestBody Map<String, String> connectionData) throws JsonProcessingException {
+    public String connectWithoutInteraction(@RequestBody Map<String, String> connectionData, APIUser apiUser) throws JsonProcessingException {
         LOG.debug("connectWithoutInteraction, username: " + connectionData.get("username") + " idpId: " + connectionData.get("idpId") + " spId: " + connectionData.get("spId") + " type: " + connectionData.get("type"));
 
         String spId = connectionData.get("spId");
@@ -662,7 +662,8 @@ public class MetaDataController {
         allowedEntities.add(newAllowedEntity);
         data.put("allowedEntities", allowedEntities);
         metaData.setData(data);
-        doPut(metaData, connectionData.get("username"), false);
+        doPut(metaData, apiUser.getName(), false);
+
         return "success";
     }
 }
