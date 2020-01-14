@@ -32,6 +32,7 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -636,7 +637,7 @@ public class MetaDataController {
 
     @Secured("WRITE")
     @PutMapping(value = "/internal/connectWithoutInteraction")
-    public HttpEntity<String> connectWithoutInteraction(@RequestBody Map<String, String> connectionData, APIUser apiUser) throws JsonProcessingException {
+    public HttpEntity<HttpStatus> connectWithoutInteraction(@RequestBody Map<String, String> connectionData, APIUser apiUser) throws JsonProcessingException {
         LOG.debug("connectWithoutInteraction, connectionData: " + connectionData);
 
         String idpEntityId = connectionData.get("idpId");
@@ -686,6 +687,6 @@ public class MetaDataController {
 
         doPut(idp, apiUser.getName(), false);
 
-        return new HttpEntity<>("success");
+        return new HttpEntity<>(HttpStatus.OK);
     }
 }
