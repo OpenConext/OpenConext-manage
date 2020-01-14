@@ -11,7 +11,6 @@ import manage.model.MetaDataUpdate;
 import manage.model.Revision;
 import manage.model.RevisionRestore;
 import manage.oidc.OidcClient;
-import org.apache.http.HttpEntity;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 
@@ -1044,7 +1043,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         Map<String, Object> data = idp.getData();
         List<Map> allowedEntities = (List<Map>) data.get("allowedEntities");
 
-        assert this.listOfMapsContainsValue(allowedEntities, spId);
+        assert listOfMapsContainsValue(allowedEntities, spId);
     }
 
     @Test
@@ -1062,9 +1061,5 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 .put("manage/api/internal/connectWithoutInteraction/")
                 .then()
                 .statusCode(SC_NOT_FOUND);
-    }
-
-    public boolean listOfMapsContainsValue(List<Map> l, Object o) {
-        return l.stream().anyMatch(m -> m.containsValue(o));
     }
 }
