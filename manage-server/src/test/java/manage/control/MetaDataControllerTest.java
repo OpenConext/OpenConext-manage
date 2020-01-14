@@ -1065,11 +1065,6 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     public boolean listOfMapsContainsValue(List<Map> l, Object o) {
-        for (Map m : l) {
-            if (m.containsValue(o)){
-                return true;
-            }
-        }
-        return false;
+        return l.stream().anyMatch(m -> m.containsValue(o));
     }
 }

@@ -644,14 +644,6 @@ public class MetaDataController {
         String spEntityId = connectionData.get("spId");
         String spType = connectionData.get("spType");
 
-        List<String> validServiceProviders = metaDataRepository.allServiceProviderEntityIds().stream()
-                .map(ServiceProvider::new)
-                .map(ServiceProvider::getEntityId)
-                .collect(Collectors.toList());;
-        if (spEntityId == null || !validServiceProviders.contains(spEntityId)){
-            throw new ResourceNotFoundException("cannot find sp in validServiceProviders");
-        }
-
         Map<String, Object> idpSearchOptions = new HashMap<>();
         idpSearchOptions.put("entityid", idpEntityId);
         List<Map> idpSearchResults = uniqueEntityId(EntityType.IDP.getType(), idpSearchOptions);
@@ -676,7 +668,7 @@ public class MetaDataController {
 
         boolean allowedToConnect = (boolean) sp.metaDataFields().get("coin:connect_without_interaction");
         if (!allowedToConnect) {
-            throw new ResourceNotFoundException("sp does not allow automatic connection"); // TODO: throw the correct exception
+            throw new IllegalArgumentException("sp does not allow automatic connection");
         }
 
         Map<String, Object> idpData = idp.getData();
