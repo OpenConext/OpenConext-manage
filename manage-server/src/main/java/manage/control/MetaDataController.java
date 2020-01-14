@@ -31,6 +31,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -123,7 +124,7 @@ public class MetaDataController {
         return metaDataHook.postGet(metaData);
     }
 
-    private void checkNull(@PathVariable("type") String type, @PathVariable("id") String id, MetaData metaData) {
+    private void checkNull(String type, String id, MetaData metaData) {
         if (metaData == null) {
             throw new ResourceNotFoundException(String.format("MetaData type %s with id %s does not exist", type, id));
         }
@@ -635,35 +636,64 @@ public class MetaDataController {
 
     @Secured("WRITE")
     @PutMapping(value = "/internal/connectWithoutInteraction")
-    public String connectWithoutInteraction(@RequestBody Map<String, String> connectionData, APIUser apiUser) throws JsonProcessingException {
-        LOG.debug("connectWithoutInteraction, username: " + connectionData.get("username") + " idpId: " + connectionData.get("idpId") + " spId: " + connectionData.get("spId") + " type: " + connectionData.get("type"));
+    public HttpEntity<String> connectWithoutInteraction(@RequestBody Map<String, String> connectionData, APIUser apiUser) throws JsonProcessingException {
+        LOG.debug("connectWithoutInteraction, connectionData: " + connectionData);
 
-        String spId = connectionData.get("spId");
+        String idpEntityId = connectionData.get("idpId");
+        String idpType = EntityType.IDP.getType();
+        String spEntityId = connectionData.get("spId");
+        String spType = connectionData.get("spType");
+
         List<String> validServiceProviders = metaDataRepository.allServiceProviderEntityIds().stream()
                 .map(ServiceProvider::new)
                 .map(ServiceProvider::getEntityId)
                 .collect(Collectors.toList());;
-        if (spId != null && !validServiceProviders.contains(spId)){
-            return "failure";
+        if (spEntityId == null || !validServiceProviders.contains(spEntityId)){
+            throw new ResourceNotFoundException("cannot find sp in validServiceProviders");
         }
 
-        MetaData metaData = metaDataRepository.findById(connectionData.get("idpId"), connectionData.get("type"));
-        Map<String, Object> data = metaData.getData();
-        List<Map<String, String>> allowedEntities = (List<Map<String, String>>) data.getOrDefault("allowedEntities", new ArrayList<Map<String, String>>());
+        Map<String, Object> idpSearchOptions = new HashMap<>();
+        idpSearchOptions.put("entityid", idpEntityId);
+        List<Map> idpSearchResults = uniqueEntityId(EntityType.IDP.getType(), idpSearchOptions);
+        if (CollectionUtils.isEmpty(idpSearchResults)) {
+            throw new ResourceNotFoundException("cannot find idp with uniqueEntityId");
+        }
 
+        Map<String, Object> spSearchOptions = new HashMap<>();
+        spSearchOptions.put("entityid", spEntityId);
+        List<Map> spSearchResults = uniqueEntityId(spType, spSearchOptions);
+        if (CollectionUtils.isEmpty(spSearchResults)) {
+            throw new ResourceNotFoundException("cannot find sp with uniqueEntityId");
+        }
+
+        String idpUId = (String) idpSearchResults.get(0).get("_id");
+        String spUId = (String) spSearchResults.get(0).get("_id");
+
+        MetaData idp = metaDataRepository.findById(idpUId, idpType);
+        MetaData sp = metaDataRepository.findById(spUId, spType);
+        checkNull(idpType, idpEntityId, idp);
+        checkNull(spType, spEntityId, sp);
+
+        boolean allowedToConnect = (boolean) sp.metaDataFields().get("coin:connect_without_interaction");
+        if (!allowedToConnect) {
+            throw new ResourceNotFoundException("sp does not allow automatic connection"); // TODO: throw the correct exception
+        }
+
+        Map<String, Object> idpData = idp.getData();
+        List<Map<String, String>> allowedEntities = (List<Map<String, String>>) idpData.getOrDefault("allowedEntities", new ArrayList<Map<String, String>>());
         for (Map<String, String> allowedEntity : allowedEntities) {
-            if (allowedEntity.get("name").equals(connectionData.get("spId"))){
-                return "failure";
+            if (allowedEntity.get("name").equals(spEntityId)){
+                throw new DuplicateEntityIdException("sp is already connected");
             }
         }
-
         Map<String, String> newAllowedEntity = new HashMap<>();
-        newAllowedEntity.put("name", connectionData.get("spId"));
+        newAllowedEntity.put("name", spEntityId);
         allowedEntities.add(newAllowedEntity);
-        data.put("allowedEntities", allowedEntities);
-        metaData.setData(data);
-        doPut(metaData, apiUser.getName(), false);
+        idpData.put("allowedEntities", allowedEntities);
+        idp.setData(idpData);
 
-        return "success";
+        doPut(idp, apiUser.getName(), false);
+
+        return new HttpEntity<>("success");
     }
 }

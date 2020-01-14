@@ -11,6 +11,7 @@ import manage.model.MetaDataUpdate;
 import manage.model.Revision;
 import manage.model.RevisionRestore;
 import manage.oidc.OidcClient;
+import org.apache.http.HttpEntity;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 
@@ -1020,51 +1021,58 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void connectValidSpWithoutInteraction() {
+        String idpEntityId = "https://idp.test2.surfconext.nl";
+        String idUId = "6";
+        String spId = "Duis ad do";
+        String spType = "saml20_sp";
         Map<String, String> connectionData = new HashMap<>();
-        connectionData.put("username", "testUsername");
-        connectionData.put("idpId", "Duis ad do");
-        connectionData.put("spId", "myTestSpId");
-        connectionData.put("type", "saml20_sp");
+        connectionData.put("idpId", idpEntityId);
+        connectionData.put("spId", spId);
+        connectionData.put("spType", spType);
 
         given()
                 .auth()
                 .preemptive()
                 .basic("sp-portal", "secret")
-                .body(connectionData)
                 .header("Content-type", "application/json")
-                .put("manage/api/internal/connectWithoutInteraction/")
-                .then();
-
-        MetaData res = metaDataRepository.findById(connectionData.get("idpId"), connectionData.get("type"));
-        Map<String, Object> data = res.getData();
-        List<Map<String, String>> allowedEntities = (List<Map<String, String>>) data.get("allowedEntities");
-
-        for (Map<String, String> allowedEntity : allowedEntities) {
-            if (allowedEntity.get("name").equals(connectionData.get("spId"))){
-                return;
-            }
-        }
-        fail();
-    }
-
-    @Test
-    public void connectInvalidSpWithoutInteraction() {
-        Map<String, String> connectionData = new HashMap<>();
-        connectionData.put("username", "testUsername");
-        connectionData.put("idpId", "Duis ad do");
-        connectionData.put("spId", null);
-        connectionData.put("type", "saml20_sp");
-        String res = given()
-                .auth()
-                .preemptive()
-                .basic("sp-portal", "secret")
                 .body(connectionData)
-                .header("Content-type", "application/json")
                 .put("manage/api/internal/connectWithoutInteraction/")
                 .then()
-                .extract()
-                .body()
-                .asString();
-        assertEquals("failure", res);
+                .log();
+
+        MetaData idp = metaDataRepository.findById(idUId, EntityType.IDP.getType());
+        Map<String, Object> data = idp.getData();
+        List<Map> allowedEntities = (List<Map>) data.get("allowedEntities");
+
+        assert this.listOfMapsContainsValue(allowedEntities, spId);
+    }
+
+//    @Test
+//    public void connectInvalidSpWithoutInteraction() {
+//        Map<String, String> connectionData = new HashMap<>();
+//        connectionData.put("username", "testUsername");
+//        connectionData.put("idpId", "Duis ad do");
+//        connectionData.put("spId", null);
+//        connectionData.put("type", "saml20_sp");
+////        HttpEntity<String> getRespLink = given()
+////                .auth()
+////                .preemptive()
+////                .basic("sp-portal", "secret")
+////                .header("Content-type", "application/json")
+////                .body(connectionData)
+////                .put("manage/api/internal/connectWithoutInteraction/")
+////                .then()
+////                .extract();
+////        res = getRespLink.ge
+////        assertEquals("failure", res);
+//    }
+
+    public boolean listOfMapsContainsValue(List<Map> l, Object o) {
+        for (Map m : l) {
+            if (m.containsValue(o)){
+                return true;
+            }
+        }
+        return false;
     }
 }
