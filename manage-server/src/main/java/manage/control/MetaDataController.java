@@ -659,11 +659,11 @@ public class MetaDataController {
             throw new ResourceNotFoundException("cannot find sp with uniqueEntityId");
         }
 
-        String idpUId = (String) idpSearchResults.get(0).get("_id");
-        String spUId = (String) spSearchResults.get(0).get("_id");
+        String idpUUId = (String) idpSearchResults.get(0).get("_id");
+        String spUUId = (String) spSearchResults.get(0).get("_id");
 
-        MetaData idp = metaDataRepository.findById(idpUId, idpType);
-        MetaData sp = metaDataRepository.findById(spUId, spType);
+        MetaData idp = metaDataRepository.findById(idpUUId, idpType);
+        MetaData sp = metaDataRepository.findById(spUUId, spType);
         checkNull(idpType, idpEntityId, idp);
         checkNull(spType, spEntityId, sp);
 
