@@ -9,15 +9,7 @@ import manage.format.Exporter;
 import manage.format.Importer;
 import manage.format.SaveURLResource;
 import manage.hook.MetaDataHook;
-import manage.model.EntityType;
-import manage.model.Import;
-import manage.model.MetaData;
-import manage.model.MetaDataKeyDelete;
-import manage.model.MetaDataUpdate;
-import manage.model.RevisionRestore;
-import manage.model.ServiceProvider;
-import manage.model.StatsEntry;
-import manage.model.XML;
+import manage.model.*;
 import manage.repository.MetaDataRepository;
 import manage.shibboleth.FederatedUser;
 import org.everit.json.schema.ValidationException;
@@ -79,6 +71,8 @@ public class MetaDataController {
     static final String REQUESTED_ATTRIBUTES = "REQUESTED_ATTRIBUTES";
     static final String ALL_ATTRIBUTES = "ALL_ATTRIBUTES";
     static final String LOGICAL_OPERATOR_IS_AND = "LOGICAL_OPERATOR_IS_AND";
+
+    private static final String DASHBOARD_CONNECT_OPTION = "coin:dashboard_connect_option";
 
     private static final Logger LOG = LoggerFactory.getLogger(MetaDataController.class);
 
@@ -667,8 +661,8 @@ public class MetaDataController {
         checkNull(idpType, idpEntityId, idp);
         checkNull(spType, spEntityId, sp);
 
-        boolean allowedToConnect = (boolean) sp.metaDataFields().get("coin:connect_without_interaction");
-        if (!allowedToConnect) {
+        dashboardConnectOption connectOption = dashboardConnectOption.fromType((String) sp.metaDataFields().get(DASHBOARD_CONNECT_OPTION));
+        if (!connectOption.connectWithoutInteraction()) {
             throw new IllegalArgumentException("sp does not allow automatic connection");
         }
 
