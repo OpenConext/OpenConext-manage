@@ -661,16 +661,16 @@ public class MetaDataController {
         checkNull(idpType, idpEntityId, idp);
         checkNull(spType, spEntityId, sp);
 
-        dashboardConnectOption connectOption = dashboardConnectOption.fromType((String) sp.metaDataFields().get(DASHBOARD_CONNECT_OPTION));
+        DashboardConnectOption connectOption = DashboardConnectOption.fromType((String) sp.metaDataFields().get(DASHBOARD_CONNECT_OPTION));
         if (!connectOption.connectWithoutInteraction()) {
-            throw new IllegalArgumentException("sp does not allow automatic connection");
+            throw new IllegalArgumentException("sp does not allow connection without interaction");
         }
 
         Map<String, Object> idpData = idp.getData();
         List<Map<String, String>> allowedEntities = (List<Map<String, String>>) idpData.getOrDefault("allowedEntities", new ArrayList<Map<String, String>>());
         for (Map<String, String> allowedEntity : allowedEntities) {
             if (allowedEntity.get("name").equals(spEntityId)){
-                throw new DuplicateEntityIdException("sp is already connected");
+                throw new IllegalArgumentException("sp is already connected"); // TODO throw correct exception
             }
         }
         Map<String, String> newAllowedEntity = new HashMap<>();

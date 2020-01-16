@@ -3,7 +3,7 @@ package manage.model;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-public enum dashboardConnectOption {
+public enum DashboardConnectOption {
 
     CWI("connect_with_interaction"),                    // Connect With Interaction
     CWOIWE("connect_without_interaction_with_email"),     // Connect WithOut Interaction With Email
@@ -12,7 +12,7 @@ public enum dashboardConnectOption {
 
     private final String type;
 
-    dashboardConnectOption(String type) {
+    DashboardConnectOption(String type) {
         this.type = type;
     }
 
@@ -21,12 +21,12 @@ public enum dashboardConnectOption {
     }
 
     public boolean connectWithoutInteraction() {
-        return this.type.equals(dashboardConnectOption.CWOIWE.getType()) || this.type.equals(dashboardConnectOption.CWOIWOE.getType());
+        return this.type.equals(DashboardConnectOption.CWOIWE.getType()) || this.type.equals(DashboardConnectOption.CWOIWOE.getType());
     }
 
-    public static dashboardConnectOption fromType(String type) {
+    public static DashboardConnectOption fromType(String type) {
         String sanitizedType = type.replaceAll(Pattern.quote("-"), "_");
-        return Stream.of(dashboardConnectOption.values())
+        return Stream.of(DashboardConnectOption.values())
                 .filter(entityType -> entityType.getType().equals(sanitizedType))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Invalid EntityType " + type));
