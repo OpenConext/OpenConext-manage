@@ -670,7 +670,7 @@ public class MetaDataController {
         List<Map<String, String>> allowedEntities = (List<Map<String, String>>) idpData.getOrDefault("allowedEntities", new ArrayList<Map<String, String>>());
         for (Map<String, String> allowedEntity : allowedEntities) {
             if (allowedEntity.get("name").equals(spEntityId)){
-                throw new IllegalArgumentException("sp is already connected"); // TODO throw correct exception
+                throw new IllegalArgumentException("sp is already connected");
             }
         }
         Map<String, String> newAllowedEntity = new HashMap<>();
