@@ -88,6 +88,9 @@ public class MetaDataController {
     private Environment environment;
 
     @Autowired
+    DatabaseController databaseController;
+
+    @Autowired
     public MetaDataController(MetaDataRepository metaDataRepository,
                               MetaDataAutoConfiguration metaDataAutoConfiguration,
                               ResourceLoader resourceLoader,
@@ -681,7 +684,7 @@ public class MetaDataController {
 
         doPut(idp, apiUser.getName(), false);
 
-        // TODO do push to sync Manage Mongo with other DBs
+        databaseController.doPush();
 
         return new HttpEntity<>(HttpStatus.OK);
     }
