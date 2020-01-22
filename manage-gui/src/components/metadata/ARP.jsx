@@ -257,10 +257,17 @@ export default class ARP extends React.Component {
   renderArpAttributesTable = (arp, onChange, arpConfiguration, guest) => {
     const arpConfAttributes = arpConfiguration.properties.attributes.properties;
     const configurationAttributes = Object.keys(arpConfAttributes);
-    configurationAttributes.sort(this.sortAttributeConfigurationKeys(arpConfAttributes, arp.attributes));
+    const arpAttributesNoDuplicates = {};
+    Object.entries(arp.attributes).forEach(([key, value]) => {
+      arpAttributesNoDuplicates[key] = [value[0]];
+    });
+    configurationAttributes.sort(this.sortAttributeConfigurationKeys(arpConfAttributes, arpAttributesNoDuplicates));
 
     const sources = arpConfiguration.sources;
     const headers = ["name", "source", "enabled", "matching_rule", "action"];
+
+    console.log('arp.attributes', arp.attributes);
+    console.log('arpAttributesNoDuplicates', arpAttributesNoDuplicates);
 
     return <table className="arp-attributes">
       <thead>
@@ -272,7 +279,7 @@ export default class ARP extends React.Component {
         const {addInput, keyForNewInput} = this.state;
         const doAddInput = addInput && keyForNewInput === attrKey;
         const rows = [this.renderAttributeRow(
-          sources, attrKey, arp.attributes[attrKey] || [],
+          sources, attrKey, arpAttributesNoDuplicates[attrKey] || [],
           configurationAttributes, arpConfAttributes, guest)];
         if (doAddInput) {
           rows.push(this.renderValueCellWithInput(attrKey, index, arpConfAttributes[attrKey].display));
