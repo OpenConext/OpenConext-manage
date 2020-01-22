@@ -266,9 +266,6 @@ export default class ARP extends React.Component {
     const sources = arpConfiguration.sources;
     const headers = ["name", "source", "enabled", "matching_rule", "action"];
 
-    console.log('arp.attributes', arp.attributes);
-    console.log('arpAttributesNoDuplicates', arpAttributesNoDuplicates);
-
     return <table className="arp-attributes">
       <thead>
       <tr>
