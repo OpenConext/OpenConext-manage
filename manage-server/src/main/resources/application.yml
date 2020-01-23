@@ -10,6 +10,7 @@ server:
     timeout: 28800
 
 features: push, validation, push_preview, orphans, find_my_data, bogus
+secure_cookie: false
 
 push:
   eb:
