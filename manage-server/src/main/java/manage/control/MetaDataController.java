@@ -638,31 +638,11 @@ public class MetaDataController {
         LOG.debug("connectWithoutInteraction, connectionData: " + connectionData);
 
         String idpEntityId = connectionData.get("idpId");
-        String idpType = EntityType.IDP.getType();
+        MetaData idp = findByEntityId(idpEntityId, EntityType.IDP.getType());
+
         String spEntityId = connectionData.get("spId");
         String spType = connectionData.get("spType");
-
-        Map<String, Object> idpSearchOptions = new HashMap<>();
-        idpSearchOptions.put("entityid", idpEntityId);
-        List<Map> idpSearchResults = uniqueEntityId(EntityType.IDP.getType(), idpSearchOptions);
-        if (CollectionUtils.isEmpty(idpSearchResults)) {
-            throw new ResourceNotFoundException("cannot find idp with uniqueEntityId");
-        }
-
-        Map<String, Object> spSearchOptions = new HashMap<>();
-        spSearchOptions.put("entityid", spEntityId);
-        List<Map> spSearchResults = uniqueEntityId(spType, spSearchOptions);
-        if (CollectionUtils.isEmpty(spSearchResults)) {
-            throw new ResourceNotFoundException("cannot find sp with uniqueEntityId");
-        }
-
-        String idpUUId = (String) idpSearchResults.get(0).get("_id");
-        String spUUId = (String) spSearchResults.get(0).get("_id");
-
-        MetaData idp = metaDataRepository.findById(idpUUId, idpType);
-        MetaData sp = metaDataRepository.findById(spUUId, spType);
-        checkNull(idpType, idpEntityId, idp);
-        checkNull(spType, spEntityId, sp);
+        MetaData sp = findByEntityId(spEntityId, spType);
 
         DashboardConnectOption connectOption = DashboardConnectOption.fromType((String) sp.metaDataFields().get(DASHBOARD_CONNECT_OPTION));
         if (!connectOption.connectWithoutInteraction()) {
@@ -671,14 +651,11 @@ public class MetaDataController {
 
         Map<String, Object> idpData = idp.getData();
         List<Map<String, String>> allowedEntities = (List<Map<String, String>>) idpData.getOrDefault("allowedEntities", new ArrayList<Map<String, String>>());
-        for (Map<String, String> allowedEntity : allowedEntities) {
-            if (allowedEntity.get("name").equals(spEntityId)){
-                throw new IllegalArgumentException("sp is already connected");
-            }
+        if (allowedEntities.stream().anyMatch(allowedEntity -> allowedEntity.get("name").equals(spEntityId))) {
+            throw new IllegalArgumentException(String.format("%s %s is already connected to IDP %s", spType, spEntityId, idpEntityId));
         }
-        Map<String, String> newAllowedEntity = new HashMap<>();
-        newAllowedEntity.put("name", spEntityId);
-        allowedEntities.add(newAllowedEntity);
+
+        allowedEntities.add(Collections.singletonMap("name", spEntityId));
         idpData.put("allowedEntities", allowedEntities);
         idp.setData(idpData);
 
@@ -687,5 +664,13 @@ public class MetaDataController {
         databaseController.doPush();
 
         return new HttpEntity<>(HttpStatus.OK);
+    }
+
+    private MetaData findByEntityId(String entityId, String type) {
+        List<Map> searchResults = uniqueEntityId(type, Collections.singletonMap("entityid", entityId));
+        if (CollectionUtils.isEmpty(searchResults)) {
+            throw new ResourceNotFoundException(String.format("Type %s with entityId %s does not exists", type, entityId));
+        }
+        return metaDataRepository.findById((String) searchResults.get(0).get("_id"), type);
     }
 }

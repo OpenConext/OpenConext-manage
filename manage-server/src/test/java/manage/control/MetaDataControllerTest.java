@@ -17,7 +17,11 @@ import org.springframework.core.io.ClassPathResource;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import static io.restassured.RestAssured.given;
@@ -31,13 +35,18 @@ import static org.apache.http.HttpStatus.SC_FORBIDDEN;
 import static org.apache.http.HttpStatus.SC_INTERNAL_SERVER_ERROR;
 import static org.apache.http.HttpStatus.SC_NOT_FOUND;
 import static org.apache.http.HttpStatus.SC_OK;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 @SuppressWarnings("unchecked")
 public class MetaDataControllerTest extends AbstractIntegrationTest {
@@ -1047,11 +1056,28 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void connectAlreadyConnectedSpWithoutInteraction() {
+        Map<String, String> connectionData = new HashMap<>();
+        connectionData.put("idpId", "https://idp.test2.surfconext.nl");
+        connectionData.put("spId", "http://mock-sp");
+        connectionData.put("spType", "saml20_sp");
+        given()
+                .auth()
+                .preemptive()
+                .basic("sp-portal", "secret")
+                .header("Content-type", "application/json")
+                .body(connectionData)
+                .put("manage/api/internal/connectWithoutInteraction/")
+                .then()
+                .body("message", containsString("saml20_sp http://mock-sp is already connected to IDP https://idp.test2.surfconext.nl"));
+    }
+
+    @Test
     public void connectInvalidSpWithoutInteraction() {
         Map<String, String> connectionData = new HashMap<>();
         connectionData.put("idpId", "Duis ad do");
         connectionData.put("spId", null);
-        connectionData.put("type", "saml20_sp");
+        connectionData.put("spType", "saml20_sp");
         given()
                 .auth()
                 .preemptive()
