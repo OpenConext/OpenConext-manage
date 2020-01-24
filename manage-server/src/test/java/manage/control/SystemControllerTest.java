@@ -5,7 +5,6 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.util.List;
-import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 import static org.apache.http.HttpStatus.SC_OK;
@@ -20,19 +19,6 @@ public class SystemControllerTest extends AbstractIntegrationTest {
 
     @Value("${push.eb.password}")
     private String pushPassword;
-
-    @Test
-    public void pushPreview() throws Exception {
-        Map connections = given()
-                .when()
-                .get("manage/api/client/playground/pushPreview")
-                .then()
-                .statusCode(SC_OK)
-                .extract().as(Map.class);
-        Map expected = objectMapper.readValue(readFile("push/push.expected_connections.json"), Map.class);
-
-            assertEquals(expected, connections);
-    }
 
     @Test
     public void validate() throws Exception {

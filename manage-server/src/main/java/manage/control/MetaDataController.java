@@ -9,15 +9,7 @@ import manage.format.Exporter;
 import manage.format.Importer;
 import manage.format.SaveURLResource;
 import manage.hook.MetaDataHook;
-import manage.model.EntityType;
-import manage.model.Import;
-import manage.model.MetaData;
-import manage.model.MetaDataKeyDelete;
-import manage.model.MetaDataUpdate;
-import manage.model.RevisionRestore;
-import manage.model.ServiceProvider;
-import manage.model.StatsEntry;
-import manage.model.XML;
+import manage.model.*;
 import manage.repository.MetaDataRepository;
 import manage.shibboleth.FederatedUser;
 import org.everit.json.schema.ValidationException;
@@ -31,7 +23,10 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -77,6 +72,8 @@ public class MetaDataController {
     static final String ALL_ATTRIBUTES = "ALL_ATTRIBUTES";
     static final String LOGICAL_OPERATOR_IS_AND = "LOGICAL_OPERATOR_IS_AND";
 
+    private static final String DASHBOARD_CONNECT_OPTION = "coin:dashboard_connect_option";
+
     private static final Logger LOG = LoggerFactory.getLogger(MetaDataController.class);
 
     private static final List<String> entityTypesSuggestions = Arrays.asList(
@@ -89,6 +86,9 @@ public class MetaDataController {
     private Importer importer;
     private Exporter exporter;
     private Environment environment;
+
+    @Autowired
+    DatabaseController databaseController;
 
     @Autowired
     public MetaDataController(MetaDataRepository metaDataRepository,
@@ -122,7 +122,7 @@ public class MetaDataController {
         return metaDataHook.postGet(metaData);
     }
 
-    private void checkNull(@PathVariable("type") String type, @PathVariable("id") String id, MetaData metaData) {
+    private void checkNull(String type, String id, MetaData metaData) {
         if (metaData == null) {
             throw new ResourceNotFoundException(String.format("MetaData type %s with id %s does not exist", type, id));
         }
@@ -632,4 +632,60 @@ public class MetaDataController {
         return metaData;
     }
 
+    @Secured("WRITE")
+    @PutMapping(value = "/internal/connectWithoutInteraction")
+    public HttpEntity<HttpStatus> connectWithoutInteraction(@RequestBody Map<String, String> connectionData, APIUser apiUser) throws JsonProcessingException {
+        LOG.debug("connectWithoutInteraction, connectionData: " + connectionData);
+
+        String idpEntityId = connectionData.get("idpId");
+        String idpType = EntityType.IDP.getType();
+        String spEntityId = connectionData.get("spId");
+        String spType = connectionData.get("spType");
+
+        Map<String, Object> idpSearchOptions = new HashMap<>();
+        idpSearchOptions.put("entityid", idpEntityId);
+        List<Map> idpSearchResults = uniqueEntityId(EntityType.IDP.getType(), idpSearchOptions);
+        if (CollectionUtils.isEmpty(idpSearchResults)) {
+            throw new ResourceNotFoundException("cannot find idp with uniqueEntityId");
+        }
+
+        Map<String, Object> spSearchOptions = new HashMap<>();
+        spSearchOptions.put("entityid", spEntityId);
+        List<Map> spSearchResults = uniqueEntityId(spType, spSearchOptions);
+        if (CollectionUtils.isEmpty(spSearchResults)) {
+            throw new ResourceNotFoundException("cannot find sp with uniqueEntityId");
+        }
+
+        String idpUUId = (String) idpSearchResults.get(0).get("_id");
+        String spUUId = (String) spSearchResults.get(0).get("_id");
+
+        MetaData idp = metaDataRepository.findById(idpUUId, idpType);
+        MetaData sp = metaDataRepository.findById(spUUId, spType);
+        checkNull(idpType, idpEntityId, idp);
+        checkNull(spType, spEntityId, sp);
+
+        DashboardConnectOption connectOption = DashboardConnectOption.fromType((String) sp.metaDataFields().get(DASHBOARD_CONNECT_OPTION));
+        if (!connectOption.connectWithoutInteraction()) {
+            throw new IllegalArgumentException("sp does not allow connection without interaction");
+        }
+
+        Map<String, Object> idpData = idp.getData();
+        List<Map<String, String>> allowedEntities = (List<Map<String, String>>) idpData.getOrDefault("allowedEntities", new ArrayList<Map<String, String>>());
+        for (Map<String, String> allowedEntity : allowedEntities) {
+            if (allowedEntity.get("name").equals(spEntityId)){
+                throw new IllegalArgumentException("sp is already connected");
+            }
+        }
+        Map<String, String> newAllowedEntity = new HashMap<>();
+        newAllowedEntity.put("name", spEntityId);
+        allowedEntities.add(newAllowedEntity);
+        idpData.put("allowedEntities", allowedEntities);
+        idp.setData(idpData);
+
+        doPut(idp, apiUser.getName(), false);
+
+        databaseController.doPush();
+
+        return new HttpEntity<>(HttpStatus.OK);
+    }
 }

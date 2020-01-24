@@ -7,9 +7,13 @@ import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.List;
 import java.util.Map;
 
 public interface TestUtils {
+    default boolean listOfMapsContainsValue(List<Map> l, Object o) {
+        return l.stream().anyMatch(m -> m.containsValue(o));
+    }
 
     default String readFile(String path) {
         try {

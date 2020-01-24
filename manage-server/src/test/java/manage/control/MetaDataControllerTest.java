@@ -17,11 +17,7 @@ import org.springframework.core.io.ClassPathResource;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 
 import static io.restassured.RestAssured.given;
@@ -41,10 +37,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @SuppressWarnings("unchecked")
 public class MetaDataControllerTest extends AbstractIntegrationTest {
@@ -1025,5 +1018,48 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         });
     }
 
+    @Test
+    public void connectValidSpWithoutInteraction() {
+        String idpEntityId = "https://idp.test2.surfconext.nl";
+        String idUId = "6";
+        String spId = "Duis ad do";
+        String spType = "saml20_sp";
+        Map<String, String> connectionData = new HashMap<>();
+        connectionData.put("idpId", idpEntityId);
+        connectionData.put("spId", spId);
+        connectionData.put("spType", spType);
 
+        given()
+                .auth()
+                .preemptive()
+                .basic("sp-portal", "secret")
+                .header("Content-type", "application/json")
+                .body(connectionData)
+                .put("manage/api/internal/connectWithoutInteraction/")
+                .then()
+                .statusCode(SC_OK);
+
+        MetaData idp = metaDataRepository.findById(idUId, EntityType.IDP.getType());
+        Map<String, Object> data = idp.getData();
+        List<Map> allowedEntities = (List<Map>) data.get("allowedEntities");
+
+        assert listOfMapsContainsValue(allowedEntities, spId);
+    }
+
+    @Test
+    public void connectInvalidSpWithoutInteraction() {
+        Map<String, String> connectionData = new HashMap<>();
+        connectionData.put("idpId", "Duis ad do");
+        connectionData.put("spId", null);
+        connectionData.put("type", "saml20_sp");
+        given()
+                .auth()
+                .preemptive()
+                .basic("sp-portal", "secret")
+                .header("Content-type", "application/json")
+                .body(connectionData)
+                .put("manage/api/internal/connectWithoutInteraction/")
+                .then()
+                .statusCode(SC_NOT_FOUND);
+    }
 }
