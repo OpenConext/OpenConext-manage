@@ -476,9 +476,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                         "OpenConext Mujina SP"))
                 .body("data.metaDataFields.'AssertionConsumerService:0:Location'", hasItems(
                         "https://profile.test2.surfconext.nl/authentication/consume-assertion",
-                        "https://mujina-sp.test2.surfconext.nl/saml/SSO"))
-                .body("data.allowedall", hasItems(
-                        true));
+                        "https://mujina-sp.test2.surfconext.nl/saml/SSO"));
     }
 
     /**
@@ -1056,10 +1054,11 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void connectAlreadyConnectedSpWithoutInteraction() {
+    public void connectSpAllowsNoneWithoutInteraction() {
         Map<String, String> connectionData = new HashMap<>();
-        connectionData.put("idpId", "https://idp.test2.surfconext.nl");
-        connectionData.put("spId", "http://mock-sp");
+        String idpEntityId =  "https://idp.test2.surfconext.nl";
+        connectionData.put("idpId", idpEntityId);
+        connectionData.put("spId", "https://profile.test2.surfconext.nl/authentication/metadata");
         connectionData.put("spType", "saml20_sp");
         given()
                 .auth()
@@ -1069,7 +1068,13 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 .body(connectionData)
                 .put("manage/api/internal/connectWithoutInteraction/")
                 .then()
-                .body("message", containsString("saml20_sp http://mock-sp is already connected to IDP https://idp.test2.surfconext.nl"));
+                .statusCode(SC_OK);
+
+        MetaData sp = metaDataRepository.findById("2", EntityType.SP.getType());
+        Map<String, Object> data = sp.getData();
+        List<Map> allowedEntities = (List<Map>) data.get("allowedEntities");
+
+        assert listOfMapsContainsValue(allowedEntities, idpEntityId);
     }
 
     @Test

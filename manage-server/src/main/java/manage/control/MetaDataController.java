@@ -9,7 +9,16 @@ import manage.format.Exporter;
 import manage.format.Importer;
 import manage.format.SaveURLResource;
 import manage.hook.MetaDataHook;
-import manage.model.*;
+import manage.model.DashboardConnectOption;
+import manage.model.EntityType;
+import manage.model.Import;
+import manage.model.MetaData;
+import manage.model.MetaDataKeyDelete;
+import manage.model.MetaDataUpdate;
+import manage.model.RevisionRestore;
+import manage.model.ServiceProvider;
+import manage.model.StatsEntry;
+import manage.model.XML;
 import manage.repository.MetaDataRepository;
 import manage.shibboleth.FederatedUser;
 import org.everit.json.schema.ValidationException;
@@ -368,7 +377,7 @@ public class MetaDataController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/client/metadata/{type}/{id}")
-    public boolean remove(@PathVariable("type") String type, @PathVariable("id") String id, @RequestBody(required=false) Map body, FederatedUser user) {
+    public boolean remove(@PathVariable("type") String type, @PathVariable("id") String id, @RequestBody(required = false) Map body, FederatedUser user) {
         String defaultValue = "Deleted by " + user.getUid();
         String revisionNote = body != null ? (String) body.getOrDefault("revisionNote", defaultValue) : defaultValue;
         return doRemove(type, id, user.getUid(), revisionNote);
@@ -650,16 +659,24 @@ public class MetaDataController {
         }
 
         Map<String, Object> idpData = idp.getData();
-        List<Map<String, String>> allowedEntities = (List<Map<String, String>>) idpData.getOrDefault("allowedEntities", new ArrayList<Map<String, String>>());
-        if (allowedEntities.stream().anyMatch(allowedEntity -> allowedEntity.get("name").equals(spEntityId))) {
-            throw new IllegalArgumentException(String.format("%s %s is already connected to IDP %s", spType, spEntityId, idpEntityId));
+        List<Map<String, String>> allowedEntitiesIdp = (List<Map<String, String>>) idpData.getOrDefault("allowedEntities", new ArrayList<Map<String, String>>());
+
+        Map<String, Object> spData = sp.getData();
+        List<Map<String, String>> allowedEntitiesSp = (List<Map<String, String>>) spData.getOrDefault("allowedEntities", new ArrayList<Map<String, String>>());
+        boolean allowedAllSp = (boolean) spData.getOrDefault("allowedall", true);
+
+        if (!allowedAllSp && allowedEntitiesSp.stream().noneMatch(allowedEntity -> allowedEntity.get("name").equals(idpEntityId))) {
+            allowedEntitiesSp.add(Collections.singletonMap("name", idpEntityId));
+            spData.put("allowedEntities", allowedEntitiesSp);
+            sp.setData(spData);
+            doPut(sp, apiUser.getName(), false);
         }
-
-        allowedEntities.add(Collections.singletonMap("name", spEntityId));
-        idpData.put("allowedEntities", allowedEntities);
-        idp.setData(idpData);
-
-        doPut(idp, apiUser.getName(), false);
+        if (allowedEntitiesIdp.stream().noneMatch(allowedEntity -> allowedEntity.get("name").equals(spEntityId))) {
+            allowedEntitiesIdp.add(Collections.singletonMap("name", spEntityId));
+            idpData.put("allowedEntities", allowedEntitiesIdp);
+            idp.setData(idpData);
+            doPut(idp, apiUser.getName(), false);
+        }
 
         databaseController.doPush();
 

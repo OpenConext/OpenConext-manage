@@ -110,7 +110,12 @@
       "entityid": "https://profile.test2.surfconext.nl/authentication/metadata",
       "eid": 2,
       "state": "prodaccepted",
-      "allowedall": true,
+      "allowedall": false,
+      "allowedEntities": [
+        {
+          "name": "http://mock-idp"
+        }
+      ],
       "metaDataFields": {
         "AssertionConsumerService:0:Binding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
         "AssertionConsumerService:0:index": 0,
@@ -152,12 +157,7 @@
         "url:en": "https://www.surfconext.nl",
         "url:nl": "https://www.surfconext.nl",
         "coin:exclude_from_push": true
-      },
-      "allowedEntities": [
-        {
-          "name": "http://mock-idp"
-        }
-      ]
+      }
     }
   },
   {
@@ -348,20 +348,19 @@
           "explanation:en": "daarom"
         }
       ],
-      "stepupEntities" : [
+      "stepupEntities": [
         {
-          "name" : "https://serviceregistry.test2.surfconext.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp",
-          "level" : "http://test.surfconext.nl/assurance/loa3"
+          "name": "https://serviceregistry.test2.surfconext.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp",
+          "level": "http://test.surfconext.nl/assurance/loa3"
         },
         {
-          "name" : "http://mock-sp",
-          "level" : "http://test.surfconext.nl/assurance/loa3"
+          "name": "http://mock-sp",
+          "level": "http://test.surfconext.nl/assurance/loa3"
         },
         {
-          "name" : "http://nope",
-          "level" : "http://test.surfconext.nl/assurance/loa3"
+          "name": "http://nope",
+          "level": "http://test.surfconext.nl/assurance/loa3"
         }
-
       ],
       "manipulation": "PHP code",
       "metaDataFields": {
@@ -480,8 +479,12 @@
       "discoveryurl": "https://well_known_configuration",
       "allowedall": true,
       "allowedResourceServers": [
-        {"name": "https@//oidc.rp.resourceServer"},
-        {"name": "https@//nope"}
+        {
+          "name": "https@//oidc.rp.resourceServer"
+        },
+        {
+          "name": "https@//nope"
+        }
       ],
       "metaDataFields": {
         "name:en": "OIDC SP",
@@ -523,7 +526,9 @@
       "metaDataFields": {
         "name:en": "OIDC ResourceServer",
         "secret": "secret",
-        "redirectUrls": ["https://redirect.org"],
+        "redirectUrls": [
+          "https://redirect.org"
+        ],
         "scopes": [
           "openid",
           "groups"

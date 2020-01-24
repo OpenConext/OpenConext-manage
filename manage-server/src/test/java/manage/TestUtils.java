@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface TestUtils {
+
     default boolean listOfMapsContainsValue(List<Map> l, Object o) {
         return l.stream().anyMatch(m -> m.containsValue(o));
     }
