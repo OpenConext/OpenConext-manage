@@ -456,8 +456,8 @@ export default class Import extends React.Component {
         <td className="arpAttribute">
           <table className="arpValues">
             <tbody>
-            {arpValues.map(arpValue => (
-              <tr key={`${arpValue.source}-${arpValue.value}`}>
+            {arpValues.map((arpValue, i) => (
+              <tr key={i}>
                 <td>
                   <span className="arpSource">{arpValue.source}</span>
                   <i className="fa fa-arrow-right"/>
@@ -474,6 +474,7 @@ export default class Import extends React.Component {
   };
 
   renderArpTable = (arp, currentArp) => {
+    debugger;
     const arpKeys = Object.keys(arp.attributes);
     const currentArpKeys = Object.keys(currentArp.attributes);
     const uniqueKeys = Array.from(

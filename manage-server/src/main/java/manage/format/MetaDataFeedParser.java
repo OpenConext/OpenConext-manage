@@ -457,11 +457,13 @@ public class MetaDataFeedParser {
         final Map<String, Object> attributes = Map.class.cast(arp.getOrDefault(ATTRIBUTES, new TreeMap<>()));
         arpKeys.stream().filter(arpKey -> arpKey.endsWith(friendlyName)).findFirst().ifPresent(arpKey -> {
             List<Map<String, String>> arpEntry = List.class.cast(attributes.getOrDefault(arpKey, new ArrayList<>()));
-            Map<String, String> arpValue = new HashMap<>();
-            arpValue.put("source", "idp");
-            arpValue.put("value", "*");
-            arpEntry.add(arpValue);
-            attributes.put(arpKey, arpEntry);
+            if (arpEntry.isEmpty()) {
+                Map<String, String> arpValue = new HashMap<>();
+                arpValue.put("source", "idp");
+                arpValue.put("value", "*");
+                arpEntry.add(arpValue);
+                attributes.put(arpKey, arpEntry);
+            }
         });
         arp.put(ATTRIBUTES, attributes);
         result.put(ARP, arp);

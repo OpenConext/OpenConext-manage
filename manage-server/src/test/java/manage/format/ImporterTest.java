@@ -205,4 +205,11 @@ public class ImporterTest implements TestUtils {
         assertEquals(Arrays.asList("urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Artifact"), singleLogoutService);
     }
 
+    @Test
+    public void importUniqueArpValues() throws IOException, XMLStreamException {
+        Map<String, Object> metaData = this.subject.importXML(new ClassPathResource("/import_xml/prod_md_about_spf_sps.xml"), EntityType.SP, Optional.of("https://sp.ota.ox.ac.uk/shibboleth"));
+        List<Map<String, String>> values = (List<Map<String, String>>) ((Map)((Map)metaData.get("arp")).get("attributes")).get("urn:mace:dir:attribute-def:cn");
+        assertEquals(1, values.size());
+    }
+
 }
