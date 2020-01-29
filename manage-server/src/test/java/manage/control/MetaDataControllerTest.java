@@ -35,8 +35,6 @@ import static org.apache.http.HttpStatus.SC_FORBIDDEN;
 import static org.apache.http.HttpStatus.SC_INTERNAL_SERVER_ERROR;
 import static org.apache.http.HttpStatus.SC_NOT_FOUND;
 import static org.apache.http.HttpStatus.SC_OK;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.hasSize;
@@ -1035,6 +1033,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         connectionData.put("idpId", idpEntityId);
         connectionData.put("spId", spId);
         connectionData.put("spType", spType);
+        connectionData.put("user", "John Doe");
 
         given()
                 .auth()
@@ -1048,6 +1047,8 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
 
         MetaData idp = metaDataRepository.findById(idUId, EntityType.IDP.getType());
         Map<String, Object> data = idp.getData();
+        assertEquals(data.get("revisionnote"), "Connection created by Dashboard on request of John Doe");
+
         List<Map> allowedEntities = (List<Map>) data.get("allowedEntities");
 
         assert listOfMapsContainsValue(allowedEntities, spId);
@@ -1056,10 +1057,12 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     @Test
     public void connectSpAllowsNoneWithoutInteraction() {
         Map<String, String> connectionData = new HashMap<>();
-        String idpEntityId =  "https://idp.test2.surfconext.nl";
+        String idpEntityId = "https://idp.test2.surfconext.nl";
         connectionData.put("idpId", idpEntityId);
         connectionData.put("spId", "https://profile.test2.surfconext.nl/authentication/metadata");
         connectionData.put("spType", "saml20_sp");
+        connectionData.put("user", "John Doe");
+
         given()
                 .auth()
                 .preemptive()
@@ -1083,6 +1086,8 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         connectionData.put("idpId", "Duis ad do");
         connectionData.put("spId", null);
         connectionData.put("spType", "saml20_sp");
+        connectionData.put("user", "John Doe");
+
         given()
                 .auth()
                 .preemptive()

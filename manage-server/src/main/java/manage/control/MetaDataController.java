@@ -668,12 +668,13 @@ public class MetaDataController {
         if (!allowedAllSp && allowedEntitiesSp.stream().noneMatch(allowedEntity -> allowedEntity.get("name").equals(idpEntityId))) {
             allowedEntitiesSp.add(Collections.singletonMap("name", idpEntityId));
             spData.put("allowedEntities", allowedEntitiesSp);
-            sp.setData(spData);
+            spData.put("revisionnote", String.format("Connection created by Dashboard on request of %s", connectionData.get("user")));
             doPut(sp, apiUser.getName(), false);
         }
         if (allowedEntitiesIdp.stream().noneMatch(allowedEntity -> allowedEntity.get("name").equals(spEntityId))) {
             allowedEntitiesIdp.add(Collections.singletonMap("name", spEntityId));
             idpData.put("allowedEntities", allowedEntitiesIdp);
+            idpData.put("revisionnote", String.format("Connection created by Dashboard on request of %s", connectionData.get("user")));
             idp.setData(idpData);
             doPut(idp, apiUser.getName(), false);
         }
