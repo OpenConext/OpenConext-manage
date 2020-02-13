@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import manage.api.APIUser;
 import manage.conf.MetaDataAutoConfiguration;
 import manage.exception.DuplicateEntityIdException;
+import manage.exception.EndpointNotAllowed;
 import manage.exception.ResourceNotFoundException;
 import manage.format.Exporter;
 import manage.format.Importer;
@@ -39,6 +40,7 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -653,9 +655,17 @@ public class MetaDataController {
         String spType = connectionData.get("spType");
         MetaData sp = findByEntityId(spEntityId, spType);
 
-        DashboardConnectOption connectOption = DashboardConnectOption.fromType((String) sp.metaDataFields().get(DASHBOARD_CONNECT_OPTION));
-        if (!connectOption.connectWithoutInteraction()) {
-            throw new IllegalArgumentException("sp does not allow connection without interaction");
+        //We can connect automatically if the SP allows it or the IdP and SP share the institution ID
+        String dashboardConnectType = (String) sp.metaDataFields().get(DASHBOARD_CONNECT_OPTION);
+        boolean connectWithoutInteraction = StringUtils.hasText(dashboardConnectType) && DashboardConnectOption.fromType(dashboardConnectType).connectWithoutInteraction();
+
+        Object idpInstitutionId = idp.metaDataFields().get("coin:institution_id");
+        Object spInstitutionId = sp.metaDataFields().get("coin:institution_id");
+        boolean shareInstitutionId = idpInstitutionId != null && idpInstitutionId.equals(spInstitutionId);
+        if (!connectWithoutInteraction && !shareInstitutionId) {
+            throw new EndpointNotAllowed(
+                    String.format("SP %s does not allow an automatic connection with IdP %s. SP dashboardConnectType: %s, idpInstitutionId: %s, spInstitutionId %s",
+                            spEntityId, idpEntityId, dashboardConnectType, idpInstitutionId, spInstitutionId));
         }
 
         Map<String, Object> idpData = idp.getData();

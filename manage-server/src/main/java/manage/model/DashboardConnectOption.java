@@ -27,7 +27,7 @@ public enum DashboardConnectOption {
     public static DashboardConnectOption fromType(String type) {
         String sanitizedType = type.replaceAll(Pattern.quote("-"), "_");
         return Stream.of(DashboardConnectOption.values())
-                .filter(entityType -> entityType.getType().equals(sanitizedType))
+                .filter(option -> option.getType().equals(sanitizedType))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Invalid EntityType " + type));
     }

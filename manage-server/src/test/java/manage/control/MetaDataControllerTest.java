@@ -1055,6 +1055,59 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void connectSpWithSameInstitutionIdAsIdp() {
+        String idpEntityId = "https://idp.test2.surfconext.nl";
+        String idUId = "6";
+        String rpId = "https@//oidc.rp";
+        String rpType = "oidc10_rp";
+        Map<String, String> connectionData = new HashMap<>();
+        connectionData.put("idpId", idpEntityId);
+        connectionData.put("spId", rpId);
+        connectionData.put("spType", rpType);
+        connectionData.put("user", "John Doe");
+
+        given()
+                .auth()
+                .preemptive()
+                .basic("sp-portal", "secret")
+                .header("Content-type", "application/json")
+                .body(connectionData)
+                .put("manage/api/internal/connectWithoutInteraction/")
+                .then()
+                .statusCode(SC_OK);
+
+        MetaData idp = metaDataRepository.findById(idUId, EntityType.IDP.getType());
+        Map<String, Object> data = idp.getData();
+        assertEquals(data.get("revisionnote"), "Connection created by Dashboard on request of John Doe");
+
+        List<Map> allowedEntities = (List<Map>) data.get("allowedEntities");
+
+        assert listOfMapsContainsValue(allowedEntities, rpId);
+    }
+
+    @Test
+    public void connectSpWithIdPNotAllowed() {
+        String idpEntityId = "https://idp.test2.surfconext.nl";
+        String spId = "https://serviceregistry.test2.surfconext.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp-2";
+        String spType = "saml20_sp";
+        Map<String, String> connectionData = new HashMap<>();
+        connectionData.put("idpId", idpEntityId);
+        connectionData.put("spId", spId);
+        connectionData.put("spType", spType);
+        connectionData.put("user", "John Doe");
+
+        given()
+                .auth()
+                .preemptive()
+                .basic("sp-portal", "secret")
+                .header("Content-type", "application/json")
+                .body(connectionData)
+                .put("manage/api/internal/connectWithoutInteraction/")
+                .then()
+                .statusCode(SC_FORBIDDEN);
+    }
+
+    @Test
     public void connectSpAllowsNoneWithoutInteraction() {
         Map<String, String> connectionData = new HashMap<>();
         String idpEntityId = "https://idp.test2.surfconext.nl";

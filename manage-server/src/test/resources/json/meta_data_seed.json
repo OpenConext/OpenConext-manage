@@ -282,7 +282,6 @@
       "metaDataFields": {
         "AssertionConsumerService:0:Binding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
         "AssertionConsumerService:0:Location": "https://serviceregistry.test2.surfconext.nl/simplesaml/module.php/saml/sp/saml2-acs.php/default-sp",
-        "coin:dashboard_connect_option": "connect_without_interaction_without_email",
         "coin:policy_enforcement_decision_required": true,
         "contacts:0:contactType": "technical",
         "contacts:0:emailAddress": "support@openconext.org",
@@ -506,7 +505,8 @@
         "accessTokenValidity": 3600,
         "refreshTokenValidity": 3600,
         "coin:stepup:requireloa": "http://test.surfconext.nl/assurance/loa3",
-        "coin:stepup:allow_no_token": true
+        "coin:stepup:allow_no_token": true,
+        "coin:institution_id": "123"
       }
     }
   },
