@@ -13,7 +13,7 @@
     <artifactId>manage-server</artifactId>
     <packaging>jar</packaging>
     <name>manage-server</name>
-    <version>4.0.19</version>
+    <version>4.0.20-SNAPSHOT</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -76,7 +76,7 @@
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
-            <version>20180813</version>
+            <version>20190722</version>
         </dependency>
         <dependency>
             <groupId>com.github.mongobee</groupId>
