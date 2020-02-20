@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
@@ -221,8 +220,7 @@ public class MetaDataRepository {
     }
 
     public List<StatsEntry> stats() {
-        Set<String> collectionNames = mongoTemplate.getCollectionNames();
-        return collectionNames.stream()
+        return mongoTemplate.getCollectionNames().stream()
                 .map(name -> new StatsEntry(name, mongoTemplate.count(new Query(), name)))
                 .collect(toList());
     }

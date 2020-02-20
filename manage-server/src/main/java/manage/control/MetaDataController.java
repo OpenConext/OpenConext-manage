@@ -661,37 +661,32 @@ public class MetaDataController {
 
         Object idpInstitutionId = idp.metaDataFields().get("coin:institution_id");
         Object spInstitutionId = sp.metaDataFields().get("coin:institution_id");
-        boolean shareInstitutionId = idpInstitutionId != null && idpInstitutionId.equals(spInstitutionId);
+        boolean shareInstitutionId = idpInstitutionId != null && idpInstitutionId.equals(spInstitutionId) && !"connect_with_interaction".equals("dashboardConnectType");
         if (!connectWithoutInteraction && !shareInstitutionId) {
             throw new EndpointNotAllowed(
                     String.format("SP %s does not allow an automatic connection with IdP %s. SP dashboardConnectType: %s, idpInstitutionId: %s, spInstitutionId %s",
                             spEntityId, idpEntityId, dashboardConnectType, idpInstitutionId, spInstitutionId));
         }
 
-        Map<String, Object> idpData = idp.getData();
-        List<Map<String, String>> allowedEntitiesIdp = (List<Map<String, String>>) idpData.getOrDefault("allowedEntities", new ArrayList<Map<String, String>>());
-
-        Map<String, Object> spData = sp.getData();
-        List<Map<String, String>> allowedEntitiesSp = (List<Map<String, String>>) spData.getOrDefault("allowedEntities", new ArrayList<Map<String, String>>());
-        boolean allowedAllSp = (boolean) spData.getOrDefault("allowedall", true);
-
-        if (!allowedAllSp && allowedEntitiesSp.stream().noneMatch(allowedEntity -> allowedEntity.get("name").equals(idpEntityId))) {
-            allowedEntitiesSp.add(Collections.singletonMap("name", idpEntityId));
-            spData.put("allowedEntities", allowedEntitiesSp);
-            spData.put("revisionnote", String.format("Connection created by Dashboard on request of %s", connectionData.get("user")));
-            doPut(sp, apiUser.getName(), false);
-        }
-        if (allowedEntitiesIdp.stream().noneMatch(allowedEntity -> allowedEntity.get("name").equals(spEntityId))) {
-            allowedEntitiesIdp.add(Collections.singletonMap("name", spEntityId));
-            idpData.put("allowedEntities", allowedEntitiesIdp);
-            idpData.put("revisionnote", String.format("Connection created by Dashboard on request of %s", connectionData.get("user")));
-            idp.setData(idpData);
-            doPut(idp, apiUser.getName(), false);
-        }
+        this.addAllowedEntity(sp, idpEntityId, connectionData, apiUser);
+        this.addAllowedEntity(idp, spEntityId, connectionData, apiUser);
 
         databaseController.doPush();
 
         return new HttpEntity<>(HttpStatus.OK);
+    }
+
+    private void addAllowedEntity(MetaData metaData, String entityId, Map<String, String> connectionData, APIUser apiUser) throws JsonProcessingException {
+        Map<String, Object> data = metaData.getData();
+        List<Map<String, String>> allowedEntities = (List<Map<String, String>>) data.getOrDefault("allowedEntities", new ArrayList<Map<String, String>>());
+        boolean allowedAll = (boolean) data.getOrDefault("allowedall", true);
+
+        if (!allowedAll && allowedEntities.stream().noneMatch(allowedEntity -> allowedEntity.get("name").equals(entityId))) {
+            allowedEntities.add(Collections.singletonMap("name", entityId));
+            data.put("allowedEntities", allowedEntities);
+            data.put("revisionnote", String.format("Connection created by Dashboard on request of %s - %s", connectionData.get("user"), connectionData.get("userUrn")));
+            doPut(metaData, apiUser.getName(), false);
+        }
     }
 
     private MetaData findByEntityId(String entityId, String type) {
