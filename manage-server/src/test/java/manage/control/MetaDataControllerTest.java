@@ -1152,4 +1152,36 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 .then()
                 .statusCode(SC_NOT_FOUND);
     }
+
+    @Test
+    public void oidcMerge() {
+        List<Map<String, Object>> results = given().auth()
+                .preemptive()
+                .basic("sp-portal", "secret")
+                .when()
+                .body(Collections.singletonList("https://oidc.test.client"))
+                .header("Content-type", "application/json")
+                .put("manage/api/internal/oidc/merge")
+                .as(List.class);
+
+        assertEquals(1, results.size());
+
+        Map<String, Object> metaData = results.get(0);
+        Map<String, Object> data = (Map<String, Object>) metaData.get("data");
+        assertEquals("oidc.test.client", data.get("entityid"));
+
+        Map<String, Object> metaDataFields = (Map<String, Object>) data.get("metaDataFields");
+        assertEquals("authorization_code", ((List) metaDataFields.get("grants")).get(0));
+        assertEquals("openid", ((List) metaDataFields.get("scopes")).get(0));
+
+        Map oidcRp = given()
+                .when()
+                .get("manage/api/client/metadata/oidc10_rp/" + metaData.get("id"))
+                .as(Map.class);
+
+        //The secret is hashed
+        ((Map) ((Map) oidcRp.get("data")).get("metaDataFields")).remove("secret");
+        metaDataFields.remove("secret");
+        assertEquals(metaData, oidcRp);
+    }
 }

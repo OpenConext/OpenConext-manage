@@ -20,6 +20,7 @@ public class Client {
     private Set<String> responseTypes = Collections.singleton("code");
     private String subjectType = "PUBLIC";
     private int accessTokenValiditySeconds = 1440;
+    private int refreshTokenValiditySeconds = 3600;
     private int idTokenValiditySeconds = 60;
     private Set<String> authorizedGrantTypes = grantTypes;
     private Set<String> registeredRedirectUri;

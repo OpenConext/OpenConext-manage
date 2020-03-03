@@ -20,6 +20,8 @@ import manage.model.RevisionRestore;
 import manage.model.ServiceProvider;
 import manage.model.StatsEntry;
 import manage.model.XML;
+import manage.oidc.Client;
+import manage.oidc.OpenIdConnect;
 import manage.repository.MetaDataRepository;
 import manage.shibboleth.FederatedUser;
 import org.everit.json.schema.ValidationException;
@@ -65,6 +67,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -73,6 +76,7 @@ import static java.util.Collections.singletonMap;
 import static java.util.stream.Collectors.toList;
 import static manage.api.Scope.TEST;
 import static manage.hook.OpenIdConnectHook.OIDC_CLIENT_KEY;
+import static manage.hook.OpenIdConnectHook.translateServiceProviderEntityId;
 import static manage.mongo.MongobeeConfiguration.REVISION_POSTFIX;
 
 @RestController
@@ -96,6 +100,8 @@ public class MetaDataController {
     private MetaDataHook metaDataHook;
     private Importer importer;
     private Exporter exporter;
+    private OpenIdConnect openIdConnect;
+    private String baseDomain;
     private Environment environment;
 
     @Autowired
@@ -106,8 +112,10 @@ public class MetaDataController {
                               MetaDataAutoConfiguration metaDataAutoConfiguration,
                               ResourceLoader resourceLoader,
                               MetaDataHook metaDataHook,
+                              OpenIdConnect openIdConnect,
                               Environment environment,
                               @Value("${metadata_export_path}") String metadataExportPath,
+                              @Value("${base_domain}") String baseDomain,
                               @Value("${product.supported_languages}") String supportedLanguages) {
         this.metaDataRepository = metaDataRepository;
         this.metaDataAutoConfiguration = metaDataAutoConfiguration;
@@ -116,6 +124,8 @@ public class MetaDataController {
 
         this.importer = new Importer(metaDataAutoConfiguration, languages);
         this.exporter = new Exporter(Clock.systemDefaultZone(), resourceLoader, metadataExportPath, languages);
+        this.openIdConnect = openIdConnect;
+        this.baseDomain = baseDomain;
         this.environment = environment;
 
     }
@@ -674,6 +684,71 @@ public class MetaDataController {
         databaseController.doPush();
 
         return new HttpEntity<>(HttpStatus.OK);
+    }
+
+
+    @Secured("WRITE")
+    @PutMapping("internal/oidc/merge")
+    public List<MetaData> oidcMerge(@RequestBody List<String> spEntityIds, APIUser apiUser) throws JsonProcessingException {
+        LOG.debug("Starting OIDC Merge by {} for spEntityIds {}", apiUser.getName(), spEntityIds);
+
+        List<MetaData> metaDataResult = new ArrayList<>();
+
+        for (String spEntityId : spEntityIds) {
+            MetaData sp = findByEntityId(spEntityId, EntityType.SP.getType());
+            Map<String, Object> data = sp.getData();
+            String entityid = (String) data.get("entityid");
+
+            String openIdClientId = translateServiceProviderEntityId(entityid);
+            Optional<Client> clientOptional = openIdConnect.getClient(openIdClientId);
+
+            if (!clientOptional.isPresent()) {
+                continue;
+            }
+            Client client = clientOptional.get();
+
+            String entityId = entityid.replaceFirst("^(http[s]?://)", "");
+            data.put("entityid", entityId);
+
+            Map<String, Object> metaDataFields = (Map) data.get("metaDataFields");
+            String secret = UUID.randomUUID().toString();
+
+            metaDataFields.put("secret", secret);
+
+            Map<String, Object> schema = metaDataAutoConfiguration.schemaRepresentation(EntityType.RP);
+            Map metaDataFieldProperties = Map.class.cast(Map.class.cast(schema.get("properties")).get("metaDataFields"));
+            Map<String, Map> properties = (Map) metaDataFieldProperties.get("properties");
+            Map<String, Map> patternProperties = (Map) metaDataFieldProperties.get("patternProperties");
+
+            List<String> validGrants = (List<String>) ((Map) properties.get("grants").get("items")).get("enum");
+            List<String> validScopes = (List<String>) ((Map) properties.get("scopes").get("items")).get("enum");
+
+            metaDataFields.put("grants", client.getGrantTypes().stream().filter(validGrants::contains).collect(toList()));
+            metaDataFields.put("scopes", client.getScope().stream().filter(validScopes::contains).collect(toList()));
+            metaDataFields.put("accessTokenValidity", client.getAccessTokenValiditySeconds());
+            metaDataFields.put("refreshTokenValidity", client.getRefreshTokenValiditySeconds());
+
+            ArrayList<String> redirectUris = CollectionUtils.isEmpty(client.getRedirectUris()) ? new ArrayList<>() : new ArrayList<>(client.getRedirectUris());
+
+            redirectUris.remove("https://authz-playground." + this.baseDomain + "/redirect");
+            redirectUris.add("https://oidc-playground." + this.baseDomain + "/redirect");
+            metaDataFields.put("redirectUrls", redirectUris);
+
+            //remove all non-OIDC attributes
+            metaDataFields.entrySet().removeIf(entry -> !(properties.containsKey(entry.getKey()) ||
+                    patternProperties.keySet().stream().filter(prop -> Pattern.compile(prop).matcher(entry.getKey()).matches()).count() > 0));
+
+            MetaData oidcRP = new MetaData(EntityType.RP.getType(), data);
+            oidcRP = this.doPost(oidcRP, apiUser.getName(), false);
+
+            //There is a hook which hashes the secret
+            oidcRP.metaDataFields().put("secret", secret);
+            metaDataResult.add(oidcRP);
+        }
+
+        databaseController.doPush();
+
+        return metaDataResult;
     }
 
     private void addAllowedEntity(MetaData metaData, String entityId, Map<String, String> connectionData, APIUser apiUser) throws JsonProcessingException {

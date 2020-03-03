@@ -39,13 +39,11 @@ public class OpenIdConnectHook extends MetaDataHookAdapter {
     public MetaData postGet(MetaData metaData) {
         String openIdClientId = translateServiceProviderEntityId((String) metaData.getData().get("entityid"));
         Optional<Client> clientOptional = openIdConnect.getClient(openIdClientId);
-        if (!clientOptional.isPresent()) {
+        return clientOptional.map(client -> {
+            client.setClientSecret(null);
+            metaData.getData().put(OIDC_CLIENT_KEY, new OidcClient(client));
             return metaData;
-        }
-        Client client = clientOptional.get();
-        client.setClientSecret(null);
-        metaData.getData().put(OIDC_CLIENT_KEY, new OidcClient(client));
-        return metaData;
+        }).orElse(metaData);
     }
 
     @Override
@@ -116,7 +114,7 @@ public class OpenIdConnectHook extends MetaDataHookAdapter {
         return metaData;
     }
 
-    private String translateServiceProviderEntityId(String entityId) {
+    public static String translateServiceProviderEntityId(String entityId) {
         return entityId.replace("@", "@@").replaceAll(":", "@");
     }
 

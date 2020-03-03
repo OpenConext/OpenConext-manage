@@ -11,6 +11,7 @@ server:
 
 features: push, validation, push_preview, orphans, find_my_data, bogus
 secure_cookie: false
+base_domain: test2.surfconext.nl
 
 push:
   eb:

@@ -31,10 +31,10 @@ public class TypeSafetyHook extends MetaDataHookAdapter {
 
         Map<String, Object> metaDataFields = metaData.metaDataFields();
         metaDataFields.forEach((key, value) -> {
-            if ((propertyMatches(key, booleanKeys) || patternPopertyMatches(key, booleanPatternKeys)) && value instanceof String) {
+            if ((propertyMatches(key, booleanKeys) || patternPropertyMatches(key, booleanPatternKeys)) && value instanceof String) {
                 metaDataFields.put(key, "1".equals(value));
             }
-            if ((propertyMatches(key, numberKeys) || patternPopertyMatches(key, numberPatternKeys)) && value instanceof String) {
+            if ((propertyMatches(key, numberKeys) || patternPropertyMatches(key, numberPatternKeys)) && value instanceof String) {
                 metaDataFields.put(key, Integer.parseInt((String) value));
             }
         });
@@ -45,7 +45,7 @@ public class TypeSafetyHook extends MetaDataHookAdapter {
         return properties.contains(key);
     }
 
-    private boolean patternPopertyMatches(String key, List<String> patternProperties) {
+    private boolean patternPropertyMatches(String key, List<String> patternProperties) {
         return patternProperties.stream().filter(prop -> Pattern.compile(prop).matcher(key).matches()).count() > 0;
     }
 
