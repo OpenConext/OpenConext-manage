@@ -736,7 +736,7 @@ public class MetaDataController {
 
             //remove all non-OIDC attributes
             metaDataFields.entrySet().removeIf(entry -> !(properties.containsKey(entry.getKey()) ||
-                    patternProperties.keySet().stream().filter(prop -> Pattern.compile(prop).matcher(entry.getKey()).matches()).count() > 0));
+                    patternProperties.keySet().stream().anyMatch(prop -> Pattern.compile(prop).matcher(entry.getKey()).matches())));
 
             MetaData oidcRP = new MetaData(EntityType.RP.getType(), data);
             oidcRP = this.doPost(oidcRP, apiUser.getName(), false);
