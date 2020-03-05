@@ -588,7 +588,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 .get("manage/api/internal/rawSearch/saml20_sp")
                 .then()
                 .statusCode(SC_OK)
-                .body("size()", is(4));
+                .body("size()", is(5));
     }
 
     @Test
@@ -605,7 +605,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 .get("manage/api/internal/rawSearch/saml20_sp?query=" + query)
                 .then()
                 .statusCode(SC_OK)
-                .body("size()", is(4));
+                .body("size()", is(5));
     }
 
     @Test
@@ -620,7 +620,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 .post("manage/api/client/search/saml20_sp")
                 .then()
                 .statusCode(SC_OK)
-                .body("size()", is(6))
+                .body("size()", is(7))
                 .body("data.metaDataFields.'SingleLogoutService_Location'", hasItems(
                         "https://sls", null, null, null, null, null));
     }
@@ -633,7 +633,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 .get("manage/api/client/whiteListing/saml20_sp")
                 .then()
                 .statusCode(SC_OK)
-                .body("size()", is(5))
+                .body("size()", is(6))
                 .body("data.allowedall", hasItems(true, false));
     }
 

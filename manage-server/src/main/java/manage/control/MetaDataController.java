@@ -737,6 +737,8 @@ public class MetaDataController {
             //remove all non-OIDC attributes
             metaDataFields.entrySet().removeIf(entry -> !(properties.containsKey(entry.getKey()) ||
                     patternProperties.keySet().stream().anyMatch(prop -> Pattern.compile(prop).matcher(entry.getKey()).matches())));
+            //Reminiscent of the Janus past
+            data.put("type", "oidc10-rp");
 
             MetaData oidcRP = new MetaData(EntityType.RP.getType(), data);
             oidcRP = this.doPost(oidcRP, apiUser.getName(), false);

@@ -22,7 +22,7 @@ public class StatsControllerTest extends AbstractIntegrationTest {
                 .then()
                 .statusCode(SC_OK)
                 .extract().response().as(List.class);
-        assertEquals(5, connections.size());
+        assertEquals(6, connections.size());
 
     }
 }
