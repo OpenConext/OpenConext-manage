@@ -78,6 +78,7 @@ public class MongobeeConfiguration {
     public void createCollections(MongoTemplate mongoTemplate) {
         this.doCreateSchemas(mongoTemplate, Arrays.asList("saml20_sp", "saml20_idp"));
         long max = Math.max(highestEid(mongoTemplate, "saml20_idp"), highestEid(mongoTemplate, "saml20_sp"));
+        max = Math.max(max, highestEid(mongoTemplate, "oidc10_rp"));
 
         if (mongoTemplate.collectionExists("sequences")) {
             mongoTemplate.dropCollection("sequences");
@@ -85,7 +86,6 @@ public class MongobeeConfiguration {
         mongoTemplate.createCollection("sequences");
         LOG.info("Creating sequence collection with new start seq {}", max + 1L);
         mongoTemplate.save(new Sequence("sequence", max + 1L));
-
     }
 
     @ChangeSet(order = "023", id = "migrateAttrMotivationMetaDataToArpAgainAgain", author = "Okke Harsta")
