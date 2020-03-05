@@ -1,5 +1,66 @@
 {
   "connections": {
+    "11": {
+      "allow_all_entities": true,
+      "allowed_connections": [],
+      "arp_attributes": {
+        "urn:mace:dir:attribute-def:givenName": [
+          {
+            "value": "*",
+            "motivation": "1234"
+          }
+        ]
+      },
+      "metadata": {
+        "AssertionConsumerService": [
+          {
+            "Binding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
+            "Location": "https://oidc.test2.surfconext.nl/saml/SSO"
+          }
+        ],
+        "coin": {
+          "signature_method": "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"
+        },
+        "contacts": [
+          {
+            "emailAddress": "test@test.nl",
+            "surName": "Geesink",
+            "givenName": "Bart",
+            "contactType": "support"
+          },
+          {
+            "emailAddress": "bart.geesink@surfnet.nl",
+            "surName": "Geesink",
+            "givenName": "Bart",
+            "contactType": "administrative"
+          },
+          {
+            "emailAddress": "Bart@bart.nl",
+            "surName": "Geesik",
+            "givenName": "Bart",
+            "contactType": "technical"
+          }
+        ],
+        "description": {
+          "en": "tedrts",
+          "nl": "resr"
+        },
+        "logo": [
+          {
+            "width": "200",
+            "url": "https://static.surfconext.nl/logos/sp/surf_network-automation.png",
+            "height": "160"
+          }
+        ],
+        "name": {
+          "en": "testoidc",
+          "nl": "Testoidc"
+        }
+      },
+      "name": "https://1234aaab.nl",
+      "state": "prodaccepted",
+      "type": "saml20-sp"
+    },
     "1": {
       "allow_all_entities": false,
       "allowed_connections": [
