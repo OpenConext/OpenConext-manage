@@ -6,6 +6,7 @@ import manage.model.StatsEntry;
 import manage.mongo.Sequence;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.BasicQuery;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -35,6 +36,8 @@ public class MetaDataRepository {
 
     private MongoTemplate mongoTemplate;
     private List<String> supportedLanguages;
+
+    private FindAndModifyOptions options = FindAndModifyOptions.options().returnNew(true);
 
     @Autowired
     public MetaDataRepository(MongoTemplate mongoTemplate,
@@ -215,7 +218,7 @@ public class MetaDataRepository {
     public Long incrementEid() {
         Update updateInc = new Update();
         updateInc.inc("value", 1L);
-        Sequence res = mongoTemplate.findAndModify(new BasicQuery("{\"_id\":\"sequence\"}"), updateInc, Sequence.class);
+        Sequence res = mongoTemplate.findAndModify(new BasicQuery("{\"_id\":\"sequence\"}"), updateInc, options, Sequence.class);
         return res.getValue();
     }
 
