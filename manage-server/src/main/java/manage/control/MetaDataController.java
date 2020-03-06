@@ -743,11 +743,11 @@ public class MetaDataController {
             MetaData oidcRP = new MetaData(EntityType.RP.getType(), data);
             oidcRP = this.doPost(oidcRP, apiUser.getName(), false);
 
-            //There is a hook which hashes the secret
+            //There is a hook which hashes the secret and the recipient needs the unhashed secret
             oidcRP.metaDataFields().put("secret", secret);
             metaDataResult.add(oidcRP);
         }
-
+        //EB needs to receive the new eentry
         databaseController.doPush();
 
         return metaDataResult;
