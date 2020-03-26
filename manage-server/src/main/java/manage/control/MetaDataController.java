@@ -716,7 +716,8 @@ public class MetaDataController {
             metaDataFields.put("secret", secret);
 
             Map<String, Object> schema = metaDataAutoConfiguration.schemaRepresentation(EntityType.RP);
-            Map metaDataFieldProperties = Map.class.cast(Map.class.cast(schema.get("properties")).get("metaDataFields"));
+            Map topLevelProperties = Map.class.cast(schema.get("properties"));
+            Map metaDataFieldProperties = Map.class.cast(topLevelProperties.get("metaDataFields"));
             Map<String, Map> properties = (Map) metaDataFieldProperties.get("properties");
             Map<String, Map> patternProperties = (Map) metaDataFieldProperties.get("patternProperties");
 
@@ -737,6 +738,8 @@ public class MetaDataController {
             //remove all non-OIDC attributes
             metaDataFields.entrySet().removeIf(entry -> !(properties.containsKey(entry.getKey()) ||
                     patternProperties.keySet().stream().anyMatch(prop -> Pattern.compile(prop).matcher(entry.getKey()).matches())));
+            data.entrySet().removeIf(entry -> !topLevelProperties.containsKey(entry.getKey()));
+
             //Reminiscent of the Janus past
             data.put("type", "oidc10-rp");
 

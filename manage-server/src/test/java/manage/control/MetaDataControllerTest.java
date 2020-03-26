@@ -1,5 +1,6 @@
 package manage.control;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 import manage.AbstractIntegrationTest;
@@ -1174,6 +1175,33 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         assertEquals("authorization_code", ((List) metaDataFields.get("grants")).get(0));
         assertEquals("openid", ((List) metaDataFields.get("scopes")).get(0));
 
+        validateMergedOidc(results);
+    }
+
+    @Test
+    public void oidcMergeValidationErrors() throws IOException {
+        MetaData metaData = objectMapper.readValue(readFile("json/oidc_merge_json_export_manage.json"), new
+                TypeReference<MetaData>() {
+                });
+
+        metaDataRepository.save(metaData);
+
+        List<Map<String, Object>> results = given().auth()
+                .preemptive()
+                .basic("sp-portal", "secret")
+                .when()
+                .body(Collections.singletonList("https://ahk.leerpodium.nl"))
+                .header("Content-type", "application/json")
+                .put("manage/api/internal/oidc/merge")
+                .as(List.class);
+
+        assertEquals(1, results.size());
+
+        validateMergedOidc(results);
+    }
+
+    private void validateMergedOidc(List<Map<String, Object>> results) {
+        Map<String, Object> metaData = results.get(0);
         Map oidcRp = given()
                 .when()
                 .get("manage/api/client/metadata/oidc10_rp/" + metaData.get("id"))
@@ -1181,7 +1209,11 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
 
         //The secret is hashed
         ((Map) ((Map) oidcRp.get("data")).get("metaDataFields")).remove("secret");
+        Map<String, Object> data = (Map<String, Object>) metaData.get("data");
+
+        Map<String, Object> metaDataFields = (Map<String, Object>) data.get("metaDataFields");
         metaDataFields.remove("secret");
+
         assertEquals(metaData, oidcRp);
     }
 }
