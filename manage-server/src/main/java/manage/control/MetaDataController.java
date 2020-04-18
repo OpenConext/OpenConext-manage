@@ -349,6 +349,11 @@ public class MetaDataController {
         return exporter.exportToXml(metaData);
     }
 
+    @GetMapping(value = "/internal/xml/metadata/{type}/{id}", produces = "text/xml")
+    public String exportMetadataXml(@PathVariable("type") String type, @PathVariable("id") String id) throws IOException {
+        MetaData metaData = this.get(EntityType.fromType(type).getType(), id);
+        return exporter.exportToXml(metaData);
+    }
 
     private MetaData doPost(@Validated @RequestBody MetaData metaData, String uid, boolean excludeFromPushRequired) throws JsonProcessingException {
         String entityid = (String) metaData.getData().get("entityid");

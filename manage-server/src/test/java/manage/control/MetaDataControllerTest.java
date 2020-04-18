@@ -1,6 +1,7 @@
 package manage.control;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 import manage.AbstractIntegrationTest;
@@ -26,6 +27,8 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import static io.restassured.RestAssured.given;
+import static io.restassured.config.RestAssuredConfig.newConfig;
+import static io.restassured.config.XmlConfig.xmlConfig;
 import static java.util.Collections.singletonMap;
 import static manage.control.MetaDataController.ALL_ATTRIBUTES;
 import static manage.control.MetaDataController.LOGICAL_OPERATOR_IS_AND;
@@ -1198,6 +1201,22 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         assertEquals(1, results.size());
 
         validateMergedOidc(results);
+    }
+
+    @Test
+    public void exportMetadataXml() throws IOException {
+        given()
+                .config(newConfig().xmlConfig(xmlConfig()
+                        .declareNamespace("md", "urn:oasis:names:tc:SAML:2.0:metadata")))
+                .auth()
+                .preemptive()
+                .basic("sp-portal", "secret")
+                .contentType(ContentType.XML)
+                .when()
+                .get("/manage/api/internal/xml/metadata/saml20_sp/1")
+                .then()
+                .body("md:EntityDescriptor.@entityID",
+                        equalTo("Duis ad do"));
     }
 
     private void validateMergedOidc(List<Map<String, Object>> results) {
