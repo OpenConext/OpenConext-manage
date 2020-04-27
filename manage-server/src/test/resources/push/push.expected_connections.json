@@ -397,6 +397,9 @@
         },
         {
           "name": "http://mock-sp"
+        },
+        {
+          "name": "https://oidc.test.client"
         }
       ],
       "disable_consent_connections": [

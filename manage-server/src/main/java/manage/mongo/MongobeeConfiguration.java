@@ -156,7 +156,7 @@ public class MongobeeConfiguration {
                         MetaData previous = customMongoTemplate.findById(metaData.getId(), MetaData.class, type);
                         previous.revision(UUID.randomUUID().toString());
                         customMongoTemplate.insert(previous, previous.getType());
-                        metaData.promoteToLatest("Conversion of String to JSON schema defined type");
+                        metaData.promoteToLatest("System", "Conversion of String to JSON schema defined type");
                         customMongoTemplate.save(metaData, metaData.getType());
                         LOG.info("Migrated {} during conversion of String to JSON schema defined type", metaData.getData().get("entityid"));
 

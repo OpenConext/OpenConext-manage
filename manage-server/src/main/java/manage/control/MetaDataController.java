@@ -248,7 +248,7 @@ public class MetaDataController {
                         try {
                             MetaDataUpdate metaDataUpdate =
                                     this.importToMetaDataUpdate(existingServiceProvider.getId(), entityType, sp, feedUrl);
-                            Optional<MetaData> metaData = this.doMergeUpdate(metaDataUpdate, "edugain-import", false);
+                            Optional<MetaData> metaData = this.doMergeUpdate(metaDataUpdate, "edugain-import", "edugain-import", false);
                             if (metaData.isPresent()) {
                                 List merged = results.computeIfAbsent("merged", s -> new ArrayList());
                                 merged.add(existingServiceProvider);
@@ -456,7 +456,7 @@ public class MetaDataController {
         previous.revision(UUID.randomUUID().toString());
         metaDataRepository.save(previous);
 
-        metaData.promoteToLatest(updatedBy);
+        metaData.promoteToLatest(updatedBy, (String) metaData.getData().get("revisionnote"));
         metaDataRepository.update(metaData);
 
         LOG.info("Updated metaData {} by {}", metaData.getId(), updatedBy);
@@ -483,7 +483,7 @@ public class MetaDataController {
             previous.revision(UUID.randomUUID().toString());
             metaDataRepository.save(previous);
 
-            metaData.promoteToLatest(String.format("API call for deleting %s by %s", keyToDelete, apiUser.getName()));
+            metaData.promoteToLatest(apiUser.getName(), String.format("API call for deleting %s by %s", keyToDelete, apiUser.getName()));
             metaDataRepository.update(metaData);
         }
 
@@ -497,10 +497,10 @@ public class MetaDataController {
     public MetaData update(@Validated @RequestBody MetaDataUpdate metaDataUpdate, APIUser apiUser) throws
             JsonProcessingException {
         String name = apiUser.getName();
-        return doMergeUpdate(metaDataUpdate, name, true).get();
+        return doMergeUpdate(metaDataUpdate, name, "Internal API merge", true).get();
     }
 
-    private Optional<MetaData> doMergeUpdate(MetaDataUpdate metaDataUpdate, String name, boolean forceNewRevision)
+    private Optional<MetaData> doMergeUpdate(MetaDataUpdate metaDataUpdate, String name, String revisionNote, boolean forceNewRevision)
             throws JsonProcessingException {
         String id = metaDataUpdate.getId();
         MetaData previous = metaDataRepository.findById(id, metaDataUpdate.getType());
@@ -509,7 +509,7 @@ public class MetaDataController {
         previous.revision(UUID.randomUUID().toString());
 
         MetaData metaData = metaDataRepository.findById(id, metaDataUpdate.getType());
-        metaData.promoteToLatest(name);
+        metaData.promoteToLatest(name, revisionNote);
         metaData.merge(metaDataUpdate);
 
         if (!CollectionUtils.isEmpty(metaDataUpdate.getExternalReferenceData())) {
@@ -518,7 +518,7 @@ public class MetaDataController {
         metaData = metaDataHook.prePut(previous, metaData);
         metaData = validate(metaData);
         //Only save and update if there are changes
-        boolean somethingChanged = !metaData.getData().equals(previous.getData());
+        boolean somethingChanged = !metaData.metaDataFields().equals(previous.metaDataFields());
 
         if (somethingChanged || forceNewRevision) {
             metaDataRepository.save(previous);
@@ -702,9 +702,9 @@ public class MetaDataController {
         for (String spEntityId : spEntityIds) {
             MetaData sp = findByEntityId(spEntityId, EntityType.SP.getType());
             Map<String, Object> data = sp.getData();
-            String entityid = (String) data.get("entityid");
+            String entityId = (String) data.get("entityid");
 
-            String openIdClientId = translateServiceProviderEntityId(entityid);
+            String openIdClientId = translateServiceProviderEntityId(entityId);
             Optional<Client> clientOptional = openIdConnect.getClient(openIdClientId);
 
             if (!clientOptional.isPresent()) {
@@ -712,8 +712,13 @@ public class MetaDataController {
             }
             Client client = clientOptional.get();
 
-            String entityId = entityid.replaceFirst("^(http[s]?://)", "");
-            data.put("entityid", entityId);
+            String newEntityId = entityId.replaceFirst("^(http[s]?://)", "");
+            if (newEntityId.equals(entityId)) {
+                throw new DuplicateEntityIdException(
+                        String.format("Could not merge due to entityId conflict. Current: %s, new: %s",
+                                entityId, newEntityId));
+            }
+            data.put("entityid", newEntityId);
 
             Map<String, Object> metaDataFields = (Map) data.get("metaDataFields");
             String secret = UUID.randomUUID().toString();
@@ -747,6 +752,7 @@ public class MetaDataController {
 
             //Reminiscent of the Janus past
             data.put("type", "oidc10-rp");
+            data.put("revisionnote", String.format("Connection created by OIDC Merge for %s on request of %s",spEntityId, apiUser.getName() ));
 
             MetaData oidcRP = new MetaData(EntityType.RP.getType(), data);
             oidcRP = this.doPost(oidcRP, apiUser.getName(), false);
@@ -754,9 +760,28 @@ public class MetaDataController {
             //There is a hook which hashes the secret and the recipient needs the unhashed secret
             oidcRP.metaDataFields().put("secret", secret);
             metaDataResult.add(oidcRP);
+
+            //Now update all IdP's that have the SP in the allowedEntities.name
+            List<MetaData> identityProviders = metaDataRepository.findRaw(EntityType.IDP.getType(),
+                    String.format("{\"data.%s.name\" : \"%s\"}", "allowedEntities", spEntityId));
+            identityProviders.forEach(idp -> {
+                MetaData previous = metaDataRepository.findById(idp.getId(), idp.getType());
+                previous.revision(UUID.randomUUID().toString());
+                metaDataRepository.save(previous);
+
+                List<Map<String, String>> allowedEntities = (List<Map<String, String>>) idp.getData().get("allowedEntities");
+                allowedEntities.add(Collections.singletonMap("name", newEntityId));
+
+                idp.promoteToLatest(apiUser.getName(),
+                        String.format("Added OIDC RP to allowedEntities during API internal/oidc/merge for %s by %s", spEntityId, apiUser.getName()));
+                metaDataRepository.update(idp);
+            });
+
         }
-        //EB needs to receive the new eentry
-        databaseController.doPush();
+        //EB needs to receive the new entry
+        if (metaDataResult.size() > 0) {
+            databaseController.doPush();
+        }
 
         return metaDataResult;
     }

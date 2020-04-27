@@ -100,11 +100,10 @@ public class SystemController {
             List<Map<String, Object>> newEntries = entries.stream().filter(entry -> !entry.get("name").equals
                     (orphanMetaData.getMissingEntityId())).collect(Collectors.toList());
             metaData.getData().put(orphanMetaData.getReferencedCollectionName(), newEntries);
-            metaData.getData().put("revisionnote", "Removed reference to non-existent entityID");
             MetaData previous = metaDataRepository.findById(metaData.getId(), orphanMetaData.getCollection());
             previous.revision(UUID.randomUUID().toString());
             metaDataRepository.save(previous);
-            metaData.promoteToLatest("System");
+            metaData.promoteToLatest("System", "Removed reference to non-existent entityID");
             metaDataRepository.update(metaData);
 
         });

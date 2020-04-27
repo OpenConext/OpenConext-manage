@@ -70,8 +70,9 @@ public class MetaData implements Serializable {
         return this.revision;
     }
 
-    public void promoteToLatest(String updatedBy) {
+    public void promoteToLatest(String updatedBy, String revisionNote) {
         this.revision = new Revision(this.getNonNullRevision().getNumber() + 1, Instant.now(), null, updatedBy);
+        this.getData().put("revisionnote", revisionNote);
     }
 
     public void restoreToLatest(String newId, Long version, String updatedBy, int latestRevisionNumber, String newType) {

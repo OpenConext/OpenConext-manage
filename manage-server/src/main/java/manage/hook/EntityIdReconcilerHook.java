@@ -53,8 +53,7 @@ public class EntityIdReconcilerHook extends MetaDataHookAdapter {
                         entities.stream().filter(entry -> oldEntityId.equals(entry.get("name")))
                                 .findAny()
                                 .ifPresent(entry -> entry.put("name", newEntityId));
-                        metaData.getData().put("revisionnote", revisionNote);
-                        this.revision(metaData);
+                        this.revision(metaData, revisionNote);
                     });
                 }));
         return newMetaData;
@@ -77,8 +76,7 @@ public class EntityIdReconcilerHook extends MetaDataHookAdapter {
                     List<Map<String, String>> entities = (List<Map<String, String>>) metaData.getData().getOrDefault(name, new ArrayList<>());
                     entities = entities.stream().filter(entry -> !entityId.equals(entry.get("name"))).collect(toList());
                     metaData.getData().put(name, entities);
-                    metaData.getData().put("revisionnote", revisionNote);
-                    this.revision(metaData);
+                    this.revision(metaData, revisionNote);
                 });
             });
         });
@@ -89,13 +87,13 @@ public class EntityIdReconcilerHook extends MetaDataHookAdapter {
         return (String) metaData.getData().get("entityid");
     }
 
-    private void revision(MetaData metaData) {
+    private void revision(MetaData metaData, String revisionNote) {
         String id = metaData.getId();
         MetaData previous = metaDataRepository.findById(id, metaData.getType());
         previous.revision(UUID.randomUUID().toString());
         metaDataRepository.save(previous);
 
-        metaData.promoteToLatest("System");
+        metaData.promoteToLatest("System", revisionNote);
         metaDataRepository.update(metaData);
 
     }

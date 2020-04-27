@@ -787,7 +787,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     @Test
     public void deleteReconcileEntityIdSP() {
         MetaData idp = metaDataRepository.findById("6", "saml20_idp");
-        assertEquals(2, List.class.cast(idp.getData().get("allowedEntities")).size());
+        assertEquals(3, List.class.cast(idp.getData().get("allowedEntities")).size());
         assertEquals(2, List.class.cast(idp.getData().get("disableConsent")).size());
 
         given()
@@ -798,7 +798,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 .statusCode(SC_OK);
 
         idp = metaDataRepository.findById("6", "saml20_idp");
-        assertEquals(1, List.class.cast(idp.getData().get("allowedEntities")).size());
+        assertEquals(2, List.class.cast(idp.getData().get("allowedEntities")).size());
         assertEquals(1, List.class.cast(idp.getData().get("disableConsent")).size());
 
     }
@@ -1173,12 +1173,18 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         Map<String, Object> metaData = results.get(0);
         Map<String, Object> data = (Map<String, Object>) metaData.get("data");
         assertEquals("oidc.test.client", data.get("entityid"));
+        assertEquals("Connection created by OIDC Merge for https://oidc.test.client on request of sp-portal", data.get("revisionnote"));
 
         Map<String, Object> metaDataFields = (Map<String, Object>) data.get("metaDataFields");
         assertEquals("authorization_code", ((List) metaDataFields.get("grants")).get(0));
         assertEquals("openid", ((List) metaDataFields.get("scopes")).get(0));
 
         validateMergedOidc(results);
+
+        MetaData idp = metaDataRepository.findById("6", EntityType.IDP.getType());
+        List<Map<String, String>> allowedEntities = (List<Map<String, String>>) idp.getData().get("allowedEntities");
+        long count = allowedEntities.stream().filter(map -> map.get("name").equals("oidc.test.client")).count();
+        assertEquals(1L, count);
     }
 
     @Test
