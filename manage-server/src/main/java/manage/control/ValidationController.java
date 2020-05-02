@@ -87,6 +87,6 @@ public class ValidationController {
 
     @GetMapping(value = "/client/secret", produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, String> secret() {
-        return Collections.singletonMap("secret", passwordGenerator.generatePassword(24, rules));
+        return Collections.singletonMap("secret", passwordGenerator.generatePassword(36, rules));
     }
 }

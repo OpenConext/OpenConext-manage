@@ -83,7 +83,7 @@ public class ValidationControllerTest extends AbstractIntegrationTest {
                 .header("Content-type", "application/json")
                 .get("manage/api/client/secret")
                 .as(Map.class);
-        assertEquals(24, res.get("secret").length());
+        assertEquals(36, res.get("secret").length());
     }
 
     private void doValidation(String type, String value, boolean valid) throws Exception {
