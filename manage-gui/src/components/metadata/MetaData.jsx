@@ -41,17 +41,17 @@ export default class MetaData extends React.Component {
     }
   };
 
-  hasError(key, value = true) {
+  hasError = (key, value = true) => {
     this.props.onError(key, value || undefined);
   }
 
-  validPresence(key, value) {
+  validPresence = (key, value) => {
     const isRequired = this.state.requiredFields.includes(key);
 
     return !isRequired || (isRequired && !isEmpty(value));
   }
 
-  doChange(key, value) {
+  doChange = (key, value) => {
     const valid = this.validPresence(key, value);
 
     this.hasError(key, !valid);
@@ -133,7 +133,9 @@ export default class MetaData extends React.Component {
             <StringWithFormat
               {...defaultProps}
               format={keyConfiguration.format}
+              minLength={keyConfiguration.minLength}
               hasFormatError={hasFormatError}
+              hasError={this.hasError}
               onChange={value => this.doChange(key, value)}
               onBlur={value =>
                 this.validateFormat(key, value, keyConfiguration.format)

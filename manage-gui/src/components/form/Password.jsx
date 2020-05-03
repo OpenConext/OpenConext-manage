@@ -7,12 +7,20 @@ import CopyToClipboard from "react-copy-to-clipboard";
 import ReactTooltip from "react-tooltip";
 
 export default class Password extends React.PureComponent {
+
   state = {
     value: this.props.value,
     disabled: true,
     showSaveWarning: false,
+    showLengthWarning: false,
     copied: false
   };
+
+  componentDidMount() {
+    if (!this.props.value) {
+      this.handleGenerate();
+    }
+  }
 
   handleEdit() {
     this.setState(
@@ -31,30 +39,46 @@ export default class Password extends React.PureComponent {
     this.setState({
       value: this.props.value,
       disabled: true,
-      showSaveWarning: false
-    });
+      showSaveWarning: false,
+      showLengthWarning: false
+    }, () => this.props.hasError(this.props.name, false));
   }
 
   handleGenerate() {
     secret().then(json => this.setState({
       value: json.secret,
       disabled: true,
-      showSaveWarning: false
-    }, () => this.props.onChange(this.state.value)));
+      showSaveWarning: false,
+      showLengthWarning: false
+    }, () => {
+      this.props.hasError(this.props.name, false);
+      this.props.onChange(this.state.value);
+    }));
 
   }
 
   handleSave() {
-    this.props.onChange(this.state.value);
+    const {value} = this.state;
+    const {minLength} = this.props;
 
-    this.setState({
-      disabled: true,
-      showSaveWarning: false
-    });
+    if (value && minLength && value.length < minLength) {
+      this.setState({showLengthWarning: true});
+      this.props.hasError(this.props.name, true);
+    } else {
+      this.props.onChange(value);
+      this.props.hasError(this.props.name, false);
+
+      this.setState({
+        disabled: true,
+        showSaveWarning: false,
+        showLengthWarning: false
+      });
+    }
+
   }
 
   renderIcon = (id, className, tooltipKey) =>
-      <span>
+    <span>
           <i className={className} data-for={id} data-tip/>
           <ReactTooltip
             id={id}
@@ -66,21 +90,20 @@ export default class Password extends React.PureComponent {
       </span>;
 
 
-
   renderDisabledIcon(copied) {
     const classNameCopy = copied ? "copy copied" : "copy";
     return (
       <div className="password-icon-container">
         <div className="password-icon">
           <CopyToClipboard text={this.state.value} onCopy={this.handleCopy}>
-            {this.renderIcon("copy-icon", `fa fa-copy ${classNameCopy}`,"copy" )}
+            {this.renderIcon("copy-icon", `fa fa-copy ${classNameCopy}`, "copy")}
           </CopyToClipboard>
         </div>
 
         <span className="separator"/>
 
         <div className="password-icon" onClick={() => this.handleEdit()}>
-          {this.renderIcon("edit-icon", "fa fa-pencil edit","edit" )}
+          {this.renderIcon("edit-icon", "fa fa-pencil edit", "edit")}
         </div>
       </div>
     );
@@ -90,27 +113,27 @@ export default class Password extends React.PureComponent {
     return (
       <div className="password-icon-container">
         <div className="password-icon" onClick={() => this.handleGenerate()}>
-          {this.renderIcon("key-icon", "fa fa-key key","key" )}
+          {this.renderIcon("key-icon", "fa fa-key key", "key")}
         </div>
 
         <span className="separator"/>
 
         <div className="password-icon" onClick={() => this.handleUndo()}>
-          {this.renderIcon("undo-icon", "fa fa-undo undo","undo" )}
+          {this.renderIcon("undo-icon", "fa fa-undo undo", "undo")}
         </div>
 
         <span className="separator"/>
 
         <div className="password-icon" onClick={() => this.handleSave()}>
-          {this.renderIcon("save-icon", "fa fa-save save","save" )}
+          {this.renderIcon("save-icon", "fa fa-save save", "save")}
         </div>
       </div>
     );
   }
 
   render() {
-    const {value, showSaveWarning, copied} = this.state;
-    const {hasFormatError, onChange, ...rest} = this.props;
+    const {value, showSaveWarning, showLengthWarning, copied} = this.state;
+    const {hasFormatError, onChange, minLength, hasError, ...rest} = this.props;
 
     const disabled = this.state.disabled || this.props.disabled;
 
@@ -142,6 +165,13 @@ export default class Password extends React.PureComponent {
             Save the new submission inline for it to be saved on submit
           </span>
         )}
+        {showLengthWarning && (
+          <span className="error">
+            <i className="fa fa-warning"/>
+            Minimal length for this password / secret is {minLength}
+          </span>
+        )}
+
       </div>
     );
   }
@@ -152,6 +182,8 @@ Password.propTypes = {
   value: PropTypes.string.isRequired,
   format: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
+  hasError: PropTypes.func.isRequired,
+  minLength: PropTypes.number,
   autoFocus: PropTypes.bool,
   isRequired: PropTypes.bool,
   disabled: PropTypes.bool

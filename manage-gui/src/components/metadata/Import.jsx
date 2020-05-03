@@ -474,7 +474,6 @@ export default class Import extends React.Component {
   };
 
   renderArpTable = (arp, currentArp) => {
-    debugger;
     const arpKeys = Object.keys(arp.attributes);
     const currentArpKeys = Object.keys(currentArp.attributes);
     const uniqueKeys = Array.from(
