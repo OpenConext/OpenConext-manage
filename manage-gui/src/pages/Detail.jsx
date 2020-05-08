@@ -70,6 +70,10 @@ const tabsSingleTenant = [
   "export"
 ];
 
+const aliasTabChanges = {
+  "mfa_entities": "stepup_entities"
+}
+
 export default class Detail extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -299,7 +303,7 @@ export default class Detail extends React.PureComponent {
       );
     }
     const changes = {...this.state.changes};
-    changes[component] = true;
+    changes[aliasTabChanges[component] || component] = true;
     if (
       component === "whitelist" &&
       (name === "data.allowedall" ||

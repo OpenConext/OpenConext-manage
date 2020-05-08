@@ -681,10 +681,9 @@ export default class Import extends React.Component {
     return (
       <Select
         disabled={guest || !newEntity}
-        name="select-entity-type"
         onChange={opt => {
           const newState = {entityType: opt.value, ...this.stateForType(opt.value, newEntity)};
-          this.setState(newState)
+          this.setState(newState);
         }}
         options={options}
         value={options.find(opt => opt.value === entityType)}
