@@ -41,7 +41,7 @@ public class EntityIdReconcilerHook extends MetaDataHookAdapter {
         }
         String metaDataType = newMetaData.getType();
         List<String> types = metaDataTypesForeignKeyRelations(metaDataType);
-        asList("allowedEntities", "disableConsent", "allowedResourceServers", "stepupEntities").forEach(name ->
+        asList("allowedEntities", "disableConsent", "allowedResourceServers", "stepupEntities", "mfaEntities").forEach(name ->
                 types.forEach(type -> {
                     List<MetaData> references = metaDataRepository.findRaw(type,
                             String.format("{\"data.%s.name\" : \"%s\"}", name, oldEntityId));

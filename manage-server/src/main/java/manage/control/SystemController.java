@@ -125,19 +125,21 @@ public class SystemController {
                 .include("data.allowedEntities.name")
                 .include("data.allowedResourceServers.name")
                 .include("data.stepupEntities.name")
+                .include("data.mfaEntities.name")
                 .include("data.disableConsent.name");
 
         query.addCriteria(new Criteria().orOperator(
                 Criteria.where("data.allowedEntities").exists(true),
                 Criteria.where("data.disableConsent").exists(true),
                 Criteria.where("data.stepupEntities").exists(true),
+                Criteria.where("data.mfaEntities").exists(true),
                 Criteria.where("data.allowedResourceServers").exists(true)));
 
         MongoTemplate mongoTemplate = metaDataRepository.getMongoTemplate();
         List<MetaData> metaDataWithReferences = mongoTemplate.find(query, MetaData.class, type.getType());
 
         Map<String, Map<String, List<MetaData>>> groupedByEntityIdReference = new HashMap<>();
-        Stream.of("allowedEntities", "disableConsent", "stepupEntities", "allowedResourceServers").forEach(propertyName -> {
+        Stream.of("allowedEntities", "disableConsent", "stepupEntities", "mfaEntities", "allowedResourceServers").forEach(propertyName -> {
             metaDataWithReferences.stream().forEach(metaData -> {
                 List<Map<String, Object>> entries = (List<Map<String, Object>>) metaData.getData().get(propertyName);
                 if (!CollectionUtils.isEmpty(entries)) {

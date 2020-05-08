@@ -364,6 +364,12 @@
           "level": "http://test.surfconext.nl/assurance/loa3"
         }
       ],
+      "mfaEntities": [
+        {
+          "name": "https://serviceregistry.test2.surfconext.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp",
+          "level": "http://schemas.microsoft.com/claims/multipleauthn"
+        }
+      ],
       "manipulation": "PHP code",
       "metaDataFields": {
         "name:en": "OpenConext ServiceRegistry Mock",

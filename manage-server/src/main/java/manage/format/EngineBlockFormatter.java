@@ -117,6 +117,9 @@ public class EngineBlockFormatter {
         List<Map<String, String>> stepupEntities = (List<Map<String, String>>) source.get("stepupEntities");
         identityProvider.put("stepup_connections", stepupEntities == null ? new ArrayList<>() : stepupEntities);
 
+        List<Map<String, String>> mfaEntities = (List<Map<String, String>>) source.get("mfaEntities");
+        identityProvider.put("mfa_entities", mfaEntities == null ? new ArrayList<>() : mfaEntities);
+
         addCommonProviderAttributes(source, identityProvider);
         addSingleSignOnService(source, identityProvider);
 

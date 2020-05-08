@@ -31,7 +31,6 @@ export default class SelectEntities extends React.PureComponent {
 
     return (
       <Select
-        name="select-entities"
         onChange={option => onChange(option.value)}
         options={this.options()}
         placeholder={placeholder || "Select..."}

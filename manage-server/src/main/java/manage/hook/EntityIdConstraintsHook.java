@@ -48,6 +48,7 @@ public class EntityIdConstraintsHook extends MetaDataHookAdapter {
         relationsToCheck.put("allowedEntities", reversedEntityType);
         relationsToCheck.put("disableConsent", reversedEntityType);
         relationsToCheck.put("stepupEntities", Arrays.asList(SP, RP));
+        relationsToCheck.put("mfaEntities", Arrays.asList(SP, RP));
         relationsToCheck.put("allowedResourceServers", singletonList(RP));
 
         relationsToCheck.forEach((key, value) -> {

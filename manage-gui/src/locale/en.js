@@ -277,12 +277,14 @@ I18n.translations.en = {
     disableConsent: "Apply replacement of the Disabled Consent?",
     arp: "Apply replacement of the ARP?",
     stepupEntities: "Apply replacement of the Stepup Entities?",
+    mfaEntities: "Apply replacement of the MFA Entities?",
     allowedResourceServers:"Apply replacement of allowed Resource Servers",
     new_connection: "Add Connection attributes?",
     new_metaDataFields: "Add Metadata fields",
     new_allowedEntities: "Add Whitelist?",
     new_disableConsent: "Add Disabled Consent?",
     new_stepupEntities: "Add Stepup Entities?",
+    new_mfaEntities: "Add MFA Entities?",
     new_arp: "Add ARP?",
     new_allowedResourceServers: "Add allowed Resource Servers?",
     arpEnabled: "ARP enabled?",
@@ -379,8 +381,12 @@ I18n.translations.en = {
       status: "Status",
       entityid: "Entity ID",
       name: "Name",
-      loa_level: "LOA level"
-    }
+      loa_level: "LOA level",
+      mfa_level: "MFA level"
+    },
+    mfaTitle: "MFA configuration",
+    mfaDescription: "Select SAML Service Providers and OIDC Relying Parties and configure their MFA level",
+    mfaPlaceholder: "Search, select and add Entities to the MFA configuration",
   },
   password: {
     copy: "Copy to clipboard",

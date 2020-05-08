@@ -4,7 +4,7 @@
   background-color: white;
   padding: 20px;
 
-  .stepup-info {
+  .stepup-info, .mfa-info {
     margin: 15px 0;
 
     h2 {
@@ -14,7 +14,11 @@
 
   }
 
-  section.stepup {
+  .mfa-info {
+    margin: 40px 0 15px 0;
+  }
+
+  section.stepup, section.mfa {
     margin-top: 15px;
 
     table {
@@ -53,6 +57,10 @@
         &.loa_level {
           width: 30%;
         }
+
+        &.mfa_level {
+          width: 30%;
+        }
       }
 
       tbody {
@@ -74,11 +82,10 @@
             }
           }
 
-          div.select-loa-level {
+          div.select-loa-level, div.select-mfa-level {
             width: 95%;
             margin-right: 10px;
           }
-
         }
 
       }

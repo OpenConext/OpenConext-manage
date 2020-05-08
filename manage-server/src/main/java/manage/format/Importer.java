@@ -65,6 +65,9 @@ public class Importer {
         if (!entityType.equals(EntityType.IDP) && json.containsKey("stepupEntities")) {
             json.remove("stepupEntities");
         }
+        if (!entityType.equals(EntityType.IDP) && json.containsKey("mfaEntities")) {
+            json.remove("mfaEntities");
+        }
         if (!entityType.equals(EntityType.RP) && json.containsKey("allowedResourceServers")) {
             json.remove("allowedResourceServers");
         }
@@ -84,6 +87,11 @@ public class Importer {
             if (json.containsKey("stepupEntities")) {
                 List<String> stepupEntities = (List<String>) json.get("stepupEntities");
                 json.put("stepupEntities", stepupEntities.stream()
+                        .map(name -> Collections.singletonMap("name", name)).collect(toList()));
+            }
+            if (json.containsKey("mfaEntities")) {
+                List<String> mfaEntities = (List<String>) json.get("mfaEntities");
+                json.put("mfaEntities", mfaEntities.stream()
                         .map(name -> Collections.singletonMap("name", name)).collect(toList()));
             }
             //if the structure is nested then we need to flatten it

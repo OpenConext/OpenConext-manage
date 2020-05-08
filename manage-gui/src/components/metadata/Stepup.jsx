@@ -14,7 +14,10 @@ export default class Stepup extends React.Component {
     this.state = {
       sorted: "name",
       reverse: false,
-      enrichedStepup: []
+      sortedMfa: "name",
+      reverseMfa: false,
+      enrichedStepup: [],
+      enrichedMfa: [],
     };
   }
 
@@ -31,13 +34,18 @@ export default class Stepup extends React.Component {
 
   initialiseStepup(whiteListing) {
     window.scrollTo(0, 0);
-    const {stepupEntities} = this.props;
+    const {stepupEntities, mfaEntities} = this.props;
 
     const enrichedStepup = stepupEntities
       .map(entity => this.enrichSingleStepup(entity, whiteListing))
       .filter(enriched => enriched !== null);
 
+    const enrichedMfa = mfaEntities
+      .map(entity => this.enrichSingleStepup(entity, whiteListing))
+      .filter(enriched => enriched !== null);
+
     this.setStepupState(enrichedStepup);
+    this.setMfaState(enrichedMfa);
   }
 
   enrichSingleStepup = (stepupEntity, whiteListing) => {
@@ -70,6 +78,14 @@ export default class Stepup extends React.Component {
     });
   };
 
+  setMfaState = newMfa => {
+    this.setState({
+      enrichedMfa: newMfa.sort(
+        this.sortByAttribute(this.state.sortedMfa, this.state.reverseMfa)
+      )
+    });
+  };
+
   addStepup = entityid => {
     const entity = {
       name: entityid,
@@ -86,6 +102,22 @@ export default class Stepup extends React.Component {
     this.setStepupState(newStepup);
   };
 
+  addMfa = entityid => {
+    const entity = {
+      name: entityid,
+      level: this.props.mfaLevels[0]
+    };
+    const {mfaEntities, whiteListing} = this.props;
+    const newState = [...mfaEntities].concat(entity);
+    this.props.onChangeMfa("data.mfaEntities", newState);
+
+    const newMfa = [...this.state.enrichedMfa].concat(
+      this.enrichSingleStepup(entity, whiteListing)
+    );
+
+    this.setMfaState(newMfa);
+  };
+
   removeStepup = entry => {
     const {stepupEntities} = this.props;
     const newState = [...stepupEntities].filter(
@@ -99,6 +131,19 @@ export default class Stepup extends React.Component {
     this.setStepupState(newStepup);
   };
 
+  removeMfa = entry => {
+    const {mfaEntities} = this.props;
+    const newState = [...mfaEntities].filter(
+      entity => entity.name !== entry.entityid
+    );
+    this.props.onChangeMfa("data.mfaEntities", newState);
+
+    const newMfa = [...this.state.enrichedMfa].filter(
+      entity => entity.entityid !== entry.entityid
+    );
+    this.setMfaState(newMfa);
+  };
+
   onChangeSelectLoaLevel = (entry, level) => {
     entry.level = level;
     const newState = [...this.props.stepupEntities];
@@ -108,6 +153,17 @@ export default class Stepup extends React.Component {
       level: level
     };
     this.props.onChange("data.stepupEntities", newState);
+  };
+
+  onChangeSelectMfaLevel = (entry, level) => {
+    entry.level = level;
+    const newState = [...this.props.mfaEntities];
+    const pos = newState.map(e => e.name).indexOf(entry.entityid);
+    newState[pos] = {
+      name: entry.entityid,
+      level: level
+    };
+    this.props.onChangeMfa("data.mfaEntities", newState);
   };
 
   sortByAttribute = (name, reverse = false) => (a, b) => {
@@ -127,6 +183,18 @@ export default class Stepup extends React.Component {
       enrichedStepup: sorted,
       sorted: name,
       reverse: reverse
+    });
+  };
+
+  sortTableMfa = (enrichedMfa, name) => () => {
+    const reverse = this.state.sortedMfa === name ? !this.state.reverseMfa : false;
+    const sorted = [...enrichedMfa].sort(
+      this.sortByAttribute(name, reverse)
+    );
+    this.setState({
+      enrichedMfa: sorted,
+      sortedMfa: name,
+      reverseMfa: reverse
     });
   };
 
@@ -151,7 +219,6 @@ export default class Stepup extends React.Component {
         <td>{entity.name}</td>
         <td>
           <Select
-            name="select-loa-level"
             className="select-loa-level"
             onChange={option =>
               this.onChangeSelectLoaLevel(entity, option.value)
@@ -159,6 +226,48 @@ export default class Stepup extends React.Component {
             options={this.props.loaLevels.map(loa => ({
               label: loa,
               value: loa
+            }))}
+            value={entity.level}
+            searchable={false}
+          />
+        </td>
+        <td>
+          <Link to={`/metadata/${entity.type}/${entity.id}`} target="_blank">
+            {entity.entityid}
+          </Link>
+        </td>
+      </tr>
+    );
+  };
+
+  renderMfa = (entity, guest) => {
+    return (
+      <tr key={entity.entityid}>
+        <td className="remove">
+          {!guest && (
+            <span>
+              <a
+                onClick={e => {
+                  stop(e);
+                  this.removeMfa(entity);
+                }}
+              >
+                <i className="fa fa-trash-o"/>
+              </a>
+            </span>
+          )}
+        </td>
+        <td>{entity.status}</td>
+        <td>{entity.name}</td>
+        <td>
+          <Select
+            className="select-mfa-level"
+            onChangeMfa={option =>
+              this.onChangeMfa(entity, option.value)
+            }
+            options={this.props.mfaLevels.map(mfa => ({
+              label: mfa,
+              value: mfa
             }))}
             value={entity.level}
             searchable={false}
@@ -221,8 +330,59 @@ export default class Stepup extends React.Component {
     );
   };
 
-  filterEntityOptions(allowedAll, allowedEntities, whiteListing) {
-    whiteListing = whiteListing.filter(entity => isEmpty(entity.data.metaDataFields["coin:stepup:requireloa"]));
+  renderMfaTable = (enrichedMfa, guest) => {
+    const {sortedMfa, reverseMfa} = this.state;
+    const icon = name => {
+      if (!(name === sortedMfa)) {
+        return <i className="fa fa-arrow-down"/>;
+      }
+
+      if (reverseMfa) {
+        return <i className="fa fa-arrow-up reverse"/>;
+      }
+
+      return <i className="fa fa-arrow-down current"/>;
+    };
+    const th = name => (
+      <th
+        key={name}
+        className={name}
+        onClick={this.sortTableMfa(enrichedMfa, name)}
+      >
+        {I18n.t(`stepup.entries.${name}`)}
+        {icon(name)}
+      </th>
+    );
+    const names = [
+      "status",
+      "name",
+      "mfa_level",
+      "entityid"
+    ];
+    return (
+      <section className="stepup">
+        <table>
+          <thead>
+          <tr>
+            <th className="remove"/>
+            {names.map(th)}
+          </tr>
+          </thead>
+          <tbody>
+          {enrichedMfa.map(entity =>
+            this.renderMfa(entity, guest)
+          )}
+          </tbody>
+        </table>
+      </section>
+    );
+  };
+
+  filterEntityOptions = (allowedAll, allowedEntities, whiteListing, isLoa) => {
+    if (isLoa) {
+      whiteListing = whiteListing
+        .filter(entity => isEmpty(entity.data.metaDataFields["coin:stepup:requireloa"]));
+    }
 
     if (allowedAll) {
       return whiteListing;
@@ -234,43 +394,79 @@ export default class Stepup extends React.Component {
     );
   }
 
+  renderSetupEntities = (guest, name, allowedAll, allowedEntities, whiteListing, stepupEntities, placeholder, enrichedStepup) => {
+    return <div>
+      <div className="stepup-info">
+        <h2>{I18n.t("stepup.title")}</h2>
+        {!guest && (
+          <p>{I18n.t("stepup.description", {name: name})}</p>
+        )}
+      </div>
+      {!guest && (
+        <SelectEntities
+          whiteListing={this.filterEntityOptions(allowedAll, allowedEntities, whiteListing, true)}
+          allowedEntities={stepupEntities}
+          onChange={this.addStepup}
+          placeholder={placeholder}
+        />
+      )}
+      {enrichedStepup.length > 0 &&
+      this.renderStepupTable(
+        enrichedStepup,
+        guest
+      )}
+    </div>
+  };
+
+  renderMfaEntities = (guest, name, allowedAll, allowedEntities, whiteListing, mfaEntities, placeholder, enrichedMfa) => {
+    return <div>
+      <div className="mfa-info">
+        <h2>{I18n.t("stepup.mfaTitle")}</h2>
+        {!guest && (
+          <p>{I18n.t("stepup.mfaDescription", {name: name})}</p>
+        )}
+      </div>
+      {!guest && (
+        <SelectEntities
+          whiteListing={this.filterEntityOptions(allowedAll, allowedEntities, whiteListing, false)}
+          allowedEntities={mfaEntities}
+          onChange={this.addMfa}
+          placeholder={placeholder}
+        />
+      )}
+      {enrichedMfa.length > 0 &&
+      this.renderMfaTable(
+        enrichedMfa,
+        guest
+      )}
+    </div>;
+  };
+
   render() {
-    const {stepupEntities, name, guest, allowedAll, allowedEntities, whiteListing} = this.props;
+    const {stepupEntities, name, guest, allowedAll, allowedEntities, whiteListing, mfaEntities} = this.props;
     const placeholder = I18n.t("stepup.placeholder");
-    const {enrichedStepup} = this.state;
+    const mfaPlaceholder = I18n.t("stepup.mfaPlaceholder");
+    const {enrichedStepup, enrichedMfa} = this.state;
     return (
       <div className="metadata-stepup">
-        <div className="stepup-info">
-          <h2>{I18n.t("stepup.title")}</h2>
-          {!guest && (
-            <p>{I18n.t("stepup.description", {name: name})}</p>
-          )}
-        </div>
-        {!guest && (
-          <SelectEntities
-            whiteListing={this.filterEntityOptions(allowedAll, allowedEntities, whiteListing)}
-            allowedEntities={stepupEntities}
-            onChange={this.addStepup}
-            placeholder={placeholder}
-          />
-        )}
-        {enrichedStepup.length > 0 &&
-        this.renderStepupTable(
-          enrichedStepup,
-          guest
-        )}
+        {this.renderSetupEntities(guest, name, allowedAll, allowedEntities, whiteListing, stepupEntities, placeholder, enrichedStepup)}
+        {this.renderMfaEntities(guest, name, allowedAll, allowedEntities, whiteListing, mfaEntities, mfaPlaceholder, enrichedMfa)}
       </div>
     );
   }
+
 }
 
 Stepup.propTypes = {
   stepupEntities: PropTypes.array.isRequired,
+  mfaEntities: PropTypes.array.isRequired,
   allowedEntities: PropTypes.array.isRequired,
   allowedAll: PropTypes.bool.isRequired,
   name: PropTypes.string.isRequired,
   whiteListing: PropTypes.array.isRequired,
   onChange: PropTypes.func.isRequired,
+  onChangeMfa: PropTypes.func.isRequired,
   guest: PropTypes.bool.isRequired,
-  loaLevels: PropTypes.array.isRequired
+  loaLevels: PropTypes.array.isRequired,
+  mfaLevels: PropTypes.array.isRequired
 };

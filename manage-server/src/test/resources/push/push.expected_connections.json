@@ -519,6 +519,12 @@
           ]
         }
       },
+      "mfa_entities": [
+        {
+          "name": "https://serviceregistry.test2.surfconext.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp",
+          "level": "http://schemas.microsoft.com/claims/multipleauthn"
+        }
+      ],
       "name": "https://idp.test2.surfconext.nl",
       "state": "prodaccepted",
       "stepup_connections": [
@@ -552,6 +558,7 @@
           "en": "OpenConext ServiceRegistry Mock"
         }
       },
+      "mfa_entities": [],
       "name": "http://mock-idp",
       "state": "prodaccepted",
       "stepup_connections": [],

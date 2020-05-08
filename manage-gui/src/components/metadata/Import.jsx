@@ -153,7 +153,7 @@ export default class Import extends React.Component {
     }
     keys.forEach(key => {
       const value = results[key];
-      if (key === "allowedEntities" || key === "disableConsent" || key === "stepupEntities" ||
+      if (key === "allowedEntities" || key === "disableConsent" || key === "stepupEntities" || key === "mfaEntities" ||
         key === "allowedResourceServers") {
         const changed = this.allowedEntitiesOrDisableConsentChanged(
           currentMetaData[key],
