@@ -5,6 +5,7 @@ import {Link} from "react-router-dom";
 import SelectEntities from "./../SelectEntities";
 import {Select} from "./../../components";
 import {isEmpty, stop} from "../../utils/Utils";
+import ReactTooltip from "react-tooltip";
 
 import "./Stepup.css";
 
@@ -394,12 +395,18 @@ export default class Stepup extends React.Component {
     );
   }
 
-  renderSetupEntities = (guest, name, allowedAll, allowedEntities, whiteListing, stepupEntities, placeholder, enrichedStepup) => {
+  renderStepupEntities = (guest, name, allowedAll, allowedEntities, whiteListing, stepupEntities, placeholder, enrichedStepup) => {
     return <div>
       <div className="stepup-info">
         <h2>{I18n.t("stepup.title")}</h2>
         {!guest && (
-          <p>{I18n.t("stepup.description", {name: name})}</p>
+          <p>{I18n.t("stepup.description", {name: name})}
+            <i className="fa fa-info-circle"
+               data-for="step-up-tooltip" data-tip></i>
+            <ReactTooltip id="step-up-tooltip" type="info" class="tool-tip" effect="solid">
+              <span dangerouslySetInnerHTML={{__html: I18n.t("stepup.stepupTooltip")}}/>
+            </ReactTooltip>
+          </p>
         )}
       </div>
       {!guest && (
@@ -423,7 +430,13 @@ export default class Stepup extends React.Component {
       <div className="mfa-info">
         <h2>{I18n.t("stepup.mfaTitle")}</h2>
         {!guest && (
-          <p>{I18n.t("stepup.mfaDescription", {name: name})}</p>
+          <p>{I18n.t("stepup.mfaDescription", {name: name})}
+            <i className="fa fa-info-circle"
+               data-for="mfa-tooltip" data-tip></i>
+            <ReactTooltip id="mfa-tooltip" type="info" class="tool-tip" effect="solid">
+              <span dangerouslySetInnerHTML={{__html: I18n.t("stepup.mfaTooltip")}}/>
+            </ReactTooltip>
+          </p>
         )}
       </div>
       {!guest && (
@@ -449,7 +462,7 @@ export default class Stepup extends React.Component {
     const {enrichedStepup, enrichedMfa} = this.state;
     return (
       <div className="metadata-stepup">
-        {this.renderSetupEntities(guest, name, allowedAll, allowedEntities, whiteListing, stepupEntities, placeholder, enrichedStepup)}
+        {this.renderStepupEntities(guest, name, allowedAll, allowedEntities, whiteListing, stepupEntities, placeholder, enrichedStepup)}
         {this.renderMfaEntities(guest, name, allowedAll, allowedEntities, whiteListing, mfaEntities, mfaPlaceholder, enrichedMfa)}
       </div>
     );

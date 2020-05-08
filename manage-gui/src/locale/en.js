@@ -377,6 +377,8 @@ I18n.translations.en = {
     title: "Stepup configuration",
     description: "Select SAML Service Providers and OIDC Relying Parties and configure their LOA level",
     placeholder: "Search, select and add Entities to the stepup configuration",
+    stepupTooltip: "All selected entities and configured LOA levels<br/>will be included in the push to EB.<br/><br/>Note that you can not select Services that have the<br/>metadata field <code>coin:stepup:requireloa</code> configured.",
+    mfaTooltip: "All selected entities and configured MFA levels<br/>will be included in the push to EB.<br/><br/>EB will use the MFA information to specify the SAML<br/>Requested Authentication Context Class Reference",
     entries: {
       status: "Status",
       entityid: "Entity ID",
