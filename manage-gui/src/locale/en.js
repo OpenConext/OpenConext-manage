@@ -27,7 +27,8 @@ I18n.translations.en = {
     api: "API",
     system: "System",
     edugain: "eduGAIN",
-    support: "Staging"
+    support: "Staging",
+    scopes: "Scopes"
   },
 
   metadata: {
@@ -396,6 +397,22 @@ I18n.translations.en = {
     key: "Generate new secret",
     undo: "Undo changes",
     save: "Save new secret"
+  },
+  scopes: {
+    searchPlaceHolder: "Search for scopes",
+    name: "Name",
+    description: "Description",
+    lang: "Description {{lang}}",
+    details: "The descriptions of a scope is used on the consent screen of OIDC",
+    new: "Add +",
+    cancel: "Cancel",
+    save: "Save",
+    update: "Update",
+    delete: "Delete",
+    flash: {
+      updated: "Successfully updated scope {{name}}",
+      saved: "Successfully saved scope {{name}}"
+    }
   },
   not_found: {
     title: "404",

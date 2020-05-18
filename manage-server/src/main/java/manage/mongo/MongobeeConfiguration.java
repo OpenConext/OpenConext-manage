@@ -8,6 +8,7 @@ import manage.conf.MetaDataAutoConfiguration;
 import manage.hook.TypeSafetyHook;
 import manage.model.EntityType;
 import manage.model.MetaData;
+import manage.model.Scope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.MongoDbFactory;
+import org.springframework.data.mongodb.core.BulkOperations;
 import org.springframework.data.mongodb.core.IndexOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.convert.CustomConversions;
@@ -165,6 +167,16 @@ public class MongobeeConfiguration {
             }
         });
 
+    }
+
+    @ChangeSet(order = "029", id = "addDefaultScopes", author = "Okke Harsta")
+    public void addDefaultScopes(MongoTemplate mongoTemplate) {
+        mongoTemplate.remove(new Query(), Scope.class);
+        List<String> scopes = mongoTemplate.getCollection(EntityType.RP.getType()).distinct("data.metaDataFields.scopes");
+        List<Scope> allScopes = scopes.stream()
+                .map(scope -> new Scope(scope, new HashMap<>()))
+                .collect(Collectors.toList());
+        mongoTemplate.insert(allScopes, Scope.class);
     }
 
     private Object getField(Object targetObject, String name) {

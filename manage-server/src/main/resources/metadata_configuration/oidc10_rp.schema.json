@@ -406,7 +406,6 @@
           "default": "license_required_by_service_provider",
           "info": "Set the applicable license for this service as provisioned by the SP Dashboard."
         },
-
         "coin:dashboard_connect_option": {
           "type": "string",
           "enum": [
@@ -466,19 +465,7 @@
           "type": "array",
           "items": {
             "type": "string",
-            "enum": [
-              "openid",
-              "members",
-              "groups",
-              "actions",
-              "cross-idp-services",
-              "stats",
-              "attribute-aggregation",
-              "pdp",
-              "test",
-              "email",
-              "profile"
-            ]
+            "fetch": "scopes"
           },
           "info": "The allowed scopes for this Relying Party."
         },

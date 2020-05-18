@@ -105,8 +105,13 @@ export default class MetaData extends React.Component {
       case "number":
         return <Number {...defaultProps} />;
       case "array":
-        const options = keyConfiguration.items.enum;
+        const fetchValue = keyConfiguration.items.fetch;
 
+        if (fetchValue) {
+          return <SelectMulti {...defaultProps} enumValues={[]} fetchValue={fetchValue}/>;
+        }
+
+        const options = keyConfiguration.items.enum;
         if (options) {
           return <SelectMulti {...defaultProps} enumValues={options}/>;
         }

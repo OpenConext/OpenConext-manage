@@ -7,6 +7,7 @@ import io.restassured.RestAssured;
 import manage.conf.MetaDataAutoConfiguration;
 import manage.model.MetaData;
 import manage.repository.MetaDataRepository;
+import manage.repository.ScopeRepository;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -40,6 +41,9 @@ public abstract class AbstractIntegrationTest implements TestUtils {
 
     @Autowired
     protected MetaDataRepository metaDataRepository;
+
+    @Autowired
+    protected ScopeRepository scopeRepository;
 
     @Autowired
     protected ObjectMapper objectMapper;
@@ -80,5 +84,9 @@ public abstract class AbstractIntegrationTest implements TestUtils {
 
     protected boolean insertSeedData() {
         return true;
+    }
+
+    protected MongoTemplate mongoTemplate() {
+        return metaDataRepository.getMongoTemplate();
     }
 }
