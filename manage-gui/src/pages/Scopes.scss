@@ -113,11 +113,20 @@
 
     p {
       margin-top: 25px;
+
+      &.errors {
+        margin-top: 5px;
+      }
     }
 
     label {
       margin: 15px 0 5px 0;
       display: inline-block;
+
+      &.required::after {
+        content: " *";
+        color: $red;
+      }
     }
 
     input {
@@ -138,10 +147,8 @@
     justify-content: flex-end;
   }
 
-  section.errors {
-    p {
-      color: $red;
-    }
+  .errors, {
+    color: $red;
 
     ul {
       margin-left: 40px;

@@ -57,16 +57,15 @@ export default class Scopes extends React.Component {
 
   submit = () => {
     const {selectedScope} = this.state;
-    let isNew = selectedScope.id === -1;
-    selectedScope.id = (isNew ? null : selectedScope.id);
-
-    saveScope(selectedScope)
-      .then(() => {
-        this.refreshScopes();
-        const args = {name: selectedScope.name}
-        setFlash(isNew ? I18n.t("scopes.flash.saved", args) : I18n.t("scopes.flash.updated", args))
-      })
-      .catch(err => this.handleError(err, "change the name "));
+    if (selectedScope.name) {
+      saveScope(selectedScope)
+        .then(() => {
+          this.refreshScopes();
+          const args = {name: selectedScope.name}
+          setFlash(selectedScope.id ? I18n.t("scopes.flash.updated", args) : I18n.t("scopes.flash.saved", args))
+        })
+        .catch(err => this.handleError(err, "change the name "));
+    }
   }
 
   handleError = (err, action) => {
@@ -82,16 +81,21 @@ export default class Scopes extends React.Component {
   }
 
   confirmDelete = scope => () => {
-    this.setState({
-      confirmationDialogOpen: true,
-      confirmationQuestion: I18n.t("scopes.deleteConfirmation", {name: scope.name}),
-      confirmationDialogAction: () => {
-        this.setState({confirmationDialogOpen: false});
-        deleteScope(scope.id)
-          .then(() => this.componentDidMount())
-          .catch(err => this.handleError(err, "delete"));
-      }
-    })
+    if (scope.id) {
+      this.setState({
+        confirmationDialogOpen: true,
+        confirmationQuestion: I18n.t("scopes.deleteConfirmation", {name: scope.name}),
+        confirmationDialogAction: () => {
+          this.setState({confirmationDialogOpen: false});
+          deleteScope(scope.id)
+            .then(() => {
+              this.refreshScopes();
+              setFlash(I18n.t("scopes.flash.deleted", {name: scope.name}));
+            })
+            .catch(err => this.handleError(err, "delete"));
+        }
+      });
+    }
   };
 
   icon = reversed => reversed ? <i className="fa fa-arrow-down current"/> : <i className="fa fa-arrow-down current"/>;
@@ -122,6 +126,7 @@ export default class Scopes extends React.Component {
 
   renderDetails = () => {
     const {supportedLanguages, selectedScope, inUseEntities, inUse, inUseAction, nameInUse} = this.state;
+    const invalidName = !/^[a-zA-Z0-9_-]*$/.test(selectedScope.name)
     if (isEmpty(selectedScope)) {
       return this.renderEmptyDetails();
     }
@@ -138,28 +143,32 @@ export default class Scopes extends React.Component {
         <p>{I18n.t("scopes.nameInUse")}</p>
       </section>}
 
-      <label>
+      <label className="required">
         {I18n.t("scopes.name")}
       </label>
-      <String value={selectedScope.name || ""} onChange={this.updateName}/>
-
+      <String placeholder={I18n.t("scopes.namePlaceholder")} value={selectedScope.name || ""}
+              onChange={this.updateName}/>
+      {invalidName &&
+      <p className="errors">{I18n.t("scopes.invalidName")}</p>}
       <p>{I18n.t("scopes.details")}</p>
       {supportedLanguages.map(lang => <div key={lang} className="form-element">
         <label htmlFor={lang}>
           {I18n.t("scopes.lang", {lang})}
         </label>
-        <String value={selectedScope.descriptions[lang] || ""} onChange={this.updateDescription(lang)}/>
+        <String placeholder={I18n.t("scopes.descriptionPlaceholder", {lang: I18n.t(`scopes.${lang}`)})}
+                value={selectedScope.descriptions[lang] || ""} onChange={this.updateDescription(lang)}/>
 
       </div>)}
       <section className="detail-actions">
         <a className="button" onClick={this.refreshScopes}>
           {I18n.t("scopes.cancel")}
         </a>
-        <a className={`button ${inUse ? 'grey' : 'red'}`} onClick={this.confirmDelete(selectedScope)}>
+        <a className={`button ${(inUse || !selectedScope.id) ? 'grey' : 'red'}`}
+           onClick={this.confirmDelete(selectedScope)}>
           {I18n.t("scopes.delete")}
         </a>
-        <a className={`button blue`} onClick={this.submit}>
-          {selectedScope.id === -1 ? I18n.t("scopes.save") : I18n.t("scopes.update")}
+        <a className={`button ${(!selectedScope.name || invalidName) ? 'grey' : 'blue'}`} onClick={this.submit}>
+          {selectedScope.id ? I18n.t("scopes.update") : I18n.t("scopes.save")}
         </a>
       </section>
 
@@ -168,8 +177,7 @@ export default class Scopes extends React.Component {
 
   newScope = () => {
     const scope = {
-      id: -1,
-      name: "new scope",
+      name: "",
       descriptions: {}
     }
     this.setState({
@@ -239,9 +247,8 @@ export default class Scopes extends React.Component {
     if (!loaded) {
       return null;
     }
-    let filteredScopes = query ? scopes
+    const filteredScopes = query ? scopes
       .filter(scope => scope.name.toLowerCase().indexOf(query.toLowerCase()) > -1) : scopes;
-    filteredScopes = filteredScopes.filter(scope => scope.id !== -1);
 
     return (
       <div className="scopes">

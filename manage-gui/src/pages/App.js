@@ -122,6 +122,7 @@ class App extends React.PureComponent {
                                              configuration={configuration} {...props}/>}/>
             <Route path="/api"
                    render={props => <API configuration={configuration} {...props}/>}/>
+
             <ProtectedRoute path="/system"
                             guest={currentUser.guest}
                             render={props => <System currentUser={currentUser}
@@ -129,13 +130,17 @@ class App extends React.PureComponent {
             <ProtectedRoute path="/support"
                             guest={currentUser.guest}
                             render={props => <Support {...props}/>}/>
+
             <ProtectedRoute path="/scopes"
                             guest={currentUser.guest}
                             render={props => <Scopes {...props}/>}/>
+
             <Route path="/error"
                    render={props => <ServerError {...props}/>}/>
+
             <Route path="/dummy"
                    render={props => <Dummy {...props}/>}/>
+
             <Route component={NotFound}/>
           </Switch>
         </div>
