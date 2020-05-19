@@ -59,18 +59,18 @@ public class ScopeController {
     }
 
     @GetMapping({"/client/scopes/{id}"})
-    Scope get(@PathVariable("id") String id) {
+    public Scope get(@PathVariable("id") String id) {
         return scopeRepository.findOne(id);
     }
 
     @PutMapping({"/client/scopes"})
-    Scope update(@RequestBody Scope scope) {
+    public Scope update(@RequestBody Scope scope) {
         LOG.info("Updating scope {}", scope);
         return scopeRepository.save(scope);
     }
 
     @PostMapping({"/client/scopes"})
-    Scope save(@RequestBody Scope scope) {
+    public Scope save(@RequestBody Scope scope) {
         LOG.info("Saving scope {}", scope);
         return scopeRepository.save(scope);
     }
