@@ -231,10 +231,6 @@ export function includeInPush(id, type) {
 }
 
 //Scopes
-export function scopeById(id) {
-  return fetchJson(`scopes/${id}`)
-}
-
 export function allScopes() {
   return fetchJson("scopes")
 }
@@ -244,9 +240,9 @@ export function scopeSupportedLanguagers() {
 }
 
 export function saveScope(scope) {
-  return postPutJson("scopes", scope, scope.id ? "put" : "post");
+  return fetchJson("scopes", {method: scope.id ? "put" : "post", body: JSON.stringify(scope)}, {}, false);
 }
 
 export function deleteScope(id) {
-  return fetchDelete(`scopes/${id}`);
+  return validFetch(`scopes/${id}`, {method: "delete"},{}, false);
 }

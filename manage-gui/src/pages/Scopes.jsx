@@ -23,7 +23,11 @@ export default class Scopes extends React.Component {
       confirmationDialogOpen: false,
       confirmationQuestion: "",
       confirmationDialogAction: () => this,
-      cancelDialogAction: () => this.setState({confirmationDialogOpen: false})
+      cancelDialogAction: () => this.setState({confirmationDialogOpen: false}),
+      inUse: false,
+      inUseAction: "",
+      inUseEntities: "",
+      nameInUse: false
     };
   }
 
@@ -35,13 +39,20 @@ export default class Scopes extends React.Component {
           supportedLanguages: res[1],
           query: "",
           loaded: true,
-          selectedScope: res[0].length > 0 ? cloneDeep(res[0][0]) : {}
         })
       });
   }
 
-  cancel = () => {
-    allScopes().then(res => this.setState({scopes: res}));
+  refreshScopes = () => {
+    allScopes().then(res =>
+      this.setState({
+        scopes: res,
+        inUseEntities: "",
+        inUse: false,
+        inUseAction: "",
+        selectedScope: {},
+        nameInUse: false
+      }));
   }
 
   submit = () => {
@@ -49,20 +60,36 @@ export default class Scopes extends React.Component {
     let isNew = selectedScope.id === -1;
     selectedScope.id = (isNew ? null : selectedScope.id);
 
-    saveScope(selectedScope).then(() => {
-      this.cancel();
-      const args = {name: selectedScope.name}
-      setFlash(isNew ? I18n.t("scopes.flash.saved", args) : I18n.t("scopes.flash.updated", args))
-    });
+    saveScope(selectedScope)
+      .then(() => {
+        this.refreshScopes();
+        const args = {name: selectedScope.name}
+        setFlash(isNew ? I18n.t("scopes.flash.saved", args) : I18n.t("scopes.flash.updated", args))
+      })
+      .catch(err => this.handleError(err, "change the name "));
   }
 
-  confirmDelete = (scope) => {
+  handleError = (err, action) => {
+    if (err.response && err.response.status === 409) {
+      err.response.json().then(json => {
+        this.setState({inUse: true, inUseEntities: JSON.parse(json.message), inUseAction: action})
+      });
+    } else if (err.response && err.response.status === 400) {
+      this.setState({nameInUse: true})
+    } else {
+      throw err;
+    }
+  }
+
+  confirmDelete = scope => () => {
     this.setState({
       confirmationDialogOpen: true,
       confirmationQuestion: I18n.t("scopes.deleteConfirmation", {name: scope.name}),
       confirmationDialogAction: () => {
         this.setState({confirmationDialogOpen: false});
-        deleteScope(scope.id).then(() => this.componentDidMount())
+        deleteScope(scope.id)
+          .then(() => this.componentDidMount())
+          .catch(err => this.handleError(err, "delete"));
       }
     })
   };
@@ -86,9 +113,31 @@ export default class Scopes extends React.Component {
     this.setState({selectedScope: selectedScope});
   }
 
-  renderDetails = () => {
-    const {supportedLanguages, selectedScope} = this.state;
+  renderEmptyDetails = () => {
     return (<section className="scope-details">
+      Select a scope in the list on the left to edit the name and description. Or add a new scope.
+    </section>)
+
+  }
+
+  renderDetails = () => {
+    const {supportedLanguages, selectedScope, inUseEntities, inUse, inUseAction, nameInUse} = this.state;
+    if (isEmpty(selectedScope)) {
+      return this.renderEmptyDetails();
+    }
+    return (<section className="scope-details">
+      {inUse && <section className="errors">
+        <p>{I18n.t("scopes.inUse", {action: inUseAction})}</p>
+        <ul>
+          {inUseEntities.map(entity => <li key={entity.id}>
+            <a href={`/metadata/oidc10_rp/${entity.id}`} target="_blank">{entity.entityid}</a>
+          </li>)}
+        </ul>
+      </section>}
+      {nameInUse && <section className="errors">
+        <p>{I18n.t("scopes.nameInUse")}</p>
+      </section>}
+
       <label>
         {I18n.t("scopes.name")}
       </label>
@@ -103,13 +152,13 @@ export default class Scopes extends React.Component {
 
       </div>)}
       <section className="detail-actions">
-        <a className="button" onClick={this.cancel}>
+        <a className="button" onClick={this.refreshScopes}>
           {I18n.t("scopes.cancel")}
         </a>
-        <a className="button red" onClick={this.confirmDelete}>
+        <a className={`button ${inUse ? 'grey' : 'red'}`} onClick={this.confirmDelete(selectedScope)}>
           {I18n.t("scopes.delete")}
         </a>
-        <a className="button blue" onClick={this.submit}>
+        <a className={`button blue`} onClick={this.submit}>
           {selectedScope.id === -1 ? I18n.t("scopes.save") : I18n.t("scopes.update")}
         </a>
       </section>
@@ -123,15 +172,21 @@ export default class Scopes extends React.Component {
       name: "new scope",
       descriptions: {}
     }
-    const {scopes} = this.state;
-    scopes.push(scope);
-    this.setState({selectedScope: scope});
+    this.setState({
+      inUseEntities: "",
+      inUse: false,
+      inUseAction: "",
+      selectedScope: scope,
+      nameInUse: false
+    });
   }
 
   renderResults = (scopes, selectedScope, query, reversed) =>
     <div>
       <section className="explanation">
-        <p>Below are all Scopes that can be configured on OIDC Relying Parties.</p>
+        {
+          scopes.length === 0 ? <p>{I18n.t("scopes.noScopes")}</p> : <p>{I18n.t("scopes.info")}</p>
+        }
       </section>
       <section className="options">
         <div className="search-input-container">
@@ -156,7 +211,12 @@ export default class Scopes extends React.Component {
             <tbody>
             {scopes.map((scope, index) =>
               <tr key={`${scope.name}_${index}`}
-                  onClick={() => this.setState({selectedScope: cloneDeep(scope)})}>
+                  onClick={() => this.setState({
+                    selectedScope: cloneDeep(scope),
+                    inUseEntities: "",
+                    inUse: false,
+                    inUseAction: ""
+                  })}>
                 <td className={`${selectedScope.id === scope.id ? 'selected' : ''}`}>{scope.name}</td>
               </tr>)}
             </tbody>
@@ -171,10 +231,6 @@ export default class Scopes extends React.Component {
       </section>
     </div>;
 
-  renderNoResults = () => <section className="no-scopes">
-    <p>There are no Scopes configured.</p>
-  </section>;
-
   render() {
     const {
       scopes, loaded, query, reversed, selectedScope,
@@ -187,15 +243,13 @@ export default class Scopes extends React.Component {
       .filter(scope => scope.name.toLowerCase().indexOf(query.toLowerCase()) > -1) : scopes;
     filteredScopes = filteredScopes.filter(scope => scope.id !== -1);
 
-    const noScopes = isEmpty(scopes);
     return (
       <div className="scopes">
         <ConfirmationDialog isOpen={confirmationDialogOpen}
                             cancel={cancelDialogAction}
                             confirm={confirmationDialogAction}
                             question={confirmationQuestion}/>
-        {!noScopes && this.renderResults(filteredScopes, selectedScope, query, reversed)}
-        {noScopes && this.renderNoResults()}
+        {this.renderResults(filteredScopes, selectedScope, query, reversed)}
       </div>
     );
   }

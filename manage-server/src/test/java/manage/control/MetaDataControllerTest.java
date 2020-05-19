@@ -161,7 +161,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 .get("manage/api/client/metadata/stats")
                 .then()
                 .statusCode(SC_OK)
-                .body("size()", is(12));
+                .body("size()", is(13));
     }
 
     @Test

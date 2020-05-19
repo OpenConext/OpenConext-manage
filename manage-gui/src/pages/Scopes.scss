@@ -1,7 +1,7 @@
 @import "../stylesheets/vars.scss";
 @import "../stylesheets/mixins.scss";
 
-.scopes {
+.scopes, .no-scopes {
   @include page;
   background-color: white;
 
@@ -58,6 +58,7 @@
 
   table {
     width: 100%;
+    margin-bottom: 20px;
 
     th {
       text-align: left;
@@ -130,11 +131,21 @@
     }
 
   }
+
   .detail-actions {
     margin-top: 40px;
     display: flex;
-  justify-content: flex-end;
+    justify-content: flex-end;
   }
 
+  section.errors {
+    p {
+      color: $red;
+    }
+
+    ul {
+      margin-left: 40px;
+    }
+  }
 }
 

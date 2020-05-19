@@ -17,6 +17,7 @@ import manage.model.MetaData;
 import manage.model.MetaDataKeyDelete;
 import manage.model.MetaDataUpdate;
 import manage.model.RevisionRestore;
+import manage.model.Scope;
 import manage.model.ServiceProvider;
 import manage.model.StatsEntry;
 import manage.model.XML;
@@ -732,7 +733,7 @@ public class MetaDataController {
             Map<String, Map> patternProperties = (Map) metaDataFieldProperties.get("patternProperties");
 
             List<String> validGrants = (List<String>) ((Map) properties.get("grants").get("items")).get("enum");
-            List<String> validScopes = (List<String>) ((Map) properties.get("scopes").get("items")).get("enum");
+            List<String> validScopes =metaDataRepository.getMongoTemplate().findAll(Scope.class).stream().map(Scope::getName).collect(toList());
 
             metaDataFields.put("grants", client.getGrantTypes().stream().filter(validGrants::contains).collect(toList()));
             metaDataFields.put("scopes", client.getScope().stream().filter(validScopes::contains).collect(toList()));

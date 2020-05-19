@@ -279,7 +279,7 @@ I18n.translations.en = {
     arp: "Apply replacement of the ARP?",
     stepupEntities: "Apply replacement of the Stepup Entities?",
     mfaEntities: "Apply replacement of the MFA Entities?",
-    allowedResourceServers:"Apply replacement of allowed Resource Servers",
+    allowedResourceServers: "Apply replacement of allowed Resource Servers",
     new_connection: "Add Connection attributes?",
     new_metaDataFields: "Add Metadata fields",
     new_allowedEntities: "Add Whitelist?",
@@ -412,7 +412,12 @@ I18n.translations.en = {
     flash: {
       updated: "Successfully updated scope {{name}}",
       saved: "Successfully saved scope {{name}}"
-    }
+    },
+    deleteConfirmation: "Are you sure you want to delete the scope {{name}}?",
+    inUse: "You can not {{action}} of this scope as this scope is in use by the following RP's:",
+    nameInUse: "This name is already taken by another Scope",
+    noScopes: "There are no Scopes configured. This is extremely worrisome",
+    info: "Below are all Scopes that can be configured on OIDC Relying Parties."
   },
   not_found: {
     title: "404",

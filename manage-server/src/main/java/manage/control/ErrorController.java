@@ -1,11 +1,12 @@
 package manage.control;
 
+import com.mongodb.DuplicateKeyException;
 import manage.exception.DuplicateEntityIdException;
+import manage.exception.ScopeInUseException;
 import org.everit.json.schema.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.ErrorAttributes;
 import org.springframework.core.annotation.AnnotationUtils;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -74,6 +75,8 @@ public class ErrorController implements org.springframework.boot.autoconfigure.w
             result.put("error", HttpClientErrorException.class.getName());
             result.put("message", httpClientErrorException.getResponseBodyAsString());
             return new ResponseEntity<>(result, status);
+        } else if (error instanceof ScopeInUseException) {
+            result.put("message", error.getMessage());
         }
 
         HttpStatus statusCode = result.containsKey("status") ? HttpStatus.valueOf((Integer) result.get("status")) :
