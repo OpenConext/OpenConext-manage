@@ -154,17 +154,6 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void stats() {
-        given()
-                .when()
-                .contentType("application/json")
-                .get("manage/api/client/metadata/stats")
-                .then()
-                .statusCode(SC_OK)
-                .body("size()", is(12));
-    }
-
-    @Test
     public void post() throws IOException {
         doPost(true, "saml2_user.com");
     }
