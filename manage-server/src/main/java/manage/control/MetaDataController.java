@@ -67,6 +67,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -733,10 +734,14 @@ public class MetaDataController {
             Map<String, Map> patternProperties = (Map) metaDataFieldProperties.get("patternProperties");
 
             List<String> validGrants = (List<String>) ((Map) properties.get("grants").get("items")).get("enum");
-            List<String> validScopes =metaDataRepository.getMongoTemplate().findAll(Scope.class).stream().map(Scope::getName).collect(toList());
+            List<String> validScopes = metaDataRepository.getMongoTemplate().findAll(Scope.class).stream().map(Scope::getName).collect(toList());
 
             metaDataFields.put("grants", client.getGrantTypes().stream().filter(validGrants::contains).collect(toList()));
-            metaDataFields.put("scopes", client.getScope().stream().filter(validScopes::contains).collect(toList()));
+
+            Set<String> clientScopes = client.getScope();
+            clientScopes = CollectionUtils.isEmpty(clientScopes) ? Collections.singleton("openid") : clientScopes;
+            metaDataFields.put("scopes", clientScopes.stream().filter(validScopes::contains).collect(toList()));
+
             metaDataFields.put("accessTokenValidity", client.getAccessTokenValiditySeconds());
             metaDataFields.put("refreshTokenValidity", client.getRefreshTokenValiditySeconds());
 
@@ -753,7 +758,7 @@ public class MetaDataController {
 
             //Reminiscent of the Janus past
             data.put("type", "oidc10-rp");
-            data.put("revisionnote", String.format("Connection created by OIDC Merge for %s on request of %s",spEntityId, apiUser.getName() ));
+            data.put("revisionnote", String.format("Connection created by OIDC Merge for %s on request of %s", spEntityId, apiUser.getName()));
 
             MetaData oidcRP = new MetaData(EntityType.RP.getType(), data);
             oidcRP = this.doPost(oidcRP, apiUser.getName(), false);
