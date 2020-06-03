@@ -7,6 +7,12 @@
           "value": "*"
         }
       ],
+      "urn:mace:dir:attribute-def:eduPersonAssurance": [
+        {
+          "source": "idp",
+          "value": "*"
+        }
+      ],
       "urn:mace:dir:attribute-def:eduPersonPrincipalName": [
         {
           "source": "idp",

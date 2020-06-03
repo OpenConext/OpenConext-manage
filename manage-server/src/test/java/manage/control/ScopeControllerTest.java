@@ -127,8 +127,9 @@ public class ScopeControllerTest extends AbstractIntegrationTest {
         scope.getDescriptions().put("pt", "pt-language");
         scope = given()
                 .when()
+                .body(scope)
                 .header("Content-type", "application/json")
-                .get("manage/api/client/scopes/3")
+                .put("manage/api/client/scopes")
                 .as(Scope.class);
         assertEquals("pt-language", scope.getDescriptions().get("pt"));
     }
