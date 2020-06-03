@@ -27,7 +27,8 @@ I18n.translations.en = {
     api: "API",
     system: "System",
     edugain: "eduGAIN",
-    support: "Staging"
+    support: "Staging",
+    scopes: "Scopes"
   },
 
   metadata: {
@@ -278,7 +279,7 @@ I18n.translations.en = {
     arp: "Apply replacement of the ARP?",
     stepupEntities: "Apply replacement of the Stepup Entities?",
     mfaEntities: "Apply replacement of the MFA Entities?",
-    allowedResourceServers:"Apply replacement of allowed Resource Servers",
+    allowedResourceServers: "Apply replacement of allowed Resource Servers",
     new_connection: "Add Connection attributes?",
     new_metaDataFields: "Add Metadata fields",
     new_allowedEntities: "Add Whitelist?",
@@ -396,6 +397,34 @@ I18n.translations.en = {
     key: "Generate new secret",
     undo: "Undo changes",
     save: "Save new secret"
+  },
+  scopes: {
+    searchPlaceHolder: "Search for scopes",
+    name: "Name",
+    namePlaceholder: "The name of the scope",
+    description: "Description",
+    descriptionPlaceholder: "The {{lang}} description of the scope",
+    en: "English",
+    nl: "Dutch",
+    pt: "Portuguese",
+    lang: "Description {{lang}}",
+    details: "The descriptions of a scope is used on the consent screen of OIDC",
+    new: "Add +",
+    cancel: "Cancel",
+    save: "Save",
+    update: "Update",
+    delete: "Delete",
+    flash: {
+      updated: "Successfully updated scope {{name}}",
+      saved: "Successfully saved scope {{name}}",
+      deleted: "Successfully deleted scope {{name}}"
+    },
+    deleteConfirmation: "Are you sure you want to delete the scope {{name}}?",
+    inUse: "You can not {{action}} of this scope as this scope is in use by the following RP's:",
+    nameInUse: "This name is already taken by another Scope",
+    noScopes: "There are no Scopes configured. This is extremely worrisome",
+    info: "Below are all Scopes that can be configured on OIDC Relying Parties.",
+    invalidName: "Invalid format for a scope"
   },
   not_found: {
     title: "404",

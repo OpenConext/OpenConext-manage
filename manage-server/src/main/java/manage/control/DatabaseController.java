@@ -2,6 +2,7 @@ package manage.control;
 
 import manage.format.EngineBlockFormatter;
 import manage.model.MetaData;
+import manage.model.Scope;
 import manage.push.Delta;
 import manage.push.PrePostComparator;
 import manage.repository.MetaDataRepository;
@@ -19,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
@@ -27,6 +29,7 @@ import javax.sql.DataSource;
 import java.net.MalformedURLException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
@@ -109,6 +112,19 @@ public class DatabaseController {
         // Now push all oidc_rp metadata to OIDC proxy
         if (!environment.acceptsProfiles("dev") && oidcEnabled) {
             List<MetaData> oidcClients = metaDataRepository.getMongoTemplate().findAll(MetaData.class, "oidc10_rp");
+            List<Scope> scopes = metaDataRepository.getMongoTemplate().findAll(Scope.class);
+            Map<String, Scope> scopesMapped = scopes.stream().collect(toMap(entry -> entry.getName(), entry -> entry));
+            oidcClients.forEach(oidcClient -> {
+                Map<String, Object> metaDataFields = oidcClient.metaDataFields();
+                List<String> scopeList = (List<String>) metaDataFields.get("scopes");
+                if (!CollectionUtils.isEmpty(scopeList)) {
+                    List<Scope> transformedScope = scopeList.stream()
+                            .map(scope -> scopesMapped.getOrDefault(scope, null))
+                            .filter(Objects::nonNull)
+                            .collect(toList());
+                    metaDataFields.put("scopes", transformedScope);
+                }
+            });
             this.oidcRestTemplate.postForEntity(oidcPushUri, oidcClients, Void.class);
             result.put("oidc", true);
         }

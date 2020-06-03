@@ -19,6 +19,7 @@ import "../locale/nl";
 import Dummy from "./Dummy";
 import EduGain from "./EduGain";
 import Support from "./Support";
+import Scopes from "./Scopes";
 
 const S4 = () => (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
 
@@ -121,6 +122,7 @@ class App extends React.PureComponent {
                                              configuration={configuration} {...props}/>}/>
             <Route path="/api"
                    render={props => <API configuration={configuration} {...props}/>}/>
+
             <ProtectedRoute path="/system"
                             guest={currentUser.guest}
                             render={props => <System currentUser={currentUser}
@@ -128,10 +130,17 @@ class App extends React.PureComponent {
             <ProtectedRoute path="/support"
                             guest={currentUser.guest}
                             render={props => <Support {...props}/>}/>
+
+            <ProtectedRoute path="/scopes"
+                            guest={currentUser.guest}
+                            render={props => <Scopes {...props}/>}/>
+
             <Route path="/error"
                    render={props => <ServerError {...props}/>}/>
+
             <Route path="/dummy"
                    render={props => <Dummy {...props}/>}/>
+
             <Route component={NotFound}/>
           </Switch>
         </div>

@@ -474,19 +474,7 @@
           "type": "array",
           "items": {
             "type": "string",
-            "enum": [
-              "openid",
-              "members",
-              "groups",
-              "actions",
-              "cross-idp-services",
-              "stats",
-              "attribute-aggregation",
-              "pdp",
-              "test",
-              "email",
-              "profile"
-            ]
+            "fetch": "scopes"
           },
           "info": "The allowed scopes for this Relying Party."
         },

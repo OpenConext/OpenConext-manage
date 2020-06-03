@@ -127,6 +127,10 @@ export function validation(format, value) {
   return postPutJson("validation", {type: format, value: value}, "post");
 }
 
+export function fetchEnumValues(fetchValue) {
+  return fetchJson(`fetch/${fetchValue}`);
+}
+
 export function secret() {
   return fetchJson("secret");
 }
@@ -182,7 +186,7 @@ export function search(options, type) {
 }
 
 export function uniqueEntityId(entityid, type) {
-  return postPutJson(`uniqueEntityId/${type}`, { entityid }, "post");
+  return postPutJson(`uniqueEntityId/${type}`, {entityid}, "post");
 }
 
 export function rawSearch(query, type) {
@@ -224,4 +228,21 @@ export function deleteOrphanedReferences() {
 export function includeInPush(id, type) {
   const path = `includeInPush/${type}/${id}`;
   return postPutJson(path, {}, "put");
+}
+
+//Scopes
+export function allScopes() {
+  return fetchJson("scopes")
+}
+
+export function scopeSupportedLanguagers() {
+  return fetchJson("scopes_languages")
+}
+
+export function saveScope(scope) {
+  return fetchJson("scopes", {method: scope.id ? "put" : "post", body: JSON.stringify(scope)}, {}, false);
+}
+
+export function deleteScope(id) {
+  return validFetch(`scopes/${id}`, {method: "delete"},{}, false);
 }
