@@ -734,13 +734,13 @@ public class MetaDataController {
             Map<String, Map> patternProperties = (Map) metaDataFieldProperties.get("patternProperties");
 
             List<String> validGrants = (List<String>) ((Map) properties.get("grants").get("items")).get("enum");
-            List<String> validScopes = metaDataRepository.getMongoTemplate().findAll(Scope.class).stream().map(Scope::getName).collect(toList());
-
             metaDataFields.put("grants", client.getGrantTypes().stream().filter(validGrants::contains).collect(toList()));
 
+            List<String> validScopes = metaDataRepository.getMongoTemplate().findAll(Scope.class).stream().map(Scope::getName).collect(toList());
             Set<String> clientScopes = client.getScope();
-            clientScopes = CollectionUtils.isEmpty(clientScopes) ? Collections.singleton("openid") : clientScopes;
-            metaDataFields.put("scopes", clientScopes.stream().filter(validScopes::contains).collect(toList()));
+            List<String> scopes = clientScopes.stream().filter(validScopes::contains).collect(toList());
+            scopes = CollectionUtils.isEmpty(scopes) ? Collections.singletonList("openid") : scopes;
+            metaDataFields.put("scopes", scopes);
 
             metaDataFields.put("accessTokenValidity", client.getAccessTokenValiditySeconds());
             metaDataFields.put("refreshTokenValidity", client.getRefreshTokenValiditySeconds());
