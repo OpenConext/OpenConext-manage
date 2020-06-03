@@ -109,7 +109,8 @@
         "sab",
         "voot",
         "pseudo_email",
-        "surfmarket_entitlements"
+        "surfmarket_entitlements",
+        "manage"
       ],
       "properties": {
         "enabled": {
@@ -179,12 +180,20 @@
               "$ref": "#/definitions/ArpAttribute",
               "alias": "urn:oid:1.3.6.1.4.1.5923.1.1.1.16"
             },
+            "urn:mace:dir:attribute-def:eduPersonAssurance": {
+              "$ref": "#/definitions/ArpAttribute",
+              "alias": "urn:oid:1.3.6.1.4.1.5923.1.1.1.11"
+            },
             "urn:mace:surf.nl:attribute-def:eckid": {
               "$ref": "#/definitions/ArpAttribute"
             },
             "urn:mace:eduid.nl:1.1": {
               "$ref": "#/definitions/ArpAttribute",
               "display": "eduid"
+            },
+            "urn:mace:surf.nl:attribute-def:surf-crm-id": {
+              "$ref": "#/definitions/ArpAttribute",
+              "alias": "urn:oid:1.3.6.1.4.1.1076.20.100.10.50.2"
             },
             "urn:mace:dir:attribute-def:isMemberOf": {
               "$ref": "#/definitions/ArpAttribute",
@@ -406,7 +415,6 @@
           "default": "license_required_by_service_provider",
           "info": "Set the applicable license for this service as provisioned by the SP Dashboard."
         },
-
         "coin:dashboard_connect_option": {
           "type": "string",
           "enum": [
@@ -415,7 +423,7 @@
             "connect_without_interaction_without_email"
           ],
           "default": "connect_with_interaction",
-          "info": "Whether the IdP can connect to this SP without any interaction, and, if so, whether an email must be sent to the admin of the service"
+          "info": "Whether the IdP can connect to this RP without any interaction, and, if so, whether an email must be sent to the admin of the service"
         },
         "coin:stepup:requireloa": {
           "type": "string",
