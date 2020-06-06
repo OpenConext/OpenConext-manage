@@ -79,9 +79,9 @@ export default class Password extends React.PureComponent {
 
   renderIcon = (id, className, tooltipKey) =>
     <span>
-          <i className={className} data-for={id} data-tip/>
+          <i className={className} data-for={`${this.props.name}-${id}`} data-tip/>
           <ReactTooltip
-            id={id}
+            id={`${this.props.name}-${id}`}
             type="info"
             class="tool-tip"
             effect="solid">

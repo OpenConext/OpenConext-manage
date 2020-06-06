@@ -125,6 +125,8 @@ public class DatabaseController {
                     metaDataFields.put("scopes", transformedScope);
                 }
             });
+            List<MetaData> identityProviders = metaDataRepository.getMongoTemplate().findAll(MetaData.class, "saml20_idp");
+            oidcClients.addAll(identityProviders);
             this.oidcRestTemplate.postForEntity(oidcPushUri, oidcClients, Void.class);
             result.put("oidc", true);
         }
