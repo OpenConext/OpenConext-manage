@@ -382,7 +382,7 @@ I18n.translations.en = {
     mfaTitle: "Requested AuthnContext configuration",
     mfaDescription: "Select a special RequestedAuthnContext to be sent to the IdP for logins on the following SAML Service Providers",
     mfaPlaceholder: "Search, select and add Entities to the AuthnContext configuration",
-    mfaTooltip: "Add here Service Providers and Relying parties for which Engineblock will send a specific string to the Identity Provider as part of the login process, in the RequestedAuthnContext element. The Identity Provider can then choose to perform certain actions when this is received, e.g. Multi-Factor Authentication. Engineblock will verify that the returned Assertion indeed has been performed with that authentication class.">
+    mfaTooltip: "Add here Service Providers and Relying parties for which Engineblock will send a specific string to the Identity Provider as part of the login process, in the RequestedAuthnContext element. The Identity Provider can then choose to perform certain actions when this is received, e.g. Multi-Factor Authentication. Engineblock will verify that the returned Assertion indeed has been performed with that authentication class.",
     entries: {
       status: "Status",
       entityid: "Entity ID",
