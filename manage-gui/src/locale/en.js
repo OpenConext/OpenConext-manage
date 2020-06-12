@@ -278,14 +278,14 @@ I18n.translations.en = {
     disableConsent: "Apply replacement of the Disabled Consent?",
     arp: "Apply replacement of the ARP?",
     stepupEntities: "Apply replacement of the Stepup Entities?",
-    mfaEntities: "Apply replacement of the MFA Entities?",
+    mfaEntities: "Apply replacement of the AuthnContext Entities?",
     allowedResourceServers: "Apply replacement of allowed Resource Servers",
     new_connection: "Add Connection attributes?",
     new_metaDataFields: "Add Metadata fields",
     new_allowedEntities: "Add Whitelist?",
     new_disableConsent: "Add Disabled Consent?",
     new_stepupEntities: "Add Stepup Entities?",
-    new_mfaEntities: "Add MFA Entities?",
+    new_mfaEntities: "Add AuthnContext Entities?",
     new_arp: "Add ARP?",
     new_allowedResourceServers: "Add allowed Resource Servers?",
     arpEnabled: "ARP enabled?",
@@ -379,16 +379,16 @@ I18n.translations.en = {
     description: "Select SAML Service Providers and OIDC Relying Parties and configure their LOA level",
     placeholder: "Search, select and add Entities to the stepup configuration",
     stepupTooltip: "All selected entities and configured LOA levels<br/>will be included in the push to EB.<br/><br/>Note that you can not select Services that have the<br/>metadata field <code>coin:stepup:requireloa</code> configured.",
-    mfaTitle: "MFA configuration",
-    mfaDescription: "Select SAML Service Providers and OIDC Relying Parties and configure their MFA level",
-    mfaPlaceholder: "Search, select and add Entities to the MFA configuration",
-    mfaTooltip: "All selected entities and configured MFA levels<br/>will be included in the push to EB.<br/><br/>EB will use the MFA information to specify the SAML<br/>Requested Authentication Context Class Reference",
+    mfaTitle: "Requested AuthnContext configuration",
+    mfaDescription: "Select a special RequestedAuthnContext to be sent to the IdP for logins on the following SAML Service Providers",
+    mfaPlaceholder: "Search, select and add Entities to the AuthnContext configuration",
+    mfaTooltip: "Add here Service Providers and Relying parties for which Engineblock will send a specific string to the Identity Provider as part of the login process, in the RequestedAuthnContext element. The Identity Provider can then choose to perform certain actions when this is received, e.g. Multi-Factor Authentication. Engineblock will verify that the returned Assertion indeed has been performed with that authentication class.">
     entries: {
       status: "Status",
       entityid: "Entity ID",
       name: "Name",
       loa_level: "LOA level",
-      mfa_level: "MFA level"
+      mfa_level: "AuthnContext level"
     }
   },
   password: {
