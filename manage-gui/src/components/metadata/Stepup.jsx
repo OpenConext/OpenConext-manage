@@ -263,8 +263,8 @@ export default class Stepup extends React.Component {
         <td>
           <Select
             className="select-mfa-level"
-            onChangeMfa={option =>
-              this.onChangeMfa(entity, option.value)
+            onChange={option =>
+              this.onChangeSelectMfaLevel(entity, option.value)
             }
             options={this.props.mfaLevels.map(mfa => ({
               label: mfa,

@@ -155,6 +155,7 @@
             ],
             "enum": [
               "http://schemas.microsoft.com/claims/multipleauthn",
+              "test_with_local_value",
               "transparant_authn_context"
             ],
             "default": "http://schemas.microsoft.com/claims/multipleauthn"
