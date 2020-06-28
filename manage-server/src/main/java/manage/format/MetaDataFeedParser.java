@@ -385,13 +385,13 @@ public class MetaDataFeedParser {
                                 if (typeMismatch && enforceTypeStrictness) {
                                     return new HashMap<>();
                                 }
-                                if (!extensionsFields.isEmpty()) {
-                                    metaDataFields.putAll(extensionsFields);
-                                }
+                                metaDataFields.putAll(extensionsFields);
                                 return typeMismatch && enforceTypeStrictness ? new HashMap<>() :
                                         this.enrichMetaData(result);
                             }
                             inExtensions = false;
+
+                            metaDataFields.putAll(extensionsFields);
                             extensionsFields.clear();
                             break;
                         case "EntityAttributes":

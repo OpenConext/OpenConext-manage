@@ -13,5 +13,13 @@ public class SanitizedTreeMapTest {
         Map<String, String> subject = new SanitizedTreeMap<>();
         subject.put("key","\n\t               value    \r");
         assertEquals("value", subject.get("key"));
+
+        Map<String, String> other = new SanitizedTreeMap<>();
+        other.put("other", "other-value");
+        subject.putAll(other);
+
+        other.clear();
+        assertEquals("other-value", subject.get("other"));
+
     }
 }
