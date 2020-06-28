@@ -392,6 +392,7 @@ public class MetaDataFeedParser {
                                         this.enrichMetaData(result);
                             }
                             inExtensions = false;
+                            extensionsFields.clear();
                             break;
                         case "EntityAttributes":
                             inEntityAttributes = false;
