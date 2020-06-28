@@ -85,7 +85,14 @@ export default class EntityId extends React.PureComponent {
         <InlineEditable
             {...rest}
             value={value}
-            onBlur={e => this.validateEntityId(e.target.value)}
+            onBlur={e => {
+                if (e && e.target) {
+                    this.validateEntityId(e.target.value);
+                } else {
+                    this.validateEntityId(value);
+                }
+
+            }}
         />
                 {hasError && <span className="error">{this.state.errorMessage}</span>}
       </span>

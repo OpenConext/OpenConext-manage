@@ -172,7 +172,7 @@ export default class Detail extends React.PureComponent {
           this.validate(metaData, this.props.configuration, type);
         }
         const state = (!isEmpty(newMetaData) && !isEmpty(newMetaData.connection) && !isEmpty(newMetaData.connection.state)
-                      && newMetaData.connection.state.selected) ? newMetaData.connection.state.value : metaData.data.state;
+          && newMetaData.connection.state.selected) ? newMetaData.connection.state.value : metaData.data.state;
         whiteListing(whiteListingType, state).then(whiteListing => {
           this.setState({whiteListing: whiteListing});
           if (isOidcRP) {
@@ -443,7 +443,10 @@ export default class Detail extends React.PureComponent {
         metaData: newMetaData,
         loaded: true
       },
-      () => this.validate(newMetaData, this.props.configuration, this.state.type)
+      () => {
+        this.validate(newMetaData, this.props.configuration, this.state.type);
+        this.refreshWhiteListing();
+      }
     );
 
     if (changes.length > 0) {
@@ -500,6 +503,14 @@ export default class Detail extends React.PureComponent {
     });
   };
 
+  renderWarningNonExistentAllowedEntities = () => {
+    const {whiteListing = [], metaData} = this.state;
+    const allowedEntities = (metaData.data || {}).allowedEntities || [];
+    const names = allowedEntities.map(e => e.name);
+    const existingNames = whiteListing.map(w => w.data.entityid);
+    return names.filter(name => existingNames.indexOf(name) < 0);
+  }
+
   renderActions = revisionNote => {
     if (this.props.currentUser.guest) {
       return null;
@@ -507,6 +518,10 @@ export default class Detail extends React.PureComponent {
     const {errors, revisionNoteError} = this.state;
     const hasErrors = this.hasGlobalErrors(errors);
     const revisionNoteRequired = revisionNoteError && isEmpty(revisionNote);
+    const nonExistentAllowedEntities = this.renderWarningNonExistentAllowedEntities();
+    if (nonExistentAllowedEntities) {
+      console.log("Warning: The `allowed entities` contains non-existent entitie");
+    }
     return (
       <section className="actions">
         <section className="notes-container">
@@ -526,6 +541,9 @@ export default class Detail extends React.PureComponent {
           {revisionNoteRequired && (
             <em className="error">{I18n.t("metadata.revisionnoteRequired")}</em>
           )}
+          {/*{nonExistentAllowedEntities.length > 0 && (*/}
+          {/*  <em className="error">The `allowed entities` contains non-existent entities: {nonExistentAllowedEntities.join(", ")}</em>*/}
+          {/*)}*/}
         </section>
         <section className="buttons">
           <a
