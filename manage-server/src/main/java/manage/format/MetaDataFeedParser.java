@@ -81,7 +81,8 @@ public class MetaDataFeedParser {
                                             XMLStreamReader reader,
                                             boolean enforceTypeStrictness) throws XMLStreamException {
         Map<String, Object> result = new TreeMap<>();
-        Map<String, Object> metaDataFields = new TreeMap<>();
+        Map<String, Object> metaDataFields = new SanitizedTreeMap<>();
+        Map<String, Object> extensionsFields = new SanitizedTreeMap<>();
 
         result.put(META_DATA_FIELDS, metaDataFields);
 
@@ -93,6 +94,7 @@ public class MetaDataFeedParser {
         boolean inEntityAttributes = false;
         boolean typeMismatch = false;
         boolean inCorrectTypeDescriptor = false;
+        boolean inExtensions = false;
 
         result.put("type", entityType.getJanusDbValue());
         boolean isSp = entityType.equals(EntityType.SP);
@@ -131,11 +133,19 @@ public class MetaDataFeedParser {
                                 }
                             }
                             break;
+                        case "Extensions":
+                            /*
+                             * Now it becomes tricky. It is possible that we are in an Extensions block before we encountered
+                             * a SPSSODescriptor or IDPSSODescriptor. So we need start saving extensions metadata, but
+                             * not in the result as we don't know yet if we are in the correct EntityDescriptor
+                             */
+                            inExtensions = true;
+                            break;
                         case "SPSSODescriptor":
                             if (isSp && !entityIDOptional.isPresent()) {
                                 inCorrectEntityDescriptor = true;
                             }
-                            if (inCorrectEntityDescriptor) {
+                            if (inCorrectEntityDescriptor && !result.containsKey(ARP)) {
                                 inCorrectTypeDescriptor = isSp;
                                 if (isSp) {
                                     arpKeys = arpKeys(EntityType.SP, metaDataAutoConfiguration, isSp);
@@ -238,12 +248,18 @@ public class MetaDataFeedParser {
                                 getAttributeValue(reader, "registrationAuthority").ifPresent(authority -> {
                                     metaDataFields.put("mdrpi:RegistrationInfo", authority);
                                 });
+                            } else if (inExtensions) {
+                                getAttributeValue(reader, "registrationAuthority").ifPresent(authority -> {
+                                    extensionsFields.put("mdrpi:RegistrationInfo", authority);
+                                });
                             }
                             break;
                         }
                         case "RegistrationPolicy":
                             if (inCorrectEntityDescriptor) {
                                 addLanguageElement(metaDataFields, reader, "mdrpi:RegistrationPolicy");
+                            } else if (inExtensions) {
+                                addLanguageElement(extensionsFields, reader, "mdrpi:RegistrationPolicy");
                             }
                             break;
                         case "AttributeConsumingService":
@@ -366,10 +382,16 @@ public class MetaDataFeedParser {
                             break;
                         case "EntityDescriptor":
                             if (inCorrectEntityDescriptor) {
-                                //we got what we came for
+                                if (typeMismatch && enforceTypeStrictness) {
+                                    return new HashMap<>();
+                                }
+                                if (!extensionsFields.isEmpty()) {
+                                    metaDataFields.putAll(extensionsFields);
+                                }
                                 return typeMismatch && enforceTypeStrictness ? new HashMap<>() :
                                         this.enrichMetaData(result);
                             }
+                            inExtensions = false;
                             break;
                         case "EntityAttributes":
                             inEntityAttributes = false;

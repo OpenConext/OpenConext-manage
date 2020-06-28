@@ -116,6 +116,13 @@
         "width" : "500"
       }
     },
+    "mdrpi" : {
+      "RegistrationInfo" : "https://registration-info.org",
+      "RegistrationPolicy" : {
+        "en" : "https://registration-policy.en",
+        "nl" : "https://registration-policy.nl"
+      }
+    },
     "name" : {
       "en" : "SURFconext Teams | SURFnet",
       "nl" : "SURFconext Teams | SURFnet"

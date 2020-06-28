@@ -82,10 +82,12 @@ export default class Import extends React.Component {
 
   arpChanged = (current, imported) => {
     const currentSave = current || {enabled : false, attributes:[]};
+    imported = imported || {enabled : false, attributes:[]};
+
     if (!currentSave.enabled && !imported.enabled) {
       return false;
     }
-    if (currentSave !== imported.enabled) {
+    if (currentSave.enabled !== imported.enabled) {
       return true;
     }
     const currentAttributes = Object.keys(currentSave.attributes);

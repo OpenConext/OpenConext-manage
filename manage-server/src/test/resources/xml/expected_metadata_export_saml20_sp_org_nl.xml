@@ -1,8 +1,20 @@
 <?xml version="1.0"?>
 <md:EntityDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata"
                      xmlns:mdui="urn:oasis:names:tc:SAML:metadata:ui"
+                     xmlns:mdrpi="urn:oasis:names:tc:SAML:metadata:rpi"
                      xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
                      entityID="https://teams.surfconext.nl/shibboleth" >
+    <md:Extensions>
+        <mdrpi:RegistrationInfo registrationAuthority="https://registration-info.org">
+            <mdrpi:RegistrationPolicy xml:lang="en">
+            https://registration-policy.en
+            </mdrpi:RegistrationPolicy>
+            <mdrpi:RegistrationPolicy xml:lang="nl">
+            https://registration-policy.nl
+            </mdrpi:RegistrationPolicy>
+        </mdrpi:RegistrationInfo>
+    </md:Extensions>
+
     <md:SPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
         <md:Extensions>
             <mdui:UIInfo>

@@ -108,7 +108,10 @@
       "coin:eula": "https://wiki.surfnetlabs.nl/display/conextsupport/Terms+of+Service+%28EN%29",
       "AssertionConsumerService:0:Binding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
       "AssertionConsumerService:2:index": "4",
-      "OrganizationDisplayName:nl": "SURFnet"
+      "OrganizationDisplayName:nl": "SURFnet",
+      "mdrpi:RegistrationInfo": "https://registration-info.org",
+      "mdrpi:RegistrationPolicy:en": "https://registration-policy.en",
+      "mdrpi:RegistrationPolicy:nl": "https://registration-policy.nl"
     },
     "allowedEntities": [
       {

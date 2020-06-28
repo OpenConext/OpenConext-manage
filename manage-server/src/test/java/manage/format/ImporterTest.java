@@ -206,10 +206,22 @@ public class ImporterTest implements TestUtils {
     }
 
     @Test
+    public void importFeedWithRegistrationInfo() throws IOException, XMLStreamException {
+        List<Map<String, Object>> results = this.subject.importFeed(new ClassPathResource("/import_xml/edugain_mdrpi_missing.xml"))
+                .stream().filter(m -> !m.isEmpty()).collect(Collectors.toList());
+        assertEquals(1, results.size());
+
+        Map<String, Object> metaData = results.get(0);
+        Map<String, String> metaDataFields = (Map<String, String>) metaData.get("metaDataFields");
+        assertEquals("http://www.csc.fi/haka", metaDataFields.get("mdrpi:RegistrationInfo"));
+        assertEquals("http://www.csc.fi/english/institutions/haka/instructions/join/eduGAINRegistrationStatement/", metaDataFields.get("mdrpi:RegistrationPolicy:en"));
+    }
+
+    @Test
     public void importUniqueArpValues() throws IOException, XMLStreamException {
         Map<String, Object> metaData = this.subject.importXML(new ClassPathResource("/import_xml/prod_md_about_spf_sps.xml"),
                 EntityType.SP, Optional.of("https://sp.ota.ox.ac.uk/shibboleth"));
-        List<Map<String, String>> values = (List<Map<String, String>>) ((Map)((Map)metaData.get("arp")).get("attributes")).get("urn:mace:dir:attribute-def:cn");
+        List<Map<String, String>> values = (List<Map<String, String>>) ((Map) ((Map) metaData.get("arp")).get("attributes")).get("urn:mace:dir:attribute-def:cn");
         assertEquals(1, values.size());
     }
 

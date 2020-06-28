@@ -87,14 +87,14 @@ export default class EduGain extends React.PureComponent {
       case "not_valid":
         return <div>
           <span>{sp.entityId}</span>
-          {sp.validationException.split(",").map(s => <p className="error">{s}</p>)}
+          <p className="error">{sp.validationException}</p>
         </div>;
       default: {
         const tab = resultType === "not_imported" ? "/import" : "";
         return <div>
           <a href={`/metadata/saml20_sp/${sp.id}${tab}`} target="_blank"
              onClick={e => e.stopPropagation()}>
-            {sp.entityId}<i className="fa fa-external-link"></i>
+            {sp.entityId}<i className="fa fa-external-link"/>
           </a>
         </div>;
       }
@@ -102,7 +102,7 @@ export default class EduGain extends React.PureComponent {
   };
 
   renderResults = results => {
-    const keys = ["imported", "merged", "no_changes", "not_imported", "deleted", "published_in_edugain"];
+    const keys = ["imported", "merged", "no_changes", "not_imported", "deleted", "published_in_edugain","not_valid"];
     const nbr = results.total[0];
     const {resultsCollapsed, elapsed} = this.state;
     return (
