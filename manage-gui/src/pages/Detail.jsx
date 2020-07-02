@@ -56,6 +56,7 @@ const tabsOIDC = [
   "resource_servers",
   "arp",
   "whitelist",
+  "manipulation",
   "revisions",
   "import",
   "export"

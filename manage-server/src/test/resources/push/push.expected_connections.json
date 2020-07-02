@@ -587,6 +587,7 @@
       "allow_all_entities": true,
       "allowed_connections": [],
       "arp_attributes": {},
+      "manipulation_code": "PHP code OIDC10_RP",
       "metadata": {
         "AssertionConsumerService": [
           {
