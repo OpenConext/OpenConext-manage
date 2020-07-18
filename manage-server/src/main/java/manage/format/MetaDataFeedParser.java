@@ -41,10 +41,8 @@ public class MetaDataFeedParser {
     public List<Map<String, Object>> importFeed(Resource xml,
                                                 MetaDataAutoConfiguration metaDataAutoConfiguration) throws
             XMLStreamException, IOException {
-        //despite it's name, the XMLInputFactoryImpl is not thread safe
-        XMLInputFactory factory = getFactory();
 
-        XMLStreamReader reader = factory.createXMLStreamReader(xml.getInputStream());
+        XMLStreamReader reader = getXMLStreamReader(xml);
         List<Map<String, Object>> results = new ArrayList<>();
 
         while (reader.hasNext()) {
@@ -55,11 +53,12 @@ public class MetaDataFeedParser {
         return results;
     }
 
-    private XMLInputFactory getFactory() {
+    private XMLStreamReader getXMLStreamReader(Resource xml) throws IOException, XMLStreamException {
+        //despite it's name, the XMLInputFactoryImpl is not thread safe
         XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
         xmlInputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, false); // This disables DTDs entirely for that factory
         xmlInputFactory.setProperty("javax.xml.stream.isSupportingExternalEntities", false); // disable external entities
-        return xmlInputFactory;
+        return xmlInputFactory.createXMLStreamReader(xml.getInputStream());
     }
 
     public Map<String, Object> importXML(Resource xml,
@@ -67,10 +66,7 @@ public class MetaDataFeedParser {
                                          Optional<String> entityIDOptional,
                                          MetaDataAutoConfiguration metaDataAutoConfiguration) throws
             XMLStreamException, IOException {
-        //despite it's name, the XMLInputFactoryImpl is not thread safe
-        XMLInputFactory factory = getFactory();
-
-        XMLStreamReader reader = factory.createXMLStreamReader(xml.getInputStream());
+        XMLStreamReader reader = getXMLStreamReader(xml);
 
         return parseEntity(entityType, entityIDOptional, metaDataAutoConfiguration, reader, false);
     }
@@ -91,7 +87,6 @@ public class MetaDataFeedParser {
         boolean inUIInfo = false;
         boolean inCorrectEntityDescriptor = false;
         boolean inAttributeConsumingService = false;
-        boolean inEntityAttributes = false;
         boolean typeMismatch = false;
         boolean inCorrectTypeDescriptor = false;
         boolean inExtensions = false;
@@ -351,9 +346,6 @@ public class MetaDataFeedParser {
                                         .getElementText());
                             }
                             break;
-                        case "EntityAttributes":
-                            inEntityAttributes = true;
-                            break;
                         case "AttributeValue":
                             if (inCorrectEntityDescriptor) {
                                 addCoinEntityCategories(entityType, metaDataFields, metaDataAutoConfiguration,
@@ -394,9 +386,6 @@ public class MetaDataFeedParser {
                             }
                             inExtensions = false;
                             extensionsFields.clear();
-                            break;
-                        case "EntityAttributes":
-                            inEntityAttributes = false;
                             break;
                     }
                     break;
