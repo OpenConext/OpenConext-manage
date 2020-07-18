@@ -117,6 +117,10 @@ public class MongobeeConfiguration {
 
     @ChangeSet(order = "025", id = "addTextIndexes", author = "Okke Harsta")
     public void addTextIndexes(MongoTemplate mongoTemplate) {
+        doAddTestIndexes(mongoTemplate);
+    }
+
+    private void doAddTestIndexes(MongoTemplate mongoTemplate) {
         Stream.of(EntityType.values()).forEach(entityType -> {
             TextIndexDefinition textIndexDefinition = new TextIndexDefinition.TextIndexDefinitionBuilder()
                     .onField("$**")
@@ -177,6 +181,11 @@ public class MongobeeConfiguration {
                 .map(scope -> new Scope(scope, new HashMap<>()))
                 .collect(Collectors.toList());
         mongoTemplate.insert(allScopes, Scope.class);
+    }
+
+    @ChangeSet(order = "030", id = "addTextIndexesForOidc", author = "Okke Harsta")
+    public void addTextIndexesForOidc(MongoTemplate mongoTemplate) {
+        doAddTestIndexes(mongoTemplate);
     }
 
     private Object getField(Object targetObject, String name) {
