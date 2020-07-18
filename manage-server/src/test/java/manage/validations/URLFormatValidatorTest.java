@@ -20,5 +20,7 @@ public class URLFormatValidatorTest {
         assertTrue(subject.validate("file://test").isPresent());
         assertTrue(subject.validate("ftp://test").isPresent());
 
+        assertFalse(subject.validate("data:image/png;base64,iVBO").isPresent());
+
     }
 }

@@ -19,11 +19,14 @@ import org.springframework.core.io.ClassPathResource;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import static io.restassured.RestAssured.given;
@@ -856,6 +859,44 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         assertEquals(3, result.size());
         assertEquals(2, List.class.cast(result.get("merged")).size());
     }
+
+    @Test
+    public void importFeedIdemPotency() throws IOException {
+        String urlS = new ClassPathResource("import_xml/edugain_sniplet.xml").getURL().toString();
+        Import importRequest = new Import(urlS, null);
+        Map result = given()
+                .body(importRequest)
+                .header("Content-type", "application/json")
+                .post("manage/api/client/import/feed")
+                .getBody()
+                .as(Map.class);
+
+        assertEquals(1, ((List)result.get("total")).get(0));
+        Map imported = (Map) ((List) result.get("imported")).get(0);
+        assertEquals("https://impacter.eu/sso/metadata", imported.get("entityId"));
+
+        String id = (String) imported.get("id");
+        MetaData metaData = given()
+                .body(importRequest)
+                .header("Content-type", "application/json")
+                .get("manage/api/client/metadata/saml20_sp/"+id)
+                .getBody()
+                .as(MetaData.class);
+
+        importRequest = new Import(urlS,"https://impacter.eu/sso/metadata");
+        result = given()
+                .body(importRequest)
+                .header("Content-type", "application/json")
+                .post("manage/api/client/import/endpoint/xml/saml20_sp")
+                .getBody()
+                .as(Map.class);
+        Set<String> keysFromMetaData = metaData.metaDataFields().keySet();
+        Set<String> metaDataFields = ((Map) result.get("metaDataFields")).keySet();
+
+        keysFromMetaData.removeAll(metaDataFields);
+        assertEquals(Arrays.asList("coin:imported_from_edugain", "coin:interfed_source"), new ArrayList(keysFromMetaData));
+    }
+
 
     @Test
     public void restoreDeletedRevision() {

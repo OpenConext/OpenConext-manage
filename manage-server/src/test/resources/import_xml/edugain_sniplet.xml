@@ -1,0 +1,233 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<md:EntitiesDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
+                       xmlns:mdui="urn:oasis:names:tc:SAML:metadata:ui"
+                       xmlns:mdattr="urn:oasis:names:tc:SAML:metadata:attribute"
+                       xmlns:mdrpi="urn:oasis:names:tc:SAML:metadata:rpi"
+                       xmlns:shibmd="urn:mace:shibboleth:metadata:1.0"
+                       xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" xmlns="urn:oasis:names:tc:SAML:2.0:metadata"
+                       Name="http://edugain.org/" ID="eduGAIN" validUntil="2020-07-23T03:31:55Z" cacheDuration="PT6H">
+    <ds:Signature>
+        <ds:SignedInfo>
+            <ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+            <ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/>
+            <ds:Reference URI="#eduGAIN">
+                <ds:Transforms>
+                    <ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
+                    <ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#WithComments"/>
+                </ds:Transforms>
+                <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+                <ds:DigestValue>OH/JdLxwLExZaZyswXcwbgwEucgsgJkxKzO0tbsvmSs=</ds:DigestValue>
+            </ds:Reference>
+        </ds:SignedInfo>
+        <ds:SignatureValue>
+            Q3y/VRNivKbFQWwzJibfrtAOtSPlSYT3NgTkCSuAdmbHzMjTZyn3aHs/zSHN+HqHQmqoZU1bmL6DfoUZXr2lRcn8CEdfxXNm7NRWu6qfgoRKU01fv6u6tYHiRqEDuDmi3S39mD8fiwoetrwemIFpWSgjOj+em0NYCcxZAYlM/32476Z7po1PuM664xuY5gEVAgs0cN2Qi/t07fyRqsD95xfR+OrBfyS3OHMnDV3pVUvVX9RftNJOkpeZh1Vj6zSvorl08IiihOu/HVkOL8yzNG3DX7CmGxXma/2dkNkyT2aAFfIrJ8p9xu2EzwrAnDiJLS7mJsA2I/TqXjPv3jXCOQ==
+        </ds:SignatureValue>
+        <ds:KeyInfo>
+            <ds:X509Data>
+                <ds:X509Certificate>MIIC1zCCAb+gAwIBAgIDVWNTMA0GCSqGSIb3DQEBCwUAMCwxDjAMBgNVBAoTBUdF
+                    QU5UMRowGAYDVQQDExFlZHVHQUlOIFNpZ25lciBDQTAiGA8yMDE0MDcwMjE0MzQ0
+                    OVoYDzIwMjEwMzMxMjM1OTU5WjAsMQ4wDAYDVQQKEwVHRUFOVDEaMBgGA1UEAxMR
+                    ZWR1R0FJTiBTaWduZXIgQ0EwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIB
+                    AQCRfl1zhkaFveJvJtS03bRIO3k77q2s5m+c6sQ83j71rIad+vGCO29S4JHBXHI/
+                    U57yNbNLgoKzl0MI4WQrs4KT/y+LPMFB9M0lNrALQd/op6PNc7CWKMN1yV8V/L74
+                    /vapRlb90gPVJABHmoAfQmjyMXLW38KLwzK1qEpKUIxPBfQMBawmh0gC2T5ndZnd
+                    cMPpgsMXyG2AZ4QGSOt4tgpspjTSRY++X+gi9WUuWzsEHHdFhCR9UYQ6+1glMVhe
+                    JjVmoD0b9V/KQ0BF/1zry2jfWlchFeILlWbWgiWsIBA4BPNHqFW42qGgUr9DI3Fz
+                    RLHXqF2N2f592tzcTeDZ11ejAgMBAAEwDQYJKoZIhvcNAQELBQADggEBAATS7E/J
+                    tww0rf9VROqVqEoAcyO2fhEt4iLj2PJaAftiKTQEbsEzjOx9C/QdB88NBPxv3+hT
+                    d3eXUQfrfo1a/CMXfh4v/7wgFAFGWXMCIfXbMn7YS7FnoIhf24Dly0aY7skn9MNe
+                    57L+WP++kmiO/r7aPq1TO6+HtzdPYBovi8iBBf9Dh1y+qG6u2pH+r9nQNaPEC4nY
+                    b3cFjwCOkWeteAvZx9Jmj6rpF+r8DbQQveDruXmJXb4/yiF9vmRTRhK6KawTfPB+
+                    p9oNpPhRuUSONQDRo7Spg7sHAnAKMyP/txPLEve3MgITYv9SIMqpE2ljrs+wHxrw
+                    OegS1EztHA0//Cw=
+                </ds:X509Certificate>
+            </ds:X509Data>
+        </ds:KeyInfo>
+    </ds:Signature>
+    <md:Extensions>
+        <mdrpi:PublicationInfo publisher="http://mds.edugain.org/" creationInstant="2020-07-18T03:31:53Z"/>
+    </md:Extensions>
+    <md:EntityDescriptor entityID="https://idp.fccn.pt/idp/shibboleth">
+        <md:Extensions>
+            <mdrpi:RegistrationInfo registrationAuthority="https://www.fccn.pt"
+                                    registrationInstant="2011-12-16T17:00:00Z">
+                <mdrpi:RegistrationPolicy xml:lang="en">
+                    http://rctsfederation.fccn.pt/rctsaai/metadata-registration-practice-statement-en
+                </mdrpi:RegistrationPolicy>
+                <mdrpi:RegistrationPolicy xml:lang="pt">
+                    http://rctsfederation.fccn.pt/rctsaai/metadata-registration-practice-statement-pt
+                </mdrpi:RegistrationPolicy>
+            </mdrpi:RegistrationInfo>
+            <mdattr:EntityAttributes>
+                <saml:Attribute Name="http://macedir.org/entity-category-support"
+                                NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri">
+                    <saml:AttributeValue>http://refeds.org/category/research-and-scholarship</saml:AttributeValue>
+                    <saml:AttributeValue>http://www.geant.net/uri/dataprotection-code-of-conduct/v1
+                    </saml:AttributeValue>
+                </saml:Attribute>
+            </mdattr:EntityAttributes>
+        </md:Extensions>
+        <md:IDPSSODescriptor
+                protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol urn:oasis:names:tc:SAML:1.1:protocol urn:mace:shibboleth:1.0">
+            <md:Extensions>
+                <shibmd:Scope regexp="false">fccn.pt</shibmd:Scope>
+                <mdui:UIInfo>
+                    <mdui:DisplayName xml:lang="en">FCT|FCCN</mdui:DisplayName>
+                    <mdui:DisplayName xml:lang="pt">FCT|FCCN</mdui:DisplayName>
+                    <mdui:InformationURL xml:lang="en">https://www.fccn.pt/en/</mdui:InformationURL>
+                    <mdui:InformationURL xml:lang="pt">https://www.fccn.pt</mdui:InformationURL>
+                    <mdui:Logo height="55" width="300">https://rctsaai-rr.fccn.pt/rr/logos/FCT-FCCN_cmyk.png</mdui:Logo>
+                </mdui:UIInfo>
+                <mdui:DiscoHints>
+                    <mdui:GeolocationHint>geo:38.7591742762959,-9.142287969589233</mdui:GeolocationHint>
+                    <mdui:DomainHint>fccn.pt</mdui:DomainHint>
+                </mdui:DiscoHints>
+            </md:Extensions>
+            <md:KeyDescriptor>
+                <ds:KeyInfo>
+                    <ds:X509Data>
+                        <ds:X509Certificate>
+                            MIIDFzCCAf+gAwIBAgIUGjtxtRHoicZCdPTxK6N9BrR1vZ8wDQYJKoZIhvcNAQEF
+                            BQAwFjEUMBIGA1UEAxMLaWRwLmZjY24ucHQwHhcNMTExMjE1MTUzOTExWhcNMzEx
+                            MjE1MTUzOTExWjAWMRQwEgYDVQQDEwtpZHAuZmNjbi5wdDCCASIwDQYJKoZIhvcN
+                            AQEBBQADggEPADCCAQoCggEBAMk7r9by+CMZzGA/003Hjz08jJ9JrtfEQYOLVeh3
+                            CaMM3vAfwg5BljE+c7/fBs0teQRcnkx8oEGwGuBUV91qN5CIwRRgraXg2Xl5NDd+
+                            E76ebKWuOYqsB07V99esvRWwGMhAJrjd2Lc3u/th+8PNBfeXJOt49ZkC27uZ8ikf
+                            QauE0s9H+4i4c3bldrSVSuDq45yWr0wIHdox6dN/TjMk4kxSxyADmb/Ebp8N5n9v
+                            2l7Q9HFoaU2LnPJYyrbLrSepoFwdXgEYiu1pnrvbqT0SJ3vREctngTJ8MaL9dTLK
+                            2QaLN3cJkUby8254idNi8zPUHkvp2IFjuCcLc1k+ezdbc6kCAwEAAaNdMFswOgYD
+                            VR0RBDMwMYILaWRwLmZjY24ucHSGImh0dHBzOi8vaWRwLmZjY24ucHQvaWRwL3No
+                            aWJib2xldGgwHQYDVR0OBBYEFAPVb6XSbR8AYJEn/xiLnVzx8KSoMA0GCSqGSIb3
+                            DQEBBQUAA4IBAQDF0YZ3v7xshyEUHIRxc8c2jM2cJOUBRj7aOqnJvOnK7FI/AaSG
+                            qtEMx9RJ+NHxr5sALx1/DBu1XPEdtuBfueL0C5ky4H8a78LRqH3x50oZto+Oq1DG
+                            hZr/kURJyAM9dzi8BYZx5K2wB9vvJO2DICmnla20DTlKPY8NMZwtFbwfMloQduMi
+                            bLam1wEq+9o8TKYrw4C0pBGa8nY9gDjB1yzbT04VAuqctQL0+Sw+cXFDEk2JLbCl
+                            Bo4JbRU3T37aRSPJmLSx/lEQMBKP3cqlq+eig/e6thk3SA494XDUFlO6V+0XQF+u
+                            G5N6VkL0FX4oQt/9e14FaHZtwfb5uf02x6oO
+                        </ds:X509Certificate>
+                    </ds:X509Data>
+                </ds:KeyInfo>
+            </md:KeyDescriptor>
+            <md:NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</md:NameIDFormat>
+            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
+            <md:SingleSignOnService Binding="urn:mace:shibboleth:1.0:profiles:AuthnRequest"
+                                    Location="https://idp.fccn.pt/idp/profile/Shibboleth/SSO"/>
+            <md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+                                    Location="https://idp.fccn.pt/idp/profile/SAML2/POST/SSO"/>
+            <md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST-SimpleSign"
+                                    Location="https://idp.fccn.pt/idp/profile/SAML2/POST-SimpleSign/SSO"/>
+            <md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
+                                    Location="https://idp.fccn.pt/idp/profile/SAML2/Redirect/SSO"/>
+        </md:IDPSSODescriptor>
+        <md:Organization>
+            <md:OrganizationName xml:lang="pt">FCCN - Unidade da FCT I.P.</md:OrganizationName>
+            <md:OrganizationName xml:lang="en">FCCN - Unidade da FCT I.P.</md:OrganizationName>
+            <md:OrganizationDisplayName xml:lang="pt">FCCN - Unidade da FCT I.P.</md:OrganizationDisplayName>
+            <md:OrganizationDisplayName xml:lang="en">FCCN - Unidade da FCT I.P.</md:OrganizationDisplayName>
+            <md:OrganizationURL xml:lang="pt">https://www.fccn.pt</md:OrganizationURL>
+            <md:OrganizationURL xml:lang="en">https://www.fccn.pt</md:OrganizationURL>
+        </md:Organization>
+        <md:ContactPerson contactType="technical">
+            <md:GivenName>Esmeralda</md:GivenName>
+            <md:SurName>Pires</md:SurName>
+            <md:EmailAddress>mailto:rctsaai@fccn.pt</md:EmailAddress>
+        </md:ContactPerson>
+        <md:ContactPerson contactType="support">
+            <md:GivenName>Equipa</md:GivenName>
+            <md:SurName>RCTSaai</md:SurName>
+            <md:EmailAddress>mailto:rctsaai@fccn.pt</md:EmailAddress>
+        </md:ContactPerson>
+    </md:EntityDescriptor>
+    <md:EntityDescriptor entityID="https://impacter.eu/sso/metadata">
+        <md:Extensions>
+            <mdrpi:RegistrationInfo registrationAuthority="http://www.surfconext.nl/"
+                                    registrationInstant="2019-01-28T12:00:51.794Z">
+                <mdrpi:RegistrationPolicy xml:lang="en">https://wiki.surfnet.nl/display/eduGAIN/EduGAIN
+                </mdrpi:RegistrationPolicy>
+            </mdrpi:RegistrationInfo>
+            <mdattr:EntityAttributes>
+                <saml:Attribute Name="http://macedir.org/entity-category"
+                                NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri">
+                    <saml:AttributeValue>http://www.geant.net/uri/dataprotection-code-of-conduct/v1
+                    </saml:AttributeValue>
+                </saml:Attribute>
+            </mdattr:EntityAttributes>
+        </md:Extensions>
+        <md:SPSSODescriptor AuthnRequestsSigned="false" WantAssertionsSigned="false"
+                            protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+            <md:Extensions>
+                <mdui:UIInfo>
+                    <mdui:DisplayName xml:lang="en">Impacter</mdui:DisplayName>
+                    <mdui:Description xml:lang="en">
+                        Impacter provides direct feedback on research grant proposals to help researchers write winning
+                        proposals.
+                    </mdui:Description>
+                    <mdui:PrivacyStatementURL xml:lang="en">https://impacter.eu/acceptpolicy/statement
+                    </mdui:PrivacyStatementURL>
+                    <mdui:Logo height="500" width="500">https://impacter.eu/img/Logo-rectangle.png</mdui:Logo>
+                </mdui:UIInfo>
+            </md:Extensions>
+            <md:KeyDescriptor use="signing">
+                <ds:KeyInfo>
+                    <ds:X509Data>
+                        <ds:X509Certificate>
+                            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
+                        </ds:X509Certificate>
+                    </ds:X509Data>
+                </ds:KeyInfo>
+            </md:KeyDescriptor>
+            <md:KeyDescriptor use="encryption">
+                <ds:KeyInfo>
+                    <ds:X509Data>
+                        <ds:X509Certificate>
+                            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
+                        </ds:X509Certificate>
+                    </ds:X509Data>
+                </ds:KeyInfo>
+            </md:KeyDescriptor>
+            <md:SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
+                                    Location="https://impacter.eu/sls"/>
+            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</md:NameIDFormat>
+            <md:AssertionConsumerService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+                                         Location="https://impacter.eu/sso/acs" index="1"/>
+            <md:AttributeConsumingService index="1">
+                <md:ServiceName xml:lang="en">Impacter</md:ServiceName>
+                <md:ServiceDescription xml:lang="en">Impacter provides direct feedback on research grant proposals to
+                    help researchers write winning proposals.
+                </md:ServiceDescription>
+                <md:RequestedAttribute FriendlyName="Display Name" Name="urn:oid:2.16.840.1.113730.3.1.241"
+                                       NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri" isRequired="true"/>
+                <md:RequestedAttribute FriendlyName="Email Address" Name="urn:oid:0.9.2342.19200300.100.1.3"
+                                       NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri" isRequired="true"/>
+                <md:RequestedAttribute FriendlyName="Organization" Name="urn:oid:1.3.6.1.4.1.25178.1.2.9"
+                                       NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri" isRequired="true"/>
+                <md:RequestedAttribute FriendlyName="Affiliation" Name="urn:oid:1.3.6.1.4.1.5923.1.1.1.1"
+                                       NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri" isRequired="true"/>
+                <md:RequestedAttribute FriendlyName="Unique identifier" Name="urn:oid:0.9.2342.19200300.100.1.1"
+                                       NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri" isRequired="true"/>
+            </md:AttributeConsumingService>
+        </md:SPSSODescriptor>
+        <md:Organization>
+            <md:OrganizationName xml:lang="en">Impacter BV</md:OrganizationName>
+            <md:OrganizationName xml:lang="nl">Impacter BV</md:OrganizationName>
+            <md:OrganizationDisplayName xml:lang="en">Impacter</md:OrganizationDisplayName>
+            <md:OrganizationDisplayName xml:lang="nl">Impacter</md:OrganizationDisplayName>
+            <md:OrganizationURL xml:lang="en">https://impacter.eu</md:OrganizationURL>
+            <md:OrganizationURL xml:lang="nl">https://impacter.eu</md:OrganizationURL>
+        </md:Organization>
+        <md:ContactPerson contactType="technical">
+            <md:GivenName>Tijmen Altena</md:GivenName>
+            <md:EmailAddress>mailto:admin@impacter.eu</md:EmailAddress>
+        </md:ContactPerson>
+        <md:ContactPerson contactType="support">
+            <md:GivenName>Tijmen Altena</md:GivenName>
+            <md:EmailAddress>mailto:admin@impacter.eu</md:EmailAddress>
+        </md:ContactPerson>
+        <md:ContactPerson contactType="administrative">
+            <md:GivenName>Tijmen Altena</md:GivenName>
+            <md:EmailAddress>mailto:admin@impacter.eu</md:EmailAddress>
+        </md:ContactPerson>
+    </md:EntityDescriptor>
+
+
+</md:EntitiesDescriptor>

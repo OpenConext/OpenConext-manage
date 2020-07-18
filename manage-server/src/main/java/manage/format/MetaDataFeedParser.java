@@ -352,11 +352,14 @@ public class MetaDataFeedParser {
                             }
                             break;
                         case "EntityAttributes":
-                            inEntityAttributes = inCorrectEntityDescriptor;
+                            inEntityAttributes = true;
                             break;
                         case "AttributeValue":
-                            if (inEntityAttributes) {
+                            if (inCorrectEntityDescriptor) {
                                 addCoinEntityCategories(entityType, metaDataFields, metaDataAutoConfiguration,
+                                        reader.getElementText());
+                            } else if (inExtensions) {
+                                addCoinEntityCategories(entityType, extensionsFields, metaDataAutoConfiguration,
                                         reader.getElementText());
                             }
                             break;
@@ -390,8 +393,6 @@ public class MetaDataFeedParser {
                                         this.enrichMetaData(result);
                             }
                             inExtensions = false;
-
-                            metaDataFields.putAll(extensionsFields);
                             extensionsFields.clear();
                             break;
                         case "EntityAttributes":

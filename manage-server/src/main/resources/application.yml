@@ -33,7 +33,7 @@ product:
   organization: OpenConext
   #  service_provider_feed_url: http://mds.edugain.org/
   service_provider_feed_url: http://localhost:8000/edugain.xml
-  supported_languages: en,nl,pt
+  supported_languages: en,nl
   show_oidc_rp: true
 
 metadata_configuration_path: classpath:/metadata_configuration
