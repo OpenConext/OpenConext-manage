@@ -382,7 +382,7 @@ I18n.translations.en = {
     mfaTitle: "Requested AuthnContext configuration",
     mfaDescription: "Select a special RequestedAuthnContext to be sent to the IdP for logins on the following SAML Service Providers",
     mfaPlaceholder: "Search, select and add Entities to the AuthnContext configuration",
-    mfaTooltip: "Add here Service Providers and Relying parties for<br/>which Engineblock will send a specific string to<br/>the Identity Provider as part of the login process,<br/>in the RequestedAuthnContext element. The Identity<br/>Provider can then choose to perform certain actions<br/>when this is received, e.g. Multi-Factor Authentication.<br/>Engineblock will verify that the returned Assertion<br/>indeed has been performed with that authentication class.<br/><br/>Configure <code>transparant_authn_context</code> to have EB copy the ACCR from the SP.",
+    mfaTooltip: "Add here Service Providers and Relying parties for<br/>which Engineblock will send a specific string to<br/>the Identity Provider as part of the login process,<br/>in the RequestedAuthnContext element. The Identity<br/>Provider can then choose to perform certain actions<br/>when this is received, e.g. Multi-Factor Authentication.<br/>Engineblock will verify that the returned Assertion<br/>indeed has been performed with that authentication class.<br/><br/>Configure <code>transparent_authn_context</code> to have EB copy the ACCR from the SP.",
     entries: {
       status: "Status",
       entityid: "Entity ID",
