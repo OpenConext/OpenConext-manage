@@ -24,7 +24,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static manage.mongo.MongobeeConfiguration.REVISION_POSTFIX;
+import static manage.mongo.MongoChangelog.REVISION_POSTFIX;
 import static org.awaitility.Awaitility.await;
 
 /**

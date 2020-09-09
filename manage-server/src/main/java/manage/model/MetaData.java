@@ -17,7 +17,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import static manage.mongo.MongobeeConfiguration.REVISION_POSTFIX;
+import static manage.mongo.MongoChangelog.REVISION_POSTFIX;
 
 @Getter
 @NoArgsConstructor

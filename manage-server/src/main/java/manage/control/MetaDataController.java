@@ -79,7 +79,7 @@ import static java.util.stream.Collectors.toList;
 import static manage.api.Scope.TEST;
 import static manage.hook.OpenIdConnectHook.OIDC_CLIENT_KEY;
 import static manage.hook.OpenIdConnectHook.translateServiceProviderEntityId;
-import static manage.mongo.MongobeeConfiguration.REVISION_POSTFIX;
+import static manage.mongo.MongoChangelog.REVISION_POSTFIX;
 
 @RestController
 @SuppressWarnings("unchecked")

@@ -1,8 +1,8 @@
 package manage.mongo;
 
-import com.github.mongobee.Mongobee;
-import com.github.mongobee.changeset.ChangeLog;
-import com.github.mongobee.changeset.ChangeSet;
+import com.github.cloudyrock.mongock.ChangeLog;
+import com.github.cloudyrock.mongock.ChangeSet;
+import com.github.cloudyrock.mongock.driver.mongodb.springdata.v3.decorator.impl.MongockTemplate;
 import manage.conf.IndexConfiguration;
 import manage.conf.MetaDataAutoConfiguration;
 import manage.hook.TypeSafetyHook;
@@ -12,14 +12,10 @@ import manage.model.Scope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.MongoDbFactory;
-import org.springframework.data.mongodb.core.BulkOperations;
 import org.springframework.data.mongodb.core.IndexOperations;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.convert.CustomConversions;
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.data.mongodb.core.index.Index;
@@ -32,7 +28,6 @@ import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ReflectionUtils;
 
-import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -48,36 +43,20 @@ import java.util.stream.Stream;
 @Configuration
 @ChangeLog
 @SuppressWarnings("unchecked")
-public class MongobeeConfiguration {
+public class MongoChangelog {
 
     public static final String REVISION_POSTFIX = "_revision";
 
-    private static final Logger LOG = LoggerFactory.getLogger(MongobeeConfiguration.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MongoChangelog.class);
 
     private static MetaDataAutoConfiguration staticMetaDataAutoConfiguration;
 
     @Autowired
     private MetaDataAutoConfiguration metaDataAutoConfiguration;
 
-    @Autowired
-    private MappingMongoConverter mongoConverter;
-
-    // Converts . into a mongo friendly char
-    @PostConstruct
-    public void setUpMongoEscapeCharacterConversion() {
-        mongoConverter.setMapKeyDotReplacement("@");
-    }
-
-    @Bean
-    public Mongobee mongobee(@Value("${spring.data.mongodb.uri}") String uri) {
-        Mongobee runner = new Mongobee(uri);
-        runner.setChangeLogsScanPackage("manage.mongo");
-        MongobeeConfiguration.staticMetaDataAutoConfiguration = metaDataAutoConfiguration;
-        return runner;
-    }
 
     @ChangeSet(order = "001", id = "createCollections", author = "Okke Harsta")
-    public void createCollections(MongoTemplate mongoTemplate) {
+    public void createCollections(MongockTemplate mongoTemplate) {
         this.doCreateSchemas(mongoTemplate, Arrays.asList("saml20_sp", "saml20_idp"));
         long max = Math.max(highestEid(mongoTemplate, "saml20_idp"), highestEid(mongoTemplate, "saml20_sp"));
         max = Math.max(max, highestEid(mongoTemplate, "oidc10_rp"));
@@ -91,12 +70,12 @@ public class MongobeeConfiguration {
     }
 
     @ChangeSet(order = "023", id = "migrateAttrMotivationMetaDataToArpAgainAgain", author = "Okke Harsta")
-    public void migrateAttrMotivationMetaDataToArpAgain(MongoTemplate mongoTemplate) {
+    public void migrateAttrMotivationMetaDataToArpAgain(MongockTemplate mongoTemplate) {
         doMigrateMotivation(mongoTemplate);
     }
 
     @ChangeSet(order = "024", id = "removeEmptyManipulations", author = "Okke Harsta")
-    public void removeEmptyManipulation(MongoTemplate mongoTemplate) {
+    public void removeEmptyManipulation(MongockTemplate mongoTemplate) {
         Query query = new Query();
         query.addCriteria(Criteria.where("data.manipulation").regex("^\\s*$"));
 
@@ -116,11 +95,11 @@ public class MongobeeConfiguration {
     }
 
     @ChangeSet(order = "025", id = "addTextIndexes", author = "Okke Harsta")
-    public void addTextIndexes(MongoTemplate mongoTemplate) {
+    public void addTextIndexes(MongockTemplate mongoTemplate) {
         doAddTestIndexes(mongoTemplate);
     }
 
-    private void doAddTestIndexes(MongoTemplate mongoTemplate) {
+    private void doAddTestIndexes(MongockTemplate mongoTemplate) {
         Stream.of(EntityType.values()).forEach(entityType -> {
             TextIndexDefinition textIndexDefinition = new TextIndexDefinition.TextIndexDefinitionBuilder()
                     .onField("$**")
@@ -130,12 +109,12 @@ public class MongobeeConfiguration {
     }
 
     @ChangeSet(order = "026", id = "createOIDCSchema", author = "Okke Harsta")
-    public void createOIDCSchema(MongoTemplate mongoTemplate) {
+    public void createOIDCSchema(MongockTemplate mongoTemplate) {
         doCreateSchemas(mongoTemplate, Arrays.asList("oidc10_rp"));
     }
 
     @ChangeSet(order = "027", id = "addOidcTextIndexes", author = "Okke Harsta")
-    public void addOidcTextIndexes(MongoTemplate mongoTemplate) {
+    public void addOidcTextIndexes(MongockTemplate mongoTemplate) {
         TextIndexDefinition textIndexDefinition = new TextIndexDefinition.TextIndexDefinitionBuilder()
                 .onField("$**")
                 .build();
@@ -143,14 +122,14 @@ public class MongobeeConfiguration {
     }
 
     @ChangeSet(order = "028", id = "typeSafetyConversion", author = "Okke Harsta")
-    public void typeSafetyConversion(MongoTemplate mongoTemplate) throws IOException {
+    public void typeSafetyConversion(MongockTemplate mongoTemplate) throws IOException {
         MongoDbFactory mongoDbFactory = (MongoDbFactory) getField(mongoTemplate, "mongoDbFactory");
         MappingMongoConverter converter = (MappingMongoConverter) getField(mongoTemplate, "mongoConverter");
         converter.setCustomConversions(new CustomConversions(Arrays.asList(new EpochConverter())));
         converter.setMapKeyDotReplacement("@");
         converter.afterPropertiesSet();
-        final MongoTemplate customMongoTemplate = new MongoTemplate(mongoDbFactory, converter);
-        TypeSafetyHook hook = new TypeSafetyHook(MongobeeConfiguration.staticMetaDataAutoConfiguration);
+        final MongockTemplate customMongoTemplate = new MongockTemplate(mongoDbFactory, converter);
+        TypeSafetyHook hook = new TypeSafetyHook(MongoChangelog.staticMetaDataAutoConfiguration);
         Stream.of(EntityType.values()).map(EntityType::getType).forEach(type -> {
             List<MetaData> metaDatas = customMongoTemplate.findAll(MetaData.class, type);
             if (!CollectionUtils.isEmpty(metaDatas)) {
@@ -174,7 +153,7 @@ public class MongobeeConfiguration {
     }
 
     @ChangeSet(order = "029", id = "addDefaultScopes", author = "Okke Harsta")
-    public void addDefaultScopes(MongoTemplate mongoTemplate) {
+    public void addDefaultScopes(MongockTemplate mongoTemplate) {
         mongoTemplate.remove(new Query(), Scope.class);
         List<String> scopes = mongoTemplate.getCollection(EntityType.RP.getType()).distinct("data.metaDataFields.scopes");
         List<Scope> allScopes = scopes.stream()
@@ -184,7 +163,7 @@ public class MongobeeConfiguration {
     }
 
     @ChangeSet(order = "030", id = "addTextIndexesForOidc", author = "Okke Harsta")
-    public void addTextIndexesForOidc(MongoTemplate mongoTemplate) {
+    public void addTextIndexesForOidc(MongockTemplate mongoTemplate) {
         doAddTestIndexes(mongoTemplate);
     }
 
@@ -195,7 +174,7 @@ public class MongobeeConfiguration {
         return ReflectionUtils.getField(field, targetObject);
     }
 
-    private void doCreateSchemas(MongoTemplate mongoTemplate, List<String> connectionTypes) {
+    private void doCreateSchemas(MongockTemplate mongoTemplate, List<String> connectionTypes) {
         Set<String> schemaNames = staticMetaDataAutoConfiguration.schemaNames();
         schemaNames.forEach(schema -> {
             if (!mongoTemplate.collectionExists(schema)) {
@@ -230,7 +209,7 @@ public class MongobeeConfiguration {
         });
     }
 
-    protected void doMigrateMotivation(MongoTemplate mongoTemplate) {
+    protected void doMigrateMotivation(MongockTemplate mongoTemplate) {
         MappingMongoConverter converter = (MappingMongoConverter) mongoTemplate.getConverter();
         converter.setMapKeyDotReplacement("@");
 
@@ -298,7 +277,7 @@ public class MongobeeConfiguration {
     }
 
 
-    private Long highestEid(MongoTemplate mongoTemplate, String type) {
+    private Long highestEid(MongockTemplate mongoTemplate, String type) {
         Query query = new Query().limit(1).with(new Sort(Sort.Direction.DESC, "data.eid"));
         query.fields().include("data.eid");
         Map res = mongoTemplate.findOne(query, Map.class, type);
