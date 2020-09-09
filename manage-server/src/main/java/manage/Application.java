@@ -1,16 +1,19 @@
 package manage;
 
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.actuate.autoconfigure.MetricFilterAutoConfiguration;
-import org.springframework.boot.actuate.autoconfigure.TraceWebFilterAutoConfiguration;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.actuate.autoconfigure.audit.AuditEventsEndpointAutoConfiguration;
+import org.springframework.boot.actuate.autoconfigure.metrics.JvmMetricsAutoConfiguration;
+import org.springframework.boot.actuate.autoconfigure.metrics.MetricsAutoConfiguration;
+import org.springframework.boot.actuate.autoconfigure.metrics.export.simple.SimpleMetricsExportAutoConfiguration;
+import org.springframework.boot.actuate.autoconfigure.metrics.web.servlet.WebMvcMetricsAutoConfiguration;
+import org.springframework.boot.actuate.autoconfigure.trace.http.HttpTraceAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
-@SpringBootApplication(exclude = {TraceWebFilterAutoConfiguration.class, MetricFilterAutoConfiguration.class})
+@SpringBootApplication(exclude = {WebMvcMetricsAutoConfiguration.class, HttpTraceAutoConfiguration.class,
+        JvmMetricsAutoConfiguration.class, MetricsAutoConfiguration.class, SimpleMetricsExportAutoConfiguration.class,
+        AuditEventsEndpointAutoConfiguration.class})
 @EnableMongoRepositories(basePackages = "manage.repository")
-@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class})
 public class Application {
 
     public static void main(String[] args) {

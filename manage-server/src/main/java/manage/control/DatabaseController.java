@@ -3,8 +3,6 @@ package manage.control;
 import manage.format.EngineBlockFormatter;
 import manage.model.MetaData;
 import manage.model.Scope;
-import manage.push.Delta;
-import manage.push.PrePostComparator;
 import manage.repository.MetaDataRepository;
 import manage.web.PreemptiveAuthenticationHttpComponentsClientHttpRequestFactory;
 import org.apache.http.auth.AuthScope;
@@ -15,21 +13,23 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
+import org.springframework.core.env.Profiles;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpRequestFactory;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-import javax.sql.DataSource;
 import java.net.MalformedURLException;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
@@ -50,14 +50,11 @@ public class DatabaseController {
     private boolean excludeOidcRP;
 
     private MetaDataRepository metaDataRepository;
-    private JdbcTemplate ebJdbcTemplate;
-    private Environment environment;
 
-    private PrePostComparator prePostComparator = new PrePostComparator();
+    private Environment environment;
 
     @Autowired
     DatabaseController(MetaDataRepository metaDataRepository,
-                       DataSource ebDataSource,
                        @Value("${push.eb.url}") String pushUri,
                        @Value("${push.eb.user}") String user,
                        @Value("${push.eb.password}") String password,
@@ -78,39 +75,25 @@ public class DatabaseController {
         this.oidcPushUri = oidcPushUri;
         this.oidcEnabled = oidcEnabled;
 
-        this.ebJdbcTemplate = new JdbcTemplate(ebDataSource);
         this.environment = environment;
     }
 
     public ResponseEntity<Map> doPush() {
-        if (environment.acceptsProfiles("dev")) {
+        if (environment.acceptsProfiles(Profiles.of("dev"))) {
             return new ResponseEntity<>(Collections.singletonMap("status", 200), HttpStatus.OK);
         }
-
-        List<Map<String, Object>> preProvidersData = ebJdbcTemplate.queryForList("SELECT * FROM " +
-                "sso_provider_roles_eb5 ORDER BY id ASC");
 
         Map<String, Map<String, Map<String, Object>>> json = this.pushPreview();
 
         ResponseEntity<String> response = this.restTemplate.postForEntity(pushUri, json, String.class);
         HttpStatus statusCode = response.getStatusCode();
 
-        List<Map<String, Object>> postProvidersData = ebJdbcTemplate.queryForList("SELECT * FROM " +
-                "sso_provider_roles_eb5 ORDER BY id ASC");
-        Set<Delta> deltas = prePostComparator.compare(preProvidersData, postProvidersData);
-
-        List<String> knownDeltas = Arrays.asList("id", "name_id_formats");
-        List<Delta> realDeltas = deltas.stream().filter(delta -> !knownDeltas.contains(delta.getAttribute())).collect
-                (toList());
-        realDeltas.sort(Comparator.comparing(Delta::getEntityId));
-
         Map<String, Object> result = new HashMap<>();
         result.put("status", statusCode);
         result.put("response", response);
-        result.put("deltas", realDeltas);
 
         // Now push all oidc_rp metadata to OIDC proxy
-        if (!environment.acceptsProfiles("dev") && oidcEnabled) {
+        if (!environment.acceptsProfiles(Profiles.of("dev")) && oidcEnabled) {
             List<MetaData> oidcClients = metaDataRepository.getMongoTemplate().findAll(MetaData.class, "oidc10_rp");
             List<Scope> scopes = metaDataRepository.getMongoTemplate().findAll(Scope.class);
             Map<String, Scope> scopesMapped = scopes.stream().collect(toMap(entry -> entry.getName(), entry -> entry));

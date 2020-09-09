@@ -104,17 +104,17 @@ public class MetaData implements Serializable {
                         part));
                 part = iterator.next();
                 if (iterator.hasNext()) {
-                    reference = Map.class.cast(reference).get(part);
+                    reference = ((Map) reference).get(part);
                 } else {
                     property = part;
                 }
             }
-            Map.class.cast(reference).put(property, value);
+            ((Map) reference).put(property, value);
         });
     }
 
     @Transient
     public Map<String, Object> metaDataFields() {
-        return Map.class.cast(data.get("metaDataFields"));
+        return (Map) data.get("metaDataFields");
     }
 }

@@ -5,13 +5,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpResponse;
-import org.springframework.http.client.support.BasicAuthorizationInterceptor;
+import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.web.client.DefaultResponseErrorHandler;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Optional;
@@ -25,7 +23,7 @@ public class OpenIdConnectService implements OpenIdConnect {
 
     public OpenIdConnectService(String user, String password, String url) {
         this.restTemplate = new RestTemplate();
-        this.restTemplate.getInterceptors().add(new BasicAuthorizationInterceptor(user, password));
+        this.restTemplate.getInterceptors().add(new BasicAuthenticationInterceptor(user, password));
         this.restTemplate.setErrorHandler(new DefaultResponseErrorHandler() {
             @Override
             public void handleError(ClientHttpResponse response) throws IOException {

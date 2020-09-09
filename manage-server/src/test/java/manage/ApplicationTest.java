@@ -15,7 +15,7 @@ public class ApplicationTest extends AbstractIntegrationTest {
     public void health() throws Exception {
         given()
                 .when()
-                .get("manage/api/health")
+                .get("manage/api/actuator/health")
                 .then()
                 .statusCode(SC_OK)
                 .body("status", equalTo("UP"));

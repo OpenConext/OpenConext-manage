@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
+import org.springframework.core.env.Profiles;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -204,8 +205,8 @@ public class MetaDataController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping(value = "/client/delete/feed")
-    public Map<String, Integer> deleteFeed() {
-        int deleted = this.metaDataRepository.deleteAllImportedServiceProviders();
+    public Map<String, Long> deleteFeed() {
+        long deleted = this.metaDataRepository.deleteAllImportedServiceProviders();
         return Collections.singletonMap("deleted", deleted);
     }
 
@@ -225,7 +226,7 @@ public class MetaDataController {
                             .map(ServiceProvider::new)
                             .collect(Collectors.toMap(sp -> sp.getEntityId(), sp -> sp));
             String feedUrl = importRequest.getUrl();
-            Resource resource = new SaveURLResource(new URL(feedUrl), environment.acceptsProfiles("dev"));
+            Resource resource = new SaveURLResource(new URL(feedUrl), environment.acceptsProfiles(Profiles.of("dev")));
 
             List<Map<String, Object>> allImports = this.importer.importFeed(resource);
             List<Map<String, Object>> imports =

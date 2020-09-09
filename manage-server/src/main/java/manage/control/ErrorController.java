@@ -5,7 +5,9 @@ import manage.exception.DuplicateEntityIdException;
 import manage.exception.ScopeInUseException;
 import org.everit.json.schema.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.web.ErrorAttributes;
+import org.springframework.boot.web.error.ErrorAttributeOptions;
+import org.springframework.boot.web.servlet.error.DefaultErrorAttributes;
+import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpHeaders;
@@ -20,6 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.context.request.ServletWebRequest;
+import org.springframework.web.context.request.WebRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
@@ -27,27 +31,26 @@ import java.util.Map;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 @RestController
-public class ErrorController implements org.springframework.boot.autoconfigure.web.ErrorController {
+public class ErrorController  implements org.springframework.boot.web.servlet.error.ErrorController {
 
     private final ErrorAttributes errorAttributes;
 
-    @Autowired
-    public ErrorController(ErrorAttributes errorAttributes) {
-        this.errorAttributes = errorAttributes;
+    public ErrorController() {
+        this.errorAttributes = new DefaultErrorAttributes();
     }
 
     @Override
     public String getErrorPath() {
-        return "/error";
+        return null;
     }
 
     @RequestMapping("/error")
     public ResponseEntity<Map<String, Object>> error(HttpServletRequest request) {
-        RequestAttributes requestAttributes = new ServletRequestAttributes(request);
-        Map<String, Object> result = this.errorAttributes.getErrorAttributes(requestAttributes, false);
+        ServletWebRequest webRequest = new ServletWebRequest(request);
 
-        Throwable error = this.errorAttributes.getError(requestAttributes);
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Map<String, Object> result = errorAttributes.getErrorAttributes(webRequest, ErrorAttributeOptions.defaults());
+
+        Throwable error = errorAttributes.getError(webRequest);
 
         //Determine which status to return - GUI expects 200 and other API clients normal behaviour
         boolean isInternalCall = StringUtils.hasText(request.getHeader(HttpHeaders.AUTHORIZATION));
@@ -85,6 +88,7 @@ public class ErrorController implements org.springframework.boot.autoconfigure.w
             //https://github.com/spring-projects/spring-boot/issues/3057
             ResponseStatus annotation = AnnotationUtils.getAnnotation(error.getClass(), ResponseStatus.class);
             statusCode = annotation != null ? annotation.value() : statusCode;
+            result.put("exception", error.getClass().getCanonicalName());
         }
         return new ResponseEntity<>(result, statusCode);
     }

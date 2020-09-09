@@ -68,6 +68,7 @@ public class OidcValidationHookTest implements TestUtils {
         subject.prePut(null, metaData(singletonList("client_credentials"), singletonList("https://redirect")));
     }
 
+    @SuppressWarnings("unchecked")
     private MetaData metaData(List<String> grants, List<String> redirectUrls) {
         Map<String, Object> data = new HashMap<>();
         Map<String, Object> metaDataFields = (Map<String, Object>) data.computeIfAbsent("metaDataFields", key -> new HashMap<String, Object>());

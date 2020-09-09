@@ -3,42 +3,29 @@ package manage.mongo;
 import com.github.cloudyrock.mongock.ChangeLog;
 import com.github.cloudyrock.mongock.ChangeSet;
 import com.github.cloudyrock.mongock.driver.mongodb.springdata.v3.decorator.impl.MongockTemplate;
+import com.mongodb.client.DistinctIterable;
 import manage.conf.IndexConfiguration;
 import manage.conf.MetaDataAutoConfiguration;
-import manage.hook.TypeSafetyHook;
 import manage.model.EntityType;
-import manage.model.MetaData;
 import manage.model.Scope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.mongodb.MongoDbFactory;
-import org.springframework.data.mongodb.core.IndexOperations;
-import org.springframework.data.mongodb.core.convert.CustomConversions;
-import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.index.IndexDefinition;
+import org.springframework.data.mongodb.core.index.IndexOperations;
 import org.springframework.data.mongodb.core.index.TextIndexDefinition;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.CriteriaDefinition;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.util.Assert;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.ReflectionUtils;
 
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 @Configuration
 @ChangeLog
@@ -54,47 +41,19 @@ public class MongoChangelog {
     @Autowired
     private MetaDataAutoConfiguration metaDataAutoConfiguration;
 
-
     @ChangeSet(order = "001", id = "createCollections", author = "Okke Harsta")
     public void createCollections(MongockTemplate mongoTemplate) {
         this.doCreateSchemas(mongoTemplate, Arrays.asList("saml20_sp", "saml20_idp"));
-        long max = Math.max(highestEid(mongoTemplate, "saml20_idp"), highestEid(mongoTemplate, "saml20_sp"));
-        max = Math.max(max, highestEid(mongoTemplate, "oidc10_rp"));
+        if (!mongoTemplate.collectionExists("sequences")) {
+            LOG.info("Creating sequence collection with new start seq {}", 1L);
 
-        if (mongoTemplate.collectionExists("sequences")) {
-            mongoTemplate.dropCollection("sequences");
+            mongoTemplate.createCollection("sequences");
+            mongoTemplate.save(new Sequence("sequence", 1L));
         }
-        mongoTemplate.createCollection("sequences");
-        LOG.info("Creating sequence collection with new start seq {}", max + 1L);
-        mongoTemplate.save(new Sequence("sequence", max + 1L));
+
     }
 
-    @ChangeSet(order = "023", id = "migrateAttrMotivationMetaDataToArpAgainAgain", author = "Okke Harsta")
-    public void migrateAttrMotivationMetaDataToArpAgain(MongockTemplate mongoTemplate) {
-        doMigrateMotivation(mongoTemplate);
-    }
-
-    @ChangeSet(order = "024", id = "removeEmptyManipulations", author = "Okke Harsta")
-    public void removeEmptyManipulation(MongockTemplate mongoTemplate) {
-        Query query = new Query();
-        query.addCriteria(Criteria.where("data.manipulation").regex("^\\s*$"));
-
-        Arrays.asList(EntityType.values()).forEach(entityType -> {
-            String collectionName = entityType.getType();
-            List<Map> results = mongoTemplate.find(query, Map.class, collectionName);
-            results.forEach(provider -> {
-                Map data = Map.class.cast(provider.get("data"));
-                String manipulation = (String) data.get("manipulation");
-                if (manipulation != null && manipulation.replaceAll("\\s+", "").equals("")) {
-                    data.put("manipulation", null);
-                    mongoTemplate.save(provider, collectionName);
-                    LOG.info("Nullified empty manipulation for {}", data.get("entityid"));
-                }
-            });
-        });
-    }
-
-    @ChangeSet(order = "025", id = "addTextIndexes", author = "Okke Harsta")
+    @ChangeSet(order = "002", id = "addTextIndexes", author = "Okke Harsta")
     public void addTextIndexes(MongockTemplate mongoTemplate) {
         doAddTestIndexes(mongoTemplate);
     }
@@ -108,70 +67,22 @@ public class MongoChangelog {
         });
     }
 
-    @ChangeSet(order = "026", id = "createOIDCSchema", author = "Okke Harsta")
+    @ChangeSet(order = "003", id = "createOIDCSchema", author = "Okke Harsta")
     public void createOIDCSchema(MongockTemplate mongoTemplate) {
         doCreateSchemas(mongoTemplate, Arrays.asList("oidc10_rp"));
     }
 
-    @ChangeSet(order = "027", id = "addOidcTextIndexes", author = "Okke Harsta")
-    public void addOidcTextIndexes(MongockTemplate mongoTemplate) {
-        TextIndexDefinition textIndexDefinition = new TextIndexDefinition.TextIndexDefinitionBuilder()
-                .onField("$**")
-                .build();
-        mongoTemplate.indexOps("oidc10_rp").ensureIndex(textIndexDefinition);
-    }
-
-    @ChangeSet(order = "028", id = "typeSafetyConversion", author = "Okke Harsta")
-    public void typeSafetyConversion(MongockTemplate mongoTemplate) throws IOException {
-        MongoDbFactory mongoDbFactory = (MongoDbFactory) getField(mongoTemplate, "mongoDbFactory");
-        MappingMongoConverter converter = (MappingMongoConverter) getField(mongoTemplate, "mongoConverter");
-        converter.setCustomConversions(new CustomConversions(Arrays.asList(new EpochConverter())));
-        converter.setMapKeyDotReplacement("@");
-        converter.afterPropertiesSet();
-        final MongockTemplate customMongoTemplate = new MongockTemplate(mongoDbFactory, converter);
-        TypeSafetyHook hook = new TypeSafetyHook(MongoChangelog.staticMetaDataAutoConfiguration);
-        Stream.of(EntityType.values()).map(EntityType::getType).forEach(type -> {
-            List<MetaData> metaDatas = customMongoTemplate.findAll(MetaData.class, type);
-            if (!CollectionUtils.isEmpty(metaDatas)) {
-                metaDatas.forEach(metaData -> {
-                    Map<String, Object> metaDataFields = new HashMap<>(metaData.metaDataFields());
-                    MetaData changeMetaData = hook.preValidate(metaData);
-
-                    if (!changeMetaData.metaDataFields().equals(metaDataFields)) {
-                        MetaData previous = customMongoTemplate.findById(metaData.getId(), MetaData.class, type);
-                        previous.revision(UUID.randomUUID().toString());
-                        customMongoTemplate.insert(previous, previous.getType());
-                        metaData.promoteToLatest("System", "Conversion of String to JSON schema defined type");
-                        customMongoTemplate.save(metaData, metaData.getType());
-                        LOG.info("Migrated {} during conversion of String to JSON schema defined type", metaData.getData().get("entityid"));
-
-                    }
-                });
-            }
-        });
-
-    }
-
-    @ChangeSet(order = "029", id = "addDefaultScopes", author = "Okke Harsta")
+    @ChangeSet(order = "004", id = "addDefaultScopes", author = "Okke Harsta")
     public void addDefaultScopes(MongockTemplate mongoTemplate) {
-        mongoTemplate.remove(new Query(), Scope.class);
-        List<String> scopes = mongoTemplate.getCollection(EntityType.RP.getType()).distinct("data.metaDataFields.scopes");
-        List<Scope> allScopes = scopes.stream()
-                .map(scope -> new Scope(scope, new HashMap<>()))
-                .collect(Collectors.toList());
-        mongoTemplate.insert(allScopes, Scope.class);
-    }
-
-    @ChangeSet(order = "030", id = "addTextIndexesForOidc", author = "Okke Harsta")
-    public void addTextIndexesForOidc(MongockTemplate mongoTemplate) {
-        doAddTestIndexes(mongoTemplate);
-    }
-
-    private Object getField(Object targetObject, String name) {
-        Class<?> targetClass = targetObject.getClass();
-        Field field = ReflectionUtils.findField(targetClass, name);
-        ReflectionUtils.makeAccessible(field);
-        return ReflectionUtils.getField(field, targetObject);
+        if (!mongoTemplate.collectionExists("scopes")) {
+            mongoTemplate.remove(new Query(), Scope.class);
+            DistinctIterable<String> scopes = mongoTemplate.getCollection(EntityType.RP.getType())
+                    .distinct("data.metaDataFields.scopes", String.class);
+            List<Scope> allScopes = StreamSupport.stream(scopes.spliterator(), false)
+                    .map(scope -> new Scope(scope, new HashMap<>()))
+                    .collect(Collectors.toList());
+            mongoTemplate.insert(allScopes, Scope.class);
+        }
     }
 
     private void doCreateSchemas(MongockTemplate mongoTemplate, List<String> connectionTypes) {
@@ -207,84 +118,6 @@ public class MongoChangelog {
             IndexOperations indexOps = mongoTemplate.indexOps(collection);
             indexOps.ensureIndex(new Index("revision.parentId", Sort.Direction.ASC));
         });
-    }
-
-    protected void doMigrateMotivation(MongockTemplate mongoTemplate) {
-        MappingMongoConverter converter = (MappingMongoConverter) mongoTemplate.getConverter();
-        converter.setMapKeyDotReplacement("@");
-
-        Query query = new Query();
-        List<String> arpMotivations = Arrays.asList(
-                "coin:attr_motivation:eduPersonEntitlement", "coin:attr_motivation:schacPersonalUniqueCode",
-                "coin:attr_motivation:preferredLanguage", "coin:attr_motivation:mail",
-                "coin:attr_motivation:eduPersonAffiliation", "coin:attr_motivation:displayName",
-                "coin:attr_motivation:givenName", "coin:attr_motivation:schacHomeOrganizationType",
-                "coin:attr_motivation:cn", "coin:attr_motivation:uid", "coin:attr_motivation:eduPersonScopedAffiliation",
-                "coin:attr_motivation:eduPersonTargetedID", "coin:attr_motivation:schacHomeOrganization",
-                "coin:attr_motivation:eduPersonOrcid", "coin:attr_motivation:isMemberOf",
-                "coin:attr_motivation:eduPersonPrincipalName", "coin:attr_motivation:sn");
-
-        Map<String, String> attrMotivationMap = arpMotivations.stream()
-                .collect(Collectors.toMap(k -> k, k -> k.substring(k.lastIndexOf(":") + 1)));
-
-        Map<String, String> arpAttributes = (Map<String, String>) Map.class.cast(Map.class.cast(Map.class.cast(Map
-                .class.cast(Map.class.cast(staticMetaDataAutoConfiguration.schemaRepresentation(EntityType.SP)
-                .get("properties")).get("arp")).get("properties")).get("attributes")).get("properties"))
-                .keySet().stream().collect(Collectors.toMap(k -> {
-                    String key = (String) k;
-                    return key.substring(key.lastIndexOf(":") + 1);
-                }, k -> k));
-
-        Assert.isTrue(arpAttributes.keySet().containsAll(attrMotivationMap.values()), "Not all ");
-
-        List<CriteriaDefinition> criteriaDefinitions = attrMotivationMap.keySet().stream()
-                .map(key -> Criteria.where("data.metaDataFields.".concat(key)).exists(true))
-                .collect(Collectors.toList());
-        Criteria[] criteria = criteriaDefinitions.toArray(new Criteria[]{});
-        query.addCriteria(new Criteria().orOperator(criteria));
-        Arrays.asList(EntityType.SP.getType(), "single_tenant_template").forEach(type -> {
-            List<MetaData> entities = mongoTemplate.find(query, MetaData.class, type);
-
-            entities.forEach(entity -> {
-                Map<String, Object> dmFields = (Map<String, Object>) entity.getData().get("metaDataFields");
-                Map<String, Object> arp = (Map<String, Object>) entity.getData().get("arp");
-                Map<String, Object> attributes = (Map<String, Object>) arp.get("attributes");
-                attrMotivationMap.keySet().forEach(k -> {
-                    String motivation = (String) dmFields.remove(k);
-                    if (motivation != null) {
-                        String arpSimpleAttribute = attrMotivationMap.get(k);
-                        String arpAttribute = arpAttributes.get(arpSimpleAttribute);
-                        List newArpAttribute = (List) attributes.getOrDefault(arpAttribute, new ArrayList<>());
-                        if (newArpAttribute.isEmpty()) {
-                            Map<String, String> replacementForDeletedMotivation = new HashMap<>();
-                            replacementForDeletedMotivation.put("source", "idp");
-                            replacementForDeletedMotivation.put("value", "*");
-                            replacementForDeletedMotivation.put("motivation", motivation);
-                            newArpAttribute.add(replacementForDeletedMotivation);
-                            attributes.put(arpAttribute, newArpAttribute);
-                        } else {
-                            newArpAttribute.forEach(m -> {
-                                Map<String, String> existingArpAttribute = (Map<String, String>) m;
-                                existingArpAttribute.put("motivation", motivation);
-                            });
-                        }
-                    }
-                });
-                LOG.info("Saving metadata {} with removed coin:attr_motivation metaData", entity.getId());
-                mongoTemplate.save(entity, type);
-            });
-        });
-    }
-
-
-    private Long highestEid(MongockTemplate mongoTemplate, String type) {
-        Query query = new Query().limit(1).with(new Sort(Sort.Direction.DESC, "data.eid"));
-        query.fields().include("data.eid");
-        Map res = mongoTemplate.findOne(query, Map.class, type);
-        if (res == null) {
-            return 10L;
-        }
-        return Long.valueOf(Map.class.cast(res.get("data")).get("eid").toString());
     }
 
     private IndexDefinition indexDefinition(IndexConfiguration indexConfiguration) {

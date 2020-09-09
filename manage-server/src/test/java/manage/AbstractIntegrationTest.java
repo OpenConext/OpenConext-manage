@@ -13,8 +13,9 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.embedded.LocalServerPort;
+
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -67,10 +68,10 @@ public abstract class AbstractIntegrationTest implements TestUtils {
             }
             MongoTemplate mongoTemplate = metaDataRepository.getMongoTemplate();
             metaDataAutoConfiguration.schemaNames().forEach(schema -> {
-                int removed = mongoTemplate.remove(new Query(Criteria.where("type").is(schema)), schema).getN();
+                long removed = mongoTemplate.remove(new Query(Criteria.where("type").is(schema)), schema).getDeletedCount();
                 String revisionsSchema = schema.concat(REVISION_POSTFIX);
-                int removedRevisions = mongoTemplate.remove(new Query(Criteria.where("type").is(revisionsSchema)),
-                        revisionsSchema).getN();
+                long removedRevisions = mongoTemplate.remove(new Query(Criteria.where("type").is(revisionsSchema)),
+                        revisionsSchema).getDeletedCount();
                 LOG.debug("Removed {} records from {} and removed {} records from {}", removed, schema,
                         removedRevisions, revisionsSchema);
             });

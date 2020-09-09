@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
+import org.springframework.core.env.Profiles;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -30,7 +31,7 @@ import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.firewall.DefaultHttpFirewall;
 import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.yaml.snakeyaml.Yaml;
 
 import java.util.Arrays;
@@ -150,7 +151,7 @@ public class WebSecurityConfigurer {
                     .authorizeRequests()
                     .antMatchers("/client/**").hasRole("USER");
 
-            if (environment.acceptsProfiles("dev")) {
+            if (environment.acceptsProfiles(Profiles.of("dev"))) {
                 //we can't use @Profile, because we need to add it before the real filter
                 http.csrf().disable();
                 http.addFilterBefore(new MockShibbolethFilter(), ShibbolethPreAuthenticatedProcessingFilter.class);
@@ -170,7 +171,7 @@ public class WebSecurityConfigurer {
 
         @Override
         public void configure(WebSecurity web) throws Exception {
-            web.ignoring().antMatchers("/health", "/info");
+            web.ignoring().antMatchers("/actuator/**");
         }
 
         @Override
@@ -197,7 +198,7 @@ public class WebSecurityConfigurer {
     }
 
     @Configuration
-    public class MvcConfig extends WebMvcConfigurerAdapter {
+    public class MvcConfig implements WebMvcConfigurer {
 
         @Override
         public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {

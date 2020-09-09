@@ -106,9 +106,9 @@ public class MetaDataRepository {
         return mongoTemplate.find(query, Map.class, EntityType.SP.getType());
     }
 
-    public int deleteAllImportedServiceProviders() {
+    public long deleteAllImportedServiceProviders() {
         Query query = new Query(Criteria.where("data.metaDataFields.coin:imported_from_edugain").is(true));
-        return mongoTemplate.remove(query, EntityType.SP.getType()).getN();
+        return mongoTemplate.remove(query, EntityType.SP.getType()).getDeletedCount();
     }
 
     public long countAllImportedServiceProviders() {
