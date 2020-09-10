@@ -65,15 +65,6 @@ spring:
   data:
     mongodb:
       uri: mongodb://localhost:27017/metadata_test
-  datasource:
-    driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mysql://localhost/eb?autoReconnect=true&useSSL=false&useMysqlMetadata=true
-    username: root
-    password:
-    type: com.zaxxer.hikari.HikariDataSource
-    hikari:
-      connection-test-query: SELECT 1
-      leak-detection-threshold: 2000
   main:
     banner-mode: "off"
 
