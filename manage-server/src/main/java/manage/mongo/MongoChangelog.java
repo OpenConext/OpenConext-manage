@@ -5,13 +5,10 @@ import com.github.cloudyrock.mongock.ChangeSet;
 import com.github.cloudyrock.mongock.driver.mongodb.springdata.v3.decorator.impl.MongockTemplate;
 import com.mongodb.client.DistinctIterable;
 import manage.conf.IndexConfiguration;
-import manage.conf.MetaDataAutoConfiguration;
 import manage.model.EntityType;
 import manage.model.Scope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.index.IndexDefinition;
@@ -22,13 +19,11 @@ import org.springframework.data.mongodb.core.query.Query;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-@Configuration
-@ChangeLog
+@ChangeLog(order = "001")
 @SuppressWarnings("unchecked")
 public class MongoChangelog {
 
@@ -36,28 +31,19 @@ public class MongoChangelog {
 
     private static final Logger LOG = LoggerFactory.getLogger(MongoChangelog.class);
 
-    private static MetaDataAutoConfiguration staticMetaDataAutoConfiguration;
-
-    private MetaDataAutoConfiguration metaDataAutoConfiguration;
-
-    @Autowired
-    public MongoChangelog(MetaDataAutoConfiguration metaDataAutoConfiguration) {
-        MongoChangelog.staticMetaDataAutoConfiguration = metaDataAutoConfiguration;
-    }
-
-    @ChangeSet(order = "001", id = "createCollections", author = "Okke Harsta")
+    @ChangeSet(order = "001", id = "createCollections", author = "okke.harsta@surf.nl")
     public void createCollections(MongockTemplate mongoTemplate) {
-        this.doCreateSchemas(mongoTemplate, Arrays.asList("saml20_sp", "saml20_idp"));
+        this.doCreateSchemas(mongoTemplate, Arrays.asList("saml20_sp", "saml20_idp", "oidc10_rp"));
         if (!mongoTemplate.collectionExists("sequences")) {
-            LOG.info("Creating sequence collection with new start seq {}", 1L);
+            LOG.info("Creating sequence collection with new start seq {}", 999L);
 
             mongoTemplate.createCollection("sequences");
-            mongoTemplate.save(new Sequence("sequence", 1L));
+            mongoTemplate.save(new Sequence("sequence", 999L));
         }
 
     }
 
-    @ChangeSet(order = "002", id = "addTextIndexes", author = "Okke Harsta")
+    @ChangeSet(order = "002", id = "addTextIndexes", author = "okke.harsta@surf.nl")
     public void addTextIndexes(MongockTemplate mongoTemplate) {
         doAddTestIndexes(mongoTemplate);
     }
@@ -71,12 +57,7 @@ public class MongoChangelog {
         });
     }
 
-    @ChangeSet(order = "003", id = "createOIDCSchema", author = "Okke Harsta")
-    public void createOIDCSchema(MongockTemplate mongoTemplate) {
-        doCreateSchemas(mongoTemplate, Arrays.asList("oidc10_rp"));
-    }
-
-    @ChangeSet(order = "004", id = "addDefaultScopes", author = "Okke Harsta")
+    @ChangeSet(order = "003", id = "addDefaultScopes", author = "okke.harsta@surf.nl")
     public void addDefaultScopes(MongockTemplate mongoTemplate) {
         if (!mongoTemplate.collectionExists("scopes")) {
             mongoTemplate.remove(new Query(), Scope.class);
@@ -89,25 +70,15 @@ public class MongoChangelog {
         }
     }
 
-    @ChangeSet(order = "005", id = "removeSessions", author = "Okke Harsta", runAlways = true)
+    @ChangeSet(order = "004", id = "removeSessions", author = "okke.harsta@surf.nl", runAlways = true)
     public void removeSessions(MongockTemplate mongoTemplate) {
         mongoTemplate.remove(new Query(), "sessions");
     }
 
-    @ChangeSet(order = "006", id = "uniqueScopeName", author = "Okke Harsta")
-    public void uniqueScopeName(MongockTemplate mongoTemplate) {
-        mongoTemplate.remove(new Query(), "sessions");
-    }
-
     private void doCreateSchemas(MongockTemplate mongoTemplate, List<String> connectionTypes) {
-        Set<String> schemaNames = staticMetaDataAutoConfiguration.schemaNames();
-        schemaNames.forEach(schema -> {
+        connectionTypes.forEach(schema -> {
             if (!mongoTemplate.collectionExists(schema)) {
                 mongoTemplate.createCollection(schema);
-                staticMetaDataAutoConfiguration.indexConfigurations(schema).stream()
-                        .map(this::indexDefinition)
-                        .forEach(mongoTemplate.indexOps(schema)::ensureIndex);
-
                 String revision = schema.concat(REVISION_POSTFIX);
                 mongoTemplate.createCollection(revision);
                 mongoTemplate.indexOps(revision).ensureIndex(new Index("revision.parentId", Sort.Direction.ASC));

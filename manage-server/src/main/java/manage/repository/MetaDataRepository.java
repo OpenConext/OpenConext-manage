@@ -215,7 +215,7 @@ public class MetaDataRepository {
         return metaData;
     }
 
-    public Long incrementEid() {
+    public synchronized Long incrementEid() {
         Update updateInc = new Update();
         updateInc.inc("value", 1L);
         Sequence res = mongoTemplate.findAndModify(new BasicQuery("{\"_id\":\"sequence\"}"), updateInc, options, Sequence.class);

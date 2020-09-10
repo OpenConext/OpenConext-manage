@@ -26,7 +26,7 @@ public class MongoConfiguration {
 
         return MongockSpring5.builder()
                 .setDriver(driver)
-                .addChangeLogsScanPackage("oidc.mongo")
+                .addChangeLogsScanPackage("manage.mongo")
                 .setSpringContext(springContext)
                 .buildApplicationRunner();
     }
