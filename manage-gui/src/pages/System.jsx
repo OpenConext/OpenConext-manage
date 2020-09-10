@@ -245,14 +245,12 @@ export default class System extends React.PureComponent {
     };
 
     renderPush = () => {
-        const {loading, pushResults} = this.state;
+        const {loading} = this.state;
         const {currentUser} = this.props;
         const action = () => {
             this.setState({confirmationDialogOpen: false});
             this.runPush();
         };
-        const showNoDeltas = pushResults !== undefined && pushResults.length === 0;
-        const showDeltas = pushResults !== undefined && pushResults.length > 0;
         return (
             <section className="push">
                 <p>{I18n.t("playground.pushInfo", {url: currentUser.push.url, name: currentUser.push.name})}</p>
