@@ -2,12 +2,18 @@ logging:
   level:
     org.springframework.data.mongodb: INFO
     org.springframework.security: INFO
+    org.springframework.session: INFO
 
 server:
-  contextPath: /manage/api
+  error:
+    path: "/error"
   server-header:
-  session:
-    timeout: 28800
+  servlet:
+    context-path: /manage/api
+    session:
+      timeout: 28800
+      cookie:
+        secure: true
 
 features: push, validation, push_preview, orphans, find_my_data, bogus
 secure_cookie: false
@@ -61,29 +67,24 @@ spring:
       uri: mongodb://localhost:27017/metadata_test
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mysql://localhost/eb?autoReconnect=true&useSSL=false
+    url: jdbc:mysql://localhost/eb?autoReconnect=true&useSSL=false&useMysqlMetadata=true
     username: root
     password:
-    tomcat:
-      test-on-borrow: true
-      validation-query: SELECT 1
-      remove-abandoned: true
-      test-while-idle: true
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      connection-test-query: SELECT 1
+      leak-detection-threshold: 2000
   main:
     banner-mode: "off"
 
+# We disable all endpoints except health for the load-balancer and info for git information.
 management:
   health:
     mail:
       enabled: false
-
-# We disable all endpoints except health for the load-balancer and info for git information.
-endpoints:
-  enabled: false
-  health:
-    enabled: true
   info:
-    enabled: true
+    git:
+      mode: full
 
 gui:
   disclaimer:

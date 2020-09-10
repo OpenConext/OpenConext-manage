@@ -1,6 +1,8 @@
 package manage.shibboleth.mock;
 
 import manage.shibboleth.ShibbolethPreAuthenticatedProcessingFilter;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.GenericFilterBean;
 
 import javax.servlet.FilterChain;
@@ -41,10 +43,15 @@ public class MockShibbolethFilter extends GenericFilterBean {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
             throws IOException, ServletException {
-        SetHeader wrapper = new SetHeader((HttpServletRequest) servletRequest);
-        wrapper.setHeader(ShibbolethPreAuthenticatedProcessingFilter.NAME_ID_HEADER_NAME, SAML2_USER);
-        wrapper.setHeader(ShibbolethPreAuthenticatedProcessingFilter.DISPLAY_NAME_HEADER_NAME, "John Doe");
-        wrapper.setHeader(ShibbolethPreAuthenticatedProcessingFilter.SCHAC_HOME_HEADER, "http://mock-idp");
-        filterChain.doFilter(wrapper, servletResponse);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            SetHeader wrapper = new SetHeader((HttpServletRequest) servletRequest);
+            wrapper.setHeader(ShibbolethPreAuthenticatedProcessingFilter.NAME_ID_HEADER_NAME, SAML2_USER);
+            wrapper.setHeader(ShibbolethPreAuthenticatedProcessingFilter.DISPLAY_NAME_HEADER_NAME, "John Doe");
+            wrapper.setHeader(ShibbolethPreAuthenticatedProcessingFilter.SCHAC_HOME_HEADER, "http://mock-idp");
+            filterChain.doFilter(wrapper, servletResponse);
+        } else {
+            filterChain.doFilter(servletRequest, servletResponse);
+        }
     }
 }

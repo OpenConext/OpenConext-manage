@@ -17,7 +17,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import static manage.mongo.MongobeeConfiguration.REVISION_POSTFIX;
+import static manage.mongo.MongoChangelog.REVISION_POSTFIX;
 
 @Getter
 @NoArgsConstructor
@@ -104,17 +104,17 @@ public class MetaData implements Serializable {
                         part));
                 part = iterator.next();
                 if (iterator.hasNext()) {
-                    reference = Map.class.cast(reference).get(part);
+                    reference = ((Map) reference).get(part);
                 } else {
                     property = part;
                 }
             }
-            Map.class.cast(reference).put(property, value);
+            ((Map) reference).put(property, value);
         });
     }
 
     @Transient
     public Map<String, Object> metaDataFields() {
-        return Map.class.cast(data.get("metaDataFields"));
+        return (Map) data.get("metaDataFields");
     }
 }

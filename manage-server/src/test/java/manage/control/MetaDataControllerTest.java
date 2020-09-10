@@ -21,7 +21,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -42,11 +41,11 @@ import static org.apache.http.HttpStatus.SC_FORBIDDEN;
 import static org.apache.http.HttpStatus.SC_INTERNAL_SERVER_ERROR;
 import static org.apache.http.HttpStatus.SC_NOT_FOUND;
 import static org.apache.http.HttpStatus.SC_OK;
+import static org.hamcrest.Matchers.emptyOrNullString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -89,10 +88,10 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 .body("data.arp.enabled", equalTo(false))
                 .body("data.arp.attributes", notNullValue())
                 .body("data.metaDataFields", notNullValue())
-                .body("data.entityid", isEmptyOrNullString())
+                .body("data.entityid", emptyOrNullString())
                 .body("data.state", equalTo("testaccepted"))
                 .body("data.allowedEntities.size()", is(0))
-                .body("data.disableConsent", isEmptyOrNullString());
+                .body("data.disableConsent", emptyOrNullString());
     }
 
     @Test
@@ -105,7 +104,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 .body("type", equalTo("saml20_idp"))
                 .body("data.allowedall", equalTo(true))
                 .body("data.metaDataFields", notNullValue())
-                .body("data.entityid", isEmptyOrNullString())
+                .body("data.entityid", emptyOrNullString())
                 .body("data.state", equalTo("testaccepted"))
                 .body("data.allowedEntities.size()", is(0))
                 .body("data.disableConsent.size()", is(0));
@@ -660,7 +659,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 .post("manage/api/internal/validate/metadata")
                 .then()
                 .statusCode(SC_OK)
-                .body(isEmptyOrNullString());
+                .body(emptyOrNullString());
     }
 
     @Test
@@ -871,7 +870,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 .getBody()
                 .as(Map.class);
 
-        assertEquals(1, ((List)result.get("total")).get(0));
+        assertEquals(1, ((List) result.get("total")).get(0));
         Map imported = (Map) ((List) result.get("imported")).get(0);
         assertEquals("https://impacter.eu/sso/metadata", imported.get("entityId"));
 
@@ -879,11 +878,11 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         MetaData metaData = given()
                 .body(importRequest)
                 .header("Content-type", "application/json")
-                .get("manage/api/client/metadata/saml20_sp/"+id)
+                .get("manage/api/client/metadata/saml20_sp/" + id)
                 .getBody()
                 .as(MetaData.class);
 
-        importRequest = new Import(urlS,"https://impacter.eu/sso/metadata");
+        importRequest = new Import(urlS, "https://impacter.eu/sso/metadata");
         result = given()
                 .body(importRequest)
                 .header("Content-type", "application/json")

@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
+import org.springframework.core.env.Profiles;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -41,6 +42,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -79,7 +81,7 @@ import static java.util.stream.Collectors.toList;
 import static manage.api.Scope.TEST;
 import static manage.hook.OpenIdConnectHook.OIDC_CLIENT_KEY;
 import static manage.hook.OpenIdConnectHook.translateServiceProviderEntityId;
-import static manage.mongo.MongobeeConfiguration.REVISION_POSTFIX;
+import static manage.mongo.MongoChangelog.REVISION_POSTFIX;
 
 @RestController
 @SuppressWarnings("unchecked")
@@ -204,8 +206,8 @@ public class MetaDataController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping(value = "/client/delete/feed")
-    public Map<String, Integer> deleteFeed() {
-        int deleted = this.metaDataRepository.deleteAllImportedServiceProviders();
+    public Map<String, Long> deleteFeed() {
+        long deleted = this.metaDataRepository.deleteAllImportedServiceProviders();
         return Collections.singletonMap("deleted", deleted);
     }
 
@@ -225,7 +227,7 @@ public class MetaDataController {
                             .map(ServiceProvider::new)
                             .collect(Collectors.toMap(sp -> sp.getEntityId(), sp -> sp));
             String feedUrl = importRequest.getUrl();
-            Resource resource = new SaveURLResource(new URL(feedUrl), environment.acceptsProfiles("dev"));
+            Resource resource = new SaveURLResource(new URL(feedUrl), environment.acceptsProfiles(Profiles.of("dev")));
 
             List<Map<String, Object>> allImports = this.importer.importFeed(resource);
             List<Map<String, Object>> imports =
@@ -427,9 +429,9 @@ public class MetaDataController {
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/client/metadata")
     @Transactional
-    public MetaData put(@Validated @RequestBody MetaData metaData, FederatedUser federatedUser) throws
+    public MetaData put(@Validated @RequestBody MetaData metaData, Authentication authentication) throws
             JsonProcessingException {
-        return doPut(metaData, federatedUser.getUid(), false);
+        return doPut(metaData, authentication.getName(), false);
     }
 
     @PreAuthorize("hasRole('WRITE')")

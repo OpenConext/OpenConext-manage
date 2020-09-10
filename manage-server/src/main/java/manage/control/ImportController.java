@@ -12,6 +12,7 @@ import org.everit.json.schema.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
+import org.springframework.core.env.Profiles;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -58,7 +59,7 @@ public class ImportController {
     public Map<String, Object> importXMLUrl(@PathVariable("type") String type, @Validated @RequestBody Import
             importRequest) {
         try {
-            Resource resource = new SaveURLResource(new URL(importRequest.getUrl()), environment.acceptsProfiles("dev"));
+            Resource resource = new SaveURLResource(new URL(importRequest.getUrl()), environment.acceptsProfiles(Profiles.of("dev")));
             Map<String, Object> result = this.importer.importXML(resource, EntityType.fromType(type), Optional
                     .ofNullable(importRequest
                             .getEntityId()));
@@ -101,7 +102,7 @@ public class ImportController {
     public Map<String, Object> importJsonUrl(@PathVariable("type") String type, @Validated @RequestBody Import
             importRequest) {
         try {
-            Resource resource = new SaveURLResource(new URL(importRequest.getUrl()), environment.acceptsProfiles("dev"));
+            Resource resource = new SaveURLResource(new URL(importRequest.getUrl()), environment.acceptsProfiles(Profiles.of("dev")));
             String json = IOUtils.toString(resource.getInputStream(), Charset.defaultCharset());
             Map map = objectMapper.readValue(json, Map.class);
             return this.importJson(type, map);

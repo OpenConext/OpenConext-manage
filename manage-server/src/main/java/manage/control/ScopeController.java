@@ -3,6 +3,7 @@ package manage.control;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.DuplicateKeyException;
+import manage.exception.ResourceNotFoundException;
 import manage.exception.ScopeDuplicateNameException;
 import manage.exception.ScopeInUseException;
 import manage.model.EntityType;
@@ -68,11 +69,16 @@ public class ScopeController {
 
     @DeleteMapping({"/client/scopes/{id}"})
     public boolean delete(@PathVariable("id") String id) throws JsonProcessingException {
-        Scope scope = scopeRepository.findOne(id);
+        Scope scope = scopeById(id);
         checkScopeInUse(scope);
         LOG.info("Deleting scope {}", id);
-        scopeRepository.delete(id);
+        scopeRepository.delete(scope);
         return true;
+    }
+
+    private Scope scopeById(String id) {
+        Scope scope = scopeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(String.format("Scope with %s not found", id)));
+        return scope;
     }
 
     @GetMapping(value = "/client/fetch/{value}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -82,12 +88,12 @@ public class ScopeController {
 
     @GetMapping({"/client/scopes/{id}"})
     public Scope get(@PathVariable("id") String id) {
-        return scopeRepository.findOne(id);
+        return scopeById(id);
     }
 
     @PutMapping({"/client/scopes"})
     public Scope update(@RequestBody Scope scope) throws JsonProcessingException {
-        Scope previous = scopeRepository.findOne(scope.getId());
+        Scope previous = scopeById(scope.getId());
         if (!previous.getName().equals(scope.getName())) {
             checkScopeInUse(previous);
         }
