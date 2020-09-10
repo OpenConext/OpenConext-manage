@@ -115,7 +115,7 @@ export default class Connection extends React.PureComponent {
                     {I18n.t("metadata.revisionInfo", {
                       number: revision.number,
                       updatedBy: revision.updatedBy,
-                      created: new Date(revision.created * 1000).toGMTString()
+                      created: new Date(revision.created).toGMTString()
                     })}
                   </span>
                 </td>

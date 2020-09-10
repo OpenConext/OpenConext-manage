@@ -38,8 +38,12 @@ public class MongoChangelog {
 
     private static MetaDataAutoConfiguration staticMetaDataAutoConfiguration;
 
-    @Autowired
     private MetaDataAutoConfiguration metaDataAutoConfiguration;
+
+    @Autowired
+    public MongoChangelog(MetaDataAutoConfiguration metaDataAutoConfiguration) {
+        MongoChangelog.staticMetaDataAutoConfiguration = metaDataAutoConfiguration;
+    }
 
     @ChangeSet(order = "001", id = "createCollections", author = "Okke Harsta")
     public void createCollections(MongockTemplate mongoTemplate) {
@@ -83,6 +87,16 @@ public class MongoChangelog {
                     .collect(Collectors.toList());
             mongoTemplate.insert(allScopes, Scope.class);
         }
+    }
+
+    @ChangeSet(order = "005", id = "removeSessions", author = "Okke Harsta", runAlways = true)
+    public void removeSessions(MongockTemplate mongoTemplate) {
+        mongoTemplate.remove(new Query(), "sessions");
+    }
+
+    @ChangeSet(order = "006", id = "uniqueScopeName", author = "Okke Harsta")
+    public void uniqueScopeName(MongockTemplate mongoTemplate) {
+        mongoTemplate.remove(new Query(), "sessions");
     }
 
     private void doCreateSchemas(MongockTemplate mongoTemplate, List<String> connectionTypes) {

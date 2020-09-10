@@ -14,6 +14,7 @@ import org.springframework.session.web.context.AbstractHttpSessionApplicationIni
 import org.springframework.session.web.http.CookieSerializer;
 import org.springframework.session.web.http.DefaultCookieSerializer;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -32,31 +33,35 @@ public class SessionConfig extends AbstractHttpSessionApplicationInitializer {
     }
 
     @Bean
-    JacksonMongoSessionConverter mongoSessionConverter() {
-        SimpleModule module = new CoreJackson2Module() {
-            @Override
-            public void setupModule(SetupContext context) {
-                super.setupModule(context);
-                context.setMixInAnnotations(FederatedUser.class, FederatedUserMixin.class);
-                context.setMixInAnnotations(HashSet.class, HashSetMixin.class);
-                context.setMixInAnnotations(LinkedHashMap.class, LinkedHashMapMixin.class);
-            }
-        };
-
-        List<Module> modules = new ArrayList<>();
-        modules.add(module);
-
-        return new JacksonMongoSessionConverter(modules);
+    public JdkMongoSessionConverter jdkMongoSessionConverter() {
+        return new JdkMongoSessionConverter(Duration.ofHours(8));
     }
-
-    private static class FederatedUserMixin {
-    }
-
-    private static class HashSetMixin {
-    }
-
-    private static class LinkedHashMapMixin {
-    }
-
+//    @Bean
+//    JacksonMongoSessionConverter mongoSessionConverter() {
+//        SimpleModule module = new CoreJackson2Module() {
+//            @Override
+//            public void setupModule(SetupContext context) {
+//                super.setupModule(context);
+//                context.setMixInAnnotations(FederatedUser.class, FederatedUserMixin.class);
+//                context.setMixInAnnotations(HashSet.class, HashSetMixin.class);
+//                context.setMixInAnnotations(LinkedHashMap.class, LinkedHashMapMixin.class);
+//            }
+//        };
+//
+//        List<Module> modules = new ArrayList<>();
+//        modules.add(module);
+//
+//        return new JacksonMongoSessionConverter(modules);
+//    }
+//
+//    private static class FederatedUserMixin {
+//    }
+//
+//    private static class HashSetMixin {
+//    }
+//
+//    private static class LinkedHashMapMixin {
+//    }
+//
 
 }

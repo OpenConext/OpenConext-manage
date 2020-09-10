@@ -1,6 +1,8 @@
 package manage.web;
 
 import manage.shibboleth.FederatedUser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.MethodParameter;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
@@ -14,6 +16,8 @@ import java.security.Principal;
 public class FederatedUserHandlerMethodArgumentResolver implements
         HandlerMethodArgumentResolver {
 
+    private static final Logger LOG = LoggerFactory.getLogger(FederatedUserHandlerMethodArgumentResolver.class);
+
     public boolean supportsParameter(MethodParameter methodParameter) {
         return methodParameter.getParameterType().equals(FederatedUser.class);
     }
@@ -21,12 +25,32 @@ public class FederatedUserHandlerMethodArgumentResolver implements
     public FederatedUser resolveArgument(MethodParameter methodParameter,
                                          ModelAndViewContainer mavContainer,
                                          NativeWebRequest webRequest,
-                                         WebDataBinderFactory binderFactory) throws Exception {
-        Principal principal = webRequest.getUserPrincipal();
-        if (principal instanceof PreAuthenticatedAuthenticationToken) {
-            return FederatedUser.class.cast(PreAuthenticatedAuthenticationToken.class.cast(principal).getPrincipal());
-        } else {
-            return FederatedUser.class.cast(UsernamePasswordAuthenticationToken.class.cast(principal).getPrincipal());
+                                         WebDataBinderFactory binderFactory) {
+        Principal userPrincipal = webRequest.getUserPrincipal();
+        Object principal = null;
+        if (userPrincipal instanceof PreAuthenticatedAuthenticationToken) {
+            PreAuthenticatedAuthenticationToken token = (PreAuthenticatedAuthenticationToken) userPrincipal;
+            principal = token.getPrincipal();
+            if (principal instanceof FederatedUser) {
+                return (FederatedUser) principal;
+            }
+        } else if (userPrincipal instanceof UsernamePasswordAuthenticationToken) {
+            UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) userPrincipal;
+            principal = token.getPrincipal();
+            if (principal instanceof FederatedUser) {
+                return (FederatedUser) principal;
+            }
         }
+        LOG.warn(String.format("Can not extract FederatedUser from " +
+                        "userPrincipal %s " +
+                        "name %s " +
+                        "principal %s " +
+                        "webRequest %s",
+                userPrincipal.getClass().getCanonicalName(),
+                userPrincipal.getName(),
+                principal,
+                webRequest.getDescription(true)
+        ));
+        return null;
     }
 }

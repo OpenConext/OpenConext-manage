@@ -42,6 +42,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -428,9 +429,9 @@ public class MetaDataController {
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/client/metadata")
     @Transactional
-    public MetaData put(@Validated @RequestBody MetaData metaData, FederatedUser federatedUser) throws
+    public MetaData put(@Validated @RequestBody MetaData metaData, Authentication authentication) throws
             JsonProcessingException {
-        return doPut(metaData, federatedUser.getUid(), false);
+        return doPut(metaData, authentication.getName(), false);
     }
 
     @PreAuthorize("hasRole('WRITE')")

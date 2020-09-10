@@ -21,7 +21,7 @@ public class APIUserHandlerMethodArgumentResolver implements
     public APIUser resolveArgument(MethodParameter methodParameter,
                                    ModelAndViewContainer mavContainer,
                                    NativeWebRequest webRequest,
-                                   WebDataBinderFactory binderFactory) throws Exception {
+                                   WebDataBinderFactory binderFactory) {
         Principal principal = webRequest.getUserPrincipal();
         if (principal instanceof PreAuthenticatedAuthenticationToken) {
             return APIUser.class.cast(PreAuthenticatedAuthenticationToken.class.cast(principal).getPrincipal());

@@ -115,7 +115,7 @@ export default class Revisions extends React.Component {
         <tbody>
         <tr>
           <td>{revision.revision.number}</td>
-          <td>{new Date(revision.revision.created * 1000).toGMTString()}</td>
+          <td>{new Date(revision.revision.created).toGMTString()}</td>
           <td>{revision.revision.updatedBy}</td>
           <td>{I18n.t(`metadata.${revision.data.state}`)}</td>
           <td>{revision.data.revisionnote || ""}</td>

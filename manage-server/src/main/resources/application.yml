@@ -2,6 +2,7 @@ logging:
   level:
     org.springframework.data.mongodb: INFO
     org.springframework.security: INFO
+    org.springframework.session: INFO
 
 server:
   error:
@@ -77,18 +78,13 @@ spring:
     banner-mode: "off"
 
 # We disable all endpoints except health for the load-balancer and info for git information.
-# We disable all endpoints except health for the load-balancer and info for git information.
 management:
-  endpoints:
-    enabled-by-default: false
-  endpoint:
-    health:
-      enabled: true
-    info:
-      enabled: true
-      git:
-        mode: full
-
+  health:
+    mail:
+      enabled: false
+  info:
+    git:
+      mode: full
 
 gui:
   disclaimer:
