@@ -65,6 +65,7 @@ spring:
   data:
     mongodb:
       uri: mongodb://localhost:27017/metadata_test
+
   main:
     banner-mode: "off"
 
