@@ -50,12 +50,4 @@ public class MongoConvervter {
             }
         }
     }
-
-    //
-    //    // Converts . into a mongo friendly char
-    //    @PostConstruct
-    //    public void setUpMongoEscapeCharacterConversion() {
-    //
-    //    }
-    //
 }
