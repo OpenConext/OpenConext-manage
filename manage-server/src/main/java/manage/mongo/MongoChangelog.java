@@ -4,14 +4,12 @@ import com.github.cloudyrock.mongock.ChangeLog;
 import com.github.cloudyrock.mongock.ChangeSet;
 import com.github.cloudyrock.mongock.driver.mongodb.springdata.v3.decorator.impl.MongockTemplate;
 import com.mongodb.client.DistinctIterable;
-import manage.conf.IndexConfiguration;
 import manage.model.EntityType;
 import manage.model.Scope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.index.Index;
-import org.springframework.data.mongodb.core.index.IndexDefinition;
 import org.springframework.data.mongodb.core.index.IndexOperations;
 import org.springframework.data.mongodb.core.index.TextIndexDefinition;
 import org.springframework.data.mongodb.core.query.Query;
@@ -103,16 +101,6 @@ public class MongoChangelog {
             IndexOperations indexOps = mongoTemplate.indexOps(collection);
             indexOps.ensureIndex(new Index("revision.parentId", Sort.Direction.ASC));
         });
-    }
-
-    private IndexDefinition indexDefinition(IndexConfiguration indexConfiguration) {
-        Index index = new Index();
-        indexConfiguration.getFields().forEach(field -> index.on("data.".concat(field), Sort.Direction.ASC));
-        index.named(indexConfiguration.getName());
-        if (indexConfiguration.isUnique()) {
-            index.unique();
-        }
-        return index;
     }
 
 }
