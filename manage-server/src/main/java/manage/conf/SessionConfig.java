@@ -27,32 +27,4 @@ public class SessionConfig extends AbstractHttpSessionApplicationInitializer {
     public JdkMongoSessionConverter jdkMongoSessionConverter() {
         return new JdkMongoSessionConverter(Duration.ofHours(8));
     }
-//    @Bean
-//    JacksonMongoSessionConverter mongoSessionConverter() {
-//        SimpleModule module = new CoreJackson2Module() {
-//            @Override
-//            public void setupModule(SetupContext context) {
-//                super.setupModule(context);
-//                context.setMixInAnnotations(FederatedUser.class, FederatedUserMixin.class);
-//                context.setMixInAnnotations(HashSet.class, HashSetMixin.class);
-//                context.setMixInAnnotations(LinkedHashMap.class, LinkedHashMapMixin.class);
-//            }
-//        };
-//
-//        List<Module> modules = new ArrayList<>();
-//        modules.add(module);
-//
-//        return new JacksonMongoSessionConverter(modules);
-//    }
-//
-//    private static class FederatedUserMixin {
-//    }
-//
-//    private static class HashSetMixin {
-//    }
-//
-//    private static class LinkedHashMapMixin {
-//    }
-//
-
 }
