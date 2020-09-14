@@ -6,6 +6,7 @@ import manage.model.StatsEntry;
 import manage.mongo.Sequence;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.BasicQuery;
@@ -15,10 +16,12 @@ import org.springframework.data.mongodb.core.query.Field;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -199,6 +202,30 @@ public class MetaDataRepository {
 
     public List<MetaData> findRaw(String type, String query) {
         return mongoTemplate.find(new BasicQuery(query), MetaData.class, type);
+    }
+
+    public List<MetaData> recentActivity(List<EntityType> types, int max) {
+        max = Math.min(max, 100);
+        Query query = new Query()
+                .with(Sort.by(Sort.Order.desc("revision.created")))
+                .limit(max);
+        Field fields = query.fields();
+        fields
+                .include("type")
+                .include("data.state")
+                .include("data.entityid")
+                .include("data.metaDataFields.name:en")
+                .include("data.revisionnote")
+                .include("revision.created")
+                .include("revision.updatedBy");
+        List<MetaData> metaData = types.stream()
+                .map(entityType -> mongoTemplate.find(query, MetaData.class, entityType.getType()))
+                .flatMap(List::stream)
+                .collect(toList());
+        List<MetaData> results = metaData.stream()
+                .sorted(Comparator.comparing(md -> md.getRevision().getCreated(), Comparator.reverseOrder()))
+                .collect(toList()).subList(0, max);
+        return results;
     }
 
     public List<Map> whiteListing(String type, String state) {

@@ -656,6 +656,16 @@ public class MetaDataController {
         return metaDataRepository.findRaw(type, query);
     }
 
+    @PostMapping({"/client/recent-activity", "/internal/recent-activity"})
+    public List<MetaData> recentActivity(@RequestBody Map<String, Object> properties) {
+        int max = (int) properties.getOrDefault("limit", 100);
+        List<EntityType> types = ((List<String>) properties.get("types")).stream().map(s -> EntityType.fromType(s)).collect(toList());
+        if (CollectionUtils.isEmpty(types)) {
+            types = Arrays.asList(EntityType.values());
+        }
+        return metaDataRepository.recentActivity(types, max);
+    }
+
     private MetaData validate(MetaData metaData) throws JsonProcessingException {
         metaData = metaDataHook.preValidate(metaData);
         metaDataAutoConfiguration.validate(metaData.getData(), metaData.getType());

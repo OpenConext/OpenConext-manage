@@ -2,6 +2,7 @@ package manage;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.restassured.common.mapper.TypeRef;
 import org.apache.commons.io.IOUtils;
 import org.springframework.core.io.ClassPathResource;
 
@@ -25,6 +26,9 @@ public interface TestUtils {
     }
 
     TypeReference<Map<String, Object>> mapTypeRef = new TypeReference<Map<String, Object>>() {
+    };
+
+    TypeRef<List<Map<String, Object>>> mapListTypeRef = new TypeRef<List<Map<String, Object>>>() {
     };
 
     ObjectMapper objectMapper = ObjectMapperWrapper.init();
