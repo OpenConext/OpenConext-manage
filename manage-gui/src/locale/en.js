@@ -431,7 +431,7 @@ I18n.translations.en = {
     searchPlaceHolder: "Search for metadata within the results...",
     name: "Name",
     entityId: "EntityID",
-    created: "Created",
+    created: "Changed at",
     state: "State",
     type: "Type",
     revisionNote: "Revision note",
