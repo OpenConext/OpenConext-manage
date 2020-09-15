@@ -108,6 +108,7 @@ export default class Navigation extends React.PureComponent {
           {this.renderItem("/api", "api")}
           {!this.props.currentUser.guest && this.renderItem("/support", "support")}
           {!this.props.currentUser.guest && this.renderItem("/scopes", "scopes")}
+          {!this.props.currentUser.guest && this.renderItem("/activity", "activity")}
           {this.renderSpinner()}
           {this.renderPushButton()}
         </div>

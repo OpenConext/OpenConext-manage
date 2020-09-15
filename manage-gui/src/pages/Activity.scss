@@ -1,0 +1,159 @@
+@import "../stylesheets/vars.scss";
+@import "../stylesheets/mixins.scss";
+
+.activity {
+  @include page;
+  background-color: white;
+
+  section.explanation {
+    padding: 30px 15px;
+  }
+
+  section.options {
+    align-items: center;
+
+    div.entity-types {
+      width: 600px;
+      margin-right: 55px;
+    }
+
+    div.limit-value {
+      width: 90px;
+      margin-left: 10px;
+    }
+
+  }
+
+  section.search, section.options {
+    display: flex;
+    width: 100%;
+    margin-bottom: 15px;
+
+    .search-input-container {
+      flex-grow: 2;
+      position: relative;
+    }
+
+    .search-input {
+      padding: 10px;
+      font-size: 14px;
+      border-radius: 3px;
+      border: 1px solid #d9d9d8;
+      width: 100%;
+      height: 100%;
+    }
+
+    .fa-search {
+      position: absolute;
+      right: 15px;
+      top: 10px;
+      font-size: 20px;
+      color: $blue;
+    }
+  }
+
+  span.button {
+    margin-left: auto;
+    width: 240px;
+
+    i.fa {
+      margin-left: 25px;
+    }
+
+    &.copied {
+      animation: pulse 1s;
+      animation-iteration-count: 1;
+      position: relative;
+    }
+
+    @keyframes pulse {
+      0% {
+        box-shadow: 0 0 0 0 white;
+      }
+      70% {
+        box-shadow: 0 0 10px 8px lighten($green, 15%);
+      }
+      100% {
+        box-shadow: 0 0 0 0 white;
+      }
+    }
+  }
+
+  section.activity-printable {
+    display: none;
+  }
+
+  table {
+    width: 100%;
+    margin-bottom: 20px;
+
+    th {
+      text-align: left;
+      padding: 3px;
+      cursor: pointer;
+
+      i {
+        margin-left: 15px;
+        color: $lighter-grey;
+
+        &.current, &.reverse {
+          color: $blue;
+        }
+      }
+
+      &.name {
+        width: 20%;
+      }
+
+      &.entityId {
+        width: 35%;
+      }
+
+      &.type {
+        width: 8%;
+      }
+
+      &.created {
+        width: 15%;
+      }
+
+      &.state {
+        width: 7%;
+      }
+
+      &.revisionNote {
+        width: 10%;
+      }
+
+      &.updatedBy {
+        width: 10%;
+      }
+    }
+
+    tbody {
+      tr:nth-child(odd) {
+        background-color: $lightest-grey;
+      }
+
+      td {
+        vertical-align: middle;
+        word-wrap: break-word;
+        padding: 5px 8px 5px 1px;
+
+        &.info {
+          padding: 5px;
+
+          i.fa-info-circle {
+            font-size: 20px;
+            color: $blue;
+            margin-left: 20px;
+          }
+        }
+
+      }
+    }
+
+  }
+
+}
+

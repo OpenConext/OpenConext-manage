@@ -657,12 +657,18 @@ public class MetaDataController {
     }
 
     @PostMapping({"/client/recent-activity", "/internal/recent-activity"})
-    public List<MetaData> recentActivity(@RequestBody Map<String, Object> properties) {
-        int max = (int) properties.getOrDefault("limit", 100);
-        List<EntityType> types = ((List<String>) properties.get("types")).stream().map(s -> EntityType.fromType(s)).collect(toList());
-        if (CollectionUtils.isEmpty(types)) {
-            types = Arrays.asList(EntityType.values());
+    public List<MetaData> recentActivity(@RequestBody(required = false) Map<String, Object> properties) {
+        if (properties == null) {
+            properties = new HashMap<>();
         }
+        Object limit = properties.getOrDefault("limit", 25);
+        int max = 25;
+        if (limit instanceof Integer) {
+            max = (int) limit;
+        }
+        List<EntityType> types = ((List<String>) properties.getOrDefault("types",
+                Arrays.asList(EntityType.IDP.getType(), EntityType.SP.getType(), EntityType.RP.getType())))
+                .stream().map(EntityType::fromType).collect(toList());
         return metaDataRepository.recentActivity(types, max);
     }
 

@@ -28,7 +28,8 @@ I18n.translations.en = {
     system: "System",
     edugain: "eduGAIN",
     support: "Staging",
-    scopes: "Scopes"
+    scopes: "Scopes",
+    activity: "Activity"
   },
 
   metadata: {
@@ -425,6 +426,21 @@ I18n.translations.en = {
     noScopes: "There are no Scopes configured. This is extremely worrisome",
     info: "Below are all Scopes that can be configured on OIDC Relying Parties.",
     invalidName: "Invalid format for a scope"
+  },
+  activity: {
+    searchPlaceHolder: "Search for metadata within the results...",
+    name: "Name",
+    entityId: "EntityID",
+    created: "Created",
+    state: "State",
+    type: "Type",
+    revisionNote: "Revision note",
+    updatedBy: "Updated by",
+    noActivity: "No activity found",
+    search: "Search",
+    info: "Below are all the metadata that was recently changed.",
+    refresh: "Refresh",
+    limit: "Max results"
   },
   not_found: {
     title: "404",

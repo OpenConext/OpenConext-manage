@@ -244,5 +244,10 @@ export function saveScope(scope) {
 }
 
 export function deleteScope(id) {
-  return validFetch(`scopes/${id}`, {method: "delete"},{}, false);
+  return validFetch(`scopes/${id}`, {method: "delete"}, {}, false);
+}
+
+//Activity
+export function recentActivity(types, limit) {
+  return postPutJson("recent-activity", {types, limit}, "POST")
 }

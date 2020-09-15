@@ -73,6 +73,14 @@ public class MongoChangelog {
         mongoTemplate.remove(new Query(), "sessions");
     }
 
+    @ChangeSet(order = "005", id = "revisionCreatedIndex", author = "okke.harsta@surf.nl", runAlways = true)
+    public void revisionCreatedIndex(MongockTemplate mongoTemplate) {
+        Stream.of(EntityType.values()).forEach(entityType -> {
+            mongoTemplate.indexOps(entityType.getType())
+                    .ensureIndex(new Index("revision.created", Sort.Direction.DESC));
+        });
+    }
+
     private void doCreateSchemas(MongockTemplate mongoTemplate, List<String> connectionTypes) {
         connectionTypes.forEach(schema -> {
             if (!mongoTemplate.collectionExists(schema)) {

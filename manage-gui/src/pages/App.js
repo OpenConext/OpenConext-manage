@@ -20,6 +20,7 @@ import Dummy from "./Dummy";
 import EduGain from "./EduGain";
 import Support from "./Support";
 import Scopes from "./Scopes";
+import Activity from "./Activity";
 
 const S4 = () => (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
 
@@ -134,6 +135,10 @@ class App extends React.PureComponent {
             <ProtectedRoute path="/scopes"
                             guest={currentUser.guest}
                             render={props => <Scopes {...props}/>}/>
+
+            <ProtectedRoute path="/activity"
+                            guest={currentUser.guest}
+                            render={props => <Activity {...props}/>}/>
 
             <Route path="/error"
                    render={props => <ServerError {...props}/>}/>

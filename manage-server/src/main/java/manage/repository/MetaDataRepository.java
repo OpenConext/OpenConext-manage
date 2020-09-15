@@ -224,7 +224,7 @@ public class MetaDataRepository {
                 .collect(toList());
         List<MetaData> results = metaData.stream()
                 .sorted(Comparator.comparing(md -> md.getRevision().getCreated(), Comparator.reverseOrder()))
-                .collect(toList()).subList(0, max);
+                .collect(toList()).subList(0, Math.min(max, metaData.size()));
         return results;
     }
 
