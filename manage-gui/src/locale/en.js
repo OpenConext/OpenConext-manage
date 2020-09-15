@@ -440,7 +440,8 @@ I18n.translations.en = {
     search: "Search",
     info: "Below are all the metadata that was recently changed.",
     refresh: "Refresh",
-    limit: "Max results"
+    limit: "Max results",
+    noResults: "No results, make sure you have selected one of more entity types."
   },
   not_found: {
     title: "404",

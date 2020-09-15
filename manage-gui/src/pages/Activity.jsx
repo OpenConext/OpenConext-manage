@@ -94,7 +94,7 @@ export default class Activity extends React.Component {
       <th key={name} className={name}
           onClick={this.sortTable(filteredActivity, name)}>{I18n.t(`activity.${name}`)}{icon(name)}</th>
     const names = [
-      "name", "entityId", "type", "created", "state", "revisionNote", "updatedBy"
+      "name", "entityId", "type", "created", "revisionNote", "updatedBy"
     ];
     return <section className="activity-table">
       <table>
@@ -127,9 +127,6 @@ export default class Activity extends React.Component {
       </td>
       <td>
         {a.created.toGMTString()}
-      </td>
-      <td>
-        {a.state}
       </td>
       <td className="info">
         {isEmpty(a.revisionNote) ? <span></span> :
@@ -189,10 +186,12 @@ export default class Activity extends React.Component {
     if (!loaded) {
       return null;
     }
+    const hasResults = !isEmpty(filteredActivity);
     return (
       <div className="activity">
         {this.renderHeader(filteredActivity, query, limit, types, allTypes, copiedToClipboardClassName)}
-        {this.renderTable(filteredActivity, reverse)}
+        {hasResults && this.renderTable(filteredActivity, reverse)}
+        {!hasResults && <p className="no-results">{I18n.t("activity.noResults")}</p>}
         {this.renderActivityTablePrintable(filteredActivity)}
       </div>
     );
