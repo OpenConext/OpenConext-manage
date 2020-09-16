@@ -20,6 +20,7 @@ public class MetaDataHookConfiguration {
                                 MetaDataAutoConfiguration metaDataAutoConfiguration,
                                 @Value("${oidc.acsLocation}") String acsLocation) {
 
+        EmptyRevisionHook emptyRevisionHook = new EmptyRevisionHook(metaDataAutoConfiguration);
         EntityIdReconcilerHook entityIdReconcilerHook = new EntityIdReconcilerHook(metaDataRepository);
         OpenIdConnectHook openIdConnectHook = new OpenIdConnectHook(openIdConnect, acsLocation);
         SecretHook secretHook = new SecretHook();
@@ -30,6 +31,7 @@ public class MetaDataHookConfiguration {
 
         return new CompositeMetaDataHook(
                 Arrays.asList(
+                        emptyRevisionHook,
                         validationHook,
                         typeSafetyHook,
                         entityIdConstraintsHook,

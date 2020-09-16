@@ -73,7 +73,7 @@ public class MongoChangelog {
         mongoTemplate.remove(new Query(), "sessions");
     }
 
-    @ChangeSet(order = "005", id = "revisionCreatedIndex", author = "okke.harsta@surf.nl", runAlways = true)
+    @ChangeSet(order = "005", id = "revisionCreatedIndex", author = "okke.harsta@surf.nl")
     public void revisionCreatedIndex(MongockTemplate mongoTemplate) {
         Stream.of(EntityType.values()).forEach(entityType -> {
             mongoTemplate.indexOps(entityType.getType())
