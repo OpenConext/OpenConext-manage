@@ -21,7 +21,7 @@ public class OidcValidationHook extends MetaDataHookAdapter {
 
     @Override
     public boolean appliesForMetaData(MetaData metaData) {
-        return metaData.getType().equals("oidc10_rp");
+        return metaData.getType().equals(EntityType.RP.getType());
     }
 
     @Override

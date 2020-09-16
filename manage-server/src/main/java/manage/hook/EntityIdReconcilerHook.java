@@ -20,7 +20,7 @@ import static manage.model.EntityType.STT;
 @SuppressWarnings("unchecked")
 public class EntityIdReconcilerHook extends MetaDataHookAdapter {
 
-    private MetaDataRepository metaDataRepository;
+    private final MetaDataRepository metaDataRepository;
 
     public EntityIdReconcilerHook(MetaDataRepository metaDataRepository) {
         this.metaDataRepository = metaDataRepository;

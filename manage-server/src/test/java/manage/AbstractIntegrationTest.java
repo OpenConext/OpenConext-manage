@@ -50,7 +50,7 @@ public abstract class AbstractIntegrationTest implements TestUtils {
     protected ObjectMapper objectMapper;
 
     @Autowired
-    private MetaDataAutoConfiguration metaDataAutoConfiguration;
+    protected MetaDataAutoConfiguration metaDataAutoConfiguration;
 
     @LocalServerPort
     protected int port;

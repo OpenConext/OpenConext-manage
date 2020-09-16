@@ -29,7 +29,6 @@ public class OidcValidationHookTest implements TestUtils {
     public OidcValidationHookTest() throws IOException {
     }
 
-
     @Test
     public void appliesForMetaData() {
         assertTrue(subject.appliesForMetaData(new MetaData(EntityType.RP.getType(), emptyMap())));

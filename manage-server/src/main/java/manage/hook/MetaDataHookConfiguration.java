@@ -26,6 +26,7 @@ public class MetaDataHookConfiguration {
         TypeSafetyHook typeSafetyHook = new TypeSafetyHook(metaDataAutoConfiguration);
         EntityIdConstraintsHook entityIdConstraintsHook = new EntityIdConstraintsHook(metaDataRepository);
         OidcValidationHook validationHook = new OidcValidationHook(metaDataAutoConfiguration);
+        SSIDValidationHook ssidValidationHook = new SSIDValidationHook(metaDataRepository, metaDataAutoConfiguration);
 
         return new CompositeMetaDataHook(
                 Arrays.asList(
@@ -34,6 +35,7 @@ public class MetaDataHookConfiguration {
                         entityIdConstraintsHook,
                         entityIdReconcilerHook,
                         openIdConnectHook,
+                        ssidValidationHook,
                         secretHook));
     }
 

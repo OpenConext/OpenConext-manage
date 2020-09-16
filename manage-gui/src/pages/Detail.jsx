@@ -478,7 +478,7 @@ export default class Detail extends React.PureComponent {
     const metaData = this.state.metaData;
     metaData.data.revisionnote = revisionNote;
     promise(metaData).then(json => {
-      if (json.exception) {
+      if (json.exception || json.error) {
         setFlash(json.validations, "error");
         window.scrollTo(0, 0);
       } else {
