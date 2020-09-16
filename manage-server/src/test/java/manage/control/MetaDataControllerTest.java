@@ -621,6 +621,9 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void recentActivity() {
+        doDelete(EntityType.SP, "2", "Delete revision SP 2");
+        doDelete(EntityType.RP, "10", "Delete revision RP 10");
+
         doUpdate(EntityType.SP, "1", "First revision SP");
         doUpdate(EntityType.RP, "9", "First revision RP");
         doUpdate(EntityType.IDP, "6", "First revision IDP");
@@ -629,7 +632,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
 
         Map<String, Object> body = new HashMap<>();
         body.put("types", Arrays.asList(EntityType.RP.getType(), EntityType.IDP.getType(), EntityType.SP.getType()));
-        body.put("limit", 4);
+        body.put("limit", 6);
         List<Map<String, Object>> results = given()
                 .when()
                 .header("Content-type", "application/json")
@@ -637,19 +640,39 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 .post("manage/api/client/recent-activity")
                 .as(mapListTypeRef);
 
-        assertEquals(4, results.size());
+        assertEquals(6, results.size());
 
         Map<String, Object> sp1 = results.get(0);
         assertEquals("1", sp1.get("id"));
-        assertEquals("Third revision SP", ((Map)sp1.get("data")).get("revisionnote"));
+        assertEquals("Third revision SP", ((Map) sp1.get("data")).get("revisionnote"));
+        assertNull(((Map) sp1.get("revision")).get("terminated"));
 
         Map<String, Object> idp6 = results.get(1);
         assertEquals("6", idp6.get("id"));
-        assertEquals("First revision IDP", ((Map)idp6.get("data")).get("revisionnote"));
+        assertEquals("First revision IDP", ((Map) idp6.get("data")).get("revisionnote"));
+        assertNull(((Map) idp6.get("revision")).get("terminated"));
 
         Map<String, Object> rp9 = results.get(2);
         assertEquals("9", rp9.get("id"));
-        assertEquals("First revision RP", ((Map)rp9.get("data")).get("revisionnote"));
+        assertEquals("First revision RP", ((Map) rp9.get("data")).get("revisionnote"));
+        assertNull(((Map) rp9.get("revision")).get("terminated"));
+
+        Map<String, Object> rp10 = results.get(3);
+        assertEquals("Delete revision RP 10", ((Map) rp10.get("data")).get("revisionnote"));
+        assertNotNull(((Map) rp10.get("revision")).get("terminated"));
+
+        Map<String, Object> sp2 = results.get(4);
+        assertEquals("Delete revision SP 2", ((Map) sp2.get("data")).get("revisionnote"));
+        assertNotNull(((Map) sp2.get("revision")).get("terminated"));
+    }
+
+    private void doDelete(EntityType entityType, String id, String revisionNote) {
+        given().when()
+                .header("Content-type", "application/json")
+                .body(Collections.singletonMap("revisionNote", revisionNote))
+                .put("manage/api/client/metadata/" + entityType.getType() + "/" + id)
+                .then()
+                .statusCode(SC_OK);
     }
 
     @Test

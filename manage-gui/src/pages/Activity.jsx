@@ -8,6 +8,7 @@ import {copyToClip, isEmpty} from "../utils/Utils";
 import {Link} from "react-router-dom";
 import Select from "../components/Select";
 import NotesTooltip from "../components/NotesTooltip";
+import CheckBox from "../components/CheckBox";
 
 const limitOptions = ["25", "50", "75", "100"].map(s => ({value: s, label:s}));
 
@@ -41,6 +42,7 @@ export default class Activity extends React.Component {
         type: a.type,
         entityId: a.data.entityid,
         state: a.data.state,
+        terminated: a.revision.terminated,
         revisionNote: a.data.revisionnote,
         name: a.data.metaDataFields["name:en"],
         created: new Date(a.revision.created),
@@ -94,7 +96,7 @@ export default class Activity extends React.Component {
       <th key={name} className={name}
           onClick={this.sortTable(filteredActivity, name)}>{I18n.t(`activity.${name}`)}{icon(name)}</th>
     const names = [
-      "name", "entityId", "type", "created", "revisionNote", "updatedBy"
+      "name", "entityId", "type", "created", "terminated", "revisionNote", "updatedBy"
     ];
     return <section className="activity-table">
       <table>
@@ -115,9 +117,10 @@ export default class Activity extends React.Component {
     //"name", "entityId", "type", "created", "state", "revisionNote", "updatedBy"
     return <tr key={a.id}>
       <td>
-        <Link to={`/metadata/${a.type}/${a.id}/revisions`} target="_blank">
+        {isEmpty(a.terminated) && <Link to={`/metadata/${a.type}/${a.id}/revisions`} target="_blank">
           {a.name}
-        </Link>
+        </Link>}
+        {!isEmpty(a.terminated) && <span>{a.name}</span>}
       </td>
       <td>
         {a.entityId}
@@ -128,6 +131,7 @@ export default class Activity extends React.Component {
       <td>
         {a.created.toGMTString()}
       </td>
+      <td className="terminated"><CheckBox name="terminated" value={!isEmpty(a.terminated)} readOnly={true}/> </td>
       <td className="info">
         {isEmpty(a.revisionNote) ? <span></span> :
           <NotesTooltip identifier={a.entityId} notes={a.revisionNote}/>}

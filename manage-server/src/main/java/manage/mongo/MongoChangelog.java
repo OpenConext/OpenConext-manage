@@ -81,6 +81,14 @@ public class MongoChangelog {
         });
     }
 
+    @ChangeSet(order = "005", id = "revisionTerminatedIndex", author = "okke.harsta@surf.nl")
+    public void revisionTerminatedIndex(MongockTemplate mongoTemplate) {
+        Stream.of(EntityType.values()).forEach(entityType -> {
+            mongoTemplate.indexOps(entityType.getType().concat(REVISION_POSTFIX))
+                    .ensureIndex(new Index("revision.terminated", Sort.Direction.DESC));
+        });
+    }
+
     private void doCreateSchemas(MongockTemplate mongoTemplate, List<String> connectionTypes) {
         connectionTypes.forEach(schema -> {
             if (!mongoTemplate.collectionExists(schema)) {

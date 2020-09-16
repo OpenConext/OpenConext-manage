@@ -117,7 +117,7 @@
         width: 20%;
       }
 
-      &.state {
+      &.terminated {
         width: 7%;
       }
 
@@ -139,6 +139,10 @@
         vertical-align: middle;
         word-wrap: break-word;
         padding: 5px 8px 5px 1px;
+
+        &.terminated {
+          text-align: center;
+        }
 
         &.info {
           padding: 5px;

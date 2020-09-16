@@ -68,10 +68,9 @@ public abstract class AbstractIntegrationTest implements TestUtils {
             }
             MongoTemplate mongoTemplate = metaDataRepository.getMongoTemplate();
             metaDataAutoConfiguration.schemaNames().forEach(schema -> {
-                long removed = mongoTemplate.remove(new Query(Criteria.where("type").is(schema)), schema).getDeletedCount();
+                long removed = mongoTemplate.remove(new Query(), schema).getDeletedCount();
                 String revisionsSchema = schema.concat(REVISION_POSTFIX);
-                long removedRevisions = mongoTemplate.remove(new Query(Criteria.where("type").is(revisionsSchema)),
-                        revisionsSchema).getDeletedCount();
+                long removedRevisions = mongoTemplate.remove(new Query(), revisionsSchema).getDeletedCount();
                 LOG.debug("Removed {} records from {} and removed {} records from {}", removed, schema,
                         removedRevisions, revisionsSchema);
             });

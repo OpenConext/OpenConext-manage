@@ -19,6 +19,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -27,6 +28,7 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
+import static manage.mongo.MongoChangelog.REVISION_POSTFIX;
 
 /**
  * We can't use the Spring JPA repositories as we at runtime need to decide which collection to use. We only have one
@@ -217,7 +219,9 @@ public class MetaDataRepository {
                 .include("data.metaDataFields.name:en")
                 .include("data.revisionnote")
                 .include("revision.created")
+                .include("revision.terminated")
                 .include("revision.updatedBy");
+
         List<MetaData> metaData = types.stream()
                 .map(entityType -> mongoTemplate.find(query, MetaData.class, entityType.getType()))
                 .flatMap(List::stream)
@@ -225,7 +229,28 @@ public class MetaDataRepository {
         List<MetaData> results = metaData.stream()
                 .sorted(Comparator.comparing(md -> md.getRevision().getCreated(), Comparator.reverseOrder()))
                 .collect(toList()).subList(0, Math.min(max, metaData.size()));
+
+        Instant firstActivity = results.get(results.size() - 1).getRevision().getCreated();
+        query.addCriteria(Criteria.where("revision.terminated").gte(firstActivity));
+        List<MetaData> revisionMetaData = types.stream()
+                .map(entityType -> mongoTemplate.find(query, MetaData.class, entityType.getType().concat(REVISION_POSTFIX)))
+                .flatMap(List::stream)
+                .map(md -> updateCreatedRevision(md))
+                .collect(toList());
+        results.addAll(revisionMetaData);
+        if (!revisionMetaData.isEmpty()) {
+            //need to re-sort and cut off again
+            results = results.stream()
+                    .sorted(Comparator.comparing(md -> md.getRevision().getCreated(), Comparator.reverseOrder()))
+                    .collect(toList()).subList(0, Math.min(max, metaData.size()));
+        }
+
         return results;
+    }
+
+    private MetaData updateCreatedRevision(MetaData metaData) {
+        metaData.getRevision().markCreatedWithTerminatedInstant();
+        return metaData;
     }
 
     public List<Map> whiteListing(String type, String state) {

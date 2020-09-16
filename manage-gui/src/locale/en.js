@@ -432,7 +432,7 @@ I18n.translations.en = {
     name: "Name",
     entityId: "EntityID",
     created: "Changed at",
-    state: "State",
+    terminated: "Deleted",
     type: "Type",
     revisionNote: "Revision note",
     updatedBy: "Updated by",

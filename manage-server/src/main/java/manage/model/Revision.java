@@ -31,6 +31,11 @@ public class Revision {
         ++this.number;
     }
 
+    public void markCreatedWithTerminatedInstant() {
+        this.created = terminated;
+    }
+
+
     public void deTerminate(String newId) {
         this.terminated = null;
         this.parentId = newId;
