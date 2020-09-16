@@ -519,7 +519,9 @@ public class MetaDataController {
         if (!CollectionUtils.isEmpty(metaDataUpdate.getExternalReferenceData())) {
             metaData.getData().putAll(metaDataUpdate.getExternalReferenceData());
         }
-        metaData = metaDataHook.prePut(previous, metaData);
+        if (!name.equals("edugain-import")) {
+            metaData = metaDataHook.prePut(previous, metaData);
+        }
         metaData = validate(metaData);
         //Only save and update if there are changes
         boolean somethingChanged = !metaData.metaDataFields().equals(previous.metaDataFields());

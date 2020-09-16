@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 import static io.restassured.RestAssured.given;
@@ -609,6 +610,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 .get("manage/api/client/metadata/" + type.getType() + "/" + id)
                 .as(MetaData.class);
         metaData.getData().put("revisionnote", revisionNote);
+        metaData.getData().put("notes", UUID.randomUUID().toString());
         given().when()
                 .body(metaData)
                 .header("Content-type", "application/json")
