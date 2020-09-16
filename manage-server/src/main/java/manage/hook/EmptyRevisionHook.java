@@ -34,8 +34,14 @@ public class EmptyRevisionHook extends MetaDataHookAdapter {
 
     private boolean mapEquality(Map<String, Object> first, Map<String, Object> second) {
         return first.entrySet().stream()
-                .allMatch(e -> ignoreInDiff.contains(e.getKey()) ||
-                        (e.getValue() == null && second.get(e.getKey()) == null) ||
-                        e.getValue().equals(second.get(e.getKey())));
+                .allMatch(e -> {
+                    String firstKey = e.getKey();
+                    Object firstValue = e.getValue();
+                    Object secondValue = second.get(firstKey);
+
+                    return ignoreInDiff.contains(firstKey) ||
+                            (firstValue == null && secondValue == null) ||
+                            (firstValue != null && firstValue.equals(secondValue));
+                });
     }
 }

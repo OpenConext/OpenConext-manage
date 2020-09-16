@@ -41,6 +41,39 @@ public class EmptyRevisionHookTest implements TestUtils {
         subject.prePut(prevMetaData, newMetaData);
     }
 
+    @Test(expected = ValidationException.class)
+    public void prePutNullNotChanged() throws IOException {
+        MetaData prevMetaData = readMetaData();
+        MetaData newMetaData = readMetaData();
+        prevMetaData.getData().put("notes", null);
+        newMetaData.getData().put("notes", null);
+
+        newMetaData.getData().put("revisionnote", "has changed");
+        subject.prePut(prevMetaData, newMetaData);
+    }
+
+    @Test
+    public void prePutNullChanged() throws IOException {
+        MetaData prevMetaData = readMetaData();
+        MetaData newMetaData = readMetaData();
+        prevMetaData.getData().put("notes", "changed");
+        newMetaData.getData().put("notes", null);
+
+        newMetaData.getData().put("revisionnote", "has changed");
+        subject.prePut(prevMetaData, newMetaData);
+    }
+
+    @Test
+    public void prePutNullPrevChanged() throws IOException {
+        MetaData prevMetaData = readMetaData();
+        MetaData newMetaData = readMetaData();
+        prevMetaData.getData().put("notes", null);
+        newMetaData.getData().put("notes", "changed");
+
+        newMetaData.getData().put("revisionnote", "has changed");
+        subject.prePut(prevMetaData, newMetaData);
+    }
+
     @Test
     public void prePut() throws IOException {
         MetaData prevMetaData = readMetaData();
