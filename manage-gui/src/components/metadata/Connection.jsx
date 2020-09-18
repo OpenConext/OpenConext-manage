@@ -27,7 +27,8 @@ export default class Connection extends React.PureComponent {
     const {
       guest,
       originalEntityId,
-      metaData: { type, revision, data, id }
+      metaData: { type, revision, data, id },
+      revisionNote
     } = this.props;
     const isRelyingParty = type === "oidc10_rp";
     const entityIdFormat = this.props.configuration.properties.entityid.format;
@@ -124,7 +125,7 @@ export default class Connection extends React.PureComponent {
             <tr>
               <td className="key">{I18n.t("metadata.revisionnote")}</td>
               <td className="value">
-                <span>{data.revisionnote}</span>
+                <span>{revisionNote}</span>
               </td>
             </tr>
             <tr>
@@ -153,5 +154,6 @@ Connection.propTypes = {
   guest: PropTypes.bool.isRequired,
   isNew: PropTypes.bool.isRequired,
   configuration: PropTypes.object.isRequired,
-  originalEntityId: PropTypes.string.isRequired
+  originalEntityId: PropTypes.string.isRequired,
+  revisionNote: PropTypes.string
 };

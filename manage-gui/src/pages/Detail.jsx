@@ -91,6 +91,7 @@ export default class Detail extends React.PureComponent {
       loaded: false,
       selectedTab: "connection",
       revisionNote: "",
+      revisionNoteClone: "",
       confirmationDialogOpen: false,
       confirmationDialogAction: () => this,
       cancelDialogAction: () => this,
@@ -146,6 +147,7 @@ export default class Detail extends React.PureComponent {
             : "connection";
         this.setState({
           metaData: metaData,
+          revisionNoteClone: metaData.data.revisionnote,
           isNew: isNew || !isEmpty(this.props.clone),
           originalEntityId: metaData.data.entityid || "",
           loaded: isEmpty(newMetaData),
@@ -605,7 +607,8 @@ export default class Detail extends React.PureComponent {
     metaData,
     resourceServers,
     whiteListing,
-    revisions
+    revisions,
+    revisionNoteClone
   ) => {
     const configuration = this.props.configuration.find(
       conf => conf.title === this.state.type
@@ -627,6 +630,7 @@ export default class Detail extends React.PureComponent {
         return (
           <Connection
             metaData={metaData}
+            revisionNote={revisionNoteClone}
             onChange={this.onChange("connection")}
             onError={this.onError("connection")}
             errors={this.state.errors["connection"]}
@@ -736,6 +740,7 @@ export default class Detail extends React.PureComponent {
         return (
           <Revisions
             revisions={revisions}
+            firstRevisionNote={revisionNoteClone}
             isNew={isNew}
             entityType={type}
             history={this.props.history}
@@ -797,7 +802,8 @@ export default class Detail extends React.PureComponent {
       cancelDialogAction,
       leavePage,
       isNew,
-      errors
+      errors,
+      revisionNoteClone
     } = this.state;
 
     const type = metaData.type;
@@ -899,7 +905,8 @@ export default class Detail extends React.PureComponent {
           metaData,
           resourceServers,
           whiteListing,
-          revisions
+          revisions,
+          revisionNoteClone
         )}
         {renderContent && this.renderActions(revisionNote)}
       </div>

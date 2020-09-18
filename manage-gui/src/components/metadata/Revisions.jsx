@@ -99,7 +99,7 @@ export default class Revisions extends React.Component {
     return diffs ? <p dangerouslySetInnerHTML={{__html: html}}/> : <p>{I18n.t("revisions.identical")}</p>
   };
 
-  renderRevisionTable = (revision, isLatest, entityType) => {
+  renderRevisionTable = (revision, isLatest, entityType, firstRevisionNote) => {
     const showDetail = this.state.showRevisionDetails[revision.id];
     const headers = ["number", "created", "updatedBy", "status", "notes", "nope"];
     const isFirstRevision = revision.revision.number === 0;
@@ -118,7 +118,7 @@ export default class Revisions extends React.Component {
           <td>{new Date(revision.revision.created).toGMTString()}</td>
           <td>{revision.revision.updatedBy}</td>
           <td>{I18n.t(`metadata.${revision.data.state}`)}</td>
-          <td>{revision.data.revisionnote || ""}</td>
+          <td>{isLatest ? (firstRevisionNote || "") : revision.data.revisionnote || ""}</td>
           <td><a className={restoreClassName} href={`/restore/${revision.id}`}
                  onClick={this.restore(revision.id, revision.revision.number, revision.type, entityType, isLatest)}
                  disabled={isLatest}>
@@ -142,7 +142,7 @@ export default class Revisions extends React.Component {
   };
 
   render() {
-    const {revisions, isNew, entityType} = this.props;
+    const {revisions, isNew, entityType, firstRevisionNote} = this.props;
     const {
       showAllDetails, cancelDialogAction, confirmationDialogAction, confirmationDialogOpen,
       confirmationQuestion
@@ -165,7 +165,7 @@ export default class Revisions extends React.Component {
         </div>}
         {!isNew && <div className="revisions">
 
-          {revisions.map((rev, index) => this.renderRevisionTable(rev, index === 0, entityType))}
+          {revisions.map((rev, index) => this.renderRevisionTable(rev, index === 0, entityType, firstRevisionNote))}
         </div>}
       </div>
     );
@@ -176,6 +176,7 @@ Revisions.propTypes = {
   history: PropTypes.object.isRequired,
   revisions: PropTypes.array.isRequired,
   entityType: PropTypes.string.isRequired,
-  isNew: PropTypes.bool.isRequired
+  isNew: PropTypes.bool.isRequired,
+  firstRevisionNote: PropTypes.string
 };
 
