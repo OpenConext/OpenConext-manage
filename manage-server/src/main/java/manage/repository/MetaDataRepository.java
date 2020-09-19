@@ -235,7 +235,7 @@ public class MetaDataRepository {
         List<MetaData> revisionMetaData = types.stream()
                 .map(entityType -> mongoTemplate.find(query, MetaData.class, entityType.getType().concat(REVISION_POSTFIX)))
                 .flatMap(List::stream)
-                .map(md -> updateCreatedRevision(md))
+                .map(this::updateCreatedRevision)
                 .collect(toList());
         results.addAll(revisionMetaData);
         if (!revisionMetaData.isEmpty()) {
