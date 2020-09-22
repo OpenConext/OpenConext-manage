@@ -615,6 +615,12 @@
           "multiplicity": 3,
           "info": "The NameIDFormat(s) this service provider supports. This can be transient, persistent or unspecified."
         },
+        "^contacts:([0-3]{1}):company": {
+          "type": "string",
+          "multiplicity": 4,
+          "sibblingIndependent": true,
+          "info": "The company of the contact."
+        },
         "^contacts:([0-3]{1}):surName$": {
           "type": "string",
           "multiplicity": 4,
