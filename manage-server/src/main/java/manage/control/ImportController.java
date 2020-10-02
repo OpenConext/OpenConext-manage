@@ -63,6 +63,9 @@ public class ImportController {
             Map<String, Object> result = this.importer.importXML(resource, EntityType.fromType(type), Optional
                     .ofNullable(importRequest
                             .getEntityId()));
+            if (result.isEmpty()) {
+                return singletonMap("errors", singletonList("URL dit not contain valid SAML metadata"));
+            }
             result.put("metadataurl", importRequest.getUrl());
             return result;
         } catch (IOException | XMLStreamException e) {
