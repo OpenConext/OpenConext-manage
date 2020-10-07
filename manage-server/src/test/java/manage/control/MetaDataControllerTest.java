@@ -12,7 +12,6 @@ import manage.model.MetaDataKeyDelete;
 import manage.model.MetaDataUpdate;
 import manage.model.Revision;
 import manage.model.RevisionRestore;
-import manage.oidc.OidcClient;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 
@@ -36,10 +35,8 @@ import static java.util.Collections.singletonMap;
 import static manage.control.MetaDataController.ALL_ATTRIBUTES;
 import static manage.control.MetaDataController.LOGICAL_OPERATOR_IS_AND;
 import static manage.control.MetaDataController.REQUESTED_ATTRIBUTES;
-import static manage.hook.OpenIdConnectHook.OIDC_CLIENT_KEY;
 import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
 import static org.apache.http.HttpStatus.SC_FORBIDDEN;
-import static org.apache.http.HttpStatus.SC_INTERNAL_SERVER_ERROR;
 import static org.apache.http.HttpStatus.SC_NOT_FOUND;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.hamcrest.Matchers.emptyOrNullString;
@@ -227,38 +224,6 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void updateWithOIDC() {
-        String body = readFile("oidc/post_path_update.json");
-
-        given()
-                .auth()
-                .preemptive()
-                .basic("sp-portal", "secret")
-                .body(body)
-                .header("Content-type", "application/json")
-                .when()
-                .put("/manage/api/internal/merge")
-                .then()
-                .statusCode(SC_OK);
-    }
-
-    @Test
-    public void updateWithOIDCWithRedirectUriMap() {
-        String body = readFile("oidc/post_path_update_redirect_uri_map.json");
-
-        given()
-                .auth()
-                .preemptive()
-                .basic("sp-portal", "secret")
-                .body(body)
-                .header("Content-type", "application/json")
-                .when()
-                .put("/manage/api/internal/merge")
-                .then()
-                .statusCode(SC_INTERNAL_SERVER_ERROR);
-    }
-
-    @Test
     public void updateNonExistent() {
         MetaDataUpdate metaDataUpdate = new MetaDataUpdate("99999", EntityType.SP.getType(), Collections.emptyMap(), Collections.emptyMap());
 
@@ -273,7 +238,6 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 .then()
                 .statusCode(SC_NOT_FOUND);
     }
-
 
     @Test
     public void updateWithValidationErrors() throws IOException {
@@ -1018,73 +982,6 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void createOidc() throws java.io.IOException {
-        String json = readFile("/json/valid_service_provider.json");
-        Map data = objectMapper.readValue(json, Map.class);
-
-        OidcClient oidcClient = new OidcClient("http://client_id", "secret", Collections.singleton("http://redirect"), "authorization_code", Collections.singleton("openid"));
-        data.put(OIDC_CLIENT_KEY, oidcClient);
-
-        MetaData metaData = new MetaData(EntityType.SP.getType(), data);
-        metaData.metaDataFields().remove("AssertionConsumerService:0:Binding");
-        metaData.metaDataFields().remove("AssertionConsumerService:0:Location");
-        metaData.metaDataFields().put("coin:oidc_client", "1");
-        metaData.getData().put("entityid", "http://oidc_client");
-
-        Map map = given().auth()
-                .preemptive()
-                .basic("sp-portal", "secret")
-                .when()
-                .body(metaData)
-                .header("Content-type", "application/json")
-                .post("manage/api/internal/metadata")
-                .getBody().as(Map.class);
-
-        Map oidcClientMap = Map.class.cast(Map.class.cast(map.get("data")).get(OIDC_CLIENT_KEY));
-        assertEquals("http@//oidc_client", oidcClientMap.get("clientId"));
-
-        Map results = given()
-                .when()
-                .get("manage/api/client/metadata/saml20_sp/" + map.get("id"))
-                .getBody().as(Map.class);
-
-        oidcClientMap = Map.class.cast(Map.class.cast(results.get("data")).get(OIDC_CLIENT_KEY));
-        assertEquals("http@//oidc_client", oidcClientMap.get("clientId"));
-    }
-
-    @Test
-    public void updateOicdClient() {
-        MetaData metaData = given()
-                .when()
-                .get("manage/api/client/metadata/saml20_sp/8")
-                .getBody().as(MetaData.class);
-
-        Map<String, Object> pathUpdates = new HashMap<>();
-        pathUpdates.put("metaDataFields.name:en", "New name");
-
-        Map<String, Object> externalReferenceData = new HashMap<>();
-        Map<String, Object> oidcClient = (Map<String, Object>) metaData.getData().get(OIDC_CLIENT_KEY);
-        List<String> rediredctUris = Collections.singletonList("http://new-redirect");
-        oidcClient.put("redirectUris", rediredctUris);
-        externalReferenceData.put(OIDC_CLIENT_KEY, oidcClient);
-
-        MetaDataUpdate metaDataUpdate = new MetaDataUpdate("8", EntityType.SP.getType(), pathUpdates, externalReferenceData);
-
-        MetaData result = given()
-                .auth()
-                .preemptive()
-                .basic("sp-portal", "secret")
-                .body(metaDataUpdate)
-                .header("Content-type", "application/json")
-                .when()
-                .put("/manage/api/internal/merge")
-                .getBody()
-                .as(MetaData.class);
-        oidcClient = (Map<String, Object>) result.getData().get(OIDC_CLIENT_KEY);
-        assertEquals(rediredctUris, oidcClient.get("redirectUris"));
-    }
-
-    @Test
     public void updateWithValidationError() throws IOException {
         String json = readFile("/metadata_templates/oidc10_rp.template.json");
 
@@ -1259,58 +1156,6 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void oidcMerge() {
-        List<Map<String, Object>> results = given().auth()
-                .preemptive()
-                .basic("sp-portal", "secret")
-                .when()
-                .body(Collections.singletonList("https://oidc.test.client"))
-                .header("Content-type", "application/json")
-                .put("manage/api/internal/oidc/merge")
-                .as(List.class);
-
-        assertEquals(1, results.size());
-
-        Map<String, Object> metaData = results.get(0);
-        Map<String, Object> data = (Map<String, Object>) metaData.get("data");
-        assertEquals("oidc.test.client", data.get("entityid"));
-        assertEquals("Connection created by OIDC Merge for https://oidc.test.client on request of sp-portal", data.get("revisionnote"));
-
-        Map<String, Object> metaDataFields = (Map<String, Object>) data.get("metaDataFields");
-        assertEquals("authorization_code", ((List) metaDataFields.get("grants")).get(0));
-        assertEquals("openid", ((List) metaDataFields.get("scopes")).get(0));
-
-        validateMergedOidc(results);
-
-        MetaData idp = metaDataRepository.findById("6", EntityType.IDP.getType());
-        List<Map<String, String>> allowedEntities = (List<Map<String, String>>) idp.getData().get("allowedEntities");
-        long count = allowedEntities.stream().filter(map -> map.get("name").equals("oidc.test.client")).count();
-        assertEquals(1L, count);
-    }
-
-    @Test
-    public void oidcMergeValidationErrors() throws IOException {
-        MetaData metaData = objectMapper.readValue(readFile("json/oidc_merge_json_export_manage.json"), new
-                TypeReference<MetaData>() {
-                });
-
-        metaDataRepository.save(metaData);
-
-        List<Map<String, Object>> results = given().auth()
-                .preemptive()
-                .basic("sp-portal", "secret")
-                .when()
-                .body(Collections.singletonList("https://ahk.leerpodium.nl"))
-                .header("Content-type", "application/json")
-                .put("manage/api/internal/oidc/merge")
-                .as(List.class);
-
-        assertEquals(1, results.size());
-
-        validateMergedOidc(results);
-    }
-
-    @Test
     public void exportMetadataXml() throws IOException {
         given()
                 .config(newConfig().xmlConfig(xmlConfig()
@@ -1326,20 +1171,4 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                         equalTo("Duis ad do"));
     }
 
-    private void validateMergedOidc(List<Map<String, Object>> results) {
-        Map<String, Object> metaData = results.get(0);
-        Map oidcRp = given()
-                .when()
-                .get("manage/api/client/metadata/oidc10_rp/" + metaData.get("id"))
-                .as(Map.class);
-
-        //The secret is hashed
-        ((Map) ((Map) oidcRp.get("data")).get("metaDataFields")).remove("secret");
-        Map<String, Object> data = (Map<String, Object>) metaData.get("data");
-
-        Map<String, Object> metaDataFields = (Map<String, Object>) data.get("metaDataFields");
-        metaDataFields.remove("secret");
-
-        assertEquals(metaData, oidcRp);
-    }
 }

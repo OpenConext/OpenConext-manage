@@ -17,12 +17,9 @@ import manage.model.MetaData;
 import manage.model.MetaDataKeyDelete;
 import manage.model.MetaDataUpdate;
 import manage.model.RevisionRestore;
-import manage.model.Scope;
 import manage.model.ServiceProvider;
 import manage.model.StatsEntry;
 import manage.model.XML;
-import manage.oidc.Client;
-import manage.oidc.OpenIdConnect;
 import manage.repository.MetaDataRepository;
 import manage.shibboleth.FederatedUser;
 import org.everit.json.schema.ValidationException;
@@ -69,9 +66,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -79,8 +74,6 @@ import static java.util.Collections.singletonList;
 import static java.util.Collections.singletonMap;
 import static java.util.stream.Collectors.toList;
 import static manage.api.Scope.TEST;
-import static manage.hook.OpenIdConnectHook.OIDC_CLIENT_KEY;
-import static manage.hook.OpenIdConnectHook.translateServiceProviderEntityId;
 import static manage.mongo.MongoChangelog.REVISION_POSTFIX;
 
 @RestController
@@ -104,7 +97,6 @@ public class MetaDataController {
     private MetaDataHook metaDataHook;
     private Importer importer;
     private Exporter exporter;
-    private OpenIdConnect openIdConnect;
     private String baseDomain;
     private Environment environment;
 
@@ -116,7 +108,6 @@ public class MetaDataController {
                               MetaDataAutoConfiguration metaDataAutoConfiguration,
                               ResourceLoader resourceLoader,
                               MetaDataHook metaDataHook,
-                              OpenIdConnect openIdConnect,
                               Environment environment,
                               @Value("${metadata_export_path}") String metadataExportPath,
                               @Value("${base_domain}") String baseDomain,
@@ -128,7 +119,6 @@ public class MetaDataController {
 
         this.importer = new Importer(metaDataAutoConfiguration, languages);
         this.exporter = new Exporter(Clock.systemDefaultZone(), resourceLoader, metadataExportPath, languages);
-        this.openIdConnect = openIdConnect;
         this.baseDomain = baseDomain;
         this.environment = environment;
 
@@ -172,8 +162,6 @@ public class MetaDataController {
         MetaData metaData = this.get(type, id);
         Map metaDataFields = metaData.metaDataFields();
         metaDataFields.remove("coin:exclude_from_push");
-        //Bugfix for enriched metadata from the get
-        metaData.getData().remove(OIDC_CLIENT_KEY);
 
         return doPut(metaData, federatedUser.getUid(), false);
     }
@@ -713,104 +701,6 @@ public class MetaDataController {
         return new HttpEntity<>(HttpStatus.OK);
     }
 
-
-    @Secured("WRITE")
-    @PutMapping("internal/oidc/merge")
-    public List<MetaData> oidcMerge(@RequestBody List<String> spEntityIds, APIUser apiUser) throws JsonProcessingException {
-        LOG.debug("Starting OIDC Merge by {} for spEntityIds {}", apiUser.getName(), spEntityIds);
-
-        List<MetaData> metaDataResult = new ArrayList<>();
-
-        for (String spEntityId : spEntityIds) {
-            MetaData sp = findByEntityId(spEntityId, EntityType.SP.getType());
-            Map<String, Object> data = sp.getData();
-            String entityId = (String) data.get("entityid");
-
-            String openIdClientId = translateServiceProviderEntityId(entityId);
-            Optional<Client> clientOptional = openIdConnect.getClient(openIdClientId);
-
-            if (!clientOptional.isPresent()) {
-                continue;
-            }
-            Client client = clientOptional.get();
-
-            String newEntityId = entityId.replaceFirst("^(http[s]?://)", "");
-            if (newEntityId.equals(entityId)) {
-                throw new DuplicateEntityIdException(
-                        String.format("Could not merge due to entityId conflict. Current: %s, new: %s",
-                                entityId, newEntityId));
-            }
-            data.put("entityid", newEntityId);
-
-            Map<String, Object> metaDataFields = (Map) data.get("metaDataFields");
-            String secret = UUID.randomUUID().toString();
-
-            metaDataFields.put("secret", secret);
-
-            Map<String, Object> schema = metaDataAutoConfiguration.schemaRepresentation(EntityType.RP);
-            Map topLevelProperties = Map.class.cast(schema.get("properties"));
-            Map metaDataFieldProperties = Map.class.cast(topLevelProperties.get("metaDataFields"));
-            Map<String, Map> properties = (Map) metaDataFieldProperties.get("properties");
-            Map<String, Map> patternProperties = (Map) metaDataFieldProperties.get("patternProperties");
-
-            List<String> validGrants = (List<String>) ((Map) properties.get("grants").get("items")).get("enum");
-            metaDataFields.put("grants", client.getGrantTypes().stream().filter(validGrants::contains).collect(toList()));
-
-            List<String> validScopes = metaDataRepository.getMongoTemplate().findAll(Scope.class).stream().map(Scope::getName).collect(toList());
-            Set<String> clientScopes = client.getScope();
-            List<String> scopes = clientScopes.stream().filter(validScopes::contains).collect(toList());
-            scopes = CollectionUtils.isEmpty(scopes) ? Collections.singletonList("openid") : scopes;
-            metaDataFields.put("scopes", scopes);
-
-            metaDataFields.put("accessTokenValidity", client.getAccessTokenValiditySeconds());
-            metaDataFields.put("refreshTokenValidity", client.getRefreshTokenValiditySeconds());
-
-            ArrayList<String> redirectUris = CollectionUtils.isEmpty(client.getRedirectUris()) ? new ArrayList<>() : new ArrayList<>(client.getRedirectUris());
-
-            redirectUris.remove("https://authz-playground." + this.baseDomain + "/redirect");
-            redirectUris.add("https://oidc-playground." + this.baseDomain + "/redirect");
-            metaDataFields.put("redirectUrls", redirectUris);
-
-            //remove all non-OIDC attributes
-            metaDataFields.entrySet().removeIf(entry -> !(properties.containsKey(entry.getKey()) ||
-                    patternProperties.keySet().stream().anyMatch(prop -> Pattern.compile(prop).matcher(entry.getKey()).matches())));
-            data.entrySet().removeIf(entry -> !topLevelProperties.containsKey(entry.getKey()));
-
-            //Reminiscent of the Janus past
-            data.put("type", "oidc10-rp");
-            data.put("revisionnote", String.format("Connection created by OIDC Merge for %s on request of %s", spEntityId, apiUser.getName()));
-
-            MetaData oidcRP = new MetaData(EntityType.RP.getType(), data);
-            oidcRP = this.doPost(oidcRP, apiUser.getName(), false);
-
-            //There is a hook which hashes the secret and the recipient needs the unhashed secret
-            oidcRP.metaDataFields().put("secret", secret);
-            metaDataResult.add(oidcRP);
-
-            //Now update all IdP's that have the SP in the allowedEntities.name
-            List<MetaData> identityProviders = metaDataRepository.findRaw(EntityType.IDP.getType(),
-                    String.format("{\"data.%s.name\" : \"%s\"}", "allowedEntities", spEntityId));
-            identityProviders.forEach(idp -> {
-                MetaData previous = metaDataRepository.findById(idp.getId(), idp.getType());
-                previous.revision(UUID.randomUUID().toString());
-                metaDataRepository.save(previous);
-
-                List<Map<String, String>> allowedEntities = (List<Map<String, String>>) idp.getData().get("allowedEntities");
-                allowedEntities.add(Collections.singletonMap("name", newEntityId));
-
-                idp.promoteToLatest(apiUser.getName(),
-                        String.format("Added OIDC RP to allowedEntities during API internal/oidc/merge for %s by %s", spEntityId, apiUser.getName()));
-                metaDataRepository.update(idp);
-            });
-
-        }
-        //EB needs to receive the new entry
-        if (metaDataResult.size() > 0) {
-            databaseController.doPush();
-        }
-
-        return metaDataResult;
-    }
 
     private void addAllowedEntity(MetaData metaData, String entityId, Map<String, String> connectionData, APIUser apiUser) throws JsonProcessingException {
         Map<String, Object> data = metaData.getData();
