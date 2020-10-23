@@ -611,13 +611,14 @@ public class MetaDataController {
     public List<Map> uniqueEntityId(@PathVariable("type") String type,
                                     @RequestBody Map<String, Object> properties) {
         EntityType entityType = EntityType.fromType(type);
+        String entityId = (String) properties.get("entityid");
         List<Map> results;
         if (entityType.equals(EntityType.IDP) || entityType.equals(EntityType.STT)) {
-            results = metaDataRepository.findByEntityId(type, (String) properties.get("entityid"));
+            results = metaDataRepository.findByEntityId(type, entityId);
         } else {
-            results = metaDataRepository.findByEntityId(entityType.getType(), (String) properties.get("entityid"));
+            results = metaDataRepository.findByEntityId(entityType.getType(), entityId);
             String otherType = entityType.equals(EntityType.RP) ? EntityType.SP.getType() : EntityType.RP.getType();
-            results.addAll(metaDataRepository.findByEntityId(otherType, (String) properties.get("entityid")));
+            results.addAll(metaDataRepository.findByEntityId(otherType, entityId));
         }
         return results;
     }

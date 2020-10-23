@@ -406,7 +406,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void uniqueEntityIdCaseInsentive() {
+    public void uniqueEntityIdCaseInsensitive() {
         Map<String, Object> searchOptions = new HashMap<>();
         searchOptions.put("entityid", "https@//OIDC.RP");
         given()
