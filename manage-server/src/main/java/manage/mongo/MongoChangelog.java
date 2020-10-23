@@ -93,7 +93,9 @@ public class MongoChangelog {
 
     @ChangeSet(order = "006", id = "caseInsensitiveIndexEntityID", author = "okke.harsta@surf.nl")
     public void caseInsensitiveIndexEntityID(MongockTemplate mongoTemplate) {
-        Stream.of(EntityType.values()).map(EntityType::getType).forEach(val -> {
+        Stream.of(EntityType.values())
+                .filter(entityType -> !entityType.equals(EntityType.STT))
+                .map(EntityType::getType).forEach(val -> {
             IndexOperations indexOperations = mongoTemplate.indexOps(val);
             List<IndexInfo> indexInfo = indexOperations.getIndexInfo();
             if (indexInfo.stream().anyMatch(info -> info.getName().equals("data.entityid_1"))) {
