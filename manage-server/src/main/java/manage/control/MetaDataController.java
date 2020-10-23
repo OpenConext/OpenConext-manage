@@ -613,10 +613,11 @@ public class MetaDataController {
         EntityType entityType = EntityType.fromType(type);
         List<Map> results;
         if (entityType.equals(EntityType.IDP) || entityType.equals(EntityType.STT)) {
-            results = metaDataRepository.search(type, properties, new ArrayList<>(), false, true);
+            results = metaDataRepository.findByEntityId(type, (String) properties.get("entityid"));
         } else {
-            results = metaDataRepository.search(entityType.getType(), properties, new ArrayList<>(), false, true);
-            results.addAll(metaDataRepository.search(entityType.equals(EntityType.RP) ? EntityType.SP.getType() : EntityType.RP.getType(), properties, new ArrayList<>(), false, true));
+            results = metaDataRepository.findByEntityId(entityType.getType(), (String) properties.get("entityid"));
+            String otherType = entityType.equals(EntityType.RP) ? EntityType.SP.getType() : EntityType.RP.getType();
+            results.addAll(metaDataRepository.findByEntityId(otherType, (String) properties.get("entityid")));
         }
         return results;
     }

@@ -4,12 +4,14 @@ import manage.model.EntityType;
 import manage.model.MetaData;
 import manage.model.StatsEntry;
 import manage.mongo.Sequence;
+import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.BasicQuery;
+import org.springframework.data.mongodb.core.query.Collation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.CriteriaDefinition;
 import org.springframework.data.mongodb.core.query.Field;
@@ -204,6 +206,13 @@ public class MetaDataRepository {
 
     public List<MetaData> findRaw(String type, String query) {
         return mongoTemplate.find(new BasicQuery(query), MetaData.class, type);
+    }
+
+    public List<Map> findByEntityId(String type, String entityId) {
+        Document document = new Document("data.entityid", entityId);
+        Query query = new BasicQuery(document).collation(Collation.of("en").strength(2));
+        query.fields().include("_id");
+        return mongoTemplate.find(query, Map.class, type);
     }
 
     public List<MetaData> recentActivity(List<EntityType> types, int max) {

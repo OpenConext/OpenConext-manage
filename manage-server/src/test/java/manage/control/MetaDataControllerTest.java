@@ -405,6 +405,19 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 .body("size()", is(1));
     }
 
+    @Test
+    public void uniqueEntityIdCaseInsentive() {
+        Map<String, Object> searchOptions = new HashMap<>();
+        searchOptions.put("entityid", "https@//OIDC.RP");
+        given()
+                .when()
+                .body(searchOptions)
+                .header("Content-type", "application/json")
+                .post("manage/api/client/uniqueEntityId/saml20_sp")
+                .then()
+                .statusCode(SC_OK)
+                .body("size()", is(1));
+    }
 
     @Test
     public void search() {

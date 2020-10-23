@@ -10,8 +10,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.index.Index;
+import org.springframework.data.mongodb.core.index.IndexInfo;
 import org.springframework.data.mongodb.core.index.IndexOperations;
 import org.springframework.data.mongodb.core.index.TextIndexDefinition;
+import org.springframework.data.mongodb.core.query.Collation;
 import org.springframework.data.mongodb.core.query.Query;
 
 import java.util.Arrays;
@@ -86,6 +88,19 @@ public class MongoChangelog {
         Stream.of(EntityType.values()).forEach(entityType -> {
             mongoTemplate.indexOps(entityType.getType().concat(REVISION_POSTFIX))
                     .ensureIndex(new Index("revision.terminated", Sort.Direction.DESC));
+        });
+    }
+
+    @ChangeSet(order = "006", id = "caseInsensitiveIndexEntityID", author = "okke.harsta@surf.nl")
+    public void caseInsensitiveIndexEntityID(MongockTemplate mongoTemplate) {
+        Stream.of(EntityType.values()).map(EntityType::getType).forEach(val -> {
+            IndexOperations indexOperations = mongoTemplate.indexOps(val);
+            List<IndexInfo> indexInfo = indexOperations.getIndexInfo();
+            if (indexInfo.stream().anyMatch(info -> info.getName().equals("data.entityid_1"))) {
+                indexOperations.dropIndex("data.entityid_1");
+            }
+            indexOperations.ensureIndex(new Index("data.entityid", Sort.Direction.ASC).unique()
+                    .collation(Collation.of("en").strength(2)));
         });
     }
 
