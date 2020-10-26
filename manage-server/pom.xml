@@ -100,11 +100,6 @@
             <artifactId>mongodb-springdata-v3-driver</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.github.ooxi</groupId>
-            <artifactId>serialized-php-parser</artifactId>
-            <version>0.5.0</version>
-        </dependency>
-        <dependency>
             <!-- Spring-Boot provides snakeyaml, but only in scope runtime. -->
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
