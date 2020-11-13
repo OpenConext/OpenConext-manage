@@ -130,6 +130,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
 
         MetaData revision = revisions.get(1);
         assertEquals(revision.getData().get("revisionnote"), reasonForDeletion);
+        assertEquals("saml2_user.com", revision.getRevision().getUpdatedBy());
     }
 
     @Test
@@ -324,7 +325,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         assertEquals(1, revisions.size());
 
         Revision revision = revisions.get(0).getRevision();
-        assertEquals("saml2_user.com", revision.getUpdatedBy());
+        assertEquals("some.user", revision.getUpdatedBy());
         assertEquals(0, revision.getNumber());
         assertEquals("1", revision.getParentId());
 

@@ -26,8 +26,9 @@ public class Revision {
         this.parentId = parentId;
     }
 
-    public void terminate() {
+    public void terminate(String uid) {
         this.terminated = Instant.now();
+        this.updatedBy = uid;
         ++this.number;
     }
 

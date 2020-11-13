@@ -389,6 +389,7 @@ public class MetaDataController {
     public boolean remove(@PathVariable("type") String type, @PathVariable("id") String id, @RequestBody(required = false) Map body, FederatedUser user) {
         String defaultValue = "Deleted by " + user.getUid();
         String revisionNote = body != null ? (String) body.getOrDefault("revisionNote", defaultValue) : defaultValue;
+        revisionNote = StringUtils.hasText(revisionNote) ? revisionNote : defaultValue;
         return doRemove(type, id, user.getUid(), revisionNote);
     }
 
@@ -409,7 +410,7 @@ public class MetaDataController {
         current.revision(UUID.randomUUID().toString());
         metaDataRepository.save(current);
 
-        current.terminate(UUID.randomUUID().toString(), revisionNote);
+        current.terminate(UUID.randomUUID().toString(), revisionNote, uid);
         metaDataRepository.save(current);
         return true;
     }
