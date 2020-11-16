@@ -64,7 +64,7 @@ public class ImportController {
                     .ofNullable(importRequest
                             .getEntityId()));
             if (result.isEmpty()) {
-                return singletonMap("errors", singletonList("URL dit not contain valid SAML metadata"));
+                return singletonMap("errors", singletonList("URL did not contain valid SAML metadata"));
             }
             result.put("metadataurl", importRequest.getUrl());
             return result;
