@@ -126,7 +126,7 @@ export default class Scopes extends React.Component {
 
   renderDetails = () => {
     const {supportedLanguages, selectedScope, inUseEntities, inUse, inUseAction, nameInUse} = this.state;
-    const invalidName = !/^[a-zA-Z0-9_-]*$/.test(selectedScope.name)
+    const invalidName = !/^[a-zA-Z0-9_:/-]*$/.test(selectedScope.name)
     if (isEmpty(selectedScope)) {
       return this.renderEmptyDetails();
     }
