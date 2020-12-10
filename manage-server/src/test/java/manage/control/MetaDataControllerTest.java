@@ -1063,11 +1063,9 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
 
         MetaData idp = metaDataRepository.findById(idUId, EntityType.IDP.getType());
         Map<String, Object> data = idp.getData();
-        assertTrue(((String) data.get("revisionnote")).startsWith("Connection created by Dashboard on request of John Doe"));
-
         List<Map> allowedEntities = (List<Map>) data.get("allowedEntities");
 
-        assert listOfMapsContainsValue(allowedEntities, spId);
+        assertTrue(listOfMapsContainsValue(allowedEntities, spId));
     }
 
     @Test
@@ -1095,7 +1093,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
 
         MetaData idp = metaDataRepository.findById(idUId, EntityType.IDP.getType());
         Map<String, Object> data = idp.getData();
-        assertEquals(data.get("revisionnote"), "Connection created by Dashboard on request of John Doe - urn:collab:person:example.com:jdoe");
+        assertEquals(data.get("revisionnote"), "Connected https@//oidc.rp on request of John Doe - urn:collab:person:example.com:jdoe via Dashboard.");
 
         List<Map> allowedEntities = (List<Map>) data.get("allowedEntities");
 
