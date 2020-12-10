@@ -292,8 +292,13 @@ export default class MetaData extends React.Component {
   getDefaultValueForKey = (key, configuration) => {
     const keyConf = this.metaDataFieldConfiguration(key, configuration);
 
-    if (keyConf.type === "boolean") return keyConf.default;
-    if (keyConf.format === "date-time") return new Date().toISOString();
+    if (keyConf.type === "boolean") {
+      //https://www.pivotaltracker.com/story/show/175998120
+      return true;
+    }
+    if (keyConf.format === "date-time") {
+      return new Date().toISOString();
+    }
 
     return keyConf.default || "";
   };

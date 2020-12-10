@@ -713,7 +713,8 @@ public class MetaDataController {
         if (!allowedAll && allowedEntities.stream().noneMatch(allowedEntity -> allowedEntity.get("name").equals(entityId))) {
             allowedEntities.add(Collections.singletonMap("name", entityId));
             data.put("allowedEntities", allowedEntities);
-            data.put("revisionnote", String.format("Connection created by Dashboard on request of %s - %s", connectionData.get("user"), connectionData.get("userUrn")));
+            String revisionNote = String.format("Connected %s on request of %s - %s via Dashboard.", entityId, connectionData.get("user"), connectionData.get("userUrn"));
+            data.put("revisionnote", revisionNote);
             doPut(metaData, apiUser.getName(), false);
         }
     }
