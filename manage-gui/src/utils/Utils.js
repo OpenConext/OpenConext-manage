@@ -53,5 +53,5 @@ export function capitalize(str) {
 }
 
 export function validScope(scope) {
-    return scope.indexOf(" ") === -1;
+    return isEmpty(scope) || scope.indexOf(" ") === -1;
 }
