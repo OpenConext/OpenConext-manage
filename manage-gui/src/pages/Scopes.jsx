@@ -2,7 +2,7 @@ import React from "react";
 import I18n from "i18n-js";
 import PropTypes from "prop-types";
 import {allScopes, deleteScope, saveScope, scopeSupportedLanguagers} from "../api";
-import {isEmpty} from "../utils/Utils";
+import {isEmpty, validScope} from "../utils/Utils";
 import "./Scopes.css";
 import ConfirmationDialog from "../components/ConfirmationDialog";
 import String from "../components/form/String";
@@ -126,7 +126,7 @@ export default class Scopes extends React.Component {
 
   renderDetails = () => {
     const {supportedLanguages, selectedScope, inUseEntities, inUse, inUseAction, nameInUse} = this.state;
-    const invalidName = !/^[a-zA-Z0-9_:/-]*$/.test(selectedScope.name)
+    const invalidName = !validScope(selectedScope.name);
     if (isEmpty(selectedScope)) {
       return this.renderEmptyDetails();
     }

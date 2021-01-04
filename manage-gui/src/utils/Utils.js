@@ -51,3 +51,7 @@ export function copyToClip(elementId) {
 export function capitalize(str) {
     return str.charAt(0).toUpperCase() + str.substring(1);
 }
+
+export function validScope(scope) {
+    return scope.indexOf(" ") === -1;
+}
