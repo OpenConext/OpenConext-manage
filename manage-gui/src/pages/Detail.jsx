@@ -24,6 +24,7 @@ import {setFlash} from "../utils/Flash";
 import "./Detail.css";
 import ResourceServers from "../components/metadata/ResourceServers";
 import Stepup from "../components/metadata/Stepup";
+import ReactTooltip from "react-tooltip";
 
 const tabsSp = [
   "connection",
@@ -521,10 +522,6 @@ export default class Detail extends React.PureComponent {
     const {errors, revisionNoteError} = this.state;
     const hasErrors = this.hasGlobalErrors(errors);
     const revisionNoteRequired = revisionNoteError && isEmpty(revisionNote);
-    const nonExistentAllowedEntities = this.renderWarningNonExistentAllowedEntities();
-    if (nonExistentAllowedEntities) {
-      console.log("Warning: The `allowed entities` contains non-existent entitie");
-    }
     return (
       <section className="actions">
         <section className="notes-container">
@@ -787,6 +784,84 @@ export default class Detail extends React.PureComponent {
     );
   };
 
+  renderTopBanner = (name, metaData, resourceServers, whiteListing, isNew) => {
+    const type = metaData.type;
+    const {allowedall, state, allowedEntities, entityid} = metaData.data;
+    const typeMetaData = I18n.t(`metadata.${type}_single`);
+    const isSp = type === "saml20_sp";
+    const isRp = type === "oidc10_rp";
+    const isSingleTenantTemplate = type === "single_tenant_template";
+    const nonExistentAllowedEntities = this.renderWarningNonExistentAllowedEntities();
+    const importedFromEdugain = metaData.data.metaDataFields["coin:imported_from_edugain"];
+    const excludedFromPush = metaData.data.metaDataFields["coin:exclude_from_push"];
+    const pushEnabled = metaData.data.metaDataFields["coin:push_enabled"];
+    const isRs = metaData.data.metaDataFields["isResourceServer"];
+    const connectedEntities = whiteListing
+      .filter(idp => idp.data.allowedall || idp.data.allowedEntities.some(entity => entity.name === entityid))
+      .filter(idp => idp.data.state === state)
+      .filter(idp => allowedall || allowedEntities.some(entity => entity.name === idp.data.entityid));
+    // if (isEmpty(connectedEntities)) {
+    //   debugger;
+    // }
+    const isTrue = I18n.t("topBannerDetails.isTrue");
+    const isFalse = I18n.t("topBannerDetails.isFalse");
+    //name, type, workflow, status, imported_from_edugain, resourceserver
+    return (
+      <section className="info">
+        <table className={`${type} ${importedFromEdugain ? "imported-from-edugain" : ""}`}>
+          <thead>
+          <tr>
+            <th>{I18n.t("topBannerDetails.name")}</th>
+            <th>{I18n.t("topBannerDetails.type")}</th>
+            <th>{I18n.t("topBannerDetails.workflow")}</th>
+            {isSp && <th>
+              {I18n.t("topBannerDetails.reviewState")}
+              {excludedFromPush && <span className="info">
+                <i className="fa fa-info-circle" data-for="push-excluded-tooltip" data-tip/>
+                <ReactTooltip id="push-excluded-tooltip" type="info" class="tool-tip" effect="solid">
+                  <span dangerouslySetInnerHTML={{__html: I18n.t("topBannerDetails.pushExcludedTooltip")}}/>
+                </ReactTooltip>
+              </span>}
+            </th>}
+            {importedFromEdugain && <th>{I18n.t("topBannerDetails.edugainImported")}</th>}
+            {importedFromEdugain && <th>
+              {I18n.t("topBannerDetails.pushEnabled")}
+              <i className="fa fa-info-circle" data-for="push-enabled-tooltip" data-tip/>
+              <ReactTooltip id="push-enabled-tooltip" type="info" class="tool-tip" effect="solid">
+                <span dangerouslySetInnerHTML={{__html: I18n.t("topBannerDetails.pushEnabledTooltip")}}/>
+              </ReactTooltip>
+            </th>}
+            {isRp && <th>{I18n.t("topBannerDetails.isResourceServer")}</th>}
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td>{name}</td>
+            <td>{typeMetaData}</td>
+            <td className={state === "prodaccepted" ? "green" : "orange"}>{state}</td>
+            {isSp && <td className={excludedFromPush ? "orange" : "green"}>
+              {excludedFromPush ? I18n.t("topBannerDetails.staging") : I18n.t("topBannerDetails.production")}
+            </td>}
+            {importedFromEdugain && <td className={"blue"}>{isTrue}</td>}
+            {importedFromEdugain && <td className={"blue"}>{pushEnabled ? isTrue : isFalse}</td>}
+            {isRp && <th>{isRs ? isTrue : isFalse}</th>}
+          </tr>
+          </tbody>
+        </table>
+        {(!isEmpty(nonExistentAllowedEntities) && !isSingleTenantTemplate) &&
+        <section className="warning">
+          <i className="fa fa-exclamation-circle"></i>
+          <span>{I18n.t("topBannerDetails.unknownEntitiesConnected", {entities: nonExistentAllowedEntities.join(", ")})}</span>
+        </section>}
+        {(isEmpty(connectedEntities) && !isSingleTenantTemplate) &&
+        <section className="warning">
+          <i className="fa fa-exclamation-circle"></i>
+          <span>{I18n.t("topBannerDetails.noEntitiesConnected")}</span>
+        </section>}
+      </section>
+    );
+  }
+
   render() {
     const {
       loaded,
@@ -827,7 +902,6 @@ export default class Detail extends React.PureComponent {
     const renderContent = loaded && !notFound;
 
     const name = renderContent ? this.nameOfMetaData(metaData) : "";
-    const typeMetaData = I18n.t(`metadata.${type}_single`);
     const hasErrors = this.hasGlobalErrors(errors) && !isEmpty(metaData.id);
 
     return (
@@ -845,7 +919,7 @@ export default class Detail extends React.PureComponent {
         />
         {renderContent && (
           <section className="top-detail">
-            <section className="info">{`${typeMetaData} - ${name}`}</section>
+            {this.renderTopBanner(name, metaData, resourceServers, whiteListing, isNew)}
             {hasErrors && this.renderErrors(errors)}
             {!isNew && (
               <a

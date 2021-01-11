@@ -39,19 +39,19 @@ import static java.util.stream.Collectors.toMap;
 @RestController
 public class DatabaseController {
 
-    private RestTemplate restTemplate;
-    private String pushUri;
+    private final RestTemplate restTemplate;
+    private final String pushUri;
 
-    private RestTemplate oidcRestTemplate;
-    private String oidcPushUri;
-    private boolean oidcEnabled;
+    private final RestTemplate oidcRestTemplate;
+    private final String oidcPushUri;
+    private final boolean oidcEnabled;
 
-    private boolean excludeEduGainImported;
-    private boolean excludeOidcRP;
+    private final boolean excludeEduGainImported;
+    private final boolean excludeOidcRP;
 
-    private MetaDataRepository metaDataRepository;
+    private final MetaDataRepository metaDataRepository;
 
-    private Environment environment;
+    private final Environment environment;
 
     @Autowired
     DatabaseController(MetaDataRepository metaDataRepository,
@@ -96,7 +96,7 @@ public class DatabaseController {
         if (!environment.acceptsProfiles(Profiles.of("dev")) && oidcEnabled) {
             List<MetaData> oidcClients = metaDataRepository.getMongoTemplate().findAll(MetaData.class, "oidc10_rp");
             List<Scope> scopes = metaDataRepository.getMongoTemplate().findAll(Scope.class);
-            Map<String, Scope> scopesMapped = scopes.stream().collect(toMap(entry -> entry.getName(), entry -> entry));
+            Map<String, Scope> scopesMapped = scopes.stream().collect(toMap(scope -> scope.getName(), scope -> scope));
             oidcClients.forEach(oidcClient -> {
                 Map<String, Object> metaDataFields = oidcClient.metaDataFields();
                 List<String> scopeList = (List<String>) metaDataFields.get("scopes");

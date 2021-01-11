@@ -41,17 +41,17 @@ public class SystemController {
 
     private static final Logger LOG = LoggerFactory.getLogger(SystemController.class);
 
-    private MetaDataRepository metaDataRepository;
-    private MetaDataValidator metaDataValidator;
-
-    @Autowired
-    private DatabaseController databaseController;
+    private final MetaDataRepository metaDataRepository;
+    private final MetaDataValidator metaDataValidator;
+    private final DatabaseController databaseController;
 
     @Autowired
     public SystemController(MetaDataRepository metaDataRepository,
-                            MetaDataValidator metaDataValidator) {
+                            MetaDataValidator metaDataValidator,
+                            DatabaseController databaseController) {
         this.metaDataRepository = metaDataRepository;
         this.metaDataValidator = metaDataValidator;
+        this.databaseController = databaseController;
     }
 
     @PreAuthorize("hasRole('ADMIN')")

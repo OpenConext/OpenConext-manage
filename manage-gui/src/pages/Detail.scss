@@ -6,18 +6,75 @@
   @include page;
 
   section.top-detail {
-    margin: 15px 0 10px 0;
+    margin: 10px 0;
     display: flex;
     align-items: center;
 
     section.info {
-      font-size: 18px;
-      font-weight: bold;
-      color: $blue;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid $light-grey;
+      padding: 10px;
+      width: 100%;
+      font-size: 16px;
+      background-color: white;
+      border-radius: $br;
+
+      table {
+        width: 100%;
+        th {
+          text-align: left;
+          width: 33%;
+          padding-bottom: 5px;
+
+          i.fa {
+            margin-left: 15px;
+            color: $blue;
+          }
+
+        }
+
+        td {
+          &.green {
+            color: $dark-green;
+            font-weight: bold;
+          }
+
+          &.orange {
+            color: $orange;
+            font-weight: bold;
+          }
+
+          &.blue {
+            color: $blue;
+            font-weight: bold;
+          }
+
+        }
+
+        &.saml20_sp, &.oidc10_rp {
+          th {
+            width: 25%;
+          }
+        }
+
+        &.saml20_sp.imported-from-edugain {
+          th {
+            width: 16%;
+          }
+        }
+      }
+      section.warning {
+        margin-top: 15px;
+        color: $orange;
+        i.fa {
+          margin-right: 15px;
+        }
+      }
     }
 
     a.delete-metadata {
-      margin-left: auto;
+      margin-left: 15px;
     }
 
     a.clone-metadata {
