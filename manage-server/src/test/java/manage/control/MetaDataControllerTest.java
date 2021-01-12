@@ -151,7 +151,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 .then()
                 .statusCode(SC_OK)
                 .body("size()", is(4))
-                .body("title", hasItems("saml20_sp", "saml20_idp", "single_tenant_template", "oidc10_rp"));
+                .body("title", hasItems("saml20_sp", "saml20_idp", "single_tenant_template", "oidc10_rp", "oauth20_rs"));
     }
 
     @Test

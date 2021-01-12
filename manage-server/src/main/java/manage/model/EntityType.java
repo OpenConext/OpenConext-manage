@@ -8,6 +8,7 @@ public enum EntityType {
     IDP("saml20_idp"),
     SP("saml20_sp"),
     RP("oidc10_rp", SP.getJanusDbValue()),
+    RS("oauth20_rs"),
     STT("single_tenant_template", SP.getJanusDbValue());
 
 

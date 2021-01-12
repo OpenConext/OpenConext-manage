@@ -1,5 +1,6 @@
 package manage.hook;
 
+import manage.model.EntityType;
 import manage.model.MetaData;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.util.CollectionUtils;
@@ -14,7 +15,7 @@ public class SecretHook extends MetaDataHookAdapter {
 
     @Override
     public boolean appliesForMetaData(MetaData metaData) {
-        return metaData.getType().equals("oidc10_rp");
+        return metaData.getType().equals(EntityType.RP.getType()) || metaData.getType().equals(EntityType.RS.getType());
     }
 
     @Override
