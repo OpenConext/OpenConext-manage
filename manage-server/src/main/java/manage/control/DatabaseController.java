@@ -1,6 +1,7 @@
 package manage.control;
 
 import manage.format.EngineBlockFormatter;
+import manage.model.EntityType;
 import manage.model.MetaData;
 import manage.model.Scope;
 import manage.repository.MetaDataRepository;
@@ -94,11 +95,13 @@ public class DatabaseController {
 
         // Now push all oidc_rp metadata to OIDC proxy
         if (!environment.acceptsProfiles(Profiles.of("dev")) && oidcEnabled) {
-            List<MetaData> oidcClients = metaDataRepository.getMongoTemplate().findAll(MetaData.class, "oidc10_rp");
+            List<MetaData> relyingParties = metaDataRepository.getMongoTemplate().findAll(MetaData.class, EntityType.RP.getType());
+            List<MetaData> resourceServers = metaDataRepository.getMongoTemplate().findAll(MetaData.class, EntityType.RS.getType());
             List<Scope> scopes = metaDataRepository.getMongoTemplate().findAll(Scope.class);
             Map<String, Scope> scopesMapped = scopes.stream().collect(toMap(scope -> scope.getName(), scope -> scope));
-            oidcClients.forEach(oidcClient -> {
-                Map<String, Object> metaDataFields = oidcClient.metaDataFields();
+            resourceServers.forEach(rs -> {
+                Map<String, Object> metaDataFields = rs.metaDataFields();
+                metaDataFields.put("isResourceServer", true);
                 List<String> scopeList = (List<String>) metaDataFields.get("scopes");
                 if (!CollectionUtils.isEmpty(scopeList)) {
                     List<Scope> transformedScope = scopeList.stream()
@@ -108,7 +111,12 @@ public class DatabaseController {
                     metaDataFields.put("scopes", transformedScope);
                 }
             });
-            this.oidcRestTemplate.postForEntity(oidcPushUri, oidcClients, Void.class);
+            relyingParties.forEach(rp -> {
+                Map<String, Object> metaDataFields = rp.metaDataFields();
+                metaDataFields.put("isResourceServer", false);
+            });
+            relyingParties.addAll(resourceServers);
+            this.oidcRestTemplate.postForEntity(oidcPushUri, relyingParties, Void.class);
             result.put("oidc", true);
         }
 
@@ -143,8 +151,10 @@ public class DatabaseController {
                 .collect(toMap(MetaData::getId, formatter::parseIdentityProvider));
 
         if (!excludeOidcRP) {
-            List<MetaData> oidcClients = metaDataRepository.getMongoTemplate().findAll(MetaData.class, "oidc10_rp");
-            Map<String, Map<String, Object>> oidcClientsToPush = oidcClients.stream()
+            List<MetaData> relyingParties = metaDataRepository.getMongoTemplate().findAll(MetaData.class, EntityType.RP.getType());
+            List<MetaData> resourceServers = metaDataRepository.getMongoTemplate().findAll(MetaData.class, EntityType.RS.getType());
+            relyingParties.addAll(resourceServers);
+            Map<String, Map<String, Object>> oidcClientsToPush = relyingParties.stream()
                     .filter(metaData -> !excludeFromPush(metaData.metaDataFields()))
                     .collect(toMap(MetaData::getId, formatter::parseOidcClient));
 

@@ -16,6 +16,7 @@ public class SecretHookTest {
     @Test
     public void appliesForMetaData() {
         assertEquals(true, subject.appliesForMetaData(new MetaData("oidc10_rp", emptyMap())));
+        assertEquals(true, subject.appliesForMetaData(new MetaData("oauth20_rs", emptyMap())));
         assertEquals(false, subject.appliesForMetaData(new MetaData("nope", emptyMap())));
     }
 
