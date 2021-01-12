@@ -105,7 +105,8 @@ export default class Detail extends React.PureComponent {
       id: id,
       revisionNoteError: false,
       addedWhiteListedEntities: [],
-      removedWhiteListedEntities: []
+      removedWhiteListedEntities: [],
+      whiteListingLoaded: false
     };
   }
 
@@ -178,7 +179,7 @@ export default class Detail extends React.PureComponent {
         const state = (!isEmpty(newMetaData) && !isEmpty(newMetaData.connection) && !isEmpty(newMetaData.connection.state)
           && newMetaData.connection.state.selected) ? newMetaData.connection.state.value : metaData.data.state;
         whiteListing(whiteListingType, state).then(whiteListing => {
-          this.setState({whiteListing: whiteListing});
+          this.setState({whiteListing: whiteListing, whiteListingLoaded: true});
           if (isOidcRP) {
             allResourceServers(state).then(json =>
               this.setState({resourceServers: json})
@@ -784,7 +785,7 @@ export default class Detail extends React.PureComponent {
     );
   };
 
-  renderTopBanner = (name, metaData, resourceServers, whiteListing, isNew) => {
+  renderTopBanner = (name, metaData, resourceServers, whiteListing, isNew, whiteListingLoaded) => {
     const type = metaData.type;
     const {allowedall, state, allowedEntities, entityid} = metaData.data;
     const typeMetaData = I18n.t(`metadata.${type}_single`);
@@ -800,12 +801,8 @@ export default class Detail extends React.PureComponent {
       .filter(idp => idp.data.allowedall || idp.data.allowedEntities.some(entity => entity.name === entityid))
       .filter(idp => idp.data.state === state)
       .filter(idp => allowedall || allowedEntities.some(entity => entity.name === idp.data.entityid));
-    // if (isEmpty(connectedEntities)) {
-    //   debugger;
-    // }
     const isTrue = I18n.t("topBannerDetails.isTrue");
     const isFalse = I18n.t("topBannerDetails.isFalse");
-    //name, type, workflow, status, imported_from_edugain, resourceserver
     return (
       <section className="info">
         <table className={`${type} ${importedFromEdugain ? "imported-from-edugain" : ""}`}>
@@ -848,7 +845,8 @@ export default class Detail extends React.PureComponent {
           </tr>
           </tbody>
         </table>
-        {(!isEmpty(nonExistentAllowedEntities) && !isSingleTenantTemplate) &&
+        {(!isEmpty(nonExistentAllowedEntities) && !isSingleTenantTemplate
+        && !isNew && whiteListingLoaded) &&
         <section className="warning">
           <i className="fa fa-exclamation-circle"></i>
           <span>{I18n.t("topBannerDetails.unknownEntitiesConnected", {entities: nonExistentAllowedEntities.join(", ")})}</span>
@@ -878,7 +876,8 @@ export default class Detail extends React.PureComponent {
       leavePage,
       isNew,
       errors,
-      revisionNoteClone
+      revisionNoteClone,
+      whiteListingLoaded
     } = this.state;
 
     const type = metaData.type;
@@ -919,7 +918,7 @@ export default class Detail extends React.PureComponent {
         />
         {renderContent && (
           <section className="top-detail">
-            {this.renderTopBanner(name, metaData, resourceServers, whiteListing, isNew)}
+            {this.renderTopBanner(name, metaData, resourceServers, whiteListing, isNew, whiteListingLoaded)}
             {hasErrors && this.renderErrors(errors)}
             {!isNew && (
               <a
