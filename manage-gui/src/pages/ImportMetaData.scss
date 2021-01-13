@@ -11,7 +11,7 @@
     span {
       text-align: center;
       cursor: pointer;
-      padding: 15px;
+      padding: 15px 40px;
       background-color: $light-grey;
       color: $dark-grey;
       text-transform: uppercase;
@@ -22,6 +22,7 @@
         color: $darker-blue;
         border-top: 2px solid $blue;
         border-right: none;
+        font-weight: bold;
       }
 
       &:last-child {

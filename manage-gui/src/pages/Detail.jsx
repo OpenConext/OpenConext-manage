@@ -50,7 +50,7 @@ const tabsIdP = [
   "export"
 ];
 
-const tabsOIDC = [
+const tabsRp = [
   "connection",
   "connected_idps",
   "metadata",
@@ -58,6 +58,14 @@ const tabsOIDC = [
   "arp",
   "whitelist",
   "manipulation",
+  "revisions",
+  "import",
+  "export"
+];
+
+const tabsRs = [
+  "connection",
+  "metadata",
   "revisions",
   "import",
   "export"
@@ -854,7 +862,7 @@ export default class Detail extends React.PureComponent {
             entities: nonExistentAllowedEntities.join(", ")
           })}</span>
         </section>}
-        {(isEmpty(connectedEntities) && !isSingleTenantTemplate) &&
+        {(isEmpty(connectedEntities) && !isSingleTenantTemplate && !isNew && whiteListingLoaded) &&
         <section className="warning">
           <i className="fa fa-exclamation-circle"></i>
           <span>{I18n.t("topBannerDetails.noEntitiesConnected", {type: typeMetaData})}</span>
@@ -892,7 +900,9 @@ export default class Detail extends React.PureComponent {
         case "saml20_idp":
           return tabsIdP;
         case "oidc10_rp":
-          return tabsOIDC;
+          return tabsRp;
+        case "oauth2_rs":
+          return tabsRs;
         case "single_tenant_template":
           return tabsSingleTenant;
         default:

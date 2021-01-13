@@ -35,10 +35,12 @@ I18n.translations.en = {
   metadata: {
     saml20_sp: "Service Providers",
     saml20_idp: "Identity Providers",
-    oidc10_rp: "OIDC Relying Parties",
+    oidc10_rp: "Relying Parties",
+    oauth2_rs: "Resource Servers",
     saml20_sp_single: "Service Provider",
     saml20_idp_single: "Identity Provider",
     oidc10_rp_single: "OpenID Connect Relying Party",
+    oauth2_rs_single: "Resource Server",
     saml20_sp_revision_single: "Service Provider",
     saml20_idp_revision_single: "Identity Provider",
     oidc10_rp_revision_single: "OpenID Connect Relying Parties",
