@@ -94,6 +94,7 @@ export default class Navigation extends React.PureComponent {
 
   render() {
     const {confirmationDialogOpen, cancelDialogAction, confirmationDialogAction, confirmationQuestion} = this.state;
+    const {currentUser} = this.props;
     return (
       <div className="navigation-container">
         <ConfirmationDialog isOpen={confirmationDialogOpen}
@@ -102,13 +103,13 @@ export default class Navigation extends React.PureComponent {
                             question={confirmationQuestion}/>
         <div className="navigation">
           {this.renderItem("/search", "search")}
-          {!this.props.currentUser.guest && this.renderItem("/import", "import")}
-          {!this.props.currentUser.guest && this.renderItem("/system", "system")}
-          {!this.props.currentUser.guest && this.renderItem("/edugain", "edugain")}
+          {!currentUser.guest && this.renderItem("/import", "import")}
+          {!currentUser.guest && this.renderItem("/system", "system")}
+          {(!currentUser.guest && currentUser.featureToggles.some(feature => feature.toLowerCase() === "edugain")) && this.renderItem("/edugain", "edugain")}
           {this.renderItem("/api", "api")}
-          {!this.props.currentUser.guest && this.renderItem("/support", "support")}
-          {!this.props.currentUser.guest && this.renderItem("/scopes", "scopes")}
-          {!this.props.currentUser.guest && this.renderItem("/activity", "activity")}
+          {!currentUser.guest && this.renderItem("/support", "support")}
+          {!currentUser.guest && this.renderItem("/scopes", "scopes")}
+          {!currentUser.guest && this.renderItem("/activity", "activity")}
           {this.renderSpinner()}
           {this.renderPushButton()}
         </div>
