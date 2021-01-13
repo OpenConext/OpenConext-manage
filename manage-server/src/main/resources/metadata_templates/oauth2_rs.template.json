@@ -1,0 +1,11 @@
+{
+  "entityid": "",
+  "state": "testaccepted",
+  "metaDataFields": {
+    "name:en": "",
+    "secret": "",
+    "scopes": [
+      "openid"
+    ]
+  }
+}

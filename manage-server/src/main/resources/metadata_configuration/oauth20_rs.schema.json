@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "oauth2_rs",
+  "title": "oauth20_rs",
   "order": 4,
   "definitions": {
     "NameIDFormat": {
@@ -91,7 +91,7 @@
         "secret": {
           "type": "string",
           "format": "password",
-          "info": "The secret of this Relying Party for authentication purposes."
+          "info": "The secret of this Resource Server for authentication purposes."
         },
         "scopes": {
           "type": "array",
@@ -99,7 +99,7 @@
             "type": "string",
             "fetch": "scopes"
           },
-          "info": "The allowed scopes for this Relying Party."
+          "info": "The allowed scopes for this Resource Server."
         }
       },
       "patternProperties": {
