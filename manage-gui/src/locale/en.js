@@ -106,8 +106,8 @@ I18n.translations.en = {
     pushEnabledTooltip: "If <code>True</code> then this entity is pushed to EB<br/>because <code>coin:push_enabled</code> is set to <code>True</code><br/>despite it is imported from eduGain.<br/>",
     pushExcluded: "Push excluded",
     pushExcludedTooltip: "This entity is <strong>NOT</strong> pushed to EB as <code>coin:exclude_from_push</code>  is set to <code>True</code>",
-    noEntitiesConnected: "There are no entities connected to this entity",
-    unknownEntitiesConnected: "There are unknown entities connected to this entity: {{entities}}",
+    noEntitiesConnected: "There are no entities connected to this {{type}}",
+    unknownEntitiesConnected: "There are unknown entities connected to this {{type}}: {{entities}}",
     isResourceServer: "Resource server",
     isTrue: "True",
     isFalse: "False"

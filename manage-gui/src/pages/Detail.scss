@@ -57,6 +57,11 @@
             width: 25%;
           }
         }
+        &.oidc10_rp {
+          th {
+            width: 20%;
+          }
+        }
 
         &.saml20_sp.imported-from-edugain {
           th {
