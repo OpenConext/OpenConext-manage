@@ -798,9 +798,9 @@ export default class Detail extends React.PureComponent {
     const pushEnabled = metaData.data.metaDataFields["coin:push_enabled"];
     const isRs = metaData.data.metaDataFields["isResourceServer"];
     const connectedEntities = whiteListing
-      .filter(idp => idp.data.allowedall || idp.data.allowedEntities.some(entity => entity.name === entityid))
+      .filter(idp => idp.data.allowedall || (idp.data.allowedEntities || []).some(entity => entity.name === entityid))
       .filter(idp => idp.data.state === state)
-      .filter(idp => allowedall || allowedEntities.some(entity => entity.name === idp.data.entityid));
+      .filter(idp => allowedall || (allowedEntities || []).some(entity => entity.name === idp.data.entityid));
     const isTrue = I18n.t("topBannerDetails.isTrue");
     const isFalse = I18n.t("topBannerDetails.isFalse");
     return (
@@ -811,7 +811,7 @@ export default class Detail extends React.PureComponent {
             <th>{I18n.t("topBannerDetails.name")}</th>
             <th>{I18n.t("topBannerDetails.type")}</th>
             <th>{I18n.t("topBannerDetails.workflow")}</th>
-            {isSp && <th>
+            {(isSp || isRp) && <th>
               {I18n.t("topBannerDetails.reviewState")}
               {excludedFromPush && <span className="info">
                 <i className="fa fa-info-circle" data-for="push-excluded-tooltip" data-tip/>
@@ -836,7 +836,7 @@ export default class Detail extends React.PureComponent {
             <td>{name}</td>
             <td>{typeMetaData}</td>
             <td className={state === "prodaccepted" ? "green" : "orange"}>{state}</td>
-            {isSp && <td className={excludedFromPush ? "orange" : "green"}>
+            {(isSp || isRp) && <td className={excludedFromPush ? "orange" : "green"}>
               {excludedFromPush ? I18n.t("topBannerDetails.staging") : I18n.t("topBannerDetails.production")}
             </td>}
             {importedFromEdugain && <td className={"blue"}>{isTrue}</td>}
@@ -846,15 +846,18 @@ export default class Detail extends React.PureComponent {
           </tbody>
         </table>
         {(!isEmpty(nonExistentAllowedEntities) && !isSingleTenantTemplate
-        && !isNew && whiteListingLoaded) &&
+          && !isNew && whiteListingLoaded) &&
         <section className="warning">
           <i className="fa fa-exclamation-circle"></i>
-          <span>{I18n.t("topBannerDetails.unknownEntitiesConnected", {entities: nonExistentAllowedEntities.join(", ")})}</span>
+          <span>{I18n.t("topBannerDetails.unknownEntitiesConnected", {
+            type: typeMetaData,
+            entities: nonExistentAllowedEntities.join(", ")
+          })}</span>
         </section>}
         {(isEmpty(connectedEntities) && !isSingleTenantTemplate) &&
         <section className="warning">
           <i className="fa fa-exclamation-circle"></i>
-          <span>{I18n.t("topBannerDetails.noEntitiesConnected")}</span>
+          <span>{I18n.t("topBannerDetails.noEntitiesConnected", {type: typeMetaData})}</span>
         </section>}
       </section>
     );
