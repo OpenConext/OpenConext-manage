@@ -142,7 +142,6 @@ public class MongoChangelog {
             LOG.info(String.format("Migrated %s relying parties to resource server collection", bulkWriteResult.getInsertedCount()));
         }
 
-
         List<String> identifiers = resourceServers.stream().map(metaData -> metaData.getId()).collect(Collectors.toList());
         Criteria revisionCriteria = Criteria.where("revision.parentId").in(identifiers);
         List<MetaData> revisions = mongoTemplate.findAllAndRemove(Query.query(revisionCriteria), MetaData.class, EntityType.RP.getType().concat(REVISION_POSTFIX));
