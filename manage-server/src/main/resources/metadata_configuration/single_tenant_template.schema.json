@@ -413,7 +413,7 @@
         },
         "coin:privacy:surfnet_dpa_agreement": {
           "type": "boolean",
-          "info": "Is the SURFnet model Data Processing Agreement (DPA) signed by the service provider?"
+          "info": "Is the service provider willing to sign the SURF model Data Processing Agreement (DPA)?"
         },
         "coin:privacy:sn_dpa_why_not": {
           "type": "string",
@@ -445,6 +445,10 @@
         "coin:privacy:gdpr_is_in_wiki": {
           "type": "boolean",
           "info": "Set if the 'General Data Protection Regulation' (GDPR) is available on the SURF wiki. In Dutch known as 'Algemene Verordening Gegevensbescherming' (AVG). "
+        },
+        "coin:ss:supports_strong_authentication": {
+          "type": "boolean",
+          "info": "Obsolete setting, does nothing"
         },
         "coin:ss:license_status": {
           "type": "string",

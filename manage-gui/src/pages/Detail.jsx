@@ -799,12 +799,12 @@ export default class Detail extends React.PureComponent {
     const typeMetaData = I18n.t(`metadata.${type}_single`);
     const isSp = type === "saml20_sp";
     const isRp = type === "oidc10_rp";
+    const isRs = type === "oauth20_rs";
     const isSingleTenantTemplate = type === "single_tenant_template";
     const nonExistentAllowedEntities = this.renderWarningNonExistentAllowedEntities();
     const importedFromEdugain = metaData.data.metaDataFields["coin:imported_from_edugain"];
     const excludedFromPush = metaData.data.metaDataFields["coin:exclude_from_push"];
     const pushEnabled = metaData.data.metaDataFields["coin:push_enabled"];
-    const isRs = metaData.data.metaDataFields["isResourceServer"];
     const connectedEntities = whiteListing
       .filter(idp => idp.data.allowedall || (idp.data.allowedEntities || []).some(entity => entity.name === entityid))
       .filter(idp => idp.data.state === state)
@@ -836,7 +836,6 @@ export default class Detail extends React.PureComponent {
                 <span dangerouslySetInnerHTML={{__html: I18n.t("topBannerDetails.pushEnabledTooltip")}}/>
               </ReactTooltip>
             </th>}
-            {isRp && <th>{I18n.t("topBannerDetails.isResourceServer")}</th>}
           </tr>
           </thead>
           <tbody>
@@ -849,11 +848,10 @@ export default class Detail extends React.PureComponent {
             </td>}
             {importedFromEdugain && <td className={"blue"}>{isTrue}</td>}
             {importedFromEdugain && <td className={"blue"}>{pushEnabled ? isTrue : isFalse}</td>}
-            {isRp && <th>{isRs ? isTrue : isFalse}</th>}
           </tr>
           </tbody>
         </table>
-        {(!isEmpty(nonExistentAllowedEntities) && !isSingleTenantTemplate
+        {(!isEmpty(nonExistentAllowedEntities) && !isSingleTenantTemplate && !isRs
           && !isNew && whiteListingLoaded) &&
         <section className="warning">
           <i className="fa fa-exclamation-circle"></i>
@@ -862,7 +860,7 @@ export default class Detail extends React.PureComponent {
             entities: nonExistentAllowedEntities.join(", ")
           })}</span>
         </section>}
-        {(isEmpty(connectedEntities) && !isSingleTenantTemplate && !isNew && whiteListingLoaded) &&
+        {(isEmpty(connectedEntities) && !isSingleTenantTemplate && !isNew && !isRs && whiteListingLoaded) &&
         <section className="warning">
           <i className="fa fa-exclamation-circle"></i>
           <span>{I18n.t("topBannerDetails.noEntitiesConnected", {type: typeMetaData})}</span>
@@ -901,7 +899,7 @@ export default class Detail extends React.PureComponent {
           return tabsIdP;
         case "oidc10_rp":
           return tabsRp;
-        case "oauth2_rs":
+        case "oauth20_rs":
           return tabsRs;
         case "single_tenant_template":
           return tabsSingleTenant;

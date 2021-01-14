@@ -31,6 +31,7 @@ export default class Connection extends React.PureComponent {
       revisionNote
     } = this.props;
     const isRelyingParty = type === "oidc10_rp";
+    const isResourceServer = type === "oauth20_rs";
     const entityIdFormat = this.props.configuration.properties.entityid.format;
 
     const logo = data.metaDataFields["logo:0:url"];
@@ -81,7 +82,7 @@ export default class Connection extends React.PureComponent {
                 </td>
               </tr>
             )}
-            {!isRelyingParty && (
+            {(!isRelyingParty && !isResourceServer)&& (
               <tr>
                 <td className="key">{I18n.t("metadata.metaDataUrl")}</td>
                 <td className="value">

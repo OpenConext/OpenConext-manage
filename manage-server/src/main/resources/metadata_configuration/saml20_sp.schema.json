@@ -133,15 +133,16 @@
     "arp": {
       "type": "object",
       "sources": [
-        "idp",
         "ala",
+        "eduid",
+        "idp",
+        "manage",
         "orcid",
-        "sab",
-        "voot",
         "pseudo_email",
+        "sab",
         "sbs",
         "surfmarket_entitlements",
-        "manage"
+        "voot"
       ],
       "properties": {
         "enabled": {
@@ -356,11 +357,6 @@
           "default": false,
           "info": "Must be set for this Service Provider to be excluded in the EB push."
         },
-        "coin:oidc_client": {
-          "type": "boolean",
-          "default": false,
-          "info": "Set for those Service Providers that are OpenIDConnect clients."
-        },
         "coin:interfed_source": {
           "type": "string",
           "enum": [
@@ -377,7 +373,7 @@
             "connect_without_interaction_without_email"
           ],
           "default": "connect_with_interaction",
-          "info": "Whether the IdP can connect to this SP without any interaction, and, if so, whether an email must be sent to the admin of the service"
+          "info": "Whether the IdP can connect to this SP without any interaction, and, if so, whether an email must be sent to the admin contact of the service"
         },
         "coin:additional_logging": {
           "type": "boolean",
@@ -535,6 +531,10 @@
           "type": "boolean",
           "info": "Set if the 'General Data Protection Regulation' (GDPR) is available on the SURF wiki. In Dutch known as 'Algemene Verordening Gegevensbescherming' (AVG). "
         },
+        "coin:ss:supports_strong_authentication": {
+          "type": "boolean",
+          "info": "Obsolete setting, does nothing"
+        },
         "coin:ss:license_status": {
           "type": "string",
           "enum": [
@@ -614,12 +614,6 @@
           "$ref": "#/definitions/NameIDFormat",
           "multiplicity": 3,
           "info": "The NameIDFormat(s) this service provider supports. This can be transient, persistent or unspecified."
-        },
-        "^contacts:([0-3]{1}):company": {
-          "type": "string",
-          "multiplicity": 4,
-          "sibblingIndependent": true,
-          "info": "The company of the contact."
         },
         "^contacts:([0-3]{1}):surName$": {
           "type": "string",

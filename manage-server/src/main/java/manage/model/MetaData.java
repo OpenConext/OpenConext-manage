@@ -91,6 +91,10 @@ public class MetaData implements Serializable {
         this.version = version;
     }
 
+    public void setType(String type) {
+        this.type = type;
+    }
+
     @SuppressWarnings("unchecked")
     public void merge(MetaDataUpdate metaDataUpdate) {
         metaDataUpdate.getPathUpdates().forEach((path, value) -> {

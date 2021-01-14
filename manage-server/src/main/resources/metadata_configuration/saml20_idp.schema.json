@@ -155,7 +155,8 @@
             ],
             "enum": [
               "http://schemas.microsoft.com/claims/multipleauthn",
-              "test_with_local_value",
+              "https://refeds.org/profile/mfa",
+              "urn:oasis:names:tc:SAML:2.0:ac:classes:MobileOneFactorContract",
               "transparent_authn_context"
             ],
             "default": "http://schemas.microsoft.com/claims/multipleauthn"

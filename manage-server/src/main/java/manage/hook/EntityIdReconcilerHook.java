@@ -14,6 +14,7 @@ import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 import static manage.model.EntityType.IDP;
 import static manage.model.EntityType.RP;
+import static manage.model.EntityType.RS;
 import static manage.model.EntityType.SP;
 import static manage.model.EntityType.STT;
 
@@ -106,7 +107,7 @@ public class EntityIdReconcilerHook extends MetaDataHookAdapter {
             return asList(SP.getType(), RP.getType());
         }
         if (type.equals(RP.getType())) {
-            return asList(IDP.getType(), RP.getType());
+            return asList(IDP.getType(), RS.getType());
         }
         throw new IllegalArgumentException("Not supported MetaData type " + type);
     }

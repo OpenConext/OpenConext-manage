@@ -225,7 +225,7 @@ export default class ResourceServers extends React.Component {
       </th>
     );
     const names = ["status", "name", "entityid", "notes"];
-    const entityType = "oidc10_rp";
+    const entityType = "oauth20_rs";
     return (
       <section className="allowed-entities">
         <table>

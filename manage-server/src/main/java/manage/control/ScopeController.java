@@ -118,12 +118,15 @@ public class ScopeController {
 
     private void checkScopeInUse(Scope scope) throws JsonProcessingException {
         Query query = Query.query(Criteria.where("data.metaDataFields.scopes").is(scope.getName()));
-        List<MetaData> metaData = mongoTemplate.find(query, MetaData.class, EntityType.RP.getType());
-        if (!metaData.isEmpty()) {
+        List<MetaData> resourcesServers = mongoTemplate.find(query, MetaData.class, EntityType.RS.getType());
+        List<MetaData> relyingParties = mongoTemplate.find(query, MetaData.class, EntityType.RP.getType());
+        resourcesServers.addAll(relyingParties);
+        if (!resourcesServers.isEmpty()) {
             List<Map<String, String>> message = new ArrayList<>();
-            metaData.forEach(md -> {
+            resourcesServers.forEach(md -> {
                 Map<String, String> entry = new HashMap<>();
                 entry.put("id", md.getId());
+                entry.put("type", md.getType());
                 entry.put("entityid", (String) md.getData().get("entityid"));
                 message.add(entry);
             });
