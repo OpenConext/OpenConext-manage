@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 import static manage.model.EntityType.IDP;
@@ -108,6 +109,9 @@ public class EntityIdReconcilerHook extends MetaDataHookAdapter {
         }
         if (type.equals(RP.getType())) {
             return asList(IDP.getType(), RS.getType());
+        }
+        if (type.equals(RS.getType())) {
+            return emptyList();
         }
         throw new IllegalArgumentException("Not supported MetaData type " + type);
     }

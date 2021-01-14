@@ -150,7 +150,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 .get("manage/api/client/metadata/configuration")
                 .then()
                 .statusCode(SC_OK)
-                .body("size()", is(4))
+                .body("size()", is(5))
                 .body("title", hasItems("saml20_sp", "saml20_idp", "single_tenant_template", "oidc10_rp", "oauth20_rs"));
     }
 
@@ -366,19 +366,6 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 .body("suggestions.size()", is(1))
                 .body("suggestions.data.entityid", hasItems(
                         "https://idp.test2.surfconext.nl"));
-    }
-
-    @Test
-    public void autoAlternatives() {
-        given()
-                .when()
-                .queryParam("query", "OIDC Resource")
-                .get("manage/api/client/autocomplete/saml20_sp")
-                .then()
-                .statusCode(SC_OK)
-                .body("suggestions.size()", is(0))
-                .body("alternatives.data.entityid", hasItems(
-                        "https@//oidc.rp.resourceServer"));
     }
 
     @Test
@@ -600,7 +587,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     @Test
     public void recentActivity() {
         doDelete(EntityType.SP, "2", "Delete revision SP 2");
-        doDelete(EntityType.RP, "10", "Delete revision RP 10");
+        doDelete(EntityType.RS, "10", "Delete revision RS 10");
 
         doUpdate(EntityType.SP, "1", "First revision SP");
         doUpdate(EntityType.RP, "9", "First revision RP");
@@ -609,7 +596,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         doUpdate(EntityType.SP, "1", "Third revision SP");
 
         Map<String, Object> body = new HashMap<>();
-        body.put("types", Arrays.asList(EntityType.RP.getType(), EntityType.IDP.getType(), EntityType.SP.getType()));
+        body.put("types", Arrays.asList(EntityType.RP.getType(), EntityType.IDP.getType(), EntityType.SP.getType(), EntityType.RS.getType()));
         body.put("limit", 6);
         List<Map<String, Object>> results = given()
                 .when()
@@ -635,9 +622,9 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         assertEquals("First revision RP", ((Map) rp9.get("data")).get("revisionnote"));
         assertNull(((Map) rp9.get("revision")).get("terminated"));
 
-        Map<String, Object> rp10 = results.get(3);
-        assertEquals("Delete revision RP 10", ((Map) rp10.get("data")).get("revisionnote"));
-        assertNotNull(((Map) rp10.get("revision")).get("terminated"));
+        Map<String, Object> rs10 = results.get(3);
+        assertEquals("Delete revision RS 10", ((Map) rs10.get("data")).get("revisionnote"));
+        assertNotNull(((Map) rs10.get("revision")).get("terminated"));
 
         Map<String, Object> sp2 = results.get(4);
         assertEquals("Delete revision SP 2", ((Map) sp2.get("data")).get("revisionnote"));
@@ -690,7 +677,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 .get("manage/api/client/whiteListing/saml20_sp")
                 .then()
                 .statusCode(SC_OK)
-                .body("size()", is(3))
+                .body("size()", is(2))
                 .body("data.allowedall", hasItems(true, false));
     }
 

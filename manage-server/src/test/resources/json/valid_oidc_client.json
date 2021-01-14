@@ -6,7 +6,6 @@
     "allowedall": true,
     "metaDataFields": {
       "name:en": "OpenConext Valid SP",
-      "coin:oidc_client": "1"
     },
     "oidcClient": {
       "clientSecret": "3510DB82-764B-482C-917D-EA473BC5E86B",

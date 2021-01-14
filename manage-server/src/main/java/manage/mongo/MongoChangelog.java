@@ -23,6 +23,7 @@ import org.springframework.data.mongodb.core.index.TextIndexDefinition;
 import org.springframework.data.mongodb.core.query.Collation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -118,7 +119,7 @@ public class MongoChangelog {
     }
 
     @SneakyThrows
-    @ChangeSet(order = "007", id = "moveResourceServers", author = "okke.harsta@surf.nl", runAlways = true)
+    @ChangeSet(order = "007", id = "moveResourceServers", author = "okke.harsta@surf.nl")
     public void moveResourceServers(MongockTemplate mongoTemplate) {
         this.doCreateSchemas(mongoTemplate, Collections.singletonList(EntityType.RS.getType()));
 
@@ -136,19 +137,22 @@ public class MongoChangelog {
         Map<String, Object> simpleProperties = (Map<String, Object>) metaDataFields.get("properties");
 
         resourceServers.forEach(rs -> migrateRelayingPartyToResourceServer(properties, patterns, simpleProperties, rs));
+        if (!CollectionUtils.isEmpty(resourceServers)) {
+            BulkWriteResult bulkWriteResult = mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, MetaData.class, EntityType.RS.getType()).insert(resourceServers).execute();
+            LOG.info(String.format("Migrated %s relying parties to resource server collection", bulkWriteResult.getInsertedCount()));
+        }
 
-        BulkWriteResult bulkWriteResult = mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, MetaData.class, EntityType.RS.getType()).insert(resourceServers).execute();
-        LOG.info(String.format("Migrated %s relying parties to resource server collection", bulkWriteResult.getInsertedCount()));
 
         List<String> identifiers = resourceServers.stream().map(metaData -> metaData.getId()).collect(Collectors.toList());
         Criteria revisionCriteria = Criteria.where("revision.parentId").in(identifiers);
         List<MetaData> revisions = mongoTemplate.findAllAndRemove(Query.query(revisionCriteria), MetaData.class, EntityType.RP.getType().concat(REVISION_POSTFIX));
 
         revisions.forEach(rev -> migrateRelayingPartyToResourceServer(properties, patterns, simpleProperties, rev));
+        if (!CollectionUtils.isEmpty(revisions)) {
 
-        BulkWriteResult bulkWriteResultRevisions = mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, MetaData.class, EntityType.RS.getType().concat(REVISION_POSTFIX)).insert(revisions).execute();
-        LOG.info(String.format("Migrated %s relying party revisions to resource server revisions collection", bulkWriteResultRevisions.getInsertedCount()));
-
+            BulkWriteResult bulkWriteResultRevisions = mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, MetaData.class, EntityType.RS.getType().concat(REVISION_POSTFIX)).insert(revisions).execute();
+            LOG.info(String.format("Migrated %s relying party revisions to resource server revisions collection", bulkWriteResultRevisions.getInsertedCount()));
+        }
     }
 
     private void migrateRelayingPartyToResourceServer(Map<String, Map<String, Object>> properties, List<Pattern> patterns, Map<String, Object> simpleProperties, MetaData rs) {
@@ -172,10 +176,10 @@ public class MongoChangelog {
                     .filter(indexInfo -> indexInfo.getName().contains("data.eid"))
                     .forEach(indexInfo -> indexOps.dropIndex(indexInfo.getName()));
             indexOps.ensureIndex(new Index("data.eid", Sort.Direction.ASC).unique());
-            if (indexOps.getIndexInfo().stream().anyMatch(indexInfo -> indexInfo.getName().equals("field_entityid"))) {
-                indexOps.dropIndex("field_entityid");
-            }
-            indexOps.ensureIndex(new Index("data.entityid", Sort.Direction.ASC).unique());
+
+            indexOps.getIndexInfo().stream().filter(indexInfo -> indexInfo.getName().contains("entityid")).forEach(indexInfo -> indexOps.dropIndex(indexInfo.getName()));
+            indexOps.ensureIndex(new Index("data.entityid", Sort.Direction.ASC).unique()
+                    .collation(Collation.of("en").strength(2)));
             indexOps.ensureIndex(new Index("data.state", Sort.Direction.ASC));
             if (!collection.equals(EntityType.RS.getType())) {
                 indexOps.ensureIndex(new Index("data.allowedall", Sort.Direction.ASC));
