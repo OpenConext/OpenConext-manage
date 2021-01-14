@@ -422,6 +422,10 @@
           "type": "boolean",
           "info": "Set if the 'General Data Protection Regulation' (GDPR) is available on the SURF wiki. In Dutch known as 'Algemene Verordening Gegevensbescherming' (AVG). "
         },
+        "coin:ss:supports_strong_authentication": {
+          "type": "boolean",
+          "info": "Obsolete setting, does nothing"
+        },
         "coin:ss:license_status": {
           "type": "string",
           "enum": [
@@ -440,7 +444,7 @@
             "connect_without_interaction_without_email"
           ],
           "default": "connect_with_interaction",
-          "info": "Whether the IdP can connect to this RP without any interaction, and, if so, whether an email must be sent to the admin of the service"
+          "info": "Whether the IdP can connect to this RP without any interaction, and, if so, whether an email must be sent to the admin contact of the service"
         },
         "coin:stepup:requireloa": {
           "type": "string",
@@ -507,11 +511,6 @@
             ]
           },
           "info": "The authorisation grant type's of this Relying Party."
-        },
-        "isResourceServer": {
-          "type": "boolean",
-          "default": false,
-          "info": "Must be set for this Relying Party to be marked as a Resource Server to explicitly grant access to the Introspect endpoint."
         },
         "isPublicClient": {
           "type": "boolean",
@@ -643,7 +642,6 @@
       "required": [
         "name:en",
         "secret",
-        "scopes",
         "grants"
       ],
       "additionalProperties": false

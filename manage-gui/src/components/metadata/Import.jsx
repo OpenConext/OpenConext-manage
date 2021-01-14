@@ -6,11 +6,11 @@ import "codemirror/mode/javascript/javascript";
 import "codemirror/mode/xml/xml";
 import {isEmpty, stop} from "../../utils/Utils";
 import {
-    importMetaDataJSON,
-    importMetaDataJsonUrl,
-    importMetaDataXML,
-    importMetaDataXmlUrl,
-    validation
+  importMetaDataJSON,
+  importMetaDataJsonUrl,
+  importMetaDataXML,
+  importMetaDataXmlUrl,
+  validation
 } from "../../api";
 import {CheckBox, Select} from "./../../components";
 
@@ -56,11 +56,11 @@ export default class Import extends React.Component {
       ]
     };
     if (newEntity) {
-      res.entityTypeOptions = ["saml20_sp", "saml20_idp", "oidc10_rp", "single_tenant_template"];
+      res.entityTypeOptions = ["saml20_sp", "saml20_idp", "oidc10_rp", "oauth20_rs", "single_tenant_template"];
     } else {
       res.entityTypeOptions = [type]
     }
-    if (type === "oidc10_rp") {
+    if (type === "oidc10_rp" || type === "oauth20_rs") {
       res.tabs = ["import_json", "results"];
       res.selectedTab = "import_json";
     }
@@ -81,8 +81,8 @@ export default class Import extends React.Component {
       : a.source.localeCompare(b.source);
 
   arpChanged = (current, imported) => {
-    const currentSave = current || {enabled : false, attributes:[]};
-    imported = imported || {enabled : false, attributes:[]};
+    const currentSave = current || {enabled: false, attributes: []};
+    imported = imported || {enabled: false, attributes: []};
 
     if (!currentSave.enabled && !imported.enabled) {
       return false;
@@ -363,10 +363,10 @@ export default class Import extends React.Component {
                     onChange={this.changeMetaPropertySelected(name, key)}
                   />
                 }
-                </td>
-                <td>{key}</td>
-                <td>{isEmpty(prop.current) ? "" : prop.current.toString()}</td>
-                <td>{isEmpty(prop.value) ? "" : prop.value.toString()}</td>
+              </td>
+              <td>{key}</td>
+              <td>{isEmpty(prop.current) ? "" : prop.current.toString()}</td>
+              <td>{isEmpty(prop.value) ? "" : prop.value.toString()}</td>
             </tr>
           );
         })}

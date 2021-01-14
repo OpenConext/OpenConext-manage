@@ -10,9 +10,6 @@
     "name:en": "",
     "secret": "",
     "redirectUrls": [],
-    "scopes": [
-      "openid"
-    ],
     "grants": [
       "authorization_code"
     ]

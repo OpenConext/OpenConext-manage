@@ -178,7 +178,7 @@ export function countFeed() {
 }
 
 export function allResourceServers(state) {
-  return search({"state": state, "metaDataFields.isResourceServer": true}, "oidc10_rp")
+  return search({"state": state}, "oauth20_rs")
 }
 
 export function search(options, type) {

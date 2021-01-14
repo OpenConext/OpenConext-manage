@@ -616,10 +616,16 @@ public class MetaDataController {
         List<Map> results;
         if (entityType.equals(EntityType.IDP) || entityType.equals(EntityType.STT)) {
             results = metaDataRepository.findByEntityId(type, entityId);
+        } else if (entityType.equals(EntityType.RS)) {
+            results = metaDataRepository.findByEntityId(entityType.getType(), entityId);
+            results.addAll(metaDataRepository.findByEntityId(EntityType.RP.getType(), entityId));
         } else {
             results = metaDataRepository.findByEntityId(entityType.getType(), entityId);
             String otherType = entityType.equals(EntityType.RP) ? EntityType.SP.getType() : EntityType.RP.getType();
             results.addAll(metaDataRepository.findByEntityId(otherType, entityId));
+            if (entityType.equals(EntityType.RP)) {
+                results.addAll(metaDataRepository.findByEntityId(EntityType.RS.getType(), entityId));
+            }
         }
         return results;
     }
@@ -660,7 +666,7 @@ public class MetaDataController {
             max = (int) limit;
         }
         List<EntityType> types = ((List<String>) properties.getOrDefault("types",
-                Arrays.asList(EntityType.IDP.getType(), EntityType.SP.getType(), EntityType.RP.getType())))
+                Arrays.asList(EntityType.IDP.getType(), EntityType.SP.getType(), EntityType.RP.getType(), EntityType.RS.getType())))
                 .stream().map(EntityType::fromType).collect(toList());
         return metaDataRepository.recentActivity(types, max);
     }

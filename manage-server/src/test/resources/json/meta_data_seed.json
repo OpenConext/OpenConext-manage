@@ -523,7 +523,7 @@
   },
   {
     "id": "10",
-    "type": "oidc10_rp",
+    "type": "oauth20_rs",
     "revision": {
       "number": 0,
       "created": "2018-06-15T08:20:34.575Z",
@@ -537,24 +537,10 @@
       "metaDataFields": {
         "name:en": "OIDC ResourceServer",
         "secret": "secret",
-        "redirectUrls": [
-          "https://redirect.org"
-        ],
         "scopes": [
           "openid",
           "groups"
-        ],
-        "grants": [
-          "authorization_code",
-          "implicit",
-          "refresh_token",
-          "client_credentials"
-        ],
-        "accessTokenValidity": 3600,
-        "refreshTokenValidity": 3600,
-        "isPublicClient": true,
-        "isResourceServer": true,
-        "coin:exclude_from_push": true
+        ]
       }
     }
   },

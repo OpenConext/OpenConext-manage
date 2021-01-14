@@ -26,7 +26,7 @@ export default class Scopes extends React.Component {
       cancelDialogAction: () => this.setState({confirmationDialogOpen: false}),
       inUse: false,
       inUseAction: "",
-      inUseEntities: "",
+      inUseEntities: [],
       nameInUse: false
     };
   }
@@ -47,7 +47,7 @@ export default class Scopes extends React.Component {
     allScopes().then(res =>
       this.setState({
         scopes: res,
-        inUseEntities: "",
+        inUseEntities: [],
         inUse: false,
         inUseAction: "",
         selectedScope: {},
@@ -135,7 +135,7 @@ export default class Scopes extends React.Component {
         <p>{I18n.t("scopes.inUse", {action: inUseAction})}</p>
         <ul>
           {inUseEntities.map(entity => <li key={entity.id}>
-            <a href={`/metadata/oidc10_rp/${entity.id}`} target="_blank">{entity.entityid}</a>
+            <a href={`/metadata/${entity.type}/${entity.id}`} target="_blank">{entity.entityid}</a>
           </li>)}
         </ul>
       </section>}
@@ -181,7 +181,7 @@ export default class Scopes extends React.Component {
       descriptions: {}
     }
     this.setState({
-      inUseEntities: "",
+      inUseEntities: [],
       inUse: false,
       inUseAction: "",
       selectedScope: scope,
@@ -221,7 +221,7 @@ export default class Scopes extends React.Component {
               <tr key={`${scope.name}_${index}`}
                   onClick={() => this.setState({
                     selectedScope: cloneDeep(scope),
-                    inUseEntities: "",
+                    inUseEntities: [],
                     inUse: false,
                     inUseAction: ""
                   })}>

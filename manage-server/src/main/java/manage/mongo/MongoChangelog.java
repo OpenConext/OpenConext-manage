@@ -1,24 +1,35 @@
 package manage.mongo;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.cloudyrock.mongock.ChangeLog;
 import com.github.cloudyrock.mongock.ChangeSet;
 import com.github.cloudyrock.mongock.driver.mongodb.springdata.v3.decorator.impl.MongockTemplate;
+import com.mongodb.bulk.BulkWriteResult;
 import com.mongodb.client.DistinctIterable;
+import lombok.SneakyThrows;
+import manage.conf.MetaDataAutoConfiguration;
 import manage.model.EntityType;
+import manage.model.MetaData;
 import manage.model.Scope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.BulkOperations;
 import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.index.IndexInfo;
 import org.springframework.data.mongodb.core.index.IndexOperations;
 import org.springframework.data.mongodb.core.index.TextIndexDefinition;
 import org.springframework.data.mongodb.core.query.Collation;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -106,6 +117,46 @@ public class MongoChangelog {
         });
     }
 
+    @SneakyThrows
+    @ChangeSet(order = "007", id = "moveResourceServers", author = "okke.harsta@surf.nl", runAlways = true)
+    public void moveResourceServers(MongockTemplate mongoTemplate) {
+        this.doCreateSchemas(mongoTemplate, Collections.singletonList(EntityType.RS.getType()));
+
+        Criteria criteria = Criteria.where("data.metaDataFields.isResourceServer").is(true);
+        List<MetaData> resourceServers = mongoTemplate.findAllAndRemove(Query.query(criteria), MetaData.class, EntityType.RP.getType());
+        MetaDataAutoConfiguration metaDataAutoConfiguration = new MetaDataAutoConfiguration(new ObjectMapper(),
+                new ClassPathResource("/metadata_configuration"),
+                new ClassPathResource("metadata_templates"));
+        Map<String, Object> schemaRepresentation = metaDataAutoConfiguration.schemaRepresentation(EntityType.RS);
+        Map<String, Map<String, Object>> properties = (Map<String, Map<String, Object>>) schemaRepresentation.get("properties");
+        Map<String, Object> metaDataFields = properties.get("metaDataFields");
+        Map<String, Object> patternProperties = (Map<String, Object>) metaDataFields.get("patternProperties");
+
+        List<Pattern> patterns = patternProperties.keySet().stream().map(key -> Pattern.compile(key)).collect(Collectors.toList());
+        Map<String, Object> simpleProperties = (Map<String, Object>) metaDataFields.get("properties");
+
+        resourceServers.forEach(rs -> migrateRelayingPartyToResourceServer(properties, patterns, simpleProperties, rs));
+
+        BulkWriteResult bulkWriteResult = mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, MetaData.class, EntityType.RS.getType()).insert(resourceServers).execute();
+        LOG.info(String.format("Migrated %s relying parties to resource server collection", bulkWriteResult.getInsertedCount()));
+
+        List<String> identifiers = resourceServers.stream().map(metaData -> metaData.getId()).collect(Collectors.toList());
+        Criteria revisionCriteria = Criteria.where("revision.parentId").in(identifiers);
+        List<MetaData> revisions = mongoTemplate.findAllAndRemove(Query.query(revisionCriteria), MetaData.class, EntityType.RP.getType().concat(REVISION_POSTFIX));
+
+        revisions.forEach(rev -> migrateRelayingPartyToResourceServer(properties, patterns, simpleProperties, rev));
+
+        BulkWriteResult bulkWriteResultRevisions = mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, MetaData.class, EntityType.RS.getType().concat(REVISION_POSTFIX)).insert(revisions).execute();
+        LOG.info(String.format("Migrated %s relying party revisions to resource server revisions collection", bulkWriteResultRevisions.getInsertedCount()));
+
+    }
+
+    private void migrateRelayingPartyToResourceServer(Map<String, Map<String, Object>> properties, List<Pattern> patterns, Map<String, Object> simpleProperties, MetaData rs) {
+        rs.setType(EntityType.RS.getType());
+        rs.getData().entrySet().removeIf(entry -> !properties.containsKey(entry.getKey()));
+        rs.metaDataFields().entrySet().removeIf(entry -> !simpleProperties.containsKey(entry.getKey()) && patterns.stream().noneMatch(pattern -> pattern.matcher(entry.getKey()).matches()));
+    }
+
     private void doCreateSchemas(MongockTemplate mongoTemplate, List<String> connectionTypes) {
         connectionTypes.forEach(schema -> {
             if (!mongoTemplate.collectionExists(schema)) {
@@ -126,9 +177,11 @@ public class MongoChangelog {
             }
             indexOps.ensureIndex(new Index("data.entityid", Sort.Direction.ASC).unique());
             indexOps.ensureIndex(new Index("data.state", Sort.Direction.ASC));
-            indexOps.ensureIndex(new Index("data.allowedall", Sort.Direction.ASC));
-            indexOps.ensureIndex(new Index("data.allowedEntities.name", Sort.Direction.ASC));
-            indexOps.ensureIndex(new Index("metaDataFields.coin:institution_id", Sort.Direction.ASC));
+            if (!collection.equals(EntityType.RS.getType())) {
+                indexOps.ensureIndex(new Index("data.allowedall", Sort.Direction.ASC));
+                indexOps.ensureIndex(new Index("data.allowedEntities.name", Sort.Direction.ASC));
+                indexOps.ensureIndex(new Index("data.metaDataFields.coin:institution_id", Sort.Direction.ASC));
+            }
         });
         connectionTypes.stream().map(s -> s + "_revision").forEach(collection -> {
             IndexOperations indexOps = mongoTemplate.indexOps(collection);

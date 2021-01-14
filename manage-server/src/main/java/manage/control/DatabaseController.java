@@ -100,6 +100,8 @@ public class DatabaseController {
             List<Scope> scopes = metaDataRepository.getMongoTemplate().findAll(Scope.class);
             Map<String, Scope> scopesMapped = scopes.stream().collect(toMap(scope -> scope.getName(), scope -> scope));
             resourceServers.forEach(rs -> {
+                //Once we want to get rid of this hack, but for now backward compatibility
+                rs.setType(EntityType.RP.getType());
                 Map<String, Object> metaDataFields = rs.metaDataFields();
                 metaDataFields.put("isResourceServer", true);
                 List<String> scopeList = (List<String>) metaDataFields.get("scopes");
@@ -119,7 +121,6 @@ public class DatabaseController {
             this.oidcRestTemplate.postForEntity(oidcPushUri, relyingParties, Void.class);
             result.put("oidc", true);
         }
-
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
@@ -152,8 +153,6 @@ public class DatabaseController {
 
         if (!excludeOidcRP) {
             List<MetaData> relyingParties = metaDataRepository.getMongoTemplate().findAll(MetaData.class, EntityType.RP.getType());
-            List<MetaData> resourceServers = metaDataRepository.getMongoTemplate().findAll(MetaData.class, EntityType.RS.getType());
-            relyingParties.addAll(resourceServers);
             Map<String, Map<String, Object>> oidcClientsToPush = relyingParties.stream()
                     .filter(metaData -> !excludeFromPush(metaData.metaDataFields()))
                     .collect(toMap(MetaData::getId, formatter::parseOidcClient));

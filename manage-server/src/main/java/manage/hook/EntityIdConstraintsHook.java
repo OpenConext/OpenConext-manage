@@ -14,6 +14,7 @@ import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 import static manage.model.EntityType.IDP;
 import static manage.model.EntityType.RP;
+import static manage.model.EntityType.RS;
 import static manage.model.EntityType.SP;
 
 @SuppressWarnings("unchecked")
@@ -49,7 +50,7 @@ public class EntityIdConstraintsHook extends MetaDataHookAdapter {
         relationsToCheck.put("disableConsent", reversedEntityType);
         relationsToCheck.put("stepupEntities", Arrays.asList(SP, RP));
         relationsToCheck.put("mfaEntities", Arrays.asList(SP, RP));
-        relationsToCheck.put("allowedResourceServers", singletonList(RP));
+        relationsToCheck.put("allowedResourceServers", singletonList(RS));
 
         relationsToCheck.forEach((key, value) -> {
             if (newMetaData.getData().containsKey(key)) {

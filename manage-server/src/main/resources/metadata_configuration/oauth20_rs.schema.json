@@ -153,6 +153,14 @@
           "multiplicity": 4,
           "sibblingIndependent": true,
           "info": "From the pull down, select the type of contact."
+        },
+        "^OrganizationName:(en|nl|pt)$": {
+          "type": "string",
+          "info": "The formal name of the organization. e.g. Service by University of Harderwijk."
+        },
+        "^OrganizationDisplayName:(en|nl|pt)$": {
+          "type": "string",
+          "info": "The friendly name of the organization. e.g. University of Harderwijk."
         }
       },
       "required": [
