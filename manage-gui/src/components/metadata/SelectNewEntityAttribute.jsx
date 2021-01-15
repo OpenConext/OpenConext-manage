@@ -7,15 +7,21 @@ import "./SelectNewEntityAttribute.css";
 export default class SelectNewEntityAttribute extends React.PureComponent {
 
   options = (configuration, attributes) => {
-    const attr = configuration.title === "saml20_idp" ? ["disableConsent.name", "disableConsent.type"] :
-      ["arp.enabled"].concat(Object.keys(configuration.properties.arp.properties.attributes.properties)
-        .map(arpAttr => "arp.attributes." + arpAttr));
+    let attr = ["entityid", "notes", "state"];
+    if (configuration.title === "saml20_idp") {
+      attr = attr.concat(["disableConsent.name", "disableConsent.type", "stepupEntities.name", "mfaEntities.name"])
+    } else if (configuration.title === "saml20_sp" || configuration.title === "oidc10_rp") {
+      attr = attr.concat(["arp.enabled"].concat(Object.keys(configuration.properties.arp.properties.attributes.properties)
+        .map(arpAttr => "arp.attributes." + arpAttr)));
+    }
+    if (configuration.title === "oidc10_rp") {
+      attr = attr.concat(["allowedResourceServers.name"]);
+    }
+    if (configuration.title !== "oauth20_rs") {
+      attr = attr.concat(["allowedEntities.name", "manipulation", "manipulationNotes", "metadataurl", "allowedall"])
+    }
     const choosenKeys = Object.keys(attributes);
-    return attr.concat(["active", "allowedEntities.name", "disableConsent.name", "allowedResourceServers.name",
-      "stepupEntities.name", "mfaEntities.name",
-      "entityid", "manipulation", "manipulationNotes", "metadataurl",
-      "allowedall", "notes", "state"])
-      .filter(a => choosenKeys.indexOf(a) < 0)
+    return attr.filter(a => choosenKeys.indexOf(a) < 0)
       .map(a => ({value: a, label: a}))
       .sort((a, b) => a.value.toLowerCase().localeCompare(b.value.toLowerCase()));
   };

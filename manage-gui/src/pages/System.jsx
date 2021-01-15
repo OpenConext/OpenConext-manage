@@ -28,7 +28,9 @@ export default class System extends React.PureComponent {
 
     constructor(props) {
         super(props);
-        const tabs = props.currentUser.featureToggles.map(feature => feature.toLowerCase());
+        const tabs = props.currentUser.featureToggles
+          .map(feature => feature.toLowerCase())
+          .filter(feature => feature !== "edugain");
         tabs.push("stats");
         this.state = {
             tabs: tabs,
