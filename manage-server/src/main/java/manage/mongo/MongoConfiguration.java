@@ -2,6 +2,7 @@ package manage.mongo;
 
 import com.github.cloudyrock.mongock.driver.mongodb.springdata.v3.SpringDataMongo3Driver;
 import com.github.cloudyrock.spring.v5.MongockSpring5;
+import manage.conf.MetaDataAutoConfiguration;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +21,7 @@ public class MongoConfiguration {
 
     @Bean
     public MongockSpring5.MongockApplicationRunner mongockApplicationRunner(ApplicationContext springContext,
+                                                                            MetaDataAutoConfiguration metaDataAutoConfiguration,
                                                                             MongoTemplate mongoTemplate) {
         SpringDataMongo3Driver driver = SpringDataMongo3Driver.withDefaultLock(mongoTemplate);
         driver.disableTransaction();
@@ -27,6 +29,7 @@ public class MongoConfiguration {
         return MongockSpring5.builder()
                 .setDriver(driver)
                 .addChangeLogsScanPackage("manage.mongo")
+                .addDependency(metaDataAutoConfiguration)
                 .setSpringContext(springContext)
                 .buildApplicationRunner();
     }
