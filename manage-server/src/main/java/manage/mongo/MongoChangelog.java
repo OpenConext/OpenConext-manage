@@ -120,14 +120,11 @@ public class MongoChangelog {
 
     @SneakyThrows
     @ChangeSet(order = "007", id = "moveResourceServers", author = "okke.harsta@surf.nl")
-    public void moveResourceServers(MongockTemplate mongoTemplate) {
+    public void moveResourceServers(MongockTemplate mongoTemplate, MetaDataAutoConfiguration metaDataAutoConfiguration) {
         this.doCreateSchemas(mongoTemplate, Collections.singletonList(EntityType.RS.getType()));
 
         Criteria criteria = Criteria.where("data.metaDataFields.isResourceServer").is(true);
         List<MetaData> resourceServers = mongoTemplate.findAllAndRemove(Query.query(criteria), MetaData.class, EntityType.RP.getType());
-        MetaDataAutoConfiguration metaDataAutoConfiguration = new MetaDataAutoConfiguration(new ObjectMapper(),
-                new ClassPathResource("/metadata_configuration"),
-                new ClassPathResource("metadata_templates"));
         Map<String, Object> schemaRepresentation = metaDataAutoConfiguration.schemaRepresentation(EntityType.RS);
         Map<String, Map<String, Object>> properties = (Map<String, Map<String, Object>>) schemaRepresentation.get("properties");
         Map<String, Object> metaDataFields = properties.get("metaDataFields");
