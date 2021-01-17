@@ -6,7 +6,8 @@
     "marked": "^0.3.19",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
-    "react-md-editor": "^0.2.2"
+    "react-md-editor": "^0.2.2",
+    "source-map-explorer": "^2.5.2"
   },
   "devDependencies": {
     "codemirror": "^5.27.4",
@@ -38,7 +39,8 @@
     "start": "npm-run-all -p watch-css start-js",
     "build": "npm run build-css && react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "analyze": "source-map-explorer 'build/static/js/*.js'"
   },
   "proxy": "http://localhost:8080",
   "eslintConfig": {
