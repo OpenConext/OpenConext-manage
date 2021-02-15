@@ -92,11 +92,12 @@
       flex-grow: 1;
       text-align: center;
       cursor: pointer;
-      padding: 15px 40px;
+      padding: 15px 25px;
       background-color: $light-grey;
       color: $dark-grey;
       text-transform: uppercase;
       border-right: 1px solid white;
+      position: relative;
 
       &.active {
         background-color: white;
@@ -119,7 +120,9 @@
       }
 
       i.fa-warning, i.fa-asterisk {
-        float: right;
+        position: absolute;
+        top: 6px;
+        right: 8px;
       }
     }
   }

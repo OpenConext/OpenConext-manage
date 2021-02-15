@@ -103,7 +103,7 @@ export default class Navigation extends React.PureComponent {
                             question={confirmationQuestion}/>
         <div className="navigation">
           {this.renderItem("/search", "search")}
-          {!currentUser.guest && this.renderItem("/import", "import")}
+          {/*{!currentUser.guest && this.renderItem("/import", "import")}*/}
           {!currentUser.guest && this.renderItem("/system", "system")}
           {(!currentUser.guest && currentUser.featureToggles.some(feature => feature.toLowerCase() === "edugain")) && this.renderItem("/edugain", "edugain")}
           {this.renderItem("/api", "api")}

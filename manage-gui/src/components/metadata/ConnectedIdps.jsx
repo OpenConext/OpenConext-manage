@@ -6,6 +6,7 @@ import {Link} from "react-router-dom";
 import "./ConnectedIdps.css";
 import {copyToClip, isEmpty} from "../../utils/Utils";
 import NotesTooltip from "../NotesTooltip";
+import {getConnectedEntities} from "../../utils/TabNumbers";
 
 export default class ConnectedIdps extends React.Component {
 
@@ -29,10 +30,7 @@ export default class ConnectedIdps extends React.Component {
   initialiseConnectedIdps(whiteListing) {
     window.scrollTo(0, 0);
     const {allowedAll, allowedEntities = [], entityId, state} = this.props;
-    const connectedEntities = whiteListing
-      .filter(idp => idp.data.allowedall || idp.data.allowedEntities.some(entity => entity.name === entityId))
-      .filter(idp => idp.data.state === state)
-      .filter(idp => allowedAll || allowedEntities.some(entity => entity.name === idp.data.entityid))
+    const entities =  getConnectedEntities(whiteListing, allowedAll , allowedEntities, entityId, state)
       .map(idp => ({
         id: idp._id,
         name: idp.data.metaDataFields["name:en"] || idp.data.metaDataFields["name:nl"] || idp.data.entityid,
@@ -40,8 +38,8 @@ export default class ConnectedIdps extends React.Component {
         entityid: idp.data.entityid,
         notes: idp.data.notes
       }));
-    const sorted = connectedEntities.sort(this.sortByAttribute("name", false));
-    this.setState({connectedEntities: connectedEntities, filteredConnectedEntities: sorted});
+    const sorted = entities.sort(this.sortByAttribute("name", false));
+    this.setState({connectedEntities: entities, filteredConnectedEntities: sorted});
   }
 
   componentWillReceiveProps(nextProps) {
