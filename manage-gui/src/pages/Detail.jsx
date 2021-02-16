@@ -287,6 +287,11 @@ export default class Detail extends React.PureComponent {
     metaData.data.metaDataFields["name:nl"] ||
     metaData.data["entityid"];
 
+  organisationOfMetaData = metaData =>
+    metaData.data.metaDataFields["OrganizationName:en"] ||
+    metaData.data.metaDataFields["OrganizationName:nl"] ||
+    "";
+
   onChange = component => (
     name,
     value,
@@ -834,7 +839,7 @@ export default class Detail extends React.PureComponent {
     );
   };
 
-  renderTopBanner = (name, metaData, resourceServers, whiteListing, isNew, whiteListingLoaded) => {
+  renderTopBanner = (name, organization, metaData, resourceServers, whiteListing, isNew, whiteListingLoaded) => {
     const type = metaData.type;
     const {allowedall, state, allowedEntities, entityid} = metaData.data;
     const typeMetaData = I18n.t(`metadata.${type}_single`);
@@ -858,6 +863,7 @@ export default class Detail extends React.PureComponent {
           <thead>
           <tr>
             <th>{I18n.t("topBannerDetails.name")}</th>
+            <th>{I18n.t("topBannerDetails.organization")}</th>
             <th>{I18n.t("topBannerDetails.type")}</th>
             <th>{I18n.t("topBannerDetails.workflow")}</th>
             {(isSp || isRp) && <th>
@@ -882,6 +888,7 @@ export default class Detail extends React.PureComponent {
           <tbody>
           <tr>
             <td>{name}</td>
+            <td>{organization}</td>
             <td>{typeMetaData}</td>
             <td className={state === "prodaccepted" ? "green" : "orange"}>{state}</td>
             {(isSp || isRp) && <td className={excludedFromPush ? "orange" : "green"}>
@@ -953,6 +960,8 @@ export default class Detail extends React.PureComponent {
     const renderContent = loaded && !notFound;
 
     const name = renderContent ? this.nameOfMetaData(metaData) : "";
+    const organization = renderContent ? this.organisationOfMetaData(metaData) : "";
+
     const hasErrors = this.hasGlobalErrors(errors) && !isEmpty(metaData.id);
 
     return (
@@ -970,7 +979,7 @@ export default class Detail extends React.PureComponent {
         />
         {renderContent && (
           <section className="top-detail">
-            {this.renderTopBanner(name, metaData, resourceServers, whiteListing, isNew, whiteListingLoaded)}
+            {this.renderTopBanner(name, organization, metaData, resourceServers, whiteListing, isNew, whiteListingLoaded)}
             {hasErrors && this.renderErrors(errors)}
             {!isNew && (
               <a

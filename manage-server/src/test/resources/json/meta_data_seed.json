@@ -531,8 +531,7 @@
     "data": {
       "entityid": "https@//oidc.rp.resourceServer",
       "eid": 10,
-      "state": "testaccepted",
-      "allowedall": true,
+      "state": "prodaccepted",
       "metaDataFields": {
         "name:en": "OIDC ResourceServer",
         "secret": "secret",

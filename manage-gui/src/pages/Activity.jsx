@@ -45,6 +45,7 @@ export default class Activity extends React.Component {
         terminated: a.revision.terminated,
         revisionNote: a.data.revisionnote,
         name: a.data.metaDataFields["name:en"],
+        organization: a.data.metaDataFields["OrganizationName:en"] || a.data.metaDataFields["OrganizationName:nl"] || "",
         created: new Date(a.revision.created),
         updatedBy: a.revision.updatedBy,
       }));
@@ -71,7 +72,7 @@ export default class Activity extends React.Component {
   search = e => {
     const query = e.target.value ? e.target.value.toLowerCase() : "";
     const {sorted, reverse, activity} = this.state;
-    const names = ["name", "entityId", "updatedBy"];
+    const names = ["name", "organization", "entityId", "updatedBy"];
     const result = isEmpty(query) ? activity : activity.filter(a => names.some(name =>
       a[name].toLowerCase().indexOf(query) > -1));
     this.setState({query: query, filteredActivity: result.sort(this.sortByAttribute(sorted, reverse))});
@@ -96,7 +97,7 @@ export default class Activity extends React.Component {
       <th key={name} className={name}
           onClick={this.sortTable(filteredActivity, name)}>{I18n.t(`activity.${name}`)}{icon(name)}</th>
     const names = [
-      "name", "entityId", "type", "created", "terminated", "revisionNote", "updatedBy"
+      "name", "organization", "entityId", "type", "created", "terminated", "revisionNote", "updatedBy"
     ];
     return <section className="activity-table">
       <table>
@@ -121,6 +122,9 @@ export default class Activity extends React.Component {
           {a.name}
         </Link>}
         {!isEmpty(a.terminated) && <span>{a.name}</span>}
+      </td>
+      <td>
+        {a.organization}
       </td>
       <td>
         {a.entityId}

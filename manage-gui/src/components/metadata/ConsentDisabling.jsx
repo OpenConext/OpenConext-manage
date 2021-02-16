@@ -56,6 +56,10 @@ export default class ConsentDisabling extends React.Component {
         moreInfo.data.metaDataFields["name:en"] ||
         moreInfo.data.metaDataFields["name:nl"] ||
         "",
+      organization:
+        moreInfo.data.metaDataFields["OrganizationName:en"] ||
+        moreInfo.data.metaDataFields["OrganizationName:nl"] ||
+        "",
       id: moreInfo["_id"],
       type: disableConsent.type,
       entityType: moreInfo.type,
@@ -172,6 +176,7 @@ export default class ConsentDisabling extends React.Component {
         </td>
         <td>{entity.status}</td>
         <td>{entity.name}</td>
+        <td>{entity.organization}</td>
         <td>
           <Select
             name="select-consent-value"
@@ -250,6 +255,7 @@ export default class ConsentDisabling extends React.Component {
     const names = [
       "status",
       "name",
+      "organization",
       "consent_value",
       "explanationNl",
       "explanationEn",

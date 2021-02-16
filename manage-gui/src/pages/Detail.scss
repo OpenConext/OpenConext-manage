@@ -24,7 +24,7 @@
         width: 100%;
         th {
           text-align: left;
-          width: 33%;
+          width: 25%;
           padding-bottom: 5px;
 
           i.fa {
@@ -54,13 +54,13 @@
 
         &.saml20_sp, &.oidc10_rp {
           th {
-            width: 25%;
+            width: 20%;
           }
         }
 
         &.saml20_sp.imported-from-edugain {
           th {
-            width: 16%;
+            width: 14%;
           }
         }
       }

@@ -30,30 +30,34 @@ section.metadata-autocomplete {
       text-align: left;
 
       &.name {
-        width: 28%;
+        width: 20%;
+      }
+
+      &.organization {
+        width: 20%;
       }
 
       &.type {
-        width: 8%;
+        width: 6%;
       }
 
       &.state {
         text-align: center;
-        width: 12%;
+        width: 10%;
       }
 
       &.entity_id {
-        width: 37%;
+        width: 32%;
       }
 
       &.info {
         text-align: center;
-        width: 8%;
+        width: 6%;
       }
 
       &.link {
         text-align: center;
-        width: 7%;
+        width: 6%;
       }
     }
 

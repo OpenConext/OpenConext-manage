@@ -57,6 +57,10 @@ export default class ResourceServers extends React.Component {
         moreInfo.data.metaDataFields["name:en"] ||
         moreInfo.data.metaDataFields["name:nl"] ||
         "",
+      organization:
+        moreInfo.data.metaDataFields["OrganizationName:en"] ||
+        moreInfo.data.metaDataFields["OrganizationName:nl"] ||
+        "",
       id: moreInfo["_id"],
       notes: moreInfo.data.notes
     };
@@ -86,7 +90,7 @@ export default class ResourceServers extends React.Component {
     if (isEmpty(query)) {
       return enrichedResourceServers;
     }
-    const attributes = ["entityid", "name"];
+    const attributes = ["entityid", "organization", "name"];
     const lowerQuery = query.toLowerCase();
     return enrichedResourceServers.filter(entry =>
       attributes.some(
@@ -184,6 +188,7 @@ export default class ResourceServers extends React.Component {
             {entity.name}
           </Link>
         </td>
+        <td>{entity.organization}</td>
         <td>{entity.entityid}</td>
         <td className="info">
           {isEmpty(entity.notes) ? (
@@ -224,7 +229,7 @@ export default class ResourceServers extends React.Component {
         {icon(name)}
       </th>
     );
-    const names = ["status", "name", "entityid", "notes"];
+    const names = ["status", "name", "organization", "entityid", "notes"];
     const entityType = "oauth20_rs";
     return (
       <section className="allowed-entities">

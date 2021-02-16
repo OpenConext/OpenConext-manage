@@ -34,6 +34,8 @@ export default class ConnectedIdps extends React.Component {
       .map(idp => ({
         id: idp._id,
         name: idp.data.metaDataFields["name:en"] || idp.data.metaDataFields["name:nl"] || idp.data.entityid,
+        organization: idp.data.metaDataFields["OrganizationName:en"] || idp.data.metaDataFields["OrganizationName:nl"] ||
+          idp.data.metaDataFields["name:en"] || idp.data.metaDataFields["name:nl"] || idp.data.entityid,
         status: idp.data.state,
         entityid: idp.data.entityid,
         notes: idp.data.notes
@@ -64,7 +66,7 @@ export default class ConnectedIdps extends React.Component {
   search = e => {
     const query = e.target.value ? e.target.value.toLowerCase() : "";
     const {sorted, reverse, connectedEntities} = this.state;
-    const names = ["name", "status", "entityid"];
+    const names = ["name", "status", "organization", "entityid"];
     const result = isEmpty(query) ? connectedEntities : connectedEntities.filter(idp => names.some(name =>
       idp[name].toLowerCase().indexOf(query) > -1));
     this.setState({query: query, filteredConnectedEntities: result.sort(this.sortByAttribute(sorted, reverse))});
@@ -82,6 +84,9 @@ export default class ConnectedIdps extends React.Component {
         <Link to={`/metadata/${type}/${entity.id}`} target="_blank">
           {entity.name}
         </Link>
+      </td>
+      <td>
+        {entity.organization}
       </td>
       <td>
         {entity.status}
@@ -110,7 +115,7 @@ export default class ConnectedIdps extends React.Component {
     const th = name =>
       <th key={name} className={name}
           onClick={this.sortTable(entries, name)}>{I18n.t(`whitelisting.allowedEntries.${name}`)}{icon(name)}</th>
-    const names = ["name", "status", "entityid", "notes"];
+    const names = ["name", "organization", "status", "entityid", "notes"];
     return <section className="entities">
       <table>
         <thead>

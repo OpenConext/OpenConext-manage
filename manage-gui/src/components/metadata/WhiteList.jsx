@@ -76,6 +76,9 @@ export default class WhiteList extends React.Component {
         moreInfo.data.metaDataFields["name:en"] ||
         moreInfo.data.metaDataFields["name:nl"] ||
         "",
+      organization: moreInfo.data.metaDataFields["OrganizationName:en"] ||
+        moreInfo.data.metaDataFields["OrganizationName:nl"] ||
+        "",
       id: moreInfo["_id"],
       blocked:
         !moreInfo.data.allowedall &&
@@ -130,7 +133,7 @@ export default class WhiteList extends React.Component {
     if (isEmpty(query)) {
       return enrichedAllowedEntries;
     }
-    const attributes = ["entityid", "name"];
+    const attributes = ["entityid", "organization", "name"];
     const lowerQuery = query.toLowerCase();
     return enrichedAllowedEntries.filter(entry =>
       attributes.some(
@@ -285,6 +288,7 @@ export default class WhiteList extends React.Component {
             {entity.name}
           </Link>
         </td>
+        <td>{entity.organization}</td>
         <td>{entity.entityid}</td>
         <td className="info">
           {isEmpty(entity.notes) ? (
@@ -361,7 +365,7 @@ export default class WhiteList extends React.Component {
         {icon(name)}
       </th>
     );
-    const names = ["blocked", "status", "name", "entityid", "notes"];
+    const names = ["blocked", "status", "name", "organization", "entityid", "notes"];
     return (
       <section className="allowed-entities">
         <table>
