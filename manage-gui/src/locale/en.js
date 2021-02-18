@@ -50,16 +50,16 @@ I18n.translations.en = {
     new: "New",
     tabs: {
       connection: "Connection",
-      whitelist: "Whitelisting",
+      whitelist: "Whitelisting{{info}}",
       metadata: "Metadata",
       metaDataFields: "Metadata fields",
-      arp: "ARP",
-      resource_servers: "Resource Servers",
-      manipulation: "Manipulation",
-      consent_disabling: "Consent Management",
-      stepup_entities: "Stepup",
-      connected_idps: "Connected IdP's",
-      revisions: "Revisions",
+      arp: "ARP{{info}}",
+      resource_servers: "Resource Servers ({{nbr}})",
+      manipulation: "Manipulation{{info}}",
+      consent_disabling: "Consent Management ({{nbr}})",
+      stepup_entities: "Stepup ({{nbr}})",
+      connected_idps: "Connected IdP's ({{nbr}})",
+      revisions: "Revisions ({{nbr}})",
       import: "Import",
       export: "Export"
     },
@@ -98,6 +98,7 @@ I18n.translations.en = {
 
   topBannerDetails: {
     name: "Name",
+    organization: "Organization",
     type: "Type",
     workflow: "Workflow",
     reviewState: "Review state",
@@ -144,6 +145,7 @@ I18n.translations.en = {
       status: "Status",
       entityid: "Entity ID",
       name: "Name",
+      organization: "Organization",
       notes: "Notes",
       terminated: "Deleted",
       revisionNumber: "Revision",
@@ -184,6 +186,7 @@ I18n.translations.en = {
       status: "Status",
       entityid: "Entity ID",
       name: "Name",
+      organization: "Organization",
       notes: "Notes"
     }
   },
@@ -196,6 +199,7 @@ I18n.translations.en = {
       status: "Status",
       entityid: "Entity ID",
       name: "Name",
+      organization: "Organization",
       notes: "Notes"
     }
   },
@@ -214,6 +218,7 @@ I18n.translations.en = {
       status: "Status",
       entityid: "Entity ID",
       name: "Name",
+      organization: "Organization",
       no_consent: "No consent is required",
       minimal_consent: "Minimal consent is required",
       default_consent: "Default consent with custom message",
@@ -370,6 +375,7 @@ I18n.translations.en = {
   metadata_autocomplete: {
     entity_id: "Entity ID",
     name: "Name",
+    organization: "Organization",
     state: "Production",
     type: "Type",
     notes: "Notes",
@@ -409,6 +415,7 @@ I18n.translations.en = {
       status: "Status",
       entityid: "Entity ID",
       name: "Name",
+      organization: "Organization",
       loa_level: "LOA level",
       mfa_level: "AuthnContext level"
     }
@@ -451,6 +458,7 @@ I18n.translations.en = {
   activity: {
     searchPlaceHolder: "Search for metadata within the results...",
     name: "Name",
+    organization: "Organization",
     entityId: "EntityID",
     created: "Changed at",
     terminated: "Deleted",

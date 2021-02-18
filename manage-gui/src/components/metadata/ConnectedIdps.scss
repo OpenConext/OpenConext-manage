@@ -91,19 +91,23 @@
         }
 
         &.status {
-          width: 25%;
+          width: 12%;
         }
 
         &.name {
-          width: 30%;
+          width: 25%;
+        }
+
+        &.organization {
+          width: 25%;
         }
 
         &.entityId {
-          width: 35%;
+          width: 30%;
         }
 
         &.notes {
-          width: 10%;
+          width: 8%;
         }
       }
 

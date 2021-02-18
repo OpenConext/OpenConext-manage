@@ -73,6 +73,7 @@ export default class Autocomplete extends React.PureComponent {
             <thead>
             <tr>
                 <th className="name">{I18n.t("metadata_autocomplete.name")}</th>
+                <th className="organization">{I18n.t("metadata_autocomplete.organization")}</th>
                 <th className="type">{I18n.t("metadata_autocomplete.type")}</th>
                 <th className="state">{I18n.t("metadata_autocomplete.state")}</th>
                 <th className="entity_id">{I18n.t("metadata_autocomplete.entity_id")}</th>
@@ -92,6 +93,7 @@ export default class Autocomplete extends React.PureComponent {
                                 }
                             }}>
                             <td>{this.item(item.data.metaDataFields["name:en"] || item.data.metaDataFields["name:nl"], query)}</td>
+                            <td>{this.item(item.data.metaDataFields["OrganizationName:en"] || item.data.metaDataFields["OrganizationName:nl"], query)}</td>
                             <td>{item.type}</td>
                             <td className="state">
                                 <CheckBox name="state" value={item.data.state === "prodaccepted"}

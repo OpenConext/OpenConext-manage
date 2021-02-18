@@ -64,6 +64,10 @@ export default class Stepup extends React.Component {
         moreInfo.data.metaDataFields["name:en"] ||
         moreInfo.data.metaDataFields["name:nl"] ||
         "",
+      organization:
+        moreInfo.data.metaDataFields["OrganizationName:en"] ||
+        moreInfo.data.metaDataFields["OrganizationName:nl"] ||
+        "",
       id: moreInfo["_id"],
       requireloa: moreInfo.data.metaDataFields["coin:stepup:requireloa"] || undefined,
       type: moreInfo.type,
@@ -218,6 +222,7 @@ export default class Stepup extends React.Component {
         </td>
         <td>{entity.status}</td>
         <td>{entity.name}</td>
+        <td>{entity.organization}</td>
         <td>
           <Select
             className="select-loa-level"
@@ -260,6 +265,7 @@ export default class Stepup extends React.Component {
         </td>
         <td>{entity.status}</td>
         <td>{entity.name}</td>
+        <td>{entity.organization}</td>
         <td>
           <Select
             className="select-mfa-level"
@@ -309,6 +315,7 @@ export default class Stepup extends React.Component {
     const names = [
       "status",
       "name",
+      "organization",
       "loa_level",
       "entityid"
     ];
@@ -357,6 +364,7 @@ export default class Stepup extends React.Component {
     const names = [
       "status",
       "name",
+      "organization",
       "mfa_level",
       "entityid"
     ];

@@ -25,6 +25,7 @@ import "./Detail.css";
 import ResourceServers from "../components/metadata/ResourceServers";
 import Stepup from "../components/metadata/Stepup";
 import ReactTooltip from "react-tooltip";
+import {getConnectedEntities} from "../utils/TabNumbers";
 
 const tabsSp = [
   "connection",
@@ -285,6 +286,11 @@ export default class Detail extends React.PureComponent {
     metaData.data.metaDataFields["name:en"] ||
     metaData.data.metaDataFields["name:nl"] ||
     metaData.data["entityid"];
+
+  organisationOfMetaData = metaData =>
+    metaData.data.metaDataFields["OrganizationName:en"] ||
+    metaData.data.metaDataFields["OrganizationName:nl"] ||
+    "";
 
   onChange = component => (
     name,
@@ -586,7 +592,48 @@ export default class Detail extends React.PureComponent {
       Object.keys(errors[key]).find(subKey => errors[key][subKey])
     ) !== undefined;
 
-  renderTab = tab => {
+  renderTabTitle = (tab, metaData, resourceServers, whiteListing, revisions) => {
+    const allowedAll = metaData.data.allowedall;
+    const allowedEntities = metaData.data.allowedEntities;
+    let args = {};
+    switch (tab) {
+      case "connection":
+      case "metadata":
+      case "import":
+      case "export":
+        break;
+      case "connected_idps":
+        const connectedEntities = getConnectedEntities(whiteListing, allowedAll , allowedEntities, metaData.data.entityid, metaData.data.state);
+        args = {nbr: connectedEntities.length};
+        break;
+      case "arp":
+        args = {info: (metaData.data.arp || {}).enabled ? "" : " (no)"};
+        break;
+      case "whitelist":
+        args = {info: allowedAll ? " (*)" : allowedEntities.length === 0 ? " (-)" : ` (${allowedEntities.length})`};
+        break;
+      case "manipulation":
+        args = {info: isEmpty(metaData.data.manipulation) ? "" : " (1)"}
+        break;
+      case "revisions":
+        args = {nbr: (revisions || []).length};
+        break;
+      case "consent_disabling":
+        args = {nbr: (metaData.data.disableConsent || []).length};
+        break;
+      case "stepup_entities":
+        args = {nbr: (metaData.data.stepupEntities || []).length};
+        break;
+      case "resource_servers":
+        args = {nbr: (metaData.data.allowedResourceServers || []).length};
+        break;
+      default:
+        args = {};
+    }
+    return I18n.t(`metadata.tabs.${tab}`, args);
+  }
+
+  renderTab = (tab, metaData, resourceServers, whiteListing, revisions) => {
     const tabErrors = this.state.errors[tab] || {};
     const tabChanges = this.state.changes[tab] || false;
     const hasChanges = tabChanges ? "changes" : "";
@@ -599,9 +646,8 @@ export default class Detail extends React.PureComponent {
       <span
         key={tab}
         className={`${className} ${hasErrors} ${hasChanges}`}
-        onClick={this.switchTab(tab)}
-      >
-        {I18n.t(`metadata.tabs.${tab}`)}
+        onClick={this.switchTab(tab)}>
+        {this.renderTabTitle(tab, metaData, resourceServers, whiteListing, revisions)}
         {hasErrors && <i className="fa fa-warning"/>}
         {!hasErrors && tabChanges && <i className="fa fa-asterisk"/>}
       </span>
@@ -793,7 +839,7 @@ export default class Detail extends React.PureComponent {
     );
   };
 
-  renderTopBanner = (name, metaData, resourceServers, whiteListing, isNew, whiteListingLoaded) => {
+  renderTopBanner = (name, organization, metaData, resourceServers, whiteListing, isNew, whiteListingLoaded) => {
     const type = metaData.type;
     const {allowedall, state, allowedEntities, entityid} = metaData.data;
     const typeMetaData = I18n.t(`metadata.${type}_single`);
@@ -817,6 +863,7 @@ export default class Detail extends React.PureComponent {
           <thead>
           <tr>
             <th>{I18n.t("topBannerDetails.name")}</th>
+            <th>{I18n.t("topBannerDetails.organization")}</th>
             <th>{I18n.t("topBannerDetails.type")}</th>
             <th>{I18n.t("topBannerDetails.workflow")}</th>
             {(isSp || isRp) && <th>
@@ -841,6 +888,7 @@ export default class Detail extends React.PureComponent {
           <tbody>
           <tr>
             <td>{name}</td>
+            <td>{organization}</td>
             <td>{typeMetaData}</td>
             <td className={state === "prodaccepted" ? "green" : "orange"}>{state}</td>
             {(isSp || isRp) && <td className={excludedFromPush ? "orange" : "green"}>
@@ -912,6 +960,8 @@ export default class Detail extends React.PureComponent {
     const renderContent = loaded && !notFound;
 
     const name = renderContent ? this.nameOfMetaData(metaData) : "";
+    const organization = renderContent ? this.organisationOfMetaData(metaData) : "";
+
     const hasErrors = this.hasGlobalErrors(errors) && !isEmpty(metaData.id);
 
     return (
@@ -929,7 +979,7 @@ export default class Detail extends React.PureComponent {
         />
         {renderContent && (
           <section className="top-detail">
-            {this.renderTopBanner(name, metaData, resourceServers, whiteListing, isNew, whiteListingLoaded)}
+            {this.renderTopBanner(name, organization, metaData, resourceServers, whiteListing, isNew, whiteListingLoaded)}
             {hasErrors && this.renderErrors(errors)}
             {!isNew && (
               <a
@@ -980,7 +1030,7 @@ export default class Detail extends React.PureComponent {
         {renderNotFound && <section>{I18n.t("metadata.notFound")}</section>}
         {!notFound && (
           <section className="tabs">
-            {tabs.map(tab => this.renderTab(tab))}
+            {tabs.map(tab => this.renderTab(tab, metaData, resourceServers, whiteListing, revisions))}
           </section>
         )}
         {renderContent &&

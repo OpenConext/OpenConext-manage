@@ -95,6 +95,7 @@ public class MetaDataRepository {
             this.supportedLanguages.forEach(lang -> {
                 orCriterias.add(regex("data.metaDataFields.name:" + lang, part));
                 orCriterias.add(regex("data.metaDataFields.keywords:" + lang, part));
+                orCriterias.add(regex("data.metaDataFields.OrganizationName:" + lang, part));
             });
             return new Criteria().orOperator(orCriterias.toArray(new Criteria[orCriterias.size()]));
         }).toArray(Criteria[]::new));
@@ -226,6 +227,8 @@ public class MetaDataRepository {
                 .include("data.state")
                 .include("data.entityid")
                 .include("data.metaDataFields.name:en")
+                .include("data.metaDataFields.OrganizationName:en")
+                .include("data.metaDataFields.OrganizationName:en")
                 .include("data.revisionnote")
                 .include("revision.created")
                 .include("revision.terminated")
@@ -300,7 +303,10 @@ public class MetaDataRepository {
                 .include("data.state")
                 .include("data.entityid")
                 .include("data.notes");
-        this.supportedLanguages.forEach(lang -> fields.include("data.metaDataFields.name:" + lang));
+        this.supportedLanguages.forEach(lang -> {
+            fields.include("data.metaDataFields.name:" + lang);
+            fields.include("data.metaDataFields.OrganizationName:" + lang);
+        });
         return query;
     }
 }

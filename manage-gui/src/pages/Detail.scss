@@ -24,7 +24,7 @@
         width: 100%;
         th {
           text-align: left;
-          width: 33%;
+          width: 25%;
           padding-bottom: 5px;
 
           i.fa {
@@ -54,13 +54,13 @@
 
         &.saml20_sp, &.oidc10_rp {
           th {
-            width: 25%;
+            width: 20%;
           }
         }
 
         &.saml20_sp.imported-from-edugain {
           th {
-            width: 16%;
+            width: 14%;
           }
         }
       }
@@ -92,11 +92,12 @@
       flex-grow: 1;
       text-align: center;
       cursor: pointer;
-      padding: 15px 40px;
+      padding: 15px 25px;
       background-color: $light-grey;
       color: $dark-grey;
       text-transform: uppercase;
       border-right: 1px solid white;
+      position: relative;
 
       &.active {
         background-color: white;
@@ -119,7 +120,9 @@
       }
 
       i.fa-warning, i.fa-asterisk {
-        float: right;
+        position: absolute;
+        top: 6px;
+        right: 8px;
       }
     }
   }

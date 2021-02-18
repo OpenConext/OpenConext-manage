@@ -103,11 +103,15 @@
       }
 
       &.name {
-        width: 23%;
+        width: 17%;
+      }
+
+      &.organization {
+        width: 17%;
       }
 
       &.entityId {
-        width: 23%;
+        width: 20%;
       }
 
       &.type {
@@ -115,7 +119,7 @@
       }
 
       &.created {
-        width: 15%;
+        width: 11%;
       }
 
       &.terminated {
@@ -127,7 +131,7 @@
       }
 
       &.updatedBy {
-        width: 16%;
+        width: 12%;
       }
     }
 
