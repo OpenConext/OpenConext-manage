@@ -531,8 +531,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 .post("manage/api/client/search/oidc10_rp")
                 .then()
                 .statusCode(SC_OK)
-                .body("size()", is(1))
-                .body("[0].data.metaDataFields.'scopes'", hasItems("openid", "groups"));
+                .body("size()", is(1));
     }
 
     @Test

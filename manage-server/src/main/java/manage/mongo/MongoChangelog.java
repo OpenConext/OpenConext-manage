@@ -1,6 +1,5 @@
 package manage.mongo;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.cloudyrock.mongock.ChangeLog;
 import com.github.cloudyrock.mongock.ChangeSet;
 import com.github.cloudyrock.mongock.driver.mongodb.springdata.v3.decorator.impl.MongockTemplate;
@@ -13,7 +12,6 @@ import manage.model.MetaData;
 import manage.model.Scope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.BulkOperations;
 import org.springframework.data.mongodb.core.index.Index;
@@ -30,6 +28,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -150,6 +149,23 @@ public class MongoChangelog {
             LOG.info(String.format("Migrated %s relying party revisions to resource server revisions collection", bulkWriteResultRevisions.getInsertedCount()));
         }
     }
+
+
+    @ChangeSet(order = "008", id = "removeExtraneousKeys", author = "okke.harsta@surf.nl")
+    public void removeExtraneousKeys(MongockTemplate mongoTemplate) {
+        List<MetaData> relyingParties = mongoTemplate.findAll(MetaData.class, EntityType.RP.getType());
+        List<String> extraneousKeys = Arrays.asList("scopes", "NameIDFormats:0", "NameIDFormats:1", "NameIDFormats:2");
+        relyingParties.forEach(rp -> {
+            Map<String, Object> metaDataFields = rp.metaDataFields();
+            Set<String> keySet = metaDataFields.keySet();
+            if (keySet.stream().anyMatch(key -> extraneousKeys.contains(key))) {
+                keySet.removeIf(key -> extraneousKeys.contains(key));
+                LOG.info(String.format("Saving %s relying party where extraneousKeys are removed", rp.getData().get("entityid")));
+                mongoTemplate.save(rp, EntityType.RP.getType());
+            }
+        });
+    }
+
 
     private void migrateRelayingPartyToResourceServer(Map<String, Map<String, Object>> properties, List<Pattern> patterns, Map<String, Object> simpleProperties, MetaData rs) {
         rs.setType(EntityType.RS.getType());

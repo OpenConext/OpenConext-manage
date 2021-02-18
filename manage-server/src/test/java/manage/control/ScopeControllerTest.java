@@ -172,7 +172,7 @@ public class ScopeControllerTest extends AbstractIntegrationTest {
                 .extract()
                 .as(Map.class);
         Object message = map.get("message");
-        assertEquals("[{\"entityid\":\"https@//oidc.rp.resourceServer\",\"id\":\"10\",\"type\":\"oauth20_rs\"},{\"entityid\":\"https@//oidc.rp\",\"id\":\"9\",\"type\":\"oidc10_rp\"}]", message);
+        assertEquals("[{\"entityid\":\"https@//oidc.rp.resourceServer\",\"id\":\"10\",\"type\":\"oauth20_rs\"}]", message);
     }
 
     @Test

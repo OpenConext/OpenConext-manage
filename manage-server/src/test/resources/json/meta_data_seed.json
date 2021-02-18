@@ -502,10 +502,6 @@
           "http://localhost:8080/redirect1",
           "http://localhost:8080/redirect2"
         ],
-        "scopes": [
-          "openid",
-          "groups"
-        ],
         "grants": [
           "authorization_code",
           "implicit",
