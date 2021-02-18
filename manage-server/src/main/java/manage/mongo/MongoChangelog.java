@@ -154,14 +154,25 @@ public class MongoChangelog {
     @ChangeSet(order = "008", id = "removeExtraneousKeys", author = "okke.harsta@surf.nl")
     public void removeExtraneousKeys(MongockTemplate mongoTemplate) {
         List<MetaData> relyingParties = mongoTemplate.findAll(MetaData.class, EntityType.RP.getType());
-        List<String> extraneousKeys = Arrays.asList("scopes", "NameIDFormats:0", "NameIDFormats:1", "NameIDFormats:2");
+        List<String> extraneousKeysRelyingParties = Arrays.asList("scopes", "isResourceServer");
         relyingParties.forEach(rp -> {
             Map<String, Object> metaDataFields = rp.metaDataFields();
             Set<String> keySet = metaDataFields.keySet();
-            if (keySet.stream().anyMatch(key -> extraneousKeys.contains(key))) {
-                keySet.removeIf(key -> extraneousKeys.contains(key));
+            if (keySet.stream().anyMatch(key -> extraneousKeysRelyingParties.contains(key))) {
+                keySet.removeIf(key -> extraneousKeysRelyingParties.contains(key));
                 LOG.info(String.format("Saving %s relying party where extraneousKeys are removed", rp.getData().get("entityid")));
                 mongoTemplate.save(rp, EntityType.RP.getType());
+            }
+        });
+        List<MetaData> resourceServers = mongoTemplate.findAll(MetaData.class, EntityType.RS.getType());
+        List<String> extraneousKeysResourceServers = Arrays.asList("NameIDFormats:0", "NameIDFormats:1", "NameIDFormats:2");
+        resourceServers.forEach(rs -> {
+            Map<String, Object> metaDataFields = rs.metaDataFields();
+            Set<String> keySet = metaDataFields.keySet();
+            if (keySet.stream().anyMatch(key -> extraneousKeysResourceServers.contains(key))) {
+                keySet.removeIf(key -> extraneousKeysResourceServers.contains(key));
+                LOG.info(String.format("Saving %s relying party where extraneousKeys are removed", rs.getData().get("entityid")));
+                mongoTemplate.save(rs, EntityType.RS.getType());
             }
         });
     }
