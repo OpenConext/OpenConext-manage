@@ -89,7 +89,7 @@ public class MetaDataController {
     private static final Logger LOG = LoggerFactory.getLogger(MetaDataController.class);
 
     private static final List<String> entityTypesSuggestions = Arrays.asList(
-            EntityType.RP.getType(), EntityType.SP.getType()
+            EntityType.RP.getType(), EntityType.SP.getType(), EntityType.RS.getType()
     );
 
     private MetaDataRepository metaDataRepository;
