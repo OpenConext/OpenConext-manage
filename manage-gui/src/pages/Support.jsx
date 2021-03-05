@@ -30,10 +30,13 @@ export default class Support extends React.PureComponent {
   }
 
   componentDidMount() {
-    Promise.all([search({"metaDataFields.coin:exclude_from_push": "true"}, "saml20_sp"),
-      search({"metaDataFields.coin:exclude_from_push": "true"}, "oidc10_rp")])
-      .then(json => {
-        const entities = json[0].concat(json[1]);
+    Promise.all([
+      search({"metaDataFields.coin:exclude_from_push": "true"}, "saml20_sp"),
+      search({"metaDataFields.coin:exclude_from_push": "true"}, "oidc10_rp"),
+      search({"metaDataFields.coin:exclude_from_push": "true"}, "oauth20_rs"),
+      search({"metaDataFields.coin:exclude_from_push": "true"}, "saml20_idp")
+    ]).then(json => {
+        const entities = json[0].concat(json[1]).concat(json[2]).concat(json[3]);
         const result = entities.map(entity => ({
           state: entity.data.state,
           type: entity.type,
@@ -81,7 +84,7 @@ export default class Support extends React.PureComponent {
   changeStatus = option => this.setState({status: option ? option.value : null});
 
   renderSearchResultsTable = (excludeFromPushServiceProviders, status) => {
-    const searchHeaders = ["status", "name", "organization", "entityid", "notes", "excluded"];
+    const searchHeaders = ["status", "name", "organization", "entityid", "type", "notes", "excluded"];
     excludeFromPushServiceProviders = status === "all" ? excludeFromPushServiceProviders : excludeFromPushServiceProviders.filter(entity => entity.state === status);
     return (
       <section>
@@ -103,6 +106,7 @@ export default class Support extends React.PureComponent {
             </td>
             <td className="organization">{entity.organization}</td>
             <td className="entityId">{entity.entityid}</td>
+            <td className="type">{entity.type}</td>
             <td className="notes">
               {isEmpty(entity.notes) ? <span></span> :
                 <NotesTooltip identifier={entity.entityid} notes={entity.notes}/>}
@@ -128,7 +132,7 @@ export default class Support extends React.PureComponent {
 
   renderResults = (excludeFromPushServiceProviders, copiedToClipboardClassName, status, query) => <div>
     <section className="explanation">
-      <p>Below are all Service Providers with <span className="code">coin:exclude_from_push</span> set to <span
+      <p>Below are all Metadata Entities with <span className="code">coin:exclude_from_push</span> set to <span
         className="code">true</span>.</p>
       <p/>
       <p>You can either include them in the push by unchecking the checkbox or view them in a separate tab, review

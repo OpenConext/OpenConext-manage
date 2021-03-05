@@ -84,6 +84,11 @@
           "format": "uuid",
           "info": "This is a 128 bit number also known as a globally unique identifier (GUID or UUID) for this service."
         },
+        "coin:exclude_from_push": {
+          "type": "boolean",
+          "default": false,
+          "info": "Must be set for this Resource Server to be excluded in the EB push."
+        },
         "coin:service_team_id": {
           "type": "string",
           "info": "Enter the team name as used in the SP Dashboard. e.g. urn:collab:group:example-teams.nl:nl:surfnet:services:spd_example. "

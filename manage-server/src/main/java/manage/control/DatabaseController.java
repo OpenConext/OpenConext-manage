@@ -118,7 +118,10 @@ public class DatabaseController {
                 metaDataFields.put("isResourceServer", false);
             });
             relyingParties.addAll(resourceServers);
-            this.oidcRestTemplate.postForEntity(oidcPushUri, relyingParties, Void.class);
+            List<MetaData> filteredEntities = relyingParties.stream()
+                    .filter(metaData -> !excludeFromPush(metaData.metaDataFields()))
+                    .collect(toList());
+            this.oidcRestTemplate.postForEntity(oidcPushUri, filteredEntities, Void.class);
             result.put("oidc", true);
         }
         return new ResponseEntity<>(result, HttpStatus.OK);
