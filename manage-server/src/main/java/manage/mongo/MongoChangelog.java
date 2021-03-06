@@ -151,7 +151,7 @@ public class MongoChangelog {
     }
 
 
-    @ChangeSet(order = "008", id = "removeExtraneousKeys", author = "okke.harsta@surf.nl")
+    @ChangeSet(order = "008", id = "removeExtraneousKeys", author = "okke.harsta@surf.nl", runAlways = true)
     public void removeExtraneousKeys(MongockTemplate mongoTemplate) {
         List<MetaData> relyingParties = mongoTemplate.findAll(MetaData.class, EntityType.RP.getType());
         List<String> extraneousKeysRelyingParties = Arrays.asList("scopes", "isResourceServer");
