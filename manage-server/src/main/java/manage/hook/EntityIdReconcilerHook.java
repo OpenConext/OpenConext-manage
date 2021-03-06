@@ -43,7 +43,7 @@ public class EntityIdReconcilerHook extends MetaDataHookAdapter {
         }
         String metaDataType = newMetaData.getType();
         List<String> types = metaDataTypesForeignKeyRelations(metaDataType);
-        asList("allowedEntities", "disableConsent", "allowedResourceServers", "stepupEntities", "mfaEntities").forEach(name ->
+        getCollectionReferenceNames(metaDataType).forEach(name ->
                 types.forEach(type -> {
                     List<MetaData> references = metaDataRepository.findRaw(type,
                             String.format("{\"data.%s.name\" : \"%s\"}", name, oldEntityId));
@@ -66,8 +66,8 @@ public class EntityIdReconcilerHook extends MetaDataHookAdapter {
         String entityId = entityId(metaDataToBeDeleted);
         String metaDataType = metaDataToBeDeleted.getType();
 
-        asList("allowedEntities", "disableConsent").forEach(name -> {
-            List<String> types = metaDataTypesForeignKeyRelations(metaDataType);
+        List<String> types = metaDataTypesForeignKeyRelations(metaDataType);
+        getCollectionReferenceNames(metaDataType).forEach(name -> {
             types.forEach(type -> {
                 List<MetaData> references = metaDataRepository.findRaw(type,
                         String.format("{\"data.%s.name\" : \"%s\"}", name, entityId));
@@ -99,19 +99,35 @@ public class EntityIdReconcilerHook extends MetaDataHookAdapter {
         metaDataRepository.update(metaData);
 
     }
+    private List<String> getCollectionReferenceNames(String type) {
+        if (type.equals(STT.getType())) {
+            return emptyList();
+        }
+        if (type.equals(SP.getType()) || type.equals(RP.getType())) {
+            return asList("allowedEntities", "stepupEntities", "mfaEntities", "disableConsent");
+        }
+        if (type.equals(IDP.getType())) {
+            return singletonList("allowedEntities");
+        }
+        if (type.equals(RS.getType())) {
+            return singletonList("allowedResourceServers");
+        }
+        throw new IllegalArgumentException("Not supported MetaData type " + type);
+    }
+
 
     public static List<String> metaDataTypesForeignKeyRelations(String type) {
-        if (type.equals(SP.getType()) || type.equals(STT.getType())) {
+        if (type.equals(STT.getType())) {
+            return emptyList();
+        }
+        if (type.equals(SP.getType()) || type.equals(RP.getType())) {
             return singletonList(IDP.getType());
         }
         if (type.equals(IDP.getType())) {
             return asList(SP.getType(), RP.getType());
         }
-        if (type.equals(RP.getType())) {
-            return asList(IDP.getType(), RS.getType());
-        }
         if (type.equals(RS.getType())) {
-            return emptyList();
+            return singletonList(RP.getType());
         }
         throw new IllegalArgumentException("Not supported MetaData type " + type);
     }

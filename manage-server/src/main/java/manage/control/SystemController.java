@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -111,8 +112,8 @@ public class SystemController {
 
     @GetMapping({"/client/playground/orphans", "/internal/playground/orphans"})
     public List<OrphanMetaData> orphans() {
-        return Stream.of(EntityType.values()).map(this::orphanMetaData)
-                .flatMap(Function.identity())
+        return Stream.of(EntityType.values())
+                .flatMap(this::orphanMetaData)
                 .collect(toList());
     }
 
@@ -150,20 +151,19 @@ public class SystemController {
                 }
             });
         });
-        List<String> types = EntityIdReconcilerHook.metaDataTypesForeignKeyRelations(type.getType());
+        List<String> types = Arrays.stream(EntityType.values()).map(EntityType::getType).collect(toList());
         return groupedByEntityIdReference.entrySet().stream()
                 .filter(entry -> types.stream()
                         .noneMatch(entityType -> mongoTemplate.exists(new BasicQuery("{\"data.entityid\":\"" + entry.getKey() + "\"}"), entityType)))
-                .map(entry -> entry.getValue().entrySet().stream().map(m ->
+                .flatMap(entry -> entry.getValue().entrySet().stream().map(m ->
                         m.getValue().stream().map(metaData -> new OrphanMetaData(
                                 entry.getKey(),
                                 (String) metaData.getData().get("entityid"),
-                                (String) Map.class.cast(metaData.getData().get("metaDataFields")).get("name:en"),
+                                (String) ((Map) metaData.getData().get("metaDataFields")).get("name:en"),
                                 m.getKey(),
                                 metaData.getId(),
                                 type.getType()
                         ))))
-                .flatMap(Function.identity())
                 .flatMap(Function.identity());
     }
 }
