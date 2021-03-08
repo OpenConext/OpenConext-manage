@@ -10,6 +10,7 @@ import {SelectNewMetaDataField} from "../metadata";
 import {isEmpty} from "../../utils/Utils";
 
 import "./MetaData.css";
+import ScopeSelection from "../form/ScopeSelection";
 
 export default class MetaData extends React.Component {
   constructor(props) {
@@ -105,10 +106,9 @@ export default class MetaData extends React.Component {
       case "number":
         return <Number {...defaultProps} />;
       case "array":
-        const fetchValue = keyConfiguration.items.fetch;
-
-        if (fetchValue) {
-          return <SelectMulti {...defaultProps} enumValues={[]} fetchValue={fetchValue}/>;
+        if (key === "scopes") {
+          const {isNewEntity, originalEntityId} = this.props;
+          return <ScopeSelection {...defaultProps} isNewEntity={isNewEntity} originalEntityId={originalEntityId}/>;
         }
 
         const options = keyConfiguration.items.enum;
@@ -350,5 +350,6 @@ MetaData.propTypes = {
   metaDataFields: PropTypes.object.isRequired,
   name: PropTypes.string.isRequired,
   configuration: PropTypes.object.isRequired,
-  guest: PropTypes.bool.isRequired
+  guest: PropTypes.bool.isRequired,
+  isNewEntity: PropTypes.bool.isRequired
 };

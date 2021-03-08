@@ -90,6 +90,17 @@ public class ScopeControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void scopesInUse() {
+        given()
+                .when()
+                .header("Content-type", "application/json")
+                .queryParam("scopes", "groups, nope, noppes")
+                .get("manage/api/client/inuse/scopes")
+                .then()
+                .body("size()", is(1));
+    }
+
+    @Test
     public void update() {
         Scope scope = given()
                 .when()

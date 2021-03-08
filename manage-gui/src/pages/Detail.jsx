@@ -715,6 +715,8 @@ export default class Detail extends React.PureComponent {
             configuration={configuration}
             onChange={this.onChange("metadata")}
             name={name}
+            isNewEntity={this.state.isNew}
+            originalEntityId={this.state.originalEntityId}
             onError={this.onError("metadata")}
             errors={this.state.errors["metadata"]}
             guest={guest}

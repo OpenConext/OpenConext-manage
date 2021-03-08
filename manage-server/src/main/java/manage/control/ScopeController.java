@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.BasicQuery;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.MediaType;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.websocket.server.PathParam;
@@ -35,6 +37,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
+import static manage.model.EntityType.RS;
 
 @RestController
 public class ScopeController {
@@ -81,14 +84,21 @@ public class ScopeController {
         return scope;
     }
 
-    @GetMapping(value = "/client/fetch/{value}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<String> fetchValues(@PathParam("value") String value) {
+    @GetMapping(value = "/client/fetch/scopes", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<String> fetchValues() {
         return scopeRepository.findAll().stream().map(Scope::getName).collect(Collectors.toList());
     }
 
     @GetMapping({"/client/scopes/{id}"})
     public Scope get(@PathVariable("id") String id) {
         return scopeById(id);
+    }
+
+    @GetMapping("/client/inuse/scopes")
+    public List<MetaData> scopesInUse(@RequestParam(value = "scopes") String scopes) {
+        String scopesIn = Stream.of(scopes.split(",")).map(s -> String.format("\"%s\"", s.trim())).collect(Collectors.joining(","));
+        String query = String.format("{\"data.metaDataFields.scopes\":{$in:[%s]}}", scopesIn);
+        return mongoTemplate.find(new BasicQuery(query), MetaData.class, RS.getType());
     }
 
     @PutMapping({"/client/scopes"})
@@ -119,8 +129,6 @@ public class ScopeController {
     private void checkScopeInUse(Scope scope) throws JsonProcessingException {
         Query query = Query.query(Criteria.where("data.metaDataFields.scopes").is(scope.getName()));
         List<MetaData> resourcesServers = mongoTemplate.find(query, MetaData.class, EntityType.RS.getType());
-        List<MetaData> relyingParties = mongoTemplate.find(query, MetaData.class, EntityType.RP.getType());
-        resourcesServers.addAll(relyingParties);
         if (!resourcesServers.isEmpty()) {
             List<Map<String, String>> message = new ArrayList<>();
             resourcesServers.forEach(md -> {

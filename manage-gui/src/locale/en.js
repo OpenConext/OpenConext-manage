@@ -453,7 +453,8 @@ I18n.translations.en = {
     nameInUse: "This name is already taken by another Scope",
     noScopes: "There are no Scopes configured. This is extremely worrisome",
     info: "Below are all Scopes that can be configured on OIDC Relying Parties.",
-    invalidName: "Invalid format for a scope"
+    invalidName: "Invalid format for a scope",
+    duplicateScope: "Scope <strong>{{name}}</strong> is already used by Resource Server(s): {{entities}}"
   },
   activity: {
     searchPlaceHolder: "Search for metadata within the results...",

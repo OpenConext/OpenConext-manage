@@ -247,6 +247,10 @@ export function deleteScope(id) {
   return validFetch(`scopes/${id}`, {method: "delete"}, {}, false);
 }
 
+export function scopeInUse(scopes) {
+  return fetchJson(`inuse/scopes?scopes=${encodeURIComponent(scopes.join(","))}`);
+}
+
 //Activity
 export function recentActivity(types, limit) {
   return postPutJson("recent-activity", {types, limit}, "POST")
