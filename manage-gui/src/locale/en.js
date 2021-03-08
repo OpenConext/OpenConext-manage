@@ -449,10 +449,10 @@ I18n.translations.en = {
       deleted: "Successfully deleted scope {{name}}"
     },
     deleteConfirmation: "Are you sure you want to delete the scope {{name}}?",
-    inUse: "You can not {{action}} of this scope as this scope is in use by the following RP's:",
+    inUse: "You can not {{action}} of this scope as this scope is in use by the following RS's:",
     nameInUse: "This name is already taken by another Scope",
     noScopes: "There are no Scopes configured. This is extremely worrisome",
-    info: "Below are all Scopes that can be configured on OIDC Relying Parties.",
+    info: "Below are all Scopes that can be configured on OIDC Resource Servers.",
     invalidName: "Invalid format for a scope",
     duplicateScope: "Scope <strong>{{name}}</strong> is already used by Resource Server(s): {{entities}}"
   },
