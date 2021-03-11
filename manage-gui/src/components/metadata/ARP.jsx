@@ -227,7 +227,7 @@ export default class ARP extends React.Component {
       <td className={`name ${deprecated ? "deprecated" : ""}`}><span
         className="display-name">{displayKey}</span><i className="fa fa-info-circle"
                                                        data-for={reactTooltipId} data-tip></i>
-        <ReactTooltip id={reactTooltipId} type="info" class="tool-tip" effect="solid">
+        <ReactTooltip id={reactTooltipId} type="info" class="tool-tip" effect="solid" place="right">
           <span>{attributeKey}</span>
         </ReactTooltip>
       </td>

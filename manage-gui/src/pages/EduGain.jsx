@@ -124,7 +124,7 @@ export default class EduGain extends React.PureComponent {
             <td>{I18n.t(`edugain.results.${k}`)}
               <span>
                             <i className="fa fa-info-circle" data-for={k} data-tip></i>
-                                <ReactTooltip id={k} type="info" class="tool-tip" effect="solid">
+                                <ReactTooltip id={k} type="info" class="tool-tip" effect="solid" place="right">
                                     <span>{I18n.t(`edugain.results.${k}_info`)}</span>
                                 </ReactTooltip>
                         </span>

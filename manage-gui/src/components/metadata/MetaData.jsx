@@ -199,17 +199,14 @@ export default class MetaData extends React.Component {
           {key}
           {toolTip && (
             <span>
-              <i
-                className="fa fa-info-circle"
-                data-for={reactTooltipId}
-                data-tip
-              />
-              <ReactTooltip
-                id={reactTooltipId}
-                type="info"
-                class="tool-tip"
-                effect="solid"
-              >
+              <i className="fa fa-info-circle"
+                 data-for={reactTooltipId}
+                 data-tip/>
+              <ReactTooltip id={reactTooltipId}
+                            type="info"
+                            place="right"
+                            class="tool-tip"
+                            effect="solid">
                 <span>{toolTip}</span>
               </ReactTooltip>
             </span>
