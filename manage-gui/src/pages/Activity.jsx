@@ -10,7 +10,7 @@ import Select from "../components/Select";
 import NotesTooltip from "../components/NotesTooltip";
 import CheckBox from "../components/CheckBox";
 
-const limitOptions = ["25", "50", "75", "100"].map(s => ({value: s, label:s}));
+const limitOptions = ["25", "50", "75", "100"].map(s => ({value: s, label: s}));
 
 export default class Activity extends React.Component {
 
@@ -36,22 +36,27 @@ export default class Activity extends React.Component {
 
   refreshActivities = () => {
     const {types, limit} = this.state;
-    recentActivity(types, parseInt(limit, 10)).then(res => {
-      const activities = res.map(a => ({
-        id: a.id,
-        type: a.type,
-        entityId: a.data.entityid,
-        state: a.data.state,
-        terminated: a.revision.terminated,
-        revisionNote: a.data.revisionnote,
-        name: a.data.metaDataFields["name:en"],
-        organization: a.data.metaDataFields["OrganizationName:en"] || a.data.metaDataFields["OrganizationName:nl"] || "",
-        created: new Date(a.revision.created),
-        updatedBy: a.revision.updatedBy,
-      }));
-      const sorted = activities.sort(this.sortByAttribute("created", false));
-      this.setState({activity: sorted, filteredActivity: sorted, loaded: true});
-    });
+    if (isEmpty(types)) {
+      this.setState({activity: [], filteredActivity: []});
+    } else {
+      this.setState({loaded: false});
+      recentActivity(types, parseInt(limit, 10)).then(res => {
+        const activities = res.map(a => ({
+          id: a.id,
+          type: a.type,
+          entityId: a.data.entityid,
+          state: a.data.state,
+          terminated: a.revision.terminated,
+          revisionNote: a.data.revisionnote,
+          name: a.data.metaDataFields["name:en"],
+          organization: a.data.metaDataFields["OrganizationName:en"] || a.data.metaDataFields["OrganizationName:nl"] || "",
+          created: new Date(a.revision.created),
+          updatedBy: a.revision.updatedBy,
+        }));
+        const sorted = activities.sort(this.sortByAttribute("created", false));
+        this.setState({activity: sorted, filteredActivity: sorted, loaded: true});
+      });
+    }
   };
 
   sortByAttribute = (name, reverse = false) => (a, b) => {
@@ -135,7 +140,7 @@ export default class Activity extends React.Component {
       <td>
         {a.created.toGMTString()}
       </td>
-      <td className="terminated"><CheckBox name="terminated" value={!isEmpty(a.terminated)} readOnly={true}/> </td>
+      <td className="terminated"><CheckBox name="terminated" value={!isEmpty(a.terminated)} readOnly={true}/></td>
       <td className="info">
         {isEmpty(a.revisionNote) ? <span></span> :
           <NotesTooltip identifier={a.entityId} notes={a.revisionNote}/>}

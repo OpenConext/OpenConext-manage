@@ -114,8 +114,10 @@ public class DatabaseController {
                 }
             });
             relyingParties.forEach(rp -> {
+                //Once we want to get rid of this cleanup, but for now backward compatibility
                 Map<String, Object> metaDataFields = rp.metaDataFields();
                 metaDataFields.put("isResourceServer", false);
+                metaDataFields.remove("scopes");
             });
             relyingParties.addAll(resourceServers);
             List<MetaData> filteredEntities = relyingParties.stream()
