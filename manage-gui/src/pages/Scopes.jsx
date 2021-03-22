@@ -111,6 +111,12 @@ export default class Scopes extends React.Component {
     this.setState({selectedScope: selectedScope});
   }
 
+  updateTitle = lang => val => {
+    const {selectedScope} = this.state;
+    selectedScope.titles[lang] = val;
+    this.setState({selectedScope: selectedScope});
+  }
+
   updateName = val => {
     const {selectedScope} = this.state;
     selectedScope.name = val;
@@ -150,10 +156,19 @@ export default class Scopes extends React.Component {
               onChange={this.updateName}/>
       {invalidName &&
       <p className="errors">{I18n.t("scopes.invalidName")}</p>}
-      <p>{I18n.t("scopes.details")}</p>
+      <p>{I18n.t("scopes.titles")}</p>
       {supportedLanguages.map(lang => <div key={lang} className="form-element">
         <label htmlFor={lang}>
-          {I18n.t("scopes.lang", {lang})}
+          {I18n.t("scopes.titleL", {lang})}
+        </label>
+        <String placeholder={I18n.t("scopes.titlePlaceholder", {lang: I18n.t(`scopes.${lang}`)})}
+                value={selectedScope.titles[lang] || ""} onChange={this.updateTitle(lang)}/>
+
+      </div>)}
+      <p>{I18n.t("scopes.descriptions")}</p>
+      {supportedLanguages.map(lang => <div key={lang} className="form-element">
+        <label htmlFor={lang}>
+          {I18n.t("scopes.description", {lang})}
         </label>
         <String placeholder={I18n.t("scopes.descriptionPlaceholder", {lang: I18n.t(`scopes.${lang}`)})}
                 value={selectedScope.descriptions[lang] || ""} onChange={this.updateDescription(lang)}/>
@@ -178,6 +193,7 @@ export default class Scopes extends React.Component {
   newScope = () => {
     const scope = {
       name: "",
+      titles: {},
       descriptions: {}
     }
     this.setState({

@@ -98,7 +98,7 @@ public class DatabaseController {
             List<MetaData> relyingParties = metaDataRepository.getMongoTemplate().findAll(MetaData.class, EntityType.RP.getType());
             List<MetaData> resourceServers = metaDataRepository.getMongoTemplate().findAll(MetaData.class, EntityType.RS.getType());
             List<Scope> scopes = metaDataRepository.getMongoTemplate().findAll(Scope.class);
-            Map<String, Scope> scopesMapped = scopes.stream().collect(toMap(scope -> scope.getName(), scope -> scope));
+            Map<String, Scope> scopesMapped = scopes.stream().collect(toMap(Scope::getName, scope -> scope));
             resourceServers.forEach(rs -> {
                 //Once we want to get rid of this hack, but for now backward compatibility
                 rs.setType(EntityType.RP.getType());

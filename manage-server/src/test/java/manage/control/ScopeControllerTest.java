@@ -31,9 +31,9 @@ public class ScopeControllerTest extends AbstractIntegrationTest {
         super.before();
         MongoTemplate mongoTemplate = mongoTemplate();
         List<Scope> scopes = Arrays.asList(
-                new Scope("1", 0L, "groups", descriptions()),
-                new Scope("2", 0L, "openid", descriptions()),
-                new Scope("3", 0L, "not-used", descriptions())
+                new Scope("1", 0L, "groups", titles(), descriptions()),
+                new Scope("2", 0L, "openid", titles(), descriptions()),
+                new Scope("3", 0L, "not-used", titles(), descriptions())
         );
         mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, Scope.class)
                 .remove(Query.query(Criteria.where("_id").exists(true)))
@@ -46,7 +46,7 @@ public class ScopeControllerTest extends AbstractIntegrationTest {
     public void save() {
         String id = given()
                 .when()
-                .body(new Scope("new-scope", descriptions()))
+                .body(new Scope("new-scope", titles(), descriptions()))
                 .header("Content-type", "application/json")
                 .post("manage/api/client/scopes")
                 .then()
@@ -59,7 +59,7 @@ public class ScopeControllerTest extends AbstractIntegrationTest {
     public void saveDuplicateKey() {
         given()
                 .when()
-                .body(new Scope("groups", descriptions()))
+                .body(new Scope("groups", titles(), descriptions()))
                 .header("Content-type", "application/json")
                 .post("manage/api/client/scopes")
                 .then()
@@ -150,7 +150,7 @@ public class ScopeControllerTest extends AbstractIntegrationTest {
         long pre = countScopes();
         String id = given()
                 .when()
-                .body(new Scope("nope", descriptions()))
+                .body(new Scope("nope", titles(), descriptions()))
                 .header("Content-type", "application/json")
                 .post("manage/api/client/scopes")
                 .then()
@@ -201,6 +201,13 @@ public class ScopeControllerTest extends AbstractIntegrationTest {
         Map<String, String> descriptions = new HashMap<>();
         descriptions.put("en", "English description");
         descriptions.put("nl", "Nederlandse omschrijving");
+        return descriptions;
+    }
+
+    private Map<String, String> titles() {
+        Map<String, String> descriptions = new HashMap<>();
+        descriptions.put("en", "English title");
+        descriptions.put("nl", "Nederlandse title");
         return descriptions;
     }
 

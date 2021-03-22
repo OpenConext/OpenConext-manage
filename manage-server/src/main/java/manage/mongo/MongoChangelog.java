@@ -75,7 +75,7 @@ public class MongoChangelog {
             DistinctIterable<String> scopes = mongoTemplate.getCollection(EntityType.RP.getType())
                     .distinct("data.metaDataFields.scopes", String.class);
             List<Scope> allScopes = StreamSupport.stream(scopes.spliterator(), false)
-                    .map(scope -> new Scope(scope, new HashMap<>()))
+                    .map(scope -> new Scope(scope, new HashMap<>(), new HashMap<>()))
                     .collect(Collectors.toList());
             mongoTemplate.insert(allScopes, Scope.class);
         }
@@ -176,6 +176,14 @@ public class MongoChangelog {
         });
     }
 
+    @ChangeSet(order = "009", id = "addScopeTitles", author = "okke.harsta@surf.nl")
+    public void addScopeTitles(MongockTemplate mongoTemplate) {
+        List<Scope> scopes = mongoTemplate.findAll(Scope.class);
+        scopes.forEach(scope -> {
+            scope.update(scope);
+            mongoTemplate.save(scope);
+        });
+    }
 
     private void migrateRelayingPartyToResourceServer(Map<String, Map<String, Object>> properties, List<Pattern> patterns, Map<String, Object> simpleProperties, MetaData rs) {
         rs.setType(EntityType.RS.getType());

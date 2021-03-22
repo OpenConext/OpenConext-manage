@@ -9,9 +9,11 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.util.CollectionUtils;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 
 @Getter
@@ -32,10 +34,18 @@ public class Scope implements Serializable {
     @Indexed(unique = true)
     private String name;
 
+    private Map<String, String> titles;
+
     private Map<String, String> descriptions;
 
-    public Scope(String name, Map<String, String> descriptions) {
+    public Scope(String name, Map<String, String> titles, Map<String, String> descriptions) {
         this.name = name;
+        this.titles = titles;
         this.descriptions = descriptions;
+    }
+
+    public void update(Scope scope) {
+        this.titles = scope.getTitles() != null ? scope.getTitles() : new HashMap<>();
+        this.descriptions = scope.getDescriptions() != null ? scope.getDescriptions() : new HashMap<>();
     }
 }
