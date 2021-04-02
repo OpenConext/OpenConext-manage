@@ -622,7 +622,7 @@ export default class Detail extends React.PureComponent {
         args = {nbr: (metaData.data.disableConsent || []).length};
         break;
       case "stepup_entities":
-        args = {nbr: (metaData.data.stepupEntities || []).length};
+        args = {nbr: (metaData.data.stepupEntities || []).length + (metaData.data.mfaEntities || []).length};
         break;
       case "resource_servers":
         args = {nbr: (metaData.data.allowedResourceServers || []).length};
