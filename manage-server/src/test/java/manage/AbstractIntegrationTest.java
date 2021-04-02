@@ -17,9 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
@@ -33,9 +32,8 @@ import static org.awaitility.Awaitility.await;
  * impersonate EB or other identity).
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        properties = {"spring.data.mongodb.uri=mongodb://localhost:27017/metadata_test", "oidc.feature=false"})
-@ActiveProfiles("dev")
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestPropertySource(locations= "classpath:test.properties")
 public abstract class AbstractIntegrationTest implements TestUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractIntegrationTest.class);
