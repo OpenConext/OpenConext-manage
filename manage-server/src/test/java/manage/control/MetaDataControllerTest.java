@@ -1169,4 +1169,22 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                         equalTo("Duis ad do"));
     }
 
+    @Test
+    public void emptyArpArray() throws java.io.IOException {
+        String json = readFile("/json/sp_dashboard_arp_array.json");
+        Map data = objectMapper.readValue(json, Map.class);
+        MetaData metaData = new MetaData(EntityType.SP.getType(), data);
+        given().auth()
+                    .preemptive()
+                    .basic("sp-portal", "secret")
+                .when()
+                .body(metaData)
+                .header("Content-type", "application/json")
+                .post("manage/api/internal/metadata")
+                .then()
+                .statusCode(SC_BAD_REQUEST)
+                .body("validations", equalTo("#/arp/attributes: expected type: JSONObject, found: JSONArray"));
+    }
+
+
 }
