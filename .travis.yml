@@ -21,7 +21,8 @@ before_install:
 - wget http://fastdl.mongodb.org/linux/mongodb-linux-x86_64-${MONGODB}.tgz
 - tar xzf mongodb-linux-x86_64-${MONGODB}.tgz
 - ${PWD}/mongodb-linux-x86_64-${MONGODB}/bin/mongod --version
-- pip install --user codecov
+- pyenv global system 3.6
+- pip3 install --user codecov
 - nvm install 10.14.2
 - npm install -g yarn
 - yarn install
