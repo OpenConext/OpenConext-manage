@@ -12,7 +12,7 @@
     <artifactId>manage-gui</artifactId>
     <packaging>pom</packaging>
     <name>manage-gui</name>
-    <version>6.0.6-SNAPSHOT</version>
+    <version>6.0.7</version>
     <build>
         <plugins>
             <plugin>
