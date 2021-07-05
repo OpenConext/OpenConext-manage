@@ -3,37 +3,15 @@ package manage.control;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import manage.api.APIUser;
 import manage.conf.MetaDataAutoConfiguration;
-import manage.exception.DuplicateEntityIdException;
-import manage.exception.EndpointNotAllowed;
-import manage.exception.ResourceNotFoundException;
-import manage.format.Exporter;
-import manage.format.Importer;
-import manage.format.SaveURLResource;
-import manage.hook.MetaDataHook;
-import manage.model.DashboardConnectOption;
-import manage.model.EntityType;
-import manage.model.Import;
-import manage.model.MetaData;
-import manage.model.MetaDataKeyDelete;
-import manage.model.MetaDataUpdate;
-import manage.model.RevisionRestore;
-import manage.model.ServiceProvider;
-import manage.model.StatsEntry;
-import manage.model.XML;
+import manage.model.*;
 import manage.repository.MetaDataRepository;
+import manage.service.ExporterService;
+import manage.service.ImporterService;
+import manage.service.MetaDataService;
 import manage.shibboleth.FederatedUser;
-import org.everit.json.schema.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
-import org.springframework.core.env.Profiles;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,38 +19,18 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.net.URLDecoder;
-import java.time.Clock;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import static java.util.Collections.singletonList;
-import static java.util.Collections.singletonMap;
-import static java.util.stream.Collectors.toList;
 import static manage.api.Scope.TEST;
 import static manage.mongo.MongoChangelog.REVISION_POSTFIX;
 
@@ -80,47 +38,29 @@ import static manage.mongo.MongoChangelog.REVISION_POSTFIX;
 @SuppressWarnings("unchecked")
 public class MetaDataController {
 
-    static final String REQUESTED_ATTRIBUTES = "REQUESTED_ATTRIBUTES";
-    static final String ALL_ATTRIBUTES = "ALL_ATTRIBUTES";
-    static final String LOGICAL_OPERATOR_IS_AND = "LOGICAL_OPERATOR_IS_AND";
-
-    private static final String DASHBOARD_CONNECT_OPTION = "coin:dashboard_connect_option";
-
     private static final Logger LOG = LoggerFactory.getLogger(MetaDataController.class);
 
-    private static final List<String> entityTypesSuggestions = Arrays.asList(
-            EntityType.RP.getType(), EntityType.SP.getType(), EntityType.RS.getType()
-    );
-
     private MetaDataRepository metaDataRepository;
+
     private MetaDataAutoConfiguration metaDataAutoConfiguration;
-    private MetaDataHook metaDataHook;
-    private Importer importer;
-    private Exporter exporter;
-    private String baseDomain;
-    private Environment environment;
 
-    @Autowired
-    DatabaseController databaseController;
+    private MetaDataService metaDataService;
 
-    @Autowired
+    private ExporterService exporterService;
+
+    private ImporterService importerService;
+
     public MetaDataController(MetaDataRepository metaDataRepository,
                               MetaDataAutoConfiguration metaDataAutoConfiguration,
-                              ResourceLoader resourceLoader,
-                              MetaDataHook metaDataHook,
-                              Environment environment,
-                              @Value("${metadata_export_path}") String metadataExportPath,
-                              @Value("${base_domain}") String baseDomain,
-                              @Value("${product.supported_languages}") String supportedLanguages) {
+                              ExporterService exporterService,
+                              ImporterService importerService,
+                              MetaDataService metaDataService) {
+
         this.metaDataRepository = metaDataRepository;
         this.metaDataAutoConfiguration = metaDataAutoConfiguration;
-        this.metaDataHook = metaDataHook;
-        List<String> languages = Stream.of(supportedLanguages.split(",")).map(String::trim).collect(toList());
-
-        this.importer = new Importer(metaDataAutoConfiguration, languages);
-        this.exporter = new Exporter(Clock.systemDefaultZone(), resourceLoader, metadataExportPath, languages);
-        this.baseDomain = baseDomain;
-        this.environment = environment;
+        this.exporterService = exporterService;
+        this.importerService = importerService;
+        this.metaDataService = metaDataService;
 
     }
 
@@ -132,15 +72,7 @@ public class MetaDataController {
 
     @GetMapping({"/client/metadata/{type}/{id}", "/internal/metadata/{type}/{id}"})
     public MetaData get(@PathVariable("type") String type, @PathVariable("id") String id) {
-        MetaData metaData = metaDataRepository.findById(id, type);
-        checkNull(type, id, metaData);
-        return metaDataHook.postGet(metaData);
-    }
-
-    private void checkNull(String type, String id, MetaData metaData) {
-        if (metaData == null) {
-            throw new ResourceNotFoundException(String.format("MetaData type %s with id %s does not exist", type, id));
-        }
+        return metaDataService.getMetaDataAndValidate(type, id);
     }
 
     @GetMapping("/client/metadata/configuration")
@@ -150,20 +82,23 @@ public class MetaDataController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/client/metadata")
-    public MetaData post(@Validated @RequestBody MetaData metaData, FederatedUser federatedUser) throws
-            JsonProcessingException {
-        return doPost(metaData, federatedUser.getUid(), false);
+    public MetaData post(@Validated @RequestBody MetaData metaData, FederatedUser federatedUser)
+            throws JsonProcessingException {
+
+        return metaDataService.doPost(metaData, federatedUser.getUid(), false);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/client/includeInPush/{type}/{id}")
-    public MetaData includeInPush(@PathVariable("type") String type, @PathVariable("id") String id,
+    public MetaData includeInPush(@PathVariable("type") String type,
+                                  @PathVariable("id") String id,
                                   FederatedUser federatedUser) throws JsonProcessingException {
+
         MetaData metaData = this.get(type, id);
         Map metaDataFields = metaData.metaDataFields();
         metaDataFields.remove("coin:exclude_from_push");
 
-        return doPut(metaData, federatedUser.getUid(), false);
+        return metaDataService.doPut(metaData, federatedUser.getUid(), false);
     }
 
     @GetMapping("/client/metadata/stats")
@@ -173,22 +108,24 @@ public class MetaDataController {
 
     @PreAuthorize("hasRole('WRITE')")
     @PostMapping("/internal/metadata")
-    public MetaData postInternal(@Validated @RequestBody MetaData metaData, APIUser apiUser) throws
-            JsonProcessingException {
-        return doPost(metaData, apiUser.getName(), !apiUser.getScopes().contains(TEST));
+    public MetaData postInternal(@Validated @RequestBody MetaData metaData, APIUser apiUser)
+            throws JsonProcessingException {
+
+        return metaDataService.doPost(metaData, apiUser.getName(), !apiUser.getScopes().contains(TEST));
     }
 
     @PreAuthorize("hasRole('WRITE')")
     @PostMapping("/internal/new-sp")
-    public MetaData newSP(@Validated @RequestBody XML container, APIUser apiUser) throws
-            IOException, XMLStreamException {
-        Map<String, Object> innerJson = this.importer.importXML(new ByteArrayResource(container.getXml()
+    public MetaData newSP(@Validated @RequestBody XML container, APIUser apiUser)
+            throws IOException, XMLStreamException {
+
+        Map<String, Object> innerJson = importerService.importXML(new ByteArrayResource(container.getXml()
                 .getBytes()), EntityType.SP, Optional.empty());
 
-        addDefaultSpData(innerJson);
+        metaDataService.addDefaultSpData(innerJson);
         MetaData metaData = new MetaData(EntityType.SP.getType(), innerJson);
 
-        return doPost(metaData, apiUser.getName(), !apiUser.getScopes().contains(TEST));
+        return metaDataService.doPost(metaData, apiUser.getName(), !apiUser.getScopes().contains(TEST));
     }
 
 
@@ -209,112 +146,7 @@ public class MetaDataController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(value = "/client/import/feed")
     public Map<String, List> importFeed(@Validated @RequestBody Import importRequest) {
-        try {
-            Map<String, ServiceProvider> serviceProviderMap =
-                    metaDataRepository.allServiceProviderEntityIds().stream()
-                            .map(ServiceProvider::new)
-                            .collect(Collectors.toMap(sp -> sp.getEntityId(), sp -> sp));
-            String feedUrl = importRequest.getUrl();
-            Resource resource = new SaveURLResource(new URL(feedUrl), environment.acceptsProfiles(Profiles.of("dev")));
-
-            List<Map<String, Object>> allImports = this.importer.importFeed(resource);
-            List<Map<String, Object>> imports =
-                    allImports.stream().filter(m -> !m.isEmpty()).collect(toList());
-
-            Map<String, List> results = new HashMap<>();
-            EntityType entityType = EntityType.SP;
-            imports.forEach(sp -> {
-                String entityId = (String) sp.get("entityid");
-                sp.put("metadataurl", feedUrl);
-                Map metaDataFields = Map.class.cast(sp.get("metaDataFields"));
-                metaDataFields.put("coin:imported_from_edugain", true);
-                metaDataFields.put("coin:interfed_source", "eduGAIN");
-
-                ServiceProvider existingServiceProvider = serviceProviderMap.get(entityId);
-                if (existingServiceProvider != null) {
-                    if (existingServiceProvider.isPublishedInEduGain()) {
-                        // Do not import this SP as it's source is SURFconext
-                        List publishedInEdugain = results.computeIfAbsent("published_in_edugain", s -> new ArrayList());
-                        publishedInEdugain.add(existingServiceProvider);
-                    } else if (existingServiceProvider.isImportedFromEduGain()) {
-                        try {
-                            MetaDataUpdate metaDataUpdate =
-                                    this.importToMetaDataUpdate(existingServiceProvider.getId(), entityType, sp, feedUrl);
-                            Optional<MetaData> metaData = this.doMergeUpdate(metaDataUpdate, "edugain-import", "edugain-import", false);
-                            if (metaData.isPresent()) {
-                                List merged = results.computeIfAbsent("merged", s -> new ArrayList());
-                                merged.add(existingServiceProvider);
-                            } else {
-                                List noChanges = results.computeIfAbsent("no_changes", s -> new ArrayList());
-                                noChanges.add(existingServiceProvider);
-                            }
-                        } catch (JsonProcessingException | ValidationException e) {
-                            addNoValid(results, entityId, e);
-                        }
-                    } else {
-                        // Do not import this SP as it is modified after the import or is not imported at all
-                        List notImported = results.computeIfAbsent("not_imported", s -> new ArrayList());
-                        notImported.add(existingServiceProvider);
-                    }
-                } else {
-                    try {
-                        MetaData metaData = this.importToMetaData(sp, entityType);
-                        MetaData persistedMetaData = this.doPost(metaData, "edugain-import", false);
-                        List imported = results.computeIfAbsent("imported", s -> new ArrayList());
-                        imported.add(new ServiceProvider(persistedMetaData.getId(), entityId, false, false, null));
-                    } catch (JsonProcessingException | ValidationException e) {
-                        addNoValid(results, entityId, e);
-                    }
-                }
-            });
-            List<ServiceProvider> notInFeedAnymore = serviceProviderMap.values().stream()
-                    .filter(sp -> sp.isImportedFromEduGain() &&
-                            !imports.stream().anyMatch(map -> sp.getEntityId().equals(map.get("entityid"))))
-                    .collect(toList());
-            notInFeedAnymore.forEach(sp -> this.doRemove(entityType.getType(), sp.getId(), "edugain-import", "Removed from eduGain feed"));
-
-            List deleted = results.computeIfAbsent("deleted", s -> new ArrayList());
-            deleted.addAll(notInFeedAnymore.stream().map(sp -> sp.getEntityId()).collect(toList()));
-
-            results.put("total", Collections.singletonList(imports.size()));
-
-            return results;
-        } catch (IOException | XMLStreamException e) {
-            return singletonMap("errors", singletonList(e.getClass().getName()));
-        }
-    }
-
-    private void addNoValid(Map<String, List> results, String entityId, Exception e) {
-        String msg = e instanceof ValidationException ?
-                String.join(", ", ValidationException.class.cast(e).getAllMessages()) : e.getClass().getName();
-        List notValid = results.computeIfAbsent("not_valid", s -> new ArrayList());
-        Map<String, String> result = new HashMap<>();
-        result.put("validationException", msg);
-        result.put("entityId", entityId);
-        notValid.add(result);
-    }
-
-    private MetaData importToMetaData(Map<String, Object> m, EntityType entityType) {
-        MetaData template = this.template(entityType.getType());
-        template.getData().putAll(m);
-        template.getData().put("state", "prodaccepted");
-        return template;
-    }
-
-    private MetaDataUpdate importToMetaDataUpdate(String id, EntityType entityType, Map<String, Object> m,
-                                                  String feedUrl) {
-        Map<String, Object> metaDataFields = Map.class.cast(m.get("metaDataFields"));
-        Map<String, Object> pathUpdates = new HashMap<>();
-        metaDataFields.forEach((k, v) -> pathUpdates.put("metaDataFields.".concat(k), v));
-        pathUpdates.put("metadataurl", feedUrl);
-        MetaDataUpdate metaDataUpdate = new MetaDataUpdate(id, entityType.getType(), pathUpdates, Collections.emptyMap());
-        return metaDataUpdate;
-    }
-
-    private void addDefaultSpData(Map<String, Object> innerJson) {
-        innerJson.put("allowedall", true);
-        innerJson.put("state", "testaccepted");
-        innerJson.put("allowedEntities", new ArrayList<>());
+        return metaDataService.importFeed(importRequest);
     }
 
     @PreAuthorize("hasRole('WRITE')")
@@ -323,413 +155,174 @@ public class MetaDataController {
                              @PathVariable("version") Long version,
                              @Validated @RequestBody XML container,
                              APIUser apiUser) throws IOException, XMLStreamException {
-        MetaData metaData = this.get(EntityType.SP.getType(), id);
-        Map<String, Object> innerJson = this.importer.importXML(new ByteArrayResource(container.getXml()
+
+        MetaData metaData = metaDataService.getMetaDataAndValidate(EntityType.SP.getType(), id);
+        Map<String, Object> innerJson = importerService.importXML(new ByteArrayResource(container.getXml()
                 .getBytes()), EntityType.SP, Optional.empty());
 
-        addDefaultSpData(innerJson);
+        metaDataService.addDefaultSpData(innerJson);
 
         metaData.setData(innerJson);
         metaData.setVersion(version);
 
-        return doPut(metaData, apiUser.getName(), !apiUser.getScopes().contains(TEST));
+        return metaDataService.doPut(metaData, apiUser.getName(), !apiUser.getScopes().contains(TEST));
     }
 
     @GetMapping("/internal/sp-metadata/{id}")
     public String exportXml(@PathVariable("id") String id) throws IOException {
-        MetaData metaData = this.get(EntityType.SP.getType(), id);
-        return exporter.exportToXml(metaData);
+        MetaData metaData = metaDataService.getMetaDataAndValidate(EntityType.SP.getType(), id);
+        return exporterService.exportToXml(metaData);
     }
 
     @GetMapping(value = "/internal/xml/metadata/{type}/{id}", produces = "text/xml")
-    public String exportMetadataXml(@PathVariable("type") String type, @PathVariable("id") String id) throws IOException {
-        MetaData metaData = this.get(EntityType.fromType(type).getType(), id);
-        return exporter.exportToXml(metaData);
-    }
+    public String exportMetadataXml(@PathVariable("type") String type,
+                                    @PathVariable("id") String id) throws IOException {
 
-    private MetaData doPost(@Validated @RequestBody MetaData metaData, String uid, boolean excludeFromPushRequired) throws JsonProcessingException {
-        String entityid = (String) metaData.getData().get("entityid");
-        List<Map> result = this.uniqueEntityId(metaData.getType(), singletonMap("entityid", entityid));
-        if (!CollectionUtils.isEmpty(result)) {
-            throw new DuplicateEntityIdException(entityid);
-        }
-
-        sanitizeExcludeFromPush(metaData, excludeFromPushRequired);
-        metaData = metaDataHook.prePost(metaData);
-
-        metaData = validate(metaData);
-        Long eid = metaDataRepository.incrementEid();
-        metaData.initial(UUID.randomUUID().toString(), uid, eid);
-
-        LOG.info("Saving new metaData {} by {}", metaData.getId(), uid);
-
-        metaDataRepository.save(metaData);
-
-        return this.get(metaData.getType(), metaData.getId());
-    }
-
-    private void sanitizeExcludeFromPush(@RequestBody @Validated MetaData metaData, boolean excludeFromPushRequired) {
-        Map metaDataFields = metaData.metaDataFields();
-        Object val = metaDataFields.get("coin:exclude_from_push");
-        if (excludeFromPushRequired && ("0".equals(val) || Boolean.FALSE == val)) {
-            metaDataFields.put("coin:exclude_from_push", true);
-        }
+        MetaData metaData = metaDataService.getMetaDataAndValidate(EntityType.fromType(type).getType(), id);
+        return exporterService.exportToXml(metaData);
     }
 
     @PreAuthorize("hasRole('READ')")
     @PostMapping("/internal/validate/metadata")
-    public ResponseEntity<Object> validateMetaData(@Validated @RequestBody MetaData metaData) throws
-            JsonProcessingException {
-        validate(metaData);
+    public ResponseEntity<Object> validateMetaData(@Validated @RequestBody MetaData metaData)
+            throws JsonProcessingException {
+
+        metaDataService.validate(metaData);
         return ResponseEntity.ok().build();
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/client/metadata/{type}/{id}")
-    public boolean remove(@PathVariable("type") String type, @PathVariable("id") String id, @RequestBody(required = false) Map body, FederatedUser user) {
+    public boolean remove(@PathVariable("type") String type,
+                          @PathVariable("id") String id,
+                          @RequestBody(required = false) Map body,
+                          FederatedUser user) {
+
         String defaultValue = "Deleted by " + user.getUid();
         String revisionNote = body != null ? (String) body.getOrDefault("revisionNote", defaultValue) : defaultValue;
         revisionNote = StringUtils.hasText(revisionNote) ? revisionNote : defaultValue;
-        return doRemove(type, id, user.getUid(), revisionNote);
+        return metaDataService.doRemove(type, id, user.getUid(), revisionNote);
     }
 
     @PreAuthorize("hasRole('WRITE')")
     @DeleteMapping("/internal/metadata/{type}/{id}")
-    public boolean removeInternal(@PathVariable("type") String type, @PathVariable("id") String id, APIUser apiUser) {
-        return doRemove(type, id, apiUser.getName(), "Deleted by APIUser " + apiUser.getName());
+    public boolean removeInternal(@PathVariable("type") String type,
+                                  @PathVariable("id") String id, APIUser apiUser) {
+
+        return metaDataService.doRemove(type, id, apiUser.getName(), "Deleted by APIUser " + apiUser.getName());
     }
 
-    private boolean doRemove(@PathVariable("type") String type, @PathVariable("id") String id, String uid, String revisionNote) {
-        MetaData current = metaDataRepository.findById(id, type);
-        checkNull(type, id, current);
-        current = metaDataHook.preDelete(current);
-        metaDataRepository.remove(current);
-
-        LOG.info("Deleted metaData {} by {}", current.getId(), uid);
-
-        current.revision(UUID.randomUUID().toString());
-        metaDataRepository.save(current);
-
-        current.terminate(UUID.randomUUID().toString(), revisionNote, uid);
-        metaDataRepository.save(current);
-        return true;
-    }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/client/metadata")
     @Transactional
-    public MetaData put(@Validated @RequestBody MetaData metaData, Authentication authentication) throws
-            JsonProcessingException {
-        return doPut(metaData, authentication.getName(), false);
+    public MetaData put(@Validated @RequestBody MetaData metaData, Authentication authentication)
+            throws JsonProcessingException {
+
+        return metaDataService.doPut(metaData, authentication.getName(), false);
     }
 
     @PreAuthorize("hasRole('WRITE')")
     @PutMapping("/internal/metadata")
     @Transactional
-    public MetaData putInternal(@Validated @RequestBody MetaData metaData, APIUser apiUser) throws
-            JsonProcessingException {
-        return doPut(metaData, apiUser.getName(), !apiUser.getScopes().contains(TEST));
-    }
+    public MetaData putInternal(@Validated @RequestBody MetaData metaData, APIUser apiUser)
+            throws JsonProcessingException {
 
-    private MetaData doPut(@Validated @RequestBody MetaData metaData, String updatedBy, boolean excludeFromPushRequired) throws JsonProcessingException {
-        String entityid = (String) metaData.getData().get("entityid");
-        List<Map> result = this.uniqueEntityId(metaData.getType(), singletonMap("entityid", entityid));
-        if (result.size() > 1) {
-            throw new DuplicateEntityIdException(entityid);
-        }
-
-        sanitizeExcludeFromPush(metaData, excludeFromPushRequired);
-        String id = metaData.getId();
-        MetaData previous = metaDataRepository.findById(id, metaData.getType());
-        checkNull(metaData.getType(), id, previous);
-
-        metaData = metaDataHook.prePut(previous, metaData);
-        metaData = validate(metaData);
-
-        previous.revision(UUID.randomUUID().toString());
-        metaDataRepository.save(previous);
-
-        metaData.promoteToLatest(updatedBy, (String) metaData.getData().get("revisionnote"));
-        metaDataRepository.update(metaData);
-
-        LOG.info("Updated metaData {} by {}", metaData.getId(), updatedBy);
-
-        return this.get(metaData.getType(), metaData.getId());
+        return metaDataService.doPut(metaData, apiUser.getName(), !apiUser.getScopes().contains(TEST));
     }
 
     @PreAuthorize("hasRole('WRITE')")
     @PutMapping("/internal/delete-metadata-key")
     @Transactional
-    public List<String> deleteMetaDataKey(@Validated @RequestBody MetaDataKeyDelete metaDataKeyDelete, APIUser apiUser) throws
-            IOException {
+    public List<String> deleteMetaDataKey(@Validated @RequestBody MetaDataKeyDelete metaDataKeyDelete,
+                                          APIUser apiUser) throws IOException {
 
-        String keyToDelete = metaDataKeyDelete.getMetaDataKey();
-        Query query = Query.query(Criteria.where("data.metaDataFields." + keyToDelete).exists(true));
-        List<MetaData> metaDataList = metaDataRepository.getMongoTemplate().find(query, MetaData.class, metaDataKeyDelete.getType());
-
-        //of we stream then we need to catch all exceptions including validation exception
-        for (MetaData metaData : metaDataList) {
-            metaData.metaDataFields().remove(keyToDelete);
-            metaData = validate(metaData);
-
-            MetaData previous = metaDataRepository.findById(metaData.getId(), metaData.getType());
-            previous.revision(UUID.randomUUID().toString());
-            metaDataRepository.save(previous);
-
-            metaData.promoteToLatest(apiUser.getName(), String.format("API call for deleting %s by %s", keyToDelete, apiUser.getName()));
-            metaDataRepository.update(metaData);
-        }
-
-        return metaDataList.stream().map(metaData -> (String) metaData.getData().get("entityid")).collect(toList());
+        return metaDataService.deleteMetaDataKey(metaDataKeyDelete, apiUser);
     }
-
 
     @PreAuthorize("hasRole('WRITE')")
     @PutMapping("internal/merge")
     @Transactional
-    public MetaData update(@Validated @RequestBody MetaDataUpdate metaDataUpdate, APIUser apiUser) throws
-            JsonProcessingException {
-        String name = apiUser.getName();
-        return doMergeUpdate(metaDataUpdate, name, "Internal API merge", true).get();
-    }
-
-    private Optional<MetaData> doMergeUpdate(MetaDataUpdate metaDataUpdate, String name, String revisionNote, boolean forceNewRevision)
+    public MetaData update(@Validated @RequestBody MetaDataUpdate metaDataUpdate, APIUser apiUser)
             throws JsonProcessingException {
-        String id = metaDataUpdate.getId();
-        MetaData previous = metaDataRepository.findById(id, metaDataUpdate.getType());
-        checkNull(metaDataUpdate.getType(), id, previous);
 
-        previous.revision(UUID.randomUUID().toString());
-
-        MetaData metaData = metaDataRepository.findById(id, metaDataUpdate.getType());
-        metaData.promoteToLatest(name, revisionNote);
-        metaData.merge(metaDataUpdate);
-
-        if (!CollectionUtils.isEmpty(metaDataUpdate.getExternalReferenceData())) {
-            metaData.getData().putAll(metaDataUpdate.getExternalReferenceData());
-        }
-        if (!name.equals("edugain-import")) {
-            metaData = metaDataHook.prePut(previous, metaData);
-        }
-        metaData = validate(metaData);
-        //Only save and update if there are changes
-        boolean somethingChanged = !metaData.metaDataFields().equals(previous.metaDataFields());
-
-        if (somethingChanged || forceNewRevision) {
-            metaDataRepository.save(previous);
-            metaDataRepository.update(metaData);
-
-            LOG.info("Merging new metaData {} by {}", metaData.getId(), name);
-
-            return Optional.of(this.get(metaData.getType(), metaData.getId()));
-        } else {
-            return Optional.empty();
-        }
+        String name = apiUser.getName();
+        return metaDataService
+                .doMergeUpdate(metaDataUpdate, name, "Internal API merge", true)
+                .get();
     }
-
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/client/restoreDeleted")
     @Transactional
     public MetaData restoreDeleted(@Validated @RequestBody RevisionRestore revisionRestore,
                                    FederatedUser federatedUser) throws JsonProcessingException {
-        MetaData revision = metaDataRepository.findById(revisionRestore.getId(), revisionRestore.getType());
 
-        MetaData parent = metaDataRepository.findById(revision.getRevision().getParentId(),
-                revisionRestore.getParentType());
-
-        if (parent != null) {
-            throw new IllegalArgumentException("Parent is not null");
-        }
-        String newId = revision.getRevision().getParentId();
-        revision.getRevision().deTerminate(newId);
-        metaDataRepository.update(revision);
-
-        revision.restoreToLatest(newId, 0L, federatedUser.getUid(),
-                revision.getRevision().getNumber(), revisionRestore.getParentType());
-        //It might be that the revision is no longer valid as metaData configuration has changed
-        revision = validate(revision);
-        metaDataRepository.save(revision);
-
-        LOG.info("Restored deleted revision {} with Id {} by {}", revisionRestore, revision.getId(), federatedUser
-                .getUid());
-
-        return revision;
+        return metaDataService.restoreDeleted(revisionRestore, federatedUser);
     }
-
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/client/restoreRevision")
     @Transactional
     public MetaData restoreRevision(@Validated @RequestBody RevisionRestore revisionRestore,
                                     FederatedUser federatedUser) throws JsonProcessingException {
-        MetaData revision = metaDataRepository.findById(revisionRestore.getId(), revisionRestore.getType());
 
-        MetaData parent = metaDataRepository.findById(revision.getRevision().getParentId(),
-                revisionRestore.getParentType());
-
-        revision.restoreToLatest(parent.getId(), parent.getVersion(), federatedUser.getUid(),
-                parent.getRevision().getNumber(), revisionRestore.getParentType());
-        //It might be that the revision is no longer valid as metaData configuration has changed
-        revision = validate(revision);
-        metaDataRepository.update(revision);
-
-        parent.revision(UUID.randomUUID().toString());
-        metaDataRepository.save(parent);
-
-        LOG.info("Restored revision {} with Id {} by {}", revisionRestore, revision.getId(), federatedUser.getUid());
-
-        return revision;
+        return metaDataService.restoreRevision(revisionRestore, federatedUser);
     }
 
     @GetMapping("/client/revisions/{type}/{parentId}")
-    public List<MetaData> revisions(@PathVariable("type") String type, @PathVariable("parentId") String parentId) {
+    public List<MetaData> revisions(@PathVariable("type") String type,
+                                    @PathVariable("parentId") String parentId) {
+
         return metaDataRepository.revisions(type.concat(REVISION_POSTFIX), parentId);
     }
 
-
     @GetMapping("/client/autocomplete/{type}")
-    public Map<String, List<Map>> autoCompleteEntities(@PathVariable("type") String type, @RequestParam("query") String query) {
-        List<Map> suggestions = metaDataRepository.autoComplete(type, query);
-        Map<String, List<Map>> results = new HashMap<>();
-        results.put("suggestions", suggestions);
-        if (suggestions.isEmpty() && entityTypesSuggestions.contains(type)) {
-            List<Map> alternatives = new ArrayList<>();
-            entityTypesSuggestions.stream().filter(s -> !s.equals(type))
-                    .forEach(s -> alternatives.addAll(metaDataRepository.autoComplete(s, query)));
-            results.put("alternatives", alternatives);
-        }
-        return results;
+    public Map<String, List<Map>> autoCompleteEntities(@PathVariable("type") String type,
+                                                       @RequestParam("query") String query) {
+
+        return metaDataService.autoCompleteEntities(type, query);
     }
 
     @GetMapping("/client/whiteListing/{type}")
-    public List<Map> whiteListing(@PathVariable("type") String type,
-                                  @RequestParam(value = "state") String state) {
+    public List<Map> whiteListing(@PathVariable("type") String type, @RequestParam(value = "state") String state) {
         return metaDataRepository.whiteListing(type, state);
     }
 
     @PostMapping({"/client/uniqueEntityId/{type}", "/internal/uniqueEntityId/{type}"})
-    public List<Map> uniqueEntityId(@PathVariable("type") String type,
-                                    @RequestBody Map<String, Object> properties) {
-        EntityType entityType = EntityType.fromType(type);
+    public List<Map> uniqueEntityId(@PathVariable("type") String type, @RequestBody Map<String, Object> properties) {
         String entityId = (String) properties.get("entityid");
-        List<Map> results;
-        if (entityType.equals(EntityType.IDP) || entityType.equals(EntityType.STT)) {
-            results = metaDataRepository.findByEntityId(type, entityId);
-        } else if (entityType.equals(EntityType.RS)) {
-            results = metaDataRepository.findByEntityId(entityType.getType(), entityId);
-            results.addAll(metaDataRepository.findByEntityId(EntityType.RP.getType(), entityId));
-        } else {
-            results = metaDataRepository.findByEntityId(entityType.getType(), entityId);
-            String otherType = entityType.equals(EntityType.RP) ? EntityType.SP.getType() : EntityType.RP.getType();
-            results.addAll(metaDataRepository.findByEntityId(otherType, entityId));
-            if (entityType.equals(EntityType.RP)) {
-                results.addAll(metaDataRepository.findByEntityId(EntityType.RS.getType(), entityId));
-            }
-        }
-        return results;
+        return metaDataService.uniqueEntityId(type, entityId);
     }
 
     @PostMapping({"/client/search/{type}", "/internal/search/{type}"})
     public List<Map> searchEntities(@PathVariable("type") String type,
                                     @RequestBody Map<String, Object> properties,
                                     @RequestParam(required = false, defaultValue = "false") boolean nested) {
-        List requestedAttributes = (List) properties.getOrDefault(REQUESTED_ATTRIBUTES, new
-                ArrayList<String>());
-        Boolean allAttributes = (Boolean) properties.getOrDefault(ALL_ATTRIBUTES, false);
-        Boolean logicalOperatorIsAnd = (Boolean) properties.getOrDefault(LOGICAL_OPERATOR_IS_AND, true);
-        properties.remove(REQUESTED_ATTRIBUTES);
-        properties.remove(ALL_ATTRIBUTES);
-        properties.remove(LOGICAL_OPERATOR_IS_AND);
-        List<Map> search = metaDataRepository.search(type, properties, requestedAttributes, allAttributes,
-                logicalOperatorIsAnd);
-        return nested ? search.stream().map(m -> exporter.nestMetaData(m, type)).collect(toList()) : search;
+
+        return metaDataService.searchEntityByType(type, properties, nested);
     }
 
     @GetMapping({"/client/rawSearch/{type}", "/internal/rawSearch/{type}"})
-    public List<MetaData> rawSearch(@PathVariable("type") String type, @RequestParam("query") String query) throws
-            UnsupportedEncodingException {
-        if (query.startsWith("%")) {
-            query = URLDecoder.decode(query, "UTF-8");
-        }
-        return metaDataRepository.findRaw(type, query);
+    public List<MetaData> rawSearch(@PathVariable("type") String type, @RequestParam("query") String query)
+            throws UnsupportedEncodingException {
+
+        return metaDataService.retrieveRawSearch(type, query);
     }
 
     @PostMapping({"/client/recent-activity", "/internal/recent-activity"})
     public List<MetaData> recentActivity(@RequestBody(required = false) Map<String, Object> properties) {
-        if (properties == null) {
-            properties = new HashMap<>();
-        }
-        Object limit = properties.getOrDefault("limit", 25);
-        int max = 25;
-        if (limit instanceof Integer) {
-            max = (int) limit;
-        }
-        List<EntityType> types = ((List<String>) properties.getOrDefault("types",
-                Arrays.asList(EntityType.IDP.getType(), EntityType.SP.getType(), EntityType.RP.getType(), EntityType.RS.getType())))
-                .stream().map(EntityType::fromType).collect(toList());
-        return metaDataRepository.recentActivity(types, max);
-    }
-
-    private MetaData validate(MetaData metaData) throws JsonProcessingException {
-        metaData = metaDataHook.preValidate(metaData);
-        metaDataAutoConfiguration.validate(metaData.getData(), metaData.getType());
-        return metaData;
+        return metaDataService.retrieveRecentActivity(properties);
     }
 
     @Secured("WRITE")
     @PutMapping(value = "/internal/connectWithoutInteraction")
-    public HttpEntity<HttpStatus> connectWithoutInteraction(@RequestBody Map<String, String> connectionData, APIUser apiUser) throws JsonProcessingException {
+    public HttpEntity<HttpStatus> connectWithoutInteraction(@RequestBody Map<String, String> connectionData,
+                                                            APIUser apiUser) throws JsonProcessingException {
+
         LOG.debug("connectWithoutInteraction, connectionData: " + connectionData);
-
-        String idpEntityId = connectionData.get("idpId");
-        MetaData idp = findByEntityId(idpEntityId, EntityType.IDP.getType());
-
-        String spEntityId = connectionData.get("spId");
-        String spType = connectionData.get("spType");
-        MetaData sp = findByEntityId(spEntityId, spType);
-
-        //We can connect automatically if the SP allows it or the IdP and SP share the institution ID
-        String dashboardConnectType = (String) sp.metaDataFields().get(DASHBOARD_CONNECT_OPTION);
-        boolean connectWithoutInteraction = StringUtils.hasText(dashboardConnectType) && DashboardConnectOption.fromType(dashboardConnectType).connectWithoutInteraction();
-
-        Object idpInstitutionId = idp.metaDataFields().get("coin:institution_id");
-        Object spInstitutionId = sp.metaDataFields().get("coin:institution_id");
-        boolean shareInstitutionId = idpInstitutionId != null && idpInstitutionId.equals(spInstitutionId) && !"connect_with_interaction".equals("dashboardConnectType");
-        if (!connectWithoutInteraction && !shareInstitutionId) {
-            throw new EndpointNotAllowed(
-                    String.format("SP %s does not allow an automatic connection with IdP %s. SP dashboardConnectType: %s, idpInstitutionId: %s, spInstitutionId %s",
-                            spEntityId, idpEntityId, dashboardConnectType, idpInstitutionId, spInstitutionId));
-        }
-
-        this.addAllowedEntity(sp, idpEntityId, connectionData, apiUser);
-        this.addAllowedEntity(idp, spEntityId, connectionData, apiUser);
-
-        databaseController.doPush();
-
+        metaDataService.createConnectWithoutInteraction(connectionData, apiUser);
         return new HttpEntity<>(HttpStatus.OK);
     }
 
-
-    private void addAllowedEntity(MetaData metaData, String entityId, Map<String, String> connectionData, APIUser apiUser) throws JsonProcessingException {
-        Map<String, Object> data = metaData.getData();
-        List<Map<String, String>> allowedEntities = (List<Map<String, String>>) data.getOrDefault("allowedEntities", new ArrayList<Map<String, String>>());
-        boolean allowedAll = (boolean) data.getOrDefault("allowedall", true);
-
-        if (!allowedAll && allowedEntities.stream().noneMatch(allowedEntity -> allowedEntity.get("name").equals(entityId))) {
-            allowedEntities.add(Collections.singletonMap("name", entityId));
-            data.put("allowedEntities", allowedEntities);
-            String revisionNote = String.format("Connected %s on request of %s - %s via Dashboard.", entityId, connectionData.get("user"), connectionData.get("userUrn"));
-            data.put("revisionnote", revisionNote);
-            doPut(metaData, apiUser.getName(), false);
-        }
-    }
-
-    private MetaData findByEntityId(String entityId, String type) {
-        List<Map> searchResults = uniqueEntityId(type, Collections.singletonMap("entityid", entityId));
-        if (CollectionUtils.isEmpty(searchResults)) {
-            throw new ResourceNotFoundException(String.format("Type %s with entityId %s does not exists", type, entityId));
-        }
-        return metaDataRepository.findById((String) searchResults.get(0).get("_id"), type);
-    }
 }

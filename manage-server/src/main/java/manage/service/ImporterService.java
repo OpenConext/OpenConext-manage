@@ -1,43 +1,81 @@
-package manage.format;
+package manage.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import manage.conf.MetaDataAutoConfiguration;
+import manage.format.MetaDataFeedParser;
+import manage.format.SaveURLResource;
 import manage.hook.TypeSafetyHook;
 import manage.model.EntityType;
+import manage.model.Import;
 import manage.model.MetaData;
+import org.apache.commons.io.IOUtils;
+import org.everit.json.schema.ValidationException;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
+import org.springframework.core.env.Profiles;
 import org.springframework.core.io.Resource;
+import org.springframework.stereotype.Service;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.TreeMap;
+import java.net.URL;
+import java.nio.charset.Charset;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Stream;
 
+import static java.util.Collections.singletonList;
+import static java.util.Collections.singletonMap;
 import static java.util.stream.Collectors.toList;
 
 @SuppressWarnings("unchecked")
-public class Importer {
+@Service
+public class ImporterService {
 
     public static final String META_DATA_FIELDS = "metaDataFields";
     public static final String ARP = "arp";
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     private MetaDataAutoConfiguration metaDataAutoConfiguration;
 
     private MetaDataFeedParser metaDataFeedParser;
 
+    private Environment environment;
+
     private TypeSafetyHook metaDataHook;
 
-    public Importer(MetaDataAutoConfiguration metaDataAutoConfiguration, List<String> supportedLanguages) {
+    public ImporterService(MetaDataAutoConfiguration metaDataAutoConfiguration, Environment environment,
+                           @Value("${product.supported_languages}") String supportedLanguages) {
+
         this.metaDataAutoConfiguration = metaDataAutoConfiguration;
-        this.metaDataFeedParser = new MetaDataFeedParser(supportedLanguages);
+        this.environment = environment;
         this.metaDataHook = new TypeSafetyHook(metaDataAutoConfiguration);
+        this.metaDataFeedParser = new MetaDataFeedParser(Stream.of(
+                supportedLanguages.split(","))
+                .map(String::trim)
+                .collect(toList()));
     }
 
-    public Map<String, Object> importXML(Resource resource, EntityType entityType, Optional<String> entityId) throws
-            IOException, XMLStreamException {
+    public Map<String, Object> importXMLUrl(EntityType type, Import importRequest) {
+        try {
+            Resource resource = new SaveURLResource(new URL(importRequest.getUrl()),
+                    environment.acceptsProfiles(Profiles.of("dev")));
+            Map<String, Object> result = importXML(resource, type, Optional
+                    .ofNullable(importRequest.getEntityId()));
+            if (result.isEmpty()) {
+                return singletonMap("errors", singletonList("URL did not contain valid SAML metadata"));
+            }
+            result.put("metadataurl", importRequest.getUrl());
+            return result;
+        } catch (IOException | XMLStreamException e) {
+            return singletonMap("errors", singletonList(e.getClass().getName()));
+        }
+    }
+
+    public Map<String, Object> importXML(Resource resource, EntityType entityType, Optional<String> entityId)
+            throws IOException, XMLStreamException {
         return metaDataFeedParser.importXML(resource, entityType, entityId, metaDataAutoConfiguration);
     }
 
@@ -46,13 +84,37 @@ public class Importer {
         return metaDataFeedParser.importFeed(resource, metaDataAutoConfiguration);
     }
 
-    public Map<String, Object> importJSON(EntityType entityType, Map<String, Object> data) throws
-            JsonProcessingException {
+    public Map<String, Object> importJson(String type, Map<String, Object> json) throws JsonProcessingException {
+        EntityType entityType = getType(type, json);
+        try {
+            return importJSON(entityType, json);
+        } catch (ValidationException e) {
+            Map<String, Object> result = new HashMap<>();
+            result.put("errors", e.getAllMessages());
+            result.put("type", entityType.getType());
+            return result;
+        }
+    }
+
+    public Map<String, Object> importJsonUrl(String type, Import importRequest) {
+        try {
+            Resource resource = new SaveURLResource(new URL(importRequest.getUrl()),
+                    environment.acceptsProfiles(Profiles.of("dev")));
+            String json = IOUtils.toString(resource.getInputStream(), Charset.defaultCharset());
+            Map<String, Object> map = objectMapper.readValue(json, Map.class);
+            return importJson(type, map);
+        } catch (IOException e) {
+            return singletonMap("errors", singletonList(e.getClass().getName()));
+        }
+    }
+
+    public Map<String, Object> importJSON(EntityType entityType, Map<String, Object> data)
+            throws JsonProcessingException {
         data.entrySet().removeIf(entry -> entry.getValue() == null);
 
         Map<String, Object> json = new ConcurrentHashMap<>(data);
         Object metaDataFieldsMap = json.get(META_DATA_FIELDS);
-        if (metaDataFieldsMap == null || !(metaDataFieldsMap instanceof Map)) {
+        if (!(metaDataFieldsMap instanceof Map)) {
             metaDataAutoConfiguration.validate(json, entityType.getType());
             return Collections.EMPTY_MAP;
         }
@@ -96,7 +158,7 @@ public class Importer {
             }
             //if the structure is nested then we need to flatten it
             Map<String, Object> flattened = new ConcurrentHashMap<>();
-            metaDataFields.entrySet().stream().forEach(entry -> {
+            metaDataFields.entrySet().forEach(entry -> {
                 Object value = entry.getValue();
                 if (value instanceof String) {
                     flattened.put(entry.getKey(), value);
@@ -108,7 +170,7 @@ public class Importer {
             });
             json.put(META_DATA_FIELDS, flattened);
         }
-        Exporter.excludedDataFields.forEach(excluded -> json.remove(excluded));
+        ExporterService.excludedDataFields.forEach(json::remove);
 
         MetaData metaData = metaDataHook.preValidate(new MetaData(entityType.getType(), json));
         Map<String, Object> migratedData = metaData.getData();
@@ -124,9 +186,23 @@ public class Importer {
                 target.put(keyPrefix + ":" + key, entryValue);
             }
             if (entryValue instanceof Map) {
-                this.flatten(keyPrefix + ":" + key, (Map<String, Object>) entryValue, target);
+                flatten(keyPrefix + ":" + key, (Map<String, Object>) entryValue, target);
             }
         });
+    }
+
+    private EntityType getType(String type, Map<String, Object> json) {
+        EntityType entityType = EntityType.IDP.getType().equals(type) ?
+                EntityType.IDP : EntityType.SP.getType().equals(type) ? EntityType.SP : null;
+        if (entityType == null) {
+            Object jsonType = json.get("type");
+            if (jsonType == null) {
+                throw new IllegalArgumentException("Expected a 'type' attribute in the JSON with value 'saml20-idp' " +
+                        "or 'saml20-sp'");
+            }
+            return EntityType.fromType((String) jsonType);
+        }
+        return entityType;
     }
 
 }

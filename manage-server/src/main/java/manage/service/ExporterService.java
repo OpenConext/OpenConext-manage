@@ -1,12 +1,16 @@
-package manage.format;
+package manage.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.github.mustachejava.DefaultMustacheFactory;
 import com.github.mustachejava.Mustache;
 import com.github.mustachejava.MustacheFactory;
 import manage.model.MetaData;
 import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
@@ -17,42 +21,71 @@ import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.TimeZone;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
-/*
- * Thread-safe
- */
 @SuppressWarnings("unchecked")
-public class Exporter {
+@Service
+public class ExporterService {
 
-    public static final List<String> validMetadataExportTypes = Arrays.asList("saml20_idp", "saml20_sp", "single_tenant_template");
-    static List<String> excludedDataFields = Arrays.asList("id", "eid", "revisionid", "user", "created", "ip",
-            "revisionnote", "notes");
-    private final static MustacheFactory MUSTACHE_FACTORY = new DefaultMustacheFactory();
+    static final List<String> excludedDataFields =
+            Arrays.asList("id", "eid", "revisionid", "user", "created", "ip", "revisionnote", "notes");
+    private static final List<String> validMetadataExportTypes =
+            Arrays.asList("saml20_idp", "saml20_sp", "single_tenant_template");
+    private static final MustacheFactory MUSTACHE_FACTORY = new DefaultMustacheFactory();
+
+    private static final List<String> excludeMetaDataOnlyKeys =
+            Arrays.asList("allowedEntities", "arp", "disableConsent", "active", "manipulation");
+
     private final ResourceLoader resourceLoader;
-    private final String metadataExportPath;
+
     private final Clock clock;
 
-    private final List<String> languages;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public Exporter(Clock clock, ResourceLoader resourceLoader, String metadataExportPath, List<String> languages) {
-        this.clock = clock;
+    @Value("#{'${product.supported_languages}'.split(',')}")
+    private List<String> languages;
+
+    @Value("${metadata_export_path}")
+    private String metadataExportPath;
+
+    public ExporterService(ResourceLoader resourceLoader) {
+
+        this.clock = Clock.systemDefaultZone();
         this.resourceLoader = resourceLoader;
-        this.metadataExportPath = metadataExportPath;
-        this.languages = languages;
+    }
+
+    public Map<String, Object> export(MetaData metaData) throws IOException {
+        Map<String, Object> result = new HashMap<>();
+
+        metaData.getData().entrySet().removeIf(entry -> entry.getValue() == null);
+
+        Map<String, Object> nested = exportToMap(metaData, true);
+        Map<String, Object> flat = exportToMap(metaData, false);
+
+        ObjectWriter objectWriter = objectMapper.writerWithDefaultPrettyPrinter();
+
+        result.put("json", objectWriter.writeValueAsString(nested));
+        result.put("jsonFlat", objectWriter.writeValueAsString(flat));
+        if (validMetadataExportTypes.contains(metaData.getType())) {
+            result.put("xml", exportToXml(metaData));
+        }
+        Map<String, Object> metaDataOnlyNested = new TreeMap<>(nested);
+        excludeMetaDataOnlyKeys.forEach(metaDataOnlyNested::remove);
+        result.put("jsonMetaDataOnly", objectWriter.writeValueAsString(metaDataOnlyNested));
+
+        Map<String, Object> metaDataOnlyFlat = new TreeMap<>(flat);
+        excludeMetaDataOnlyKeys.forEach(metaDataOnlyFlat::remove);
+        result.put("jsonMetaDataOnlyFlat", objectWriter.writeValueAsString(metaDataOnlyFlat));
+
+        return result;
     }
 
     public String exportToXml(MetaData metaData) throws IOException {
         String type = metaData.getType();
         if (!validMetadataExportTypes.contains(type)) {
-            throw new IllegalArgumentException(String.format("Not allowd metaData type %s. Allowed are %s", type, validMetadataExportTypes));
+            throw new IllegalArgumentException(String.format("Not allowed metaData type %s. Allowed are %s",
+                    type, validMetadataExportTypes));
         }
         String path = String.format("%s/%s.xml", metadataExportPath, type);
         Resource resource = resourceLoader.getResource(path);
@@ -63,11 +96,11 @@ public class Exporter {
         try {
             Map data = Map.class.cast(metaData.getData());
 
-            this.addOrganizationName(data);
-            this.addValidUntil(data);
-            this.addAttributeConsumingService(data);
-            this.addUIInfoExtension(data);
-            this.addUILogo(data);
+            addOrganizationName(data);
+            addValidUntil(data);
+            addAttributeConsumingService(data);
+            addUIInfoExtension(data);
+            addUILogo(data);
 
             mustache.execute(writer, data).flush();
             String xml = writer.toString();
@@ -90,12 +123,12 @@ public class Exporter {
     private Map<String, Object> doExportToMap(boolean nested, Map<String, Object> data, String type) {
         final Map<String, Object> result = new TreeMap<>();
         if (nested) {
-            data.forEach((key, value) -> this.addKeyValue(key, value, result));
+            data.forEach((key, value) -> addKeyValue(key, value, result));
         } else {
             result.putAll(data);
             result.put("metaDataFields", new TreeMap(Map.class.cast(result.get("metaDataFields"))));
         }
-        this.excludedDataFields.forEach(result::remove);
+        excludedDataFields.forEach(result::remove);
         result.put("type", type);
         return result;
     }
@@ -104,7 +137,7 @@ public class Exporter {
         if (value instanceof Map) {
             Map<String, Object> map = new TreeMap();
             result.put(key, map);
-            Map.class.cast(value).forEach((mapKey, mapValue) -> this.addKeyValue(String.class.cast(mapKey), mapValue,
+            Map.class.cast(value).forEach((mapKey, mapValue) -> addKeyValue(String.class.cast(mapKey), mapValue,
                     map));
             return;
         }
@@ -138,16 +171,18 @@ public class Exporter {
     }
 
     private void addValidUntil(Map data) {
-        ZonedDateTime zonedDateTime = ZonedDateTime.of(LocalDateTime.now(clock), TimeZone.getTimeZone("UTC").toZoneId());
+        ZonedDateTime zonedDateTime = ZonedDateTime.of(LocalDateTime.now(clock),
+                TimeZone.getTimeZone("UTC").toZoneId());
+
         String validUntil = DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(zonedDateTime.plusYears(1L));
         data.put("validUntil", validUntil);
     }
 
     private void addOrganizationName(Map data) {
         Map metaDataFields = Map.class.cast(data.get("metaDataFields"));
-        String name = this.addLanguageFallbackValue(metaDataFields, "OrganizationName");
-        String displayName = this.addLanguageFallbackValue(metaDataFields, "OrganizationDisplayName");
-        String url = this.addLanguageFallbackValue(metaDataFields, "OrganizationName");
+        String name = addLanguageFallbackValue(metaDataFields, "OrganizationName");
+        String displayName = addLanguageFallbackValue(metaDataFields, "OrganizationDisplayName");
+        String url = addLanguageFallbackValue(metaDataFields, "OrganizationName");
         metaDataFields.put("OrganizationInfo", StringUtils.hasText(name) || StringUtils.hasText(displayName) ||
                 StringUtils.hasText(url));
     }
@@ -155,7 +190,7 @@ public class Exporter {
     private void addAttributeConsumingService(Map data) {
         boolean arpAttributes = false;
         Object possibleArp = data.get("arp");
-        if (possibleArp != null && possibleArp instanceof Map) {
+        if (possibleArp instanceof Map) {
             Map arp = Map.class.cast(possibleArp);
             if (Boolean.class.cast(arp.getOrDefault("enabled", false))) {
                 Object attributesObject = arp.get("attributes");
@@ -182,20 +217,21 @@ public class Exporter {
 
     private void addUIInfoExtension(Map data) {
         Map metaDataFields = Map.class.cast(data.get("metaDataFields"));
-        String name = this.addLanguageFallbackValue(metaDataFields, "name");
-        String description = this.addLanguageFallbackValue(metaDataFields, "description");
+        String name = addLanguageFallbackValue(metaDataFields, "name");
+        String description = addLanguageFallbackValue(metaDataFields, "description");
         data.put("UIInfoExtension", StringUtils.hasText(name) || StringUtils.hasText(description));
     }
 
     private String addLanguageFallbackValue(Map metaDataFields, String attribute) {
         AtomicReference<String> reference = new AtomicReference<>();
-        this.languages.forEach(lang -> {
+        languages.forEach(lang -> {
             if (StringUtils.isEmpty(reference.get())) {
                 reference.set((String) metaDataFields.get(attribute + ":" + lang));
             }
         });
         if (StringUtils.hasText(reference.get())) {
-            this.languages.forEach(lang -> metaDataFields.computeIfAbsent(attribute + ":" + lang, key -> reference.get()));
+            languages.forEach(lang ->
+                    metaDataFields.computeIfAbsent(attribute + ":" + lang, key -> reference.get()));
         }
         return reference.get();
     }
@@ -207,6 +243,5 @@ public class Exporter {
         String url = (String) metaDataFields.get("logo:0:url");
         data.put("Logo", height != null && width != null && StringUtils.hasText(url));
     }
-
 
 }
