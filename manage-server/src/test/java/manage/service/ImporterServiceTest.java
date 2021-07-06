@@ -1,41 +1,38 @@
-package manage.format;
+package manage.service;
 
 import manage.TestUtils;
 import manage.conf.MetaDataAutoConfiguration;
+import manage.format.GZIPClassPathResource;
 import manage.model.EntityType;
 import org.everit.json.schema.ValidationException;
 import org.junit.Test;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.mock.env.MockEnvironment;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @SuppressWarnings("unchecked")
-public class ImporterTest implements TestUtils {
+public class ImporterServiceTest implements TestUtils {
 
-    private static Importer subject;
+    private static ImporterService subject;
 
     static {
         try {
-            subject = new Importer(new MetaDataAutoConfiguration(
+            subject = new ImporterService(new MetaDataAutoConfiguration(
                     objectMapper,
                     new ClassPathResource("metadata_configuration"),
                     new ClassPathResource("metadata_templates")),
-                    Arrays.asList("nl", "en", "pt"));
+                    new MockEnvironment(),
+                    "nl,pt,en");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -54,7 +51,7 @@ public class ImporterTest implements TestUtils {
 
         assertEquals("https://teams.surfconext.nl/shibboleth", result.get("entityid"));
 
-        Map metaDataFields = Map.class.cast(result.get(Importer.META_DATA_FIELDS));
+        Map metaDataFields = Map.class.cast(result.get(ImporterService.META_DATA_FIELDS));
 
         String json = this.readFile("/json/expected_imported_metadata_saml20_sp.json");
         assertEquals(json, objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(metaDataFields));
@@ -72,7 +69,7 @@ public class ImporterTest implements TestUtils {
 
         assertEquals("https://beta.surfnet.nl/simplesaml/saml2/idp/metadata.php", result.get("entityid"));
 
-        Map metaDataFields = Map.class.cast(result.get(Importer.META_DATA_FIELDS));
+        Map metaDataFields = Map.class.cast(result.get(ImporterService.META_DATA_FIELDS));
 
         String json = this.readFile("/json/expected_imported_metadata_saml20_idp.json");
         assertEquals(json, objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(metaDataFields));
@@ -114,7 +111,7 @@ public class ImporterTest implements TestUtils {
 
     @Test
     public void importNoEncryptionCerts() throws IOException, XMLStreamException {
-        Map<String, Object> results = this.subject.importXML(new ClassPathResource
+        Map<String, Object> results = subject.importXML(new ClassPathResource
                         ("xml/FederationMetadataCertificate.xml"), EntityType.SP,
                 Optional.of("http://adfs2.noorderpoort.nl/adfs/services/trust"));
         Map<String, String> metadataFields = (Map<String, String>) results.get("metaDataFields");
@@ -126,7 +123,7 @@ public class ImporterTest implements TestUtils {
     public void importCertificateTwice() {
         Stream.of(EntityType.values()).forEach(entityType -> {
             try {
-                Map<String, Object> data = this.subject.importXML(
+                Map<String, Object> data = subject.importXML(
                         new ClassPathResource("import_xml/adfs.mijnlentiz.nl.xml"), entityType, Optional.empty());
                 Map metaDataFields = Map.class.cast(data.get("metaDataFields"));
                 assertTrue(metaDataFields.containsKey("certData"));
@@ -141,7 +138,7 @@ public class ImporterTest implements TestUtils {
 
     @Test
     public void aliases() throws IOException, XMLStreamException {
-        Map<String, Object> metaData = this.subject.importXML(new ClassPathResource("/sp_portal/sp_xml.xml"),
+        Map<String, Object> metaData = subject.importXML(new ClassPathResource("/sp_portal/sp_xml.xml"),
                 EntityType.SP, Optional.empty());
         Set<String> arpAttributes = Map.class.cast(Map.class.cast(metaData.get("arp")).get("attributes")).keySet();
         //urn:mace:dir:attribute-def:eduPersonTargetedID is alias for urn:oid:1.3.6.1.4.1.5923.1.1.1.10
@@ -153,7 +150,7 @@ public class ImporterTest implements TestUtils {
         MetaDataAutoConfiguration metaDataAutoConfiguration = new MetaDataAutoConfiguration(objectMapper, new ClassPathResource("metadata_configuration"), new ClassPathResource("metadata_templates"));
         Map<String, Object> spSchema = metaDataAutoConfiguration.schemaRepresentation(EntityType.SP);
         Map.class.cast(Map.class.cast(Map.class.cast(Map.class.cast(spSchema.get("properties")).get("metaDataFields")).get("patternProperties")).get("^AssertionConsumerService:([0-3]{0,1}[0-9]{1}):index$")).put("multiplicity", 15);
-        Importer alteredSubject = new Importer(metaDataAutoConfiguration, Arrays.asList("nl", "en", "pt"));
+        ImporterService alteredSubject = new ImporterService(metaDataAutoConfiguration, new MockEnvironment(), "nl,en,pt");
         Map<String, Object> metaData = alteredSubject.importXML(new ClassPathResource("import_xml/assertion_consumer_service.15.xml"), EntityType.SP, Optional.empty());
         Set<Map.Entry> metaDataFields = Map.class.cast(metaData.get("metaDataFields"))
                 .entrySet();
@@ -164,13 +161,13 @@ public class ImporterTest implements TestUtils {
 
     @Test
     public void multipleCerts() throws IOException, XMLStreamException {
-        Map<String, Object> metaData = this.subject.importXML(new ClassPathResource("/import_xml/metadata_with_attribute_authority_cert.xml"), EntityType.IDP, Optional.empty());
+        Map<String, Object> metaData = subject.importXML(new ClassPathResource("/import_xml/metadata_with_attribute_authority_cert.xml"), EntityType.IDP, Optional.empty());
         assertEquals(1l, Map.class.cast(metaData.get("metaDataFields")).keySet().stream().filter(key -> String.class.cast(key).startsWith("certData")).count());
     }
 
     @Test
     public void ignoreNonSaml20IdpBindings() throws IOException, XMLStreamException {
-        Map<String, Object> metaData = this.subject.importXML(new ClassPathResource("/import_xml/saml1.x_providers.xml"), EntityType.IDP, Optional.empty());
+        Map<String, Object> metaData = subject.importXML(new ClassPathResource("/import_xml/saml1.x_providers.xml"), EntityType.IDP, Optional.empty());
         Pattern binding = Pattern.compile("^SingleSignOnService:([0-9]{1}):Binding$");
         List<String> singleSignOnServices = ((Map<String, String>) metaData.get("metaDataFields"))
                 .entrySet().stream()
@@ -185,7 +182,7 @@ public class ImporterTest implements TestUtils {
 
     @Test
     public void ignoreNonSaml20SPBindings() throws IOException, XMLStreamException {
-        Map<String, Object> metaData = this.subject.importXML(new ClassPathResource("/import_xml/saml1.x_providers.xml"), EntityType.SP, Optional.empty());
+        Map<String, Object> metaData = subject.importXML(new ClassPathResource("/import_xml/saml1.x_providers.xml"), EntityType.SP, Optional.empty());
         Pattern binding = Pattern.compile("^AssertionConsumerService:([0-3]{0,1}[0-9]{1}):Binding$");
         List<String> assertionConsumerServices = ((Map<String, String>) metaData.get("metaDataFields"))
                 .entrySet().stream()
@@ -207,7 +204,7 @@ public class ImporterTest implements TestUtils {
 
     @Test
     public void importFeedWithRegistrationInfo() throws IOException, XMLStreamException {
-        List<Map<String, Object>> results = this.subject.importFeed(new ClassPathResource("/import_xml/edugain_mdrpi_missing.xml"))
+        List<Map<String, Object>> results = subject.importFeed(new ClassPathResource("/import_xml/edugain_mdrpi_missing.xml"))
                 .stream().filter(m -> !m.isEmpty()).collect(Collectors.toList());
         assertEquals(1, results.size());
 
@@ -219,10 +216,9 @@ public class ImporterTest implements TestUtils {
 
     @Test
     public void importUniqueArpValues() throws IOException, XMLStreamException {
-        Map<String, Object> metaData = this.subject.importXML(new ClassPathResource("/import_xml/prod_md_about_spf_sps.xml"),
+        Map<String, Object> metaData = subject.importXML(new ClassPathResource("/import_xml/prod_md_about_spf_sps.xml"),
                 EntityType.SP, Optional.of("https://sp.ota.ox.ac.uk/shibboleth"));
         List<Map<String, String>> values = (List<Map<String, String>>) ((Map) ((Map) metaData.get("arp")).get("attributes")).get("urn:mace:dir:attribute-def:cn");
         assertEquals(1, values.size());
     }
-
 }

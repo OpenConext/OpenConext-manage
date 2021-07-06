@@ -25,8 +25,8 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
-import static manage.format.Importer.ARP;
-import static manage.format.Importer.META_DATA_FIELDS;
+import static manage.service.ImporterService.ARP;
+import static manage.service.ImporterService.META_DATA_FIELDS;
 
 @SuppressWarnings("unchecked")
 public class MetaDataFeedParser {

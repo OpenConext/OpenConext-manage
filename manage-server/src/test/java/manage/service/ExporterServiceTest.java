@@ -1,31 +1,29 @@
-package manage.format;
+package manage.service;
 
 import manage.TestUtils;
 import manage.model.MetaData;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.DefaultResourceLoader;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
-import java.time.Clock;
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @SuppressWarnings("unchecked")
-public class ExporterTest implements TestUtils {
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = ExporterService.class)
+@TestPropertySource(locations = "classpath:test.properties")
+public class ExporterServiceTest implements TestUtils {
 
-    private Exporter subject = new Exporter(
-            Clock.fixed(Instant.from(DateTimeFormatter.ISO_OFFSET_DATE_TIME.parse("2017-07-14T11:15:56.857+02:00")), ZoneId.systemDefault()),
-            new DefaultResourceLoader(),
-            "classpath:/metadata_export",
-            Arrays.asList("nl", "en", "pt"));
+    @Autowired
+    private ExporterService subject;
 
     @Test
     public void exportToXml() throws Exception {
@@ -48,7 +46,7 @@ public class ExporterTest implements TestUtils {
         MetaData metaData = this.metaData();
         Map<String, Object> result = subject.exportToMap(metaData, false);
 
-        Exporter.excludedDataFields.forEach(Map.class.cast(metaData.getData())::remove);
+        ExporterService.excludedDataFields.forEach(Map.class.cast(metaData.getData())::remove);
 
         assertEquals(result, metaData.getData());
     }
@@ -58,7 +56,7 @@ public class ExporterTest implements TestUtils {
         MetaData metaData = this.metaData();
         Map<String, Object> metaDataFields = (Map<String, Object>) metaData.getData().get("metaDataFields");
         Arrays.asList(new String[]{"OrganizationName:en", "OrganizationURL:en", "OrganizationDisplayName:en"})
-                .forEach(s -> metaDataFields.remove(s));
+                .forEach(metaDataFields::remove);
 
         doExportToXml(metaData, "/xml/expected_metadata_export_saml20_sp_org_nl.xml");
     }
@@ -87,6 +85,5 @@ public class ExporterTest implements TestUtils {
         return objectMapper.readValue(new ClassPathResource("/json/exported_metadata_saml20_sp.json").getInputStream
                 (), MetaData.class);
     }
-
 
 }

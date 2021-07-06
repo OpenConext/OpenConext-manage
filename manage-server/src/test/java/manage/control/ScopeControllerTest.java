@@ -194,7 +194,7 @@ public class ScopeControllerTest extends AbstractIntegrationTest {
                 .get("manage/api/client/scopes_languages")
                 .then()
                 .extract().body().jsonPath().getList(".", String.class);
-        assertEquals(2, languages.size());
+        assertEquals(3, languages.size());
     }
 
     private Map<String, String> descriptions() {

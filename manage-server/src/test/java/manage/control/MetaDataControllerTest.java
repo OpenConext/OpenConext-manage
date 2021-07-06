@@ -32,9 +32,9 @@ import static io.restassured.RestAssured.given;
 import static io.restassured.config.RestAssuredConfig.newConfig;
 import static io.restassured.config.XmlConfig.xmlConfig;
 import static java.util.Collections.singletonMap;
-import static manage.control.MetaDataController.ALL_ATTRIBUTES;
-import static manage.control.MetaDataController.LOGICAL_OPERATOR_IS_AND;
-import static manage.control.MetaDataController.REQUESTED_ATTRIBUTES;
+import static manage.service.MetaDataService.ALL_ATTRIBUTES;
+import static manage.service.MetaDataService.LOGICAL_OPERATOR_IS_AND;
+import static manage.service.MetaDataService.REQUESTED_ATTRIBUTES;
 import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
 import static org.apache.http.HttpStatus.SC_FORBIDDEN;
 import static org.apache.http.HttpStatus.SC_NOT_FOUND;
@@ -1185,6 +1185,4 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 .statusCode(SC_BAD_REQUEST)
                 .body("validations", equalTo("#/arp/attributes: expected type: JSONObject, found: JSONArray"));
     }
-
-
 }
