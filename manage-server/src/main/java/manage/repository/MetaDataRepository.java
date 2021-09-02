@@ -94,6 +94,7 @@ public class MetaDataRepository {
             orCriterias.add(regex("data.entityid", part));
             this.supportedLanguages.forEach(lang -> {
                 orCriterias.add(regex("data.metaDataFields.name:" + lang, part));
+                orCriterias.add(regex("data.metaDataFields.displayName:" + lang, part));
                 orCriterias.add(regex("data.metaDataFields.keywords:" + lang, part));
                 orCriterias.add(regex("data.metaDataFields.OrganizationName:" + lang, part));
             });
