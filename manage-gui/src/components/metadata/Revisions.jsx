@@ -33,7 +33,12 @@ export default class Revisions extends React.Component {
       cancelDialogAction: () => this.setState({confirmationDialogOpen: false}),
       confirmationQuestion: ""
     };
-    this.differ = new DiffPatcher();
+    this.differ = new DiffPatcher({
+      objectHash: function(obj, index) {
+        // https://github.com/benjamine/jsondiffpatch/blob/HEAD/docs/arrays.md
+        return obj.name || obj.level || obj.type || obj.source || obj.value ||'$$index:' + index;
+      }
+    });
   }
 
   componentDidMount() {
@@ -88,9 +93,9 @@ export default class Revisions extends React.Component {
     const rev = cloneDeep(revision.data);
     escapeDeep(rev);
     ignoreInDiff.forEach(ignore => delete rev[ignore]);
+
     const prev = cloneDeep(previous.data);
     escapeDeep(prev);
-
     ignoreInDiff.forEach(ignore => delete prev[ignore]);
 
     const diffs = this.differ.diff(prev, rev);
