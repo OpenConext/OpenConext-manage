@@ -35,7 +35,7 @@ export default class Revisions extends React.Component {
     };
     this.differ = new DiffPatcher({
       // https://github.com/benjamine/jsondiffpatch/blob/HEAD/docs/arrays.md
-      objectHash: (obj, index) => obj.name || obj.level || obj.type || obj.source || obj.value ||'$$index:' + index
+      objectHash: (obj, index) => obj.name || obj.level || obj.type || obj.source || obj.value || '$$index:' + index
     });
   }
 
