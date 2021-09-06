@@ -16,9 +16,11 @@ import java.time.Duration;
 public class SessionConfig extends AbstractHttpSessionApplicationInitializer {
 
     @Bean
-    CookieSerializer cookieSerializer(@Value("${secure_cookie}") boolean secureCookie) {
+    CookieSerializer cookieSerializer(@Value("${cookie.secure}") boolean secureCookie,
+                                      @Value("${cookie.same_site}") String sameSite) {
+
         DefaultCookieSerializer defaultCookieSerializer = new DefaultCookieSerializer();
-        defaultCookieSerializer.setSameSite("None");
+        defaultCookieSerializer.setSameSite(sameSite);
         defaultCookieSerializer.setUseSecureCookie(secureCookie);
         return defaultCookieSerializer;
     }
