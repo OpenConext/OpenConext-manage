@@ -35,7 +35,7 @@ export default class Scopes extends React.Component {
     Promise.all([allScopes(), scopeSupportedLanguagers()])
       .then(res => {
         this.setState({
-          scopes: res[0],
+          scopes: res[0].sort((a,b)=> a.name.localeCompare(b.name)),
           supportedLanguages: res[1],
           query: "",
           loaded: true,
@@ -46,7 +46,7 @@ export default class Scopes extends React.Component {
   refreshScopes = () => {
     allScopes().then(res =>
       this.setState({
-        scopes: res,
+        scopes: res.sort((a,b)=> a.name.localeCompare(b.name)),
         inUseEntities: [],
         inUse: false,
         inUseAction: "",
