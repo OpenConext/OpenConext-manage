@@ -16,7 +16,6 @@ server:
         secure: true
 
 features: push, validation, push_preview, orphans, find_my_data, edugain, bogus
-secure_cookie: false
 base_domain: test2.surfconext.nl
 
 push:
@@ -68,6 +67,11 @@ spring:
 
   main:
     banner-mode: "off"
+
+cookie:
+  secure: false
+  # Options are 'Strict', 'Lax' or 'None'
+  same_site: None
 
 # We disable all endpoints except health for the load-balancer and info for git information.
 management:
