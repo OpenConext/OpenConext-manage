@@ -41,18 +41,19 @@ public class OidcValidationHook extends MetaDataHookAdapter {
         Map<String, Object> metaDataFields = newMetaData.metaDataFields();
         List<String> redirectUrls = (List<String>) metaDataFields.getOrDefault("redirectUrls", new ArrayList<String>());
         List<String> grants = (List<String>) metaDataFields.getOrDefault("grants", new ArrayList<String>());
+        Schema schema = metaDataAutoConfiguration.schema(EntityType.RP.getType());
         if (grants.stream().anyMatch(grant -> Arrays.asList("authorization_code", "implicit").contains(grant)) &&
                 redirectUrls.isEmpty()) {
-            Schema schema = metaDataAutoConfiguration.schema(EntityType.RP.getType());
             throw new ValidationException(schema, "Redirect URI is required with selected grant types", "redirectUris");
         }
         if (grants.size() == 1 && grants.get(0).equals("client_credentials") && redirectUrls.size() > 0) {
-            Schema schema = metaDataAutoConfiguration.schema(EntityType.RP.getType());
             throw new ValidationException(schema, "Redirect URI is not allowed with selected grant type", "redirectUris");
         }
         if (grants.size() == 1 && grants.get(0).equals("refresh_token")) {
-            Schema schema = metaDataAutoConfiguration.schema(EntityType.RP.getType());
             throw new ValidationException(schema, "Refresh token grant must be combined with another grant type", "grants");
+        }
+        if (metaDataFields.get("refreshTokenValidity") != null && grants.stream().noneMatch(grant -> grant.equals("refresh_token"))) {
+            throw new ValidationException(schema, "refreshTokenValidity specified, but no refresh_token grant. Either remove refreshTokenValidity or add refresh_token grant type", "refreshTokenValidity");
         }
     }
 
