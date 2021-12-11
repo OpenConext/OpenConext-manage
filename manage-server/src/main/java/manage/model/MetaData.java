@@ -12,10 +12,8 @@ import org.springframework.util.Assert;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static manage.mongo.MongoChangelog.REVISION_POSTFIX;
 
@@ -120,5 +118,34 @@ public class MetaData implements Serializable {
     @Transient
     public Map<String, Object> metaDataFields() {
         return (Map) data.get("metaDataFields");
+    }
+
+    @SuppressWarnings("unchecked")
+    private Object doTrimSpaces(Object value) {
+        if (value instanceof String) {
+            return ((String) value).trim();
+        }
+        if (value instanceof Map) {
+            try {
+                ((Map) value).replaceAll((key, val) -> doTrimSpaces(val));
+                return value;
+            } catch (UnsupportedOperationException e) {
+                //Collections.singletonMap does not support replaceAll
+                return value;
+            }
+        }
+        if (value instanceof List) {
+            try {
+                return ((List) value).stream().map(o -> doTrimSpaces(o)).collect(Collectors.toList());
+            } catch (UnsupportedOperationException e) {
+                //Collections.singletonList does not support replaceAll
+                return value;
+            }
+        }
+        return value;
+    }
+
+    public void trimSpaces() {
+        data.replaceAll((key, value) -> doTrimSpaces(value));
     }
 }

@@ -58,6 +58,7 @@ public class MetaDataRepository {
     }
 
     public MetaData save(MetaData metaData) {
+        metaData.trimSpaces();
         mongoTemplate.insert(metaData, metaData.getType());
         return metaData;
     }
@@ -72,6 +73,7 @@ public class MetaDataRepository {
     }
 
     public void update(MetaData metaData) {
+        metaData.trimSpaces();
         mongoTemplate.save(metaData, metaData.getType());
     }
 

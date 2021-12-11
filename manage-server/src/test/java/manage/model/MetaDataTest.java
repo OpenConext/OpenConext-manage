@@ -1,11 +1,13 @@
 package manage.model;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import manage.TestUtils;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
@@ -49,4 +51,22 @@ public class MetaDataTest implements TestUtils {
         assertTrue(subject.equals(subject));
     }
 
+
+    @Test
+    public void trimSpaces() throws JsonProcessingException {
+        MetaData metaData = objectMapper.readValue(readFile("json/meta_data_with_spacesl.json"), MetaData.class);
+
+        assertEquals(" SURFnet BV ", metaData.metaDataFields().get("OrganizationName:nl"));
+        Map displayNameArp = (Map) ((List) ((Map) ((Map) metaData.getData().get("arp")).get("attributes")).get("urn:mace:dir:attribute-def:displayName")).get(0);
+        assertEquals(" * ", displayNameArp.get("value"));
+        assertEquals(" idp ", displayNameArp.get("source"));
+
+        metaData.trimSpaces();
+
+        assertEquals("SURFnet BV", metaData.metaDataFields().get("OrganizationName:nl"));
+        displayNameArp = (Map) ((List) ((Map) ((Map) metaData.getData().get("arp")).get("attributes")).get("urn:mace:dir:attribute-def:displayName")).get(0);
+        assertEquals("*", displayNameArp.get("value"));
+        assertEquals("idp", displayNameArp.get("source"));
+
+    }
 }
