@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "marked": "^0.3.19",
+    "marked": "^4.0.10",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "react-md-editor": "^0.2.2",
