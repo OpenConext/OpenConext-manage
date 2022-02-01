@@ -13,7 +13,7 @@ Note that the original migration from Janus was removed in version 3.0.0. If you
 
 ### [System Requirements](#system-requirements)
 
-- Java 8
+- Java 11
 - Maven 3
 - MongoDB 3.4.x
 - yarn 1.2.1

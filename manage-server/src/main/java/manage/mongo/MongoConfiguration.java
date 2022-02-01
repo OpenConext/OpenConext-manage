@@ -1,6 +1,6 @@
 package manage.mongo;
 
-import com.github.cloudyrock.mongock.driver.mongodb.springdata.v3.SpringDataMongo3Driver;
+import com.github.cloudyrock.mongock.driver.mongodb.springdata.v3.SpringDataMongoV3Driver;
 import com.github.cloudyrock.spring.v5.MongockSpring5;
 import manage.conf.MetaDataAutoConfiguration;
 import org.springframework.context.ApplicationContext;
@@ -23,7 +23,7 @@ public class MongoConfiguration {
     public MongockSpring5.MongockApplicationRunner mongockApplicationRunner(ApplicationContext springContext,
                                                                             MetaDataAutoConfiguration metaDataAutoConfiguration,
                                                                             MongoTemplate mongoTemplate) {
-        SpringDataMongo3Driver driver = SpringDataMongo3Driver.withDefaultLock(mongoTemplate);
+        SpringDataMongoV3Driver driver = SpringDataMongoV3Driver.withDefaultLock(mongoTemplate);
         driver.disableTransaction();
 
         return MongockSpring5.builder()

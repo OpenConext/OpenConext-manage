@@ -39,11 +39,6 @@ public class ErrorController  implements org.springframework.boot.web.servlet.er
         this.errorAttributes = new DefaultErrorAttributes();
     }
 
-    @Override
-    public String getErrorPath() {
-        return null;
-    }
-
     @RequestMapping("/error")
     public ResponseEntity<Map<String, Object>> error(HttpServletRequest request) {
         ServletWebRequest webRequest = new ServletWebRequest(request);
