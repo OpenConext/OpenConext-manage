@@ -77,6 +77,7 @@ class App extends React.PureComponent {
           if (currentUser && currentUser.uid) {
             configuration().then(configuration =>
               this.setState({loading: false, currentUser: currentUser, configuration: configuration}));
+              window.document.title = `${currentUser.product.name} - ${currentUser.product.organization}`;
           } else {
             this.handleBackendDown();
           }
