@@ -7,6 +7,7 @@ import org.everit.json.schema.Schema;
 import org.everit.json.schema.ValidationException;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -39,29 +40,35 @@ public class RequiredAttributesHook extends MetaDataHookAdapter {
         Map<String, Object> properties = (Map<String, Object>) schemaMetaDataFields.get("properties");
         Map<String, Object> patternProperties = (Map<String, Object>) schemaMetaDataFields.get("patternProperties");
 
+        List<ValidationException> failures = new ArrayList<>();
+
         properties.forEach((key, value) -> {
             if (value instanceof Map && ((Map) value).containsKey("requiredAttributes")) {
                 List<String> requiredAttributes = (List<String>) ((Map<?, ?>) value).get("requiredAttributes");
-                this.ensureMetaDataFieldIsPresent(requiredAttributes, metaDataFields, schema, key);
+                this.ensureMetaDataFieldIsPresent(requiredAttributes, metaDataFields, schema, key, failures);
             }
         });
 
         patternProperties.forEach((key, value) -> {
             if (value instanceof Map && ((Map) value).containsKey("requiredAttributes")) {
                 Map<String, List<String>> requiredAttributesMap = (Map<String, List<String>>) ((Map<?, ?>) value).get("requiredAttributes");
-                requiredAttributesMap.forEach((attr, requiredAttributes) -> this.ensureMetaDataFieldIsPresent(requiredAttributes, metaDataFields, schema, attr));
+                requiredAttributesMap.forEach((attr, requiredAttributes) ->
+                        this.ensureMetaDataFieldIsPresent(requiredAttributes, metaDataFields, schema, attr, failures));
             }
         });
+
+        ValidationException.throwFor(schema, failures);
     }
 
-    private void ensureMetaDataFieldIsPresent(List<String> names, Map<String, Object> metaDataFields, Schema schema, String parentKey) {
+    private void ensureMetaDataFieldIsPresent(List<String> names, Map<String, Object> metaDataFields,
+                                              Schema schema, String parentKey, List<ValidationException> failures) {
         if (metaDataFields.containsKey(parentKey)) {
             names.forEach(name -> {
                 Object value = metaDataFields.get(name);
                 if (value == null || (value instanceof String && !StringUtils.hasText((String) value))) {
-                    throw new ValidationException(schema,
+                    failures.add(new ValidationException(schema,
                             String.format("Missing required attribute %s defined as required by %s", name, parentKey),
-                            name);
+                            name));
                 }
             });
         }
