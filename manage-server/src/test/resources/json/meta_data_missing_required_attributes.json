@@ -1,0 +1,37 @@
+{
+  "id": "bcd9c7f0-1d97-4fb2-9a20-7e56c9c661de",
+  "type": "saml20_sp",
+  "revision": {
+    "number": 72,
+    "created": 1475224818.000000000,
+    "parentId": null,
+    "updatedBy": "37"
+  },
+  "data": {
+    "id": 59425,
+    "eid": 2,
+    "entityid": "https://teams.surfconext.nl/shibboleth",
+    "revisionid": 72,
+    "state": "prodaccepted",
+    "metadataurl": "https://teams.surfconext.nl/Shibboleth.sso/Metadata",
+    "allowedall": true,
+    "manipulation": "",
+    "user": "37",
+    "created": "2016-09-30T10:40:18+02:00",
+    "ip": "145.101.112.195",
+    "revisionnote": "No revision note",
+    "active": true,
+    "arp": {
+      "enabled": false
+    },
+    "metaDataFields": {
+      "OrganizationName:en": "SURFnet BV",
+      "url:en": "https://www.surfnet.nl/",
+      "coin:stepup:requireloa": "http://load",
+      "url:nl": "https://www.surfnet.nl/",
+      "displayName:en": "SURFconext Teams | SURFnet"
+    },
+    "allowedEntities": [],
+    "disableConsent": []
+  }
+}
