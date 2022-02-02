@@ -15,8 +15,7 @@ public class MetaDataHookConfiguration {
     @Bean
     @Autowired
     CompositeMetaDataHook hooks(MetaDataRepository metaDataRepository,
-                                MetaDataAutoConfiguration metaDataAutoConfiguration,
-                                @Value("${oidc.acsLocation}") String acsLocation) {
+                                MetaDataAutoConfiguration metaDataAutoConfiguration) {
 
         EmptyRevisionHook emptyRevisionHook = new EmptyRevisionHook(metaDataAutoConfiguration);
         EntityIdReconcilerHook entityIdReconcilerHook = new EntityIdReconcilerHook(metaDataRepository);
@@ -25,6 +24,7 @@ public class MetaDataHookConfiguration {
         EntityIdConstraintsHook entityIdConstraintsHook = new EntityIdConstraintsHook(metaDataRepository);
         OidcValidationHook validationHook = new OidcValidationHook(metaDataAutoConfiguration);
         SSIDValidationHook ssidValidationHook = new SSIDValidationHook(metaDataRepository, metaDataAutoConfiguration);
+        RequiredAttributesHook requiredAttributesHook = new RequiredAttributesHook(metaDataAutoConfiguration);
 
         return new CompositeMetaDataHook(
                 Arrays.asList(
@@ -34,7 +34,8 @@ public class MetaDataHookConfiguration {
                         entityIdConstraintsHook,
                         entityIdReconcilerHook,
                         ssidValidationHook,
-                        secretHook));
+                        secretHook,
+                        requiredAttributesHook));
     }
 
 
