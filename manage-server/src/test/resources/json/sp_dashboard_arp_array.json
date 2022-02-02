@@ -12,6 +12,8 @@
     "AssertionConsumerService:0:Location": "https://example.com/Shibboleth.sso/SAML2/POST",
     "NameIDFormat": "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent",
     "OrganizationName:en": "TestJohn",
+    "OrganizationDisplayName:en": "Test",
+    "OrganizationURL:en": "https://url.nl",
     "OrganizationName:nl": "TestJohn",
     "name:en": "TestJohn"
   },
