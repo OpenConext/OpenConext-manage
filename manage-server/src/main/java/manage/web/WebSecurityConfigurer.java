@@ -170,8 +170,8 @@ public class WebSecurityConfigurer {
         private ResourceLoader resourceLoader;
 
         @Override
-        public void configure(WebSecurity web) throws Exception {
-            web.ignoring().antMatchers("/actuator/**");
+        public void configure(WebSecurity web) {
+            web.ignoring().antMatchers("/internal/health", "/internal/info");
         }
 
         @Override

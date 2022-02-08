@@ -13,10 +13,10 @@ import static org.hamcrest.Matchers.equalTo;
 public class ApplicationTest extends AbstractIntegrationTest {
 
     @Test
-    public void health() throws Exception {
+    public void health() {
         given()
                 .when()
-                .get("manage/api/actuator/health")
+                .get("manage/api/internal/health")
                 .then()
                 .statusCode(SC_OK)
                 .body("status", equalTo("UP"));
