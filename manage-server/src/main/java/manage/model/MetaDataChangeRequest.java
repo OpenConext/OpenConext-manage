@@ -14,10 +14,13 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
-public class MetaDataUpdate implements PathUpdates {
+public class MetaDataChangeRequest implements PathUpdates {
 
     @Id
     private String id;
+
+    @NotNull
+    private String metaDataId;
 
     @NotNull
     private String type;
@@ -25,5 +28,6 @@ public class MetaDataUpdate implements PathUpdates {
     @NotNull
     private Map<String, Object> pathUpdates;
 
-    private Map<String, Object> externalReferenceData;
+    @NotNull
+    private Map<String, Object> auditData;
 }

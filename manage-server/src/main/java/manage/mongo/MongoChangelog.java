@@ -39,6 +39,7 @@ import java.util.stream.StreamSupport;
 public class MongoChangelog {
 
     public static final String REVISION_POSTFIX = "_revision";
+    public static final String CHANGE_REQUEST_POSTFIX = "_change_request";
 
     private static final Logger LOG = LoggerFactory.getLogger(MongoChangelog.class);
 

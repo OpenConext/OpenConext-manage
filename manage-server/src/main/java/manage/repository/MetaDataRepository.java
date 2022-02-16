@@ -2,6 +2,7 @@ package manage.repository;
 
 import manage.model.EntityType;
 import manage.model.MetaData;
+import manage.model.MetaDataChangeRequest;
 import manage.model.StatsEntry;
 import manage.mongo.Sequence;
 import org.bson.Document;
@@ -30,6 +31,7 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
+import static manage.mongo.MongoChangelog.CHANGE_REQUEST_POSTFIX;
 import static manage.mongo.MongoChangelog.REVISION_POSTFIX;
 
 /**
@@ -63,6 +65,10 @@ public class MetaDataRepository {
         return metaData;
     }
 
+    public MetaDataChangeRequest save(MetaDataChangeRequest metaDataChangeRequest) {
+        return mongoTemplate.insert(metaDataChangeRequest, metaDataChangeRequest.getType().concat(CHANGE_REQUEST_POSTFIX));
+    }
+
     public void remove(MetaData metaData) {
         mongoTemplate.remove(metaData, metaData.getType());
     }
@@ -70,6 +76,11 @@ public class MetaDataRepository {
     public List<MetaData> revisions(String type, String parentId) {
         Query query = new Query(Criteria.where("revision.parentId").is(parentId));
         return mongoTemplate.find(query, MetaData.class, type);
+    }
+
+    public List<MetaDataChangeRequest> changeRequests(String metaDataId, String collectionName) {
+        Query query = new Query(Criteria.where("metaDataId").is(metaDataId));
+        return mongoTemplate.find(query, MetaDataChangeRequest.class, collectionName);
     }
 
     public void update(MetaData metaData) {

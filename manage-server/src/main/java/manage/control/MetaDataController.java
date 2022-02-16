@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static manage.api.Scope.TEST;
+import static manage.mongo.MongoChangelog.CHANGE_REQUEST_POSTFIX;
 import static manage.mongo.MongoChangelog.REVISION_POSTFIX;
 
 @RestController
@@ -252,6 +253,20 @@ public class MetaDataController {
                 .get();
     }
 
+    @PreAuthorize("hasRole('WRITE')")
+    @PutMapping("internal/change-request")
+    @Transactional
+    public MetaDataChangeRequest changeRequest(@Validated @RequestBody MetaDataChangeRequest metaDataChangeRequest, APIUser apiUser) throws JsonProcessingException {
+        return metaDataService.doChangeRequest(metaDataChangeRequest, apiUser);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/client/accept-change-request")
+    @Transactional
+    public MetaData acceptChangeRequest(@RequestBody @Validated ChangeRequest changeRequest, FederatedUser user) {
+        return metaDataService.doAcceptChangeRequest(changeRequest, user);
+    }
+
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/client/restoreDeleted")
     @Transactional
@@ -275,6 +290,12 @@ public class MetaDataController {
                                     @PathVariable("parentId") String parentId) {
 
         return metaDataRepository.revisions(type.concat(REVISION_POSTFIX), parentId);
+    }
+
+    @GetMapping("/client/change-requests/{type}/{metaDataId}")
+    public List<MetaDataChangeRequest> changeRequests(@PathVariable("type") String type,
+                                                      @PathVariable("metaDataId") String metaDataId) {
+        return metaDataRepository.changeRequests(metaDataId, type.concat(CHANGE_REQUEST_POSTFIX));
     }
 
     @GetMapping("/client/autocomplete/{type}")

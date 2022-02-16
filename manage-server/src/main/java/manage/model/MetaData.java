@@ -94,8 +94,8 @@ public class MetaData implements Serializable {
     }
 
     @SuppressWarnings("unchecked")
-    public void merge(MetaDataUpdate metaDataUpdate) {
-        metaDataUpdate.getPathUpdates().forEach((path, value) -> {
+    public void merge(PathUpdates pathUpdates) {
+        pathUpdates.getPathUpdates().forEach((path, value) -> {
             List<String> parts = Arrays.asList(path.split("\\."));
             Iterator<String> iterator = parts.iterator();
             String part = iterator.next();
