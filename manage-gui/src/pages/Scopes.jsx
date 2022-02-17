@@ -278,7 +278,3 @@ export default class Scopes extends React.Component {
   }
 
 }
-
-Scopes.propTypes = {
-  history: PropTypes.object.isRequired
-};

@@ -22,7 +22,8 @@ import SelectMetaDataType from "../components/metadata/SelectMetaDataType";
 import NotesTooltip from "../components/NotesTooltip";
 import CheckBox from "../components/CheckBox";
 import JSONPretty from "react-json-pretty";
-import "react-json-pretty/JSONPretty.monikai.styl";
+import "react-json-pretty/themes/monikai.css";
+import {Navigate} from "react-router-dom";
 
 export default class System extends React.PureComponent {
 
@@ -175,8 +176,8 @@ export default class System extends React.PureComponent {
                     revision: number,
                     newRevision: json.revision.number
                 }));
-                this.props.history.replace(`/dummy`);
-                setTimeout(() => this.props.history.replace(`/metadata/${json.type}/${json.id}`), 50);
+                const path = decodeURIComponent(`/metadata/${json.type}/${json.id}`);
+                return <Navigate to={`refresh-route/${path}`} />
             }
         });
     };
@@ -440,7 +441,6 @@ export default class System extends React.PureComponent {
 }
 
 System.propTypes = {
-    history: PropTypes.object.isRequired,
     configuration: PropTypes.array.isRequired,
     currentUser: PropTypes.object.isRequired
 };

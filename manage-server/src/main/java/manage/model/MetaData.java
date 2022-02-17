@@ -120,6 +120,19 @@ public class MetaData implements Serializable {
         return (Map) data.get("metaDataFields");
     }
 
+    @Transient
+    public Map<String, Object> summary() {
+        Map<String, Object> results = new HashMap<>();
+        results.put("entityid", data.get("entityid"));
+        results.put("state", data.get("state"));
+
+        Map<String, Object> metaDataFields = metaDataFields();
+        results.put("name", metaDataFields.get("name:en"));
+        results.put("organizationName", metaDataFields.get("OrganizationName:en"));
+
+        return results;
+    }
+
     @SuppressWarnings("unchecked")
     private Object doTrimSpaces(Object value) {
         if (value instanceof String) {

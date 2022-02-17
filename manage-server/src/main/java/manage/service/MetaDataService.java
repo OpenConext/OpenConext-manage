@@ -3,6 +3,7 @@ package manage.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import manage.api.APIUser;
+import manage.api.AbstractUser;
 import manage.conf.MetaDataAutoConfiguration;
 import manage.control.DatabaseController;
 import manage.exception.DuplicateEntityIdException;
@@ -56,15 +57,13 @@ public class MetaDataService {
             EntityType.RP.getType(), EntityType.SP.getType(), EntityType.RS.getType()
     );
 
-    private MetaDataRepository metaDataRepository;
+    private final MetaDataRepository metaDataRepository;
 
     private final MetaDataAutoConfiguration metaDataAutoConfiguration;
 
     private final MetaDataHook metaDataHook;
 
     private final DatabaseController databaseController;
-
-    private ObjectMapper objectMapper;
 
     private final Environment environment;
 
@@ -76,7 +75,6 @@ public class MetaDataService {
                            MetaDataAutoConfiguration metaDataAutoConfiguration,
                            MetaDataHook metaDataHook,
                            DatabaseController databaseController,
-                           ObjectMapper objectMapper,
                            ImporterService importerService,
                            ExporterService exporterService,
                            Environment environment) {
@@ -85,7 +83,6 @@ public class MetaDataService {
         this.metaDataAutoConfiguration = metaDataAutoConfiguration;
         this.metaDataHook = metaDataHook;
         this.databaseController = databaseController;
-        this.objectMapper = objectMapper;
         this.exporterService = exporterService;
         this.environment = environment;
         this.importerService = importerService;
@@ -304,28 +301,32 @@ public class MetaDataService {
         }
     }
 
-    public MetaDataChangeRequest doChangeRequest(MetaDataChangeRequest metaDataChangeRequest, APIUser apiUser) throws JsonProcessingException {
+    public MetaDataChangeRequest doChangeRequest(MetaDataChangeRequest metaDataChangeRequest, AbstractUser user) throws JsonProcessingException {
         String id = metaDataChangeRequest.getMetaDataId();
         MetaData metaData = metaDataRepository.findById(id, metaDataChangeRequest.getType());
         checkNull(metaDataChangeRequest.getType(), id, metaData);
 
-        //we need a deep copy to see if the prePut has validationErrors
-        MetaData deepCopy = objectMapper
-                .readValue(objectMapper.writeValueAsString(metaData), MetaData.class);
+        //fail fast if there are validation errors
         metaData.merge(metaDataChangeRequest);
-
-        metaData = metaDataHook.prePut(deepCopy, metaData);
         validate(metaData);
+
+        metaDataChangeRequest.getAuditData().put("userName", user.getName());
+        metaDataChangeRequest.getAuditData().put("apiUser", user.isAPIUser());
+        metaDataChangeRequest.setMetaDataSummary(metaData.summary());
 
         return metaDataRepository.save(metaDataChangeRequest);
     }
+
 
     public MetaData doAcceptChangeRequest(ChangeRequest changeRequest, FederatedUser user) {
         //TODO
         return null;
     }
 
-
+    public MetaData doRejectChangeRequest(ChangeRequest changeRequest, FederatedUser user) {
+        //TODO
+        return null;
+    }
     public MetaData restoreDeleted(RevisionRestore revisionRestore, FederatedUser federatedUser)
             throws JsonProcessingException {
         MetaData revision = metaDataRepository.findById(revisionRestore.getId(), revisionRestore.getType());

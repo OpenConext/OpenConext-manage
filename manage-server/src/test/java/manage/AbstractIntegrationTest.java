@@ -13,7 +13,6 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -33,7 +32,7 @@ import static org.awaitility.Awaitility.await;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestPropertySource(locations= "classpath:test.properties")
+@TestPropertySource(locations = "classpath:test.properties")
 public abstract class AbstractIntegrationTest implements TestUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractIntegrationTest.class);
@@ -60,8 +59,8 @@ public abstract class AbstractIntegrationTest implements TestUtils {
         RestAssured.port = port;
         if (insertSeedData()) {
             if (metaDataList == null) {
-                metaDataList = objectMapper.readValue(readFile("json/meta_data_seed.json"), new
-                        TypeReference<List<MetaData>>() {
+                metaDataList = objectMapper.readValue(readFile("json/meta_data_seed.json"),
+                        new TypeReference<>() {
                         });
             }
             MongoTemplate mongoTemplate = metaDataRepository.getMongoTemplate();

@@ -211,7 +211,3 @@ export default class Activity extends React.Component {
   }
 
 }
-
-Activity.propTypes = {
-  history: PropTypes.object.isRequired
-};

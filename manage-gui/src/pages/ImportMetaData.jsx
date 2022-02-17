@@ -30,11 +30,10 @@ export default class ImportMetaData extends React.PureComponent {
 
   render() {
     const {showDetails, results} = this.state;
-    const {history, currentUser, configuration} = this.props;
+    const {currentUser, configuration} = this.props;
     if (showDetails) {
       return (
-        <Detail history={history}
-                currentUser={currentUser}
+        <Detail currentUser={currentUser}
                 fromImport={true}
                 configuration={configuration}
                 newMetaData={results}/>
@@ -66,7 +65,6 @@ export default class ImportMetaData extends React.PureComponent {
 }
 
 ImportMetaData.propTypes = {
-  history: PropTypes.object.isRequired,
   currentUser: PropTypes.object.isRequired,
   configuration: PropTypes.array.isRequired
 };

@@ -1,8 +1,8 @@
 import React from "react";
 import I18n from "i18n-js";
 
-import {DiffPatcher} from 'jsondiffpatch/src/diffpatcher';
-import htmlFormatter from "jsondiffpatch/src/formatters/html";
+import {DiffPatcher} from 'jsondiffpatch';
+import {HtmlFormatter} from "jsondiffpatch";
 
 import PropTypes from "prop-types";
 import cloneDeep from "lodash.clonedeep";
@@ -10,10 +10,11 @@ import CheckBox from "../../components/CheckBox";
 import ConfirmationDialog from "../../components/ConfirmationDialog";
 import {escapeDeep, stop} from "../../utils/Utils";
 
-import "jsondiffpatch/public/formatters-styles/html.css";
+import "jsondiffpatch/dist/formatters-styles/html.css";
 import "./Revisions.css";
 import {restoreRevision} from "../../api";
 import {setFlash} from "../../utils/Flash";
+import {Navigate} from "react-router-dom";
 
 const ignoreInDiff = ["id", "eid", "revisionid", "user", "created", "ip", "revisionnote"];
 
@@ -70,8 +71,8 @@ export default class Revisions extends React.Component {
           revision: number,
           newRevision: json.revision.number
         }));
-        this.props.history.replace(`/dummy`);
-        setTimeout(() => this.props.history.replace(`/metadata/${json.type}/${json.id}/revisions`), 50);
+        setTimeout(() => <Navigate to={`/metadata/${json.type}/${json.id}/revisions`}/>, 50);
+        return <Navigate to={`/dummy`}/>;
       }
     });
   };
@@ -97,7 +98,7 @@ export default class Revisions extends React.Component {
     ignoreInDiff.forEach(ignore => delete prev[ignore]);
 
     const diffs = this.differ.diff(prev, rev);
-    const html = htmlFormatter.format(diffs);
+    const html = HtmlFormatter.format(diffs);
     //we need dangerouslySetInnerHTML otherwise the diff has to html in it, but the data is cleansed
     return diffs ? <p dangerouslySetInnerHTML={{__html: html}}/> : <p>{I18n.t("revisions.identical")}</p>
   };
@@ -176,7 +177,6 @@ export default class Revisions extends React.Component {
 }
 
 Revisions.propTypes = {
-  history: PropTypes.object.isRequired,
   revisions: PropTypes.array.isRequired,
   entityType: PropTypes.string.isRequired,
   isNew: PropTypes.bool.isRequired,

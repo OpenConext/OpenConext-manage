@@ -1,54 +1,28 @@
 package manage.control;
 
-import com.fasterxml.jackson.core.type.TypeReference;
+import io.restassured.common.mapper.TypeRef;
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 import manage.AbstractIntegrationTest;
-import manage.model.EntityType;
-import manage.model.Import;
-import manage.model.MetaData;
-import manage.model.MetaDataKeyDelete;
-import manage.model.MetaDataUpdate;
-import manage.model.Revision;
-import manage.model.RevisionRestore;
+import manage.model.*;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.regex.Pattern;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.config.RestAssuredConfig.newConfig;
 import static io.restassured.config.XmlConfig.xmlConfig;
 import static java.util.Collections.singletonMap;
-import static manage.service.MetaDataService.ALL_ATTRIBUTES;
-import static manage.service.MetaDataService.LOGICAL_OPERATOR_IS_AND;
-import static manage.service.MetaDataService.REQUESTED_ATTRIBUTES;
-import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
-import static org.apache.http.HttpStatus.SC_FORBIDDEN;
-import static org.apache.http.HttpStatus.SC_NOT_FOUND;
-import static org.apache.http.HttpStatus.SC_OK;
-import static org.hamcrest.Matchers.emptyOrNullString;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItems;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static manage.service.MetaDataService.*;
+import static org.apache.http.HttpStatus.*;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 @SuppressWarnings("unchecked")
 public class MetaDataControllerTest extends AbstractIntegrationTest {
@@ -1175,8 +1149,8 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         Map data = objectMapper.readValue(json, Map.class);
         MetaData metaData = new MetaData(EntityType.SP.getType(), data);
         given().auth()
-                    .preemptive()
-                    .basic("sp-portal", "secret")
+                .preemptive()
+                .basic("sp-portal", "secret")
                 .when()
                 .body(metaData)
                 .header("Content-type", "application/json")
@@ -1184,5 +1158,39 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 .then()
                 .statusCode(SC_BAD_REQUEST)
                 .body("validations", equalTo("#/arp/attributes: expected type: JSONObject, found: JSONArray"));
+    }
+
+    @Test
+    public void createChangeRequest() {
+        Map<String, Object> pathUpdates = new HashMap<>();
+        pathUpdates.put("metaDataFields.description:en", "New description");
+        pathUpdates.put("allowedall", false);
+        pathUpdates.put("allowedEntities", Arrays.asList(singletonMap("name", "https://allow-me"),
+                singletonMap("name", "http://mock-idp")));
+        Map<String, Object> auditData = new HashMap<>();
+        auditData.put("user", "jdoe");
+
+        MetaDataChangeRequest changeRequest = new MetaDataChangeRequest(
+                "1", EntityType.SP.getType(), pathUpdates, auditData
+        );
+        given().auth().preemptive().basic("sp-portal", "secret")
+                .when()
+                .body(changeRequest)
+                .header("Content-type", "application/json")
+                .post("manage/api/internal/change-request")
+                .then()
+                .statusCode(SC_OK);
+
+        List<MetaDataChangeRequest> requests = given()
+                .when()
+                .get("manage/api/client/change-requests/saml20_sp/1")
+                .as(new TypeRef<>() {
+                });
+        assertEquals(1, requests.size());
+
+        MetaDataChangeRequest request = requests.get(0) ;
+        assertEquals(4, request.getMetaDataSummary().size());
+        assertEquals(3, request.getAuditData().size());
+        assertEquals(3, request.getPathUpdates().size());
     }
 }

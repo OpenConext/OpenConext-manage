@@ -1,10 +1,10 @@
 import React from "react";
-import {Redirect, Route} from "react-router-dom";
+import {Navigate, Route} from "react-router-dom";
 import PropTypes from "prop-types";
 
 export default function ProtectedRoute({path, guest, render}) {
   if (guest) {
-    return <Redirect to={"/"}/>;
+    return <Navigate to={"/"}/>;
   }
   return <Route path={path} render={render}/>;
 }

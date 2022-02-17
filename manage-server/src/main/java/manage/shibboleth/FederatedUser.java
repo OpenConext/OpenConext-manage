@@ -1,6 +1,7 @@
 package manage.shibboleth;
 
 import lombok.Getter;
+import manage.api.AbstractUser;
 import manage.conf.Features;
 import manage.conf.Product;
 import manage.conf.Push;
@@ -11,7 +12,7 @@ import java.io.Serializable;
 import java.util.List;
 
 @Getter
-public class FederatedUser extends User implements Serializable {
+public class FederatedUser extends User implements Serializable, AbstractUser {
 
     private String uid;
     private String displayName;
@@ -40,4 +41,13 @@ public class FederatedUser extends User implements Serializable {
         return featureToggles.contains(feature);
     }
 
+    @Override
+    public String getName() {
+        return this.uid;
+    }
+
+    @Override
+    public boolean isAPIUser() {
+        return false;
+    }
 }

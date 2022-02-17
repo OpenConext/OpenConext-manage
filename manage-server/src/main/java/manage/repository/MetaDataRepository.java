@@ -11,23 +11,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.BasicQuery;
-import org.springframework.data.mongodb.core.query.Collation;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.CriteriaDefinition;
-import org.springframework.data.mongodb.core.query.Field;
-import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.data.mongodb.core.query.*;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
@@ -81,6 +71,23 @@ public class MetaDataRepository {
     public List<MetaDataChangeRequest> changeRequests(String metaDataId, String collectionName) {
         Query query = new Query(Criteria.where("metaDataId").is(metaDataId));
         return mongoTemplate.find(query, MetaDataChangeRequest.class, collectionName);
+    }
+
+    public List<MetaDataChangeRequest> allChangeRequests() {
+        List<MetaDataChangeRequest> results = new ArrayList<>();
+        Stream.of(EntityType.values()).forEach(entityType -> {
+            results.addAll(mongoTemplate.findAll(MetaDataChangeRequest.class, entityType.getType().concat(CHANGE_REQUEST_POSTFIX)));
+        });
+        return results;
+    }
+
+    public long openChangeRequests() {
+        AtomicLong count = new AtomicLong(0);
+        Query query = new Query();
+        Stream.of(EntityType.values()).forEach(entityType -> {
+            count.addAndGet(mongoTemplate.count(query, entityType.getType().concat(CHANGE_REQUEST_POSTFIX)));
+        });
+        return count.get();
     }
 
     public void update(MetaData metaData) {

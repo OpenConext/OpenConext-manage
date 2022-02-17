@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import Creatable from "react-select/lib/Creatable";
+import Creatable from 'react-select/creatable';
 import I18n from "i18n-js";
 
 import reactSelectStyles from "./../reactSelectStyles.js";

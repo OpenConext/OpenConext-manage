@@ -1,12 +1,12 @@
 import React from "react";
 import I18n from "i18n-js";
-import Editor from "react-md-editor";
-import marked from "marked";
+import MDEditor from '@uiw/react-md-editor';
+import { marked } from "marked";
 import PropTypes from "prop-types";
 import CodeMirror from "react-codemirror";
 import "codemirror/mode/javascript/javascript";
 import "codemirror/lib/codemirror.css";
-import "react-md-editor/dist/react-md-editor.css";
+import "@uiw/react-md-editor/dist/mdeditor.css";
 import "./Manipulation.css";
 import {isEmpty, stop} from "../../utils/Utils";
 
@@ -62,7 +62,7 @@ export default class Manipulation extends React.PureComponent {
           </a>
         </h2>
         <section className="notes">
-          <Editor value={notes} onChange={this.onChange("data.manipulationNotes")} options={options}/>
+          <MDEditor value={notes} onChange={this.onChange("data.manipulationNotes")} options={options}/>
           <div className="preview" dangerouslySetInnerHTML={{__html: preview}}/>
         </section>
       </div>

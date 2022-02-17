@@ -389,6 +389,5 @@ export default class API extends React.PureComponent {
 }
 
 API.propTypes = {
-  history: PropTypes.object.isRequired,
   configuration: PropTypes.array.isRequired
 };

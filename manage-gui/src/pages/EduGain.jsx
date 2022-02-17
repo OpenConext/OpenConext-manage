@@ -6,7 +6,7 @@ import "./EduGain.css";
 
 import {isEmpty, stop} from "../utils/Utils";
 import {setFlash} from "../utils/Flash";
-import "react-json-pretty/JSONPretty.monikai.styl";
+import "react-json-pretty/themes/monikai.css";
 import ReactTooltip from "react-tooltip";
 
 export default class EduGain extends React.PureComponent {
@@ -206,7 +206,6 @@ export default class EduGain extends React.PureComponent {
 }
 
 EduGain.propTypes = {
-  history: PropTypes.object.isRequired,
   currentUser: PropTypes.object.isRequired,
   configuration: PropTypes.array.isRequired
 };

@@ -7,10 +7,10 @@ import spinner from "../lib/Spin";
 
 import {NavLink} from "react-router-dom";
 
-import "./Navigation.css";
+import "./Navigation.scss";
 import {stop} from "../utils/Utils";
 import {pushConfirmationFlash, pushFlash, setFlash} from "../utils/Flash";
-import {push} from "../api";
+import {hasOpenChangeRequests, push} from "../api";
 import ConfirmationDialog from "./ConfirmationDialog";
 
 export default class Navigation extends React.PureComponent {
@@ -19,6 +19,7 @@ export default class Navigation extends React.PureComponent {
     super();
     this.state = {
       loading: false,
+      openChangeRequestsCount: 0,
       confirmationDialogOpen: false,
       confirmationQuestion: "",
       confirmationDialogAction: () => this,
@@ -26,9 +27,10 @@ export default class Navigation extends React.PureComponent {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     spinner.onStart = () => this.setState({loading: true});
     spinner.onStop = () => this.setState({loading: false});
+    hasOpenChangeRequests().then(r => this.setState({openChangeRequestsCount: r}));
   }
 
   componentDidUpdate() {
@@ -82,9 +84,16 @@ export default class Navigation extends React.PureComponent {
     </a>
   };
 
-  renderItem(href, value) {
+  renderItem(href, value, details = null) {
     return (
-      <NavLink activeClassName="active" className="menu-item" to={href}>{I18n.t("navigation." + value)}</NavLink>
+      <NavLink className={({ isActive }) => {
+        return   isActive ? "menu-item active" : "menu-item";
+      }
+
+      } to={href}>
+        {I18n.t("navigation." + value)}
+        {details && <span className="details">{details}</span>}
+      </NavLink>
     );
   }
 
@@ -93,7 +102,8 @@ export default class Navigation extends React.PureComponent {
   }
 
   render() {
-    const {confirmationDialogOpen, cancelDialogAction, confirmationDialogAction, confirmationQuestion} = this.state;
+    const {confirmationDialogOpen, cancelDialogAction, confirmationDialogAction, confirmationQuestion,
+      openChangeRequestsCount} = this.state;
     const {currentUser} = this.props;
     return (
       <div className="navigation-container">
@@ -107,7 +117,7 @@ export default class Navigation extends React.PureComponent {
           {!currentUser.guest && this.renderItem("/system", "system")}
           {(!currentUser.guest && currentUser.featureToggles.some(feature => feature.toLowerCase() === "edugain")) && this.renderItem("/edugain", "edugain")}
           {this.renderItem("/api", "api")}
-          {!currentUser.guest && this.renderItem("/support", "support")}
+          {!currentUser.guest && this.renderItem("/staging", "staging", openChangeRequestsCount === 0 ? null : openChangeRequestsCount )}
           {!currentUser.guest && this.renderItem("/scopes", "scopes")}
           {!currentUser.guest && this.renderItem("/activity", "activity")}
           {this.renderSpinner()}

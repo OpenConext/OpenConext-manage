@@ -1,9 +1,8 @@
 import React from "react";
-import {BrowserRouter as Router, Redirect, Route, Switch} from "react-router-dom";
+import {BrowserRouter as Router, Navigate, Route, Routes} from "react-router-dom";
 import "./App.css";
 import ErrorDialog from "../components/ErrorDialog";
 import Flash from "../components/Flash";
-import ProtectedRoute from "../components/ProtectedRoute";
 import NotFound from "../pages/NotFound";
 import Search from "../pages/Search";
 import Detail from "../pages/Detail";
@@ -18,142 +17,150 @@ import "../locale/en";
 import "../locale/nl";
 import Dummy from "./Dummy";
 import EduGain from "./EduGain";
-import Support from "./Support";
 import Scopes from "./Scopes";
 import Activity from "./Activity";
+import Staging from "./Staging";
+import RefreshRoute from "./RefreshRoute";
 
 const S4 = () => (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
 
 class App extends React.PureComponent {
 
-  constructor(props, context) {
-    super(props, context);
-    this.state = {
-      loading: true,
-      currentUser: {},
-      configuration: {},
-      error: false,
-      errorDialogOpen: false,
-      errorDialogAction: () => this.setState({errorDialogOpen: false})
+    constructor(props, context) {
+        super(props, context);
+        this.state = {
+            loading: true,
+            currentUser: {},
+            configuration: {},
+            error: false,
+            errorDialogOpen: false,
+            errorDialogAction: () => this.setState({errorDialogOpen: false})
+        };
+        window.onerror = (msg, url, line, col, err) => {
+            this.setState({errorDialogOpen: true});
+            const info = err || {};
+            const response = info.response || {};
+            const error = {
+                userAgent: navigator.userAgent,
+                message: msg,
+                url: url,
+                line: line,
+                col: col,
+                error: info.message,
+                stack: info.stack,
+                targetUrl: response.url,
+                status: response.status
+            };
+            reportError(error);
+        };
+    }
+
+    handleBackendDown = () => {
+        const location = window.location;
+        const alreadyRetried = location.href.indexOf("guid") > -1;
+        if (alreadyRetried) {
+            window.location.href = `${location.protocol}//${location.hostname}${location.port ? ":" + location.port : ""}/error`;
+        } else {
+            //302 redirects from Shib are cached by the browser. We force a one-time reload
+            const guid = (S4() + S4() + "-" + S4() + "-4" + S4().substr(0, 3) + "-" + S4() + "-" + S4() + S4() + S4()).toLowerCase();
+            window.location.href = `${location.href}?guid=${guid}`;
+        }
     };
-    window.onerror = (msg, url, line, col, err) => {
-      this.setState({errorDialogOpen: true});
-      const info = err || {};
-      const response = info.response || {};
-      const error = {
-        userAgent: navigator.userAgent,
-        message: msg,
-        url: url,
-        line: line,
-        col: col,
-        error: info.message,
-        stack: info.stack,
-        targetUrl: response.url,
-        status: response.status
-      };
-      reportError(error);
-    };
-  }
 
-  handleBackendDown = () => {
-    const location = window.location;
-    const alreadyRetried = location.href.indexOf("guid") > -1;
-    if (alreadyRetried) {
-      window.location.href = `${location.protocol}//${location.hostname}${location.port ? ":" + location.port : ""}/error`;
-    } else {
-      //302 redirects from Shib are cached by the browser. We force a one-time reload
-      const guid = (S4() + S4() + "-" + S4() + "-4" + S4().substr(0, 3) + "-" + S4() + "-" + S4() + S4() + S4()).toLowerCase();
-      window.location.href = `${location.href}?guid=${guid}`;
-    }
-  };
-
-  componentDidMount() {
-    const location = window.location;
-    if (location.href.indexOf("error") > -1) {
-      this.setState({loading: false});
-    } else {
-      me().catch(() => this.handleBackendDown())
-        .then(currentUser => {
-          if (currentUser && currentUser.uid) {
-            configuration().then(configuration =>
-              this.setState({loading: false, currentUser: currentUser, configuration: configuration}));
-              window.document.title = `${currentUser.product.name} - ${currentUser.product.organization}`;
-          } else {
-            this.handleBackendDown();
-          }
-        });
-    }
-  }
-
-
-  render() {
-    const {loading, errorDialogAction, errorDialogOpen} = this.state;
-
-    if (loading) {
-      return null; // render null when app is not ready yet
+    componentDidMount() {
+        const location = window.location;
+        if (location.href.indexOf("error") > -1) {
+            this.setState({loading: false});
+        } else {
+            me().catch(() => this.handleBackendDown())
+                .then(currentUser => {
+                    if (currentUser && currentUser.uid) {
+                        configuration().then(configuration =>
+                            this.setState({loading: false, currentUser: currentUser, configuration: configuration}));
+                        window.document.title = `${currentUser.product.name} - ${currentUser.product.organization}`;
+                    } else {
+                        this.handleBackendDown();
+                    }
+                });
+        }
     }
 
-    const {currentUser, configuration} = this.state;
 
-    return (
-      <Router>
-        <div>
-          <div>
-            <Flash/>
-            <Header currentUser={currentUser}/>
-            <Navigation currentUser={currentUser} {...this.props}/>
-            <ErrorDialog isOpen={errorDialogOpen}
-                         close={errorDialogAction}/>
-          </div>
-          <Switch>
-            <Route exact path="/" render={() => <Redirect to="/search"/>}/>
-            <Route path="/search"
-                   render={props => <Search currentUser={currentUser}
-                                            configuration={configuration} {...props}/>}/>
-            <Route path="/metadata/:type/:id/:tab?"
-                   render={props => <Detail currentUser={currentUser} fromImport={false}
-                                            configuration={configuration} {...props}/>}/>
-            <Route path="/clone/:type/:id/:tab?"
-                   render={props => <Detail currentUser={currentUser} clone={true} fromImport={false}
-                                            configuration={configuration} {...props}/>}/>
-            <Route path="/import"
-                   render={props => <ImportMetaData currentUser={currentUser}
-                                                    configuration={configuration} {...props}/>}/>
-            <Route path="/edugain"
-                   render={props => <EduGain currentUser={currentUser}
-                                             configuration={configuration} {...props}/>}/>
-            <Route path="/api"
-                   render={props => <API configuration={configuration} {...props}/>}/>
+    render() {
+        const {loading, errorDialogAction, errorDialogOpen} = this.state;
 
-            <ProtectedRoute path="/system"
-                            guest={currentUser.guest}
-                            render={props => <System currentUser={currentUser}
-                                                     configuration={configuration} {...props}/>}/>
-            <ProtectedRoute path="/support"
-                            guest={currentUser.guest}
-                            render={props => <Support {...props}/>}/>
+        if (loading) {
+            return null; // render null when app is not ready yet
+        }
 
-            <ProtectedRoute path="/scopes"
-                            guest={currentUser.guest}
-                            render={props => <Scopes {...props}/>}/>
+        const {currentUser, configuration} = this.state;
 
-            <ProtectedRoute path="/activity"
-                            guest={currentUser.guest}
-                            render={props => <Activity {...props}/>}/>
+        return (
+            <Router>
+                <div>
+                    <div>
+                        <Flash/>
+                        <Header currentUser={currentUser}/>
+                        <Navigation currentUser={currentUser} {...this.props}/>
+                        <ErrorDialog isOpen={errorDialogOpen}
+                                     close={errorDialogAction}/>
+                    </div>
+                    <Routes>
+                        <Route path="/" element={<Navigate replace to="/search"/>}/>/>
+                        <Route path="search" element={<Search currentUser={currentUser}
+                                                              configuration={configuration}/>}/>
+                        <Route path="/metadata/:type/:id"
+                               element={<Detail currentUser={currentUser} fromImport={false}
+                                                configuration={configuration}/>}/>
+                        <Route path="/metadata/:type/:id/:tab"
+                               element={<Detail currentUser={currentUser} fromImport={false}
+                                                configuration={configuration}/>}/>
+                        <Route path="/clone/:type/:id/"
+                               element={<Detail currentUser={currentUser} clone={true} fromImport={false}
+                                                configuration={configuration}/>}/>
+                        <Route path="/clone/:type/:id/:tab"
+                               element={<Detail currentUser={currentUser} clone={true} fromImport={false}
+                                                configuration={configuration}/>}/>
+                        <Route path="/import"
+                               element={<ImportMetaData currentUser={currentUser}
+                                                        configuration={configuration}/>}/>
+                        <Route path="/edugain"
+                               element={<EduGain currentUser={currentUser}
+                                                 configuration={configuration}/>}/>
+                        <Route path="/api"
+                               element={<API configuration={configuration}/>}/>
 
-            <Route path="/error"
-                   render={props => <ServerError {...props}/>}/>
+                        <Route path="/system"
 
-            <Route path="/dummy"
-                   render={props => <Dummy {...props}/>}/>
+                               element={<System currentUser={currentUser}
+                                                configuration={configuration}/>}/>
+                        <Route path="/staging"
 
-            <Route component={NotFound}/>
-          </Switch>
-        </div>
-      </Router>
+                               element={<Staging/>}/>
 
-    );
-  }
+                        <Route path="/scopes"
+
+                               element={<Scopes/>}/>
+
+                        <Route path="/activity"
+
+                               element={<Activity/>}/>
+                        <Route path="/refresh-route/:path"
+                               element={<RefreshRoute />}/>
+
+                        <Route path="/error"
+                               element={<ServerError/>}/>
+
+                        <Route path="/dummy"
+                               element={<Dummy/>}/>
+
+                        <Route element={NotFound}/>
+                    </Routes>
+                </div>
+            </Router>
+
+        );
+    }
 }
 
 export default App;

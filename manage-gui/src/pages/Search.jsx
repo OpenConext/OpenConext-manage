@@ -2,14 +2,15 @@ import React from "react";
 import I18n from "i18n-js";
 import PropTypes from "prop-types";
 import debounce from "lodash.debounce";
-
+import {Navigate} from "react-router-dom";
 import Autocomplete from "../components/Autocomplete";
 import {autocomplete, ping} from "../api";
 import {isEmpty, stop} from "../utils/Utils";
 
 import "./Search.css";
+import withRouterHooks from "../utils/RouterBackwardCompatability";
 
-export default class Search extends React.PureComponent {
+class Search extends React.PureComponent {
 
     constructor(props) {
         super(props);
@@ -81,11 +82,14 @@ export default class Search extends React.PureComponent {
                 })
             }), 200);
 
-    itemSelected = metaData => this.props.history.push(`/metadata/${metaData.type}/${metaData["_id"]}`);
+    itemSelected = metaData => {
+        const {navigate} = this.props;
+        navigate(`/metadata/${metaData.type}/${metaData["_id"]}`);
+    }
 
     newMetaData = e => {
         stop(e);
-        this.props.history.push(`/metadata/${this.state.selectedTab}/new`);
+        return <Navigate to={`/metadata/${this.state.selectedTab}/new`}/>;
     };
 
     switchTab = tab => e => {
@@ -101,8 +105,10 @@ export default class Search extends React.PureComponent {
         </span>;
 
     render() {
-        const {selected, suggestions, query, loadingAutoComplete, selectedTab, tabs, moreToShow, alternatives,
-            moreAlternativesToShow} = this.state;
+        const {
+            selected, suggestions, query, loadingAutoComplete, selectedTab, tabs, moreToShow, alternatives,
+            moreAlternativesToShow
+        } = this.state;
         const showAutoCompletes = (query.trim().length > 2 || "*" === query.trim()) && !loadingAutoComplete;
         return (
             <div className="search-metadata">
@@ -138,8 +144,9 @@ export default class Search extends React.PureComponent {
     }
 }
 
+export default withRouterHooks(Search);
+
 Search.propTypes = {
-    history: PropTypes.object.isRequired,
     currentUser: PropTypes.object.isRequired,
     configuration: PropTypes.array.isRequired
 };

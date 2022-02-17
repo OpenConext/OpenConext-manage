@@ -253,11 +253,35 @@ public class MetaDataController {
                 .get();
     }
 
+    @GetMapping("/client/change-requests/{type}/{metaDataId}")
+    public List<MetaDataChangeRequest> changeRequests(@PathVariable("type") String type,
+                                                      @PathVariable("metaDataId") String metaDataId) {
+        return metaDataRepository.changeRequests(metaDataId, type.concat(CHANGE_REQUEST_POSTFIX));
+    }
+
+    @GetMapping("/client/all-change-requests")
+    public List<MetaDataChangeRequest> allChangeRequests() {
+        return metaDataRepository.allChangeRequests();
+    }
+
+    @GetMapping("client/has-change-requests")
+    public long openChangeRequests() {
+        return metaDataRepository.openChangeRequests();
+    }
+
+
     @PreAuthorize("hasRole('WRITE')")
-    @PutMapping("internal/change-request")
+    @PostMapping("internal/change-request")
     @Transactional
-    public MetaDataChangeRequest changeRequest(@Validated @RequestBody MetaDataChangeRequest metaDataChangeRequest, APIUser apiUser) throws JsonProcessingException {
+    public MetaDataChangeRequest changeRequestInternal(@Validated @RequestBody MetaDataChangeRequest metaDataChangeRequest, APIUser apiUser) throws JsonProcessingException {
         return metaDataService.doChangeRequest(metaDataChangeRequest, apiUser);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("client/change-request")
+    @Transactional
+    public MetaDataChangeRequest changeRequestClient(@Validated @RequestBody MetaDataChangeRequest metaDataChangeRequest, FederatedUser federatedUser) throws JsonProcessingException {
+        return metaDataService.doChangeRequest(metaDataChangeRequest, federatedUser);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -265,6 +289,13 @@ public class MetaDataController {
     @Transactional
     public MetaData acceptChangeRequest(@RequestBody @Validated ChangeRequest changeRequest, FederatedUser user) {
         return metaDataService.doAcceptChangeRequest(changeRequest, user);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/client/reject-change-request")
+    @Transactional
+    public MetaData rejectChangeRequest(@RequestBody @Validated ChangeRequest changeRequest, FederatedUser user) {
+        return metaDataService.doRejectChangeRequest(changeRequest, user);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -290,12 +321,6 @@ public class MetaDataController {
                                     @PathVariable("parentId") String parentId) {
 
         return metaDataRepository.revisions(type.concat(REVISION_POSTFIX), parentId);
-    }
-
-    @GetMapping("/client/change-requests/{type}/{metaDataId}")
-    public List<MetaDataChangeRequest> changeRequests(@PathVariable("type") String type,
-                                                      @PathVariable("metaDataId") String metaDataId) {
-        return metaDataRepository.changeRequests(metaDataId, type.concat(CHANGE_REQUEST_POSTFIX));
     }
 
     @GetMapping("/client/autocomplete/{type}")

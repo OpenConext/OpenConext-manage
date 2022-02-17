@@ -13,10 +13,19 @@
     display: flex;
     position: relative;
 
+    span.details {
+      position: absolute;
+      right: -18px;
+      top: -8px;
+      font-weight: bold;
+    }
+
     a.menu-item {
       color: lighten($light-blue, 5);
       margin-right: 50px;
       padding-bottom: 12px;
+      position: relative;
+
       @include no-text-decoration;
 
       &.active {

@@ -185,7 +185,3 @@ export default class Support extends React.PureComponent {
     );
   }
 }
-
-Support.propTypes = {
-  history: PropTypes.object.isRequired
-};

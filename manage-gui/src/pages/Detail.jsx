@@ -26,6 +26,8 @@ import ResourceServers from "../components/metadata/ResourceServers";
 import Stepup from "../components/metadata/Stepup";
 import ReactTooltip from "react-tooltip";
 import {getConnectedEntities} from "../utils/TabNumbers";
+import {Navigate} from "react-router-dom";
+import withRouterHooks from "../utils/RouterBackwardCompatability";
 
 const tabsSp = [
   "connection",
@@ -85,13 +87,14 @@ const aliasTabChanges = {
   "mfa_entities": "stepup_entities"
 }
 
-export default class Detail extends React.PureComponent {
+class Detail extends React.PureComponent {
   constructor(props) {
     super(props);
+    const {tab="connection"} = this.props.params;
     const type = isEmpty(props.newMetaData)
-      ? this.props.match.params.type
+      ? this.props.params.type
       : props.newMetaData.connection.type.value.replace(/-/g, "_");
-    const id = isEmpty(props.newMetaData) ? this.props.match.params.id : "new";
+    const id = isEmpty(props.newMetaData) ? this.props.params.id : "new";
     this.state = {
       metaData: {},
       whiteListing: [],
@@ -108,10 +111,10 @@ export default class Detail extends React.PureComponent {
       leavePage: false,
       errors: {},
       changes: {},
-      isNew: true,
       originalEntityId: undefined,
       type: type,
       id: id,
+      isNew: id === "new",
       revisionNoteError: false,
       addedWhiteListedEntities: [],
       removedWhiteListedEntities: [],
@@ -122,8 +125,7 @@ export default class Detail extends React.PureComponent {
   componentDidMount() {
     window.scrollTo(0, 0);
     const {newMetaData} = this.props;
-    let {type, id} = this.state;
-    const isNew = id === "new";
+    let {isNew, type, id} = this.state;
     const promise = isNew ? template(type) : detail(type, id);
     promise
       .then(metaData => {
@@ -150,12 +152,7 @@ export default class Detail extends React.PureComponent {
           clonedClearFields.forEach(attr => delete metaData.data[attr]);
           id = undefined;
         }
-        const selectedTab =
-          this.props.match &&
-          this.props.match.params &&
-          this.props.match.params.tab
-            ? this.props.match.params.tab
-            : "connection";
+        const selectedTab = this.props.params.tab || "connection";
         this.setState({
           metaData: metaData,
           revisionNoteClone: metaData.data.revisionnote,
@@ -272,7 +269,7 @@ export default class Detail extends React.PureComponent {
     this.setState({selectedTab: tab});
     const {type, id} = this.state;
     if (!this.props.fromImport) {
-      this.props.history.push(`/metadata/${type}/${id}/${tab}`);
+      return <Navigate to={`/metadata/${type}/${id}/${tab}`}/>;
     }
   };
 
@@ -510,14 +507,8 @@ export default class Detail extends React.PureComponent {
             revision: json.revision.number
           })
         );
-        this.props.history.replace(`/dummy`);
-        setTimeout(
-          () =>
-            this.props.history.replace(
-              `/metadata/${json.type}/${json.id}/${this.state.selectedTab}`
-            ),
-          50
-        );
+        const path = decodeURIComponent(`/metadata/${json.type}/${json.id}/${this.state.selectedTab}`);
+        return <Navigate to={`refresh-route/${path}`}/>
       }
     });
   };
@@ -566,7 +557,7 @@ export default class Detail extends React.PureComponent {
             onClick={e => {
               stop(e);
               this.setState({
-                cancelDialogAction: () => this.props.history.replace("/search"),
+                cancelDialogAction: () => <Navigate to={'/search'}/>,
                 confirmationDialogAction: () =>
                   this.setState({confirmationDialogOpen: false}),
                 confirmationDialogOpen: true,
@@ -797,7 +788,6 @@ export default class Detail extends React.PureComponent {
             firstRevisionNote={revisionNoteClone}
             isNew={isNew}
             entityType={type}
-            history={this.props.history}
           />
         );
       case "export":
@@ -991,11 +981,11 @@ export default class Detail extends React.PureComponent {
                   this.setState({
                     confirmationDialogAction: () => {
                       remove(this.state.metaData, this.state.revisionNote).then(res => {
-                        this.props.history.replace("/search");
                         const name = this.nameOfMetaData(this.state.metaData);
                         setFlash(
                           I18n.t("metadata.flash.deleted", {name: name})
                         );
+                        return <Navigate to={'/search'}/>
                       });
                     },
                     cancelDialogAction: () =>
@@ -1013,15 +1003,15 @@ export default class Detail extends React.PureComponent {
                 className="button green clone-metadata"
                 onClick={e => {
                   stop(e);
-                  this.props.history.replace(`/dummy`);
                   setTimeout(() => {
                     const name =
                       metaData.data.metaDataFields["name:en"] ||
                       metaData.data.metaDataFields["name:nl"] ||
                       "this service";
                     setFlash(I18n.t("metadata.flash.cloned", {name: name}));
-                    this.props.history.replace(`/clone/${type}/${metaData.id}`);
                   }, 50);
+                  const path = encodeURIComponent(`/clone/${type}/${metaData.id}`);
+                  return <Navigate to={`refresh-route/${path}`} />
                 }}
               >
                 {I18n.t("metadata.clone")}
@@ -1049,9 +1039,9 @@ export default class Detail extends React.PureComponent {
     );
   }
 }
+export default withRouterHooks(Detail);
 
 Detail.propTypes = {
-  history: PropTypes.object.isRequired,
   currentUser: PropTypes.object.isRequired,
   configuration: PropTypes.array.isRequired,
   clone: PropTypes.bool,

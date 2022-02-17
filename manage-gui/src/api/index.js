@@ -185,6 +185,15 @@ export function search(options, type) {
   return postPutJson(`search/${type}`, options, "post");
 }
 
+export function allChangeRequests() {
+  return fetchJson("all-change-requests");
+}
+
+export function hasOpenChangeRequests() {
+  return fetchJson("has-change-requests");
+}
+
+
 export function uniqueEntityId(entityid, type) {
   return postPutJson(`uniqueEntityId/${type}`, {entityid}, "post");
 }

@@ -27,7 +27,7 @@ I18n.translations.en = {
     api: "API",
     system: "System",
     edugain: "eduGAIN",
-    support: "Staging",
+    staging: "Staging",
     scopes: "Scopes",
     activity: "Activity"
   },
@@ -152,7 +152,8 @@ I18n.translations.en = {
       updatedBy: "Deleted by",
       revisionNote: "Revision note",
       nope: "",
-      excluded: "Excluded from push"
+      excluded: "Excluded from push",
+      user: "User"
     },
     displayNonRestorable: "Display non-restorable",
     no_results: "No results",
@@ -352,6 +353,13 @@ I18n.translations.en = {
     searchPlaceHolder: "Search for excluded providers...",
     includeConfirmation: "Are you sure you want to include {{name}} in the MetaData push?"
   },
+  staging: {
+    changeRequests: "Change requests",
+    staging: "Excluded from push"
+  },
+  changeRequests: {
+    searchPlaceHolder: "Search for change requests"
+  },
   clipboard: {
     copied: "Copied!",
     copy: "Copy to clipboard"
@@ -361,7 +369,6 @@ I18n.translations.en = {
     body: "This is embarrassing; an unexpected error has occurred. It has been logged and reported. Please try again. Still doesn't work? Please click 'Help'.",
     ok: "Close"
   },
-
   confirmation_dialog: {
     title: "Please confirm",
     confirm: "Confirm",
