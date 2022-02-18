@@ -323,7 +323,7 @@ public class MetaDataService {
         return null;
     }
 
-    public MetaData doRejectChangeRequest(ChangeRequest changeRequest, FederatedUser user) {
+    public MetaData doRejectChangeRequest(ChangeRequest changeRequest, AbstractUser user) {
         //TODO
         return null;
     }

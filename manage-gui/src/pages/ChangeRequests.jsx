@@ -1,13 +1,13 @@
 import React from "react";
 import I18n from "i18n-js";
-import PropTypes from "prop-types";
 import {Link} from "react-router-dom";
 import {allChangeRequests} from "../api";
 import {copyToClip, isEmpty, stop} from "../utils/Utils";
 import "./Support.scss";
 import {Select} from "../components";
+import withRouterHooks from "../utils/RouterBackwardCompatability";
 
-export default class ChangeRequests extends React.PureComponent {
+class ChangeRequests extends React.PureComponent {
 
     constructor(props) {
         super(props);
@@ -50,7 +50,7 @@ export default class ChangeRequests extends React.PureComponent {
     changeStatus = option => this.setState({status: option ? option.value : null});
 
     renderSearchResultsTable = (filteredChangeRequests, status) => {
-        const searchHeaders = ["status", "name", "organization", "entityid", "type", "user"];
+        const searchHeaders = ["name", "organization", "entityid", "status", "type", "user"];
         filteredChangeRequests = status === "all" ? filteredChangeRequests : filteredChangeRequests.filter(cr => cr.metaDataSummary.state === status);
         return (
             <section>
@@ -65,13 +65,14 @@ export default class ChangeRequests extends React.PureComponent {
                     <tbody>
                     {filteredChangeRequests.map((cr, index) => <tr
                         key={`${cr.metaDataSummary.entityid}_${index}`}>
-                        <td className="state">{I18n.t(`metadata.${cr.metaDataSummary.state}`)}</td>
                         <td className="name">
-                            <Link to={`/metadata/${cr.type}/${cr.metaDataId}/requests`}
-                                  target="_blank">{cr.metaDataSummary.name}</Link>
+                            <Link to={`/metadata/${cr.type}/${cr.metaDataId}/requests`}>
+                                {cr.metaDataSummary.name}
+                            </Link>
                         </td>
                         <td className="organization">{cr.metaDataSummary.organizationName}</td>
                         <td className="entityId">{cr.metaDataSummary.entityid}</td>
+                        <td className="state">{I18n.t(`metadata.${cr.metaDataSummary.state}`)}</td>
                         <td className="type">{cr.type}</td>
                         <td className="user">{cr.auditData.userName}</td>
                     </tr>)}
@@ -143,3 +144,4 @@ export default class ChangeRequests extends React.PureComponent {
         );
     }
 }
+export default withRouterHooks(ChangeRequests)

@@ -1177,7 +1177,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 .when()
                 .body(changeRequest)
                 .header("Content-type", "application/json")
-                .post("manage/api/internal/change-request")
+                .post("manage/api/internal/change-requests")
                 .then()
                 .statusCode(SC_OK);
 

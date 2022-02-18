@@ -1,4 +1,5 @@
 import escape from "lodash.escape";
+import React from "react";
 
 export function stop(e) {
     if (e !== undefined && e !== null) {
@@ -54,4 +55,58 @@ export function capitalize(str) {
 
 export function validScope(scope) {
     return isEmpty(scope) || scope.indexOf(" ") === -1;
+}
+
+const setValue = (object, path, value) => {
+    const parts = path.split(".").map(p => p.replace(/@/g, "."));
+    const last = parts.pop();
+    parts.reduce((o, k) => o[k] = o[k] || {}, object)[last] = value;
+    return object;
+}
+
+/*
+ * Given input:
+ * {
+ *  "a.b.c": "val",
+ *  "d.e.f": ["some"],
+ *  "g": {a:1}
+ * }
+ *
+ * Output:
+ * {
+ *  a: {b: {c: "val"}},
+ *  d: {e: {f: ["some]}},
+ *  g: {a: 1}
+ * }
+ */
+export function collapseDotKeys(data) {
+    return Object
+        .entries(data)
+        .reduce((acc, [path, value]) => setValue(acc, path, value), {});
+}
+
+const originalValue = (data, acc, key, value) => {
+    const sourceValue = data[key];
+    if (typeof sourceValue === "object") {
+        acc[key] = {};
+        Object.keys(sourceValue)
+            .filter(sk => value[sk])
+            .forEach(sk => originalValue(sourceValue, acc[key], sk, value))
+    } else if (sourceValue !== undefined) {
+        acc[key] = sourceValue
+    }
+    return acc;
+}
+
+/*
+ * Given input:
+ * data: {a:"b",c:{d: "val", ign: "x"},ign: [1,2,3]}
+ * nestedChangeRequest: {a:"x",c:{d: "changed"},extra: [1]}
+ *
+ * Output:{a:"b",c:{d: "val"}}
+ */
+export function createDiffObject(data, nestedChangeRequest) {
+    return Object
+        .entries(nestedChangeRequest)
+        .reduce((acc, [key, value]) => originalValue(data, acc, key, value), {})
 }

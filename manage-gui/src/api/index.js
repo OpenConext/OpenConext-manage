@@ -186,13 +186,28 @@ export function search(options, type) {
 }
 
 export function allChangeRequests() {
-  return fetchJson("all-change-requests");
+  return fetchJson("change-requests/all");
 }
 
 export function hasOpenChangeRequests() {
-  return fetchJson("has-change-requests");
+  return fetchJson("change-requests/count");
 }
 
+export function changeRequests(type, metaDataId) {
+  return fetchJson(`change-requests/${type}/${metaDataId}`);
+}
+
+export function newChangeRequest(changeRequest) {
+  return postPutJson("change-requests", changeRequest, "post");
+}
+
+export function acceptChangeRequest(changeRequest) {
+  return postPutJson("change-requests/accept", changeRequest, "put");
+}
+
+export function rejectChangeRequest(changeRequest) {
+  return postPutJson("change-requests/reject", changeRequest, "put");
+}
 
 export function uniqueEntityId(entityid, type) {
   return postPutJson(`uniqueEntityId/${type}`, {entityid}, "post");

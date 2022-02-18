@@ -259,42 +259,56 @@ public class MetaDataController {
         return metaDataRepository.changeRequests(metaDataId, type.concat(CHANGE_REQUEST_POSTFIX));
     }
 
-    @GetMapping("/client/all-change-requests")
+    @PreAuthorize("hasRole('WRITE')")
+    @GetMapping("/internal/change-requests/{type}/{metaDataId}")
+    public List<MetaDataChangeRequest> internalChangeRequests(@PathVariable("type") String type,
+                                                              @PathVariable("metaDataId") String metaDataId) {
+        return metaDataRepository.changeRequests(metaDataId, type.concat(CHANGE_REQUEST_POSTFIX));
+    }
+
+    @GetMapping("/client/change-requests/all")
     public List<MetaDataChangeRequest> allChangeRequests() {
         return metaDataRepository.allChangeRequests();
     }
 
-    @GetMapping("client/has-change-requests")
+    @GetMapping("client/change-requests/count")
     public long openChangeRequests() {
         return metaDataRepository.openChangeRequests();
     }
 
 
     @PreAuthorize("hasRole('WRITE')")
-    @PostMapping("internal/change-request")
+    @PostMapping("internal/change-requests")
     @Transactional
     public MetaDataChangeRequest changeRequestInternal(@Validated @RequestBody MetaDataChangeRequest metaDataChangeRequest, APIUser apiUser) throws JsonProcessingException {
         return metaDataService.doChangeRequest(metaDataChangeRequest, apiUser);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("client/change-request")
+    @PostMapping("client/change-requests")
     @Transactional
     public MetaDataChangeRequest changeRequestClient(@Validated @RequestBody MetaDataChangeRequest metaDataChangeRequest, FederatedUser federatedUser) throws JsonProcessingException {
         return metaDataService.doChangeRequest(metaDataChangeRequest, federatedUser);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("/client/accept-change-request")
+    @PutMapping("/client/change-requests/accept")
     @Transactional
     public MetaData acceptChangeRequest(@RequestBody @Validated ChangeRequest changeRequest, FederatedUser user) {
         return metaDataService.doAcceptChangeRequest(changeRequest, user);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("/client/reject-change-request")
+    @PutMapping("/client/change-requests/reject")
     @Transactional
     public MetaData rejectChangeRequest(@RequestBody @Validated ChangeRequest changeRequest, FederatedUser user) {
+        return metaDataService.doRejectChangeRequest(changeRequest, user);
+    }
+
+    @PreAuthorize("hasRole('WRITE')")
+    @PutMapping("/internal/change-requests/reject")
+    @Transactional
+    public MetaData internalRejectChangeRequest(@RequestBody @Validated ChangeRequest changeRequest, APIUser user) {
         return metaDataService.doRejectChangeRequest(changeRequest, user);
     }
 

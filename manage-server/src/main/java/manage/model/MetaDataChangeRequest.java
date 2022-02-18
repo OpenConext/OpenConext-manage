@@ -8,6 +8,7 @@ import org.springframework.data.annotation.Id;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.Map;
 
 @Getter
@@ -31,6 +32,8 @@ public class MetaDataChangeRequest implements PathUpdates {
     @NotNull
     private Map<String, Object> auditData;
 
+    private Instant created;
+
     private Map<String, Object> metaDataSummary;
 
     public MetaDataChangeRequest(String metaDataId, String type, Map<String, Object> pathUpdates, Map<String, Object> auditData) {
@@ -38,6 +41,7 @@ public class MetaDataChangeRequest implements PathUpdates {
         this.type = type;
         this.pathUpdates = pathUpdates;
         this.auditData = auditData;
+        this.created = Instant.now();
     }
 
     public void setMetaDataSummary(Map<String, Object> metaDataSummary) {

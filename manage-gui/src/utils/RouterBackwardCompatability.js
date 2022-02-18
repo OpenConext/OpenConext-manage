@@ -1,6 +1,4 @@
-import {useParams} from "react-router-dom";
-
-const {useNavigate} = require("react-router-dom");
+import {useNavigate, useParams} from "react-router-dom";
 
 const withRouterHooks = WrappedComponent => props => {
     const navigate = useNavigate();

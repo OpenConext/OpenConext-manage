@@ -60,6 +60,7 @@ I18n.translations.en = {
       stepup_entities: "Stepup ({{nbr}})",
       connected_idps: "Connected IdP's ({{nbr}})",
       revisions: "Revisions ({{nbr}})",
+      requests: "Requests ({{nbr}})",
       import: "Import",
       export: "Export"
     },
@@ -358,7 +359,17 @@ I18n.translations.en = {
     staging: "Excluded from push"
   },
   changeRequests: {
-    searchPlaceHolder: "Search for change requests"
+    searchPlaceHolder: "Search for change requests",
+    info: "All outstanding change requests of {{name}}",
+    created: "Created",
+    apiClient: "API client",
+    changes: "Changes",
+    nope: "",
+    accept: "Accept",
+    reject: "Reject",
+    acceptConfirmation: "Are you sure you want to accept this change request?",
+    rejectConfirmation: "Are you sure you want to reject this change request?",
+    toggleDetails: "Show visual diff with current metaData"
   },
   clipboard: {
     copied: "Copied!",

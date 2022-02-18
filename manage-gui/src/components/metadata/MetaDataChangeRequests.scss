@@ -1,0 +1,61 @@
+@import "../../stylesheets/vars.scss";
+@import "../../stylesheets/mixins.scss";
+
+.metadata-change-requests {
+  background-color: white;
+  padding: 20px;
+
+  .change-request-info {
+    margin: 15px 0;
+
+    h2 {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+  }
+
+  table.change-requests-table {
+    width: 100%;
+    table-layout: fixed;
+    border: 1px solid $light-grey;
+    border-radius: $br;
+    margin: 15px;
+
+    thead th {
+      text-align: left;
+      padding: 10px;
+      background-color: $lightest-grey;
+
+      &.created {
+        width: 20%;
+      }
+
+      &.apiClient {
+        width: 20%;
+      }
+
+      &.changes {
+        width: 40%;
+      }
+
+      &.nope {
+        width: 20%;
+      }
+    }
+
+    tbody {
+      tr:nth-child(even) {
+        background-color: $lightest-grey;
+      }
+
+      td {
+        padding: 10px;
+
+        &.nope {
+          text-align: right;
+        }
+      }
+    }
+  }
+}
