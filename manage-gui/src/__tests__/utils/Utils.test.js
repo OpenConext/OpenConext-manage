@@ -1,4 +1,4 @@
-import {collapseDotKeys, createDiff} from "../../utils/Utils";
+import {collapseDotKeys, createDiffObject} from "../../utils/Utils";
 
 test("collapseDotKeys", () => {
     const res = collapseDotKeys({
@@ -12,7 +12,7 @@ test("collapseDotKeys", () => {
 });
 
 test("createDiff", () => {
-    const res = createDiff(
+    const res = createDiffObject(
         {a: "b", c: {d: "val", ign: "x"}, ign: [1, 2, 3]},
         {a: "x", c: {d: "changed"}, extra: [1]}
     );

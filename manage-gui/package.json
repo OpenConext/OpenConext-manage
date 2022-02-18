@@ -37,7 +37,7 @@
   "scripts": {
     "start": "HOST=localhost DANGEROUSLY_DISABLE_HOST_CHECK=true react-scripts start",
     "build": "HOST=localhost DANGEROUSLY_DISABLE_HOST_CHECK=true react-scripts build",
-    "test": "HOST=localhost DANGEROUSLY_DISABLE_HOST_CHECK=true react-scripts test"
+    "test": "HOST=localhost DANGEROUSLY_DISABLE_HOST_CHECK=true CI=true react-scripts test"
   },
   "proxy": "http://localhost:8080",
   "eslintConfig": {
