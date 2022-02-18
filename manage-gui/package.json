@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@uiw/react-md-editor": "^3.9.5",
+    "http-proxy-middleware": "^2.0.3",
     "marked": "^4.0.12",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -33,9 +34,9 @@
     "urijs": "^1.19.8"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test"
+    "start": "HOST=localhost DANGEROUSLY_DISABLE_HOST_CHECK=true react-scripts start",
+    "build": "HOST=localhost DANGEROUSLY_DISABLE_HOST_CHECK=true react-scripts build",
+    "test": "HOST=localhost DANGEROUSLY_DISABLE_HOST_CHECK=true react-scripts test"
   },
   "proxy": "http://localhost:8080",
   "eslintConfig": {

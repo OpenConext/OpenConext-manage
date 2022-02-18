@@ -15,16 +15,10 @@ Note that the original migration from Janus was removed in version 3.0.0. If you
 
 - Java 11
 - Maven 3
-- MongoDB 3.4.x
-- yarn 1.2.1
-- NodeJS v8.12.0 (best managed with `nvm`, current version in [.nvmrc](manage-gui/.nvmrc) or do `brew switch node 8.9.0`)
+- MongoDB
+- yarn
+- NodeJS v16.13.2 (best managed with `nvm`, current version in [.nvmrc](manage-gui/.nvmrc))
 - ansible
-- mysql
-
-```
-  mysql -uroot
-  create database IF NOT EXISTS eb;
-```
 
 ## [Building and running](#building-and-running)
 
@@ -55,6 +49,7 @@ cd manage-gui
 yarn install
 yarn start
 ```
+See https://github.com/facebook/create-react-app/issues/11762#issuecomment-1002285279 for troubleshooting the proxy settings.
 
 Browse to the [application homepage](http://localhost:3000/).
 

@@ -4,7 +4,7 @@ import Modal from "react-modal";
 import I18n from "i18n-js";
 import {stop} from "../utils/Utils";
 
-import "./ConfirmationDialog.css";
+import "./ConfirmationDialog.scss";
 
 export default function ConfirmationDialog({
                                              isOpen = false, cancel, confirm, question = "",

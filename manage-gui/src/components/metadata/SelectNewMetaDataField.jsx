@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import {Select} from "./../../components";
 import {options} from "../../utils/MetaDataConfiguration";
 
-import "./SelectNewMetaDataField.css";
+import "./SelectNewMetaDataField.scss";
 
 export default function SelectNewMetaDataField({onChange, configuration, metaDataFields, placeholder = "Select..."}) {
 

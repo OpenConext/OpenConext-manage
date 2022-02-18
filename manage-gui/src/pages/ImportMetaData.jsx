@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import {ping} from "../api";
 import Import from "../components/metadata/Import";
 import Detail from "./Detail";
-import "./ImportMetaData.css";
+import "./ImportMetaData.scss";
 
 export default class ImportMetaData extends React.PureComponent {
 

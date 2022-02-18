@@ -21,7 +21,7 @@ import {allResourceServers, detail, remove, revisions, save, template, update, w
 import {isEmpty, stop} from "../utils/Utils";
 import {setFlash} from "../utils/Flash";
 
-import "./Detail.css";
+import "./Detail.scss";
 import ResourceServers from "../components/metadata/ResourceServers";
 import Stepup from "../components/metadata/Stepup";
 import ReactTooltip from "react-tooltip";
@@ -269,7 +269,7 @@ class Detail extends React.PureComponent {
     this.setState({selectedTab: tab});
     const {type, id} = this.state;
     if (!this.props.fromImport) {
-      return <Navigate to={`/metadata/${type}/${id}/${tab}`}/>;
+      this.props.navigate(`/metadata/${type}/${id}/${tab}`);
     }
   };
 
@@ -507,8 +507,8 @@ class Detail extends React.PureComponent {
             revision: json.revision.number
           })
         );
-        const path = decodeURIComponent(`/metadata/${json.type}/${json.id}/${this.state.selectedTab}`);
-        return <Navigate to={`refresh-route/${path}`}/>
+        const path = encodeURIComponent(`/metadata/${json.type}/${json.id}/${this.state.selectedTab}`);
+        this.props.navigate(`/refresh-route/${path}`, {replace: true});
       }
     });
   };
@@ -557,7 +557,7 @@ class Detail extends React.PureComponent {
             onClick={e => {
               stop(e);
               this.setState({
-                cancelDialogAction: () => <Navigate to={'/search'}/>,
+                cancelDialogAction: () => this.props.navigate(`/search`),
                 confirmationDialogAction: () =>
                   this.setState({confirmationDialogOpen: false}),
                 confirmationDialogOpen: true,
@@ -607,7 +607,7 @@ class Detail extends React.PureComponent {
         args = {info: isEmpty(metaData.data.manipulation) ? "" : " (1)"}
         break;
       case "revisions":
-        args = {nbr: (revisions || []).length};
+        args = {nbr: (revisions || []).filter(rev => rev.id).length};
         break;
       case "consent_disabling":
         args = {nbr: (metaData.data.disableConsent || []).length};
@@ -985,7 +985,7 @@ class Detail extends React.PureComponent {
                         setFlash(
                           I18n.t("metadata.flash.deleted", {name: name})
                         );
-                        return <Navigate to={'/search'}/>
+                        this.props.navigate(`/search`);
                       });
                     },
                     cancelDialogAction: () =>
@@ -1011,7 +1011,7 @@ class Detail extends React.PureComponent {
                     setFlash(I18n.t("metadata.flash.cloned", {name: name}));
                   }, 50);
                   const path = encodeURIComponent(`/clone/${type}/${metaData.id}`);
-                  return <Navigate to={`refresh-route/${path}`} />
+                  this.props.navigate(`/refresh-route/${path}`);
                 }}
               >
                 {I18n.t("metadata.clone")}

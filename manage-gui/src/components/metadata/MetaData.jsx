@@ -9,7 +9,7 @@ import {Boolean, Number, SelectMulti, SelectOne, String, Strings, StringWithForm
 import {SelectNewMetaDataField} from "../metadata";
 import {isEmpty} from "../../utils/Utils";
 
-import "./MetaData.css";
+import "./MetaData.scss";
 import ScopeSelection from "../form/ScopeSelection";
 
 export default class MetaData extends React.Component {

@@ -5,7 +5,7 @@ import {Link} from "react-router-dom";
 import SelectEntities from "./../SelectEntities";
 import {copyToClip, isEmpty, stop} from "../../utils/Utils";
 
-import "./ResourceServers.css";
+import "./ResourceServers.scss";
 import NotesTooltip from "../NotesTooltip";
 
 export default class ResourceServers extends React.Component {

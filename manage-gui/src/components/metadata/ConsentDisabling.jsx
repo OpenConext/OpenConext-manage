@@ -6,7 +6,7 @@ import SelectEntities from "./../SelectEntities";
 import { Select } from "./../../components";
 import { stop } from "../../utils/Utils";
 
-import "./ConsentDisabling.css";
+import "./ConsentDisabling.scss";
 
 export default class ConsentDisabling extends React.Component {
   constructor(props) {
@@ -199,7 +199,7 @@ export default class ConsentDisabling extends React.Component {
               }
             ]}
             value={entity.type}
-            searchable={false}
+            isSearchable={false}
           />
         </td>
         <td className="explanation">

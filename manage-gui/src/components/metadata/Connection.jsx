@@ -6,7 +6,7 @@ import EntityId from "./EntityId";
 import SelectState from "./SelectState";
 import FormatInput from "./../FormatInput";
 
-import "./Connection.css";
+import "./Connection.scss";
 
 export default class Connection extends React.PureComponent {
   componentDidMount() {

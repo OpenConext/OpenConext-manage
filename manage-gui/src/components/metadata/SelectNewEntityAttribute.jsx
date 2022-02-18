@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import {Select} from "./../../components";
 
-import "./SelectNewEntityAttribute.css";
+import "./SelectNewEntityAttribute.scss";
 
 export default class SelectNewEntityAttribute extends React.PureComponent {
 

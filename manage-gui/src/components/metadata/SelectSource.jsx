@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import {Select} from "./../../components";
 
-import "./SelectSource.css";
+import "./SelectSource.scss";
 
 export default class SelectSource extends React.PureComponent {
 
@@ -20,7 +20,7 @@ export default class SelectSource extends React.PureComponent {
                    options={options}
                    value={source}
                    autoFocus={autoFocus}
-                   searchable={false}
+                   isSearchable={false}
                    disabled={disabled || false}/>;
   }
 }

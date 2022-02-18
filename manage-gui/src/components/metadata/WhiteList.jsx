@@ -7,7 +7,7 @@ import CheckBox from "./../CheckBox";
 import SelectEntities from "./../SelectEntities";
 import {copyToClip, isEmpty, stop} from "../../utils/Utils";
 
-import "./WhiteList.css";
+import "./WhiteList.scss";
 import NotesTooltip from "../NotesTooltip";
 
 export default class WhiteList extends React.Component {

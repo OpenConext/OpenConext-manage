@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import I18n from "i18n-js";
-import "./Password.css";
+import "./Password.scss";
 import {secret} from "../../api";
 import CopyToClipboard from "react-copy-to-clipboard";
 import ReactTooltip from "react-tooltip";

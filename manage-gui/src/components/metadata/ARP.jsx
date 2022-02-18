@@ -7,7 +7,7 @@ import CheckBox from "./../../components/CheckBox";
 import SelectSource from "./SelectSource";
 import {copyToClip, isEmpty} from "../../utils/Utils";
 
-import "./ARP.css";
+import "./ARP.scss";
 
 //PureComponent only does a shallow comparison and we use derived values from deeply nested objects
 export default class ARP extends React.Component {

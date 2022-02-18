@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import {Link} from "react-router-dom";
 import {allChangeRequests} from "../api";
 import {copyToClip, isEmpty, stop} from "../utils/Utils";
-import "./Support.css";
+import "./Support.scss";
 import {Select} from "../components";
 
 export default class ChangeRequests extends React.PureComponent {

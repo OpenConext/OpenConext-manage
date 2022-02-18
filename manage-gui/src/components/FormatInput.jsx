@@ -5,7 +5,7 @@ import I18n from "i18n-js";
 import {validation} from "./../api";
 import {isEmpty} from "../utils/Utils";
 
-import "./FormatInput.css";
+import "./FormatInput.scss";
 
 export default class FormatInput extends React.PureComponent {
   constructor(props) {
@@ -53,7 +53,7 @@ export default class FormatInput extends React.PureComponent {
       <div className="format-input">
         <input
           ref={ref => this.input = ref}
-          className={error && "error"}
+          className={error ? "error" : ""}
           type={this.getInputType()}
           id={name}
           name={name}

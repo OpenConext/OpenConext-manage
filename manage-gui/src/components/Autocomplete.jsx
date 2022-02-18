@@ -5,7 +5,7 @@ import scrollIntoView from "scroll-into-view";
 import {isEmpty} from "../utils/Utils";
 
 import CheckBox from "./CheckBox";
-import "./Autocomplete.css";
+import "./Autocomplete.scss";
 import NotesTooltip from "./NotesTooltip";
 
 export default class Autocomplete extends React.PureComponent {

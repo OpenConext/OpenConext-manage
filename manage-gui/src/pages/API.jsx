@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import {Link} from "react-router-dom";
 import {ping, rawSearch, search, validation} from "../api";
 import {copyToClip, isEmpty, stop} from "../utils/Utils";
-import "./API.css";
+import "./API.scss";
 import debounce from "lodash.debounce";
 import {CheckBox, NotesTooltip, Select} from '../components'
 import {SelectMetaDataType, SelectNewEntityAttribute, SelectNewMetaDataField} from "../components/metadata"

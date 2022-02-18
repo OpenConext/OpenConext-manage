@@ -5,7 +5,7 @@ import ReactTooltip from "react-tooltip";
 
 import {isEmpty} from "../../utils/Utils";
 
-import "./InlineEditable.css";
+import "./InlineEditable.scss";
 
 export default class InlineEditable extends React.PureComponent {
 

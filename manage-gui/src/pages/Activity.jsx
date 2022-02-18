@@ -2,7 +2,7 @@ import React from "react";
 import I18n from "i18n-js";
 import PropTypes from "prop-types";
 import {recentActivity} from "../api";
-import "./Activity.css";
+import "./Activity.scss";
 import SelectMulti from "../components/form/SelectMulti";
 import {copyToClip, isEmpty} from "../utils/Utils";
 import {Link} from "react-router-dom";

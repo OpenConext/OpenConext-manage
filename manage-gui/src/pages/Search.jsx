@@ -7,7 +7,7 @@ import Autocomplete from "../components/Autocomplete";
 import {autocomplete, ping} from "../api";
 import {isEmpty, stop} from "../utils/Utils";
 
-import "./Search.css";
+import "./Search.scss";
 import withRouterHooks from "../utils/RouterBackwardCompatability";
 
 class Search extends React.PureComponent {
@@ -89,7 +89,7 @@ class Search extends React.PureComponent {
 
     newMetaData = e => {
         stop(e);
-        return <Navigate to={`/metadata/${this.state.selectedTab}/new`}/>;
+        this.props.navigate(`/metadata/${this.state.selectedTab}/new`);
     };
 
     switchTab = tab => e => {

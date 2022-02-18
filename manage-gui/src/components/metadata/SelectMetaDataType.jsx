@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import {Select} from "./../../components";
 
 import I18n from "i18n-js";
-import "./SelectMetaDataType.css";
+import "./SelectMetaDataType.scss";
 
 export default class SelectMetaDataType extends React.PureComponent {
 
@@ -19,7 +19,7 @@ export default class SelectMetaDataType extends React.PureComponent {
                    }}
                    options={options.sort((a, b) => a.label.localeCompare(b.label))}
                    value={state ? state : defaultToFirst ? options[0].value : state}
-                   searchable={false}/>;
+                   isSearchable={false}/>;
   }
 }
 

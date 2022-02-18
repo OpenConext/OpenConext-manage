@@ -15,7 +15,7 @@ import {
 import {CheckBox, Select} from "./../../components";
 
 import "codemirror/lib/codemirror.css";
-import "./Import.css";
+import "./Import.scss";
 
 export default class Import extends React.Component {
   constructor(props) {
@@ -688,6 +688,7 @@ export default class Import extends React.Component {
           this.setState(newState);
         }}
         options={options}
+        isSearchable={false}
         value={options.find(opt => opt.value === entityType)}
       />
     );

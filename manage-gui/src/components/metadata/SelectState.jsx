@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import {Select} from "./../../components";
 
 import I18n from "i18n-js";
-import "./SelectState.css";
+import "./SelectState.scss";
 
 const states = ["prodaccepted", "testaccepted"];
 
@@ -34,7 +34,7 @@ export default class SelectState extends React.PureComponent {
                    optionRenderer={this.renderOption}
                    options={options}
                    value={state}
-                   searchable={false}
+                   isSearchable={false}
                    valueRenderer={this.renderOption}
                    disabled={disabled || false}/>;
   }

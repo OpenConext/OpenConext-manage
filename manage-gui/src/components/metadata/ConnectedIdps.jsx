@@ -3,7 +3,7 @@ import I18n from "i18n-js";
 import PropTypes from "prop-types";
 import {Link} from "react-router-dom";
 
-import "./ConnectedIdps.css";
+import "./ConnectedIdps.scss";
 import {copyToClip, isEmpty} from "../../utils/Utils";
 import NotesTooltip from "../NotesTooltip";
 import {getConnectedEntities} from "../../utils/TabNumbers";

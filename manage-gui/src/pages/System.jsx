@@ -16,7 +16,7 @@ import {
 } from "../api";
 import {capitalize, isEmpty, stop} from "../utils/Utils";
 import ConfirmationDialog from "../components/ConfirmationDialog";
-import "./System.css";
+import "./System.scss";
 import {pushConfirmationFlash, pushFlash, setFlash} from "../utils/Flash";
 import SelectMetaDataType from "../components/metadata/SelectMetaDataType";
 import NotesTooltip from "../components/NotesTooltip";
@@ -177,7 +177,7 @@ export default class System extends React.PureComponent {
                     newRevision: json.revision.number
                 }));
                 const path = decodeURIComponent(`/metadata/${json.type}/${json.id}`);
-                return <Navigate to={`refresh-route/${path}`} />
+                this.props.navigate(`refresh-route/${path}`);
             }
         });
     };

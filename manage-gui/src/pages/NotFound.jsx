@@ -1,6 +1,6 @@
 import React from "react";
 import I18n from "i18n-js";
-import "./NotFound.css";
+import "./NotFound.scss";
 
 export default function NotFound() {
   return (

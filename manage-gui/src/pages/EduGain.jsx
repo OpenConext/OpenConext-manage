@@ -2,7 +2,7 @@ import React from "react";
 import I18n from "i18n-js";
 import PropTypes from "prop-types";
 import {countFeed, deleteFeed, importFeed, validation} from "../api";
-import "./EduGain.css";
+import "./EduGain.scss";
 
 import {isEmpty, stop} from "../utils/Utils";
 import {setFlash} from "../utils/Flash";

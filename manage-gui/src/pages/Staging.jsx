@@ -2,7 +2,7 @@ import React from "react";
 import I18n from "i18n-js";
 import PropTypes from "prop-types";
 import {stop} from "../utils/Utils";
-import "./System.css";
+import "./System.scss";
 import "react-json-pretty/themes/monikai.css";
 import System from "./System";
 import Support from "./Support";

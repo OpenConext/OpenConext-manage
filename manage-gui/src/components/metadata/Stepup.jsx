@@ -7,7 +7,7 @@ import {Select} from "./../../components";
 import {isEmpty, stop} from "../../utils/Utils";
 import ReactTooltip from "react-tooltip";
 
-import "./Stepup.css";
+import "./Stepup.scss";
 
 export default class Stepup extends React.Component {
   constructor(props) {
@@ -234,7 +234,7 @@ export default class Stepup extends React.Component {
               value: loa
             }))}
             value={entity.level}
-            searchable={false}
+            isSearchable={false}
           />
         </td>
         <td>
@@ -277,7 +277,7 @@ export default class Stepup extends React.Component {
               value: mfa
             }))}
             value={entity.level}
-            searchable={false}
+            isSearchable={false}
           />
         </td>
         <td>

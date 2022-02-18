@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import "./CheckBox.css";
+import "./CheckBox.scss";
 
 export default class CheckBox extends React.PureComponent {
   componentDidMount() {

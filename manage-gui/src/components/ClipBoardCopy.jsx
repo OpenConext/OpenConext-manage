@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import ReactTooltip from "react-tooltip";
 import CopyToClipboard from "react-copy-to-clipboard";
 
-import "./ClipBoardCopy.css";
+import "./ClipBoardCopy.scss";
 
 export default class ClipBoardCopy extends React.PureComponent {
 

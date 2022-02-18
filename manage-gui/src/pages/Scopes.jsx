@@ -3,7 +3,7 @@ import I18n from "i18n-js";
 import PropTypes from "prop-types";
 import {allScopes, deleteScope, saveScope, scopeSupportedLanguagers} from "../api";
 import {isEmpty, validScope} from "../utils/Utils";
-import "./Scopes.css";
+import "./Scopes.scss";
 import ConfirmationDialog from "../components/ConfirmationDialog";
 import String from "../components/form/String";
 import cloneDeep from "lodash.clonedeep";

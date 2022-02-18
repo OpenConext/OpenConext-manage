@@ -1,6 +1,6 @@
 import React from "react";
 import {BrowserRouter as Router, Navigate, Route, Routes} from "react-router-dom";
-import "./App.css";
+import "./App.scss";
 import ErrorDialog from "../components/ErrorDialog";
 import Flash from "../components/Flash";
 import NotFound from "../pages/NotFound";

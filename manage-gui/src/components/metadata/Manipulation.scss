@@ -36,18 +36,8 @@
     display: flex;
     margin-bottom: 15px;
 
-    .MDEditor_toolbarButton--quote {
-      display: none;
-    }
-
-    .MDEditor {
-      width: 50%;
-    }
-
-    div.preview {
-      width: 50%;
-      margin: 51px 0 0 25px;
-      list-style: inside;
+    .w-md-editor {
+      width: 100%;
     }
   }
 

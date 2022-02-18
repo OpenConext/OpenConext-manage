@@ -2,7 +2,7 @@ import React from "react";
 import {Select} from "./../../components";
 import {fetchEnumValues, scopeInUse} from "../../api";
 import I18n from "i18n-js";
-import "./ScopeSelection.css";
+import "./ScopeSelection.scss";
 
 export default class ScopeSelection extends React.PureComponent {
 

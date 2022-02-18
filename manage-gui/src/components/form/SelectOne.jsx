@@ -21,6 +21,7 @@ export default class SelectOne extends React.PureComponent {
         optionRenderer={option => option.label}
         options={this.valuesToOptions(enumValues)}
         value={this.valueToOption(value)}
+        isSearchable={false}
       />
     );
   }

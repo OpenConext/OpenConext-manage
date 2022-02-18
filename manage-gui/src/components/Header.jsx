@@ -6,7 +6,7 @@ import {Link} from "react-router-dom";
 import logoSurfConext from "../images/logo@2x.png";
 import logoOpenConext from "../images/open-conext-logo.png";
 import {logOut} from "../api";
-import "./Header.css";
+import "./Header.scss";
 import {isEmpty} from "../utils/Utils";
 
 export default class Header extends React.PureComponent {

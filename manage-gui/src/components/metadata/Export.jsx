@@ -9,7 +9,7 @@ import CheckBox from "./../CheckBox";
 import ClipBoardCopy from "./../ClipBoardCopy";
 
 import "highlight.js/styles/default.css";
-import "./Export.css";
+import "./Export.scss";
 
 export default class Export extends React.Component {
   constructor(props) {
