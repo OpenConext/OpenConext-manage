@@ -57,5 +57,12 @@
         }
       }
     }
+
+    div.accept {
+      display: flex;
+      a:first-child {
+        margin: 0 15px 0 auto;
+      }
+    }
   }
 }

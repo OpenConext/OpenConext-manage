@@ -369,7 +369,8 @@ I18n.translations.en = {
     reject: "Reject",
     acceptConfirmation: "Are you sure you want to accept this change request?",
     rejectConfirmation: "Are you sure you want to reject this change request?",
-    toggleDetails: "Show visual diff with current metaData"
+    toggleDetails: "Show visual diff against current metaData",
+    toggleAllDetails: "Show diffs for all change requests",
   },
   clipboard: {
     copied: "Copied!",

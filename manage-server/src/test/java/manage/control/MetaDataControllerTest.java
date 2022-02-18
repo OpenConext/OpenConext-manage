@@ -1,5 +1,6 @@
 package manage.control;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.restassured.common.mapper.TypeRef;
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
@@ -1161,7 +1162,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void createChangeRequest() {
+    public void createChangeRequest() throws JsonProcessingException {
         Map<String, Object> pathUpdates = new HashMap<>();
         pathUpdates.put("metaDataFields.description:en", "New description");
         pathUpdates.put("allowedall", false);

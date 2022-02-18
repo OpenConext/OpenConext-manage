@@ -107,7 +107,7 @@ class MetaDataChangeRequests extends React.Component {
                     <td>{request.auditData.userName}</td>
                     <td><ReactJson src={request.pathUpdates} name="pathUpdates" collapsed={true}/></td>
                     <td className="nope">
-                        <div className="actions">
+                        <div className="accept">
                             <a className="button blue" href={`/accept/${request.id}`}
                                onClick={this.action(request.id, entityType, metaData, true)}>
                                 {I18n.t("changeRequests.accept")}</a>
