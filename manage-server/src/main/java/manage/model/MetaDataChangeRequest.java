@@ -9,6 +9,7 @@ import org.springframework.data.annotation.Id;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.Collections;
 import java.util.Map;
 
 @Getter
@@ -46,5 +47,10 @@ public class MetaDataChangeRequest implements PathUpdates {
 
     public void setMetaDataSummary(Map<String, Object> metaDataSummary) {
         this.metaDataSummary = metaDataSummary;
+    }
+
+    @Override
+    public Map<String, Object> getExternalReferenceData() {
+        return Collections.emptyMap();
     }
 }

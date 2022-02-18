@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
 import org.springframework.core.io.Resource;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
@@ -39,6 +40,7 @@ import java.util.stream.Collectors;
 import static java.util.Collections.singletonList;
 import static java.util.Collections.singletonMap;
 import static java.util.stream.Collectors.toList;
+import static manage.mongo.MongoChangelog.CHANGE_REQUEST_POSTFIX;
 
 @Service
 public class MetaDataService {
@@ -265,11 +267,11 @@ public class MetaDataService {
         return metaDataList.stream().map(metaData -> (String) metaData.getData().get("entityid")).collect(toList());
     }
 
-    public Optional<MetaData> doMergeUpdate(MetaDataUpdate metaDataUpdate,
+    public Optional<MetaData> doMergeUpdate(PathUpdates metaDataUpdate,
                                             String name,
                                             String revisionNote,
                                             boolean forceNewRevision) throws JsonProcessingException {
-        String id = metaDataUpdate.getId();
+        String id = metaDataUpdate.getMetaDataId();
         MetaData previous = metaDataRepository.findById(id, metaDataUpdate.getType());
         checkNull(metaDataUpdate.getType(), id, previous);
 
@@ -318,15 +320,16 @@ public class MetaDataService {
     }
 
 
-    public MetaData doAcceptChangeRequest(ChangeRequest changeRequest, FederatedUser user) {
-        //TODO
-        return null;
+    public MetaData doRejectChangeRequest(ChangeRequest changeRequest, AbstractUser user) {
+        LOG.info("Rejecting change request {} by {}", changeRequest.getType(), user.getName());
+
+        Query query = new Query(Criteria.where("id").is(changeRequest.getId()));
+        MongoTemplate mongoTemplate = metaDataRepository.getMongoTemplate();
+        mongoTemplate.remove(query, changeRequest.getType().concat(CHANGE_REQUEST_POSTFIX));
+
+        return mongoTemplate.findById(changeRequest.getMetaDataId(), MetaData.class, changeRequest.getType());
     }
 
-    public MetaData doRejectChangeRequest(ChangeRequest changeRequest, AbstractUser user) {
-        //TODO
-        return null;
-    }
     public MetaData restoreDeleted(RevisionRestore revisionRestore, FederatedUser federatedUser)
             throws JsonProcessingException {
         MetaData revision = metaDataRepository.findById(revisionRestore.getId(), revisionRestore.getType());

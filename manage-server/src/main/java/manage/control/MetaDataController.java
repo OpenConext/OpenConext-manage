@@ -12,6 +12,9 @@ import manage.shibboleth.FederatedUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -246,7 +249,6 @@ public class MetaDataController {
     @Transactional
     public MetaData update(@Validated @RequestBody MetaDataUpdate metaDataUpdate, APIUser apiUser)
             throws JsonProcessingException {
-
         String name = apiUser.getName();
         return metaDataService
                 .doMergeUpdate(metaDataUpdate, name, "Internal API merge", true)
@@ -294,8 +296,14 @@ public class MetaDataController {
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/client/change-requests/accept")
     @Transactional
-    public MetaData acceptChangeRequest(@RequestBody @Validated ChangeRequest changeRequest, FederatedUser user) {
-        return metaDataService.doAcceptChangeRequest(changeRequest, user);
+    public MetaData acceptChangeRequest(@RequestBody @Validated ChangeRequest changeRequest, FederatedUser user) throws JsonProcessingException {
+        String name = user.getName();
+        String collectionName = changeRequest.getType().concat(CHANGE_REQUEST_POSTFIX);
+        MetaDataChangeRequest metaDataChangeRequest = metaDataRepository.getMongoTemplate().findById(changeRequest.getId(), MetaDataChangeRequest.class, collectionName);
+
+        return metaDataService
+                .doMergeUpdate(metaDataChangeRequest, name, "Change request API merge", true)
+                .get();
     }
 
     @PreAuthorize("hasRole('ADMIN')")

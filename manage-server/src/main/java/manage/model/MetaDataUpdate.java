@@ -26,4 +26,9 @@ public class MetaDataUpdate implements PathUpdates {
     private Map<String, Object> pathUpdates;
 
     private Map<String, Object> externalReferenceData;
+
+    @Override
+    public String getMetaDataId() {
+        return id;
+    }
 }
