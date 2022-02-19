@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -316,6 +317,7 @@ public class MetaDataService {
         metaDataChangeRequest.getAuditData().put("userName", user.getName());
         metaDataChangeRequest.getAuditData().put("apiUser", user.isAPIUser());
         metaDataChangeRequest.setMetaDataSummary(metaData.summary());
+        metaDataChangeRequest.setCreated(Instant.now());
 
         return metaDataRepository.save(metaDataChangeRequest);
     }

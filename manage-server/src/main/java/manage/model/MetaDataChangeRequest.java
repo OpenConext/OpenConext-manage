@@ -49,6 +49,10 @@ public class MetaDataChangeRequest implements PathUpdates {
         this.metaDataSummary = metaDataSummary;
     }
 
+    public void setCreated(Instant created) {
+        this.created = created;
+    }
+
     @Override
     public Map<String, Object> getExternalReferenceData() {
         return Collections.emptyMap();
