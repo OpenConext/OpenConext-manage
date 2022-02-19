@@ -98,3 +98,10 @@ When you want to import existing metaData into your local mongodb you can use th
 ```
 mongoimport --db metadata --collection saml20_idp --type json --file identity-providers.json --jsonArray
 ```
+
+### Change requests
+```
+cd ./manage-server/src/test/resources/
+curl -u sysadmin:secret -X POST -H 'Content-Type: application/json' -d '@change_request.json' 'https://manage.test2.surfconext.nl/manage/api/internal/change-requests'
+```
+ 
