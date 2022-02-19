@@ -27,7 +27,10 @@ class ChangeRequests extends React.PureComponent {
 
     componentDidMount() {
         allChangeRequests().then(res => {
-            this.setState({changeRequests: res, filteredChangeRequests: res, loaded: true});
+            this.setState({
+                changeRequests: res,
+                filteredChangeRequests: res,
+                loaded: true});
         })
     }
 
@@ -135,6 +138,9 @@ class ChangeRequests extends React.PureComponent {
             status,
             query
         } = this.state;
+        if (!loaded) {
+            return null;
+        }
         const showResults = changeRequests.length > 0 && loaded;
         const showNoResults = changeRequests.length === 0 && loaded;
         return (

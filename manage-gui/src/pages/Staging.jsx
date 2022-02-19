@@ -47,7 +47,6 @@ export default class Staging extends React.PureComponent {
             <div className="playground">
                 <section className="tabs">
                     {tabs.map(tab => this.renderTab(tab, selectedTab))}
-
                 </section>
                 {this.renderCurrentTab(selectedTab)}
             </div>
