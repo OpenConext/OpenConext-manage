@@ -116,6 +116,7 @@ class ChangeRequests extends React.PureComponent {
                 options={["all", "prodaccepted", "testaccepted"]
                     .map(s => ({value: s, label: I18n.t(`metadata.${s}`)}))}
                 value={status}
+                isSearchable={false}
                 className="status-select"/>
         {this.renderSearchResultsTable(changeRequests, status)}
         {this.renderSearchResultsTablePrintable(changeRequests)}

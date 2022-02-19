@@ -372,6 +372,7 @@ export default class API extends React.PureComponent {
                                 options={["all", "prodaccepted", "testaccepted"]
                                   .map(s => ({value: s, label: I18n.t(`metadata.${s}`)}))}
                                 value={status}
+                                isSearchable={false}
                                 className="status-select"/>}
         {showResults && this.renderSearchResultsTable(searchResults, selectedType, searchAttributes, globalSearchAttributes, status, fullTextSearch)}
         {showResults && this.renderSearchResultsTablePrintable(searchResults)}

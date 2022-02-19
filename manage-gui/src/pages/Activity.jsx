@@ -169,9 +169,17 @@ export default class Activity extends React.Component {
         <p>{I18n.t("activity.info")}</p>
       </section>
       <section className="options">
-        <SelectMulti className="entity-types" enumValues={allTypes} onChange={this.changeTypes} value={types}/>
+        <SelectMulti className="entity-types"
+                     enumValues={allTypes}
+                     isSearchable={false}
+                     onChange={this.changeTypes}
+                     value={types}/>
         <span className="span-option">{I18n.t("activity.limit")}</span>
-        <Select className="limit-value" options={limitOptions} onChange={this.changeLimit} value={limit}/>
+        <Select className="limit-value"
+                options={limitOptions}
+                onChange={this.changeLimit}
+                value={limit}
+                isSearchable={false}/>
         <span className="button green" onClick={this.refreshActivities}>
           {I18n.t("activity.refresh")}<i className="fa fa-refresh"/>
         </span>

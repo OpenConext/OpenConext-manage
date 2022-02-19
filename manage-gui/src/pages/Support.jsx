@@ -156,6 +156,7 @@ export default class Support extends React.PureComponent {
             options={["all", "prodaccepted", "testaccepted"]
               .map(s => ({value: s, label: I18n.t(`metadata.${s}`)}))}
             value={status}
+            isSearchable={false}
             className="status-select"/>
     {this.renderSearchResultsTable(excludeFromPushServiceProviders, status)}
     {this.renderSearchResultsTablePrintable(excludeFromPushServiceProviders)}
