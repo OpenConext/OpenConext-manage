@@ -14,12 +14,13 @@
     position: relative;
 
     span.details {
-      position: absolute;
-      right: -34px;
-      top: -20px;
-      background-color: #165596;
-      padding: 4px 10px;
+      background-color: #1667b6;
       border-radius: 50%;
+      padding: 2px 10px;
+      position: absolute;
+      right: -26px;
+      top: -20px;
+      font-size: 14px;
     }
 
     a.menu-item {
