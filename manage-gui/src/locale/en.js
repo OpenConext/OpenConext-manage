@@ -372,6 +372,7 @@ I18n.translations.en = {
         rejectConfirmation: "Are you sure you want to reject this change request?",
         toggleDetails: "Show visual diff against current metaData",
         toggleAllDetails: "Show diffs for all change requests",
+        identical: "This change request does not change the metadata. Consider rejecting it.",
         flash: {
             accepted: "Change request for {{name}} has been accepted",
             rejected: "Change request {{name}} has been rejected"

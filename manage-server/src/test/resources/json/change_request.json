@@ -1,9 +1,8 @@
 {
-  "metaDataId" : "76171457-6ed5-4505-9071-9e0e47557985",
+  "metaDataId" : "1",
   "type" : "saml20_sp",
   "pathUpdates" : {
-    "metaDataFields.description:en" : "New description",
-    "metaDataFields.contacts:1:emailAddress": "info@openconext.org"
+    "metaDataFields.description:en" : "New description"
   },
   "auditData" : {
     "user" : "jdoe"

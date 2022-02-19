@@ -70,7 +70,6 @@ class MetaDataChangeRequests extends React.Component {
                 emitter.emit("changeRequests");
                 const path = encodeURIComponent(`/metadata/${entityType}/${metaData.id}/requests`);
                 this.props.navigate(`/refresh-route/${path}`, {replace: true});
-
             }
         });
     };
@@ -90,7 +89,7 @@ class MetaDataChangeRequests extends React.Component {
         const originalDict = createDiffObject(data, request);
         const diffs = this.differ.diff(originalDict, request);
         const html = formatters.html.format(diffs);
-        return <p dangerouslySetInnerHTML={{__html: html}}/>
+        return diffs ? <p dangerouslySetInnerHTML={{__html: html}}/> : <p>{I18n.t("changeRequests.identical")}</p>
     };
 
     renderChangeRequestTable = (request, entityType, metaData) => {
