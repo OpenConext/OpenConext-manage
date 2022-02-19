@@ -9,7 +9,7 @@ import {NavLink} from "react-router-dom";
 
 import "./Navigation.scss";
 import {stop} from "../utils/Utils";
-import {pushConfirmationFlash, pushFlash, setFlash} from "../utils/Flash";
+import {emitter, pushConfirmationFlash, pushFlash, setFlash} from "../utils/Flash";
 import {hasOpenChangeRequests, push} from "../api";
 import ConfirmationDialog from "./ConfirmationDialog";
 
@@ -30,6 +30,11 @@ export default class Navigation extends React.PureComponent {
   componentDidMount() {
     spinner.onStart = () => this.setState({loading: true});
     spinner.onStop = () => this.setState({loading: false});
+    this.changeRequests();
+    emitter.addListener("changeRequests", this.changeRequests);
+  }
+
+  changeRequests = () => {
     hasOpenChangeRequests().then(r => this.setState({openChangeRequestsCount: r}));
   }
 

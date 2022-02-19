@@ -301,9 +301,11 @@ public class MetaDataController {
         String collectionName = changeRequest.getType().concat(CHANGE_REQUEST_POSTFIX);
         MetaDataChangeRequest metaDataChangeRequest = metaDataRepository.getMongoTemplate().findById(changeRequest.getId(), MetaDataChangeRequest.class, collectionName);
 
-        return metaDataService
+        MetaData metaData = metaDataService
                 .doMergeUpdate(metaDataChangeRequest, name, "Change request API merge", true)
                 .get();
+        metaDataRepository.getMongoTemplate().remove(metaDataChangeRequest, collectionName);
+        return metaData;
     }
 
     @PreAuthorize("hasRole('ADMIN')")

@@ -9,6 +9,7 @@ import manage.AbstractIntegrationTest;
 import manage.model.*;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.mongodb.core.query.Query;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -20,6 +21,7 @@ import static io.restassured.RestAssured.given;
 import static io.restassured.config.RestAssuredConfig.newConfig;
 import static io.restassured.config.XmlConfig.xmlConfig;
 import static java.util.Collections.singletonMap;
+import static manage.mongo.MongoChangelog.CHANGE_REQUEST_POSTFIX;
 import static manage.service.MetaDataService.*;
 import static org.apache.http.HttpStatus.*;
 import static org.hamcrest.Matchers.*;
@@ -1163,6 +1165,66 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void createChangeRequest() throws JsonProcessingException {
+        doCreateChangeRequest();
+
+        List<MetaDataChangeRequest> requests = given()
+                .when()
+                .get("manage/api/client/change-requests/saml20_sp/1")
+                .as(new TypeRef<>() {
+                });
+        assertEquals(1, requests.size());
+
+        MetaDataChangeRequest request = requests.get(0);
+        assertEquals(4, request.getMetaDataSummary().size());
+        assertEquals(3, request.getAuditData().size());
+        assertEquals(3, request.getPathUpdates().size());
+    }
+
+    @Test
+    public void acceptChangeRequest() {
+        doCreateChangeRequest();
+        MetaDataChangeRequest metaDataChangeRequest = mongoTemplate()
+                .find(new Query(), MetaDataChangeRequest.class, EntityType.SP.getType().concat(CHANGE_REQUEST_POSTFIX)).get(0);
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .body(new ChangeRequest(metaDataChangeRequest.getId(), EntityType.SP.getType(), metaDataChangeRequest.getMetaDataId()))
+                .put("/manage/api/client/change-requests/accept")
+                .then()
+                        .statusCode(200);
+
+        MetaData metaData = metaDataRepository.findById("1", EntityType.SP.getType());
+        assertEquals("New description", metaData.metaDataFields().get("description:en"));
+
+        List<MetaDataChangeRequest> requests = given()
+                .when()
+                .get("manage/api/client/change-requests/saml20_sp/1")
+                .as(new TypeRef<>() {
+                });
+        assertEquals(0, requests.size());
+    }
+
+    @Test
+    public void rejectChangeRequest() {
+        doCreateChangeRequest();
+        MetaDataChangeRequest metaDataChangeRequest = mongoTemplate()
+                .find(new Query(), MetaDataChangeRequest.class, EntityType.SP.getType().concat(CHANGE_REQUEST_POSTFIX)).get(0);
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .body(new ChangeRequest(metaDataChangeRequest.getId(), EntityType.SP.getType(), metaDataChangeRequest.getMetaDataId()))
+                .put("/manage/api/client/change-requests/reject")
+                .then()
+                .statusCode(200);
+        List<MetaDataChangeRequest> requests = given()
+                .when()
+                .get("manage/api/client/change-requests/saml20_sp/1")
+                .as(new TypeRef<>() {
+                });
+        assertEquals(0, requests.size());
+    }
+
+    private void doCreateChangeRequest() {
         Map<String, Object> pathUpdates = new HashMap<>();
         pathUpdates.put("metaDataFields.description:en", "New description");
         pathUpdates.put("allowedall", false);
@@ -1181,17 +1243,5 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 .post("manage/api/internal/change-requests")
                 .then()
                 .statusCode(SC_OK);
-
-        List<MetaDataChangeRequest> requests = given()
-                .when()
-                .get("manage/api/client/change-requests/saml20_sp/1")
-                .as(new TypeRef<>() {
-                });
-        assertEquals(1, requests.size());
-
-        MetaDataChangeRequest request = requests.get(0) ;
-        assertEquals(4, request.getMetaDataSummary().size());
-        assertEquals(3, request.getAuditData().size());
-        assertEquals(3, request.getPathUpdates().size());
     }
 }

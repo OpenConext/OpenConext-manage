@@ -12,8 +12,9 @@ import {collapseDotKeys, createDiffObject, stop} from "../../utils/Utils";
 import "jsondiffpatch/dist/formatters-styles/html.css";
 import "./MetaDataChangeRequests.scss";
 import {acceptChangeRequest, rejectChangeRequest} from "../../api";
-import {setFlash} from "../../utils/Flash";
+import {emitter, setFlash} from "../../utils/Flash";
 import withRouterHooks from "../../utils/RouterBackwardCompatability";
+
 
 class MetaDataChangeRequests extends React.Component {
 
@@ -66,8 +67,10 @@ class MetaDataChangeRequests extends React.Component {
                 setFlash(I18n.t(`changeRequests.flash.${accept ? "accepted" : "rejected"}`, {
                     name: name
                 }));
-                const path = encodeURIComponent(`/metadata/${metaData.id}/${entityType}/requests`);
+                emitter.emit("changeRequests");
+                const path = encodeURIComponent(`/metadata/${entityType}/${metaData.id}/requests`);
                 this.props.navigate(`/refresh-route/${path}`, {replace: true});
+
             }
         });
     };
@@ -147,7 +150,7 @@ class MetaDataChangeRequests extends React.Component {
                                     confirm={confirmationDialogAction}
                                     question={confirmationQuestion}/>
                 {requests.length === 0 && <div className="change-request-info">
-                    <h2>{I18n.t("changeRequests.noRevisions")}</h2>
+                    <h2>{I18n.t("changeRequests.noChangeRequests")}</h2>
                 </div>}
                 {requests.length > 0 && <div className="change-request-info">
                     <h2>{I18n.t("changeRequests.info", {name: metaData.data.metaDataFields["name:en"]})}</h2>

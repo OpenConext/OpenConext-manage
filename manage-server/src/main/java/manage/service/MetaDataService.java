@@ -2,6 +2,7 @@ package manage.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mongodb.client.result.DeleteResult;
 import manage.api.APIUser;
 import manage.api.AbstractUser;
 import manage.conf.MetaDataAutoConfiguration;
@@ -323,9 +324,10 @@ public class MetaDataService {
     public MetaData doRejectChangeRequest(ChangeRequest changeRequest, AbstractUser user) {
         LOG.info("Rejecting change request {} by {}", changeRequest.getType(), user.getName());
 
-        Query query = new Query(Criteria.where("id").is(changeRequest.getId()));
         MongoTemplate mongoTemplate = metaDataRepository.getMongoTemplate();
-        mongoTemplate.remove(query, changeRequest.getType().concat(CHANGE_REQUEST_POSTFIX));
+        String collectionName = changeRequest.getType().concat(CHANGE_REQUEST_POSTFIX);
+        MetaDataChangeRequest request = mongoTemplate.findById(changeRequest.getId(), MetaDataChangeRequest.class, collectionName);
+        mongoTemplate.remove(request, collectionName);
 
         return mongoTemplate.findById(changeRequest.getMetaDataId(), MetaData.class, changeRequest.getType());
     }
