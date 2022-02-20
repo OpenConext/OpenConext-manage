@@ -84,8 +84,15 @@
     }
 
     tbody {
-      tr:nth-child(odd) {
-        background-color: $lightest-grey;
+      tr {
+        &:nth-child(odd) {
+          background-color: $lightest-grey;
+        }
+
+        &:hover {
+          color: $blue;
+        }
+
       }
 
       td {

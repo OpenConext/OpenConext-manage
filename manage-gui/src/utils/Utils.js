@@ -57,13 +57,6 @@ export function validScope(scope) {
     return isEmpty(scope) || scope.indexOf(" ") === -1;
 }
 
-const setValue = (object, path, value) => {
-    const parts = path.split(".").map(p => p.replace(/@/g, "."));
-    const last = parts.pop();
-    parts.reduce((o, k) => o[k] = o[k] || {}, object)[last] = value;
-    return object;
-}
-
 /*
  * Given input:
  * {
@@ -82,7 +75,12 @@ const setValue = (object, path, value) => {
 export function collapseDotKeys(data) {
     return Object
         .entries(data)
-        .reduce((acc, [path, value]) => setValue(acc, path, value), {});
+        .reduce((acc, [path, value]) => {
+            const parts = path.split(".").map(p => p.replace(/@/g, "."));
+            const last = parts.pop();
+            parts.reduce((o, k) => o[k] = o[k] || {}, acc)[last] = value;
+            return acc;
+        }, {});
 }
 
 const originalValue = (data, acc, key, value) => {
