@@ -7,7 +7,7 @@ import PropTypes from "prop-types";
 import cloneDeep from "lodash.clonedeep";
 import CheckBox from "../../components/CheckBox";
 import ConfirmationDialog from "../../components/ConfirmationDialog";
-import {collapseDotKeys, createDiffObject, stop} from "../../utils/Utils";
+import {collapseDotKeys, createDiffObject, isEmpty, stop} from "../../utils/Utils";
 
 import "jsondiffpatch/dist/formatters-styles/html.css";
 import "./MetaDataChangeRequests.scss";
@@ -44,7 +44,13 @@ class MetaDataChangeRequests extends React.Component {
 
     toggleAllShowDetail = e => {
         const showAll = e.target.checked;
-        const newShowChangeRequests = {...this.state.showChangeRequests};
+        const {requests} = this.props;
+        const checkedState = {...this.state.showChangeRequests};
+        const newShowChangeRequests = isEmpty(checkedState) ?
+            requests.reduce((acc, request) => {
+                acc[request.id] = false;
+                return acc;
+            }, {}) : checkedState;
         Object.keys(newShowChangeRequests).forEach(id => newShowChangeRequests[id] = showAll);
         this.setState({showChangeRequests: newShowChangeRequests, showAllDetails: showAll});
     };

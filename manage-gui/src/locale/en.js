@@ -150,9 +150,11 @@ I18n.translations.en = {
             notes: "Notes",
             terminated: "Deleted",
             revisionNumber: "Revision",
+            createdAt: "Created",
             updatedBy: "Deleted by",
             revisionNote: "Revision note",
             nope: "",
+            type: "Type",
             excluded: "Excluded from push",
             user: "User"
         },

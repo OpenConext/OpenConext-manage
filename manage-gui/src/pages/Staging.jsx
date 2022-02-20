@@ -1,10 +1,8 @@
 import React from "react";
 import I18n from "i18n-js";
-import PropTypes from "prop-types";
 import {stop} from "../utils/Utils";
 import "./System.scss";
 import "react-json-pretty/themes/monikai.css";
-import System from "./System";
 import Support from "./Support";
 import ChangeRequests from "./ChangeRequests";
 
@@ -30,12 +28,11 @@ export default class Staging extends React.PureComponent {
         </span>;
 
     renderCurrentTab = selectedTab => {
-        const {history, configuration, currentUser} = this.props;
         switch (selectedTab) {
             case "changeRequests" :
-                return <ChangeRequests history={history} configuration={configuration} currentUser={currentUser}/>
+                return <ChangeRequests/>
             case "staging" :
-                return <Support history={history}/>;
+                return <Support/>;
             default :
                 throw new Error(`Unknown tab: ${selectedTab}`);
         }

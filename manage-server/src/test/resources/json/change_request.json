@@ -2,7 +2,7 @@
   "metaDataId" : "1",
   "type" : "saml20_sp",
   "pathUpdates" : {
-    "metaDataFields.description:en" : "New description"
+    "metaDataFields.description:nl" : "Nieuwe omschrijving"
   },
   "auditData" : {
     "user" : "jdoe"

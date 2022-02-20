@@ -1,6 +1,5 @@
 import React from "react";
 import I18n from "i18n-js";
-import {Link} from "react-router-dom";
 import {allChangeRequests} from "../api";
 import {copyToClip, isEmpty, stop} from "../utils/Utils";
 import "./Support.scss";
@@ -27,10 +26,12 @@ class ChangeRequests extends React.PureComponent {
 
     componentDidMount() {
         allChangeRequests().then(res => {
+            res.forEach(cr => cr.createdAt = new Date(cr.created));
             this.setState({
-                changeRequests: res,
+                changeRequests: res.sort((a, b) => b.createdAt - a.createdAt),
                 filteredChangeRequests: res,
-                loaded: true});
+                loaded: true
+            });
         })
     }
 
@@ -53,7 +54,7 @@ class ChangeRequests extends React.PureComponent {
     changeStatus = option => this.setState({status: option ? option.value : null});
 
     renderSearchResultsTable = (filteredChangeRequests, status) => {
-        const searchHeaders = ["name", "organization", "entityid", "status", "type", "user"];
+        const searchHeaders = ["name", "organization", "entityid", "status", "createdAt", "type", "user"];
         filteredChangeRequests = status === "all" ? filteredChangeRequests : filteredChangeRequests.filter(cr => cr.metaDataSummary.state === status);
         return (
             <section>
@@ -62,20 +63,19 @@ class ChangeRequests extends React.PureComponent {
                     <tr>
                         {searchHeaders.map((header, index) =>
                             <th key={`${header}_${index}`}
-                                className={index < 4 ? header : "extra"}>{index < 4 ? I18n.t(`playground.headers.${header}`) : header}</th>)}
+                                className={header}>{I18n.t(`playground.headers.${header}`)}</th>)}
                     </tr>
                     </thead>
                     <tbody>
                     {filteredChangeRequests.map((cr, index) => <tr
-                        key={`${cr.metaDataSummary.entityid}_${index}`}>
-                        <td className="name">
-                            <Link to={`/metadata/${cr.type}/${cr.metaDataId}/requests`}>
-                                {cr.metaDataSummary.name}
-                            </Link>
-                        </td>
+                        className="clickable"
+                        key={`${cr.metaDataSummary.entityid}_${index}`}
+                        onClick={() => this.props.navigate(`/metadata/${cr.type}/${cr.metaDataId}/requests`)}>
+                        <td className="name">{cr.metaDataSummary.name}</td>
                         <td className="organization">{cr.metaDataSummary.organizationName}</td>
                         <td className="entityId">{cr.metaDataSummary.entityid}</td>
                         <td className="state">{I18n.t(`metadata.${cr.metaDataSummary.state}`)}</td>
+                        <td className="created">{cr.createdAt.toGMTString()}</td>
                         <td className="type">{cr.type}</td>
                         <td className="user">{cr.auditData.userName}</td>
                     </tr>)}
@@ -99,7 +99,7 @@ class ChangeRequests extends React.PureComponent {
 
     renderResults = (changeRequests, copiedToClipboardClassName, status, query) => <div>
         <section className="explanation">
-            <p>Below are all the external change requests. You can look at the details by clicking on the link.</p>
+            <p>Below are all the external change requests. You can look at the details by clicking on the row.</p>
         </section>
         <section className="options">
             <div className="search-input-container">
@@ -151,4 +151,5 @@ class ChangeRequests extends React.PureComponent {
         );
     }
 }
+
 export default withRouterHooks(ChangeRequests)

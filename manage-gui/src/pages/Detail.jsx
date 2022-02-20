@@ -217,7 +217,10 @@ class Detail extends React.PureComponent {
                                         ? -1
                                         : 0
                             );
-                            this.setState({revisions: revisions, requests: results[1]});
+                            const requests = results[1];
+                            requests.forEach(cr => cr.createdAt = new Date(cr.created));
+                            requests.sort((a, b) => b.createdAt - a.createdAt);
+                            this.setState({revisions: revisions, requests: requests});
                         });
                 });
             })

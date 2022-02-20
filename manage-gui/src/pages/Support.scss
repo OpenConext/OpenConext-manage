@@ -98,8 +98,19 @@
     }
 
     tbody {
-      tr:nth-child(odd) {
-        background-color: $lightest-grey;
+      tr {
+        &.clickable {
+          cursor: pointer;
+
+          &:hover {
+            color: $blue;
+          }
+
+        }
+
+        &:nth-child(odd) {
+          background-color: $lightest-grey;
+        }
       }
 
       td {
