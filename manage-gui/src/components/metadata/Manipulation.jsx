@@ -76,7 +76,7 @@ export default class Manipulation extends React.PureComponent {
  * The following variables are available:
  *
  * @var string &$subjectId  NameID (empty for IdPs)
- * @var array  &$attributes URN attributes (example: array('urn:mace:terena.org:attribute-def:schacHomeOrganization'=>array('example.edu')))
+ * @var array  &$attributes URN attributes (example: ['urn:mace:terena.org:attribute-def:schacHomeOrganization'=>['example.edu']])
  * @var array  &$response   XmlToArray formatted Response
  */
         `;
