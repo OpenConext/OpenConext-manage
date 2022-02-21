@@ -1234,7 +1234,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         auditData.put("user", "jdoe");
 
         MetaDataChangeRequest changeRequest = new MetaDataChangeRequest(
-                "1", EntityType.SP.getType(), pathUpdates, auditData
+                "1", EntityType.SP.getType(), "Because....", pathUpdates, auditData
         );
         given().auth().preemptive().basic("sp-portal", "secret")
                 .when()

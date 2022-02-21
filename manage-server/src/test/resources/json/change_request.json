@@ -1,10 +1,11 @@
 {
-  "metaDataId" : "1",
+  "metaDataId" : "76171457-6ed5-4505-9071-9e0e47557985",
   "type" : "saml20_sp",
   "pathUpdates" : {
-    "metaDataFields.description:nl" : "Nieuwe omschrijving"
+    "metaDataFields.description:en" : "Test notes"
   },
   "auditData" : {
     "user" : "jdoe"
-  }
+  },
+  "note": "Optional note describing the reason for this change"
 }

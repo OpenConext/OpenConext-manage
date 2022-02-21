@@ -14,6 +14,7 @@ import "./MetaDataChangeRequests.scss";
 import {acceptChangeRequest, rejectChangeRequest} from "../../api";
 import {emitter, setFlash} from "../../utils/Flash";
 import withRouterHooks from "../../utils/RouterBackwardCompatability";
+import NotesTooltip from "../NotesTooltip";
 
 
 class MetaDataChangeRequests extends React.Component {
@@ -40,6 +41,12 @@ class MetaDataChangeRequests extends React.Component {
 
     componentDidMount() {
         window.scrollTo(0, 0);
+    }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.requests.length !== this.props.requests.length) {
+            this.toggleAllShowDetail({target: {checked: true}});
+        }
     }
 
     toggleAllShowDetail = e => {
@@ -100,7 +107,7 @@ class MetaDataChangeRequests extends React.Component {
 
     renderChangeRequestTable = (request, entityType, metaData) => {
         const showDetail = this.state.showChangeRequests[request.id];
-        const headers = ["created", "apiClient", "changes", "nope"];
+        const headers = ["created", "apiClient", "changes", "note", "nope"];
         return (
             <table className="change-requests-table" key={request.id}>
                 <thead>
@@ -114,6 +121,10 @@ class MetaDataChangeRequests extends React.Component {
                     <td>{new Date(request.created).toGMTString()}</td>
                     <td>{request.auditData.userName}</td>
                     <td><ReactJson src={request.pathUpdates} name="pathUpdates" collapsed={true}/></td>
+                    <td className="info">
+                        {isEmpty(request.note) ? <span></span> :
+                            <NotesTooltip identifier={request.id} notes={request.note}/>}
+                    </td>
                     <td className="nope">
                         <div className="accept">
                             <a className="button blue" href={`/accept/${request.id}`}

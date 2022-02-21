@@ -368,6 +368,7 @@ I18n.translations.en = {
         apiClient: "API client",
         changes: "Changes",
         nope: "",
+        note: "Notes",
         accept: "Accept",
         reject: "Reject",
         acceptConfirmation: "Are you sure you want to accept this change request?",

@@ -27,6 +27,8 @@ public class MetaDataChangeRequest implements PathUpdates {
     @NotNull
     private String type;
 
+    private String note;
+
     @NotNull
     private Map<String, Object> pathUpdates;
 
@@ -37,9 +39,10 @@ public class MetaDataChangeRequest implements PathUpdates {
 
     private Map<String, Object> metaDataSummary;
 
-    public MetaDataChangeRequest(String metaDataId, String type, Map<String, Object> pathUpdates, Map<String, Object> auditData) {
+    public MetaDataChangeRequest(String metaDataId, String type, String note, Map<String, Object> pathUpdates, Map<String, Object> auditData) {
         this.metaDataId = metaDataId;
         this.type = type;
+        this.note = note;
         this.pathUpdates = pathUpdates;
         this.auditData = auditData;
         this.created = Instant.now();
