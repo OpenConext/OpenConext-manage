@@ -1191,7 +1191,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 .body(new ChangeRequest(metaDataChangeRequest.getId(), EntityType.SP.getType(), metaDataChangeRequest.getMetaDataId()))
                 .put("/manage/api/client/change-requests/accept")
                 .then()
-                        .statusCode(200);
+                .statusCode(200);
 
         MetaData metaData = metaDataRepository.findById("1", EntityType.SP.getType());
         assertEquals("New description", metaData.metaDataFields().get("description:en"));
@@ -1202,6 +1202,73 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 .as(new TypeRef<>() {
                 });
         assertEquals(0, requests.size());
+    }
+
+    @Test
+    public void changeRequestDisableConsent() {
+        Map<String, Object> pathUpdates = new HashMap<>();
+        List<Map<String, String>> disableConsent = List.of(
+                Map.of("name", "http://disableConsent1", "type", "default_consent", "explanation:nl", "NL", "explanation:en", "EN"),
+                Map.of("name", "http://mock-sp", "type", "no_consent"),
+                Map.of("name", "Duis ad do", "type", "minimal_consent", "explanation:nl", "NL", "explanation:en", "EN")
+        );
+        pathUpdates.put("disableConsent", disableConsent);
+
+        Map<String, Object> auditData = new HashMap<>();
+        auditData.put("user", "jdoe");
+
+        MetaDataChangeRequest changeRequest = new MetaDataChangeRequest(
+                "6", EntityType.IDP.getType(), "Because....", pathUpdates, auditData
+        );
+        Map results = given().auth().preemptive().basic("sp-portal", "secret")
+                .when()
+                .body(changeRequest)
+                .header("Content-type", "application/json")
+                .post("manage/api/internal/change-requests")
+                .as(Map.class);
+
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .body(new ChangeRequest((String) results.get("id"), EntityType.IDP.getType(), "6"))
+                .put("/manage/api/client/change-requests/accept")
+                .then()
+                .statusCode(200);
+
+        MetaData metaData = metaDataRepository.findById("6", EntityType.IDP.getType());
+        List<Map<String, String>> newDisableConsent = (List<Map<String, String>>) metaData.getData().get("disableConsent");
+        Map<String, String> duisAdDo = newDisableConsent.stream().filter(map -> map.get("name").equals("Duis ad do")).findFirst().get();
+        assertEquals("minimal_consent", duisAdDo.get("type"));
+    }
+
+    @Test
+    public void changeRequestRemoveMetadataField() {
+        Map<String, Object> pathUpdates = new HashMap<>();
+        pathUpdates.put("metaDataFields.contacts:3:contactType", null);
+
+        Map<String, Object> auditData = new HashMap<>();
+        auditData.put("user", "jdoe");
+
+        MetaDataChangeRequest changeRequest = new MetaDataChangeRequest(
+                "6", EntityType.IDP.getType(), "Because....", pathUpdates, auditData
+        );
+        Map results = given().auth().preemptive().basic("sp-portal", "secret")
+                .when()
+                .body(changeRequest)
+                .header("Content-type", "application/json")
+                .post("manage/api/internal/change-requests")
+                .as(Map.class);
+
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .body(new ChangeRequest((String) results.get("id"), EntityType.IDP.getType(), "6"))
+                .put("/manage/api/client/change-requests/accept")
+                .then()
+                .statusCode(200);
+
+        MetaData metaData = metaDataRepository.findById("6", EntityType.IDP.getType());
+        assertFalse(metaData.metaDataFields().containsKey("contacts:3:contactType"));
     }
 
     @Test

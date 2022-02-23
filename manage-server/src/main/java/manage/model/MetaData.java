@@ -111,7 +111,12 @@ public class MetaData implements Serializable {
                     property = part;
                 }
             }
-            ((Map) reference).put(property, value);
+            if (value == null) {
+                ((Map) reference).remove(property);
+            } else {
+                ((Map) reference).put(property, value);
+            }
+
         });
     }
 
