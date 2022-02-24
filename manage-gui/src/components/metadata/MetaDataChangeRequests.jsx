@@ -7,7 +7,7 @@ import PropTypes from "prop-types";
 import cloneDeep from "lodash.clonedeep";
 import CheckBox from "../../components/CheckBox";
 import ConfirmationDialog from "../../components/ConfirmationDialog";
-import {collapseDotKeys, createDiffObject, isEmpty, stop} from "../../utils/Utils";
+import {collapseDotKeys, createDiffObject, isEmpty, sortDict, stop} from "../../utils/Utils";
 
 import "jsondiffpatch/dist/formatters-styles/html.css";
 import "./MetaDataChangeRequests.scss";
@@ -99,6 +99,8 @@ class MetaDataChangeRequests extends React.Component {
     renderDiff = (changeRequest, metaData) => {
         const data = cloneDeep(metaData.data);
         const request = collapseDotKeys(cloneDeep(changeRequest));
+        sortDict(data);
+        sortDict(request);
         const originalDict = createDiffObject(data, request);
         const diffs = this.differ.diff(originalDict, request);
         const html = formatters.html.format(diffs);
