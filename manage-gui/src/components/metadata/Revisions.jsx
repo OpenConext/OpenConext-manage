@@ -7,7 +7,7 @@ import PropTypes from "prop-types";
 import cloneDeep from "lodash.clonedeep";
 import CheckBox from "../../components/CheckBox";
 import ConfirmationDialog from "../../components/ConfirmationDialog";
-import {escapeDeep, stop} from "../../utils/Utils";
+import {escapeDeep, sortDict, stop} from "../../utils/Utils";
 
 import "jsondiffpatch/dist/formatters-styles/html.css";
 import "./Revisions.scss";
@@ -91,10 +91,12 @@ class Revisions extends React.Component {
         const rev = cloneDeep(revision.data);
         escapeDeep(rev);
         ignoreInDiff.forEach(ignore => delete rev[ignore]);
+        sortDict(rev);
 
         const prev = cloneDeep(previous.data);
         escapeDeep(prev);
         ignoreInDiff.forEach(ignore => delete prev[ignore]);
+        sortDict(prev);
 
         const diffs = this.differ.diff(prev, rev);
         const html = formatters.html.format(diffs);

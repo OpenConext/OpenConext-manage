@@ -1,4 +1,4 @@
-import {collapseDotKeys, createDiffObject} from "../../utils/Utils";
+import {collapseDotKeys, createDiffObject, sortDict} from "../../utils/Utils";
 
 test("collapseDotKeys", () => {
     const res = collapseDotKeys({
@@ -21,7 +21,7 @@ test("createDiff", () => {
     expect(res).toStrictEqual({a: "b", c: {d: "val"}});
 });
 
-test("createDiff nested arrau", () => {
+test("createDiff nested array", () => {
     const data = {
         "entityid": "https://idp.test2.surfconext.nl",
         "allowedEntities": [
@@ -73,3 +73,10 @@ test("createDiff nested arrau", () => {
     );
     expect(res).toStrictEqual({allowedEntities: data.allowedEntities});
 });
+
+test("createDiff", () => {
+    const data = {a: "a", l1: [{name: "x"}, {name: "a"}], l2: [null, "", undefined]};
+    sortDict(data);
+    expect(data).toStrictEqual({a: "a", l1: [{name: "a"}, {name: "x"}], l2: [null, "", undefined]});
+});
+
