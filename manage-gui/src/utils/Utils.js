@@ -113,15 +113,15 @@ export function sortDict(data) {
     Object.values(data).forEach(value => {
         if (Array.isArray(value)) {
             value.sort((o1, o2) => {
-                if (o1 && o1.name) {
+                if (o1 && o1.name && o2 && o2.name) {
                     return o1.name.localeCompare(o2.name);
                 }
                 if (o1 && o2) {
-                    return o1.toString().localeCompareo2.toString();
+                    return o1.toString().localeCompare(o2.toString());
                 }
                 return 0;
             })
-        } else if (typeof value === "object") {
+        } else if (value && value.constructor === Object) {
             sortDict(value);
         }
     })
