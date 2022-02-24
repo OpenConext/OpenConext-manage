@@ -182,11 +182,7 @@ public class MetaDataService {
 
     public MetaData doPost(@Validated MetaData metaData, String uid, boolean excludeFromPushRequired)
             throws JsonProcessingException {
-        String entityid = (String) metaData.getData().get("entityid");
-        List<Map> result = uniqueEntityId(metaData.getType(), entityid);
-        if (!CollectionUtils.isEmpty(result)) {
-            throw new DuplicateEntityIdException(entityid);
-        }
+        checkForDuplicateEntityId(metaData, true);
 
         sanitizeExcludeFromPush(metaData, excludeFromPushRequired);
         metaData = metaDataHook.prePost(metaData);
@@ -220,11 +216,7 @@ public class MetaDataService {
 
     public MetaData doPut(@Validated MetaData metaData, String updatedBy, boolean excludeFromPushRequired)
             throws JsonProcessingException {
-        String entityid = (String) metaData.getData().get("entityid");
-        List<Map> result = uniqueEntityId(metaData.getType(), entityid);
-        if (result.size() > 1) {
-            throw new DuplicateEntityIdException(entityid);
-        }
+        checkForDuplicateEntityId(metaData, false);
 
         sanitizeExcludeFromPush(metaData, excludeFromPushRequired);
         String id = metaData.getId();
@@ -352,12 +344,24 @@ public class MetaDataService {
                 revision.getRevision().getNumber(), revisionRestore.getParentType());
         //It might be that the revision is no longer valid as metaData configuration has changed
         revision = validate(revision);
+        metaDataHook.prePost(revision);
+
+        checkForDuplicateEntityId(revision, true);
+
         metaDataRepository.save(revision);
 
         LOG.info("Restored deleted revision {} with Id {} by {}", revisionRestore, revision.getId(), federatedUser
                 .getUid());
 
         return revision;
+    }
+
+    private void checkForDuplicateEntityId(MetaData metData, boolean isNew) {
+        String entityid = (String) metData.getData().get("entityid");
+        List<Map> result = uniqueEntityId(metData.getType(), entityid);
+        if ((isNew && !CollectionUtils.isEmpty(result)) || (!isNew && result.size() > 1)) {
+            throw new DuplicateEntityIdException(entityid);
+        }
     }
 
     public MetaData restoreRevision(RevisionRestore revisionRestore, FederatedUser federatedUser)

@@ -23,15 +23,14 @@ import NotesTooltip from "../components/NotesTooltip";
 import CheckBox from "../components/CheckBox";
 import JSONPretty from "react-json-pretty";
 import "react-json-pretty/themes/monikai.css";
-import {Navigate} from "react-router-dom";
 
 export default class System extends React.PureComponent {
 
     constructor(props) {
         super(props);
         const tabs = props.currentUser.featureToggles
-          .map(feature => feature.toLowerCase())
-          .filter(feature => feature !== "edugain");
+            .map(feature => feature.toLowerCase())
+            .filter(feature => feature !== "edugain");
         tabs.push("stats");
         this.state = {
             tabs: tabs,
@@ -169,6 +168,8 @@ export default class System extends React.PureComponent {
         restoreDeletedRevision(id, revisionType, parentType).then(json => {
             if (json.exception) {
                 setFlash(json.validations, "error");
+            } else if (json.error) {
+                setFlash(json.message, "error");
             } else {
                 const name = json.data.metaDataFields["name:en"] || json.data.metaDataFields["name:nl"] || "this service";
                 setFlash(I18n.t("metadata.flash.restored", {
@@ -226,11 +227,13 @@ export default class System extends React.PureComponent {
                         <td className="updatedBy">{revision.updatedBy}</td>
                         <td className="revisionNote">
                             {isEmpty(entity.data.revisionnote) ? <span></span> :
-                                <NotesTooltip identifier={entity.data.entityid + "/revisionNotes/" + index} notes={entity.data.revisionnote}/>}
+                                <NotesTooltip identifier={entity.data.entityid + "/revisionNotes/" + index}
+                                              notes={entity.data.revisionnote}/>}
                         </td>
                         <td className="notes">
                             {isEmpty(entity.data.notes) ? <span></span> :
-                                <NotesTooltip identifier={entity.data.entityid + "/notes/" + index} notes={entity.data.notes}/>}
+                                <NotesTooltip identifier={entity.data.entityid + "/notes/" + index}
+                                              notes={entity.data.notes}/>}
                         </td>
                         <td><a className={restoreClassName} href={`/restore/${entity._id}`}
                                onClick={this.restoreDeleted(entity, revision.number,
@@ -369,7 +372,7 @@ export default class System extends React.PureComponent {
     };
 
     icon = (name, sorted, reverse) => name === sorted ? (reverse ? <i className="fa fa-arrow-up reverse"></i> :
-        <i className="fa fa-arrow-down current"></i>)
+            <i className="fa fa-arrow-down current"></i>)
         : <i className="fa fa-arrow-down"></i>;
 
     renderStats = () => {
@@ -423,7 +426,14 @@ export default class System extends React.PureComponent {
     };
 
     render() {
-        const {tabs, selectedTab, confirmationDialogOpen, confirmationQuestion, confirmationDialogAction, cancelDialogAction} = this.state;
+        const {
+            tabs,
+            selectedTab,
+            confirmationDialogOpen,
+            confirmationQuestion,
+            confirmationDialogAction,
+            cancelDialogAction
+        } = this.state;
         return (
             <div className="playground">
                 <ConfirmationDialog isOpen={confirmationDialogOpen}
