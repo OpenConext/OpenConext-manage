@@ -85,7 +85,7 @@ export function collapseDotKeys(data) {
 
 const originalValue = (data, acc, key, value) => {
     const sourceValue = data[key];
-    if (typeof sourceValue === "object") {
+    if (typeof sourceValue === "object" && !Array.isArray(sourceValue)) {
         acc[key] = {};
         Object.keys(sourceValue)
             .filter(sk => value[sk])
