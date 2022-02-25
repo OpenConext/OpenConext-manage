@@ -41,6 +41,7 @@ class MetaDataChangeRequests extends React.Component {
 
     componentDidMount() {
         window.scrollTo(0, 0);
+        this.toggleAllShowDetail({target: {checked: true}});
     }
 
     componentDidUpdate(prevProps) {
@@ -63,7 +64,13 @@ class MetaDataChangeRequests extends React.Component {
     };
 
     toggleShowDetail = request => {
-        const newShowChangeRequests = {...this.state.showChangeRequests};
+        const {requests} = this.props;
+        const checkedState = {...this.state.showChangeRequests};
+        const newShowChangeRequests = isEmpty(checkedState) ?
+            requests.reduce((acc, request) => {
+                acc[request.id] = false;
+                return acc;
+            }, {}) : checkedState;
         newShowChangeRequests[request.id] = !newShowChangeRequests[request.id];
         this.setState({showChangeRequests: newShowChangeRequests});
     };
@@ -107,7 +114,7 @@ class MetaDataChangeRequests extends React.Component {
         return diffs ? <p dangerouslySetInnerHTML={{__html: html}}/> : <p>{I18n.t("changeRequests.identical")}</p>
     };
 
-    renderChangeRequestTable = (request, entityType, metaData) => {
+    renderChangeRequestTable = (request, entityType, metaData, i) => {
         const showDetail = this.state.showChangeRequests[request.id];
         const headers = ["created", "apiClient", "changes", "note", "nope"];
         return (
@@ -140,9 +147,11 @@ class MetaDataChangeRequests extends React.Component {
                     </td>
                 </tr>
                 <tr>
-                    <td colSpan={headers.length}><CheckBox name={request.id} value={showDetail || false}
-                                                           info={I18n.t("changeRequests.toggleDetails")}
-                                                           onChange={() => this.toggleShowDetail(request)}/></td>
+                    <td><CheckBox name={i}
+                                  value={showDetail || false}
+                                  info={I18n.t("changeRequests.toggleDetails")}
+                                  onChange={() => this.toggleShowDetail(request)}/>
+                    </td>
                 </tr>
                 {showDetail &&
                 <tr>
@@ -177,7 +186,7 @@ class MetaDataChangeRequests extends React.Component {
                                                       onChange={this.toggleAllShowDetail}/>}
                 </div>}
                 {<div className="change-requests">
-                    {requests.map(request => this.renderChangeRequestTable(request, entityType, metaData))}
+                    {requests.map((request, i) => this.renderChangeRequestTable(request, entityType, metaData, i))}
                 </div>}
             </div>
         );

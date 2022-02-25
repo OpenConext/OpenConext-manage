@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import "./CheckBox.scss";
 
 export default class CheckBox extends React.PureComponent {
+
   componentDidMount() {
     if (this.props.autoFocus && this.input !== null) {
       this.input.focus();

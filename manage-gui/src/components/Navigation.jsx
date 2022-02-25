@@ -34,6 +34,10 @@ export default class Navigation extends React.PureComponent {
     emitter.addListener("changeRequests", this.changeRequests);
   }
 
+  componentWillUnmount() {
+    emitter.removeListener("changeRequests", this.changeRequests);
+  }
+
   changeRequests = () => {
     hasOpenChangeRequests().then(r => this.setState({openChangeRequestsCount: r}));
   }
