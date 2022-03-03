@@ -32,7 +32,7 @@
     "sass": "^1.49.7",
     "scroll-into-view": "^1.16.0",
     "spin.js": "^2.3.2",
-    "urijs": "^1.19.8"
+    "urijs": "^1.19.9"
   },
   "scripts": {
     "start": "HOST=localhost DANGEROUSLY_DISABLE_HOST_CHECK=true react-scripts start",
