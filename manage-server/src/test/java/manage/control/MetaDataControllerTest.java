@@ -1013,6 +1013,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         connectionData.put("spId", spId);
         connectionData.put("spType", spType);
         connectionData.put("user", "John Doe");
+        connectionData.put("loaLevel", "http://test.surfconext.nl/assurance/loa2");
 
         given()
                 .auth()
@@ -1029,6 +1030,10 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         List<Map> allowedEntities = (List<Map>) data.get("allowedEntities");
 
         assertTrue(listOfMapsContainsValue(allowedEntities, spId));
+
+        List<Map<String, String>> stepUpEntities = (List<Map<String, String>>) data.get("stepupEntities");
+        String level = stepUpEntities.stream().filter(map -> map.get("name").equals(spId)).map(map -> map.get("level")).findFirst().get();
+        assertEquals("http://test.surfconext.nl/assurance/loa2", level);
     }
 
     @Test

@@ -480,29 +480,49 @@ public class MetaDataService {
                             spEntityId, idpEntityId, dashboardConnectType, idpInstitutionId, spInstitutionId));
         }
 
-        addAllowedEntity(sp, idpEntityId, connectionData, apiUser);
-        addAllowedEntity(idp, spEntityId, connectionData, apiUser);
+        addAllowedEntity(sp, idpEntityId, connectionData, apiUser, false);
+        addAllowedEntity(idp, spEntityId, connectionData, apiUser, true);
 
         databaseController.doPush();
     }
 
-    private void addAllowedEntity(MetaData metaData, String entityId, Map<String, String> connectionData,
-                                  APIUser apiUser) throws JsonProcessingException {
+    private void addAllowedEntity(MetaData metaData,
+                                  String entityId,
+                                  Map<String, String> connectionData,
+                                  APIUser apiUser,
+                                  boolean isIdp) throws JsonProcessingException {
 
         Map<String, Object> data = metaData.getData();
         List<Map<String, String>> allowedEntities = (List<Map<String, String>>)
                 data.getOrDefault("allowedEntities", new ArrayList<Map<String, String>>());
         boolean allowedAll = (boolean) data.getOrDefault("allowedall", true);
+        boolean needsUpdate = false;
+
+        String revisionNote = String.format("Connected %s on request of %s - %s via Dashboard.",
+                entityId, connectionData.get("user"), connectionData.get("userUrn"));
+
+        if (connectionData.containsKey("loaLevel") && isIdp) {
+            List<Map<String, String>> stepupEntities = (List<Map<String, String>>)
+                    data.getOrDefault("stepupEntities", new ArrayList<Map<String, String>>());
+            Map<String, String> stepupEntity = new HashMap<>();
+            stepupEntity.put("name", entityId);
+            stepupEntity.put("level", connectionData.get("loaLevel"));
+            stepupEntities.add(stepupEntity);
+            data.put("stepupEntities", stepupEntities);
+            data.put("revisionnote", revisionNote);
+        }
 
         if (!allowedAll && allowedEntities.stream().noneMatch(allowedEntity ->
                 allowedEntity.get("name").equals(entityId))) {
             allowedEntities.add(Collections.singletonMap("name", entityId));
             data.put("allowedEntities", allowedEntities);
-            String revisionNote = String.format("Connected %s on request of %s - %s via Dashboard.",
-                    entityId, connectionData.get("user"), connectionData.get("userUrn"));
             data.put("revisionnote", revisionNote);
+            needsUpdate = true;
+        }
+        if (needsUpdate) {
             doPut(metaData, apiUser.getName(), false);
         }
+
     }
 
     private MetaData findByEntityId(String entityId, String type) {
