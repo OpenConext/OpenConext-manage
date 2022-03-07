@@ -23,12 +23,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -108,14 +103,14 @@ public class MongoChangelog {
         Stream.of(EntityType.values())
                 .filter(entityType -> !entityType.equals(EntityType.STT))
                 .map(EntityType::getType).forEach(val -> {
-            IndexOperations indexOperations = mongoTemplate.indexOps(val);
-            List<IndexInfo> indexInfo = indexOperations.getIndexInfo();
-            if (indexInfo.stream().anyMatch(info -> info.getName().equals("data.entityid_1"))) {
-                indexOperations.dropIndex("data.entityid_1");
-            }
-            indexOperations.ensureIndex(new Index("data.entityid", Sort.Direction.ASC).unique()
-                    .collation(Collation.of("en").strength(2)));
-        });
+                    IndexOperations indexOperations = mongoTemplate.indexOps(val);
+                    List<IndexInfo> indexInfo = indexOperations.getIndexInfo();
+                    if (indexInfo.stream().anyMatch(info -> info.getName().equals("data.entityid_1"))) {
+                        indexOperations.dropIndex("data.entityid_1");
+                    }
+                    indexOperations.ensureIndex(new Index("data.entityid", Sort.Direction.ASC).unique()
+                            .collation(Collation.of("en").strength(2)));
+                });
     }
 
     @SneakyThrows
@@ -183,6 +178,16 @@ public class MongoChangelog {
         scopes.forEach(scope -> {
             scope.update(scope);
             mongoTemplate.save(scope);
+        });
+    }
+
+    @ChangeSet(order = "010", id = "createChangeRequestsCollections", author = "okke.harsta@surf.nl")
+    public void createChangeRequestsCollections(MongockTemplate mongoTemplate) {
+        Stream.of(EntityType.values()).forEach(entityType -> {
+            String revisionCollection = entityType.getType().concat(REVISION_POSTFIX);
+            if (!mongoTemplate.collectionExists(entityType.getType())) {
+                mongoTemplate.createCollection(revisionCollection);
+            }
         });
     }
 
