@@ -184,7 +184,7 @@ public class MongoChangelog {
     @ChangeSet(order = "010", id = "createChangeRequestsCollections", author = "okke.harsta@surf.nl")
     public void createChangeRequestsCollections(MongockTemplate mongoTemplate) {
         Stream.of(EntityType.values()).forEach(entityType -> {
-            String revisionCollection = entityType.getType().concat(REVISION_POSTFIX);
+            String revisionCollection = entityType.getType().concat(CHANGE_REQUEST_POSTFIX);
             if (!mongoTemplate.collectionExists(revisionCollection)) {
                 mongoTemplate.createCollection(revisionCollection);
             }
