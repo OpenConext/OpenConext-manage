@@ -21,6 +21,7 @@ import org.passay.CharacterRule;
 import org.passay.EnglishCharacterData;
 import org.passay.PasswordGenerator;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -78,6 +79,7 @@ public class ValidationController {
         return Arrays.asList(lowerCaseRule, upperCaseRule, digitRule);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/client/validation")
     public boolean validation(@Validated @RequestBody Validation validation) {
         return !validators.computeIfAbsent(validation.getType(), key -> {
@@ -85,6 +87,7 @@ public class ValidationController {
         }).validate(validation.getValue()).isPresent();
     }
 
+    @PreAuthorize("hasRole('USER')")
     @GetMapping(value = "/client/secret", produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, String> secret() {
         return Collections.singletonMap("secret", passwordGenerator.generatePassword(36, rules));

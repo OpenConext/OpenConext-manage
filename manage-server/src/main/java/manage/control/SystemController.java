@@ -71,6 +71,7 @@ public class SystemController {
         return databaseController.doPush();
     }
 
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/client/playground/validate")
     public Map<String, Object> validate(FederatedUser federatedUser) {
         if (!federatedUser.featureAllowed(Features.VALIDATION)) {
@@ -110,6 +111,7 @@ public class SystemController {
         });
     }
 
+    @PreAuthorize("hasAnyRole('USER', 'READ')")
     @GetMapping({"/client/playground/orphans", "/internal/playground/orphans"})
     public List<OrphanMetaData> orphans() {
         return Stream.of(EntityType.values())
