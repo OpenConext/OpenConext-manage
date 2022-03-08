@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,22 +39,26 @@ public class UserController {
     @Value("${gui.disclaimer.content}")
     private String disclaimerContent;
 
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/client/users/me")
     public FederatedUser me(FederatedUser federatedUser) {
         return federatedUser;
     }
 
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/client/users/ping")
     public Map<String, String> ping() {
         return Collections.singletonMap("Ping", "Ok");
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/client/users/logout")
     public void logout(HttpServletRequest request) {
         request.getSession().invalidate();
         SecurityContextHolder.clearContext();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/client/users/error")
     public void error(@RequestBody Map<String, Object> payload, FederatedUser federatedUser) throws
             JsonProcessingException, UnknownHostException {

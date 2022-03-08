@@ -65,17 +65,20 @@ public class MetaDataController {
 
     }
 
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/client/template/{type}")
     public MetaData template(@PathVariable("type") String type) {
         Map<String, Object> data = metaDataAutoConfiguration.metaDataTemplate(type);
         return new MetaData(type, data);
     }
 
+    @PreAuthorize("hasAnyRole('USER', 'READ')")
     @GetMapping({"/client/metadata/{type}/{id}", "/internal/metadata/{type}/{id}"})
     public MetaData get(@PathVariable("type") String type, @PathVariable("id") String id) {
         return metaDataService.getMetaDataAndValidate(type, id);
     }
 
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/client/metadata/configuration")
     public List<Map<String, Object>> configuration() {
         return metaDataAutoConfiguration.schemaRepresentations();
@@ -102,6 +105,7 @@ public class MetaDataController {
         return metaDataService.doPut(metaData, federatedUser.getUid(), false);
     }
 
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/client/metadata/stats")
     public List<StatsEntry> stats() {
         return metaDataRepository.stats();
@@ -137,6 +141,7 @@ public class MetaDataController {
         return Collections.singletonMap("deleted", deleted);
     }
 
+    @PreAuthorize("hasRole('USER')")
     @GetMapping(value = "/client/count/feed")
     public Map<String, Long> countFeed() {
         long count = this.metaDataRepository.countAllImportedServiceProviders();
@@ -169,12 +174,14 @@ public class MetaDataController {
         return metaDataService.doPut(metaData, apiUser.getName(), !apiUser.getScopes().contains(TEST));
     }
 
+    @PreAuthorize("hasRole('READ')")
     @GetMapping("/internal/sp-metadata/{id}")
     public String exportXml(@PathVariable("id") String id) throws IOException {
         MetaData metaData = metaDataService.getMetaDataAndValidate(EntityType.SP.getType(), id);
         return exporterService.exportToXml(metaData);
     }
 
+    @PreAuthorize("hasRole('READ')")
     @GetMapping(value = "/internal/xml/metadata/{type}/{id}", produces = "text/xml")
     public String exportMetadataXml(@PathVariable("type") String type,
                                     @PathVariable("id") String id) throws IOException {
@@ -337,6 +344,7 @@ public class MetaDataController {
         return metaDataService.restoreRevision(revisionRestore, federatedUser);
     }
 
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/client/revisions/{type}/{parentId}")
     public List<MetaData> revisions(@PathVariable("type") String type,
                                     @PathVariable("parentId") String parentId) {
@@ -344,6 +352,7 @@ public class MetaDataController {
         return metaDataRepository.revisions(type.concat(REVISION_POSTFIX), parentId);
     }
 
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/client/autocomplete/{type}")
     public Map<String, List<Map>> autoCompleteEntities(@PathVariable("type") String type,
                                                        @RequestParam("query") String query) {
@@ -351,17 +360,20 @@ public class MetaDataController {
         return metaDataService.autoCompleteEntities(type, query);
     }
 
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/client/whiteListing/{type}")
     public List<Map> whiteListing(@PathVariable("type") String type, @RequestParam(value = "state") String state) {
         return metaDataRepository.whiteListing(type, state);
     }
 
+    @PreAuthorize("hasAnyRole('USER', 'READ')")
     @PostMapping({"/client/uniqueEntityId/{type}", "/internal/uniqueEntityId/{type}"})
     public List<Map> uniqueEntityId(@PathVariable("type") String type, @RequestBody Map<String, Object> properties) {
         String entityId = (String) properties.get("entityid");
         return metaDataService.uniqueEntityId(type, entityId);
     }
 
+    @PreAuthorize("hasAnyRole('USER', 'READ')")
     @PostMapping({"/client/search/{type}", "/internal/search/{type}"})
     public List<Map> searchEntities(@PathVariable("type") String type,
                                     @RequestBody Map<String, Object> properties,
@@ -370,6 +382,7 @@ public class MetaDataController {
         return metaDataService.searchEntityByType(type, properties, nested);
     }
 
+    @PreAuthorize("hasAnyRole('USER', 'READ')")
     @GetMapping({"/client/rawSearch/{type}", "/internal/rawSearch/{type}"})
     public List<MetaData> rawSearch(@PathVariable("type") String type, @RequestParam("query") String query)
             throws UnsupportedEncodingException {
@@ -377,6 +390,7 @@ public class MetaDataController {
         return metaDataService.retrieveRawSearch(type, query);
     }
 
+    @PreAuthorize("hasAnyRole('USER', 'READ')")
     @PostMapping({"/client/recent-activity", "/internal/recent-activity"})
     public List<MetaData> recentActivity(@RequestBody(required = false) Map<String, Object> properties) {
         return metaDataService.retrieveRecentActivity(properties);

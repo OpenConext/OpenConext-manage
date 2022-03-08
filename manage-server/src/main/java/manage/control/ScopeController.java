@@ -19,6 +19,7 @@ import org.springframework.data.mongodb.core.query.BasicQuery;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -60,16 +61,19 @@ public class ScopeController {
         this.supportedLanguages = Stream.of(supportedLanguages.split(",")).map(String::trim).collect(toList());
     }
 
+    @PreAuthorize("hasRole('USER')")
     @GetMapping({"/client/scopes_languages"})
     public List<String> supportedLanguages() {
         return supportedLanguages;
     }
 
+    @PreAuthorize("hasAnyRole('USER', 'READ')")
     @GetMapping({"/client/scopes", "/internal/scopes"})
     public List<Scope> allScopes() {
         return scopeRepository.findAll();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping({"/client/scopes/{id}"})
     public boolean delete(@PathVariable("id") String id) throws JsonProcessingException {
         Scope scope = scopeById(id);
@@ -84,16 +88,19 @@ public class ScopeController {
         return scope;
     }
 
+    @PreAuthorize("hasRole('USER')")
     @GetMapping(value = "/client/fetch/scopes", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<String> fetchValues() {
         return scopeRepository.findAll().stream().map(Scope::getName).collect(Collectors.toList());
     }
 
+    @PreAuthorize("hasRole('USER')")
     @GetMapping({"/client/scopes/{id}"})
     public Scope get(@PathVariable("id") String id) {
         return scopeById(id);
     }
 
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/client/inuse/scopes")
     public List<MetaData> scopesInUse(@RequestParam(value = "scopes") String scopes) {
         String scopesIn = Stream.of(scopes.split(",")).map(s -> String.format("\"%s\"", s.trim())).collect(Collectors.joining(","));
@@ -101,6 +108,7 @@ public class ScopeController {
         return mongoTemplate.find(new BasicQuery(query), MetaData.class, RS.getType());
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping({"/client/scopes"})
     public Scope update(@RequestBody Scope scope) throws JsonProcessingException {
         Scope previous = scopeById(scope.getId());
@@ -120,6 +128,7 @@ public class ScopeController {
         }
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping({"/client/scopes"})
     public Scope save(@RequestBody Scope scope) {
         LOG.info("Saving scope {}", scope);
