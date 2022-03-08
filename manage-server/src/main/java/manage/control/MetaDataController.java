@@ -396,7 +396,7 @@ public class MetaDataController {
         return metaDataService.retrieveRecentActivity(properties);
     }
 
-    @Secured("WRITE")
+    @Secured("ROLE_WRITE")
     @PutMapping(value = "/internal/connectWithoutInteraction")
     public HttpEntity<HttpStatus> connectWithoutInteraction(@RequestBody Map<String, String> connectionData,
                                                             APIUser apiUser) throws JsonProcessingException {
