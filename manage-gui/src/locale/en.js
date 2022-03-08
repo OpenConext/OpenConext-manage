@@ -363,7 +363,7 @@ I18n.translations.en = {
     changeRequests: {
         searchPlaceHolder: "Search for change requests",
         info: "All outstanding change requests of {{name}}",
-        noChangeRequests: "There are no outstanding change requests",
+        noChangeRequests: "There are no pending change requests",
         created: "Created",
         apiClient: "API client",
         changes: "Changes",
