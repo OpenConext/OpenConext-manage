@@ -126,7 +126,7 @@ class ChangeRequests extends React.PureComponent {
     </div>;
 
     renderNoResults = () => <section className="explanation">
-        <p>There are no outstanding change requests.</p>
+        <p>{I18n.t("changeRequests.noChangeRequests")}.</p>
     </section>;
 
     render() {
