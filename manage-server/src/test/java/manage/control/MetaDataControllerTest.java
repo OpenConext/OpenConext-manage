@@ -1136,6 +1136,29 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void connectValidSpWithoutInteractionInvalidApiUser() {
+        String idpEntityId = "https://idp.test2.surfconext.nl";
+        String spId = "Duis ad do";
+        String spType = "saml20_sp";
+        Map<String, String> connectionData = new HashMap<>();
+        connectionData.put("idpId", idpEntityId);
+        connectionData.put("spId", spId);
+        connectionData.put("spType", spType);
+        connectionData.put("user", "John Doe");
+        connectionData.put("loaLevel", "http://test.surfconext.nl/assurance/loa2");
+
+        given()
+                .auth()
+                .preemptive()
+                .basic("stats", "secret")
+                .header("Content-type", "application/json")
+                .body(connectionData)
+                .put("manage/api/internal/connectWithoutInteraction/")
+                .then()
+                .statusCode(SC_FORBIDDEN);
+    }
+
+    @Test
     public void exportMetadataXml() throws IOException {
         given()
                 .config(newConfig().xmlConfig(xmlConfig()
