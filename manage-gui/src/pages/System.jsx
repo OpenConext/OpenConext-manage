@@ -166,8 +166,9 @@ export default class System extends React.PureComponent {
     doRestoreDeleted = (id, revisionType, parentType, number) => () => {
         this.setState({confirmationDialogOpen: false});
         restoreDeletedRevision(id, revisionType, parentType).then(json => {
-            if (json.exception) {
+            if ((json.exception || json.error) && json.validations) {
                 setFlash(json.validations, "error");
+                window.scrollTo(0, 0);
             } else if (json.error) {
                 setFlash(json.message, "error");
             } else {
