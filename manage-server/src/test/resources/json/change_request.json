@@ -1,6 +1,6 @@
 {
-  "metaDataId" : "76171457-6ed5-4505-9071-9e0e47557985",
-  "type" : "saml20_sp",
+  "metaDataId" : "6",
+  "type" : "saml20_idp",
   "pathUpdates" : {
     "metaDataFields.description:en" : "Test notes"
   },

@@ -80,8 +80,9 @@ class MetaDataChangeRequests extends React.Component {
         let changeRequest = {id: id, type: entityType, metaDataId: metaData.id};
         const promise = accept ? acceptChangeRequest : rejectChangeRequest;
         promise(changeRequest).then(json => {
-            if (json.exception) {
+            if (json.exception || json.error) {
                 setFlash(json.validations, "error");
+                window.scrollTo(0, 0);
             } else {
                 const name = json.data.metaDataFields["name:en"] || json.data.metaDataFields["name:nl"] || "this service";
                 setFlash(I18n.t(`changeRequests.flash.${accept ? "accepted" : "rejected"}`, {
