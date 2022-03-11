@@ -15,6 +15,15 @@
 
   }
 
+  div.loading {
+    display: flex;
+    height: 40px;
+
+    span {
+      margin: auto;
+    }
+  }
+
   table.change-requests-table {
     width: 100%;
     table-layout: fixed;

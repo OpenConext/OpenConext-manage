@@ -165,12 +165,16 @@ class MetaDataChangeRequests extends React.Component {
     };
 
     render() {
-        const {requests, entityType, metaData} = this.props;
+        const {requests, entityType, metaData, changeRequestsLoaded} = this.props;
         const {
             showAllDetails, cancelDialogAction, confirmationDialogAction, confirmationDialogOpen,
             confirmationQuestion
         } = this.state;
-
+        if (!changeRequestsLoaded) {
+            return <div className="metadata-change-requests">
+                <div className="loading"><span>Loading...</span></div>
+            </div>
+        }
         return (
             <div className="metadata-change-requests">
                 <ConfirmationDialog isOpen={confirmationDialogOpen}
@@ -199,6 +203,7 @@ export default withRouterHooks(MetaDataChangeRequests);
 MetaDataChangeRequests.propTypes = {
     requests: PropTypes.array.isRequired,
     metaData: PropTypes.object.isRequired,
-    entityType: PropTypes.string.isRequired
+    entityType: PropTypes.string.isRequired,
+    changeRequestsLoaded: PropTypes.bool
 };
 

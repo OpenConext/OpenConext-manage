@@ -133,7 +133,8 @@ class Detail extends React.PureComponent {
             revisionNoteError: false,
             addedWhiteListedEntities: [],
             removedWhiteListedEntities: [],
-            whiteListingLoaded: false
+            whiteListingLoaded: false,
+            changeRequestsLoaded: false
         };
     }
 
@@ -220,7 +221,7 @@ class Detail extends React.PureComponent {
                             const requests = results[1];
                             requests.forEach(cr => cr.createdAt = new Date(cr.created));
                             requests.sort((a, b) => b.createdAt - a.createdAt);
-                            this.setState({revisions: revisions, requests: requests});
+                            this.setState({revisions: revisions, requests: requests, changeRequestsLoaded: true});
                         });
                 });
             })
@@ -675,7 +676,8 @@ class Detail extends React.PureComponent {
         whiteListing,
         revisions,
         requests,
-        revisionNoteClone
+        revisionNoteClone,
+        changeRequestsLoaded
     ) => {
         const configuration = this.props.configuration.find(
             conf => conf.title === this.state.type
@@ -831,6 +833,7 @@ class Detail extends React.PureComponent {
                     <MetaDataChangeRequests
                         requests={requests}
                         metaData={metaData}
+                        changeRequestsLoaded={changeRequestsLoaded}
                         entityType={type}
                     />
                 )
@@ -960,6 +963,7 @@ class Detail extends React.PureComponent {
             isNew,
             errors,
             revisionNoteClone,
+            changeRequestsLoaded,
             whiteListingLoaded
         } = this.state;
 
@@ -1068,6 +1072,7 @@ class Detail extends React.PureComponent {
                     revisions,
                     requests,
                     revisionNoteClone,
+                    changeRequestsLoaded
                 )}
                 {renderContent && this.renderActions(revisionNote)}
             </div>
