@@ -356,10 +356,12 @@ public class MetaDataService {
         return revision;
     }
 
-    private void checkForDuplicateEntityId(MetaData metData, boolean isNew) {
-        String entityid = (String) metData.getData().get("entityid");
-        List<Map> result = uniqueEntityId(metData.getType(), entityid);
-        if ((isNew && !CollectionUtils.isEmpty(result)) || (!isNew && result.size() > 1)) {
+    private void checkForDuplicateEntityId(MetaData metaData, boolean isNew) {
+        String entityid = (String) metaData.getData().get("entityid");
+        List<Map> matchingEntities = uniqueEntityId(metaData.getType(), entityid);
+        if ((isNew && !CollectionUtils.isEmpty(matchingEntities)) ||
+                (matchingEntities.size() == 1 && !matchingEntities.get(0).get("_id").equals(metaData.getId())) ||
+                matchingEntities.size() > 1) {
             throw new DuplicateEntityIdException(entityid);
         }
     }
