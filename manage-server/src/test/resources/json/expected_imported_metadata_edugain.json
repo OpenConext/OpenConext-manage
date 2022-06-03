@@ -60,6 +60,7 @@
     "AssertionConsumerService:1:Binding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Artifact",
     "AssertionConsumerService:1:Location": "https://wayf.nikhef.nl/sso/module.php/saml/sp/saml2-acs.php/default-sp",
     "AssertionConsumerService:1:index": 2,
+    "NameIDFormat": "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent",
     "OrganizationDisplayName:en": "Nikhef",
     "OrganizationDisplayName:nl": "Nikhef",
     "OrganizationName:en": "Nikhef - Dutch National Institute for Subatomic Physics",

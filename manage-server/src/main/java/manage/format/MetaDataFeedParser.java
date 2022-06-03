@@ -221,6 +221,9 @@ public class MetaDataFeedParser {
                                 }
                             }
                             break;
+                        case "NameIDFormat":
+                            metaDataFields.put("NameIDFormat", reader.getElementText());
+                            break;
                         case "SingleSignOnService":
                             if (!inCorrectEntityDescriptor || isSp) {
                                 break;
