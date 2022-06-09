@@ -5,8 +5,6 @@ import {Select} from "./../../components";
 import I18n from "i18n-js";
 import "./SelectState.scss";
 
-const states = ["prodaccepted", "testaccepted"];
-
 export default class SelectState extends React.PureComponent {
 
   renderOption = option => {
@@ -20,7 +18,7 @@ export default class SelectState extends React.PureComponent {
   };
 
   render() {
-    const {onChange, state, disabled} = this.props;
+    const {onChange, state, states, disabled} = this.props;
     const options = states.map(s => {
       return {value: s, label: I18n.t(`metadata.${s}`)};
     });
@@ -45,5 +43,6 @@ export default class SelectState extends React.PureComponent {
 SelectState.propTypes = {
   onChange: PropTypes.func.isRequired,
   state: PropTypes.string.isRequired,
+  states: PropTypes.array.isRequired,
   disabled: PropTypes.bool
 };

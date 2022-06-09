@@ -33,6 +33,7 @@ export default class Connection extends React.PureComponent {
     const isRelyingParty = type === "oidc10_rp";
     const isResourceServer = type === "oauth20_rs";
     const entityIdFormat = this.props.configuration.properties.entityid.format;
+    const states = this.props.configuration.properties.state.enum;
 
     const logo = data.metaDataFields["logo:0:url"];
     const name =
@@ -105,6 +106,7 @@ export default class Connection extends React.PureComponent {
                 <SelectState
                   onChange={this.onChange("data.state")}
                   state={data.state}
+                  states={states}
                   disabled={guest}
                 />
               </td>
