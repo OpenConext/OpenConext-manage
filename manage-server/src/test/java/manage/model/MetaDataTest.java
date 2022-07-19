@@ -61,6 +61,41 @@ public class MetaDataTest implements TestUtils {
     }
 
     @Test
+    public void mergeIncrementalMultipleAddition() {
+        List<Map<String, String>> allowedEntities = (List<Map<String, String>>) subject.getData().get("allowedEntities");
+        allowedEntities.add(Map.of("name", "existing_entity"));
+
+        Map<String, Object> pathUpdates = Map.of("allowedEntities",
+                List.of(Map.of("name", "new_entity"), Map.of("name", "new_entity2")));
+
+        MetaDataChangeRequest changeRequest = new MetaDataChangeRequest("id", "saml20_sp", "note", pathUpdates, Collections.emptyMap());
+        changeRequest.setIncrementalChange(true);
+        changeRequest.setPathUpdateType(PathUpdateType.ADDITION);
+
+        subject.merge(changeRequest);
+
+        assertEquals(3, allowedEntities.size());
+    }
+
+    @Test
+    public void mergeIncrementalMultipleRemoval() {
+        List<Map<String, String>> allowedEntities = (List<Map<String, String>>) subject.getData().get("allowedEntities");
+        allowedEntities.add(Map.of("name", "entity_1"));
+        allowedEntities.add(Map.of("name", "entity_2"));
+
+        Map<String, Object> pathUpdates = Map.of("allowedEntities",
+                List.of(Map.of("name", "entity_1"), Map.of("name", "entity_2")));
+
+        MetaDataChangeRequest changeRequest = new MetaDataChangeRequest("id", "saml20_sp", "note", pathUpdates, Collections.emptyMap());
+        changeRequest.setIncrementalChange(true);
+        changeRequest.setPathUpdateType(PathUpdateType.REMOVAL);
+
+        subject.merge(changeRequest);
+
+        assertEquals(0, allowedEntities.size());
+    }
+
+    @Test
     public void mergeIncrementalAdditionNewAttribute() {
         subject.getData().remove("allowedEntities");
 

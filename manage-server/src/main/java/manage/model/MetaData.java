@@ -113,15 +113,23 @@ public class MetaData implements Serializable {
             }
             if (pathUpdates.isIncrementalChange()) {
                 List<Map<String, Object>> referenceValue = (List<Map<String, Object>>) ((Map) reference).get(property);
-                Map<String, Object> valueMap = (Map<String, Object>) value;
                 if (PathUpdateType.ADDITION.equals(pathUpdates.getPathUpdateType())) {
                     if (referenceValue == null) {
                         referenceValue = new ArrayList<>();
                         ((Map) reference).put(property, referenceValue);
                     }
-                    referenceValue.add(valueMap);
+                    if (value instanceof Map) {
+                        referenceValue.add((Map) value);
+                    } else if (value instanceof List) {
+                        referenceValue.addAll((List) value);
+                    }
                 } else if (referenceValue != null) {
-                    referenceValue.removeIf(m -> m.get("name").equals(valueMap.get("name")));
+                    if (value instanceof Map) {
+                        referenceValue.removeIf(m -> m.get("name").equals(((Map) value).get("name")));
+                    } else if (value instanceof List) {
+                        List<Map<String, Object>> valueList = (List<Map<String, Object>>) value;
+                        referenceValue.removeIf(m -> valueList.stream().anyMatch(ms -> ms.get("name").equals(m.get("name"))));
+                    }
                 }
             } else {
                 if (value == null) {
