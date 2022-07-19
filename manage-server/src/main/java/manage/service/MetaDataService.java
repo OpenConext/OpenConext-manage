@@ -302,8 +302,12 @@ public class MetaDataService {
         MetaData metaData = metaDataRepository.findById(id, metaDataChangeRequest.getType());
         checkNull(metaDataChangeRequest.getType(), id, metaData);
 
+        if (metaDataChangeRequest.isIncrementalChange()) {
+            //new style
+        } else {
+            metaData.merge(metaDataChangeRequest);
+        }
         //fail fast if there are validation errors
-        metaData.merge(metaDataChangeRequest);
         validate(metaData);
 
         metaDataChangeRequest.getAuditData().put("userName", user.getName());

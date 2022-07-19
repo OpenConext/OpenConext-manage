@@ -1319,6 +1319,68 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         assertEquals(0, requests.size());
     }
 
+    @Test
+    public void changeRequestAddition() {
+        Map<String, Object> pathUpdates = Map.of("allowedEntities", Map.of("name", "https://idp.test2.surfconext.nl"));
+        Map<String, Object> auditData = Map.of("user", "jdoe");
+
+        MetaDataChangeRequest changeRequest = new MetaDataChangeRequest(
+                "2", EntityType.SP.getType(), "Because....", pathUpdates, auditData
+        );
+        changeRequest.setIncrementalChange(true);
+        changeRequest.setPathUpdateType(PathUpdateType.ADDITION);
+
+        Map results = given().auth().preemptive().basic("sp-portal", "secret")
+                .when()
+                .body(changeRequest)
+                .header("Content-type", "application/json")
+                .post("manage/api/internal/change-requests")
+                .as(Map.class);
+
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .body(new ChangeRequest((String) results.get("id"), EntityType.SP.getType(), "2"))
+                .put("/manage/api/client/change-requests/accept")
+                .then()
+                .statusCode(200);
+
+        MetaData metaData = metaDataRepository.findById("2", EntityType.SP.getType());
+        List<Map<String, String>> allowedEntities = (List<Map<String, String>>) metaData.getData().get("allowedEntities");
+        assertEquals(2, allowedEntities.size());
+    }
+
+    @Test
+    public void changeRequestRemoval() {
+        Map<String, Object> pathUpdates = Map.of("allowedEntities", Map.of("name", "http://mock-idp"));
+        Map<String, Object> auditData = Map.of("user", "jdoe");
+
+        MetaDataChangeRequest changeRequest = new MetaDataChangeRequest(
+                "2", EntityType.SP.getType(), "Because....", pathUpdates, auditData
+        );
+        changeRequest.setIncrementalChange(true);
+        changeRequest.setPathUpdateType(PathUpdateType.REMOVAL);
+
+        Map results = given().auth().preemptive().basic("sp-portal", "secret")
+                .when()
+                .body(changeRequest)
+                .header("Content-type", "application/json")
+                .post("manage/api/internal/change-requests")
+                .as(Map.class);
+
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .body(new ChangeRequest((String) results.get("id"), EntityType.SP.getType(), "2"))
+                .put("/manage/api/client/change-requests/accept")
+                .then()
+                .statusCode(200);
+
+        MetaData metaData = metaDataRepository.findById("2", EntityType.SP.getType());
+        List<Map<String, String>> allowedEntities = (List<Map<String, String>>) metaData.getData().get("allowedEntities");
+        assertEquals(0, allowedEntities.size());
+    }
+
     private void doCreateChangeRequest() {
         Map<String, Object> pathUpdates = new HashMap<>();
         pathUpdates.put("metaDataFields.description:en", "New description");

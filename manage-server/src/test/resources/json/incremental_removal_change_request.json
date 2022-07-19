@@ -1,0 +1,15 @@
+{
+  "metaDataId": "1",
+  "type": "saml20_sp",
+  "incrementalChange": true,
+  "pathUpdateType": "REMOVAL",
+  "pathUpdates": {
+    "allowedEntities": {
+      "name": "http://allowed2"
+    }
+  },
+  "auditData": {
+    "user": "jdoe"
+  },
+  "note": "Optional note describing the reason for this change"
+}

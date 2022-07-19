@@ -98,6 +98,14 @@ const originalValue = (data, acc, key, value) => {
 
 /*
  * Given input:
+ *
+ */
+export function calculateDiffObject(data, nestedChangeRequest, pathUpdateType) {
+
+}
+
+/*
+ * Given input:
  * data: {a:"b",c:{d: "val", ign: "x"},ign: [1,2,3]}
  * nestedChangeRequest: {a:"x",c:{d: "changed"},extra: [1]}
  *

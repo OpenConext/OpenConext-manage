@@ -37,11 +37,13 @@
       background-color: $lightest-grey;
 
       &.created {
-        width: 20%;
+        width: 15%;
       }
-
+      &.incremental {
+        width: 10%;
+      }
       &.apiClient {
-        width: 20%;
+        width: 15%;
       }
 
       &.changes {

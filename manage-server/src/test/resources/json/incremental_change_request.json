@@ -1,0 +1,15 @@
+{
+  "metaDataId": "1",
+  "type": "saml20_sp",
+  "incrementalChange": true,
+  "pathUpdateType": "ADDITION",
+  "pathUpdates": {
+    "allowedEntities": {
+      "name": "http://mock-idp"
+    }
+  },
+  "auditData": {
+    "user": "jdoe"
+  },
+  "note": "Optional note describing the reason for this change"
+}

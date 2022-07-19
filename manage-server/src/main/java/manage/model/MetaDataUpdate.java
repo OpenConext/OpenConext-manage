@@ -31,4 +31,14 @@ public class MetaDataUpdate implements PathUpdates {
     public String getMetaDataId() {
         return id;
     }
+
+    @Override
+    public boolean isIncrementalChange() {
+        return false;
+    }
+
+    @Override
+    public PathUpdateType getPathUpdateType() {
+        return null;
+    }
 }

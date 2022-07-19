@@ -29,6 +29,10 @@ public class MetaDataChangeRequest implements PathUpdates {
 
     private String note;
 
+    private boolean incrementalChange;
+
+    private PathUpdateType pathUpdateType;
+
     @NotNull
     private Map<String, Object> pathUpdates;
 
@@ -54,6 +58,14 @@ public class MetaDataChangeRequest implements PathUpdates {
 
     public void setCreated(Instant created) {
         this.created = created;
+    }
+
+    public void setIncrementalChange(boolean incrementalChange) {
+        this.incrementalChange = incrementalChange;
+    }
+
+    public void setPathUpdateType(PathUpdateType pathUpdateType) {
+        this.pathUpdateType = pathUpdateType;
     }
 
     @Override

@@ -366,6 +366,7 @@ I18n.translations.en = {
         noChangeRequests: "There are no pending change requests",
         created: "Created",
         apiClient: "API client",
+        incremental: "Incremental",
         changes: "Changes",
         nope: "",
         note: "Notes",

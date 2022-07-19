@@ -303,7 +303,8 @@ public class MetaDataController {
     public MetaData acceptChangeRequest(@RequestBody @Validated ChangeRequest changeRequest, FederatedUser user) throws JsonProcessingException {
         String name = user.getName();
         String collectionName = changeRequest.getType().concat(CHANGE_REQUEST_POSTFIX);
-        MetaDataChangeRequest metaDataChangeRequest = metaDataRepository.getMongoTemplate().findById(changeRequest.getId(), MetaDataChangeRequest.class, collectionName);
+        MetaDataChangeRequest metaDataChangeRequest = metaDataRepository.getMongoTemplate()
+                .findById(changeRequest.getId(), MetaDataChangeRequest.class, collectionName);
 
         MetaData metaData = metaDataService
                 .doMergeUpdate(metaDataChangeRequest, name, "Change request API merge", true)

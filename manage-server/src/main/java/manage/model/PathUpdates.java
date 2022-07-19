@@ -13,5 +13,7 @@ public interface PathUpdates extends Serializable {
 
     Map<String, Object> getPathUpdates();
 
+    boolean isIncrementalChange();
 
+    PathUpdateType getPathUpdateType();
 }

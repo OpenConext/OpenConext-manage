@@ -104,20 +104,35 @@ class MetaDataChangeRequests extends React.Component {
         });
     };
 
-    renderDiff = (changeRequest, metaData) => {
+    renderDiff = (request, metaData) => {
+        const pathUpdates = request.pathUpdates
         const data = cloneDeep(metaData.data);
-        const request = collapseDotKeys(cloneDeep(changeRequest));
+        const newData = collapseDotKeys(cloneDeep(pathUpdates));
         sortDict(data);
-        sortDict(request);
-        const originalDict = createDiffObject(data, request);
-        const diffs = this.differ.diff(originalDict, request);
+        sortDict(newData);
+        let diffs;
+        if (request.incrementalChange) {
+            if (request.pathUpdateType === "ADDITION") {
+                diffs = this.differ.diff({}, newData);
+            } else {
+                diffs = this.differ.diff(newData, {});
+            }
+        } else {
+            const originalDict = createDiffObject(data, newData);
+            diffs = this.differ.diff(originalDict, newData);
+        }
         const html = formatters.html.format(diffs);
         return diffs ? <p dangerouslySetInnerHTML={{__html: html}}/> : <p>{I18n.t("changeRequests.identical")}</p>
     };
 
+    requestToJson = request => {
+        const type = request.incrementalChange ? request.pathUpdateType : "REPLACEMENT";
+        return {type: type, pathUpdates: request.pathUpdates};
+    }
+
     renderChangeRequestTable = (request, entityType, metaData, i) => {
         const showDetail = this.state.showChangeRequests[request.id];
-        const headers = ["created", "apiClient", "changes", "note", "nope"];
+        const headers = ["created", "apiClient", "incremental", "changes", "note", "nope"];
         return (
             <table className="change-requests-table" key={request.id}>
                 <thead>
@@ -130,7 +145,8 @@ class MetaDataChangeRequests extends React.Component {
                 <tr>
                     <td>{new Date(request.created).toGMTString()}</td>
                     <td>{request.auditData.userName}</td>
-                    <td><ReactJson src={request.pathUpdates} name="pathUpdates" collapsed={true}/></td>
+                    <td><CheckBox name={"incremental"} readOnly={true} value={request.incrementalChange || false}/></td>
+                    <td><ReactJson src={this.requestToJson(request)} name="changeRequest" collapsed={true}/></td>
                     <td className="info">
                         {isEmpty(request.note) ? <span></span> :
                             <NotesTooltip identifier={request.id} notes={request.note}/>}
@@ -157,7 +173,7 @@ class MetaDataChangeRequests extends React.Component {
                 {showDetail &&
                 <tr>
                     <td className="diff"
-                        colSpan={headers.length}>{this.renderDiff(request.pathUpdates, metaData)}</td>
+                        colSpan={headers.length}>{this.renderDiff(request, metaData)}</td>
                 </tr>}
                 </tbody>
             </table>

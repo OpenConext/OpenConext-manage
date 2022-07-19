@@ -111,12 +111,25 @@ public class MetaData implements Serializable {
                     property = part;
                 }
             }
-            if (value == null) {
-                ((Map) reference).remove(property);
+            if (pathUpdates.isIncrementalChange()) {
+                List<Map<String, Object>> referenceValue = (List<Map<String, Object>>) ((Map) reference).get(property);
+                Map<String, Object> valueMap = (Map<String, Object>) value;
+                if (PathUpdateType.ADDITION.equals(pathUpdates.getPathUpdateType())) {
+                    if (referenceValue == null) {
+                        referenceValue = new ArrayList<>();
+                        ((Map) reference).put(property, referenceValue);
+                    }
+                    referenceValue.add(valueMap);
+                } else if (referenceValue != null) {
+                    referenceValue.removeIf(m -> m.get("name").equals(valueMap.get("name")));
+                }
             } else {
-                ((Map) reference).put(property, value);
+                if (value == null) {
+                    ((Map) reference).remove(property);
+                } else {
+                    ((Map) reference).put(property, value);
+                }
             }
-
         });
     }
 
