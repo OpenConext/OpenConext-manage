@@ -1381,6 +1381,42 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         assertEquals(0, allowedEntities.size());
     }
 
+    @Test
+    public void changeRequestRemovalMultiple() {
+        MetaData currentMetaData = metaDataRepository.findById("6", EntityType.IDP.getType());
+        List<Map<String, String>> currentAllowedEntities = (List<Map<String, String>>) currentMetaData.getData().get("allowedEntities");
+        assertEquals(3, currentAllowedEntities.size());
+
+        Map<String, Object> pathUpdates = Map.of("allowedEntities",
+                List.of(Map.of("name", "https://oidc.test.client"), Map.of("name", "http://mock-sp")));
+        Map<String, Object> auditData = Map.of("user", "jdoe");
+
+        MetaDataChangeRequest changeRequest = new MetaDataChangeRequest(
+                "6", EntityType.IDP.getType(), "Because....", pathUpdates, auditData
+        );
+        changeRequest.setIncrementalChange(true);
+        changeRequest.setPathUpdateType(PathUpdateType.REMOVAL);
+
+        Map results = given().auth().preemptive().basic("sp-portal", "secret")
+                .when()
+                .body(changeRequest)
+                .header("Content-type", "application/json")
+                .post("manage/api/internal/change-requests")
+                .as(Map.class);
+
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .body(new ChangeRequest((String) results.get("id"), EntityType.IDP.getType(), "6"))
+                .put("/manage/api/client/change-requests/accept")
+                .then()
+                .statusCode(200);
+
+        MetaData metaData = metaDataRepository.findById("6", EntityType.IDP.getType());
+        List<Map<String, String>> allowedEntities = (List<Map<String, String>>) metaData.getData().get("allowedEntities");
+        assertEquals(0, allowedEntities.size());
+    }
+
     private void doCreateChangeRequest() {
         Map<String, Object> pathUpdates = new HashMap<>();
         pathUpdates.put("metaDataFields.description:en", "New description");
