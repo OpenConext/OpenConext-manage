@@ -57,6 +57,7 @@ public class MetaDataTest implements TestUtils {
 
         subject.merge(changeRequest);
 
+        allowedEntities = (List<Map<String, String>>) subject.getData().get("allowedEntities");
         assertEquals(2, allowedEntities.size());
     }
 
@@ -74,6 +75,7 @@ public class MetaDataTest implements TestUtils {
 
         subject.merge(changeRequest);
 
+        allowedEntities = (List<Map<String, String>>) subject.getData().get("allowedEntities");
         assertEquals(3, allowedEntities.size());
     }
 
@@ -138,6 +140,46 @@ public class MetaDataTest implements TestUtils {
 
         subject.merge(changeRequest);
         assertFalse(subject.getData().containsKey("allowedEntities"));
+
+    }
+
+    @Test
+    public void mergeIncrementalAdditionUpdate() {
+        subject.getData().put("stepupEntities",
+                List.of(Map.of("name", "entity_id", "level", "loa2")));
+
+        Map<String, Object> pathUpdates = Map.of("stepupEntities", Map.of("name", "entity_id", "level", "loa3"));
+        MetaDataChangeRequest changeRequest = new MetaDataChangeRequest("id", "saml20_sp", "note", pathUpdates, Collections.emptyMap());
+        changeRequest.setIncrementalChange(true);
+        changeRequest.setPathUpdateType(PathUpdateType.ADDITION);
+
+        subject.merge(changeRequest);
+
+        List<Map<String, String>> stepupEntities = (List<Map<String, String>>) subject.getData().get("stepupEntities");
+        assertEquals(1, stepupEntities.size());
+        assertEquals("loa3", stepupEntities.get(0).get("level"));
+    }
+
+    @Test
+    public void mergeIncrementalAdditionUpdateMultiple() {
+        subject.getData().put("stepupEntities",
+                List.of(Map.of("name", "entity_id", "level", "loa2"),
+                        Map.of("name", "sp_id", "level", "loa2")));
+
+        Map<String, Object> pathUpdates = Map.of("stepupEntities",
+                List.of(Map.of("name", "entity_id", "level", "loa3"),
+                        Map.of("name", "sp_id", "level", "loa3")));
+        MetaDataChangeRequest changeRequest = new MetaDataChangeRequest("id", "saml20_sp", "note", pathUpdates, Collections.emptyMap());
+        changeRequest.setIncrementalChange(true);
+        changeRequest.setPathUpdateType(PathUpdateType.ADDITION);
+
+        subject.merge(changeRequest);
+
+        List<Map<String, String>> stepupEntities = (List<Map<String, String>>) subject.getData().get("stepupEntities");
+        assertEquals(2, stepupEntities.size());
+        stepupEntities.forEach(entity -> {
+            assertEquals("loa3", entity.get("level"));
+        });
 
     }
 

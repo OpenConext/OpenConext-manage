@@ -116,11 +116,17 @@ public class MetaData implements Serializable {
                 if (PathUpdateType.ADDITION.equals(pathUpdates.getPathUpdateType())) {
                     if (referenceValue == null) {
                         referenceValue = new ArrayList<>();
-                        ((Map) reference).put(property, referenceValue);
+                    } else {
+                        //we need top copy in case the referenceValue is immutable
+                        referenceValue = new ArrayList<>(referenceValue);
                     }
+                    //In case for example a Loa, the level could be updated. So first remove any existing one's, but
+                    ((Map) reference).put(property, referenceValue);
                     if (value instanceof Map) {
+                        referenceValue.removeIf((ref -> ref.get("name").equals(((Map) value).get("name"))));
                         referenceValue.add((Map) value);
                     } else if (value instanceof List) {
+                        referenceValue.removeIf(ref -> ((List) value).stream().anyMatch(m -> ref.get("name").equals(((Map) m).get("name"))));
                         referenceValue.addAll((List) value);
                     }
                 } else if (referenceValue != null) {
