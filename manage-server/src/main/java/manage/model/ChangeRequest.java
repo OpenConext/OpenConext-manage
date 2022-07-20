@@ -11,12 +11,6 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 public class ChangeRequest {
 
-    public ChangeRequest(String id, String type, String metaDataId) {
-        this.id = id;
-        this.type = type;
-        this.metaDataId = metaDataId;
-    }
-
     @NotNull
     private String id;
 

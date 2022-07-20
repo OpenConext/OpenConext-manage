@@ -5,14 +5,20 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-    padding: 25px;
+    padding: 0 25px;
 
     p {
-        margin-bottom: 10px;
+        line-height: 22px;
+        font-size: 15px;
+        margin-bottom: 5px;
     }
 
     textarea {
         min-height: 175px;
+        border: 1px solid #d9d9d8;
+        padding: 6px;
+        border-radius: 3px;
+        font-family: "Roboto", Sans-serif, serif;
     }
 }
 

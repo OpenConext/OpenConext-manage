@@ -1216,7 +1216,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         given()
                 .when()
                 .contentType(ContentType.JSON)
-                .body(new ChangeRequest(metaDataChangeRequest.getId(), EntityType.SP.getType(), metaDataChangeRequest.getMetaDataId()))
+                .body(new ChangeRequest(metaDataChangeRequest.getId(), EntityType.SP.getType(), metaDataChangeRequest.getMetaDataId(), "Rev notes"))
                 .put("/manage/api/client/change-requests/accept")
                 .then()
                 .statusCode(200);
@@ -1258,7 +1258,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         given()
                 .when()
                 .contentType(ContentType.JSON)
-                .body(new ChangeRequest((String) results.get("id"), EntityType.IDP.getType(), "6"))
+                .body(new ChangeRequest((String) results.get("id"), EntityType.IDP.getType(), "6", "Rev notes"))
                 .put("/manage/api/client/change-requests/accept")
                 .then()
                 .statusCode(200);
@@ -1290,7 +1290,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         given()
                 .when()
                 .contentType(ContentType.JSON)
-                .body(new ChangeRequest((String) results.get("id"), EntityType.IDP.getType(), "6"))
+                .body(new ChangeRequest((String) results.get("id"), EntityType.IDP.getType(), "6", "Rev notes"))
                 .put("/manage/api/client/change-requests/accept")
                 .then()
                 .statusCode(200);
@@ -1307,7 +1307,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         given()
                 .when()
                 .contentType(ContentType.JSON)
-                .body(new ChangeRequest(metaDataChangeRequest.getId(), EntityType.SP.getType(), metaDataChangeRequest.getMetaDataId()))
+                .body(new ChangeRequest(metaDataChangeRequest.getId(), EntityType.SP.getType(), metaDataChangeRequest.getMetaDataId(), "Rev notes"))
                 .put("/manage/api/client/change-requests/reject")
                 .then()
                 .statusCode(200);
@@ -1340,7 +1340,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         given()
                 .when()
                 .contentType(ContentType.JSON)
-                .body(new ChangeRequest((String) results.get("id"), EntityType.SP.getType(), "2"))
+                .body(new ChangeRequest((String) results.get("id"), EntityType.SP.getType(), "2", "Rev notes"))
                 .put("/manage/api/client/change-requests/accept")
                 .then()
                 .statusCode(200);
@@ -1371,7 +1371,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         given()
                 .when()
                 .contentType(ContentType.JSON)
-                .body(new ChangeRequest((String) results.get("id"), EntityType.SP.getType(), "2"))
+                .body(new ChangeRequest((String) results.get("id"), EntityType.SP.getType(), "2", "Rev notes"))
                 .put("/manage/api/client/change-requests/accept")
                 .then()
                 .statusCode(200);
@@ -1407,7 +1407,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         given()
                 .when()
                 .contentType(ContentType.JSON)
-                .body(new ChangeRequest((String) results.get("id"), EntityType.IDP.getType(), "6"))
+                .body(new ChangeRequest((String) results.get("id"), EntityType.IDP.getType(), "6", "Rev notes"))
                 .put("/manage/api/client/change-requests/accept")
                 .then()
                 .statusCode(200);
