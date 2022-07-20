@@ -189,7 +189,9 @@ class MetaDataChangeRequests extends React.Component {
         return (
             <div className={"accept-notes"}>
                 <p>{I18n.t("changeRequests.revisionNotes")}</p>
-                <textarea name={"acceptance-notes"} value={revisionNotes}
+                <textarea name={"acceptance-notes"}
+                          value={revisionNotes}
+                          placeholder={I18n.t("changeRequests.revisionNotesPlaceholder")}
                           onChange={e => this.setState({revisionNotes: e.target.value})} />
 
             </div>
