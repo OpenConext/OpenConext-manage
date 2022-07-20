@@ -23,10 +23,6 @@
     margin-right: 15px;
   }
 
-  &.disabled {
-    cursor: no-drop;
-  }
-
   i {
     margin-left: 10px;
     color: $medium-grey;
@@ -44,6 +40,11 @@
     i {
       color: white;
     }
+  }
+
+  &.disabled {
+    cursor: no-drop;
+    background-color: $medium-grey;
   }
 
   &.grey {

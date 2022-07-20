@@ -9,7 +9,8 @@
     }
   },
   "auditData": {
-    "user": "jdoe"
+    "user": "jdoe",
+    "notes": "example notes for popup"
   },
   "note": "Optional note describing the reason for this change"
 }

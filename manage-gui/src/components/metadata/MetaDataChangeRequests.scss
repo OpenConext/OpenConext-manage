@@ -1,91 +1,108 @@
 @import "../../stylesheets/vars.scss";
 @import "../../stylesheets/mixins.scss";
 
-.metadata-change-requests {
-  background-color: white;
-  padding: 20px;
-
-  .change-request-info {
-    margin: 15px 0;
-
-    h2 {
-      font-size: 18px;
-      margin-bottom: 10px;
-    }
-
-  }
-
-  div.loading {
+.accept-notes {
     display: flex;
-    height: 40px;
-
-    span {
-      margin: auto;
-    }
-  }
-
-  table.change-requests-table {
+    flex-direction: column;
     width: 100%;
-    table-layout: fixed;
-    border: 1px solid $light-grey;
-    border-radius: $br;
-    margin: 15px;
+    padding: 25px;
 
-    thead th {
-      text-align: left;
-      padding: 10px;
-      background-color: $lightest-grey;
-
-      &.created {
-        width: 15%;
-      }
-      &.incremental {
-        width: 10%;
-      }
-      &.apiClient {
-        width: 15%;
-      }
-
-      &.changes {
-        width: 40%;
-      }
-
-      &.nope {
-        width: 20%;
-      }
+    p {
+        margin-bottom: 10px;
     }
 
-    tbody {
-      tr:nth-child(even) {
-        background-color: $lightest-grey;
-      }
+    textarea {
+        min-height: 175px;
+    }
+}
 
-      td {
-        padding: 10px;
+.metadata-change-requests {
+    background-color: white;
+    padding: 20px;
 
-        &.nope {
-          text-align: right;
+    .change-request-info {
+        margin: 15px 0;
+
+        h2 {
+            font-size: 18px;
+            margin-bottom: 10px;
         }
 
-        &.info {
-          padding: 5px;
+    }
 
-          i.fa-info-circle {
-            font-size: 20px;
-            color: $blue;
-            margin-left: 20px;
-          }
+    div.loading {
+        display: flex;
+        height: 40px;
+
+        span {
+            margin: auto;
+        }
+    }
+
+    table.change-requests-table {
+        width: 100%;
+        table-layout: fixed;
+        border: 1px solid $light-grey;
+        border-radius: $br;
+        margin: 15px;
+
+        thead th {
+            text-align: left;
+            padding: 10px;
+            background-color: $lightest-grey;
+
+            &.created {
+                width: 15%;
+            }
+
+            &.incremental {
+                width: 10%;
+            }
+
+            &.apiClient {
+                width: 15%;
+            }
+
+            &.changes {
+                width: 40%;
+            }
+
+            &.nope {
+                width: 20%;
+            }
         }
 
-      }
-    }
+        tbody {
+            tr:nth-child(even) {
+                background-color: $lightest-grey;
+            }
 
-    div.accept {
-      display: flex;
+            td {
+                padding: 10px;
 
-      a:first-child {
-        margin: 0 15px 0 auto;
-      }
+                &.nope {
+                    text-align: right;
+                }
+
+                &.info {
+                    padding: 5px;
+
+                    i.fa-info-circle {
+                        font-size: 20px;
+                        color: $blue;
+                        margin-left: 20px;
+                    }
+                }
+
+            }
+        }
+
+        div.accept {
+            display: flex;
+
+            a:first-child {
+                margin: 0 15px 0 auto;
+            }
+        }
     }
-  }
 }

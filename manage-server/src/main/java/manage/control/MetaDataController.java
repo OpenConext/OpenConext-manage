@@ -307,7 +307,7 @@ public class MetaDataController {
                 .findById(changeRequest.getId(), MetaDataChangeRequest.class, collectionName);
 
         MetaData metaData = metaDataService
-                .doMergeUpdate(metaDataChangeRequest, name, "Change request API merge", true)
+                .doMergeUpdate(metaDataChangeRequest, name, changeRequest.getRevisionNotes(), true)
                 .get();
         metaDataRepository.getMongoTemplate().remove(metaDataChangeRequest, collectionName);
         return metaData;

@@ -31,7 +31,9 @@ class MetaDataChangeRequests extends React.Component {
             confirmationDialogOpen: false,
             confirmationDialogAction: () => this,
             cancelDialogAction: () => this.setState({confirmationDialogOpen: false}),
-            confirmationQuestion: ""
+            confirmationQuestion: "",
+            currentRequest: {},
+            revisionNotes: ""
         };
         this.differ = new DiffPatcher({
             // https://github.com/benjamine/jsondiffpatch/blob/HEAD/docs/arrays.md
@@ -76,8 +78,9 @@ class MetaDataChangeRequests extends React.Component {
     };
 
     doAction = (id, entityType, metaData, accept) => () => {
+        const {revisionNotes} = this.state;
         this.setState({confirmationDialogOpen: false});
-        let changeRequest = {id: id, type: entityType, metaDataId: metaData.id};
+        let changeRequest = {id: id, type: entityType, metaDataId: metaData.id, revisionNotes: revisionNotes};
         const promise = accept ? acceptChangeRequest : rejectChangeRequest;
         promise(changeRequest).then(json => {
             if (json.exception || json.error) {
@@ -95,12 +98,14 @@ class MetaDataChangeRequests extends React.Component {
         });
     };
 
-    action = (id, entityType, metaData, accept) => e => {
+    action = (request, entityType, metaData, accept) => e => {
         stop(e);
         this.setState({
+            currentRequest: request,
+            revisionNotes: request.auditData.notes || "",
             confirmationDialogOpen: true,
             confirmationQuestion: I18n.t(`changeRequests.${accept ? "accept" : "reject"}Confirmation`),
-            confirmationDialogAction: this.doAction(id, entityType, metaData, accept)
+            confirmationDialogAction: this.doAction(request.id, entityType, metaData, accept)
         });
     };
 
@@ -154,10 +159,10 @@ class MetaDataChangeRequests extends React.Component {
                     <td className="nope">
                         <div className="accept">
                             <a className="button blue" href={`/accept/${request.id}`}
-                               onClick={this.action(request.id, entityType, metaData, true)}>
+                               onClick={this.action(request, entityType, metaData, true)}>
                                 {I18n.t("changeRequests.accept")}</a>
                             <a className="button red" href={`/reject/${request.id}`}
-                               onClick={this.action(request.id, entityType, metaData, false)}>
+                               onClick={this.action(request, entityType, metaData, false)}>
                                 {I18n.t("changeRequests.reject")}</a>
                         </div>
 
@@ -180,11 +185,22 @@ class MetaDataChangeRequests extends React.Component {
         );
     };
 
+    renderNotes = revisionNotes => {
+        return (
+            <div className={"accept-notes"}>
+                <p>{I18n.t("changeRequests.revisionNotes")}</p>
+                <textarea name={"acceptance-notes"} value={revisionNotes}
+                          onChange={e => this.setState({revisionNotes: e.target.value})} />
+
+            </div>
+        );
+    }
+
     render() {
         const {requests, entityType, metaData, changeRequestsLoaded} = this.props;
         const {
             showAllDetails, cancelDialogAction, confirmationDialogAction, confirmationDialogOpen,
-            confirmationQuestion
+            confirmationQuestion, revisionNotes
         } = this.state;
         if (!changeRequestsLoaded) {
             return <div className="metadata-change-requests">
@@ -195,7 +211,9 @@ class MetaDataChangeRequests extends React.Component {
             <div className="metadata-change-requests">
                 <ConfirmationDialog isOpen={confirmationDialogOpen}
                                     cancel={cancelDialogAction}
+                                    children={this.renderNotes(revisionNotes)}
                                     confirm={confirmationDialogAction}
+                                    disableConfirm={isEmpty(revisionNotes)}
                                     question={confirmationQuestion}/>
                 {requests.length === 0 && <div className="change-request-info">
                     <h2>{I18n.t("changeRequests.noChangeRequests")}</h2>

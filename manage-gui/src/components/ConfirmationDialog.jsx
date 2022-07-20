@@ -8,7 +8,8 @@ import "./ConfirmationDialog.scss";
 
 export default function ConfirmationDialog({
                                                isOpen = false, cancel, confirm, question = "",
-                                               leavePage = false, isError = false
+                                               leavePage = false, isError = false, children = null,
+                                               disableConfirm = false
                                            }) {
     return (
         <Modal
@@ -30,6 +31,7 @@ export default function ConfirmationDialog({
                 <section className="dialog-content">
                     <h2>{question}</h2>
                 </section>}
+            {children && children}
             <section className="dialog-buttons">
                 <a className="button" onClick={e => {
                     stop(e);
@@ -37,9 +39,9 @@ export default function ConfirmationDialog({
                 }}>
                     {leavePage ? I18n.t("confirmation_dialog.leave") : I18n.t("confirmation_dialog.cancel")}
                 </a>
-                <a className="button blue" onClick={e => {
+                <a className={`button blue ${disableConfirm ? "disabled" : ""}`} onClick={e => {
                     stop(e);
-                    confirm();
+                    !disableConfirm && confirm();
                 }}>
                     {leavePage ? I18n.t("confirmation_dialog.stay") : I18n.t("confirmation_dialog.confirm")}
                 </a>

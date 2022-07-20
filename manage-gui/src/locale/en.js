@@ -367,6 +367,7 @@ I18n.translations.en = {
         created: "Created",
         apiClient: "API client",
         incremental: "Incremental",
+        revisionNotes: "Revision notes",
         changes: "Changes",
         nope: "",
         note: "Notes",
