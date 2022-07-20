@@ -33,7 +33,8 @@ class MetaDataChangeRequests extends React.Component {
             cancelDialogAction: () => this.setState({confirmationDialogOpen: false}),
             confirmationQuestion: "",
             currentRequest: {},
-            revisionNotes: ""
+            revisionNotes: "",
+            accept: false
         };
         this.differ = new DiffPatcher({
             // https://github.com/benjamine/jsondiffpatch/blob/HEAD/docs/arrays.md
@@ -102,6 +103,7 @@ class MetaDataChangeRequests extends React.Component {
         stop(e);
         this.setState({
             currentRequest: request,
+            accept: accept,
             revisionNotes: request.auditData.notes || "",
             confirmationDialogOpen: true,
             confirmationQuestion: I18n.t(`changeRequests.${accept ? "accept" : "reject"}Confirmation`),
@@ -202,7 +204,7 @@ class MetaDataChangeRequests extends React.Component {
         const {requests, entityType, metaData, changeRequestsLoaded} = this.props;
         const {
             showAllDetails, cancelDialogAction, confirmationDialogAction, confirmationDialogOpen,
-            confirmationQuestion, revisionNotes
+            confirmationQuestion, revisionNotes, accept
         } = this.state;
         if (!changeRequestsLoaded) {
             return <div className="metadata-change-requests">
@@ -213,9 +215,9 @@ class MetaDataChangeRequests extends React.Component {
             <div className="metadata-change-requests">
                 <ConfirmationDialog isOpen={confirmationDialogOpen}
                                     cancel={cancelDialogAction}
-                                    children={this.renderNotes(revisionNotes)}
+                                    children={accept && this.renderNotes(revisionNotes)}
                                     confirm={confirmationDialogAction}
-                                    disableConfirm={isEmpty(revisionNotes)}
+                                    disableConfirm={accept && isEmpty(revisionNotes)}
                                     question={confirmationQuestion}/>
                 {requests.length === 0 && <div className="change-request-info">
                     <h2>{I18n.t("changeRequests.noChangeRequests")}</h2>
