@@ -111,6 +111,25 @@ class MetaDataChangeRequests extends React.Component {
         });
     };
 
+    applyPathUpdates = (pathUpdates, data, pathUpdateType) => {
+        const newData = cloneDeep(data);
+        Object.keys(pathUpdates).forEach(key => {
+            const singleValue = pathUpdates[key]
+            const value = Array.isArray(singleValue) ? singleValue : [singleValue];
+            if (pathUpdateType === "ADDITION") {
+                if (!newData[key]) {
+                    newData[key] = []
+                }
+                //first remove everything, could be an attribute value change like loa-level
+                const newValue = newData[key].filter(entry => !value.some(ent => entry.name === ent.name))
+                newData[key] = newValue.concat(value);
+            } else if (newData[key]) {
+                newData[key] = newData[key].filter(entry => !value.some(ent => entry.name === ent.name));
+            }
+        });
+        return newData;
+    }
+
     renderDiff = (request, metaData) => {
         const pathUpdates = request.pathUpdates
         const data = cloneDeep(metaData.data);
@@ -119,11 +138,9 @@ class MetaDataChangeRequests extends React.Component {
         sortDict(newData);
         let diffs;
         if (request.incrementalChange) {
-            if (request.pathUpdateType === "ADDITION") {
-                diffs = this.differ.diff({}, newData);
-            } else {
-                diffs = this.differ.diff(newData, {});
-            }
+            //we can not simple show the pathUpdate (e.g. newData) as this is not against the actual data
+            const appliedData = this.applyPathUpdates(newData, data, request.pathUpdateType);
+            diffs = this.differ.diff(data, appliedData);
         } else {
             const originalDict = createDiffObject(data, newData);
             diffs = this.differ.diff(originalDict, newData);
