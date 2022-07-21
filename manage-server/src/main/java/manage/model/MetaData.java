@@ -113,29 +113,16 @@ public class MetaData implements Serializable {
             }
             if (pathUpdates.isIncrementalChange()) {
                 List<Map<String, Object>> referenceValue = (List<Map<String, Object>>) ((Map) reference).get(property);
+                final List valueList = value instanceof Map ? List.of(value) : (List) value;
                 if (PathUpdateType.ADDITION.equals(pathUpdates.getPathUpdateType())) {
-                    if (referenceValue == null) {
-                        referenceValue = new ArrayList<>();
-                    } else {
-                        //we need top copy in case the referenceValue is immutable
-                        referenceValue = new ArrayList<>(referenceValue);
-                    }
+                    //we need top copy in case the referenceValue is immutable
+                    referenceValue = referenceValue == null ? new ArrayList<>() : new ArrayList<>(referenceValue);
                     //In case for example a Loa, the level could be updated. So first remove any existing one's, but
                     ((Map) reference).put(property, referenceValue);
-                    if (value instanceof Map) {
-                        referenceValue.removeIf((ref -> ref.get("name").equals(((Map) value).get("name"))));
-                        referenceValue.add((Map) value);
-                    } else if (value instanceof List) {
-                        referenceValue.removeIf(ref -> ((List) value).stream().anyMatch(m -> ref.get("name").equals(((Map) m).get("name"))));
-                        referenceValue.addAll((List) value);
-                    }
+                    referenceValue.removeIf(ref -> valueList.stream().anyMatch(m -> ref.get("name").equals(((Map) m).get("name"))));
+                    referenceValue.addAll(valueList);
                 } else if (referenceValue != null) {
-                    if (value instanceof Map) {
-                        referenceValue.removeIf(m -> m.get("name").equals(((Map) value).get("name")));
-                    } else if (value instanceof List) {
-                        List<Map<String, Object>> valueList = (List<Map<String, Object>>) value;
-                        referenceValue.removeIf(m -> valueList.stream().anyMatch(ms -> ms.get("name").equals(m.get("name"))));
-                    }
+                    referenceValue.removeIf(m -> valueList.stream().anyMatch(ms -> ((Map) ms).get("name").equals(m.get("name"))));
                 }
             } else {
                 if (value == null) {
