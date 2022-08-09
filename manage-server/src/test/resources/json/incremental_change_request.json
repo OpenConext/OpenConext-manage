@@ -12,5 +12,5 @@
     "user": "jdoe",
     "notes": "example notes for popup"
   },
-  "note": "Optional note describing the reason for this change"
+  "note": "Optional note describing the reason for this change, and we make it a long note too test the size of the tooltip popup"
 }
