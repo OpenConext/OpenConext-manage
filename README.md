@@ -107,5 +107,6 @@ curl -u sysadmin:secret -X POST -H 'Content-Type: application/json' -d '@change_
 Or the other supported flavour: a incremental change
 ```
 curl -u sysadmin:secret -X POST -H 'Content-Type: application/json' -d '@incremental_change_request.json' 'https://manage.test2.surfconext.nl/manage/api/internal/change-requests'
+curl -u sysadmin:secret -X POST -H 'Content-Type: application/json' -d '@incremental_change_request.json' 'http://localhost:8080/manage/api/internal/change-requests'
 ```
  

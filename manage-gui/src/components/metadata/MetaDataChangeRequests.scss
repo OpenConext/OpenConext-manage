@@ -58,15 +58,16 @@
             background-color: $lightest-grey;
 
             &.created {
-                width: 15%;
+                width: 20%;
             }
 
             &.incremental {
                 width: 10%;
+                text-align: center;
             }
 
             &.apiClient {
-                width: 15%;
+                width: 10%;
             }
 
             &.changes {
@@ -86,20 +87,17 @@
             td {
                 padding: 10px;
 
+                &.incremental {
+                    text-align: center;
+                }
+
                 &.nope {
                     text-align: right;
                 }
 
-                &.info {
-                    padding: 5px;
-
-                    i.fa-info-circle {
-                        font-size: 20px;
-                        color: $blue;
-                        margin-left: 20px;
-                    }
+                &.notes span.notes {
+                    font-style: italic;
                 }
-
             }
         }
 

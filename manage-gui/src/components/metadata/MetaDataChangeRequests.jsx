@@ -14,7 +14,6 @@ import "./MetaDataChangeRequests.scss";
 import {acceptChangeRequest, rejectChangeRequest} from "../../api";
 import {emitter, setFlash} from "../../utils/Flash";
 import withRouterHooks from "../../utils/RouterBackwardCompatability";
-import NotesTooltip from "../NotesTooltip";
 
 
 class MetaDataChangeRequests extends React.Component {
@@ -156,7 +155,7 @@ class MetaDataChangeRequests extends React.Component {
 
     renderChangeRequestTable = (request, entityType, metaData, i) => {
         const showDetail = this.state.showChangeRequests[request.id];
-        const headers = ["created", "apiClient", "incremental", "changes", "note", "nope"];
+        const headers = ["created", "apiClient", "incremental", "changes", "nope"];
         return (
             <table className="change-requests-table" key={request.id}>
                 <thead>
@@ -167,14 +166,15 @@ class MetaDataChangeRequests extends React.Component {
                 </thead>
                 <tbody>
                 <tr>
+                    <td className={"notes"} colSpan={5}>Summary: <span
+                        className={"notes"}>{request.note ? request.note : "-"}</span></td>
+                </tr>
+                <tr>
                     <td>{new Date(request.created).toGMTString()}</td>
                     <td>{request.auditData.userName}</td>
-                    <td><CheckBox name={"incremental"} readOnly={true} value={request.incrementalChange || false}/></td>
+                    <td className={"incremental"}><CheckBox name={"incremental"} readOnly={true}
+                                                            value={request.incrementalChange || false}/></td>
                     <td><ReactJson src={this.requestToJson(request)} name="changeRequest" collapsed={true}/></td>
-                    <td className="info">
-                        {isEmpty(request.note) ? <span></span> :
-                            <NotesTooltip identifier={request.id} notes={request.note}/>}
-                    </td>
                     <td className="nope">
                         <div className="accept">
                             <a className="button blue" href={`/accept/${request.id}`}
@@ -211,7 +211,7 @@ class MetaDataChangeRequests extends React.Component {
                 <textarea name={"acceptance-notes"}
                           value={revisionNotes}
                           placeholder={I18n.t("changeRequests.revisionNotesPlaceholder")}
-                          onChange={e => this.setState({revisionNotes: e.target.value})} />
+                          onChange={e => this.setState({revisionNotes: e.target.value})}/>
 
             </div>
         );
