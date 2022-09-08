@@ -202,6 +202,77 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void updateArp() throws IOException {
+        Map<String, Object> pathUpdates = new HashMap<>();
+        pathUpdates.put("arp", Map.of("enabled", true,
+                "attributes",
+                singletonMap("urn:mace:dir:attribute-def:eduPersonAffiliation",
+                        Collections.singletonList(Map.of("value","student", "source", "idp")))));
+        MetaDataUpdate metaDataUpdate = new MetaDataUpdate("1", EntityType.SP.getType(), pathUpdates, Collections.emptyMap());
+
+        given()
+                .auth()
+                .preemptive()
+                .basic("sp-portal", "secret")
+                .body(metaDataUpdate)
+                .header("Content-type", "application/json")
+                .when()
+                .put("/manage/api/internal/merge")
+                .then()
+                .statusCode(SC_OK);
+
+        MetaData metaData = metaDataRepository.findById("1", EntityType.SP.getType());
+        Map<String, Object> arp = (Map<String, Object>) metaData.getData().get("arp");
+        Map<String, Object> attributes = (Map<String, Object>) arp.get("attributes");
+        assertEquals(1, attributes.size());
+    }
+
+    @Test
+    public void updateAllowedEntities() {
+        Map<String, Object> pathUpdates = new HashMap<>();
+        pathUpdates.put("allowedEntities", List.of(Map.of("name","http://mock-idp")));
+        MetaDataUpdate metaDataUpdate = new MetaDataUpdate("3", EntityType.SP.getType(), pathUpdates, Collections.emptyMap());
+
+        given()
+                .auth()
+                .preemptive()
+                .basic("sp-portal", "secret")
+                .body(metaDataUpdate)
+                .header("Content-type", "application/json")
+                .when()
+                .put("/manage/api/internal/merge")
+                .then()
+                .statusCode(SC_OK);
+
+        MetaData metaData = metaDataRepository.findById("3", EntityType.SP.getType());
+        List<Map<String, String>> allowedEntities = (List<Map<String, String>>) metaData.getData().get("allowedEntities");
+        assertEquals(1, allowedEntities.size());
+    }
+
+    @Test
+    public void removeMetadataField() {
+        Map<String, Object> pathUpdates = new HashMap<>();
+        pathUpdates.put("metaDataFields.description:en", null);
+        MetaDataUpdate metaDataUpdate = new MetaDataUpdate("4", EntityType.SP.getType(), pathUpdates, Collections.emptyMap());
+
+        given()
+                .auth()
+                .preemptive()
+                .basic("sp-portal", "secret")
+                .body(metaDataUpdate)
+                .header("Content-type", "application/json")
+                .when()
+                .put("/manage/api/internal/merge")
+                .then()
+                .statusCode(SC_OK);
+
+        MetaData metaData = metaDataRepository.findById("4", EntityType.SP.getType());
+        Map<String, Object> metaDataFields = metaData.metaDataFields();
+        assertFalse(metaDataFields.containsKey("description:en"));
+    }
+
+
+    @Test
     public void updateNonExistent() {
         MetaDataUpdate metaDataUpdate = new MetaDataUpdate("99999", EntityType.SP.getType(), Collections.emptyMap(), Collections.emptyMap());
 

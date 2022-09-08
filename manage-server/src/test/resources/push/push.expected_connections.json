@@ -204,8 +204,7 @@
           "do_not_add_attribute_aliases": "1",
           "policy_enforcement_decision_required": "1",
           "stepup": {
-            "allow_no_token": "0",
-            "requireloa": "http://test.surfconext.nl/assurance/loa2"
+            "allow_no_token": "0"
           }
         },
         "contacts": [

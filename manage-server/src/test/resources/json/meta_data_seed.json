@@ -206,7 +206,6 @@
         "NameIDFormats:0": "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
         "NameIDFormats:1": "urn:oasis:names:tc:SAML:2.0:nameid-format:transient",
         "NameIDFormats:2": "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent",
-        "coin:stepup:requireloa": "http://test.surfconext.nl/assurance/loa2",
         "coin:stepup:allow_no_token": false
       },
       "allowedEntities": [
