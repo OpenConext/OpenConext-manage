@@ -6,6 +6,8 @@ import {secret} from "../../api";
 import CopyToClipboard from "react-copy-to-clipboard";
 import ReactTooltip from "react-tooltip";
 
+const minLength = 12;
+
 export default class Password extends React.PureComponent {
 
   state = {
@@ -59,8 +61,6 @@ export default class Password extends React.PureComponent {
 
   handleSave() {
     const {value} = this.state;
-    const {minLength} = this.props;
-
     if (value && minLength && value.length < minLength) {
       this.setState({showLengthWarning: true});
       this.props.hasError(this.props.name, true);
@@ -133,7 +133,7 @@ export default class Password extends React.PureComponent {
 
   render() {
     const {value, showSaveWarning, showLengthWarning, copied} = this.state;
-    const {hasFormatError, onChange, minLength, hasError, ...rest} = this.props;
+    const {hasFormatError, onChange, hasError, ...rest} = this.props;
 
     const disabled = this.state.disabled || this.props.disabled;
 

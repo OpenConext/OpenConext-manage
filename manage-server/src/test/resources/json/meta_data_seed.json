@@ -498,7 +498,7 @@
       "manipulation": "PHP code OIDC10_RP",
       "metaDataFields": {
         "name:en": "OIDC SP",
-        "secret": "secret",
+        "secret": "secret1234567890",
         "redirectUrls": [
           "http://localhost:8080/redirect1",
           "http://localhost:8080/redirect2"
@@ -531,7 +531,7 @@
       "state": "prodaccepted",
       "metaDataFields": {
         "name:en": "OIDC ResourceServer",
-        "secret": "secret",
+        "secret": "secret1234567890",
         "scopes": [
           "openid",
           "groups"
