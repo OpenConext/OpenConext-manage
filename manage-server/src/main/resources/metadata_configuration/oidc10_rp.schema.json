@@ -476,7 +476,7 @@
         "secret": {
           "type": "string",
           "format": "password",
-          "info": "The secret of this Relying Party for authentication purposes."
+          "info": "The secret of this Relying Party for authentication purposes - minimal length 12 characters."
         },
         "clientSecretJWT": {
           "type": "string",

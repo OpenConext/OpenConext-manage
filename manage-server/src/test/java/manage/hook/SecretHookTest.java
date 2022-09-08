@@ -1,7 +1,10 @@
 package manage.hook;
 
+import manage.AbstractIntegrationTest;
 import manage.model.EntityType;
 import manage.model.MetaData;
+import org.everit.json.schema.ValidationException;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -13,10 +16,16 @@ import java.util.regex.Pattern;
 import static java.util.Collections.emptyMap;
 import static org.junit.Assert.*;
 
-public class SecretHookTest {
+public class SecretHookTest extends AbstractIntegrationTest {
 
-    private final SecretHook subject = new SecretHook();
+    private SecretHook subject;
     private final Pattern bcryptPattern = Pattern.compile("\\A\\$2(a|y|b)?\\$(\\d\\d)\\$[./0-9A-Za-z]{53}");
+
+    @Before
+    public void before() throws Exception {
+        super.before();
+        subject = new SecretHook(metaDataAutoConfiguration);
+    }
 
     @Test
     public void appliesForMetaData() {
@@ -33,7 +42,7 @@ public class SecretHookTest {
 
     @Test
     public void prePut() {
-        MetaData metaData = subject.prePut(null, metaData("secret"));
+        MetaData metaData = subject.prePut(null, metaData("secret1234567890"));
         assertTrue(subject.isBCryptEncoded((String) metaData.metaDataFields().get("secret")));
 
         String secret = (String) metaData.metaDataFields().get("secret");
@@ -45,11 +54,11 @@ public class SecretHookTest {
 
     @Test
     public void prePost() {
-        MetaData metaData = subject.prePost(metaData("secret"));
+        MetaData metaData = subject.prePost(metaData("secret1234567890"));
         String encodedPassword = (String) metaData.metaDataFields().get("secret");
 
         assertTrue(subject.isBCryptEncoded(encodedPassword));
-        assertEquals(10, this.getStrength(encodedPassword));
+        assertEquals(5, this.getStrength(encodedPassword));
 
         metaData = subject.prePost(metaData);
 
@@ -70,11 +79,16 @@ public class SecretHookTest {
 
     @Test
     public void resourceServerWeakerStrength() {
-        MetaData metaData = subject.prePost(metaData("secret", EntityType.RS));
+        MetaData metaData = subject.prePost(metaData("secret1234567890", EntityType.RS));
         String encodedPassword = (String) metaData.metaDataFields().get("secret");
 
         assertTrue(subject.isBCryptEncoded(encodedPassword));
         assertEquals(5, this.getStrength(encodedPassword));
+    }
+
+    @Test(expected = ValidationException.class)
+    public void minimalLength() {
+        subject.prePost(metaData("secret", EntityType.RS));
     }
 
     private int getStrength(String encodedPassword) {

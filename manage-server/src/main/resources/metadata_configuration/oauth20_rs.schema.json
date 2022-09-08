@@ -96,7 +96,7 @@
         "secret": {
           "type": "string",
           "format": "password",
-          "info": "The secret of this Resource Server for authentication purposes."
+          "info": "The secret of this Resource Server for authentication purposes - minimal length 12 characters."
         },
         "scopes": {
           "type": "array",

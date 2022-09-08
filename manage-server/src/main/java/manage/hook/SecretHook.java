@@ -1,19 +1,26 @@
 package manage.hook;
 
+import manage.conf.MetaDataAutoConfiguration;
 import manage.model.EntityType;
 import manage.model.MetaData;
+import org.everit.json.schema.Schema;
+import org.everit.json.schema.ValidationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.Map;
 import java.util.regex.Pattern;
 
 public class SecretHook extends MetaDataHookAdapter {
 
-    private final BCryptPasswordEncoder strongPasswordEncoder = new BCryptPasswordEncoder();
-    private final BCryptPasswordEncoder weakerPasswordEncoder = new BCryptPasswordEncoder(5);
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(5);
     private final Pattern pattern = Pattern.compile("^\\$2[ayb]\\$.{56}$");
+    private final MetaDataAutoConfiguration metaDataAutoConfiguration;
+
+    public SecretHook(MetaDataAutoConfiguration metaDataAutoConfiguration) {
+        this.metaDataAutoConfiguration = metaDataAutoConfiguration;
+    }
 
     @Override
     public boolean appliesForMetaData(MetaData metaData) {
@@ -35,9 +42,13 @@ public class SecretHook extends MetaDataHookAdapter {
         if (!CollectionUtils.isEmpty(data) && data.containsKey("secret")) {
             String secret = (String) data.get("secret");
             if (!isBCryptEncoded(secret)) {
-                String encoded = (newMetaData.getType().equals(EntityType.RP.getType())
-                        ? this.strongPasswordEncoder : this.weakerPasswordEncoder).encode(secret);
-                data.put("secret", encoded);
+                if (secret == null || secret.trim().length() < 12) {
+                    Schema schema = metaDataAutoConfiguration.schema(newMetaData.getType());
+                    throw new ValidationException(schema, "Secret has minimal length of 12 characters", "metaDataFields.secret");
+                } else {
+                    String encoded = this.passwordEncoder.encode(secret);
+                    data.put("secret", encoded);
+                }
             }
         }
         return newMetaData;

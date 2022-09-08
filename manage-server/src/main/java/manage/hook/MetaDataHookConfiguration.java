@@ -19,7 +19,7 @@ public class MetaDataHookConfiguration {
 
         EmptyRevisionHook emptyRevisionHook = new EmptyRevisionHook(metaDataAutoConfiguration);
         EntityIdReconcilerHook entityIdReconcilerHook = new EntityIdReconcilerHook(metaDataRepository);
-        SecretHook secretHook = new SecretHook();
+        SecretHook secretHook = new SecretHook(metaDataAutoConfiguration);
         TypeSafetyHook typeSafetyHook = new TypeSafetyHook(metaDataAutoConfiguration);
         EntityIdConstraintsHook entityIdConstraintsHook = new EntityIdConstraintsHook(metaDataRepository);
         OidcValidationHook validationHook = new OidcValidationHook(metaDataAutoConfiguration);
