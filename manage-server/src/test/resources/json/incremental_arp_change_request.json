@@ -4,8 +4,14 @@
   "incrementalChange": true,
   "pathUpdateType": "ADDITION",
   "pathUpdates": {
-    "allowedEntities": {
-      "name": "http://mock-idp"
+    "arp.attributes": {
+      "urn:mace:dir:attribute-def:eduPersonOrcid" : [
+        {
+          "value" : "*",
+          "source" : "idp",
+          "motivation" : ""
+        }
+      ]
     }
   },
   "auditData": {

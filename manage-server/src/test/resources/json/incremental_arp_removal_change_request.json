@@ -2,10 +2,16 @@
   "metaDataId": "1",
   "type": "saml20_sp",
   "incrementalChange": true,
-  "pathUpdateType": "ADDITION",
+  "pathUpdateType": "REMOVAL",
   "pathUpdates": {
-    "allowedEntities": {
-      "name": "http://mock-idp"
+    "arp.attributes": {
+      "urn:mace:dir:attribute-def:mail" : [
+        {
+          "value" : "*",
+          "source" : "idp",
+          "motivation" : ""
+        }
+      ]
     }
   },
   "auditData": {

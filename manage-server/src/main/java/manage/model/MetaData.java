@@ -112,17 +112,39 @@ public class MetaData implements Serializable {
                 }
             }
             if (pathUpdates.isIncrementalChange()) {
-                List<Map<String, Object>> referenceValue = (List<Map<String, Object>>) ((Map) reference).get(property);
-                final List valueList = value instanceof Map ? List.of(value) : (List) value;
-                if (PathUpdateType.ADDITION.equals(pathUpdates.getPathUpdateType())) {
-                    //we need top copy in case the referenceValue is immutable
-                    referenceValue = referenceValue == null ? new ArrayList<>() : new ArrayList<>(referenceValue);
-                    ((Map) reference).put(property, referenceValue);
-                    //In case for example a Loa, the level could be updated. So first remove any existing one's
-                    referenceValue.removeIf(ref -> valueList.stream().anyMatch(m -> ref.get("name").equals(((Map) m).get("name"))));
-                    referenceValue.addAll(valueList);
-                } else if (referenceValue != null) {
-                    referenceValue.removeIf(m -> valueList.stream().anyMatch(ms -> ((Map) ms).get("name").equals(m.get("name"))));
+                Object rawReferenceValue = ((Map) reference).get(property);
+                if (rawReferenceValue instanceof List || rawReferenceValue == null) {
+                    List<Map<String, Object>> referenceValue = (List<Map<String, Object>>) rawReferenceValue;
+                    final List valueList = value instanceof Map ? List.of(value) : (List) value;
+                    if (PathUpdateType.ADDITION.equals(pathUpdates.getPathUpdateType())) {
+                        //we need to copy in case the referenceValue is immutable List
+                        referenceValue = referenceValue == null ? new ArrayList<>() : new ArrayList<>(referenceValue);
+                        ((Map) reference).put(property, referenceValue);
+                        //In case for example a Loa, the level could be updated. So first remove any existing one's
+                        referenceValue.removeIf(ref -> valueList.stream().anyMatch(m -> ref.get("name").equals(((Map) m).get("name"))));
+                        referenceValue.addAll(valueList);
+                    } else if (referenceValue != null) {
+                        referenceValue.removeIf(m -> valueList.stream().anyMatch(ms -> ((Map) ms).get("name").equals(m.get("name"))));
+                    }
+                } else if (rawReferenceValue instanceof Map) {
+                    Map<String, Object> referenceValue = (Map<String, Object>) rawReferenceValue;
+                    final Map valueMap = (Map) value;
+                    if (PathUpdateType.ADDITION.equals(pathUpdates.getPathUpdateType())) {
+                        //we need to copy in case the referenceValue is immutable Map
+                        referenceValue = referenceValue == null ? new HashMap<>() : new HashMap<>(referenceValue);
+                        ((Map) reference).put(property, referenceValue);
+                        referenceValue.putAll(valueMap);
+                    } else if (referenceValue != null) {
+                        referenceValue = referenceValue == null ? new HashMap<>() : new HashMap<>(referenceValue);
+                        ((Map) reference).put(property, referenceValue);
+                        Iterator<String> iter = referenceValue.keySet().iterator();
+                        while (iter.hasNext()) {
+                            String key = iter.next();
+                            if (valueMap.containsKey(key)) {
+                                iter.remove();
+                            }
+                        }
+                    }
                 }
             } else {
                 if (value == null) {

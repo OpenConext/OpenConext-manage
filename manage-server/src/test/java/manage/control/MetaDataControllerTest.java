@@ -7,6 +7,7 @@ import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 import manage.AbstractIntegrationTest;
 import manage.model.*;
+import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.mongodb.core.query.Query;
@@ -1277,6 +1278,60 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         assertEquals(4, request.getMetaDataSummary().size());
         assertEquals(3, request.getAuditData().size());
         assertEquals(3, request.getPathUpdates().size());
+    }
+
+    @Test
+    public void arpAdditionChangeRequest() throws IOException {
+        String changeRequestJson = readFile("json/incremental_arp_change_request.json");
+        given().auth().preemptive().basic("sp-portal", "secret")
+                .when()
+                .body(changeRequestJson)
+                .header("Content-type", "application/json")
+                .post("manage/api/internal/change-requests")
+                .then()
+                .statusCode(SC_OK);
+        MetaDataChangeRequest metaDataChangeRequest = mongoTemplate()
+                .find(new Query(), MetaDataChangeRequest.class, EntityType.SP.getType().concat(CHANGE_REQUEST_POSTFIX)).get(0);
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .body(new ChangeRequest(metaDataChangeRequest.getId(), EntityType.SP.getType(), metaDataChangeRequest.getMetaDataId(), "Rev notes"))
+                .put("/manage/api/client/change-requests/accept")
+                .then()
+                .statusCode(200);
+
+        MetaData metaData = metaDataRepository.findById("1", EntityType.SP.getType());
+        Map attributes = (Map) ((Map) metaData.getData().get("arp")).get("attributes");
+
+        assertTrue(attributes.containsKey("urn:mace:dir:attribute-def:eduPersonOrcid"));
+        assertEquals(6, attributes.size());
+    }
+
+    @Test
+    public void arpRemovalChangeRequest() throws IOException {
+        String changeRequestJson = readFile("json/incremental_arp_removal_change_request.json");
+        given().auth().preemptive().basic("sp-portal", "secret")
+                .when()
+                .body(changeRequestJson)
+                .header("Content-type", "application/json")
+                .post("manage/api/internal/change-requests")
+                .then()
+                .statusCode(SC_OK);
+        MetaDataChangeRequest metaDataChangeRequest = mongoTemplate()
+                .find(new Query(), MetaDataChangeRequest.class, EntityType.SP.getType().concat(CHANGE_REQUEST_POSTFIX)).get(0);
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .body(new ChangeRequest(metaDataChangeRequest.getId(), EntityType.SP.getType(), metaDataChangeRequest.getMetaDataId(), "Rev notes"))
+                .put("/manage/api/client/change-requests/accept")
+                .then()
+                .statusCode(200);
+
+        MetaData metaData = metaDataRepository.findById("1", EntityType.SP.getType());
+        Map attributes = (Map) ((Map) metaData.getData().get("arp")).get("attributes");
+
+        assertFalse(attributes.containsKey("urn:mace:dir:attribute-def:mail"));
+        assertEquals(4, attributes.size());
     }
 
     @Test

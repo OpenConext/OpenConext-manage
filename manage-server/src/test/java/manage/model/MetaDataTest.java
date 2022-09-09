@@ -184,6 +184,45 @@ public class MetaDataTest implements TestUtils {
     }
 
     @Test
+    public void mergeIncrementalAdditionArp() {
+        List<Map<String, String>> orcidArpValue = List.of(Map.of("value", "*", "source", "idp"));
+        Map<String, Object> pathUpdates = Map.of("arp.attributes",
+                Map.of("urn:mace:dir:attribute-def:eduPersonOrcid", orcidArpValue));
+        MetaDataChangeRequest changeRequest = new MetaDataChangeRequest("id", "saml20_sp", "note", pathUpdates, Collections.emptyMap());
+        changeRequest.setIncrementalChange(true);
+        changeRequest.setPathUpdateType(PathUpdateType.ADDITION);
+
+        Map<String, Object> attributes = (Map<String, Object>) ((Map) subject.getData().get("arp")).get("attributes");
+        assertEquals(5, attributes.size());
+
+        subject.merge(changeRequest);
+
+        Map<String, Object> newAttributes = (Map<String, Object>) ((Map) subject.getData().get("arp")).get("attributes");
+        assertEquals(orcidArpValue, newAttributes.get("urn:mace:dir:attribute-def:eduPersonOrcid"));
+        assertEquals(6, newAttributes.size());
+    }
+
+    @Test
+    public void mergeIncrementalRemovalArp() {
+        List<Map<String, String>> mailArpValue = List.of(Map.of("value", "*", "source", "idp"));
+        Map<String, Object> pathUpdates = Map.of("arp.attributes",
+                Map.of("urn:mace:dir:attribute-def:mail", mailArpValue));
+        MetaDataChangeRequest changeRequest = new MetaDataChangeRequest("id", "saml20_sp", "note", pathUpdates, Collections.emptyMap());
+        changeRequest.setIncrementalChange(true);
+        changeRequest.setPathUpdateType(PathUpdateType.REMOVAL);
+
+        Map<String, Object> attributes = (Map<String, Object>) ((Map) subject.getData().get("arp")).get("attributes");
+        assertEquals(5, attributes.size());
+
+        subject.merge(changeRequest);
+
+        Map<String, Object> newAttributes = (Map<String, Object>) ((Map) subject.getData().get("arp")).get("attributes");
+        assertFalse(newAttributes.containsKey("urn:mace:dir:attribute-def:mail"));
+        assertEquals(4, newAttributes.size());
+    }
+
+
+    @Test
     public void equals() {
         assertTrue(subject.equals(subject));
     }

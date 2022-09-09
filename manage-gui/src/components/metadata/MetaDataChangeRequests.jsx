@@ -2,7 +2,7 @@ import React from "react";
 import I18n from "i18n-js";
 import ReactJson from "react-json-view";
 import {DiffPatcher, formatters} from 'jsondiffpatch';
-
+import merge from "lodash.merge";
 import PropTypes from "prop-types";
 import cloneDeep from "lodash.clonedeep";
 import CheckBox from "../../components/CheckBox";
@@ -113,17 +113,31 @@ class MetaDataChangeRequests extends React.Component {
     applyPathUpdates = (pathUpdates, data, pathUpdateType) => {
         const newData = cloneDeep(data);
         Object.keys(pathUpdates).forEach(key => {
-            const singleValue = pathUpdates[key]
-            const value = Array.isArray(singleValue) ? singleValue : [singleValue];
-            if (pathUpdateType === "ADDITION") {
-                if (!newData[key]) {
-                    newData[key] = []
+            const singleValue = pathUpdates[key];
+            if (typeof singleValue === "object") {
+                if (pathUpdateType === "ADDITION") {
+                    if (!newData[key]) {
+                        newData[key] = {};
+                    }
+                    newData[key] = merge(newData[key], singleValue);
+                } else if (newData[key]) {
+                    Object.keys(singleValue).forEach(k => delete newData[k]);
                 }
-                //first remove everything, could be an attribute value change like loa-level
-                const newValue = newData[key].filter(entry => !value.some(ent => entry.name === ent.name))
-                newData[key] = newValue.concat(value);
-            } else if (newData[key]) {
-                newData[key] = newData[key].filter(entry => !value.some(ent => entry.name === ent.name));
+            } else {
+                const value = Array.isArray(singleValue) ? singleValue : [singleValue];
+                if (pathUpdateType === "ADDITION") {
+                    if (!newData[key]) {
+                        newData[key] = []
+                    }
+                    //first remove everything, could be an attribute value change like loa-level
+                    const newValue = newData[key].filter(entry => !value.some(ent => entry.name === ent.name));
+                    //this alters the order and confuses the differ
+                    newData[key] = newValue.concat(value);
+                    newData[key].sort((a, b) => a.name.localeCompare(b.name));
+                    data[key].sort((a, b) => a.name.localeCompare(b.name));
+                } else if (newData[key]) {
+                    newData[key] = newData[key].filter(entry => !value.some(ent => entry.name === ent.name));
+                }
             }
         });
         return newData;
