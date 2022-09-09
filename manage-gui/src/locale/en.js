@@ -453,6 +453,7 @@ I18n.translations.en = {
     },
     password: {
         copy: "Copy to clipboard",
+        copied: "Copied",
         edit: "Edit secret",
         key: "Generate new secret",
         undo: "Undo changes",

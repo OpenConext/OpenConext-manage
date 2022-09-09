@@ -41,8 +41,8 @@ public class ValidationController {
 
     private final Map<String, FormatValidator> validators;
 
-    private PasswordGenerator passwordGenerator = new PasswordGenerator();
-    private List<CharacterRule> rules;
+    private final PasswordGenerator passwordGenerator = new PasswordGenerator();
+    private final List<CharacterRule> rules;
 
     public ValidationController() {
         this.validators = Arrays.asList(
