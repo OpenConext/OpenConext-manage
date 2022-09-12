@@ -2,6 +2,7 @@ package manage.control;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import manage.model.dto.FederatedUserDto;
 import manage.shibboleth.FederatedUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,8 +42,8 @@ public class UserController {
 
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/client/users/me")
-    public FederatedUser me(FederatedUser federatedUser) {
-        return federatedUser;
+    public FederatedUserDto me(FederatedUser federatedUser) {
+        return FederatedUserDto.fromFederatedUser(federatedUser);
     }
 
     @PreAuthorize("hasRole('USER')")
