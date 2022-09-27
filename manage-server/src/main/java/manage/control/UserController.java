@@ -51,7 +51,7 @@ public class UserController {
         return Collections.singletonMap("Ping", "Ok");
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @DeleteMapping("/client/users/logout")
     public void logout(HttpServletRequest request) {
         request.getSession().invalidate();
