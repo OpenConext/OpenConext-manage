@@ -1,6 +1,7 @@
 package manage.control;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import manage.shibboleth.FederatedUser;
 import org.slf4j.Logger;
@@ -9,11 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -41,8 +38,11 @@ public class UserController {
 
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/client/users/me")
-    public FederatedUser me(FederatedUser federatedUser) {
-        return federatedUser;
+    public Map<String, Object> me(FederatedUser federatedUser) throws JsonProcessingException {
+        Map<String, Object> federatedUserMap = objectMapper.readValue(objectMapper.writeValueAsString(federatedUser), new TypeReference<>() {
+        });
+        federatedUserMap.remove("password");
+        return federatedUserMap;
     }
 
     @PreAuthorize("hasRole('USER')")
