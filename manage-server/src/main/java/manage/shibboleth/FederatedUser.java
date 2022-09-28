@@ -1,5 +1,6 @@
 package manage.shibboleth;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import manage.api.AbstractUser;
 import manage.conf.Features;
@@ -14,12 +15,12 @@ import java.util.List;
 @Getter
 public class FederatedUser extends User implements Serializable, AbstractUser {
 
-    private String uid;
-    private String displayName;
-    private String schacHomeOrganization;
-    private List<Features> featureToggles;
-    private Product product;
-    private Push push;
+    private final String uid;
+    private final String displayName;
+    private final String schacHomeOrganization;
+    private final List<Features> featureToggles;
+    private final Product product;
+    private final Push push;
 
     public FederatedUser(String uid, String displayName, String schacHomeOrganization, List<GrantedAuthority>
             authorities, List<Features> featureToggles, Product product, Push push) {
@@ -49,5 +50,11 @@ public class FederatedUser extends User implements Serializable, AbstractUser {
     @Override
     public boolean isAPIUser() {
         return false;
+    }
+
+    @Override
+    @JsonIgnore
+    public String getPassword() {
+        return super.getPassword();
     }
 }

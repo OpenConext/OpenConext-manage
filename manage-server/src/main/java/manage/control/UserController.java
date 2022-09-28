@@ -38,11 +38,8 @@ public class UserController {
 
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/client/users/me")
-    public Map<String, Object> me(FederatedUser federatedUser) throws JsonProcessingException {
-        Map<String, Object> federatedUserMap = objectMapper.readValue(objectMapper.writeValueAsString(federatedUser), new TypeReference<>() {
-        });
-        federatedUserMap.remove("password");
-        return federatedUserMap;
+    public FederatedUser me(FederatedUser federatedUser) throws JsonProcessingException {
+        return federatedUser;
     }
 
     @PreAuthorize("hasRole('USER')")
