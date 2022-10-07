@@ -7,6 +7,7 @@ import org.junit.Test;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
 public class UserControllerTest extends AbstractIntegrationTest {
@@ -20,6 +21,6 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .as(new TypeRef<>() {
                 });
         assertFalse(federatedUser.containsKey("password"));
-
+        assertEquals("saml2_user.com", federatedUser.get("name"));
     }
 }
