@@ -1,6 +1,7 @@
 package manage.control;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import io.restassured.common.mapper.TypeRef;
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
@@ -13,6 +14,7 @@ import org.springframework.data.mongodb.core.query.Query;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Type;
 import java.net.URLEncoder;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -152,8 +154,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     private String createServiceProviderMetaData(boolean client) throws java.io.IOException {
-        String json = readFile("/json/valid_service_provider.json");
-        Map data = objectMapper.readValue(json, Map.class);
+        Map<String, Object> data = readValueFromFile("/json/valid_service_provider.json");
         MetaData metaData = new MetaData(EntityType.SP.getType(), data);
         RequestSpecification given = given();
         if (!client) {
@@ -730,8 +731,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void validate() throws java.io.IOException {
-        String json = readFile("/json/valid_service_provider.json");
-        Map data = objectMapper.readValue(json, Map.class);
+        Map<String, Object> data = readValueFromFile("/json/valid_service_provider.json");
         MetaData metaData = new MetaData(EntityType.SP.getType(), data);
         given()
                 .auth()
@@ -748,8 +748,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void validateWithErrors() throws java.io.IOException {
-        String json = readFile("/json/valid_service_provider.json");
-        Map data = objectMapper.readValue(json, Map.class);
+        Map<String, Object> data = readValueFromFile("/json/valid_service_provider.json");
         Map.class.cast(data.get("metaDataFields")).put("AssertionConsumerService:0:Binding", "bogus");
         MetaData metaData = new MetaData(EntityType.SP.getType(), data);
         given()
@@ -1031,9 +1030,8 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void updateWithValidationError() throws IOException {
-        String json = readFile("/metadata_templates/oidc10_rp.template.json");
+        Map<String, Object> data = readValueFromFile("/metadata_templates/oidc10_rp.template.json");
 
-        Map data = objectMapper.readValue(json, Map.class);
         data.put("entityid", "https://unique_entity_id");
 
         List.class.cast(Map.class.cast(data.get("metaDataFields")).get("redirectUrls")).add("javascript:alert(document.domain)");
@@ -1247,8 +1245,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void emptyArpArray() throws java.io.IOException {
-        String json = readFile("/json/sp_dashboard_arp_array.json");
-        Map data = objectMapper.readValue(json, Map.class);
+        Map<String, Object> data = readValueFromFile("/json/sp_dashboard_arp_array.json");
         MetaData metaData = new MetaData(EntityType.SP.getType(), data);
         given().auth()
                 .preemptive()
@@ -1544,7 +1541,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void searchWithEntityCategoriesMultpleKeys() throws JsonProcessingException {
-        Map searchOptions = objectMapper.readValue(readFile("/api/search_multiple_equal_keys.json"), Map.class);
+        Map<String, Object> searchOptions = readValueFromFile("/api/search_multiple_equal_keys.json");
 
         List<Map<String, Object>> results = given()
                 .when()
@@ -1558,7 +1555,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void searchWithEntityCategoriesList() throws JsonProcessingException {
-        Map searchOptions = objectMapper.readValue(readFile("/api/search_multiple_list_values.json"), Map.class);
+        Map<String, Object> searchOptions = readValueFromFile("/api/search_multiple_list_values.json");
 
         List<Map<String, Object>> results = given()
                 .when()
@@ -1568,6 +1565,11 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 .as(new TypeRef<>() {
                 });
         assertEquals(3, results.size());
+    }
+
+    private Map<String, Object> readValueFromFile(String path) throws JsonProcessingException {
+        return objectMapper.readValue(readFile(path), new TypeReference<>() {
+        });
     }
 
     private void doCreateChangeRequest() {
