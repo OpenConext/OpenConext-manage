@@ -1,0 +1,16 @@
+{
+  "ALL_ATTRIBUTES": true,
+  "metaDataFields.coin:entity_categories:1": "http://refeds.org/category/research-and-scholarship",
+  "metaDataFields.coin:entity_categories:2": "http://refeds.org/category/research-and-scholarship",
+  "metaDataFields.coin:entity_categories:3": "http://refeds.org/category/research-and-scholarship",
+  "metaDataFields.coin:entity_categories:4": "http://refeds.org/category/research-and-scholarship",
+  "metaDataFields.coin:entity_categories:1": "http://www.geant.net/uri/dataprotection-code-of-conduct/v1",
+  "metaDataFields.coin:entity_categories:2": "http://www.geant.net/uri/dataprotection-code-of-conduct/v1",
+  "metaDataFields.coin:entity_categories:3": "http://www.geant.net/uri/dataprotection-code-of-conduct/v1",
+  "metaDataFields.coin:entity_categories:4": "http://www.geant.net/uri/dataprotection-code-of-conduct/v1",
+  "metaDataFields.coin:entity_categories:1": "https://refeds.org/category/code-of-conduct/v2",
+  "metaDataFields.coin:entity_categories:2": "https://refeds.org/category/code-of-conduct/v2",
+  "metaDataFields.coin:entity_categories:3": "https://refeds.org/category/code-of-conduct/v2",
+  "metaDataFields.coin:entity_categories:4": "https://refeds.org/category/code-of-conduct/v2",
+  "LOGICAL_OPERATOR_IS_AND": false
+}

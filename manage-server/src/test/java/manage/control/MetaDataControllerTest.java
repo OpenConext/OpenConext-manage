@@ -7,7 +7,6 @@ import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 import manage.AbstractIntegrationTest;
 import manage.model.*;
-import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.mongodb.core.query.Query;
@@ -208,7 +207,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         pathUpdates.put("arp", Map.of("enabled", true,
                 "attributes",
                 singletonMap("urn:mace:dir:attribute-def:eduPersonAffiliation",
-                        Collections.singletonList(Map.of("value","student", "source", "idp")))));
+                        Collections.singletonList(Map.of("value", "student", "source", "idp")))));
         MetaDataUpdate metaDataUpdate = new MetaDataUpdate("1", EntityType.SP.getType(), pathUpdates, Collections.emptyMap());
 
         given()
@@ -231,7 +230,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     @Test
     public void updateAllowedEntities() {
         Map<String, Object> pathUpdates = new HashMap<>();
-        pathUpdates.put("allowedEntities", List.of(Map.of("name","http://mock-idp")));
+        pathUpdates.put("allowedEntities", List.of(Map.of("name", "http://mock-idp")));
         MetaDataUpdate metaDataUpdate = new MetaDataUpdate("3", EntityType.SP.getType(), pathUpdates, Collections.emptyMap());
 
         given()
@@ -1541,6 +1540,34 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         MetaData metaData = metaDataRepository.findById("6", EntityType.IDP.getType());
         List<Map<String, String>> allowedEntities = (List<Map<String, String>>) metaData.getData().get("allowedEntities");
         assertEquals(0, allowedEntities.size());
+    }
+
+    @Test
+    public void searchWithEntityCategoriesMultpleKeys() throws JsonProcessingException {
+        Map searchOptions = objectMapper.readValue(readFile("/api/search_multiple_equal_keys.json"), Map.class);
+
+        List<Map<String, Object>> results = given()
+                .when()
+                .body(searchOptions)
+                .header("Content-type", "application/json")
+                .post("manage/api/client/search/saml20_sp")
+                .as(new TypeRef<>() {
+                });
+       assertEquals(1, results.size());
+    }
+
+    @Test
+    public void searchWithEntityCategoriesList() throws JsonProcessingException {
+        Map searchOptions = objectMapper.readValue(readFile("/api/search_multiple_list_values.json"), Map.class);
+
+        List<Map<String, Object>> results = given()
+                .when()
+                .body(searchOptions)
+                .header("Content-type", "application/json")
+                .post("manage/api/client/search/saml20_sp")
+                .as(new TypeRef<>() {
+                });
+        assertEquals(3, results.size());
     }
 
     private void doCreateChangeRequest() {

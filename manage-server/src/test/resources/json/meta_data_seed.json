@@ -60,7 +60,8 @@
         "AssertionConsumerService:0:Binding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
         "AssertionConsumerService:0:Location": "https://acs0",
         "AssertionConsumerService:1:Binding": "urn:oasis:names:tc:SAML:2.0:bindings:URI",
-        "AssertionConsumerService:1:Location": "https://acs1"
+        "AssertionConsumerService:1:Location": "https://acs1",
+        "coin:entity_categories:1": "http://refeds.org/category/research-and-scholarship"
       },
       "arp": {
         "enabled": true,
@@ -157,7 +158,8 @@
         "NameIDFormats:2": "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent",
         "url:en": "https://www.surfconext.nl",
         "url:nl": "https://www.surfconext.nl",
-        "coin:exclude_from_push": true
+        "coin:exclude_from_push": true,
+        "coin:entity_categories:2": "http://www.geant.net/uri/dataprotection-code-of-conduct/v1"
       }
     }
   },
@@ -206,7 +208,8 @@
         "NameIDFormats:0": "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
         "NameIDFormats:1": "urn:oasis:names:tc:SAML:2.0:nameid-format:transient",
         "NameIDFormats:2": "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent",
-        "coin:stepup:allow_no_token": false
+        "coin:stepup:allow_no_token": false,
+        "coin:entity_categories:3": "https://refeds.org/category/code-of-conduct/v2"
       },
       "allowedEntities": [
         {
