@@ -3,199 +3,217 @@
 @import "../stylesheets/vars.scss";
 
 .detail-metadata {
-  @include page;
+    @include page;
 
-  section.top-detail {
-    margin: 10px 0;
-    display: flex;
-    align-items: center;
+    section.top-detail {
+        margin: 10px 0;
+        display: flex;
+        flex-direction: column;
 
-    section.info {
-      display: flex;
-      flex-direction: column;
-      border: 1px solid $light-grey;
-      padding: 10px;
-      width: 100%;
-      font-size: 16px;
-      background-color: white;
-      border-radius: $br;
+        section.inner-detail {
+            display: flex;
+            align-items: center;
+        }
 
-      table {
-        width: 100%;
-        th {
-          text-align: left;
-          width: 25%;
-          padding-bottom: 5px;
+        div.change-requests {
+            border: 1px solid $light-grey;
+            margin-top: 10px;
+            padding: 10px;
+            width: 100%;
+            font-size: 16px;
+            background-color: white;
+            border-radius: $br;
+        }
 
-          i.fa {
+        section.info {
+            display: flex;
+            flex-direction: column;
+            border: 1px solid $light-grey;
+            padding: 10px;
+            width: 100%;
+            font-size: 16px;
+            background-color: white;
+            border-radius: $br;
+
+            table {
+                width: 100%;
+
+                th {
+                    text-align: left;
+                    width: 25%;
+                    padding-bottom: 5px;
+
+                    i.fa {
+                        margin-left: 15px;
+                        color: $blue;
+                    }
+
+                }
+
+                td {
+                    &.green {
+                        color: $dark-green;
+                        font-weight: bold;
+                    }
+
+                    &.orange {
+                        color: $orange;
+                        font-weight: bold;
+                    }
+
+                    &.blue {
+                        color: $blue;
+                        font-weight: bold;
+                    }
+
+                }
+
+                &.saml20_sp, &.oidc10_rp {
+                    th {
+                        width: 20%;
+                    }
+                }
+
+                &.saml20_sp.imported-from-edugain {
+                    th {
+                        width: 14%;
+                    }
+                }
+            }
+
+            section.warning {
+                margin-top: 15px;
+                color: $orange;
+
+                i.fa {
+                    margin-right: 15px;
+                }
+            }
+        }
+
+        a.delete-metadata {
             margin-left: 15px;
-            color: $blue;
-          }
-
         }
 
-        td {
-          &.green {
-            color: $dark-green;
-            font-weight: bold;
-          }
+        a.clone-metadata {
+            border-top-left-radius: 3px;
+            border-bottom-left-radius: 3px;
+        }
+    }
 
-          &.orange {
-            color: $orange;
-            font-weight: bold;
-          }
 
-          &.blue {
-            color: $blue;
-            font-weight: bold;
-          }
+    section.tabs {
+        display: flex;
+        padding: 10px 0 0 0;
 
+        span {
+            flex-grow: 1;
+            text-align: center;
+            cursor: pointer;
+            padding: 15px 25px;
+            background-color: $light-grey;
+            color: $dark-grey;
+            text-transform: uppercase;
+            border-right: 1px solid white;
+            position: relative;
+
+            &.active {
+                background-color: white;
+                color: $darker-blue;
+                border-top: 2px solid $blue;
+                border-right: none;
+                font-weight: bold;
+
+                &.errors {
+                    border-top: 2px solid $red;
+                }
+            }
+
+            &.errors {
+                color: $red;
+            }
+
+            &:last-child {
+                border-right: none;
+            }
+
+            i.fa-warning, i.fa-asterisk {
+                position: absolute;
+                top: 6px;
+                right: 8px;
+            }
+        }
+    }
+
+    section.errors {
+        margin-left: 10%;
+        background-color: $red;
+        color: white;
+        border-radius: 5px;
+        padding: 15px;
+
+        h2 {
+            font-size: larger;
         }
 
-        &.saml20_sp, &.oidc10_rp {
-          th {
-            width: 20%;
-          }
+        p {
+            margin-top: 10px;
+            text-transform: uppercase;
+            font-size: 17px;
         }
 
-        &.saml20_sp.imported-from-edugain {
-          th {
-            width: 14%;
-          }
+        ul {
+            list-style: none;
+
+            li {
+                margin-left: 10px;
+            }
         }
-      }
-      section.warning {
-        margin-top: 15px;
-        color: $orange;
-        i.fa {
-          margin-right: 15px;
+    }
+
+    .actions {
+        display: flex;
+        margin-top: 25px;
+
+        .notes-container {
+            flex-grow: 2;
+
+            em.error {
+                padding-bottom: 20px;
+            }
         }
-      }
-    }
 
-    a.delete-metadata {
-      margin-left: 15px;
-    }
-
-    a.clone-metadata {
-      border-top-left-radius: 3px;
-      border-bottom-left-radius: 3px;
-    }
-  }
-
-
-  section.tabs {
-    display: flex;
-    padding: 10px 0 0 0;
-
-    span {
-      flex-grow: 1;
-      text-align: center;
-      cursor: pointer;
-      padding: 15px 25px;
-      background-color: $light-grey;
-      color: $dark-grey;
-      text-transform: uppercase;
-      border-right: 1px solid white;
-      position: relative;
-
-      &.active {
-        background-color: white;
-        color: $darker-blue;
-        border-top: 2px solid $blue;
-        border-right: none;
-        font-weight: bold;
-
-        &.errors {
-          border-top: 2px solid $red;
+        .notes {
+            display: flex;
+            align-items: center;
         }
-      }
 
-      &.errors {
-        color: $red;
-      }
+        label {
+            margin-right: 10px;
+        }
 
-      &:last-child {
-        border-right: none;
-      }
+        input[type=text] {
+            width: 75%;
+            border: 1px solid $lighter-grey;
+            padding: 6px;
+            border-radius: $br;
+            font-size: 14px;
 
-      i.fa-warning, i.fa-asterisk {
-        position: absolute;
-        top: 6px;
-        right: 8px;
-      }
+            &[disabled] {
+                background-color: $light-grey;
+            }
+        }
+
+        .buttons {
+            margin-left: auto;
+        }
+
+        em.error {
+            display: inline-block;
+            margin-top: 10px;
+            color: $red;
+        }
     }
-  }
-
-  section.errors {
-    margin-left: 10%;
-    background-color: $red;
-    color: white;
-    border-radius: 5px;
-    padding: 15px;
-
-    h2 {
-      font-size: larger;
-    }
-
-    p {
-      margin-top: 10px;
-      text-transform: uppercase;
-      font-size: 17px;
-    }
-
-    ul {
-      list-style: none;
-
-      li {
-        margin-left: 10px;
-      }
-    }
-  }
-
-  .actions {
-    display: flex;
-    margin-top: 25px;
-
-    .notes-container {
-      flex-grow: 2;
-
-      em.error {
-        padding-bottom: 20px;
-      }
-    }
-
-    .notes {
-      display: flex;
-      align-items: center;
-    }
-
-    label {
-      margin-right: 10px;
-    }
-
-    input[type=text] {
-      width: 75%;
-      border: 1px solid $lighter-grey;
-      padding: 6px;
-      border-radius: $br;
-      font-size: 14px;
-
-      &[disabled] {
-        background-color: $light-grey;
-      }
-    }
-
-    .buttons {
-      margin-left: auto;
-    }
-
-    em.error {
-      display: inline-block;
-      margin-top: 10px;
-      color: $red;
-    }
-  }
 
 }
 

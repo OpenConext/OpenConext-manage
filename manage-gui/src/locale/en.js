@@ -93,8 +93,10 @@ I18n.translations.en = {
         required: "{{name}} is required",
         extraneous: "{{name}} is an unknown / extraneous key. Remove it as this can not be saved.",
         deleteConfirmation: "Are you sure you want to delete {{name}}?\n\nYou can optionally specify the reason for deletion in the revision notes before pressing the 'delete' button.",
-        errors: "There are validation errors:"
-
+        errors: "There are validation errors:",
+        changeRequestsPre: "There are outstanding change request(s). Go to ",
+        changeRequestsLink: "requests",
+        changeRequestsPost: " to review them."
     },
 
     topBannerDetails: {

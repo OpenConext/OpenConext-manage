@@ -3,30 +3,30 @@ import I18n from "i18n-js";
 import PropTypes from "prop-types";
 
 import {
-  ARP,
-  ConnectedIdps,
-  Connection,
-  ConsentDisabling,
-  Export,
-  Import,
-  Manipulation,
-  MetaData,
-  Revisions,
-  WhiteList
+    ARP,
+    ConnectedIdps,
+    Connection,
+    ConsentDisabling,
+    Export,
+    Import,
+    Manipulation,
+    MetaData,
+    Revisions,
+    WhiteList
 } from "../components/metadata";
 
 import ConfirmationDialog from "../components/ConfirmationDialog";
 
 import {
-  allResourceServers,
-  changeRequests,
-  detail,
-  remove,
-  revisions,
-  save,
-  template,
-  update,
-  whiteListing
+    allResourceServers,
+    changeRequests,
+    detail,
+    remove,
+    revisions,
+    save,
+    template,
+    update,
+    whiteListing
 } from "../api";
 import {isEmpty, stop} from "../utils/Utils";
 import {setFlash} from "../utils/Flash";
@@ -842,6 +842,22 @@ class Detail extends React.PureComponent {
         }
     };
 
+    renderHasChangeRequests = () => {
+        return (
+            <div className={"change-requests"}>
+                <span>
+                    {I18n.t("metadata.changeRequestsPre")}
+                    <a href="/requests" onClick={e => {
+                        stop(e);
+                        this.setState({selectedTab: "requests"});
+                    }}>
+                        {I18n.t("metadata.changeRequestsLink")}
+                    </a>
+                    {I18n.t("metadata.changeRequestsPost")}
+                </span>
+            </div>)
+    }
+
     renderErrors = errors => {
         const allErrors = {...errors};
         const errorKeys = Object.keys(allErrors).filter(
@@ -1009,54 +1025,58 @@ class Detail extends React.PureComponent {
                 />
                 {renderContent && (
                     <section className="top-detail">
-                        {this.renderTopBanner(name, organization, metaData, resourceServers, whiteListing, isNew, whiteListingLoaded)}
-                        {hasErrors && this.renderErrors(errors)}
-                        {!isNew && (
-                            <a
-                                className="button red delete-metadata"
-                                onClick={e => {
-                                    stop(e);
-                                    this.setState({
-                                        confirmationDialogAction: () => {
-                                            remove(this.state.metaData, this.state.revisionNote).then(res => {
-                                                const name = this.nameOfMetaData(this.state.metaData);
-                                                setFlash(
-                                                    I18n.t("metadata.flash.deleted", {name: name})
-                                                );
-                                                this.props.navigate(`/search`);
-                                            });
-                                        },
-                                        cancelDialogAction: () =>
-                                            this.setState({confirmationDialogOpen: false}),
-                                        confirmationDialogOpen: true,
-                                        leavePage: false
-                                    });
-                                }}
-                            >
-                                {I18n.t("metadata.remove")}
-                            </a>
-                        )}
-                        {!isNew && (
-                            <a
-                                className="button green clone-metadata"
-                                onClick={e => {
-                                    stop(e);
-                                    setTimeout(() => {
-                                        const name =
-                                            metaData.data.metaDataFields["name:en"] ||
-                                            metaData.data.metaDataFields["name:nl"] ||
-                                            "this service";
-                                        setFlash(I18n.t("metadata.flash.cloned", {name: name}));
-                                    }, 50);
-                                    const path = encodeURIComponent(`/clone/${type}/${metaData.id}`);
-                                    this.props.navigate(`/refresh-route/${path}`);
-                                }}
-                            >
-                                {I18n.t("metadata.clone")}
-                            </a>
-                        )}
+                        <section className="inner-detail">
+                            {this.renderTopBanner(name, organization, metaData, resourceServers, whiteListing, isNew, whiteListingLoaded)}
+                            {hasErrors && this.renderErrors(errors)}
+                            {!isNew && (
+                                <a
+                                    className="button red delete-metadata"
+                                    onClick={e => {
+                                        stop(e);
+                                        this.setState({
+                                            confirmationDialogAction: () => {
+                                                remove(this.state.metaData, this.state.revisionNote).then(res => {
+                                                    const name = this.nameOfMetaData(this.state.metaData);
+                                                    setFlash(
+                                                        I18n.t("metadata.flash.deleted", {name: name})
+                                                    );
+                                                    this.props.navigate(`/search`);
+                                                });
+                                            },
+                                            cancelDialogAction: () =>
+                                                this.setState({confirmationDialogOpen: false}),
+                                            confirmationDialogOpen: true,
+                                            leavePage: false
+                                        });
+                                    }}
+                                >
+                                    {I18n.t("metadata.remove")}
+                                </a>
+                            )}
+                            {!isNew && (
+                                <a
+                                    className="button green clone-metadata"
+                                    onClick={e => {
+                                        stop(e);
+                                        setTimeout(() => {
+                                            const name =
+                                                metaData.data.metaDataFields["name:en"] ||
+                                                metaData.data.metaDataFields["name:nl"] ||
+                                                "this service";
+                                            setFlash(I18n.t("metadata.flash.cloned", {name: name}));
+                                        }, 50);
+                                        const path = encodeURIComponent(`/clone/${type}/${metaData.id}`);
+                                        this.props.navigate(`/refresh-route/${path}`);
+                                    }}
+                                >
+                                    {I18n.t("metadata.clone")}
+                                </a>
+                            )}
+                        </section>
+                        {(changeRequestsLoaded && !isEmpty(requests)) && this.renderHasChangeRequests()}
                     </section>
                 )}
+
                 {renderNotFound && <section>{I18n.t("metadata.notFound")}</section>}
                 {!notFound && (
                     <section className="tabs">
