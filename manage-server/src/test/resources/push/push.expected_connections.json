@@ -19,6 +19,7 @@
           }
         ],
         "coin": {
+          "service_team_id": "urn:collab:group:test.surfteams.nl:nl:surfnet:diensten:testbart2334343",
           "signature_method": "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"
         },
         "contacts": [
@@ -136,12 +137,17 @@
         "certData3": "MIIDEzCCAfugAwIBAgIJAKoK/heBjcOYMA0GCSqGSIb3DQEBBQUAMCAxHjAcBgNVBAoMFU9yZ2FuaXphdGlvbiwgQ049T0lEQzAeFw0xNTExMTExMDEyMTVaFw0yNTExMTAxMDEyMTVaMCAxHjAcBgNVBAoMFU9yZ2FuaXphdGlvbiwgQ049T0lEQzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANBGwJ/qpTQNiSgUglSE2UzEkUow+wS8r67etxoEhlzJZfgK/k5TfG1wICDqapHAxEVgUM10aBHRctNocA5wmlHtxdidhzRZroqHwpKy2BmsKX5Z2oK25RLpsyusB1KroemgA/CjUnI6rIL1xxFn3KyOFh1ZBLUQtKNQeMS7HFGgSDAp+sXuTFujz12LFDugX0T0KB5a1+0l8y0PEa0yGa1oi6seONx849ZHxM0PRvUunWkuTM+foZ0jZpFapXe02yWMqhc/2iYMieE/3GvOguJchJt6R+cut8VBb6ubKUIGK7pmoq/TB6DVXpvsHqsDJXechxcicu4pdKVDHSec850CAwEAAaNQME4wHQYDVR0OBBYEFK7RqjoodSYVXGTVEdLf3kJflP/sMB8GA1UdIwQYMBaAFK7RqjoodSYVXGTVEdLf3kJflP/sMAwGA1UdEwQFMAMBAf8wDQYJKoZIhvcNAQEFBQADggEBADNZkxlFXh4F45muCbnQd+WmaXlGvb9tkUyAIxVL8AIu8J18F420vpnGpoUAE+Hy3evBmp2nkrFAgmr055fAjpHeZFgDZBAPCwYd3TNMDeSyMta3Ka+oS7GRFDePkMEm+kH4/rITNKUF1sOvWBTSowk9TudEDyFqgGntcdu/l/zRxvx33y3LMG5USD0x4X4IKjRrRN1BbcKgi8dq10C3jdqNancTuPoqT3WWzRvVtB/q34B7F74/6JzgEoOCEHufBMp4ZFu54P0yEGtWfTwTzuoZobrChVVBt4w/XZagrRtUCDNwRpHNbpjxYudbqLqpi1MQpV9oht/BpTHVJG2i0ro=",
         "coin": {
           "additional_logging": "1",
+          "dashboard_connect_option": "connect_without_interaction_without_email",
           "display_unconnected_idps_wayf": "1",
           "do_not_add_attribute_aliases": "1",
+          "entity_categories": {
+            "1": "http://refeds.org/category/research-and-scholarship"
+          },
           "eula": "https://eula",
           "no_consent_required": "1",
           "policy_enforcement_decision_required": "1",
           "publish_in_edugain": "1",
+          "publish_in_edugain_date": "2018-06-15T08:20:34.575Z",
           "stepup": {
             "allow_no_token": "1",
             "requireloa": "http://test.surfconext.nl/assurance/loa2"
@@ -201,7 +207,11 @@
           "urn:oasis:names:tc:SAML:2.0:nameid-format:transient"
         ],
         "coin": {
+          "dashboard_connect_option": "connect_without_interaction_without_email",
           "do_not_add_attribute_aliases": "1",
+          "entity_categories": {
+            "3": "https://refeds.org/category/code-of-conduct/v2"
+          },
           "policy_enforcement_decision_required": "1",
           "stepup": {
             "allow_no_token": "0"
@@ -272,6 +282,7 @@
           "urn:oasis:names:tc:SAML:2.0:nameid-format:transient"
         ],
         "coin": {
+          "dashboard_connect_option": "connect_without_interaction_without_email",
           "policy_enforcement_decision_required": "1"
         },
         "contacts": [
@@ -449,7 +460,9 @@
           "disable_scoping": "1",
           "guest_qualifier": "All",
           "hidden": "1",
+          "institution_id": "123",
           "publish_in_edugain": "1",
+          "publish_in_edugain_date": "2018-06-15T08:20:34.575Z",
           "schachomeorganization": "schac_home"
         },
         "contacts": [
@@ -596,6 +609,7 @@
           }
         ],
         "coin": {
+          "institution_id": "123",
           "stepup": {
             "allow_no_token": "1",
             "requireloa": "http://test.surfconext.nl/assurance/loa3"

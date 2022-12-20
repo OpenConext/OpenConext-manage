@@ -12,12 +12,6 @@ import static org.junit.Assert.assertEquals;
 
 public class DatabaseControllerTest extends AbstractIntegrationTest {
 
-    @Value("${push.eb.user}")
-    private String pushUser;
-
-    @Value("${push.eb.password}")
-    private String pushPassword;
-
     @Test
     public void pushPreview() throws Exception {
         Map connections = given()

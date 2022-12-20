@@ -3,17 +3,7 @@ package manage.format;
 import manage.model.EntityType;
 import manage.model.MetaData;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.stream.IntStream;
 
 import static java.util.Optional.empty;
@@ -22,8 +12,7 @@ import static org.springframework.util.StringUtils.hasText;
 
 /**
  * Mimics the parsing of metadata from the
- * https://github.com/OpenConext/OpenConext-engineblock-metadata/blob/master/src/Entity/Assembler
- * /JanusPushMetadataAssembler.php
+ * https://github.com/OpenConext/OpenConext-engineblock-metadata/blob/master/src/Entity/Assembler/JanusPushMetadataAssembler.php
  */
 @SuppressWarnings("unchecked")
 public class EngineBlockFormatter {
@@ -54,7 +43,6 @@ public class EngineBlockFormatter {
         commonAttributes.put("metadata:keywords:nl", empty());
         commonAttributes.put("metadata:url:en", empty());
         commonAttributes.put("metadata:url:nl", empty());
-        commonAttributes.put("metadata:coin:publish_in_edugain", empty());
 
         commonAttributes.put("metadata:certData", empty());
         commonAttributes.put("metadata:certData2", empty());
@@ -64,27 +52,7 @@ public class EngineBlockFormatter {
         //contact persons are handled in separate method
         commonAttributes.put("metadata:NameIDFormat", empty());
         //single log outs are handled in separate method
-        commonAttributes.put("metadata:coin:disable_scoping", empty());
-        commonAttributes.put("metadata:coin:additional_logging", empty());
-        commonAttributes.put("metadata:coin:signature_method", empty());
         commonAttributes.put("manipulation", of("manipulation_code"));
-
-        spAttributes.put("metadata:coin:transparant_issuer", empty());
-        spAttributes.put("metadata:coin:trusted_proxy", empty());
-        spAttributes.put("metadata:coin:requesterid_required", empty());
-        spAttributes.put("metadata:coin:display_unconnected_idps_wayf", empty());
-
-        spAttributes.put("metadata:coin:eula", empty());
-        spAttributes.put("metadata:coin:do_not_add_attribute_aliases", empty());
-        spAttributes.put("metadata:coin:policy_enforcement_decision_required", empty());
-        spAttributes.put("metadata:coin:no_consent_required", empty());
-        spAttributes.put("metadata:coin:sign_response", empty());
-        spAttributes.put("metadata:coin:stepup:requireloa", empty());
-        spAttributes.put("metadata:coin:stepup:allow_no_token", empty());
-
-        idpAttributes.put("metadata:coin:guest_qualifier", empty());
-        idpAttributes.put("metadata:coin:schachomeorganization", empty());
-        idpAttributes.put("metadata:coin:hidden", empty());
     }
 
     public Map<String, Object> parseServiceProvider(MetaData metaDataContainer) {
@@ -149,6 +117,8 @@ public class EngineBlockFormatter {
 
     private void addCommonProviderAttributes(Map<String, Object> source, Map<String, Object> result) {
         commonAttributes.forEach((key, value) -> this.addToResult(source, result, key, value));
+
+        addCoinMetadataAttributesToResult(source, result);
         addLogo(source, result);
         addContactPersons(source, result);
         addSingleLogOutService(source, result);
@@ -378,6 +348,15 @@ public class EngineBlockFormatter {
             }
 
         });
+    }
+
+    protected void addCoinMetadataAttributesToResult(Map<String, Object> source,
+                                                     Map<String, Object> result) {
+        Map<String, Object> metadata = (Map<String, Object>) source.get("metaDataFields");
+        metadata.keySet().stream().filter(key -> key.startsWith("coin:"))
+                .forEach(key -> {
+                    addToResult(source, result, "metadata:" + key, empty());
+                });
     }
 
     protected void addToResult(Map<String, Object> source,

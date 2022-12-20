@@ -20,7 +20,7 @@ import static org.junit.Assert.assertEquals;
 @SuppressWarnings("unchecked")
 public class EngineBlockFormatterTest implements TestUtils {
 
-    private EngineBlockFormatter subject = new EngineBlockFormatter();
+    private final EngineBlockFormatter subject = new EngineBlockFormatter();
 
     @Test
     @SuppressWarnings("unchecked")
@@ -28,6 +28,7 @@ public class EngineBlockFormatterTest implements TestUtils {
         MetaData metaData = objectMapper.readValue(readFile("json/meta_data_detail.json"), MetaData.class);
         Map<String, Object> result = subject.parseServiceProvider(metaData);
         Map<String, Object> expected = objectMapper.readValue(readFile("push/push_results.json"), Map.class);
+        System.out.println(objectMapper.writeValueAsString(result));
         assertEquals(new HashMap<>(expected).toString(), new HashMap<>(result).toString());
     }
 
@@ -46,6 +47,7 @@ public class EngineBlockFormatterTest implements TestUtils {
         subject.addToResult(source, result, "metadata:coin:bogus", empty());
         subject.addToResult(source, result, "metadata:coin:no_consent_required", empty());
         subject.addToResult(source, result, "metadata:logo:0:height", empty());
+        subject.addCoinMetadataAttributesToResult(source, result);
 
         assertAttribute("name", "https://teams.surfconext.nl/shibboleth", result);
         assertAttribute("metadata:certData",
@@ -57,6 +59,7 @@ public class EngineBlockFormatterTest implements TestUtils {
         assertAttribute("metadata:OrganizationDisplayName:bogus", null, result);
         assertAttribute("metadata:coin:no_consent_required", "1", result);
         assertAttribute("metadata:logo:0:height", "300", result);
+        assertAttribute("metadata:coin:ss:idp_visible_only", "1", result);
     }
 
     @Test
