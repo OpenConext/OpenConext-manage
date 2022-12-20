@@ -2,146 +2,146 @@
 @import "../stylesheets/vars.scss";
 
 .edugain {
-  @include page;
+    @include page;
 
-  background-color: white;
-
-  p.info {
-    padding: 15px 0 0 30px;
-
-    span.warning {
-      color: $red;
-    }
-
-    span.code {
-      font-family: "Courier New";
-      color: $dark-grey;
-    }
-  }
-
-  section.sub-tabs {
-    margin-top: 15px;
-    background: $background;
-    display: flex;
-    padding: 0;
-
-    span {
-      text-align: center;
-      cursor: pointer;
-      padding: 15px 25px;
-      background-color: $light-grey;
-      color: $dark-grey;
-      text-transform: uppercase;
-      border-right: 1px solid white;
-
-      &.active {
-        background-color: white;
-        color: $darker-blue;
-        border-top: 2px solid $blue;
-        border-right: none;
-        font-weight: bold;
-      }
-
-      &:last-child {
-        border-right: none;
-      }
-    }
-  }
-
-  section.form {
-    display: flex;
-    padding: 30px;
-
-    input {
-      flex-grow: 2;
-      font-size: 14px;
-      padding: 0 10px;
-      border-radius: 3px 0 0 3px;
-      border: 1px solid #d9d9d8;
-      line-height: 33px;
-    }
-
-    a.disabled {
-      border-top-left-radius: 0;
-      border-bottom-left-radius: 0;
-    }
-
-    i.fa-cloud-download {
-      margin-left: 65px;
-    }
-  }
-
-  section.results {
-    padding: 30px;
     background-color: white;
-    border: 1px solid $light-grey;
 
-    p.error {
-      color: $red;
-    }
+    p.info {
+        padding: 15px 0 0 30px;
 
-    span.elapsed {
-      font-style: italic;
-      color: $dark-grey;
-      display: inline-block;
-      margin-bottom: 15px;
-    }
-
-    table {
-      width: 100%;
-
-      th {
-        text-align: left;
-
-        i {
-          margin-left: 15px;
-          color: $lighter-grey;
+        span.warning {
+            color: $red;
         }
 
-        &.category {
-          width: 25%;
+        span.code {
+            font-family: "Courier New";
+            color: $dark-grey;
+        }
+    }
+
+    section.sub-tabs {
+        margin-top: 15px;
+        background: $background;
+        display: flex;
+        padding: 0;
+
+        span {
+            text-align: center;
+            cursor: pointer;
+            padding: 15px 25px;
+            background-color: $light-grey;
+            color: $dark-grey;
+            text-transform: uppercase;
+            border-right: 1px solid white;
+
+            &.active {
+                background-color: white;
+                color: $darker-blue;
+                border-top: 2px solid $blue;
+                border-right: none;
+                font-weight: bold;
+            }
+
+            &:last-child {
+                border-right: none;
+            }
+        }
+    }
+
+    section.form {
+        display: flex;
+        padding: 30px;
+
+        input {
+            flex-grow: 2;
+            font-size: 14px;
+            padding: 0 10px;
+            border-radius: 3px 0 0 3px;
+            border: 1px solid #d9d9d8;
+            line-height: 33px;
         }
 
-        &.number {
-          width: 75%;
+        a.disabled {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
         }
-      }
 
-      tbody:nth-child(odd) {
-        background-color: $lightest-grey;
-      }
-
-      tbody tr.collapsible {
-        cursor: pointer;
-        color: $blue;
-        font-weight: bold;
-      }
-
-      td {
-        vertical-align: middle;
-        padding: 5px;
-
-        i.fa-info-circle {
-          color: $blue;
-          margin-left: 25px;
+        i.fa-cloud-download {
+            margin-left: 65px;
         }
-      }
+    }
+
+    section.results {
+        padding: 30px;
+        background-color: white;
+        border: 1px solid $light-grey;
+
+        p.error {
+            color: $red;
+        }
+
+        span.elapsed {
+            font-style: italic;
+            color: $dark-grey;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        table {
+            width: 100%;
+
+            th {
+                text-align: left;
+
+                i {
+                    margin-left: 15px;
+                    color: $lighter-grey;
+                }
+
+                &.category {
+                    width: 25%;
+                }
+
+                &.number {
+                    width: 75%;
+                }
+            }
+
+            tbody:nth-child(odd) {
+                background-color: $lightest-grey;
+            }
+
+            tbody tr.collapsible {
+                cursor: pointer;
+                color: $blue;
+                font-weight: bold;
+            }
+
+            td {
+                vertical-align: middle;
+                padding: 5px;
+
+                i.fa-info-circle {
+                    color: $blue;
+                    margin-left: 25px;
+                }
+            }
+
+        }
 
     }
 
-  }
+    section.delete {
+        a.button {
+            margin: 30px;
 
-  section.delete {
-    a.button {
-      margin: 30px;
+            i.fa {
+                margin-left: 65px;
+                color: white;
+            }
 
-      i.fa {
-        margin-left: 65px;
-        color: white;
-      }
-
+        }
     }
-  }
 
 }
 

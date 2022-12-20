@@ -424,7 +424,14 @@ class Detail extends React.PureComponent {
     applyImportChanges = (results, applyChangesFor) => {
         const newChanges = {...this.state.changes};
         const newData = {...this.state.metaData.data};
-        ["allowedEntities", "disableConsent", "stepupEntities", "mfaEntities", "arp", "allowedResourceServers"].forEach(name => {
+        [
+            "allowedEntities",
+            "disableConsent",
+            "stepupEntities",
+            "mfaEntities",
+            "arp",
+            "allowedResourceServers"
+        ].forEach(name => {
             if (applyChangesFor[name] && results[name]) {
                 newData[name] = results[name];
                 if (name === "allowedEntities") {

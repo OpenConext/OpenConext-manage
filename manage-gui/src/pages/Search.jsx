@@ -2,7 +2,6 @@ import React from "react";
 import I18n from "i18n-js";
 import PropTypes from "prop-types";
 import debounce from "lodash.debounce";
-import {Navigate} from "react-router-dom";
 import Autocomplete from "../components/Autocomplete";
 import {autocomplete, ping} from "../api";
 import {isEmpty, stop} from "../utils/Utils";

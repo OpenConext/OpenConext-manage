@@ -1,104 +1,104 @@
 @import "../../stylesheets/mixins.scss";
 
 .metadata-consent-disabling {
-  background-color: white;
-  padding: 20px;
+    background-color: white;
+    padding: 20px;
 
-  .consent-disabling-info {
-    margin: 15px 0;
+    .consent-disabling-info {
+        margin: 15px 0;
 
-    h2 {
-      font-size: 18px;
-      margin-bottom: 10px;
+        h2 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
     }
 
-  }
+    section.consent-disabling {
+        margin-top: 15px;
 
-  section.consent-disabling {
-    margin-top: 15px;
+        table {
+            width: 100%;
 
-    table {
-      width: 100%;
+            th {
+                text-align: left;
+                cursor: pointer;
+                padding-bottom: 10px;
 
-      th {
-        text-align: left;
-        cursor: pointer;
-        padding-bottom: 10px;
+                i {
+                    margin-left: 15px;
+                    color: $lighter-grey;
 
-        i {
-          margin-left: 15px;
-          color: $lighter-grey;
+                    &.current, &.reverse {
+                        color: $blue;
+                    }
+                }
 
-          &.current, &.reverse {
-            color: $blue;
-          }
-        }
+                &.remove {
+                    min-width: 25px;
+                }
 
-        &.remove {
-          min-width: 25px;
-        }
+                &.status {
+                    min-width: 100px;
+                }
 
-        &.status {
-          min-width: 100px;
-        }
+                &.name {
+                    width: 14%;
+                }
 
-        &.name {
-          width: 14%;
-        }
+                &.organization {
+                    width: 14%;
+                }
 
-        &.organization {
-          width: 14%;
-        }
+                &.entityid {
+                    width: 16%;
 
-        &.entityid {
-          width: 16%;
+                }
 
-        }
+                &.explanationNl, &.explanationEn {
+                    width: 20%;
+                }
 
-        &.explanationNl, &.explanationEn {
-          width: 20%;
-        }
-
-        &.consent_value {
-          width: 18%;
-        }
-      }
-
-      tbody {
-        tr:nth-child(odd) {
-          background-color: $lightest-grey;
-        }
-
-        td {
-          word-break: break-all;
-          vertical-align: middle;
-
-          &.remove {
-            padding: 5px 10px 5px 0;
-            text-align: center;
-
-            i.fa {
-              color: $red;
-              font-size: 20px;
+                &.consent_value {
+                    width: 18%;
+                }
             }
-          }
 
-          &.explanation {
-            input, textarea {
-              @include inputField;
-              width: 95%;
-              margin-top: 0;
+            tbody {
+                tr:nth-child(odd) {
+                    background-color: $lightest-grey;
+                }
+
+                td {
+                    word-break: break-all;
+                    vertical-align: middle;
+
+                    &.remove {
+                        padding: 5px 10px 5px 0;
+                        text-align: center;
+
+                        i.fa {
+                            color: $red;
+                            font-size: 20px;
+                        }
+                    }
+
+                    &.explanation {
+                        input, textarea {
+                            @include inputField;
+                            width: 95%;
+                            margin-top: 0;
+                        }
+                    }
+
+                    div.select-consent-value {
+                        margin-right: 10px;
+                    }
+                }
+
             }
-          }
 
-          div.select-consent-value {
-            margin-right: 10px;
-          }
         }
-
-      }
-
     }
-  }
 
 }

@@ -2,164 +2,164 @@
 @import "../stylesheets/mixins.scss";
 
 .scopes, .no-scopes {
-  @include page;
-  background-color: white;
+    @include page;
+    background-color: white;
 
-  section.explanation {
-    padding: 30px 15px;
+    section.explanation {
+        padding: 30px 15px;
 
-    p {
-      padding: 0;
-    }
-
-  }
-
-  section.options {
-    display: flex;
-
-    .search-input-container {
-      flex-grow: 2;
-      position: relative;
-    }
-
-    .search-input {
-      padding: 10px;
-      font-size: 14px;
-      width: 100%;
-    }
-
-    .fa-search {
-      position: absolute;
-      right: 15px;
-      top: 10px;
-      font-size: 20px;
-      color: $blue;
-    }
-
-    a {
-      i.fa {
-        margin-left: 35px;
-      }
-
-    }
-  }
-
-  .master-detail {
-    display: flex;
-    padding: 15px;
-  }
-
-  .scopes-overview {
-    display: flex;
-    flex-direction: column;
-    padding: 15px;
-    width: 35%;
-  }
-
-  table {
-    width: 100%;
-    margin-bottom: 20px;
-
-    th {
-      text-align: left;
-      cursor: pointer;
-      padding: 3px;
-
-      i {
-        margin-left: 15px;
-        color: $lighter-grey;
-
-        &.current, &.reverse {
-          color: $blue;
-        }
-      }
-
-      &.name {
-        padding-right: 10px;
-      }
-
-      &.actions {
-        text-align: center;
-      }
-    }
-
-    tbody {
-      tr {
-        &:nth-child(odd) {
-          background-color: $lightest-grey;
+        p {
+            padding: 0;
         }
 
-        &:hover {
-          color: $blue;
-        }
-
-      }
-
-      td {
-        vertical-align: middle;
-        word-wrap: break-word;
-        padding: 5px 3px;
-        cursor: pointer;
-
-        &.selected {
-          color: $blue;
-          font-weight: bold;
-        }
-      }
     }
 
-  }
+    section.options {
+        display: flex;
 
-  .actions {
-    margin-top: auto;
-  }
+        .search-input-container {
+            flex-grow: 2;
+            position: relative;
+        }
 
-  .scope-details {
-    width: 50%;
-    padding: 15px;
+        .search-input {
+            padding: 10px;
+            font-size: 14px;
+            width: 100%;
+        }
 
-    p {
-      margin-top: 25px;
+        .fa-search {
+            position: absolute;
+            right: 15px;
+            top: 10px;
+            font-size: 20px;
+            color: $blue;
+        }
 
-      &.errors {
-        margin-top: 5px;
-      }
+        a {
+            i.fa {
+                margin-left: 35px;
+            }
+
+        }
     }
 
-    label {
-      margin: 15px 0 5px 0;
-      display: inline-block;
+    .master-detail {
+        display: flex;
+        padding: 15px;
+    }
 
-      &.required::after {
-        content: " *";
+    .scopes-overview {
+        display: flex;
+        flex-direction: column;
+        padding: 15px;
+        width: 35%;
+    }
+
+    table {
+        width: 100%;
+        margin-bottom: 20px;
+
+        th {
+            text-align: left;
+            cursor: pointer;
+            padding: 3px;
+
+            i {
+                margin-left: 15px;
+                color: $lighter-grey;
+
+                &.current, &.reverse {
+                    color: $blue;
+                }
+            }
+
+            &.name {
+                padding-right: 10px;
+            }
+
+            &.actions {
+                text-align: center;
+            }
+        }
+
+        tbody {
+            tr {
+                &:nth-child(odd) {
+                    background-color: $lightest-grey;
+                }
+
+                &:hover {
+                    color: $blue;
+                }
+
+            }
+
+            td {
+                vertical-align: middle;
+                word-wrap: break-word;
+                padding: 5px 3px;
+                cursor: pointer;
+
+                &.selected {
+                    color: $blue;
+                    font-weight: bold;
+                }
+            }
+        }
+
+    }
+
+    .actions {
+        margin-top: auto;
+    }
+
+    .scope-details {
+        width: 50%;
+        padding: 15px;
+
+        p {
+            margin-top: 25px;
+
+            &.errors {
+                margin-top: 5px;
+            }
+        }
+
+        label {
+            margin: 15px 0 5px 0;
+            display: inline-block;
+
+            &.required::after {
+                content: " *";
+                color: $red;
+            }
+        }
+
+        input {
+            width: 100%;
+            font-size: 14px;
+            padding: 0 10px;
+            border-radius: 3px;
+            border: 1px solid #d9d9d8;
+            line-height: 33px;
+
+        }
+
+    }
+
+    .detail-actions {
+        margin-top: 40px;
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .errors, {
         color: $red;
-      }
+
+        ul {
+            margin-left: 40px;
+        }
     }
-
-    input {
-      width: 100%;
-      font-size: 14px;
-      padding: 0 10px;
-      border-radius: 3px;
-      border: 1px solid #d9d9d8;
-      line-height: 33px;
-
-    }
-
-  }
-
-  .detail-actions {
-    margin-top: 40px;
-    display: flex;
-    justify-content: flex-end;
-  }
-
-  .errors, {
-    color: $red;
-
-    ul {
-      margin-left: 40px;
-    }
-  }
 }
 

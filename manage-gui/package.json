@@ -27,10 +27,10 @@
     "react-json-pretty": "^2.2.0",
     "react-modal": "^3.14.4",
     "react-router-dom": "^6.2.1",
-    "react-scripts": "5.0.0",
+    "react-scripts": "5.0.1",
     "react-select": "^5.2.2",
     "react-tooltip": "^4.2.21",
-    "sass": "^1.49.7",
+    "sass": "^1.57.1",
     "scroll-into-view": "^1.16.0",
     "spin.js": "^2.3.2",
     "urijs": "^1.19.11"

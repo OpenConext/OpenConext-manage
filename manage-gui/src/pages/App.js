@@ -146,7 +146,7 @@ class App extends React.PureComponent {
 
                                element={<Activity/>}/>
                         <Route path="/refresh-route/:path"
-                               element={<RefreshRoute />}/>
+                               element={<RefreshRoute/>}/>
 
                         <Route path="/error"
                                element={<ServerError/>}/>

@@ -5,49 +5,49 @@ import {Select} from "../components";
 import "./SelectEntities.scss";
 
 export default class SelectEntities extends React.PureComponent {
-  options() {
-    const {whiteListing, allowedEntities} = this.props;
-    const allowedEntityNames = allowedEntities.map(entity => entity.name);
+    options() {
+        const {whiteListing, allowedEntities} = this.props;
+        const allowedEntityNames = allowedEntities.map(entity => entity.name);
 
-    return whiteListing
-      .map(entry => {
-        const {
-          metaDataFields: {"name:en": eng, "name:nl": nl},
-          entityid: value,
-          state
-        } = entry.data;
+        return whiteListing
+            .map(entry => {
+                const {
+                    metaDataFields: {"name:en": eng, "name:nl": nl},
+                    entityid: value,
+                    state
+                } = entry.data;
 
-        return {
-          label: `${eng || nl || value} - ${value} (${state})`,
-          state,
-          value
-        };
-      })
-      .filter(entry => !allowedEntityNames.includes(entry.value));
-  }
+                return {
+                    label: `${eng || nl || value} - ${value} (${state})`,
+                    state,
+                    value
+                };
+            })
+            .filter(entry => !allowedEntityNames.includes(entry.value));
+    }
 
-  render() {
-    const {onChange, placeholder} = this.props;
+    render() {
+        const {onChange, placeholder} = this.props;
 
-    return (
-      <Select
-        onChange={option => onChange(option.value)}
-        options={this.options()}
-        placeholder={placeholder || "Select..."}
-        searchable={true}
-        value={null}
-      />
-    );
-  }
+        return (
+            <Select
+                onChange={option => onChange(option.value)}
+                options={this.options()}
+                placeholder={placeholder || "Select..."}
+                searchable={true}
+                value={null}
+            />
+        );
+    }
 }
 
 SelectEntities.defaultProps = {
-  allowedEntities: []
+    allowedEntities: []
 };
 
 SelectEntities.propTypes = {
-  onChange: PropTypes.func.isRequired,
-  whiteListing: PropTypes.array.isRequired,
-  allowedEntities: PropTypes.array.isRequired,
-  placeholder: PropTypes.string
+    onChange: PropTypes.func.isRequired,
+    whiteListing: PropTypes.array.isRequired,
+    allowedEntities: PropTypes.array.isRequired,
+    placeholder: PropTypes.string
 };

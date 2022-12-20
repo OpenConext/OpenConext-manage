@@ -1,49 +1,49 @@
 @import "../stylesheets/vars.scss";
 
 body {
-  font-family: "Roboto", Sans-serif;
-  font-weight: 400;
-  font-size: 14px;
-  line-height: 20px;
-  color: $dark-grey;
-  -webkit-font-smoothing: antialiased;
-  background-color: $background;
+    font-family: "Roboto", Sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    color: $dark-grey;
+    -webkit-font-smoothing: antialiased;
+    background-color: $background;
 
-  &:after {
-    position: fixed;
-    width: 109px;
-    height: 28px;
-    top: 15px;
-    right: -25px;
-    text-align: center;
-    font-size: 16px;
-    font-family: sans-serif;
-    text-transform: uppercase;
-    font-weight: bold;
-    color: white;
-    line-height: 30px;
-    transform: rotate(45deg);
-  }
+    &:after {
+        position: fixed;
+        width: 109px;
+        height: 28px;
+        top: 15px;
+        right: -25px;
+        text-align: center;
+        font-size: 16px;
+        font-family: sans-serif;
+        text-transform: uppercase;
+        font-weight: bold;
+        color: white;
+        line-height: 30px;
+        transform: rotate(45deg);
+    }
 
-  &.ReactModal__Body--open {
-    overflow: hidden;
-  }
+    &.ReactModal__Body--open {
+        overflow: hidden;
+    }
 
 }
 
 a {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 *, *:before, *:after {
-  box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 ::-webkit-input-placeholder {
-  color: $blue;
+    color: $blue;
 }
 
 ::-moz-placeholder {
-  color: $blue;
-  opacity: 1;
+    color: $blue;
+    opacity: 1;
 }

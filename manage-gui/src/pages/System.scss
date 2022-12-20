@@ -2,283 +2,283 @@
 @import "../stylesheets/mixins.scss";
 
 .playground {
-  @include page;
+    @include page;
 
-  section.tabs {
-    display: flex;
-    margin-top: 15px;
-    padding: 0;
+    section.tabs {
+        display: flex;
+        margin-top: 15px;
+        padding: 0;
 
-    span {
-      text-align: center;
-      cursor: pointer;
-      padding: 15px 25px;
-      background-color: $light-grey;
-      color: $dark-grey;
-      text-transform: uppercase;
-      border-right: 1px solid white;
+        span {
+            text-align: center;
+            cursor: pointer;
+            padding: 15px 25px;
+            background-color: $light-grey;
+            color: $dark-grey;
+            text-transform: uppercase;
+            border-right: 1px solid white;
 
-      &.active {
+            &.active {
+                background-color: white;
+                color: $darker-blue;
+                border-top: 2px solid $blue;
+                border-right: none;
+                font-weight: bold;
+            }
+
+            &:last-child {
+                border-right: none;
+            }
+        }
+    }
+
+    section.validate, section.migrate, section.push, section.orphans, section.find-my-data, section.stats {
         background-color: white;
-        color: $darker-blue;
-        border-top: 2px solid $blue;
-        border-right: none;
-        font-weight: bold;
-      }
+        padding: 15px 15px 150px 15px;
 
-      &:last-child {
-        border-right: none;
-      }
-    }
-  }
-
-  section.validate, section.migrate, section.push, section.orphans, section.find-my-data, section.stats {
-    background-color: white;
-    padding: 15px 15px 150px 15px;
-
-    p {
-      padding: 15px 0;
-    }
-
-    a {
-      margin: 15px 0;
-
-      i.fa {
-        margin-left: 35px;
-      }
-    }
-
-  }
-
-  section.find-my-data-controls {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    padding: 30px 0;
-    background-color: white;
-
-    .search-input-container {
-      flex-grow: 2;
-      position: relative;
-    }
-
-    .search-input {
-      padding: 6px;
-      font-size: larger;
-      width: 100%;
-    }
-
-    .fa-search {
-      position: absolute;
-      right: 15px;
-      top: 10px;
-      font-size: 20px;
-      color: $blue;
-    }
-
-    div.select-metadata-type {
-      margin: 0 15px;
-      min-width: 350px;
-
-      div.Select-control {
-        margin-top: 0;
-      }
-    }
-
-    a.search {
-      margin: 0;
-      padding: 8px 30px 8px 30px;
-
-      i.fa {
-        margin-left: 35px;
-      }
-
-      border-top-left-radius: 0;
-      border-bottom-left-radius: 0;
-    }
-  }
-
-  table.find-my-data-results, table.stats {
-    width: 100%;
-
-    th {
-      text-align: left;
-
-      &.extra {
-        padding-right: 10px;
-      }
-
-      &.notes {
-        text-align: center;
-      }
-    }
-
-    tbody {
-      tr:nth-child(odd) {
-        background-color: $lightest-grey;
-      }
-
-      td {
-        vertical-align: middle;
-        word-wrap: break-word;
-        padding: 3px;
-
-        &.state {
-          width: 8%;
+        p {
+            padding: 15px 0;
         }
 
-        &.name {
-          width: 15%;
-          max-width: 300px;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
+        a {
+            margin: 15px 0;
+
+            i.fa {
+                margin-left: 35px;
+            }
         }
 
-        &.entityId {
-          width: 20%;
-          max-width: 300px;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
+    }
+
+    section.find-my-data-controls {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding: 30px 0;
+        background-color: white;
+
+        .search-input-container {
+            flex-grow: 2;
+            position: relative;
         }
 
-        &.terminated {
-          width: 8%;
+        .search-input {
+            padding: 6px;
+            font-size: larger;
+            width: 100%;
         }
 
-        &.revisionNumber {
-          width: 4%;
-        }
-
-        &.updatedBy {
-          width: 8%;
-          max-width: 100px;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-        }
-
-        &.notes, &.revisionNote {
-          width: 10%;
-          text-align: center;
-
-          i.fa-info-circle {
-            color: $blue;
+        .fa-search {
+            position: absolute;
+            right: 15px;
+            top: 10px;
             font-size: 20px;
-          }
+            color: $blue;
         }
 
-        &.nope {
-          width: 15%;
+        div.select-metadata-type {
+            margin: 0 15px;
+            min-width: 350px;
+
+            div.Select-control {
+                margin-top: 0;
+            }
         }
-      }
-    }
-  }
 
-  table.stats {
-    th {
-      text-align: left;
-      cursor: pointer;
+        a.search {
+            margin: 0;
+            padding: 8px 30px 8px 30px;
 
-      i {
-        margin-left: 15px;
-        color: $lighter-grey;
+            i.fa {
+                margin-left: 35px;
+            }
 
-        &.current, &.reverse {
-          color: $blue;
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
         }
-      }
-    }
-  }
-
-  section.results {
-    padding: 30px;
-    background-color: white;
-    border: 1px solid $light-grey;
-
-    &.pushPreviewResults {
-      font-family: "Courier New";
-    }
-  }
-
-  span.button {
-    margin-left: 40px;
-    display: inline-block;
-
-    i {
-      margin-left: 35px;
     }
 
-    &.copied {
-      animation: pulse 1s;
-      animation-iteration-count: 1;
-      position: relative;
+    table.find-my-data-results, table.stats {
+        width: 100%;
+
+        th {
+            text-align: left;
+
+            &.extra {
+                padding-right: 10px;
+            }
+
+            &.notes {
+                text-align: center;
+            }
+        }
+
+        tbody {
+            tr:nth-child(odd) {
+                background-color: $lightest-grey;
+            }
+
+            td {
+                vertical-align: middle;
+                word-wrap: break-word;
+                padding: 3px;
+
+                &.state {
+                    width: 8%;
+                }
+
+                &.name {
+                    width: 15%;
+                    max-width: 300px;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                }
+
+                &.entityId {
+                    width: 20%;
+                    max-width: 300px;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                }
+
+                &.terminated {
+                    width: 8%;
+                }
+
+                &.revisionNumber {
+                    width: 4%;
+                }
+
+                &.updatedBy {
+                    width: 8%;
+                    max-width: 100px;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                }
+
+                &.notes, &.revisionNote {
+                    width: 10%;
+                    text-align: center;
+
+                    i.fa-info-circle {
+                        color: $blue;
+                        font-size: 20px;
+                    }
+                }
+
+                &.nope {
+                    width: 15%;
+                }
+            }
+        }
     }
 
-    @keyframes pulse {
-      0% {
-        box-shadow: 0 0 0 0 white;
-      }
-      70% {
-        box-shadow: 0 0 10px 8px lighten($green, 15%);
-      }
-      100% {
-        box-shadow: 0 0 0 0 white;
-      }
+    table.stats {
+        th {
+            text-align: left;
+            cursor: pointer;
+
+            i {
+                margin-left: 15px;
+                color: $lighter-grey;
+
+                &.current, &.reverse {
+                    color: $blue;
+                }
+            }
+        }
     }
 
-  }
+    section.results {
+        padding: 30px;
+        background-color: white;
+        border: 1px solid $light-grey;
 
-  section.deltas {
-    p.push-result-info {
-      font-size: 18px;
-      color: $green;
-      margin: 15px 0;
-
-      &.differences {
-        color: $orange;
-      }
+        &.pushPreviewResults {
+            font-family: "Courier New";
+        }
     }
 
-    table.push-results {
-      width: 100%;
-      table-layout: fixed;
+    span.button {
+        margin-left: 40px;
+        display: inline-block;
 
-      thead th {
-        text-align: left;
-        padding: 5px;
-        font-size: larger;
-
-        &.entityId {
-          width: 40%;
+        i {
+            margin-left: 35px;
         }
 
-        &.attribute {
-          width: 20%;
+        &.copied {
+            animation: pulse 1s;
+            animation-iteration-count: 1;
+            position: relative;
         }
 
-        &.prePushValue {
-          width: 20%;
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 white;
+            }
+            70% {
+                box-shadow: 0 0 10px 8px lighten($green, 15%);
+            }
+            100% {
+                box-shadow: 0 0 0 0 white;
+            }
         }
 
-        &.postPushValue {
-          width: 20%;
-        }
-      }
-
-      tbody {
-        tr:nth-child(odd) {
-          background-color: $lightest-grey;
-        }
-
-        td {
-          word-wrap: break-word;
-          padding: 3px;
-        }
-      }
     }
-  }
+
+    section.deltas {
+        p.push-result-info {
+            font-size: 18px;
+            color: $green;
+            margin: 15px 0;
+
+            &.differences {
+                color: $orange;
+            }
+        }
+
+        table.push-results {
+            width: 100%;
+            table-layout: fixed;
+
+            thead th {
+                text-align: left;
+                padding: 5px;
+                font-size: larger;
+
+                &.entityId {
+                    width: 40%;
+                }
+
+                &.attribute {
+                    width: 20%;
+                }
+
+                &.prePushValue {
+                    width: 20%;
+                }
+
+                &.postPushValue {
+                    width: 20%;
+                }
+            }
+
+            tbody {
+                tr:nth-child(odd) {
+                    background-color: $lightest-grey;
+                }
+
+                td {
+                    word-wrap: break-word;
+                    padding: 3px;
+                }
+            }
+        }
+    }
 
 }
 

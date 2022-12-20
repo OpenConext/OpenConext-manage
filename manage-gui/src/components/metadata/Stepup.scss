@@ -1,105 +1,105 @@
 @import "../../stylesheets/mixins.scss";
 
 .metadata-stepup {
-  background-color: white;
-  padding: 20px;
+    background-color: white;
+    padding: 20px;
 
-  .stepup-info, .mfa-info {
-    margin: 15px 0;
+    .stepup-info, .mfa-info {
+        margin: 15px 0;
 
-    h2 {
-      font-size: 18px;
-      margin-bottom: 10px;
-    }
+        h2 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
 
-    i.fa {
-      margin-left: 15px;
-      color: $blue;
-    }
-
-  }
-
-  .mfa-info {
-    margin: 40px 0 15px 0;
-  }
-
-  section.stepup, section.mfa {
-    margin-top: 15px;
-
-    table {
-      width: 100%;
-
-      th {
-        text-align: left;
-        cursor: pointer;
-        padding-bottom: 10px;
-
-        i {
-          margin-left: 15px;
-          color: $lighter-grey;
-
-          &.current, &.reverse {
+        i.fa {
+            margin-left: 15px;
             color: $blue;
-          }
         }
-
-        &.remove {
-          min-width: 25px;
-        }
-
-        &.status {
-          min-width: 100px;
-        }
-
-        &.name {
-          width: 20%;
-        }
-
-        &.organization {
-          width: 15%;
-        }
-
-        &.entityid {
-          width: 35%;
-        }
-
-        &.loa_level {
-          width: 30%;
-        }
-
-        &.mfa_level {
-          width: 30%;
-        }
-      }
-
-      tbody {
-        tr:nth-child(odd) {
-          background-color: $lightest-grey;
-        }
-
-        td {
-          word-break: break-all;
-          vertical-align: middle;
-
-          &.remove {
-            padding: 5px 10px 5px 0;
-            text-align: center;
-
-            i.fa {
-              color: $red;
-              font-size: 20px;
-            }
-          }
-
-          div.select-loa-level, div.select-mfa-level {
-            width: 95%;
-            margin-right: 10px;
-          }
-        }
-
-      }
 
     }
-  }
+
+    .mfa-info {
+        margin: 40px 0 15px 0;
+    }
+
+    section.stepup, section.mfa {
+        margin-top: 15px;
+
+        table {
+            width: 100%;
+
+            th {
+                text-align: left;
+                cursor: pointer;
+                padding-bottom: 10px;
+
+                i {
+                    margin-left: 15px;
+                    color: $lighter-grey;
+
+                    &.current, &.reverse {
+                        color: $blue;
+                    }
+                }
+
+                &.remove {
+                    min-width: 25px;
+                }
+
+                &.status {
+                    min-width: 100px;
+                }
+
+                &.name {
+                    width: 20%;
+                }
+
+                &.organization {
+                    width: 15%;
+                }
+
+                &.entityid {
+                    width: 35%;
+                }
+
+                &.loa_level {
+                    width: 30%;
+                }
+
+                &.mfa_level {
+                    width: 30%;
+                }
+            }
+
+            tbody {
+                tr:nth-child(odd) {
+                    background-color: $lightest-grey;
+                }
+
+                td {
+                    word-break: break-all;
+                    vertical-align: middle;
+
+                    &.remove {
+                        padding: 5px 10px 5px 0;
+                        text-align: center;
+
+                        i.fa {
+                            color: $red;
+                            font-size: 20px;
+                        }
+                    }
+
+                    div.select-loa-level, div.select-mfa-level {
+                        width: 95%;
+                        margin-right: 10px;
+                    }
+                }
+
+            }
+
+        }
+    }
 
 }

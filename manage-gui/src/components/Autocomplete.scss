@@ -1,100 +1,100 @@
 @import "../stylesheets/vars.scss";
 
 section.metadata-autocomplete {
-  width: 100%;
-  position: absolute;
-  z-index: 3;
-  top: 40px;
-  border-radius: $br;
-  background-color: white;
-  box-shadow: 1px 4px 12px 1px $medium-grey;
-  margin-bottom: 25px;
-
-  div.results-info {
-    margin: 10px;
-    font-size: larger;
-    color: #cc6103;
-    font-style: italic;
-  }
-
-  table.result {
     width: 100%;
-    word-break: break-all;
+    position: absolute;
+    z-index: 3;
+    top: 40px;
+    border-radius: $br;
+    background-color: white;
+    box-shadow: 1px 4px 12px 1px $medium-grey;
+    margin-bottom: 25px;
 
-    thead th {
-      color: $medium-grey;
-      font-size: larger;
-      font-weight: bold;
-      text-transform: uppercase;
-      padding: 10px;
-      text-align: left;
-
-      &.name {
-        width: 20%;
-      }
-
-      &.organization {
-        width: 20%;
-      }
-
-      &.type {
-        width: 10%;
-      }
-
-      &.state {
-        text-align: center;
-        width: 10%;
-      }
-
-      &.entity_id {
-        width: 28%;
-      }
-
-      &.info {
-        text-align: center;
-        width: 6%;
-      }
-
-      &.link {
-        text-align: center;
-        width: 6%;
-      }
+    div.results-info {
+        margin: 10px;
+        font-size: larger;
+        color: #cc6103;
+        font-style: italic;
     }
 
-    tbody tr {
-      border-top: 1px solid $light-grey;
-      cursor: pointer;
+    table.result {
+        width: 100%;
+        word-break: break-all;
 
-      &.active, &:hover {
-        background-color: $light-grey;
-      }
+        thead th {
+            color: $medium-grey;
+            font-size: larger;
+            font-weight: bold;
+            text-transform: uppercase;
+            padding: 10px;
+            text-align: left;
 
-      td {
-        padding: 5px 10px;
-        vertical-align: middle;
+            &.name {
+                width: 20%;
+            }
 
-        &.state, &.info, &.link {
-          text-align: center;
+            &.organization {
+                width: 20%;
+            }
+
+            &.type {
+                width: 10%;
+            }
+
+            &.state {
+                text-align: center;
+                width: 10%;
+            }
+
+            &.entity_id {
+                width: 28%;
+            }
+
+            &.info {
+                text-align: center;
+                width: 6%;
+            }
+
+            &.link {
+                text-align: center;
+                width: 6%;
+            }
         }
 
-        i.fa-external-link {
-          padding: 5px 10px;
-          font-size: 16px;
-        }
+        tbody tr {
+            border-top: 1px solid $light-grey;
+            cursor: pointer;
 
-        i.fa-info-circle {
-          color: $blue;
-          font-size: 16px;
-        }
-      }
+            &.active, &:hover {
+                background-color: $light-grey;
+            }
 
-      span {
-        &.matched {
-          font-weight: bold;
-          text-decoration: underline;
-        }
-      }
+            td {
+                padding: 5px 10px;
+                vertical-align: middle;
 
+                &.state, &.info, &.link {
+                    text-align: center;
+                }
+
+                i.fa-external-link {
+                    padding: 5px 10px;
+                    font-size: 16px;
+                }
+
+                i.fa-info-circle {
+                    color: $blue;
+                    font-size: 16px;
+                }
+            }
+
+            span {
+                &.matched {
+                    font-weight: bold;
+                    text-decoration: underline;
+                }
+            }
+
+        }
     }
-  }
 }

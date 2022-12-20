@@ -1,80 +1,80 @@
 @import "../../stylesheets/mixins.scss";
 
 .metadata-manipulation {
-  background-color: white;
+    background-color: white;
 
-  section.sub-tabs {
-    margin-top: 15px;
-    display: flex;
-    padding: 0;
-    background: $background;
+    section.sub-tabs {
+        margin-top: 15px;
+        display: flex;
+        padding: 0;
+        background: $background;
 
-    span {
-      text-align: center;
-      cursor: pointer;
-      padding: 15px 25px;
-      background-color: $light-grey;
-      color: $dark-grey;
-      text-transform: uppercase;
-      border-right: 1px solid white;
+        span {
+            text-align: center;
+            cursor: pointer;
+            padding: 15px 25px;
+            background-color: $light-grey;
+            color: $dark-grey;
+            text-transform: uppercase;
+            border-right: 1px solid white;
 
-      &.active {
-        background-color: white;
-        color: $darker-blue;
-        border-top: 2px solid $blue;
-        border-right: none;
-        font-weight: bold;
-      }
+            &.active {
+                background-color: white;
+                color: $darker-blue;
+                border-top: 2px solid $blue;
+                border-right: none;
+                font-weight: bold;
+            }
 
-      &:last-child {
-        border-right: none;
-      }
-    }
-  }
-
-  section.notes {
-    display: flex;
-    margin-bottom: 15px;
-
-    .w-md-editor {
-      width: 100%;
-    }
-  }
-
-  .manipulation-info {
-    padding: 0 20px;
-
-    h1 {
-      font-size: 20px;
-      margin: 10px 0;
+            &:last-child {
+                border-right: none;
+            }
+        }
     }
 
-    h2 {
-      font-size: 18px;
-      margin: 10px 0;
+    section.notes {
+        display: flex;
+        margin-bottom: 15px;
 
-      a {
-        color: $blue;
+        .w-md-editor {
+            width: 100%;
+        }
+    }
 
-        &:visited {
-          color: $blue;
+    .manipulation-info {
+        padding: 0 20px;
+
+        h1 {
+            font-size: 20px;
+            margin: 10px 0;
         }
 
-        @include no-text-decoration;
-      }
+        h2 {
+            font-size: 18px;
+            margin: 10px 0;
+
+            a {
+                color: $blue;
+
+                &:visited {
+                    color: $blue;
+                }
+
+                @include no-text-decoration;
+            }
+        }
+
+        h3 {
+            font-size: 16px;
+            margin: 10px 0;
+        }
+
     }
 
-    h3 {
-      font-size: 16px;
-      margin: 10px 0;
+    .comments {
+        .CodeMirror {
+            height: auto;
+            background-color: $lightest-grey;
+        }
     }
-
-  }
-
-  .comments {
-    .CodeMirror {
-      height: auto;
-      background-color: $lightest-grey;
-    }
-  }
 }
