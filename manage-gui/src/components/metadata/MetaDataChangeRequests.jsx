@@ -114,7 +114,9 @@ class MetaDataChangeRequests extends React.Component {
         const newData = cloneDeep(data);
         Object.keys(pathUpdates).forEach(key => {
             const singleValue = pathUpdates[key];
-            if (typeof singleValue === "object") {
+            if (typeof singleValue === "object" && (!newData[key] || !Array.isArray(newData[key])) &&
+                ["allowedEntities", "disableConsent", "stepupEntities", "mfaEntities", "allowedResourceServers",
+                    "mfaEntities"].indexOf(key) === -1) {
                 if (pathUpdateType === "ADDITION") {
                     if (!newData[key]) {
                         newData[key] = {};
@@ -202,7 +204,7 @@ class MetaDataChangeRequests extends React.Component {
                     </td>
                 </tr>
                 <tr>
-                    <td><CheckBox name={i}
+                    <td><CheckBox name={`${i}`}
                                   value={showDetail || false}
                                   info={I18n.t("changeRequests.toggleDetails")}
                                   onChange={() => this.toggleShowDetail(request)}/>
