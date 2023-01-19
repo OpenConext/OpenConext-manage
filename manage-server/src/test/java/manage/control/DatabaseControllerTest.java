@@ -2,7 +2,6 @@ package manage.control;
 
 import manage.AbstractIntegrationTest;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.util.Map;
 
@@ -20,10 +19,17 @@ public class DatabaseControllerTest extends AbstractIntegrationTest {
                 .then()
                 .statusCode(SC_OK)
                 .extract().as(Map.class);
-//        System.out.println(objectMapper.writeValueAsString(connections));
+        //System.out.println(objectMapper.writeValueAsString(connections));
         Map expected = objectMapper.readValue(readFile("push/push.expected_connections.json"), Map.class);
 
         assertEquals(expected, connections);
+        //ensure the Sp with "coin:imported_from_edugain": true is included
+        Object importFromEdugain = ((Map) ((Map) ((Map) ((Map) connections.get("connections"))
+                .get("11"))
+                .get("metadata"))
+                .get("coin"))
+                .get("imported_from_edugain");
+        assertEquals(importFromEdugain, "1");
     }
 
 }
