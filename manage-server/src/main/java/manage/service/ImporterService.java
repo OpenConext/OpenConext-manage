@@ -47,7 +47,8 @@ public class ImporterService {
     private TypeSafetyHook metaDataHook;
 
     public ImporterService(MetaDataAutoConfiguration metaDataAutoConfiguration, Environment environment,
-                           @Value("${product.supported_languages}") String supportedLanguages) {
+                           @Value("${product.supported_languages}") String supportedLanguages,
+                           @Value("${metadata_import.disable_arp_empty_attributes}") boolean disableArpEmptyAttributes) {
 
         this.metaDataAutoConfiguration = metaDataAutoConfiguration;
         this.environment = environment;
@@ -55,7 +56,8 @@ public class ImporterService {
         this.metaDataFeedParser = new MetaDataFeedParser(Stream.of(
                 supportedLanguages.split(","))
                 .map(String::trim)
-                .collect(toList()));
+                .collect(toList()),
+                disableArpEmptyAttributes);
     }
 
     public Map<String, Object> importXMLUrl(EntityType type, Import importRequest) {

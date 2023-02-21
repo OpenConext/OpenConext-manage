@@ -32,7 +32,8 @@ public class ImporterServiceTest implements TestUtils {
                     new ClassPathResource("metadata_configuration"),
                     new ClassPathResource("metadata_templates")),
                     new MockEnvironment(),
-                    "nl,pt,en");
+                    "nl,pt,en",
+                    true);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -150,7 +151,7 @@ public class ImporterServiceTest implements TestUtils {
         MetaDataAutoConfiguration metaDataAutoConfiguration = new MetaDataAutoConfiguration(objectMapper, new ClassPathResource("metadata_configuration"), new ClassPathResource("metadata_templates"));
         Map<String, Object> spSchema = metaDataAutoConfiguration.schemaRepresentation(EntityType.SP);
         Map.class.cast(Map.class.cast(Map.class.cast(Map.class.cast(spSchema.get("properties")).get("metaDataFields")).get("patternProperties")).get("^AssertionConsumerService:([0-3]{0,1}[0-9]{1}):index$")).put("multiplicity", 15);
-        ImporterService alteredSubject = new ImporterService(metaDataAutoConfiguration, new MockEnvironment(), "nl,en,pt");
+        ImporterService alteredSubject = new ImporterService(metaDataAutoConfiguration, new MockEnvironment(), "nl,en,pt", true);
         Map<String, Object> metaData = alteredSubject.importXML(new ClassPathResource("import_xml/assertion_consumer_service.15.xml"), EntityType.SP, Optional.empty());
         Set<Map.Entry> metaDataFields = Map.class.cast(metaData.get("metaDataFields"))
                 .entrySet();

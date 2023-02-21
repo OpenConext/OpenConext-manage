@@ -33,9 +33,11 @@ public class MetaDataFeedParser {
 
     private static final String ATTRIBUTES = "attributes";
     private List<String> languages;
+    private boolean disableArpEmptyAttributes;
 
-    public MetaDataFeedParser(List<String> languages) {
+    public MetaDataFeedParser(List<String> languages, boolean disableArpEmptyAttributes) {
         this.languages = languages;
+        this.disableArpEmptyAttributes = disableArpEmptyAttributes;
     }
 
     public List<Map<String, Object>> importFeed(Resource xml,
@@ -142,7 +144,7 @@ public class MetaDataFeedParser {
                             }
                             if (inCorrectEntityDescriptor && !result.containsKey(ARP)) {
                                 inCorrectTypeDescriptor = isSp;
-                                if (isSp) {
+                                if (isSp && disableArpEmptyAttributes) {
                                     arpKeys = arpKeys(EntityType.SP, metaDataAutoConfiguration, isSp);
                                     arpAliases = arpAliases(EntityType.SP, metaDataAutoConfiguration, isSp);
 
