@@ -103,4 +103,4 @@ info:
     version: "@project.version@"
 
 metadata_import:
-  disable_arp_empty_attributes: false
+  disable_arp_empty_attributes: true
