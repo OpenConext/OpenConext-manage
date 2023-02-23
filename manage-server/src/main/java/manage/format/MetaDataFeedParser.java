@@ -33,11 +33,9 @@ public class MetaDataFeedParser {
 
     private static final String ATTRIBUTES = "attributes";
     private List<String> languages;
-    private boolean disableArpEmptyAttributes;
 
-    public MetaDataFeedParser(List<String> languages, boolean disableArpEmptyAttributes) {
+    public MetaDataFeedParser(List<String> languages) {
         this.languages = languages;
-        this.disableArpEmptyAttributes = disableArpEmptyAttributes;
     }
 
     public List<Map<String, Object>> importFeed(Resource xml,
@@ -144,16 +142,9 @@ public class MetaDataFeedParser {
                             }
                             if (inCorrectEntityDescriptor && !result.containsKey(ARP)) {
                                 inCorrectTypeDescriptor = isSp;
-                                if (isSp && disableArpEmptyAttributes) {
+                                if (isSp) {
                                     arpKeys = arpKeys(EntityType.SP, metaDataAutoConfiguration, isSp);
                                     arpAliases = arpAliases(EntityType.SP, metaDataAutoConfiguration, isSp);
-
-                                    Map<String, Object> arp = new TreeMap<>();
-                                    arp.put("enabled", false);
-                                    Map<String, Object> attributes = new TreeMap<>();
-
-                                    arp.put(ATTRIBUTES, attributes);
-                                    result.put(ARP, arp);
                                 } else {
                                     //This should not happen, but an exception breaks reading the feed
                                     typeMismatch = true;

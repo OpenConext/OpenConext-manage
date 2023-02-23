@@ -101,6 +101,3 @@ info:
   build:
     artifact: "@project.artifactId@"
     version: "@project.version@"
-
-metadata_import:
-  disable_arp_empty_attributes: true
