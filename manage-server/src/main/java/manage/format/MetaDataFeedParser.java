@@ -145,13 +145,6 @@ public class MetaDataFeedParser {
                                 if (isSp) {
                                     arpKeys = arpKeys(EntityType.SP, metaDataAutoConfiguration, isSp);
                                     arpAliases = arpAliases(EntityType.SP, metaDataAutoConfiguration, isSp);
-
-                                    Map<String, Object> arp = new TreeMap<>();
-                                    arp.put("enabled", false);
-                                    Map<String, Object> attributes = new TreeMap<>();
-
-                                    arp.put(ATTRIBUTES, attributes);
-                                    result.put(ARP, arp);
                                 } else {
                                     //This should not happen, but an exception breaks reading the feed
                                     typeMismatch = true;

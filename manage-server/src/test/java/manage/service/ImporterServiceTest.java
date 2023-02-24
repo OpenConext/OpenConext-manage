@@ -221,4 +221,11 @@ public class ImporterServiceTest implements TestUtils {
         List<Map<String, String>> values = (List<Map<String, String>>) ((Map) ((Map) metaData.get("arp")).get("attributes")).get("urn:mace:dir:attribute-def:cn");
         assertEquals(1, values.size());
     }
+
+    @Test
+    public void importSPWithoutRequestedAttributes() throws IOException, XMLStreamException {
+        Map<String, Object> metaData = subject.importXML(new ClassPathResource("/import_xml/adfs.mijnlentiz.nl.xml"),
+                EntityType.SP, Optional.of("https://sp.ota.ox.ac.uk/shibboleth"));
+        assertFalse(metaData.containsKey("arp"));
+    }
 }
