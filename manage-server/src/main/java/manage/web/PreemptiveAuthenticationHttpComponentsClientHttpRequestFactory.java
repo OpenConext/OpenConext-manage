@@ -22,7 +22,7 @@ import java.net.URL;
 public class PreemptiveAuthenticationHttpComponentsClientHttpRequestFactory extends
         HttpComponentsClientHttpRequestFactory {
 
-    private HttpContext httpContext;
+    private final HttpContext httpContext;
 
     public PreemptiveAuthenticationHttpComponentsClientHttpRequestFactory(HttpClient httpClient, String url) throws
             MalformedURLException {

@@ -26,17 +26,17 @@ import static manage.mongo.MongoChangelog.REVISION_POSTFIX;
 
 /**
  * We can't use the Spring JPA repositories as we at runtime need to decide which collection to use. We only have one
- * Document type - e.g. MetaData - and more then one MetaData collections.
+ * Document type - e.g. MetaData - and more than one MetaData collections.
  */
 @Repository
 public class MetaDataRepository {
 
     private static final int AUTOCOMPLETE_LIMIT = 16;
 
-    private MongoTemplate mongoTemplate;
-    private List<String> supportedLanguages;
+    private final MongoTemplate mongoTemplate;
+    private final List<String> supportedLanguages;
 
-    private FindAndModifyOptions options = FindAndModifyOptions.options().returnNew(true);
+    private final FindAndModifyOptions options = FindAndModifyOptions.options().returnNew(true);
 
     @Autowired
     public MetaDataRepository(MongoTemplate mongoTemplate,

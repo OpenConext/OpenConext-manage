@@ -32,7 +32,7 @@ import static manage.service.ImporterService.META_DATA_FIELDS;
 public class MetaDataFeedParser {
 
     private static final String ATTRIBUTES = "attributes";
-    private List<String> languages;
+    private final List<String> languages;
 
     public MetaDataFeedParser(List<String> languages) {
         this.languages = languages;

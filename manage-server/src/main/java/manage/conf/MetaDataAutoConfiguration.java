@@ -49,11 +49,11 @@ public class MetaDataAutoConfiguration {
 
     private static final Logger LOG = LoggerFactory.getLogger(MetaDataAutoConfiguration.class);
 
-    private Map<String, Schema> schemas;
-    private Map<String, File> templates;
-    private List<Map<String, Object>> schemaRepresentations = new ArrayList<>();
-    private Map<String, List<IndexConfiguration>> indexConfigurations = new HashMap<>();
-    private ObjectMapper objectMapper;
+    private final Map<String, Schema> schemas;
+    private final Map<String, File> templates;
+    private final List<Map<String, Object>> schemaRepresentations = new ArrayList<>();
+    private final Map<String, List<IndexConfiguration>> indexConfigurations = new HashMap<>();
+    private final ObjectMapper objectMapper;
 
     @Autowired
     public MetaDataAutoConfiguration(ObjectMapper objectMapper,
@@ -112,7 +112,6 @@ public class MetaDataAutoConfiguration {
                 map.get("title").equals(entityType.getType())).findFirst();
         return schemaRepresentationOptional.orElseThrow(() -> new IllegalArgumentException(String.format("The %s " +
                 "schema does not exists", entityType.getType())));
-
     }
 
     public Schema schema(String type) {

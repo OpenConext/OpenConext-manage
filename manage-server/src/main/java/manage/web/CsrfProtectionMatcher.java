@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 public class CsrfProtectionMatcher implements RequestMatcher {
 
-    private Pattern allowedMethods = Pattern.compile("^(GET|HEAD|TRACE|OPTIONS)$");
+    private final Pattern allowedMethods = Pattern.compile("^(GET|HEAD|TRACE|OPTIONS)$");
 
     @Override
     public boolean matches(HttpServletRequest request) {
