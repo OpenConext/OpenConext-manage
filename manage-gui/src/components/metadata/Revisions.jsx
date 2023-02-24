@@ -21,12 +21,8 @@ class Revisions extends React.Component {
 
     constructor(props) {
         super(props);
-        const {revisions} = this.props;
         this.state = {
-            showRevisionDetails: revisions.reduce((acc, revision) => {
-                acc[revision.id] = false;
-                return acc;
-            }, {}),
+            showRevisionDetails: {},
             showAllDetails: false,
             confirmationDialogOpen: false,
             confirmationDialogAction: () => this,
@@ -41,6 +37,20 @@ class Revisions extends React.Component {
 
     componentDidMount() {
         window.scrollTo(0, 0);
+        this.initializeRevisionDetails(this.props.revisions);
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (this.props.revisions.length !== prevProps.revisions.length) {
+            this.initializeRevisionDetails(this.props.revisions);
+        }
+    }
+
+    initializeRevisionDetails(revisions) {
+        this.setState({showRevisionDetails: revisions.reduce((acc, revision) => {
+                acc[revision.id] = false;
+                return acc;
+            }, {})});
     }
 
     previousRevision = revision => this.props.revisions.find(rev => rev.revision.number === (revision.revision.number - 1));
