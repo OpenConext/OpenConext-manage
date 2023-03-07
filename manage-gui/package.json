@@ -36,7 +36,7 @@
     "urijs": "^1.19.11"
   },
   "scripts": {
-    "start": "HOST=localhost DANGEROUSLY_DISABLE_HOST_CHECK=true react-scripts start",
+    "start": "PORT=3006 HOST=localhost DANGEROUSLY_DISABLE_HOST_CHECK=true react-scripts start",
     "build": "HOST=localhost DANGEROUSLY_DISABLE_HOST_CHECK=true react-scripts build",
     "test": "HOST=localhost DANGEROUSLY_DISABLE_HOST_CHECK=true CI=true react-scripts test",
     "analyze": "source-map-explorer 'build/static/js/*.js'"

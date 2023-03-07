@@ -3,7 +3,7 @@ apiUsers:
   - {
     name: "dashboard",
     password: "secret",
-    scopes: [READ]
+    scopes: [READ, WRITE, PUSH, TEST]
   }
   - {
     name: "pdp",

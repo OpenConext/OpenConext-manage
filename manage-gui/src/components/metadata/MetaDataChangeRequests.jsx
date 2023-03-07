@@ -136,6 +136,9 @@ class MetaDataChangeRequests extends React.Component {
                     //this alters the order and confuses the differ
                     newData[key] = newValue.concat(value);
                     newData[key].sort((a, b) => a.name.localeCompare(b.name));
+                    if (!data[key]) {
+                        data[key] = []
+                    }
                     data[key].sort((a, b) => a.name.localeCompare(b.name));
                 } else if (newData[key]) {
                     newData[key] = newData[key].filter(entry => !value.some(ent => entry.name === ent.name));
