@@ -65,6 +65,7 @@ public class EngineBlockFormatter {
         addNameIDFormats(source, serviceProvider);
         addAttributeReleasePolicy(source, serviceProvider);
         addAssertionConsumerService(source, serviceProvider);
+        addPrivacyStatementURL(source, serviceProvider);
 
         spAttributes.forEach((key, value) -> this.addToResult(source, serviceProvider, key, value));
 
@@ -249,7 +250,20 @@ public class EngineBlockFormatter {
                         "NameIDFormats", key -> new HashSet<>());
                 nameIDFormats.add(nameIdFormat);
             }
+        });
+    }
 
+    private void addPrivacyStatementURL(Map<String, Object> source, Map<String, Object> result) {
+        final Map<String, Object> metadata = (Map<String, Object>) result.computeIfAbsent("metadata", key -> new
+                TreeMap<>());
+        Map<String, Object> metaDataFields = (Map<String, Object>) source.get("metaDataFields");
+        List.of("en", "nl").forEach(lang -> {
+            String privacyStatementURL = (String) metaDataFields.get("mdui:PrivacyStatementURL:" + lang);
+            if (hasText(privacyStatementURL)) {
+                Map<String, Object> privacyStatementURLs = (Map<String, Object>) metadata.computeIfAbsent("PrivacyStatementURL",
+                        key -> new TreeMap<>());
+                privacyStatementURLs.put(lang, privacyStatementURL);
+            }
         });
     }
 

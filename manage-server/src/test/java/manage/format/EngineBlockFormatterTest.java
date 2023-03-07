@@ -28,7 +28,7 @@ public class EngineBlockFormatterTest implements TestUtils {
         MetaData metaData = objectMapper.readValue(readFile("json/meta_data_detail.json"), MetaData.class);
         Map<String, Object> result = subject.parseServiceProvider(metaData);
         Map<String, Object> expected = objectMapper.readValue(readFile("push/push_results.json"), Map.class);
-        System.out.println(objectMapper.writeValueAsString(result));
+//        System.out.println(objectMapper.writeValueAsString(result));
         assertEquals(new HashMap<>(expected).toString(), new HashMap<>(result).toString());
     }
 
