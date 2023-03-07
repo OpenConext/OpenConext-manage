@@ -129,6 +129,7 @@ I18n.translations.en = {
         stats: "Stats",
         findMyDataInfo: "Find your 'lost' MetaData. Enter part of the entityId, specify the type of MetaData and search in the revisions where all deleted MetaData still exists.",
         findMyDataNoResults: "No results based on the entityID part",
+        findMyDataNoRestorable: "Metadata found, but no restorable metadata",
         pushPreviewInfo: "Collect all relevant metadata and perform a simulation of the {{name}} push",
         pushInfo: "Collect all relevant metadata and push the metadata to {{name}}. The metadata will be pushed to {{url}}.",
         pushedOk: "Metadata successfully pushed to {{name}}",

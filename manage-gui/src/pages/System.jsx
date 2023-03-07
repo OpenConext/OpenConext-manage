@@ -39,10 +39,10 @@ export default class System extends React.PureComponent {
             orphansResults: undefined,
             findMyDataInput: "",
             findMyDataEntityType: "saml20_sp",
-            findMyDataResults: undefined,
+            findMyDataResults: [],
             pushPreviewResults: undefined,
             pushResults: undefined,
-            showNonRestorable: true,
+            showNonRestorable: false,
             statistics: [],
             statsSorted: "count",
             statsSortedReverse: true,
@@ -132,9 +132,11 @@ export default class System extends React.PureComponent {
 
     renderFindMyData = () => {
         const {findMyDataInput, findMyDataEntityType, findMyDataResults, showNonRestorable} = this.state;
-        const showResults = findMyDataResults && findMyDataResults.length > 0;
         const noResults = findMyDataResults && findMyDataResults.length === 0;
         const classNameSearch = findMyDataInput.length > 3 ? "green" : "disabled grey";
+        const filteredDataResults = showNonRestorable ? findMyDataResults :
+            (findMyDataResults || []).filter(entity => entity.revision.terminated);
+        const showResults = filteredDataResults.length > 0;
         return (
             <section className="find-my-data">
                 <p>{I18n.t("playground.findMyDataInfo")}</p>
@@ -151,12 +153,15 @@ export default class System extends React.PureComponent {
                                         state={findMyDataEntityType}
                                         configuration={this.props.configuration}
                                         defaultToFirst={true}/>
-                    <CheckBox name="filter-live" value={showNonRestorable}
-                              info={I18n.t("playground.displayNonRestorable")} readOnly={!showResults}
+                    <CheckBox name="filter-live"
+                              value={showNonRestorable}
+                              info={I18n.t("playground.displayNonRestorable")}
+                              readOnly={noResults}
                               onChange={() => this.setState({showNonRestorable: !this.state.showNonRestorable})}/>
                 </section>
-                {showResults && this.renderMyDataResults(findMyDataResults, showNonRestorable)}
+                {showResults && this.renderMyDataResults(filteredDataResults)}
                 {noResults && <p>{I18n.t("playground.findMyDataNoResults")}</p>}
+                {(!noResults && !showResults) && <p>{I18n.t("playground.findMyDataNoRestorable")}</p>}
             </section>
         );
     };
@@ -199,11 +204,9 @@ export default class System extends React.PureComponent {
     };
 
 
-    renderMyDataResults = (findMyDataResults, showNonRestorable) => {
+    renderMyDataResults = findMyDataResults => {
         const headers = ["status", "name", "entityid", "terminated", "revisionNumber", "updatedBy", "revisionNote", "notes", "nope"];
         const {findMyDataEntityType} = this.state;
-        const filteredDataResults = showNonRestorable ? findMyDataResults :
-            findMyDataResults.filter(entity => entity.revision.terminated);
         return <section>
             <table className="find-my-data-results">
                 <thead>
@@ -214,7 +217,7 @@ export default class System extends React.PureComponent {
                 </tr>
                 </thead>
                 <tbody>
-                {filteredDataResults.map((entity, index) => {
+                {findMyDataResults.map((entity, index) => {
                     const metaDataFields = entity.data.metaDataFields || {};
                     const revision = entity.revision || {};
                     const isTerminated = entity.revision.terminated;
