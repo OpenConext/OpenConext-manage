@@ -80,3 +80,25 @@ test("createDiff", () => {
     expect(data).toStrictEqual({a: "a", l1: [{name: "a"}, {name: "x"}], l2: [null, "", undefined]});
 });
 
+test("createDiffObjectArpNull", () => {
+    const data = {
+        "metaDataFields": {
+            "name:en": "OIDC SP",
+            "accessTokenValidity": 9999,
+        },
+        "arp": {
+            "enabled": true,
+            "attributes": {"urn:mace:dir:attribute-def:cn": [{"value": "*", "source": "idp", "motivation": ""}]}
+        }
+    }
+    const nestedChangeRequest = {
+        "metaDataFields": {"accessTokenValidity": 86400}, "arp": null
+    }
+    const res = createDiffObject(
+        data,
+        nestedChangeRequest
+    );
+    const expected = {"metaDataFields": {"accessTokenValidity": 9999}, "arp": {}}
+    expect(res).toStrictEqual(expected);
+})
+

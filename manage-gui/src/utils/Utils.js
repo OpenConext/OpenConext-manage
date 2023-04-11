@@ -88,20 +88,12 @@ const originalValue = (data, acc, key, value) => {
     if (typeof sourceValue === "object" && !Array.isArray(sourceValue)) {
         acc[key] = {};
         Object.keys(sourceValue)
-            .filter(sk => value[sk])
+            .filter(sk => value && value[sk])
             .forEach(sk => originalValue(sourceValue, acc[key], sk, value))
     } else if (sourceValue !== undefined) {
         acc[key] = sourceValue
     }
     return acc;
-}
-
-/*
- * Given input:
- *
- */
-export function calculateDiffObject(data, nestedChangeRequest, pathUpdateType) {
-
 }
 
 /*
