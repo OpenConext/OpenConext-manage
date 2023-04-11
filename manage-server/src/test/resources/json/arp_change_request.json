@@ -1,0 +1,13 @@
+{
+  "metaDataId" : "9",
+  "type" : "oidc10_rp",
+  "incrementalChange" : false,
+  "pathUpdates" : {
+    "metaDataFields.accessTokenValidity" : 86400,
+    "arp" : null
+  },
+  "auditData" : {
+    "user" : "jdoe"
+  },
+  "note": "Optional note describing the reason for this change"
+}
