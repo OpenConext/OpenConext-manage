@@ -215,7 +215,8 @@ public class MetaDataController {
     @PreAuthorize("hasRole('WRITE')")
     @DeleteMapping("/internal/metadata/{type}/{id}")
     public boolean removeInternal(@PathVariable("type") String type,
-                                  @PathVariable("id") String id, APIUser apiUser) {
+                                  @PathVariable("id") String id,
+                                  APIUser apiUser) {
 
         return metaDataService.doRemove(type, id, apiUser.getName(), "Deleted by APIUser " + apiUser.getName());
     }

@@ -1277,6 +1277,26 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void deleteChangeRequestAfterMetaDataDelete() {
+        doCreateChangeRequest();
+        List<MetaDataChangeRequest> requests = given()
+                .when()
+                .get("manage/api/client/change-requests/saml20_sp/1")
+                .as(new TypeRef<>() {
+                });
+        assertEquals(1, requests.size());
+
+        doDelete(EntityType.SP, "1", "Delete SP 1");
+
+        requests = given()
+                .when()
+                .get("manage/api/client/change-requests/saml20_sp/1")
+                .as(new TypeRef<>() {
+                });
+        assertEquals(0, requests.size());
+    }
+
+    @Test
     public void arpAdditionChangeRequest() throws IOException {
         String changeRequestJson = readFile("json/incremental_arp_change_request.json");
         given().auth().preemptive().basic("sp-portal", "secret")

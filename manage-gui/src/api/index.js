@@ -160,7 +160,6 @@ export function importMetaDataXML(xml, type) {
     return postPutJson(`import/xml/${type}`, {xml: xml}, "post");
 }
 
-
 export function importMetaDataJSON(type, metaData) {
     return postPutJson(`import/json/${type}`, JSON.parse(metaData), "post");
 }

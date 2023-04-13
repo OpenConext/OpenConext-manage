@@ -23,6 +23,7 @@ import org.springframework.core.env.Profiles;
 import org.springframework.core.io.Resource;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.CriteriaDefinition;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -205,6 +206,14 @@ public class MetaDataService {
         metaDataRepository.remove(current);
 
         LOG.info("Deleted metaData {} by {}", current.getId(), uid);
+
+        String changeRequestCollection = type.concat(CHANGE_REQUEST_POSTFIX);
+        Criteria criteria = Criteria.where("metaDataId").is(id);
+        MongoTemplate mongoTemplate = metaDataRepository.getMongoTemplate();
+        List<MetaDataChangeRequest> changeRequests = mongoTemplate
+                .findAllAndRemove(Query.query(criteria), MetaDataChangeRequest.class, changeRequestCollection);
+
+        LOG.info("Deleted changeRequests {} by {}", changeRequests.stream().map(cr -> cr.getId()).collect(Collectors.joining()), uid);
 
         current.revision(UUID.randomUUID().toString());
         metaDataRepository.save(current);
