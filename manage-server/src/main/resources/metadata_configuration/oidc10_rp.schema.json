@@ -451,6 +451,7 @@
           "type": "string",
           "format": "url",
           "enum": [
+            "http://test.surfconext.nl/assurance/loa1.5",
             "http://test.surfconext.nl/assurance/loa2",
             "http://test.surfconext.nl/assurance/loa3"
           ],
