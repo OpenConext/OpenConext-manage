@@ -36,7 +36,7 @@ push:
 product:
   name: Manage
   organization: OpenConext
-  #  service_provider_feed_url: http://mds.edugain.org/
+  #  service_provider_feed_url: http://mds.edugain.org/edugain-v2.xml
   service_provider_feed_url: http://localhost:8000/edugain.xml
   supported_languages: en,nl
   show_oidc_rp: true
