@@ -59,6 +59,7 @@ I18n.translations.en = {
             consent_disabling: "Consent Management ({{nbr}})",
             stepup_entities: "Stepup ({{nbr}})",
             connected_idps: "Connected IdP's ({{nbr}})",
+            connected_rps: "Connected RP's ({{nbr}})",
             revisions: "Revisions ({{nbr}})",
             requests: "Requests ({{nbr}})",
             import: "Import",
@@ -215,7 +216,12 @@ I18n.translations.en = {
         description: "All {{type}} that are configured to allow access to {{name}}. If {{name}} is configured to not allow all {{type}} then only those {{type}} that are whitelisted are shown.",
         searchPlaceHolder: "Search for connected Identity Providers...",
         noConnections: "No {{type}} are connected. Most likely {{name}} is configured to whitelist none."
-
+    },
+    relyingParties: {
+        title: "Relying Parties connected to {{name}}",
+        description: "All RP's that are configured to allow access to ResourceServer {{name}}.",
+        searchPlaceHolder: "Search for RP's...",
+        noConnections: "There are no Relying Parties that are granted access to this Resource Server"
     },
     consentDisabling: {
         title: "Consent disabling",

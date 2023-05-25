@@ -20,7 +20,7 @@ import ConfirmationDialog from "../components/ConfirmationDialog";
 import {
     allResourceServers,
     changeRequests,
-    detail,
+    detail, relyingPartiesByResourceServer,
     remove,
     revisions,
     save,
@@ -38,6 +38,7 @@ import ReactTooltip from "react-tooltip";
 import {getConnectedEntities} from "../utils/TabNumbers";
 import withRouterHooks from "../utils/RouterBackwardCompatability";
 import MetaDataChangeRequests from "../components/metadata/MetaDataChangeRequests";
+import RelyingParties from "../components/metadata/RelyingParties";
 
 const tabsSp = [
     "connection",
@@ -82,6 +83,7 @@ const tabsRp = [
 const tabsRs = [
     "connection",
     "metadata",
+    "connected_rps",
     "requests",
     "revisions",
     "import",
@@ -113,6 +115,7 @@ class Detail extends React.PureComponent {
             metaData: {},
             whiteListing: [],
             resourceServers: [],
+            relyingParties: [],
             revisions: [],
             requests: [],
             notFound: false,
@@ -147,6 +150,7 @@ class Detail extends React.PureComponent {
             .then(metaData => {
                 const isSp = type === "saml20_sp" || type === "oidc10_rp";
                 const isOidcRP = type === "oidc10_rp";
+                const isResourceServer = type === "oauth20_rs";
                 const whiteListingType = isSp ? "saml20_idp" : "saml20_sp";
                 const errorKeys = isSp ? tabsSp : tabsIdP;
                 if (this.props.clone) {
@@ -206,6 +210,10 @@ class Detail extends React.PureComponent {
                         allResourceServers(state).then(json =>
                             this.setState({resourceServers: json})
                         );
+                    }
+                    if (isResourceServer && !isNew) {
+                        relyingPartiesByResourceServer(metaData.data.entityid).then(res =>
+                        this.setState({"relyingParties": res}));
                     }
                     Promise.all([revisions(type, id), changeRequests(type, id)])
                         .then(results => {
@@ -611,7 +619,7 @@ class Detail extends React.PureComponent {
             Object.keys(errors[key]).find(subKey => errors[key][subKey])
         ) !== undefined;
 
-    renderTabTitle = (tab, metaData, resourceServers, whiteListing, revisions, requests) => {
+    renderTabTitle = (tab, metaData, resourceServers, whiteListing, revisions, requests, relyingParties) => {
         const allowedAll = metaData.data.allowedall;
         const allowedEntities = metaData.data.allowedEntities;
         let args = {};
@@ -649,13 +657,16 @@ class Detail extends React.PureComponent {
             case "resource_servers":
                 args = {nbr: (metaData.data.allowedResourceServers || []).length};
                 break;
+            case "connected_rps":
+                args = {nbr: (relyingParties || []).length};
+                break;
             default:
                 args = {};
         }
         return I18n.t(`metadata.tabs.${tab}`, args);
     }
 
-    renderTab = (tab, metaData, resourceServers, whiteListing, revisions, requests) => {
+    renderTab = (tab, metaData, resourceServers, whiteListing, revisions, requests, relyingParties) => {
         const tabErrors = this.state.errors[tab] || {};
         const tabChanges = this.state.changes[tab] || false;
         const hasChanges = tabChanges ? "changes" : "";
@@ -669,7 +680,7 @@ class Detail extends React.PureComponent {
                 key={tab}
                 className={`${className} ${hasErrors} ${hasChanges}`}
                 onClick={this.switchTab(tab)}>
-        {this.renderTabTitle(tab, metaData, resourceServers, whiteListing, revisions, requests)}
+        {this.renderTabTitle(tab, metaData, resourceServers, whiteListing, revisions, requests, relyingParties)}
                 {hasErrors && <i className="fa fa-warning"/>}
                 {!hasErrors && tabChanges && <i className="fa fa-asterisk"/>}
       </span>
@@ -684,7 +695,8 @@ class Detail extends React.PureComponent {
         revisions,
         requests,
         revisionNoteClone,
-        changeRequestsLoaded
+        changeRequestsLoaded,
+        relyingParties
     ) => {
         const configuration = this.props.configuration.find(
             conf => conf.title === this.state.type
@@ -844,6 +856,13 @@ class Detail extends React.PureComponent {
                         entityType={type}
                     />
                 )
+            case "connected_rps":
+                return (
+                    <RelyingParties
+                        relyingParties={relyingParties}
+                        name={name}
+                    />
+                );
             default:
                 throw new Error(`Unknown tab ${tab}`);
         }
@@ -974,6 +993,7 @@ class Detail extends React.PureComponent {
             notFound,
             metaData,
             resourceServers,
+            relyingParties,
             whiteListing,
             revisions,
             requests,
@@ -1087,7 +1107,7 @@ class Detail extends React.PureComponent {
                 {renderNotFound && <section>{I18n.t("metadata.notFound")}</section>}
                 {!notFound && (
                     <section className="tabs">
-                        {tabs.map(tab => this.renderTab(tab, metaData, resourceServers, whiteListing, revisions, requests))}
+                        {tabs.map(tab => this.renderTab(tab, metaData, resourceServers, whiteListing, revisions, requests, relyingParties))}
                     </section>
                 )}
                 {renderContent &&
@@ -1099,7 +1119,8 @@ class Detail extends React.PureComponent {
                     revisions,
                     requests,
                     revisionNoteClone,
-                    changeRequestsLoaded
+                    changeRequestsLoaded,
+                    relyingParties
                 )}
                 {renderContent && this.renderActions(revisionNote)}
             </div>

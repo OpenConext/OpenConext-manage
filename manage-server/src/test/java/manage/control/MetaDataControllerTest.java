@@ -14,7 +14,6 @@ import org.springframework.data.mongodb.core.query.Query;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Type;
 import java.net.URLEncoder;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -727,6 +726,16 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 .statusCode(SC_OK)
                 .body("size()", is(2))
                 .body("data.allowedall", hasItems(true, false));
+    }
+
+    @Test
+    public void relyingParties() {
+        List<Map<String, Object>> relyingParties = given()
+                .when()
+                .queryParam("resourceServerEntityID", "https@//oidc.rp.resourceServer")
+                .get("manage/api/client/relyingParties")
+                .as(mapListTypeRef);
+        assertEquals(1, relyingParties.size());
     }
 
     @Test
@@ -1570,7 +1579,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 .post("manage/api/client/search/saml20_sp")
                 .as(new TypeRef<>() {
                 });
-       assertEquals(1, results.size());
+        assertEquals(1, results.size());
     }
 
     @Test

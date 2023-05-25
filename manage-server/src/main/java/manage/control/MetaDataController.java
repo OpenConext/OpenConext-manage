@@ -368,6 +368,12 @@ public class MetaDataController {
         return metaDataRepository.whiteListing(type, state);
     }
 
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping("/client/relyingParties")
+    public List<Map> relyingParties(@RequestParam("resourceServerEntityID") String resourceServerEntityID) {
+        return metaDataRepository.relyingParties(resourceServerEntityID);
+    }
+
     @PreAuthorize("hasAnyRole('USER', 'READ')")
     @PostMapping({"/client/uniqueEntityId/{type}", "/internal/uniqueEntityId/{type}"})
     public List<Map> uniqueEntityId(@PathVariable("type") String type, @RequestBody Map<String, Object> properties) {

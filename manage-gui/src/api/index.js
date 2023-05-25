@@ -180,6 +180,10 @@ export function allResourceServers(state) {
     return search({"state": state}, "oauth20_rs")
 }
 
+export function relyingPartiesByResourceServer(resourceServerEntityID) {
+    return fetchJson(`relyingParties?resourceServerEntityID=${encodeURIComponent(resourceServerEntityID)}`);
+}
+
 export function search(options, type) {
     return postPutJson(`search/${type}`, options, "post");
 }

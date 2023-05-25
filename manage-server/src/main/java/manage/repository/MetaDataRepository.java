@@ -300,6 +300,13 @@ public class MetaDataRepository {
         return metaData;
     }
 
+    public List<Map> relyingParties(String resourceServerEntityID) {
+        Query query = queryWithSamlFields()
+                .addCriteria(Criteria.where("data.allowedResourceServers.name").is(resourceServerEntityID));
+        return mongoTemplate.find(query, Map.class, EntityType.RP.getType());
+    }
+
+
     public synchronized Long incrementEid() {
         Update updateInc = new Update();
         updateInc.inc("value", 1L);
@@ -330,4 +337,5 @@ public class MetaDataRepository {
         });
         return query;
     }
+
 }

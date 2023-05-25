@@ -1,0 +1,134 @@
+@import "../../stylesheets/vars.scss";
+
+.metadata-connected-rps {
+    background-color: white;
+    padding: 20px;
+
+    .connected-idps-info {
+        margin: 15px 0;
+
+        h2 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+    }
+
+    section.search {
+        display: flex;
+        padding: 10px 0;
+        background-color: white;
+
+        .search-input-container {
+            flex-grow: 2;
+            position: relative;
+        }
+
+        .search-input {
+            padding: 10px;
+            font-size: 14px;
+            width: 100%;
+        }
+
+        .fa-search {
+            position: absolute;
+            right: 15px;
+            top: 10px;
+            font-size: 20px;
+            color: $blue;
+        }
+
+        span.button {
+            margin-left: auto;
+
+            i.fa-clone {
+                margin-left: 25px;
+            }
+
+            &.copied {
+                animation: pulse 1s;
+                animation-iteration-count: 1;
+                position: relative;
+            }
+
+            @keyframes pulse {
+                0% {
+                    box-shadow: 0 0 0 0 white;
+                }
+                70% {
+                    box-shadow: 0 0 10px 8px lighten($green, 15%);
+                }
+                100% {
+                    box-shadow: 0 0 0 0 white;
+                }
+            }
+        }
+
+    }
+
+    section.entities-printable {
+        display: none;
+    }
+
+    section.entities {
+        margin-top: 15px;
+
+        table {
+            width: 100%;
+
+            th {
+                text-align: left;
+                cursor: pointer;
+                padding: 3px;
+
+                i {
+                    margin-left: 15px;
+                    color: $lighter-grey;
+
+                    &.current, &.reverse {
+                        color: $blue;
+                    }
+                }
+
+                &.status {
+                    width: 12%;
+                }
+
+                &.name {
+                    width: 25%;
+                }
+
+                &.organization {
+                    width: 25%;
+                }
+
+                &.entityId {
+                    width: 30%;
+                }
+
+                &.notes {
+                    width: 8%;
+                }
+            }
+
+            tbody tr:nth-child(odd) {
+                background-color: $lightest-grey;
+            }
+
+            td {
+                vertical-align: middle;
+                padding: 3px;
+
+                &.info {
+                    padding: 5px;
+
+                    i.fa-info-circle {
+                        font-size: 20px;
+                        color: $blue;
+                        margin-left: 20px;
+                    }
+                }
+            }
+        }
+    }
+}
