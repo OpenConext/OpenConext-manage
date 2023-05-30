@@ -128,8 +128,8 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 .get("manage/api/client/metadata/configuration")
                 .then()
                 .statusCode(SC_OK)
-                .body("size()", is(5))
-                .body("title", hasItems("saml20_sp", "saml20_idp", "single_tenant_template", "oidc10_rp", "oauth20_rs"));
+                .body("size()", is(6))
+                .body("title", hasItems("saml20_sp", "saml20_idp", "single_tenant_template", "oidc10_rp", "oauth20_rs", "provisioning"));
     }
 
     @Test
@@ -1072,7 +1072,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 .getBody()
                 .as(List.class);
 
-        assertEquals(6, result.size());
+        assertEquals(5, result.size());
         result.forEach(entityId -> {
             MetaData metaData = metaDataRepository.findRaw("saml20_sp",
                     String.format("{\"data.entityid\":\"%s\"}", entityId)).get(0);
