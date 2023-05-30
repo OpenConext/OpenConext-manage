@@ -41,15 +41,15 @@ public class MetaDataController {
 
     private static final Logger LOG = LoggerFactory.getLogger(MetaDataController.class);
 
-    private MetaDataRepository metaDataRepository;
+    private final MetaDataRepository metaDataRepository;
 
-    private MetaDataAutoConfiguration metaDataAutoConfiguration;
+    private final MetaDataAutoConfiguration metaDataAutoConfiguration;
 
-    private MetaDataService metaDataService;
+    private final MetaDataService metaDataService;
 
-    private ExporterService exporterService;
+    private final ExporterService exporterService;
 
-    private ImporterService importerService;
+    private final ImporterService importerService;
 
     public MetaDataController(MetaDataRepository metaDataRepository,
                               MetaDataAutoConfiguration metaDataAutoConfiguration,
@@ -372,6 +372,12 @@ public class MetaDataController {
     @GetMapping("/client/relyingParties")
     public List<Map> relyingParties(@RequestParam("resourceServerEntityID") String resourceServerEntityID) {
         return metaDataRepository.relyingParties(resourceServerEntityID);
+    }
+
+    @PreAuthorize("hasAnyRole('USER', 'READ')")
+    @GetMapping({"/client/provisioning/{id}", "/internal/provisioning/{id}"})
+    public List<Map> provisioning(@PathVariable("id") String id) {
+        return metaDataRepository.provisioning(id);
     }
 
     @PreAuthorize("hasAnyRole('USER', 'READ')")

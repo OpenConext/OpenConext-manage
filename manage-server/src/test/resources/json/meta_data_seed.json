@@ -598,5 +598,32 @@
       "allowedall": true,
       "eid": 11
     }
+  },
+  {
+    "_id": "5e0ef4cb-e445-4160-89f7-d42d90db196c",
+    "version": 0,
+    "type": "provisioning",
+    "revision": {
+      "number": 0,
+      "created": "2018-06-15T08:20:34.575Z",
+      "updatedBy": "sp-dashboard"
+    },
+    "data": {
+      "entityid": "https://test",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "Test",
+        "provisioning_type": "scim",
+        "scim_url": "https://scim"
+      },
+      "applications": [
+        {
+          "id": "1",
+          "type": "saml20_sp"
+        }
+      ],
+      "revisionnote": "test",
+      "eid": 1234
+    }
   }
 ]

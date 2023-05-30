@@ -739,6 +739,18 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void provisioning() {
+        List<Map<String, Object>> applications = given()
+                .auth()
+                .preemptive()
+                .basic("sp-portal", "secret")
+                .when()
+                .get("manage/api/internal/provisioning/1")
+                .as(mapListTypeRef);
+        assertEquals(1, applications.size());
+    }
+
+    @Test
     public void validate() throws java.io.IOException {
         Map<String, Object> data = readValueFromFile("/json/valid_service_provider.json");
         MetaData metaData = new MetaData(EntityType.SP.getType(), data);

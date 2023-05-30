@@ -306,6 +306,11 @@ public class MetaDataRepository {
         return mongoTemplate.find(query, Map.class, EntityType.RP.getType());
     }
 
+    public List<Map> provisioning(String id) {
+        Query query = queryWithSamlFields()
+                .addCriteria(Criteria.where("data.applications.id").is(id));
+        return mongoTemplate.find(query, Map.class, EntityType.PROV.getType());
+    }
 
     public synchronized Long incrementEid() {
         Update updateInc = new Update();
