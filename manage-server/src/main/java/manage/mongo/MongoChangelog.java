@@ -194,9 +194,13 @@ public class MongoChangelog {
     @ChangeSet(order = "011", id = "addProvisioning", author = "okke.harsta@surf.nl")
     public void addProvisioning(MongockTemplate mongoTemplate) {
         String schema = EntityType.PROV.getType();
-        mongoTemplate.createCollection(schema);
+        if (!mongoTemplate.collectionExists(schema)) {
+            mongoTemplate.createCollection(schema);
+        }
         String revision = schema.concat(REVISION_POSTFIX);
-        mongoTemplate.createCollection(revision);
+        if (!mongoTemplate.collectionExists(revision)) {
+            mongoTemplate.createCollection(revision);
+        }
         mongoTemplate.indexOps(revision).ensureIndex(new Index("revision.parentId", Sort.Direction.ASC));
         TextIndexDefinition textIndexDefinition = new TextIndexDefinition.TextIndexDefinitionBuilder()
                 .onField("$**")
