@@ -117,6 +117,7 @@ I18n.translations.en = {
         pushExcluded: "Push excluded",
         pushExcludedTooltip: "This entity is <strong>NOT</strong> pushed to EB as <code>coin:exclude_from_push</code>  is set to <code>True</code>",
         noEntitiesConnected: "There are no entities connected to this {{type}}",
+        noApplicationsConnected: "There are no applications connected to this {{type}}",
         unknownEntitiesConnected: "There are unknown entities connected to this {{type}}: {{entities}}",
         isResourceServer: "Resource server",
         isTrue: "True",

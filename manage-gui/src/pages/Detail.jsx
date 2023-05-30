@@ -939,6 +939,7 @@ class Detail extends React.PureComponent {
         const isSp = type === "saml20_sp";
         const isRp = type === "oidc10_rp";
         const isRs = type === "oauth20_rs";
+        const isProvisioning = type === "provisioning";
         const isSingleTenantTemplate = type === "single_tenant_template";
         const nonExistentAllowedEntities = this.renderWarningNonExistentAllowedEntities();
         const importedFromEdugain = metaData.data.metaDataFields["coin:imported_from_edugain"];
@@ -948,6 +949,7 @@ class Detail extends React.PureComponent {
             .filter(idp => idp.data.allowedall || (idp.data.allowedEntities || []).some(entity => entity.name === entityid))
             .filter(idp => idp.data.state === state)
             .filter(idp => allowedall || (allowedEntities || []).some(entity => entity.name === idp.data.entityid));
+        const connectedApplications = metaData.data.applications;
         const isTrue = I18n.t("topBannerDetails.isTrue");
         const isFalse = I18n.t("topBannerDetails.isFalse");
         return (
@@ -1002,10 +1004,15 @@ class Detail extends React.PureComponent {
                         entities: nonExistentAllowedEntities.join(", ")
                     })}</span>
                 </section>}
-                {(isEmpty(connectedEntities) && !isSingleTenantTemplate && !isNew && !isRs && whiteListingLoaded) &&
+                {(isEmpty(connectedEntities) && !isSingleTenantTemplate && !isNew && !isRs && whiteListingLoaded && !isProvisioning) &&
                 <section className="warning">
                     <i className="fa fa-exclamation-circle"></i>
                     <span>{I18n.t("topBannerDetails.noEntitiesConnected", {type: typeMetaData})}</span>
+                </section>}
+                {(isEmpty(connectedApplications) && !isNew && whiteListingLoaded && isProvisioning) &&
+                <section className="warning">
+                    <i className="fa fa-exclamation-circle"></i>
+                    <span>{I18n.t("topBannerDetails.noApplicationsConnected", {type: typeMetaData})}</span>
                 </section>}
             </section>
         );
