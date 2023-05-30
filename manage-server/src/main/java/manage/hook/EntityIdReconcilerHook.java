@@ -4,10 +4,7 @@ import manage.model.EntityType;
 import manage.model.MetaData;
 import manage.repository.MetaDataRepository;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -30,7 +27,7 @@ public class EntityIdReconcilerHook extends MetaDataHookAdapter {
 
     @Override
     public boolean appliesForMetaData(MetaData metaData) {
-        return !metaData.getType().equals(EntityType.STT.getType());
+        return !metaData.getType().equals(EntityType.STT.getType()) && !metaData.getType().equals(EntityType.PROV.getType());
     }
 
     @Override
@@ -112,7 +109,7 @@ public class EntityIdReconcilerHook extends MetaDataHookAdapter {
         if (type.equals(RS.getType())) {
             return singletonList("allowedResourceServers");
         }
-        throw new IllegalArgumentException("Not supported MetaData type " + type);
+        return Collections.emptyList();
     }
 
 
@@ -129,7 +126,7 @@ public class EntityIdReconcilerHook extends MetaDataHookAdapter {
         if (type.equals(RS.getType())) {
             return singletonList(RP.getType());
         }
-        throw new IllegalArgumentException("Not supported MetaData type " + type);
+        return Collections.emptyList();
     }
 
 }

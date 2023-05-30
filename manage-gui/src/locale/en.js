@@ -37,10 +37,12 @@ I18n.translations.en = {
         saml20_idp: "Identity Providers",
         oidc10_rp: "Relying Parties",
         oauth20_rs: "Resource Servers",
+        provisioning: "Provisionings",
         saml20_sp_single: "Service Provider",
         saml20_idp_single: "Identity Provider",
         oidc10_rp_single: "Relying Party",
         oauth20_rs_single: "Resource Server",
+        provisioning_single: "Provisioning",
         saml20_sp_revision_single: "Service Provider",
         saml20_idp_revision_single: "Identity Provider",
         oidc10_rp_revision_single: "Relying Party",
@@ -63,7 +65,8 @@ I18n.translations.en = {
             revisions: "Revisions ({{nbr}})",
             requests: "Requests ({{nbr}})",
             import: "Import",
-            export: "Export"
+            export: "Export",
+            connected_applications: "Applications ({{nbr}})"
         },
         notFound: "No Metadata found",
         entityId: "Entity ID",
@@ -203,6 +206,19 @@ I18n.translations.en = {
         title: "{{type}}",
         description: "Add only {{type}} that are allowed to be accessed from the client {{name}}.",
         searchPlaceHolder: "Search for OIDC Resource Servers...",
+        allowedEntries: {
+            status: "Status",
+            entityid: "Entity ID",
+            name: "Name",
+            organization: "Organization",
+            notes: "Notes"
+        }
+    },
+    applications: {
+        placeholder: "Search, select and add {{type}} to the Applications",
+        title: "{{type}}",
+        description: "Add {{type}} that are provisioned by this {{name}}.",
+        searchPlaceHolder: "Search for Applications...",
         allowedEntries: {
             status: "Status",
             entityid: "Entity ID",

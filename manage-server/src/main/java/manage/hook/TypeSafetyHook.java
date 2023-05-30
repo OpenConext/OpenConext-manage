@@ -11,11 +11,17 @@ import java.util.stream.Collectors;
 
 public class TypeSafetyHook extends MetaDataHookAdapter {
 
-    private MetaDataAutoConfiguration metaDataAutoConfiguration;
+    private final MetaDataAutoConfiguration metaDataAutoConfiguration;
 
     public TypeSafetyHook(MetaDataAutoConfiguration metaDataAutoConfiguration) {
         this.metaDataAutoConfiguration = metaDataAutoConfiguration;
     }
+
+    @Override
+    public boolean appliesForMetaData(MetaData metaData) {
+        return !metaData.getType().equals(EntityType.PROV.getType());
+    }
+
 
     @Override
     @SuppressWarnings("unchecked")

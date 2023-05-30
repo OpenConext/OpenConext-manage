@@ -25,6 +25,7 @@ public class MetaDataHookConfiguration {
         OidcValidationHook validationHook = new OidcValidationHook(metaDataAutoConfiguration);
         SSIDValidationHook ssidValidationHook = new SSIDValidationHook(metaDataRepository, metaDataAutoConfiguration);
         RequiredAttributesHook requiredAttributesHook = new RequiredAttributesHook(metaDataAutoConfiguration);
+        ProvisioningHook provisioningHook = new ProvisioningHook(metaDataRepository, metaDataAutoConfiguration);
 
         return new CompositeMetaDataHook(
                 Arrays.asList(
@@ -35,7 +36,8 @@ public class MetaDataHookConfiguration {
                         entityIdReconcilerHook,
                         ssidValidationHook,
                         secretHook,
-                        requiredAttributesHook));
+                        requiredAttributesHook,
+                        provisioningHook));
     }
 
 

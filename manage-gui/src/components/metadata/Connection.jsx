@@ -32,6 +32,7 @@ export default class Connection extends React.PureComponent {
         } = this.props;
         const isRelyingParty = type === "oidc10_rp";
         const isResourceServer = type === "oauth20_rs";
+        const isProvisioning = type === "provisioning";
         const entityIdFormat = this.props.configuration.properties.entityid.format;
         const states = this.props.configuration.properties.state.enum;
 
@@ -83,7 +84,7 @@ export default class Connection extends React.PureComponent {
                             </td>
                         </tr>
                     )}
-                    {(!isRelyingParty && !isResourceServer) && (
+                    {(!isRelyingParty && !isResourceServer && !isProvisioning) && (
                         <tr>
                             <td className="key">{I18n.t("metadata.metaDataUrl")}</td>
                             <td className="value">

@@ -14,13 +14,15 @@ export default class SelectEntities extends React.PureComponent {
                 const {
                     metaDataFields: {"name:en": eng, "name:nl": nl},
                     entityid: value,
-                    state
+                    state,
+                    _id
                 } = entry.data;
 
                 return {
                     label: `${eng || nl || value} - ${value} (${state})`,
                     state,
-                    value
+                    value,
+                    _id
                 };
             })
             .filter(entry => !allowedEntityNames.includes(entry.value));

@@ -8,6 +8,7 @@ import org.everit.json.schema.ValidationException;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -37,8 +38,8 @@ public class RequiredAttributesHook extends MetaDataHookAdapter {
         Map<String, Object> schemaRepresentation = this.metaDataAutoConfiguration.schemaRepresentation(EntityType.fromType(newMetaData.getType()));
         Schema schema = metaDataAutoConfiguration.schema(newMetaData.getType());
         Map<String, Object> schemaMetaDataFields = Map.class.cast(Map.class.cast(schemaRepresentation.get("properties")).get("metaDataFields"));
-        Map<String, Object> properties = (Map<String, Object>) schemaMetaDataFields.get("properties");
-        Map<String, Object> patternProperties = (Map<String, Object>) schemaMetaDataFields.get("patternProperties");
+        Map<String, Object> properties = (Map<String, Object>) schemaMetaDataFields.getOrDefault("properties", Collections.emptyMap());
+        Map<String, Object> patternProperties = (Map<String, Object>) schemaMetaDataFields.getOrDefault("patternProperties", Collections.emptyMap());
 
         List<ValidationException> failures = new ArrayList<>();
 

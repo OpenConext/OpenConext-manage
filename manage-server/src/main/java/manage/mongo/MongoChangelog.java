@@ -191,6 +191,20 @@ public class MongoChangelog {
         });
     }
 
+    @ChangeSet(order = "011", id = "addProvisioning", author = "okke.harsta@surf.nl")
+    public void addProvisioning(MongockTemplate mongoTemplate) {
+        String schema = EntityType.PROV.getType();
+        mongoTemplate.createCollection(schema);
+        String revision = schema.concat(REVISION_POSTFIX);
+        mongoTemplate.createCollection(revision);
+        mongoTemplate.indexOps(revision).ensureIndex(new Index("revision.parentId", Sort.Direction.ASC));
+        TextIndexDefinition textIndexDefinition = new TextIndexDefinition.TextIndexDefinitionBuilder()
+                .onField("$**")
+                .build();
+        mongoTemplate.indexOps(schema).ensureIndex(textIndexDefinition);
+    }
+
+
     private void migrateRelayingPartyToResourceServer(Map<String, Map<String, Object>> properties, List<Pattern> patterns, Map<String, Object> simpleProperties, MetaData rs) {
         rs.setType(EntityType.RS.getType());
         rs.getData().entrySet().removeIf(entry -> !properties.containsKey(entry.getKey()));

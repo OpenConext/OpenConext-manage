@@ -20,7 +20,8 @@ import ConfirmationDialog from "../components/ConfirmationDialog";
 import {
     allResourceServers,
     changeRequests,
-    detail, relyingPartiesByResourceServer,
+    detail,
+    relyingPartiesByResourceServer,
     remove,
     revisions,
     save,
@@ -39,6 +40,7 @@ import {getConnectedEntities} from "../utils/TabNumbers";
 import withRouterHooks from "../utils/RouterBackwardCompatability";
 import MetaDataChangeRequests from "../components/metadata/MetaDataChangeRequests";
 import RelyingParties from "../components/metadata/RelyingParties";
+import ProvisioningApplications from "../components/metadata/ProvisioningApplications";
 
 const tabsSp = [
     "connection",
@@ -90,6 +92,13 @@ const tabsRs = [
     "export"
 ];
 
+const tabsPr = [
+    "connection",
+    "metadata",
+    "connected_applications",
+    "revisions"
+];
+
 const tabsSingleTenant = [
     "connection",
     "metadata",
@@ -116,6 +125,7 @@ class Detail extends React.PureComponent {
             whiteListing: [],
             resourceServers: [],
             relyingParties: [],
+            applications: [],
             revisions: [],
             requests: [],
             notFound: false,
@@ -151,8 +161,9 @@ class Detail extends React.PureComponent {
                 const isSp = type === "saml20_sp" || type === "oidc10_rp";
                 const isOidcRP = type === "oidc10_rp";
                 const isResourceServer = type === "oauth20_rs";
+                const isProvisioning = type === "provisioning";
                 const whiteListingType = isSp ? "saml20_idp" : "saml20_sp";
-                const errorKeys = isSp ? tabsSp : tabsIdP;
+                const errorKeys = isSp ? tabsSp : isProvisioning ? tabsPr :tabsIdP;
                 if (this.props.clone) {
                     //Clean all
                     const clonedClearFields = [
@@ -622,6 +633,7 @@ class Detail extends React.PureComponent {
     renderTabTitle = (tab, metaData, resourceServers, whiteListing, revisions, requests, relyingParties) => {
         const allowedAll = metaData.data.allowedall;
         const allowedEntities = metaData.data.allowedEntities;
+        const applications = metaData.data.applications;
         let args = {};
         switch (tab) {
             case "connection":
@@ -659,6 +671,9 @@ class Detail extends React.PureComponent {
                 break;
             case "connected_rps":
                 args = {nbr: (relyingParties || []).length};
+                break;
+            case "connected_applications":
+                args = {nbr: (applications || []).length};
                 break;
             default:
                 args = {};
@@ -863,6 +878,15 @@ class Detail extends React.PureComponent {
                         name={name}
                     />
                 );
+            case "connected_applications":
+                return (
+                    <ProvisioningApplications
+                        allowedApplications={metaData.data.applications}
+                        onChange={this.onChange("applications")}
+                        entityId={metaData.data.entityid}
+                        applications={whiteListing}
+                        name={name}/>
+                );
             default:
                 throw new Error(`Unknown tab ${tab}`);
         }
@@ -1024,6 +1048,8 @@ class Detail extends React.PureComponent {
                     return tabsRs;
                 case "single_tenant_template":
                     return tabsSingleTenant;
+                case "provisioning":
+                    return tabsPr;
                 default:
                     return [];
             }

@@ -1,10 +1,10 @@
 @import "../../stylesheets/vars.scss";
 
-.metadata-provisioning-app {
+.metadata-applications {
     background-color: white;
     padding: 20px;
 
-    .connected-idps-info {
+    .applications-info {
         margin: 15px 0;
 
         h2 {
@@ -14,33 +14,10 @@
 
     }
 
-    section.search {
-        display: flex;
-        padding: 10px 0;
-        background-color: white;
-
-        .search-input-container {
-            flex-grow: 2;
-            position: relative;
-        }
-
-        .search-input {
-            padding: 10px;
-            font-size: 14px;
-            width: 100%;
-        }
-
-        .fa-search {
-            position: absolute;
-            right: 15px;
-            top: 10px;
-            font-size: 20px;
-            color: $blue;
-        }
+    .options {
+        float: right;
 
         span.button {
-            margin-left: auto;
-
             i.fa-clone {
                 margin-left: 25px;
             }
@@ -63,14 +40,33 @@
                 }
             }
         }
-
     }
 
-    section.entities-printable {
+    .search-input-container {
+        flex-grow: 2;
+        position: relative;
+        margin-top: 15px;
+
+        .search-input {
+            padding: 10px;
+            font-size: 14px;
+            width: 100%;
+        }
+
+        .fa-search {
+            position: absolute;
+            right: 15px;
+            top: 10px;
+            font-size: 20px;
+            color: $blue;
+        }
+    }
+
+    section.allowed-applications-printable {
         display: none;
     }
 
-    section.entities {
+    section.allowed-entities {
         margin-top: 15px;
 
         table {
@@ -79,7 +75,6 @@
             th {
                 text-align: left;
                 cursor: pointer;
-                padding: 3px;
 
                 i {
                     margin-left: 15px;
@@ -90,42 +85,53 @@
                     }
                 }
 
+                &.select {
+                    width: 1%;
+                }
+
                 &.status {
-                    width: 12%;
+                    width: 15%;
                 }
 
                 &.name {
-                    width: 25%;
+                    width: 20%;
                 }
 
                 &.organization {
-                    width: 25%;
+                    width: 20%;
                 }
 
-                &.entityId {
-                    width: 30%;
+                &.entityid {
+                    width: 35%;
                 }
 
-                &.notes {
-                    width: 8%;
+                &.info {
+                    min-width: 60px;
+                    text-align: center;
                 }
             }
 
-            tbody tr:nth-child(odd) {
-                background-color: $lightest-grey;
+            tbody tr {
+                &:nth-child(odd) {
+                    background-color: $lightest-grey;
+                }
+
             }
 
             td {
                 vertical-align: middle;
-                padding: 3px;
 
-                &.info {
+                &.blocked, &.remove, &.info {
                     padding: 5px;
+                    text-align: center;
 
-                    i.fa-info-circle {
+                    i.fa {
+                        color: $red;
                         font-size: 20px;
-                        color: $blue;
-                        margin-left: 20px;
+
+                        &.fa-info-circle {
+                            color: $blue;
+                        }
                     }
                 }
             }
