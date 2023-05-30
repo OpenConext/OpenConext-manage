@@ -1072,7 +1072,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 .getBody()
                 .as(List.class);
 
-        assertEquals(5, result.size());
+        assertEquals(6, result.size());
         result.forEach(entityId -> {
             MetaData metaData = metaDataRepository.findRaw("saml20_sp",
                     String.format("{\"data.entityid\":\"%s\"}", entityId)).get(0);
