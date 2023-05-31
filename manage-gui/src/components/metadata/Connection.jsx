@@ -35,6 +35,7 @@ export default class Connection extends React.PureComponent {
             provisioningGroups
         } = this.props;
         const isRelyingParty = type === "oidc10_rp";
+        const isSP = type === "saml20_sp";
         const isResourceServer = type === "oauth20_rs";
         const isProvisioning = type === "provisioning";
         const entityIdFormat = this.props.configuration.properties.entityid.format;
@@ -116,6 +117,7 @@ export default class Connection extends React.PureComponent {
                             />
                         </td>
                     </tr>
+                    {((isSP || isRelyingParty) && id) &&
                     <tr>
                         <td className="key">{I18n.t("metadata.provisioning")}</td>
                         <td className="value provisioning">
@@ -128,7 +130,7 @@ export default class Connection extends React.PureComponent {
                                     </Link>
                                 )}
                         </td>
-                    </tr>
+                    </tr>}
                     {id && revision && (
                         <tr>
                             <td className="key">{I18n.t("metadata.revision")}</td>
