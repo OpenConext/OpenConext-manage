@@ -225,7 +225,7 @@ I18n.translations.en = {
     applications: {
         placeholder: "Search, select and add {{type}} to the Applications",
         title: "{{type}}",
-        description: "Add {{type}} that are provisioned by this {{name}}.",
+        description: "Add {{type}} that are provisioned by provisioning group '{{name}}'.",
         searchPlaceHolder: "Search for Applications...",
         allowedEntries: {
             status: "Status",
