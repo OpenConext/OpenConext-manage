@@ -321,6 +321,7 @@ public class MetaDataRepository {
 
     public List<StatsEntry> stats() {
         return mongoTemplate.getCollectionNames().stream()
+                .filter(name -> !name.toLowerCase().contains("system"))
                 .map(name -> new StatsEntry(name, mongoTemplate.count(new Query(), name)))
                 .collect(toList());
     }
