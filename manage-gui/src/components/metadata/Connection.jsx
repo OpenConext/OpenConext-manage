@@ -7,8 +7,11 @@ import SelectState from "./SelectState";
 import FormatInput from "./../FormatInput";
 
 import "./Connection.scss";
+import {isEmpty} from "../../utils/Utils";
+import {Link} from "react-router-dom";
 
 export default class Connection extends React.PureComponent {
+
     componentDidMount() {
         window.scrollTo(0, 0);
     }
@@ -28,7 +31,8 @@ export default class Connection extends React.PureComponent {
             guest,
             originalEntityId,
             metaData: {type, revision, data, id},
-            revisionNote
+            revisionNote,
+            provisioningGroups
         } = this.props;
         const isRelyingParty = type === "oidc10_rp";
         const isResourceServer = type === "oauth20_rs";
@@ -112,6 +116,19 @@ export default class Connection extends React.PureComponent {
                             />
                         </td>
                     </tr>
+                    <tr>
+                        <td className="key">{I18n.t("metadata.provisioning")}</td>
+                        <td className="value provisioning">
+                            {isEmpty(provisioningGroups) ? I18n.t("metadata.noProvisioning") :
+                                provisioningGroups.map(prov =>
+                                    <Link to={`/metadata/${prov.type}/${prov._id}`} target="_blank">
+                                        <span className="provisioning">
+                                            {prov.data.metaDataFields["name:en"]} - {I18n.t(`metadata.provisioningTypes.${prov.data.metaDataFields.provisioning_type}`)}
+                                        </span>
+                                    </Link>
+                                )}
+                        </td>
+                    </tr>
                     {id && revision && (
                         <tr>
                             <td className="key">{I18n.t("metadata.revision")}</td>
@@ -159,5 +176,6 @@ Connection.propTypes = {
     isNew: PropTypes.bool.isRequired,
     configuration: PropTypes.object.isRequired,
     originalEntityId: PropTypes.string.isRequired,
-    revisionNote: PropTypes.string
+    revisionNote: PropTypes.string,
+    provisioningGroups: PropTypes.array
 };

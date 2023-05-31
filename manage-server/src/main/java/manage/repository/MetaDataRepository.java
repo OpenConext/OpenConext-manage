@@ -307,7 +307,7 @@ public class MetaDataRepository {
     }
 
     public List<Map> provisioning(String id) {
-        Query query = queryWithSamlFields()
+        Query query = new Query()
                 .addCriteria(Criteria.where("data.applications.id").is(id));
         return mongoTemplate.find(query, Map.class, EntityType.PROV.getType());
     }

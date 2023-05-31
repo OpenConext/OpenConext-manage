@@ -42,6 +42,10 @@
             &.value {
                 width: 85%;
                 padding-right: 15px;
+
+                &.provisioning a {
+                    display: block;
+                }
             }
 
             p.error {

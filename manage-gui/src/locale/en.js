@@ -100,7 +100,14 @@ I18n.translations.en = {
         errors: "There are validation errors:",
         changeRequestsPre: "There are outstanding change request(s). Go to ",
         changeRequestsLink: "requests",
-        changeRequestsPost: " to review them."
+        changeRequestsPost: " to review them.",
+        noProvisioning: "No provisionings",
+        provisioningTypes: {
+            scim: "SCIM",
+            graph: "Graph",
+            mail: "Mail",
+            eva: "EVA"
+        }
     },
 
     topBannerDetails: {

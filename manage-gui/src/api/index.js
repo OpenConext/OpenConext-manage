@@ -184,6 +184,10 @@ export function relyingPartiesByResourceServer(resourceServerEntityID) {
     return fetchJson(`relyingParties?resourceServerEntityID=${encodeURIComponent(resourceServerEntityID)}`);
 }
 
+export function provisioningById(id) {
+    return fetchJson(`provisioning/${id}`);
+}
+
 export function search(options, type) {
     return postPutJson(`search/${type}`, options, "post");
 }

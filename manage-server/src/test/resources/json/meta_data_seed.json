@@ -610,7 +610,7 @@
     },
     "data": {
       "entityid": "https://test",
-      "state": "prodaccepted",
+      "state": "testaccepted",
       "metaDataFields": {
         "name:en": "Test",
         "provisioning_type": "scim",

@@ -22,6 +22,7 @@ import {
     changeRequests,
     detail,
     relyingPartiesByResourceServer,
+    provisioningById,
     remove,
     revisions,
     save,
@@ -113,6 +114,7 @@ const aliasTabChanges = {
 }
 
 class Detail extends React.PureComponent {
+
     constructor(props) {
         super(props);
         const {tab = "connection"} = this.props.params;
@@ -128,6 +130,7 @@ class Detail extends React.PureComponent {
             applications: [],
             revisions: [],
             requests: [],
+            provisioningGroups: [],
             notFound: false,
             loaded: false,
             selectedTab: "connection",
@@ -225,6 +228,11 @@ class Detail extends React.PureComponent {
                     if (isResourceServer && !isNew) {
                         relyingPartiesByResourceServer(metaData.data.entityid).then(res =>
                         this.setState({"relyingParties": res}));
+                    }
+                    if (isSp && !isNew) {
+                        provisioningById(id).then(res => {
+                           this.setState({provisioningGroups: res});
+                        });
                     }
                     Promise.all([revisions(type, id), changeRequests(type, id)])
                         .then(results => {
@@ -722,7 +730,8 @@ class Detail extends React.PureComponent {
             originalEntityId,
             type,
             removedWhiteListedEntities,
-            addedWhiteListedEntities
+            addedWhiteListedEntities,
+            provisioningGroups
         } = this.state;
         const name =
             metaData.data.metaDataFields["name:en"] ||
@@ -741,6 +750,7 @@ class Detail extends React.PureComponent {
                         isNew={isNew}
                         originalEntityId={originalEntityId}
                         configuration={configuration}
+                        provisioningGroups={provisioningGroups}
                     />
                 );
             case "whitelist":
