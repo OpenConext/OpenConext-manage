@@ -208,6 +208,14 @@ public class MongoChangelog {
         mongoTemplate.indexOps(schema).ensureIndex(textIndexDefinition);
     }
 
+    @ChangeSet(order = "012", id = "addTextIndexRS", author = "okke.harsta@surf.nl")
+    public void addTextIndexRS(MongockTemplate mongoTemplate) {
+        String schema = EntityType.RS.getType();
+        TextIndexDefinition textIndexDefinition = new TextIndexDefinition.TextIndexDefinitionBuilder()
+                .onField("$**")
+                .build();
+        mongoTemplate.indexOps(schema).ensureIndex(textIndexDefinition);
+    }
 
     private void migrateRelayingPartyToResourceServer(Map<String, Map<String, Object>> properties, List<Pattern> patterns, Map<String, Object> simpleProperties, MetaData rs) {
         rs.setType(EntityType.RS.getType());
