@@ -375,10 +375,17 @@ public class MetaDataController {
     }
 
     @PreAuthorize("hasAnyRole('USER', 'READ')")
-    @GetMapping({"/client/provisioning/{id}", "/internal/provisioning/{id}"})
-    public List<Map> provisioning(@PathVariable("id") String id) {
-        return metaDataRepository.provisioning(id);
+    @PostMapping({"/client/provisioning", "/internal/provisioning"})
+    public List<Map> provisioning(@RequestBody List<String> identifiers) {
+        return metaDataRepository.provisioning(identifiers);
     }
+
+    @PreAuthorize("hasAnyRole('USER', 'READ')")
+    @GetMapping({"/client/allowedEntities/{type}/{id}", "/internal/allowedEntities/{type}/{id}"})
+    public List<Map> allowedEntities(@PathVariable("type") String type, @PathVariable("id") String id) {
+        return metaDataRepository.allowedEntities(id, EntityType.fromType(type));
+    }
+
 
     @PreAuthorize("hasAnyRole('USER', 'READ')")
     @PostMapping({"/client/uniqueEntityId/{type}", "/internal/uniqueEntityId/{type}"})

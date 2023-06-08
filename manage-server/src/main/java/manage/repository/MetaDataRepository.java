@@ -306,9 +306,19 @@ public class MetaDataRepository {
         return mongoTemplate.find(query, Map.class, EntityType.RP.getType());
     }
 
-    public List<Map> provisioning(String id) {
+    public List<Map> allowedEntities(String id, EntityType entityType) {
+        Map byId = mongoTemplate.findById(id, Map.class, entityType.getType());
+        Query query = queryWithSamlFields()
+                .addCriteria(new Criteria().orOperator(
+                        Criteria.where("data.allowedEntities.name").is(((Map) byId.get("data")).get("entityid")),
+                        Criteria.where("data.allowedall").is(true)
+                ));
+        return mongoTemplate.find(query, Map.class, EntityType.IDP.getType());
+    }
+
+    public List<Map> provisioning(List<String> identifiers) {
         Query query = new Query()
-                .addCriteria(Criteria.where("data.applications.id").is(id));
+                .addCriteria(Criteria.where("data.applications.id").in(identifiers));
         return mongoTemplate.find(query, Map.class, EntityType.PROV.getType());
     }
 

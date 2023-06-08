@@ -744,8 +744,10 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 .auth()
                 .preemptive()
                 .basic("sp-portal", "secret")
+                .contentType(ContentType.JSON)
+                .body(List.of("1"))
                 .when()
-                .get("manage/api/internal/provisioning/1")
+                .post("manage/api/internal/provisioning")
                 .as(mapListTypeRef);
         assertEquals(1, applications.size());
     }

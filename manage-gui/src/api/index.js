@@ -185,7 +185,7 @@ export function relyingPartiesByResourceServer(resourceServerEntityID) {
 }
 
 export function provisioningById(id) {
-    return fetchJson(`provisioning/${id}`);
+    return postPutJson("provisioning", [id], "POST");
 }
 
 export function search(options, type) {
