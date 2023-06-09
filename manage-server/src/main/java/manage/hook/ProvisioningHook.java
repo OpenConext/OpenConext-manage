@@ -34,7 +34,7 @@ public class ProvisioningHook extends MetaDataHookAdapter {
     @Override
     public MetaData prePut(MetaData previous, MetaData newMetaData) {
         String previousProvisioningType = (String) previous.metaDataFields().get("provisioning_type");
-        String newProvisioningType = (String) previous.metaDataFields().get("provisioning_type");
+        String newProvisioningType = (String) newMetaData.metaDataFields().get("provisioning_type");
         if (!previousProvisioningType.equals(newProvisioningType)) {
             Schema schema = metaDataAutoConfiguration.schema(EntityType.PROV.getType());
             throw new ValidationException(
