@@ -33,6 +33,16 @@ public class ProvisioningHook extends MetaDataHookAdapter {
 
     @Override
     public MetaData prePut(MetaData previous, MetaData newMetaData) {
+        String previousProvisioningType = (String) previous.metaDataFields().get("provisioning_type");
+        String newProvisioningType = (String) previous.metaDataFields().get("provisioning_type");
+        if (!previousProvisioningType.equals(newProvisioningType)) {
+            Schema schema = metaDataAutoConfiguration.schema(EntityType.PROV.getType());
+            throw new ValidationException(
+                    schema,
+                    String.format("Not allowed the change the provisioning_type for provisioning metadata (changed from %s to %s)",
+                            previousProvisioningType, newProvisioningType),
+                    "metaDataFields.provisioning_type");
+        }
         prePost(newMetaData);
         return this.filterInvalidApplications(newMetaData);
     }
@@ -48,24 +58,29 @@ public class ProvisioningHook extends MetaDataHookAdapter {
         Map<String, Object> metaDataFields = newMetaData.metaDataFields();
         List<ValidationException> failures = new ArrayList<>();
         Schema schema = metaDataAutoConfiguration.schema(EntityType.PROV.getType());
-        String provisioningType = (String) metaDataFields.get("provisioning_type");
-        if ("scim".equals(provisioningType) && !metaDataFields.containsKey("scim_url")) {
-            failures.add(new ValidationException(schema, "SCIM URL is required with provisioningType SCIM", "scim_url"));
-        } else if ("mail".equals(provisioningType) && !metaDataFields.containsKey("provisioning_mail")) {
-            failures.add(new ValidationException(schema, "Provisioning mail is required with provisioningType mail", "provisioning_mail"));
-        } else if ("eva".equals(provisioningType) && !metaDataFields.containsKey("eva_token")) {
-            failures.add(new ValidationException(schema, "EVA token is required with provisioningType eva", "eva_token"));
-        }
+        Map.of(
+                "scim", List.of("scim_url", "scim_user", "scim_password"),
+                "graph", List.of("graph_url", "graph_token"),
+                "eva", List.of("eva_url", "eva_token")
+        ).forEach((provisioningType, required) -> {
+            required.forEach(attribute -> {
+                if (!StringUtils.hasText((String) metaDataFields.get(attribute))) {
+                    failures.add(new ValidationException(schema,
+                            String.format("%s is required with provisioningType %s", provisioningType, attribute), attribute));
+                }
+            });
+        });
         ValidationException.throwFor(schema, failures);
     }
 
     private MetaData filterInvalidApplications(MetaData metaData) {
         List<Map<String, String>> applications = (List<Map<String, String>>) metaData.getData().getOrDefault("applications", Collections.emptyList());
-        List<Map<String, String>> newApplications = applications.stream().filter(application -> metaDataRepository.findById(application.get("id"), application.get("type")) != null).collect(toList());
+        List<Map<String, String>> newApplications = applications.stream()
+                .filter(application -> metaDataRepository.findById(application.get("id"), application.get("type")) != null)
+                .collect(toList());
         metaData.getData().put("applications", newApplications);
         return metaData;
     }
-
 
 
 }
