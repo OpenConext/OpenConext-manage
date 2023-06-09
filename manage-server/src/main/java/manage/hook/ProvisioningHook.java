@@ -58,17 +58,20 @@ public class ProvisioningHook extends MetaDataHookAdapter {
         Map<String, Object> metaDataFields = newMetaData.metaDataFields();
         List<ValidationException> failures = new ArrayList<>();
         Schema schema = metaDataAutoConfiguration.schema(EntityType.PROV.getType());
+        String provisioningType = (String) metaDataFields.get("provisioning_type");
         Map.of(
                 "scim", List.of("scim_url", "scim_user", "scim_password"),
                 "graph", List.of("graph_url", "graph_token"),
                 "eva", List.of("eva_url", "eva_token")
-        ).forEach((provisioningType, required) -> {
-            required.forEach(attribute -> {
-                if (!StringUtils.hasText((String) metaDataFields.get(attribute))) {
-                    failures.add(new ValidationException(schema,
-                            String.format("%s is required with provisioningType %s", provisioningType, attribute), attribute));
-                }
-            });
+        ).forEach((type, required) -> {
+            if (type.equals(provisioningType)) {
+                required.forEach(attribute -> {
+                    if (!StringUtils.hasText((String) metaDataFields.get(attribute))) {
+                        failures.add(new ValidationException(schema,
+                                String.format("%s is required with provisioningType %s", provisioningType, attribute), attribute));
+                    }
+                });
+            }
         });
         ValidationException.throwFor(schema, failures);
     }
