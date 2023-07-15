@@ -750,6 +750,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 .post("manage/api/internal/provisioning")
                 .as(mapListTypeRef);
         assertEquals(1, applications.size());
+        assertEquals("1", ((Map) ((List) ((Map) applications.get(0).get("data")).get("applications")).get(0)).get("id"));
     }
 
     @Test

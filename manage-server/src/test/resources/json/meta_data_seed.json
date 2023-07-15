@@ -614,7 +614,9 @@
       "metaDataFields": {
         "name:en": "Test",
         "provisioning_type": "scim",
-        "scim_url": "https://scim"
+        "scim_url": "https://scim",
+        "scim_user": "user",
+        "scim_password": "secret"
       },
       "applications": [
         {

@@ -39,7 +39,8 @@ public class ProvisioningHook extends MetaDataHookAdapter {
             Schema schema = metaDataAutoConfiguration.schema(EntityType.PROV.getType());
             throw new ValidationException(
                     schema,
-                    String.format("Not allowed the change the provisioning_type for provisioning metadata (changed from %s to %s)",
+                    String.format("Not allowed the change the provisioning_type for provisioning metadata (changed from %s to %s)." +
+                                    " Delete this entity and create new provisioning",
                             previousProvisioningType, newProvisioningType),
                     "metaDataFields.provisioning_type");
         }
@@ -61,14 +62,14 @@ public class ProvisioningHook extends MetaDataHookAdapter {
         String provisioningType = (String) metaDataFields.get("provisioning_type");
         Map.of(
                 "scim", List.of("scim_url", "scim_user", "scim_password"),
-                "graph", List.of("graph_url", "graph_token"),
+                "graph", List.of("graph_url", "graph_client_id", "graph_secret", "graph_tenant"),
                 "eva", List.of("eva_url", "eva_token")
         ).forEach((type, required) -> {
             if (type.equals(provisioningType)) {
                 required.forEach(attribute -> {
                     if (!StringUtils.hasText((String) metaDataFields.get(attribute))) {
                         failures.add(new ValidationException(schema,
-                                String.format("%s is required with provisioningType %s", provisioningType, attribute), attribute));
+                                String.format("%s is required with provisioningType %s", attribute, provisioningType), attribute));
                     }
                 });
             }
