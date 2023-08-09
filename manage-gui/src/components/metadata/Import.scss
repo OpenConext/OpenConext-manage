@@ -6,7 +6,7 @@
     background-color: white;
 
     h2, h3 {
-        margin-bottom: $item-offset / 2;
+        margin-bottom: calc($item-offset / 2);
     }
 
     h2 {

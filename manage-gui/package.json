@@ -35,6 +35,10 @@
     "spin.js": "^2.3.2",
     "urijs": "^1.19.11"
   },
+  "resolutions": {
+    "semver": "^7.5.4",
+    "yaml": "^2.3.1"
+  },
   "scripts": {
     "start": "PORT=3006 HOST=localhost DANGEROUSLY_DISABLE_HOST_CHECK=true react-scripts start",
     "build": "HOST=localhost DANGEROUSLY_DISABLE_HOST_CHECK=true react-scripts build",
