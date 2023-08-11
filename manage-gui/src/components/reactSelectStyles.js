@@ -16,6 +16,9 @@ const selectStyles = {
     },
     multiValueLabel: provided => {
         return {...provided, color: "white", fontSize: "14px"};
+    },
+    singleValue: provided => {
+        return {...provided, color: "black"};
     }
 };
 

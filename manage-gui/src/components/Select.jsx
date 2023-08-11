@@ -22,6 +22,7 @@ export default class Select extends React.PureComponent {
             <ReactSelect
                 {...rest}
                 className={className}
+                isDisabled={rest.disabled}
                 styles={reactSelectStyles}
                 inputId={`react-select-${name}`}
                 value={valueAsOption}

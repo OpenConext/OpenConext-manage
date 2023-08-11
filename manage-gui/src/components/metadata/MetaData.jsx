@@ -13,6 +13,7 @@ import "./MetaData.scss";
 import ScopeSelection from "../form/ScopeSelection";
 
 export default class MetaData extends React.Component {
+
     constructor(props) {
         super(props);
         this.state = {
@@ -92,7 +93,7 @@ export default class MetaData extends React.Component {
 
         const defaultProps = {
             autoFocus: this.state.newMetaDataFieldKey === key,
-            disabled: guest,
+            disabled: guest || (keyConfiguration.disabledAfterPersisted && !this.props.isNewEntity),
             name: key,
             onChange: value => this.doChange(key, value),
             value: valueToUse
