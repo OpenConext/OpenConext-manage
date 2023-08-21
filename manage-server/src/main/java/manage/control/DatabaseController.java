@@ -8,9 +8,14 @@ import manage.repository.MetaDataRepository;
 import manage.web.PreemptiveAuthenticationHttpComponentsClientHttpRequestFactory;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.HttpException;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpRequest;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.conn.DefaultProxyRoutePlanner;
+import org.apache.http.protocol.HttpContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -54,6 +59,9 @@ public class DatabaseController {
     private final MetaDataRepository metaDataRepository;
 
     private final Environment environment;
+
+    private String proxyHost;
+    private int proxyPort;
 
     @Autowired
     DatabaseController(MetaDataRepository metaDataRepository,
@@ -205,6 +213,25 @@ public class DatabaseController {
         BasicCredentialsProvider basicCredentialsProvider = new BasicCredentialsProvider();
         basicCredentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(user, password));
         httpClientBuilder.setDefaultCredentialsProvider(basicCredentialsProvider);
+
+        this.proxyHost = System.getProperty("http.proxyHost");
+        if (System.getProperty("http.proxyPort") != null) {
+            this.proxyPort = Integer.parseInt(System.getProperty("http.proxyPort"));
+        } else {
+            this.proxyPort = 8080;
+        }
+
+        if (this.proxyHost != null) {
+            HttpHost proxy = new HttpHost(this.proxyHost, this.proxyPort);
+
+            httpClientBuilder.setRoutePlanner(new DefaultProxyRoutePlanner(proxy) {
+                @Override
+                public HttpHost determineProxy(HttpHost target, HttpRequest request, HttpContext context) throws HttpException {
+                    return super.determineProxy(target, request, context);
+                }
+            });
+        }
+
         CloseableHttpClient httpClient = httpClientBuilder.build();
         return new PreemptiveAuthenticationHttpComponentsClientHttpRequestFactory(httpClient, pushUri);
     }
