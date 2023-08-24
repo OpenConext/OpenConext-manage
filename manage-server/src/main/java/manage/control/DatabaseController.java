@@ -213,10 +213,9 @@ public class DatabaseController {
         httpClientBuilder.setDefaultCredentialsProvider(basicCredentialsProvider);
 
         String proxyHost = System.getProperty("http.proxyHost");
-        String proxyPortString = System.getProperty("http.proxyPort");
-        int proxyPort = StringUtils.hasText(proxyPortString) ? Integer.parseInt(proxyPortString) : 8080;
-
         if (proxyHost != null) {
+            String proxyPortString = System.getProperty("http.proxyPort");
+            int proxyPort = StringUtils.hasText(proxyPortString) ? Integer.parseInt(proxyPortString) : 8080;
             HttpHost proxy = new HttpHost(proxyHost, proxyPort);
             httpClientBuilder.setRoutePlanner(new DefaultProxyRoutePlanner(proxy));
         }
