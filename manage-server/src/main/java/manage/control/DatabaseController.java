@@ -26,6 +26,7 @@ import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
@@ -59,9 +60,6 @@ public class DatabaseController {
     private final MetaDataRepository metaDataRepository;
 
     private final Environment environment;
-
-    private String proxyHost;
-    private int proxyPort;
 
     @Autowired
     DatabaseController(MetaDataRepository metaDataRepository,
@@ -214,22 +212,13 @@ public class DatabaseController {
         basicCredentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(user, password));
         httpClientBuilder.setDefaultCredentialsProvider(basicCredentialsProvider);
 
-        this.proxyHost = System.getProperty("http.proxyHost");
-        if (System.getProperty("http.proxyPort") != null) {
-            this.proxyPort = Integer.parseInt(System.getProperty("http.proxyPort"));
-        } else {
-            this.proxyPort = 8080;
-        }
+        String proxyHost = System.getProperty("http.proxyHost");
+        String proxyPortString = System.getProperty("http.proxyPort");
+        int proxyPort = StringUtils.hasText(proxyPortString) ? Integer.parseInt(proxyPortString) : 8080;
 
-        if (this.proxyHost != null) {
-            HttpHost proxy = new HttpHost(this.proxyHost, this.proxyPort);
-
-            httpClientBuilder.setRoutePlanner(new DefaultProxyRoutePlanner(proxy) {
-                @Override
-                public HttpHost determineProxy(HttpHost target, HttpRequest request, HttpContext context) throws HttpException {
-                    return super.determineProxy(target, request, context);
-                }
-            });
+        if (proxyHost != null) {
+            HttpHost proxy = new HttpHost(proxyHost, proxyPort);
+            httpClientBuilder.setRoutePlanner(new DefaultProxyRoutePlanner(proxy));
         }
 
         CloseableHttpClient httpClient = httpClientBuilder.build();
