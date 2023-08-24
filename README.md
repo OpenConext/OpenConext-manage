@@ -20,14 +20,14 @@ Note that the original migration from Janus was removed in version 3.0.0. If you
 - NodeJS v16.13.2 (best managed with `nvm`, current version in [.nvmrc](manage-gui/.nvmrc))
 - ansible
 
+If you have installed MongoDB with your package manager, you'll have to enable transactions:
+
+```
+mongosh
+> rs.initiate()
+```
+
 ## [Building and running](#building-and-running)
-
-### Run server and gui
-
-```
-gem install foreman
-foreman s
-```
 
 ### [The manage-server](#manage-server)
 
