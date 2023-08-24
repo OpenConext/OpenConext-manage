@@ -8,9 +8,14 @@ import manage.repository.MetaDataRepository;
 import manage.web.PreemptiveAuthenticationHttpComponentsClientHttpRequestFactory;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.HttpException;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpRequest;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.conn.DefaultProxyRoutePlanner;
+import org.apache.http.protocol.HttpContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -21,6 +26,7 @@ import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
@@ -205,6 +211,16 @@ public class DatabaseController {
         BasicCredentialsProvider basicCredentialsProvider = new BasicCredentialsProvider();
         basicCredentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(user, password));
         httpClientBuilder.setDefaultCredentialsProvider(basicCredentialsProvider);
+
+        String proxyHost = System.getProperty("http.proxyHost");
+        String proxyPortString = System.getProperty("http.proxyPort");
+        int proxyPort = StringUtils.hasText(proxyPortString) ? Integer.parseInt(proxyPortString) : 8080;
+
+        if (proxyHost != null) {
+            HttpHost proxy = new HttpHost(proxyHost, proxyPort);
+            httpClientBuilder.setRoutePlanner(new DefaultProxyRoutePlanner(proxy));
+        }
+
         CloseableHttpClient httpClient = httpClientBuilder.build();
         return new PreemptiveAuthenticationHttpComponentsClientHttpRequestFactory(httpClient, pushUri);
     }
