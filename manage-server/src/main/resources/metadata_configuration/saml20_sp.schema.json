@@ -140,8 +140,7 @@
         "orcid",
         "pseudo_email",
         "sab",
-        "sbs",
-        "surfmarket_entitlements",
+        "invite",
         "voot"
       ],
       "properties": {
