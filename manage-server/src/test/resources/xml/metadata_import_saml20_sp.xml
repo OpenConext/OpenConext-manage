@@ -5,7 +5,9 @@
                      xmlns:mdrpi="urn:oasis:names:tc:SAML:metadata:rpi"
                      xmlns:mdattr="urn:oasis:names:tc:SAML:metadata:attribute"
                      xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion "
-                     entityID="https://teams.surfconext.nl/shibboleth" validUntil="2018-07-14T11:15:56.857+02:00"
+                     entityID="https://teams.surfconext.nl/shibboleth"
+                     ID="eduGAIN"
+                     validUntil="2018-07-14T11:15:56.857+02:00"
                      cacheDuration="PT86400S">
     <md:SPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
         <md:Extensions>

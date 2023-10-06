@@ -125,6 +125,12 @@ public class MetaDataFeedParser {
                                 }
                                 if (inCorrectEntityDescriptor || !entityIDOptional.isPresent()) {
                                     result.put("entityid", optional.get());
+                                    Optional<String> optionalId = getAttributeValue(reader, "ID");
+                                    optionalId.ifPresent(id -> {
+                                        if (id.equalsIgnoreCase("eduGAIN")) {
+                                            metaDataFields.put("coin:interfed_source", "eduGAIN");
+                                        }
+                                    });
                                 }
                             }
                             break;

@@ -23,7 +23,7 @@ import static org.junit.Assert.*;
 @SuppressWarnings("unchecked")
 public class ImporterServiceTest implements TestUtils {
 
-    private static ImporterService subject;
+    private static final ImporterService subject;
 
     static {
         try {

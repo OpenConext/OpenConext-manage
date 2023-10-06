@@ -20,6 +20,7 @@
   "coin:entity_categories:1" : "http://www.geant.net/uri/dataprotection-code-of-conduct/v1",
   "coin:entity_categories:2" : "http://refeds.org/category/research-and-scholarship",
   "coin:entity_categories:3" : "http://refeds.org/category/hide-from-discovery",
+  "coin:interfed_source" : "eduGAIN",
   "contacts:0:contactType" : "support",
   "contacts:0:emailAddress" : "help@surfconext.nl",
   "contacts:0:givenName" : "SURFconext",
