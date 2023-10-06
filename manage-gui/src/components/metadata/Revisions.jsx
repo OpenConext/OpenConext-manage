@@ -1,13 +1,13 @@
 import React from "react";
 import I18n from "i18n-js";
-
+import DOMPurify from "dompurify";
 import {DiffPatcher, formatters} from 'jsondiffpatch';
 
 import PropTypes from "prop-types";
 import cloneDeep from "lodash.clonedeep";
 import CheckBox from "../../components/CheckBox";
 import ConfirmationDialog from "../../components/ConfirmationDialog";
-import {escapeDeep, sortDict, stop} from "../../utils/Utils";
+import {sortDict, stop} from "../../utils/Utils";
 
 import "jsondiffpatch/dist/formatters-styles/html.css";
 import "./Revisions.scss";
@@ -47,10 +47,12 @@ class Revisions extends React.Component {
     }
 
     initializeRevisionDetails(revisions) {
-        this.setState({showRevisionDetails: revisions.reduce((acc, revision) => {
+        this.setState({
+            showRevisionDetails: revisions.reduce((acc, revision) => {
                 acc[revision.id] = false;
                 return acc;
-            }, {})});
+            }, {})
+        });
     }
 
     previousRevision = revision => this.props.revisions.find(rev => rev.revision.number === (revision.revision.number - 1));
@@ -99,19 +101,18 @@ class Revisions extends React.Component {
     };
 
     renderDiff = (revision, previous) => {
+        debugger;
         const rev = cloneDeep(revision.data);
-        escapeDeep(rev);
         ignoreInDiff.forEach(ignore => delete rev[ignore]);
         sortDict(rev);
 
         const prev = cloneDeep(previous.data);
-        escapeDeep(prev);
         ignoreInDiff.forEach(ignore => delete prev[ignore]);
         sortDict(prev);
 
         const diffs = this.differ.diff(prev, rev);
-        const html = formatters.html.format(diffs);
-        //we need dangerouslySetInnerHTML otherwise the diff has to html in it, but the data is cleansed
+        const html = DOMPurify.sanitize(formatters.html.format(diffs));
+        //we need dangerouslySetInnerHTML otherwise the diff has no html in it, but the data is cleansed
         return diffs ? <p dangerouslySetInnerHTML={{__html: html}}/> : <p>{I18n.t("revisions.identical")}</p>
     };
 
@@ -142,17 +143,17 @@ class Revisions extends React.Component {
                     </td>
                 </tr>
                 {!isFirstRevision &&
-                <tr>
-                    <td colSpan={headers.length}><CheckBox name={revision.id} value={showDetail || false}
-                                                           info={I18n.t("revisions.toggleDetails")}
-                                                           onChange={() => this.toggleShowDetail(revision)}/>
-                    </td>
-                </tr>}
+                    <tr>
+                        <td colSpan={headers.length}><CheckBox name={revision.id} value={showDetail || false}
+                                                               info={I18n.t("revisions.toggleDetails")}
+                                                               onChange={() => this.toggleShowDetail(revision)}/>
+                        </td>
+                    </tr>}
                 {(showDetail && !isFirstRevision) &&
-                <tr>
-                    <td className="diff"
-                        colSpan={headers.length}>{this.renderDiff(revision, this.previousRevision(revision))}</td>
-                </tr>}
+                    <tr>
+                        <td className="diff"
+                            colSpan={headers.length}>{this.renderDiff(revision, this.previousRevision(revision))}</td>
+                    </tr>}
                 </tbody>
             </table>
         );
