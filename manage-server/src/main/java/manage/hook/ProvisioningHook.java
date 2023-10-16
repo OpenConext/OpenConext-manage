@@ -62,7 +62,7 @@ public class ProvisioningHook extends MetaDataHookAdapter {
         String provisioningType = (String) metaDataFields.get("provisioning_type");
         Map.of(
                 "scim", List.of("scim_url", "scim_user", "scim_password"),
-                "graph", List.of("graph_url", "graph_client_id", "graph_secret", "graph_tenant"),
+                "graph", List.of("graph_client_id", "graph_secret", "graph_tenant"),
                 "eva", List.of("eva_url", "eva_token")
         ).forEach((type, required) -> {
             if (type.equals(provisioningType)) {
