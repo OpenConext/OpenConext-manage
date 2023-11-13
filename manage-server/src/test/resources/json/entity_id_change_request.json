@@ -1,0 +1,13 @@
+{
+  "metaDataId" : "6",
+  "type" : "saml20_idp",
+  "incrementalChange": true,
+  "pathUpdateType": "REMOVAL",
+  "pathUpdates" : {
+    "entityid" : "https://changed.org"
+  },
+  "auditData" : {
+    "user" : "jdoe"
+  },
+  "note": "Optional note describing the reason for this change"
+}

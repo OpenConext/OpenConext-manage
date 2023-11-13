@@ -112,9 +112,12 @@ class MetaDataChangeRequests extends React.Component {
 
     applyPathUpdates = (pathUpdates, data, pathUpdateType) => {
         const newData = cloneDeep(data);
+
         Object.keys(pathUpdates).forEach(key => {
             const singleValue = pathUpdates[key];
-            if (typeof singleValue === "object" && (!newData[key] || !Array.isArray(newData[key])) &&
+            if (typeof singleValue === "string") {
+                newData[key] = singleValue;
+            } else if (typeof singleValue === "object" && (!newData[key] || !Array.isArray(newData[key])) &&
                 ["allowedEntities", "disableConsent", "stepupEntities", "mfaEntities", "allowedResourceServers",
                     "mfaEntities"].indexOf(key) === -1) {
                 if (pathUpdateType === "ADDITION") {
@@ -132,16 +135,26 @@ class MetaDataChangeRequests extends React.Component {
                         newData[key] = []
                     }
                     //first remove everything, could be an attribute value change like loa-level
-                    const newValue = newData[key].filter(entry => !value.some(ent => entry.name === ent.name));
-                    //this alters the order and confuses the differ
-                    newData[key] = newValue.concat(value);
-                    newData[key].sort((a, b) => a.name.localeCompare(b.name));
-                    if (!data[key]) {
+                    const newValue = newData[key];
+                    if (Array.isArray(newValue)) {
+                        const newValue = newValue.filter(entry => !value.some(ent => entry.name === ent.name));
+                        //this alters the order and confuses the differ
+                        newData[key] = newValue.concat(value);
+                        newData[key].sort((a, b) => a.name.localeCompare(b.name));
+                    }
+                    const currentValue = data[key];
+                    if (!currentValue) {
                         data[key] = []
                     }
-                    data[key].sort((a, b) => a.name.localeCompare(b.name));
+                    if (Array.isArray(currentValue)) {
+                        data[key].sort((a, b) => a.name.localeCompare(b.name));
+                    }
                 } else if (newData[key]) {
-                    newData[key] = newData[key].filter(entry => !value.some(ent => entry.name === ent.name));
+                    const newKey = newData[key];
+                    if (Array.isArray(newKey)) {
+                        newData[key] = newKey.filter(entry => !value.some(ent => entry.name === ent.name));
+                    }
+
                 }
             }
         });
@@ -156,7 +169,7 @@ class MetaDataChangeRequests extends React.Component {
         sortDict(newData);
         let diffs;
         if (request.incrementalChange) {
-            //we can not simple show the pathUpdate (e.g. newData) as this is not against the actual data
+            //we can not simply show the pathUpdate (e.g. newData) as this is not against the actual data
             const appliedData = this.applyPathUpdates(newData, data, request.pathUpdateType);
             diffs = this.differ.diff(data, appliedData);
         } else {
@@ -185,14 +198,17 @@ class MetaDataChangeRequests extends React.Component {
                 </thead>
                 <tbody>
                 <tr>
-                    <td className={"notes"} colSpan={5}>Summary: <span
+                    <td className={"notes"} colSpan={headers.length}>Summary: <span
                         className={"notes"}>{request.note ? request.note : "-"}</span></td>
                 </tr>
                 <tr>
                     <td>{new Date(request.created).toGMTString()}</td>
                     <td>{request.auditData.userName}</td>
-                    <td className={"incremental"}><CheckBox name={"incremental"} readOnly={true}
-                                                            value={request.incrementalChange || false}/></td>
+                    <td className={"incremental"}>
+                        <div className={"wrapper"}><CheckBox name={"incremental"} readOnly={true}
+                                                            value={request.incrementalChange || false}/>
+                        </div>
+                    </td>
                     <td><ReactJson src={this.requestToJson(request)} name="changeRequest" collapsed={true}/></td>
                     <td className="nope">
                         <div className="accept">
@@ -207,7 +223,7 @@ class MetaDataChangeRequests extends React.Component {
                     </td>
                 </tr>
                 <tr>
-                    <td><CheckBox name={`${i}`}
+                    <td colSpan={5}><CheckBox name={`${i}`}
                                   value={showDetail || false}
                                   info={I18n.t("changeRequests.toggleDetails")}
                                   onChange={() => this.toggleShowDetail(request)}/>

@@ -104,7 +104,7 @@ mongoimport --db metadata --collection saml20_idp --type json --file identity-pr
 cd ./manage-server/src/test/resources/json
 curl -u sysadmin:secret -X POST -H 'Content-Type: application/json' -d '@change_request.json' 'https://manage.test2.surfconext.nl/manage/api/internal/change-requests'
 ```
-Or the other supported flavour: a incremental change
+Or the other supported flavour: an incremental change
 ```
 curl -u sysadmin:secret -X POST -H 'Content-Type: application/json' -d '@incremental_change_request.json' 'https://manage.test2.surfconext.nl/manage/api/internal/change-requests'
 curl -u sysadmin:secret -X POST -H 'Content-Type: application/json' -d '@incremental_change_request.json' 'http://localhost:8080/manage/api/internal/change-requests'

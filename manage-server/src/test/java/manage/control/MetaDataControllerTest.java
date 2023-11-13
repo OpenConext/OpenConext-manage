@@ -1584,6 +1584,36 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void changeRequestChangeEntityID() {
+        Map<String, Object> pathUpdates = Map.of("entityid","https://changed.org");
+        Map<String, Object> auditData = Map.of("user", "jdoe");
+
+        MetaDataChangeRequest changeRequest = new MetaDataChangeRequest(
+                "6", EntityType.IDP.getType(), "Because....", pathUpdates, auditData
+        );
+        changeRequest.setIncrementalChange(true);
+        changeRequest.setPathUpdateType(PathUpdateType.ADDITION);
+
+        Map results = given().auth().preemptive().basic("sp-portal", "secret")
+                .when()
+                .body(changeRequest)
+                .header("Content-type", "application/json")
+                .post("manage/api/internal/change-requests")
+                .as(Map.class);
+
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .body(new ChangeRequest((String) results.get("id"), EntityType.IDP.getType(), "6", "Rev notes"))
+                .put("/manage/api/client/change-requests/accept")
+                .then()
+                .statusCode(200);
+
+        MetaData metaData = metaDataRepository.findById("6", EntityType.IDP.getType());
+        assertEquals("https://changed.org", metaData.getData().get("entityid"));
+    }
+
+    @Test
     public void searchWithEntityCategoriesMultpleKeys() throws JsonProcessingException {
         Map<String, Object> searchOptions = readValueFromFile("/api/search_multiple_equal_keys.json");
 
