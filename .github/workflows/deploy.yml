@@ -58,3 +58,13 @@ jobs:
         push: true
         tags: |
           ghcr.io/openconext/openconext-manage/manage-gui:${{ github.ref_name }}
+
+    - name: Build and push the manage server image
+      uses: docker/build-push-action@v4
+      with:
+        context: manage-server
+        file: manage-server/docker/Dockerfile
+        platforms: linux/amd64
+        push: true
+        tags: |
+          ghcr.io/openconext/openconext-manage/manage-server:${{ github.ref_name }}
