@@ -1,0 +1,143 @@
+@import "../../stylesheets/vars.scss";
+@import "../../stylesheets/mixins.scss";
+
+.metadata-auto-refresh {
+  background-color: white;
+  padding: 20px;
+
+  section.options {
+    display: flex;
+    margin-bottom: 25px;
+
+    .checkbox {
+      margin-right: 10px;
+    }
+
+    span.button {
+      margin-left: auto;
+
+      i.fa-clone {
+        margin-left: 25px;
+      }
+
+      &.copied {
+        animation: pulse 1s;
+        animation-iteration-count: 1;
+        position: relative;
+      }
+
+      @keyframes pulse {
+        0% {
+          box-shadow: 0 0 0 0 white;
+        }
+        70% {
+          box-shadow: 0 0 10px 8px lighten($green, 15%);
+        }
+        100% {
+          box-shadow: 0 0 0 0 white;
+        }
+      }
+    }
+  }
+
+  .fields {
+    h2 {
+      margin-bottom: 20px;
+    }
+  }
+
+  section.auto-refresh-fields-printable {
+    display: none;
+  }
+
+  table.auto-refresh-fields {
+    border: 1px solid white;
+    width: 100%;
+    height: 100%;
+
+    .field {
+      padding: 20px 5px 20px 5px;
+    }
+
+    .value {
+      padding: 15px 5px 15px 5px;
+    }
+
+    thead th {
+      border: 2px solid white;
+      text-align: left;
+      padding: 5px;
+      font-size: larger;
+
+      &.name {
+        width: 15%;
+      }
+
+      &.enabled {
+        width: 40%;
+      }
+    }
+
+    tbody:nth-child(odd) {
+      background-color: $lightest-grey;
+    }
+
+    td {
+      border: 3px solid white;
+      vertical-align: top;
+      height: 100%;
+
+      &.name {
+        i.fa {
+          margin-left: 15px;
+          color: $blue;
+        }
+      }
+
+      ul {
+        height: 100%;
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+
+        &.values li {
+          &:first-child {
+            margin-top: 14px;
+          }
+
+          &:last-child {
+            margin-bottom: 14px;
+          }
+        }
+
+        &.matching_rules li {
+          &:first-child {
+            margin-top: 15px;
+          }
+
+          &:last-child {
+            margin-bottom: 15px;
+          }
+        }
+
+        &.sources li {
+          margin-right: 15px;
+
+          &:first-child {
+            margin-top: 10px;
+          }
+
+          &:last-child {
+            margin-bottom: 10px;
+          }
+
+          &:not(:first-child) {
+            margin-top: 5px;
+          }
+        }
+      }
+    }
+
+  }
+}

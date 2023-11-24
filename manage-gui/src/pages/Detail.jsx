@@ -42,8 +42,9 @@ import withRouterHooks from "../utils/RouterBackwardCompatability";
 import MetaDataChangeRequests from "../components/metadata/MetaDataChangeRequests";
 import RelyingParties from "../components/metadata/RelyingParties";
 import ProvisioningApplications from "../components/metadata/ProvisioningApplications";
+import AutoRefresh from "../components/metadata/AutoRefresh";
 
-const tabsSp = [
+let tabsSp = [
     "connection",
     "connected_idps",
     "metadata",
@@ -56,7 +57,7 @@ const tabsSp = [
     "export"
 ];
 
-const tabsIdP = [
+let tabsIdP = [
     "connection",
     "whitelist",
     "consent_disabling",
@@ -156,7 +157,7 @@ class Detail extends React.PureComponent {
 
     componentDidMount() {
         window.scrollTo(0, 0);
-        const {newMetaData} = this.props;
+        const {newMetaData, currentUser} = this.props;
         let {isNew, type, id} = this.state;
         const promise = isNew ? template(type) : detail(type, id);
         promise
@@ -167,6 +168,7 @@ class Detail extends React.PureComponent {
                 const isProvisioning = type === "provisioning";
                 const whiteListingType = isSp ? "saml20_idp" : "saml20_sp";
                 const errorKeys = isSp ? tabsSp : isProvisioning ? tabsPr :tabsIdP;
+                const autoRefreshFeature = "AUTO_REFRESH";
                 if (this.props.clone) {
                     //Clean all
                     const clonedClearFields = [
@@ -251,6 +253,20 @@ class Detail extends React.PureComponent {
                             this.setState({revisions: revisions, requests: requests, changeRequestsLoaded: true});
                         });
                 });
+                if (currentUser.featureToggles && currentUser.featureToggles.includes(autoRefreshFeature) &&
+                    (type === 'saml20_idp' || type === 'saml20_sp')) {
+
+                    const autoRefreshTab = "auto_refresh";
+                    const metadataTab = "metadata";
+                    if (type === 'saml20_sp' && !tabsSp.includes(autoRefreshTab)) {
+                        const metadataTabIndex = tabsSp.indexOf(metadataTab);
+                        tabsSp.splice(metadataTabIndex + 1, 0, autoRefreshTab);
+                    }
+                    if (type === 'saml20_idp' && !tabsIdP.includes(autoRefreshTab)) {
+                        const metadataTabIndex = tabsIdP.indexOf(metadataTab);
+                        tabsIdP.splice(metadataTabIndex + 1, 0, autoRefreshTab);
+                    }
+                }
             })
             .catch(err => {
                 if (err.response && err.response.status === 404) {
@@ -896,6 +912,15 @@ class Detail extends React.PureComponent {
                         entityId={metaData.data.entityid}
                         applications={whiteListing}
                         name={name}/>
+                );
+            case "auto_refresh":
+                return (
+                    <AutoRefresh
+                        metadataAutoRefresh={metaData.data.autoRefresh}
+                        autoRefreshConfiguration={configuration.properties.autoRefresh}
+                        onChange={this.onChange("autoRefresh")}
+                        guest={guest}
+                    />
                 );
             default:
                 throw new Error(`Unknown tab ${tab}`);

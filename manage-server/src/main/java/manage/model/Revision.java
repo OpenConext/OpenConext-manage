@@ -9,6 +9,8 @@ import java.time.Instant;
 @NoArgsConstructor
 public class Revision {
 
+    public static final String REVISION_KEY = "revisionnote";
+
     private int number;
     private Instant created;
     private String parentId;

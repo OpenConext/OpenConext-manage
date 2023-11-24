@@ -15,7 +15,7 @@ server:
       cookie:
         secure: true
 
-features: push, validation, push_preview, orphans, find_my_data, edugain, bogus
+features: push, validation, push_preview, orphans, find_my_data, edugain, auto_refresh, bogus
 base_domain: test2.surfconext.nl
 
 push:
@@ -95,6 +95,9 @@ gui:
     background-color: red
     content: LOCAL
 
+metadata_import:
+  auto_refresh:
+    cronSchedule: "-"
 
 # used by the git plugin
 info:
