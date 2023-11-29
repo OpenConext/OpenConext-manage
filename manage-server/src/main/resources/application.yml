@@ -50,6 +50,12 @@ security:
   backdoor_password: secret
   api_users_config_path: classpath:/manage-api-users.yml
 
+crypto:
+  development-mode: True
+  public-key-location: classpath:nope
+#  development-mode: False
+#  public-key-location: classpath:/invite_public_key.pem
+
 oidc:
   user: manage
   password: secret
