@@ -12,6 +12,7 @@ import java.util.Map;
 
 import static org.junit.Assert.*;
 
+@SuppressWarnings("unchecked")
 public class MetaDataTest implements TestUtils {
 
     private MetaData subject;

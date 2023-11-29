@@ -21,6 +21,7 @@ import static manage.mongo.MongoChangelog.REVISION_POSTFIX;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
+@SuppressWarnings("unchecked")
 public class MetaData implements Serializable {
 
     @Id

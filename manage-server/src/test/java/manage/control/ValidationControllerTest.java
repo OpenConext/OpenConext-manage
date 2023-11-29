@@ -11,6 +11,7 @@ import static org.apache.http.HttpStatus.SC_OK;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 
+@SuppressWarnings("unchecked")
 public class ValidationControllerTest extends AbstractIntegrationTest {
 
     @Test

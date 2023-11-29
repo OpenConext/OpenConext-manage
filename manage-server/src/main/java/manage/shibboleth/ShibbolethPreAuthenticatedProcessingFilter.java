@@ -41,7 +41,7 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
         String displayName = getHeader(DISPLAY_NAME_HEADER_NAME, request);
         String schacHomeOrganization = getHeader(SCHAC_HOME_HEADER, request);
 
-        if (StringUtils.isEmpty(uid) || StringUtils.isEmpty(displayName)) {
+        if (!StringUtils.hasText(uid) || !StringUtils.hasText(displayName)) {
             //this is the contract. See AbstractPreAuthenticatedProcessingFilter#doAuthenticate
             LOG.error("Missing required attribute(s): uid {} displayName {}", uid, displayName);
             return null;

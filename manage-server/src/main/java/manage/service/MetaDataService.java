@@ -46,6 +46,7 @@ import static java.util.stream.Collectors.toList;
 import static manage.mongo.MongoChangelog.CHANGE_REQUEST_POSTFIX;
 
 @Service
+@SuppressWarnings("unchecked")
 public class MetaDataService {
 
     private static final Logger LOG = LoggerFactory.getLogger(MetaDataService.class);

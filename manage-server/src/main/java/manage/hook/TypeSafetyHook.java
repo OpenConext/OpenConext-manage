@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("unchecked")
 public class TypeSafetyHook extends MetaDataHookAdapter {
 
     private final MetaDataAutoConfiguration metaDataAutoConfiguration;

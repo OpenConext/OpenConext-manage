@@ -4,6 +4,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.TreeMap;
 
+@SuppressWarnings("unchecked")
 public class SanitizedTreeMap<K, V> extends TreeMap<K, V> {
 
     @Override

@@ -1,6 +1,7 @@
 package manage.hook;
 
 import crypto.KeyStore;
+import crypto.RSAKeyStore;
 import lombok.SneakyThrows;
 import manage.conf.MetaDataAutoConfiguration;
 import manage.repository.MetaDataRepository;
@@ -34,8 +35,8 @@ public class MetaDataHookConfiguration {
         SSIDValidationHook ssidValidationHook = new SSIDValidationHook(metaDataRepository, metaDataAutoConfiguration);
         RequiredAttributesHook requiredAttributesHook = new RequiredAttributesHook(metaDataAutoConfiguration);
         ProvisioningHook provisioningHook = new ProvisioningHook(metaDataRepository, metaDataAutoConfiguration);
-        KeyStore keyStore = developmentMode ? new KeyStore() :
-                new KeyStore(IOUtils.toString(publicKeyResource.getInputStream(), Charset.defaultCharset()), true);
+        KeyStore keyStore = developmentMode ? new RSAKeyStore() :
+                new RSAKeyStore(IOUtils.toString(publicKeyResource.getInputStream(), Charset.defaultCharset()), true);
         EncryptionHook encryptionHook = new EncryptionHook(keyStore);
 
         return new CompositeMetaDataHook(

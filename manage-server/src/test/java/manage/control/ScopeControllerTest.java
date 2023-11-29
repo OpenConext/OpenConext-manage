@@ -124,7 +124,7 @@ public class ScopeControllerTest extends AbstractIntegrationTest {
                 .get("manage/api/client/scopes/3")
                 .as(Scope.class);
         assertEquals("changed", scope.getName());
-        assertEquals(new Long(1), scope.getVersion());
+        assertEquals(Long.valueOf(1), scope.getVersion());
     }
 
     @Test

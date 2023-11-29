@@ -14,7 +14,7 @@ public class URIFormatValidator implements FormatValidator {
 
     @Override
     public Optional<String> validate(String subject) {
-        if (StringUtils.isEmpty(subject)) {
+        if (!StringUtils.hasText(subject)) {
             return Optional.empty();
         }
         try {

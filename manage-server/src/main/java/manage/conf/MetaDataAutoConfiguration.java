@@ -45,6 +45,7 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
 @Component
+@SuppressWarnings("unchecked")
 public class MetaDataAutoConfiguration {
 
     private static final Logger LOG = LoggerFactory.getLogger(MetaDataAutoConfiguration.class);

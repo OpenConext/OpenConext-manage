@@ -1,6 +1,7 @@
 package manage.hook;
 
 import crypto.KeyStore;
+import crypto.RSAKeyStore;
 import manage.model.EntityType;
 import manage.model.MetaData;
 import org.junit.jupiter.api.Test;
@@ -20,7 +21,7 @@ class EncryptionHookTest {
 
     {
         try {
-            keyStore = new KeyStore();
+            keyStore = new RSAKeyStore();
             encryptionHook = new EncryptionHook(keyStore);
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);

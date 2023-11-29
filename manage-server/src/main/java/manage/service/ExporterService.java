@@ -225,7 +225,7 @@ public class ExporterService {
     private String addLanguageFallbackValue(Map metaDataFields, String attribute) {
         AtomicReference<String> reference = new AtomicReference<>();
         languages.forEach(lang -> {
-            if (StringUtils.isEmpty(reference.get())) {
+            if (!StringUtils.hasText(reference.get())) {
                 reference.set((String) metaDataFields.get(attribute + ":" + lang));
             }
         });

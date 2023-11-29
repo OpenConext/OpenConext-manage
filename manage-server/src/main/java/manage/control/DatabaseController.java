@@ -45,6 +45,7 @@ import static java.util.stream.Collectors.toMap;
 
 @Component
 @RestController
+@SuppressWarnings("unchecked")
 public class DatabaseController {
 
     private final RestTemplate restTemplate;

@@ -14,6 +14,7 @@ import java.util.Map;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+@SuppressWarnings("unchecked")
 public class SSIDValidationHookTest extends AbstractIntegrationTest {
 
     private SSIDValidationHook subject;

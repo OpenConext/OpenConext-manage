@@ -12,7 +12,7 @@ public class URLFormatValidator implements FormatValidator {
 
     @Override
     public Optional<String> validate(String subject) {
-        if (StringUtils.isEmpty(subject)) {
+        if (!StringUtils.hasText(subject)) {
             return Optional.empty();
         }
         return pattern.matcher(subject).matches() ? Optional.empty() :
