@@ -1,6 +1,5 @@
 package manage.web;
 
-import lombok.SneakyThrows;
 import org.apache.http.HttpHost;
 import org.springframework.util.StringUtils;
 
@@ -15,7 +14,6 @@ public class HttpHostProvider {
     private HttpHostProvider() {
     }
 
-    @SneakyThrows
     public static Optional<HttpHost> resolveHttpHost(URL url) {
         String proxyHost = System.getProperty("http.proxyHost");
         String nonProxyHosts = System.getProperty("http.nonProxyHosts");

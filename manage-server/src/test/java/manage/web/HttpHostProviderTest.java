@@ -21,13 +21,12 @@ class HttpHostProviderTest {
     void resolveHttpHost() {
         System.setProperty("http.proxyHost", "proxy.com");
         System.setProperty("http.nonProxyHosts", "*.example.com|localhost|*domain.org|*broadband*");
-        boolean ignoreProxy = List.of(
+        boolean ignoreProxy = Stream.of(
                         "https://www.example.com",
                         "https://www.sub.example.com",
                         "http://localhost:8080",
                         "https://sub.domain.org",
                         "https://www.broadband.com")
-                .stream()
                 .map(url -> HttpHostProvider.resolveHttpHost(url(url)))
                 .noneMatch(Optional::isPresent);
         assertTrue(ignoreProxy);
