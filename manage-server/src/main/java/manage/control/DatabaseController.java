@@ -5,17 +5,15 @@ import manage.model.EntityType;
 import manage.model.MetaData;
 import manage.model.Scope;
 import manage.repository.MetaDataRepository;
+import manage.web.HttpHostProvider;
 import manage.web.PreemptiveAuthenticationHttpComponentsClientHttpRequestFactory;
+import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.HttpException;
-import org.apache.http.HttpHost;
-import org.apache.http.HttpRequest;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.DefaultProxyRoutePlanner;
-import org.apache.http.protocol.HttpContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -26,17 +24,13 @@ import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.MalformedURLException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.net.URL;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
@@ -213,13 +207,8 @@ public class DatabaseController {
         basicCredentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(user, password));
         httpClientBuilder.setDefaultCredentialsProvider(basicCredentialsProvider);
 
-        String proxyHost = System.getProperty("http.proxyHost");
-        if (proxyHost != null) {
-            String proxyPortString = System.getProperty("http.proxyPort");
-            int proxyPort = StringUtils.hasText(proxyPortString) ? Integer.parseInt(proxyPortString) : 8080;
-            HttpHost proxy = new HttpHost(proxyHost, proxyPort);
-            httpClientBuilder.setRoutePlanner(new DefaultProxyRoutePlanner(proxy));
-        }
+        Optional<HttpHost> optionalHttpHost = HttpHostProvider.resolveHttpHost(new URL(pushUri));
+        optionalHttpHost.ifPresent(httpHost -> httpClientBuilder.setRoutePlanner(new DefaultProxyRoutePlanner(httpHost)));
 
         CloseableHttpClient httpClient = httpClientBuilder.build();
         return new PreemptiveAuthenticationHttpComponentsClientHttpRequestFactory(httpClient, pushUri);
