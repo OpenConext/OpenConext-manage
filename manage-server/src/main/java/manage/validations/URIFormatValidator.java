@@ -10,11 +10,11 @@ import java.util.regex.Pattern;
 
 public class URIFormatValidator implements FormatValidator {
 
-    private Pattern pattern = Pattern.compile("^[\\w\\.\\-]+:(\\/?\\/?)[^\\s]+$");
+    private final Pattern pattern = Pattern.compile("^[\\w\\.\\-]+:(\\/?\\/?)[^\\s]+$");
 
     @Override
     public Optional<String> validate(String subject) {
-        if (!StringUtils.hasText(subject)) {
+        if (!StringUtils.hasText(subject) || subject.trim().isEmpty()) {
             return Optional.empty();
         }
         try {

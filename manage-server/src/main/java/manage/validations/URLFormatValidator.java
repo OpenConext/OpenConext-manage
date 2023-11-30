@@ -8,11 +8,11 @@ import java.util.regex.Pattern;
 
 public class URLFormatValidator implements FormatValidator {
 
-    private Pattern pattern = Pattern.compile("^data:image(.*)|(http|https)://(.*)$");
+    private final Pattern pattern = Pattern.compile("^data:image(.*)|(http|https)://(.*)$");
 
     @Override
     public Optional<String> validate(String subject) {
-        if (!StringUtils.hasText(subject)) {
+        if (!StringUtils.hasText(subject) || subject.trim().isEmpty()) {
             return Optional.empty();
         }
         return pattern.matcher(subject).matches() ? Optional.empty() :
