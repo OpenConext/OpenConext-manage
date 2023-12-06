@@ -552,6 +552,10 @@ public class MetaDataService {
         return metaData;
     }
 
+    public List<MetaData> findAllByType(String type) {
+        return metaDataRepository.findAllByType(type);
+    }
+
     private void checkNull(String type, String id, MetaData metaData) {
         if (metaData == null) {
             throw new ResourceNotFoundException(String.format("MetaData type %s with id %s does not exist", type, id));

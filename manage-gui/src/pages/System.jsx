@@ -28,9 +28,10 @@ export default class System extends React.PureComponent {
 
     constructor(props) {
         super(props);
+        const systemFeatures = ["push", "validation", "push_preview", "orphans", "find_my_data"];
         const tabs = props.currentUser.featureToggles
             .map(feature => feature.toLowerCase())
-            .filter(feature => feature !== "edugain");
+            .filter(feature => systemFeatures.includes(feature));
         tabs.push("stats");
         this.state = {
             tabs: tabs,

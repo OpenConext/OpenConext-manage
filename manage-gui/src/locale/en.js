@@ -66,7 +66,8 @@ I18n.translations.en = {
             requests: "Requests ({{nbr}})",
             import: "Import",
             export: "Export",
-            connected_applications: "Applications ({{nbr}})"
+            connected_applications: "Applications ({{nbr}})",
+            auto_refresh: "Auto refresh"
         },
         notFound: "No Metadata found",
         entityId: "Entity ID",
@@ -548,6 +549,16 @@ I18n.translations.en = {
     server_error: {
         title: "500 Unexpected error",
         description_html: "This is embarrassing; an unexpected error has occurred. It has been logged and reported. Please try again. Still doesn't work? Please click 'Help'.",
+    },
+
+    auto_refresh: {
+        enabled: "Enable auto refresh for this entity",
+        allow_all: "Refresh all fields",
+        fields: "Auto refresh metadata fields",
+        headers: {
+            name: "Name",
+            enabled: "Enable refresh"
+        }
     }
 };
 

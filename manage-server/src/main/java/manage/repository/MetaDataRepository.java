@@ -49,6 +49,10 @@ public class MetaDataRepository {
         return mongoTemplate.findById(id, MetaData.class, type);
     }
 
+    public List<MetaData> findAllByType(String type) {
+        return mongoTemplate.findAll(MetaData.class, type);
+    }
+
     public MetaData save(MetaData metaData) {
         metaData.trimSpaces();
         mongoTemplate.insert(metaData, metaData.getType());

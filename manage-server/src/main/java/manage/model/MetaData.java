@@ -1,5 +1,6 @@
 package manage.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -209,4 +210,34 @@ public class MetaData implements Serializable {
     public void trimSpaces() {
         data.replaceAll((key, value) -> doTrimSpaces(value));
     }
+
+    @Transient
+    @JsonIgnore
+    public boolean isExcludedFromPush() {
+        Object excludedFromPush = this.metaDataFields().get("coin:exclude_from_push");
+        return null != excludedFromPush && (boolean) excludedFromPush;
+    }
+
+    @Transient
+    @JsonIgnore
+    public boolean isMetadataRefreshEnabled() {
+        Map<String, Object> autoRefresh = getAutoRefresh();
+        return (null != autoRefresh && autoRefresh.containsKey("enabled") &&
+                Boolean.parseBoolean(autoRefresh.get("enabled").toString()));
+    }
+
+    @Transient
+    @JsonIgnore
+    public boolean isMetadataRefreshAllowAllEnabled() {
+        Map<String, Object> autoRefresh = getAutoRefresh();
+        return (null != autoRefresh && autoRefresh.containsKey("allowAll") &&
+                Boolean.parseBoolean(autoRefresh.get("allowAll").toString()));
+    }
+
+    @Transient
+    @JsonIgnore
+    public Map<String, Object> getAutoRefresh() {
+        return (Map<String, Object>) data.get("autoRefresh");
+    }
+
 }
