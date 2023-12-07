@@ -46,7 +46,6 @@ class MetadataAutoRefreshRunnerTest {
     @Mock
     MetaDataAutoConfiguration metaDataAutoConfiguration;
 
-    @InjectMocks
     MetadataAutoRefreshRunner autoRefreshRunner;
 
     @Captor
@@ -90,6 +89,8 @@ class MetadataAutoRefreshRunnerTest {
         Logger logger = (Logger) LoggerFactory.getLogger(MetadataAutoRefreshRunner.class);
         memoryAppender = LogUtils.configureLogger(logger);
         memoryAppender.start();
+
+        autoRefreshRunner = new MetadataAutoRefreshRunner(metaDataService, importerService, metaDataAutoConfiguration, featureService, true);
     }
 
     @Test

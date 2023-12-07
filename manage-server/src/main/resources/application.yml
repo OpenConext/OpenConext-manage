@@ -105,6 +105,9 @@ metadata_import:
   auto_refresh:
     cronSchedule: "-"
 
+cron:
+  node-cron-job-responsible: True
+
 # used by the git plugin
 info:
   build:

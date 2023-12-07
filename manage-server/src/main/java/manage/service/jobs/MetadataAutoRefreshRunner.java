@@ -1,5 +1,5 @@
 package manage.service.jobs;
-
+import org.springframework.beans.factory.annotation.Value;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import manage.conf.Features;
 import manage.conf.MetaDataAutoConfiguration;
@@ -59,21 +59,25 @@ public class MetadataAutoRefreshRunner implements Runnable {
 
     private final FeatureService featureService;
 
+    private final boolean cronJobResponsible;
+
     public MetadataAutoRefreshRunner(MetaDataService metaDataService,
                                      ImporterService importerService,
                                      MetaDataAutoConfiguration metaDataAutoConfiguration,
-                                     FeatureService featureService) {
+                                     FeatureService featureService,
+                                     @Value("${cron.node-cron-job-responsible}") boolean cronJobResponsible) {
 
         this.metaDataService = metaDataService;
         this.importerService = importerService;
         this.metaDataAutoConfiguration = metaDataAutoConfiguration;
         this.featureService = featureService;
+        this.cronJobResponsible = cronJobResponsible;
     }
 
     @Override
     @Scheduled(cron = "${metadata_import.auto_refresh.cronSchedule}")
     public void run() {
-        if (featureService.isFeatureEnabled(Features.AUTO_REFRESH)) {
+        if (this.cronJobResponsible && featureService.isFeatureEnabled(Features.AUTO_REFRESH)) {
             // Check whether a Thread is already running
             if (running || !execLock.tryLock()) {
                 LOG.warn(LOG_ALREADY_RUNNING);
