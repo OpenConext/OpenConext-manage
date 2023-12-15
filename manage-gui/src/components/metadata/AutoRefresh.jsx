@@ -62,7 +62,7 @@ export default class AutoRefresh extends React.PureComponent {
         return aKey.localeCompare(bKey);
     };
 
-    renderRefreshFieldsTable = (autoRefresh, autoRefreshConfiguration, guest) => {
+    renderRefreshFieldsTable = (autoRefresh, autoRefreshConfiguration, guest, metaDataUrl) => {
         const autoRefreshFields = autoRefreshConfiguration.properties.fields.properties;
         const fieldKeys = Object.keys(autoRefreshFields);
         fieldKeys.sort(this.sortFieldKeys(autoRefreshFields, autoRefresh.fields));
@@ -82,13 +82,20 @@ export default class AutoRefresh extends React.PureComponent {
                     <td className="value">
                         <CheckBox name={fieldKey}
                                   value={autoRefresh.fields[fieldKey] ?? false}
-                                  readOnly={guest || autoRefresh.allowAll || !autoRefresh.enabled}
+                                  readOnly={guest || autoRefresh.allowAll || !autoRefresh.enabled || !metaDataUrl}
                                   onChange={e => this.onChange(fieldKey, e.target.checked)}/>
                     </td>
                 </tr>
             )}
             </tbody>
         </table>
+    };
+
+    renderNoMetaDataUrlWarning = () => {
+        return <section id="auto-refresh-no-metadata-url" className="metadata-url-warning">
+            <h2>{I18n.t(`auto_refresh.no_metadata_url.header`)}</h2>
+            <p>{I18n.t(`auto_refresh.no_metadata_url.body`)}</p>
+        </section>
     };
 
     renderArpAttributesTablePrintable = (fields) =>
@@ -100,18 +107,19 @@ export default class AutoRefresh extends React.PureComponent {
         </section>;
 
     render() {
-        const {metadataAutoRefresh, defaultAutoRefresh, autoRefreshConfiguration, guest} = this.props;
+        const {metadataAutoRefresh, defaultAutoRefresh, autoRefreshConfiguration, guest, metaDataUrl} = this.props;
         const {copiedToClipboardClassName} = this.state;
 
         const autoRefresh = isEmpty(metadataAutoRefresh) ? defaultAutoRefresh : metadataAutoRefresh;
         return (
             <div className="metadata-auto-refresh">
+                {!metaDataUrl && this.renderNoMetaDataUrlWarning()}
                 <section className="options">
                     <CheckBox name="auto-refresh-enabled" value={autoRefresh.enabled}
-                              onChange={this.autoRefreshEnabled} readOnly={guest}
+                              onChange={this.autoRefreshEnabled} readOnly={guest || !metaDataUrl}
                               info={I18n.t("auto_refresh.enabled")}/>
                     <CheckBox name="auto-refresh-allow-all" value={autoRefresh.allowAll}
-                              onChange={this.autoRefreshAllowAll} readOnly={guest}
+                              onChange={this.autoRefreshAllowAll} readOnly={guest || !metaDataUrl}
                               info={I18n.t("auto_refresh.allow_all")}/>
                     <span className={`button green ${copiedToClipboardClassName}`} onClick={this.copyToClipboard}>
                         {I18n.t("clipboard.copy")}<i className="fa fa-clone"></i>
@@ -119,7 +127,7 @@ export default class AutoRefresh extends React.PureComponent {
                 </section>
                 <section className="fields">
                     <h2>{I18n.t("auto_refresh.fields")}</h2>
-                    {this.renderRefreshFieldsTable(autoRefresh, autoRefreshConfiguration, guest)}
+                    {this.renderRefreshFieldsTable(autoRefresh, autoRefreshConfiguration, guest, metaDataUrl)}
                     {this.renderArpAttributesTablePrintable(autoRefresh.fields)}
                 </section>
             </div>
