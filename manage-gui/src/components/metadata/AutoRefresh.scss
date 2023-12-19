@@ -5,6 +5,11 @@
   background-color: white;
   padding: 20px;
 
+  section.metadata-url-warning {
+    margin-bottom: 25px;
+    color: $orange;
+  }
+
   section.options {
     display: flex;
     margin-bottom: 25px;

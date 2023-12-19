@@ -253,8 +253,9 @@ class Detail extends React.PureComponent {
                             this.setState({revisions: revisions, requests: requests, changeRequestsLoaded: true});
                         });
                 });
+                const configuration = this.props.configuration.find(conf => conf.title === type);
                 if (currentUser.featureToggles && currentUser.featureToggles.includes(autoRefreshFeature) &&
-                    (type === 'saml20_idp' || type === 'saml20_sp')) {
+                    (type === 'saml20_idp' || type === 'saml20_sp') && configuration.properties.autoRefresh) {
 
                     const autoRefreshTab = "auto_refresh";
                     const metadataTab = "metadata";
@@ -918,6 +919,7 @@ class Detail extends React.PureComponent {
                     <AutoRefresh
                         metadataAutoRefresh={metaData.data.autoRefresh}
                         autoRefreshConfiguration={configuration.properties.autoRefresh}
+                        metaDataUrl={metaData.data.metadataurl}
                         onChange={this.onChange("autoRefresh")}
                         guest={guest}
                     />
