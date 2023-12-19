@@ -50,7 +50,7 @@ public class ImporterService {
 
     public ImporterService(MetaDataAutoConfiguration metaDataAutoConfiguration, Environment environment,
                            @Value("${product.supported_languages}") String supportedLanguages,
-                           @Value("${metadata_import.useragent}") String autoRefreshUserAgent) {
+                           @Value("${metadata_import.useragent:#{null}}") String autoRefreshUserAgent) {
 
         this.metaDataAutoConfiguration = metaDataAutoConfiguration;
         this.environment = environment;

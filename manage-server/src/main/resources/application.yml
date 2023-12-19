@@ -102,7 +102,6 @@ gui:
     content: LOCAL
 
 metadata_import:
-  useragent: ""
   auto_refresh:
     cronSchedule: "-"
 
