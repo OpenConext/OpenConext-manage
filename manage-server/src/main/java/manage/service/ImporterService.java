@@ -46,8 +46,11 @@ public class ImporterService {
 
     private TypeSafetyHook metaDataHook;
 
+    private String autoRefreshUserAgent;
+
     public ImporterService(MetaDataAutoConfiguration metaDataAutoConfiguration, Environment environment,
-                           @Value("${product.supported_languages}") String supportedLanguages) {
+                           @Value("${product.supported_languages}") String supportedLanguages,
+                           @Value("${metadata_import.useragent:OpenConext-Manage}") String autoRefreshUserAgent) {
 
         this.metaDataAutoConfiguration = metaDataAutoConfiguration;
         this.environment = environment;
@@ -56,12 +59,13 @@ public class ImporterService {
                 supportedLanguages.split(","))
                 .map(String::trim)
                 .collect(toList()));
+        this.autoRefreshUserAgent = autoRefreshUserAgent;
     }
 
     public Map<String, Object> importXMLUrl(EntityType type, Import importRequest) {
         try {
             Resource resource = new SaveURLResource(new URL(importRequest.getUrl()),
-                    environment.acceptsProfiles(Profiles.of("dev")));
+                    environment.acceptsProfiles(Profiles.of("dev")), autoRefreshUserAgent);
             Map<String, Object> result = importXML(resource, type, Optional
                     .ofNullable(importRequest.getEntityId()));
             if (result.isEmpty()) {
@@ -99,7 +103,7 @@ public class ImporterService {
     public Map<String, Object> importJsonUrl(String type, Import importRequest) {
         try {
             Resource resource = new SaveURLResource(new URL(importRequest.getUrl()),
-                    environment.acceptsProfiles(Profiles.of("dev")));
+                    environment.acceptsProfiles(Profiles.of("dev")), autoRefreshUserAgent);
             String json = IOUtils.toString(resource.getInputStream(), Charset.defaultCharset());
             Map<String, Object> map = objectMapper.readValue(json, Map.class);
             return importJson(type, map);

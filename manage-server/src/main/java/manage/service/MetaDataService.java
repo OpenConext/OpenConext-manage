@@ -107,7 +107,7 @@ public class MetaDataService {
                             .map(ServiceProvider::new)
                             .collect(Collectors.toMap(ServiceProvider::getEntityId, sp -> sp));
             String feedUrl = importRequest.getUrl();
-            Resource resource = new SaveURLResource(new URL(feedUrl), environment.acceptsProfiles(Profiles.of("dev")));
+            Resource resource = new SaveURLResource(new URL(feedUrl), environment.acceptsProfiles(Profiles.of("dev")), null);
 
             List<Map<String, Object>> allImports = importerService.importFeed(resource);
             List<Map<String, Object>> imports =

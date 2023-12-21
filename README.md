@@ -92,6 +92,14 @@ environment specific properties in the group_vars. See the project OpenConext-de
 
 For details, see the [Spring Boot manual](https://docs.spring.io/spring-boot/docs/1.2.1.RELEASE/reference/htmlsingle/).
 
+#### [Optional configuration](#optional-configuration)
+
+The following configurations are not shown in the application.yml file but are available:
+
+| Configuration             | Description                                                                                    | Default value |
+|:--------------------------|:-----------------------------------------------------------------------------------------------|:--------------|
+| metadata_import.useragent | Set a custom (String) value for the User-Agent header used in SAML metadata retrieval requests | null          |
+
 ### [MetaData Import](#metadata-import)
 
 When you want to import existing metaData into your local mongodb you can use the following command:
