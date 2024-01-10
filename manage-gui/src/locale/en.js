@@ -553,8 +553,8 @@ I18n.translations.en = {
 
     auto_refresh: {
         enabled: "Enable auto refresh for this entity",
-        allow_all: "Refresh all fields",
-        fields: "Auto refresh metadata fields",
+        allow_all: "Refresh all of the following fields",
+        fields: "Auto refresh only these metadata fields:",
         no_metadata_url: {
             header: "No metadata URL provided",
             body: "Entities without metadata URL are skipped during auto refresh. You can configure a URL in the 'Connection' tab."
