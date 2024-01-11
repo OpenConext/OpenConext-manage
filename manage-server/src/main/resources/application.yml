@@ -49,6 +49,7 @@ security:
   backdoor_user_name: backdoor
   backdoor_password: secret
   api_users_config_path: classpath:/manage-api-users.yml
+  super_user_team_names: urn:collab:group:test.surfteams.nl:nl:surfnet:diensten:manage_super_users, urn:collab:group:test.surfteams.nl:nl:surfnet:diensten:manage_super_users_2
 
 crypto:
   development-mode: True

@@ -3,6 +3,8 @@ package manage;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.common.mapper.TypeRef;
+import manage.api.APIUser;
+import manage.api.Scope;
 import org.apache.commons.io.IOUtils;
 import org.springframework.core.io.ClassPathResource;
 
@@ -25,10 +27,10 @@ public interface TestUtils {
         }
     }
 
-    TypeReference<Map<String, Object>> mapTypeRef = new TypeReference<Map<String, Object>>() {
+    TypeReference<Map<String, Object>> mapTypeRef = new TypeReference<>() {
     };
 
-    TypeRef<List<Map<String, Object>>> mapListTypeRef = new TypeRef<List<Map<String, Object>>>() {
+    TypeRef<List<Map<String, Object>>> mapListTypeRef = new TypeRef<>() {
     };
 
     ObjectMapper objectMapper = ObjectMapperWrapper.init();
@@ -40,4 +42,9 @@ public interface TestUtils {
             return objectMapper;
         }
     }
+
+    default APIUser apiUser() {
+        return new APIUser("test", List.of(Scope.SUPER_USER));
+    }
+
 }

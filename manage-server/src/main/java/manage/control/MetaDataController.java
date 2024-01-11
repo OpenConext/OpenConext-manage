@@ -89,7 +89,7 @@ public class MetaDataController {
     public MetaData post(@Validated @RequestBody MetaData metaData, FederatedUser federatedUser)
             throws JsonProcessingException {
 
-        return metaDataService.doPost(metaData, federatedUser.getUid(), false);
+        return metaDataService.doPost(metaData, federatedUser, false);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -102,7 +102,7 @@ public class MetaDataController {
         Map metaDataFields = metaData.metaDataFields();
         metaDataFields.remove("coin:exclude_from_push");
 
-        return metaDataService.doPut(metaData, federatedUser.getUid(), false);
+        return metaDataService.doPut(metaData, federatedUser, false);
     }
 
     @PreAuthorize("hasRole('USER')")
@@ -116,7 +116,7 @@ public class MetaDataController {
     public MetaData postInternal(@Validated @RequestBody MetaData metaData, APIUser apiUser)
             throws JsonProcessingException {
 
-        return metaDataService.doPost(metaData, apiUser.getName(), !apiUser.getScopes().contains(TEST));
+        return metaDataService.doPost(metaData, apiUser, !apiUser.getScopes().contains(TEST));
     }
 
     @PreAuthorize("hasRole('WRITE')")
@@ -130,7 +130,7 @@ public class MetaDataController {
         metaDataService.addDefaultSpData(innerJson);
         MetaData metaData = new MetaData(EntityType.SP.getType(), innerJson);
 
-        return metaDataService.doPost(metaData, apiUser.getName(), !apiUser.getScopes().contains(TEST));
+        return metaDataService.doPost(metaData, apiUser, !apiUser.getScopes().contains(TEST));
     }
 
 
@@ -171,7 +171,7 @@ public class MetaDataController {
         metaData.setData(innerJson);
         metaData.setVersion(version);
 
-        return metaDataService.doPut(metaData, apiUser.getName(), !apiUser.getScopes().contains(TEST));
+        return metaDataService.doPut(metaData, apiUser, !apiUser.getScopes().contains(TEST));
     }
 
     @PreAuthorize("hasRole('READ')")
@@ -209,7 +209,7 @@ public class MetaDataController {
         String defaultValue = "Deleted by " + user.getUid();
         String revisionNote = body != null ? (String) body.getOrDefault("revisionNote", defaultValue) : defaultValue;
         revisionNote = StringUtils.hasText(revisionNote) ? revisionNote : defaultValue;
-        return metaDataService.doRemove(type, id, user.getUid(), revisionNote);
+        return metaDataService.doRemove(type, id, user, revisionNote);
     }
 
     @PreAuthorize("hasRole('WRITE')")
@@ -218,17 +218,17 @@ public class MetaDataController {
                                   @PathVariable("id") String id,
                                   APIUser apiUser) {
 
-        return metaDataService.doRemove(type, id, apiUser.getName(), "Deleted by APIUser " + apiUser.getName());
+        return metaDataService.doRemove(type, id, apiUser, "Deleted by APIUser " + apiUser.getName());
     }
 
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/client/metadata")
     @Transactional
-    public MetaData put(@Validated @RequestBody MetaData metaData, Authentication authentication)
+    public MetaData put(@Validated @RequestBody MetaData metaData, FederatedUser user)
             throws JsonProcessingException {
 
-        return metaDataService.doPut(metaData, authentication.getName(), false);
+        return metaDataService.doPut(metaData, user, false);
     }
 
     @PreAuthorize("hasRole('WRITE')")
@@ -237,7 +237,7 @@ public class MetaDataController {
     public MetaData putInternal(@Validated @RequestBody MetaData metaData, APIUser apiUser)
             throws JsonProcessingException {
 
-        return metaDataService.doPut(metaData, apiUser.getName(), !apiUser.getScopes().contains(TEST));
+        return metaDataService.doPut(metaData, apiUser, !apiUser.getScopes().contains(TEST));
     }
 
     @PreAuthorize("hasRole('WRITE')")
@@ -254,9 +254,8 @@ public class MetaDataController {
     @Transactional
     public MetaData update(@Validated @RequestBody MetaDataUpdate metaDataUpdate, APIUser apiUser)
             throws JsonProcessingException {
-        String name = apiUser.getName();
         return metaDataService
-                .doMergeUpdate(metaDataUpdate, name, "Internal API merge", true)
+                .doMergeUpdate(metaDataUpdate, apiUser, "Internal API merge", true)
                 .get();
     }
 
@@ -302,13 +301,12 @@ public class MetaDataController {
     @PutMapping("/client/change-requests/accept")
     @Transactional
     public MetaData acceptChangeRequest(@RequestBody @Validated ChangeRequest changeRequest, FederatedUser user) throws JsonProcessingException {
-        String name = user.getName();
         String collectionName = changeRequest.getType().concat(CHANGE_REQUEST_POSTFIX);
         MetaDataChangeRequest metaDataChangeRequest = metaDataRepository.getMongoTemplate()
                 .findById(changeRequest.getId(), MetaDataChangeRequest.class, collectionName);
 
         MetaData metaData = metaDataService
-                .doMergeUpdate(metaDataChangeRequest, name, changeRequest.getRevisionNotes(), true)
+                .doMergeUpdate(metaDataChangeRequest, user, changeRequest.getRevisionNotes(), true)
                 .get();
         metaDataRepository.getMongoTemplate().remove(metaDataChangeRequest, collectionName);
         return metaData;

@@ -1,19 +1,17 @@
 package manage.hook;
 
+import manage.api.AbstractUser;
 import manage.conf.MetaDataAutoConfiguration;
 import manage.model.EntityType;
 import manage.model.MetaData;
 import manage.repository.MetaDataRepository;
 import org.everit.json.schema.Schema;
 import org.everit.json.schema.ValidationException;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.*;
 
-import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
-import static manage.model.EntityType.*;
 
 @SuppressWarnings("unchecked")
 public class ProvisioningHook extends MetaDataHookAdapter {
@@ -32,7 +30,7 @@ public class ProvisioningHook extends MetaDataHookAdapter {
     }
 
     @Override
-    public MetaData prePut(MetaData previous, MetaData newMetaData) {
+    public MetaData prePut(MetaData previous, MetaData newMetaData, AbstractUser user) {
         String previousProvisioningType = (String) previous.metaDataFields().get("provisioning_type");
         String newProvisioningType = (String) newMetaData.metaDataFields().get("provisioning_type");
         if (!previousProvisioningType.equals(newProvisioningType)) {
@@ -44,12 +42,12 @@ public class ProvisioningHook extends MetaDataHookAdapter {
                             previousProvisioningType, newProvisioningType),
                     "metaDataFields.provisioning_type");
         }
-        prePost(newMetaData);
+        prePost(newMetaData, user);
         return this.filterInvalidApplications(newMetaData);
     }
 
     @Override
-    public MetaData prePost(MetaData metaData) {
+    public MetaData prePost(MetaData metaData, AbstractUser user) {
         validate(metaData);
         return this.filterInvalidApplications(metaData);
     }

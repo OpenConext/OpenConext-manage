@@ -1,5 +1,6 @@
 package manage.hook;
 
+import manage.api.AbstractUser;
 import manage.model.EntityType;
 import manage.model.MetaData;
 import manage.repository.MetaDataRepository;
@@ -32,12 +33,12 @@ public class EntityIdConstraintsHook extends MetaDataHookAdapter {
     }
 
     @Override
-    public MetaData prePost(MetaData metaData) {
+    public MetaData prePost(MetaData metaData, AbstractUser user) {
         return doPre(metaData);
     }
 
     @Override
-    public MetaData prePut(MetaData previous, MetaData newMetaData) {
+    public MetaData prePut(MetaData previous, MetaData newMetaData, AbstractUser user) {
         return doPre(newMetaData);
     }
 

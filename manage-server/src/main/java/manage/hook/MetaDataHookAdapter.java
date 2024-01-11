@@ -1,5 +1,6 @@
 package manage.hook;
 
+import manage.api.AbstractUser;
 import manage.model.MetaData;
 
 public class MetaDataHookAdapter implements MetaDataHook {
@@ -15,17 +16,17 @@ public class MetaDataHookAdapter implements MetaDataHook {
     }
 
     @Override
-    public MetaData prePut(MetaData previous, MetaData newMetaData) {
+    public MetaData prePut(MetaData previous, MetaData newMetaData, AbstractUser user) {
         return newMetaData;
     }
 
     @Override
-    public MetaData prePost(MetaData metaData) {
+    public MetaData prePost(MetaData metaData, AbstractUser user) {
         return metaData;
     }
 
     @Override
-    public MetaData preDelete(MetaData metaData) {
+    public MetaData preDelete(MetaData metaData, AbstractUser user) {
         return metaData;
     }
 

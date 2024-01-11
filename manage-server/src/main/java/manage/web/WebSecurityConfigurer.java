@@ -104,6 +104,9 @@ public class WebSecurityConfigurer {
         @Value("${push.oidc.name}")
         private String pushOidcName;
 
+        @Value("${security.super_user_team_names}")
+        private String superUserTeamNamesJoined;
+
         @Override
         public void configure(WebSecurity web) throws Exception {
             web.ignoring().antMatchers("/client/users/disclaimer");
@@ -140,8 +143,12 @@ public class WebSecurityConfigurer {
                     .addFilterAfter(new CsrfTokenResponseHeaderBindingFilter(), CsrfFilter.class)
                     .addFilterBefore(new SessionAliveFilter(), CsrfFilter.class)
                     .addFilterBefore(
-                            new ShibbolethPreAuthenticatedProcessingFilter(authenticationManagerBean(), featuresList,
-                                    product, push),
+                            new ShibbolethPreAuthenticatedProcessingFilter(
+                                    authenticationManagerBean(),
+                                    featuresList,
+                                    product,
+                                    push,
+                                    superUserTeamNamesJoined),
                             AbstractPreAuthenticatedProcessingFilter.class
                     )
                     .addFilterBefore(

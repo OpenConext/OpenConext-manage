@@ -1,6 +1,8 @@
 package manage.hook;
 
 import manage.TestUtils;
+import manage.api.APIUser;
+import manage.api.Scope;
 import manage.conf.MetaDataAutoConfiguration;
 import manage.model.EntityType;
 import manage.model.MetaData;
@@ -11,6 +13,7 @@ import org.junit.jupiter.api.function.Executable;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -19,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class RequiredAttributesHookTest implements TestUtils {
 
-    private RequiredAttributesHook subject = new RequiredAttributesHook(new MetaDataAutoConfiguration(
+    private final RequiredAttributesHook subject = new RequiredAttributesHook(new MetaDataAutoConfiguration(
             objectMapper,
             new ClassPathResource("metadata_configuration"),
             new ClassPathResource("metadata_templates")));
@@ -38,14 +41,14 @@ class RequiredAttributesHookTest implements TestUtils {
     void prePut() throws Throwable {
         MetaData prevMetaData = readMetaData();
         MetaData newMetaData = readMetaData();
-        Executable executable = () -> subject.prePut(prevMetaData, newMetaData);
+        Executable executable = () -> subject.prePut(prevMetaData, newMetaData, apiUser());
         doExecute(newMetaData, executable);
     }
 
     @Test
     void prePost() throws Throwable {
         MetaData newMetaData = readMetaData();
-        Executable executable = () -> subject.prePost(newMetaData);
+        Executable executable = () -> subject.prePost(newMetaData, apiUser());
         doExecute(newMetaData, executable);
     }
 

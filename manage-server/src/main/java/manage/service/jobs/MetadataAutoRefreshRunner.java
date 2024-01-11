@@ -1,24 +1,34 @@
 package manage.service.jobs;
-import org.springframework.beans.factory.annotation.Value;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
+import manage.api.APIUser;
+import manage.api.Scope;
 import manage.conf.Features;
 import manage.conf.MetaDataAutoConfiguration;
-import manage.model.*;
+import manage.model.EntityType;
+import manage.model.Import;
+import manage.model.MetaData;
+import manage.model.Revision;
 import manage.service.FeatureService;
 import manage.service.ImporterService;
 import manage.service.MetaDataService;
 import org.everit.json.schema.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 @Component
+@SuppressWarnings("unchecked")
 public class MetadataAutoRefreshRunner implements Runnable {
 
     private static final Logger LOG = LoggerFactory.getLogger(MetadataAutoRefreshRunner.class);
@@ -59,6 +69,8 @@ public class MetadataAutoRefreshRunner implements Runnable {
 
     private final FeatureService featureService;
 
+    private final APIUser apiUser;
+
     private final boolean cronJobResponsible;
 
     public MetadataAutoRefreshRunner(MetaDataService metaDataService,
@@ -72,6 +84,7 @@ public class MetadataAutoRefreshRunner implements Runnable {
         this.metaDataAutoConfiguration = metaDataAutoConfiguration;
         this.featureService = featureService;
         this.cronJobResponsible = cronJobResponsible;
+        this.apiUser = new APIUser(REFRESH_UPDATE_USER, List.of(Scope.SUPER_USER));
     }
 
     @Override
@@ -160,7 +173,7 @@ public class MetadataAutoRefreshRunner implements Runnable {
         }
 
         try {
-            metaDataService.doPut(metaData, REFRESH_UPDATE_USER, metaData.isExcludedFromPush());
+            metaDataService.doPut(metaData, this.apiUser, metaData.isExcludedFromPush());
         } catch (JsonProcessingException exception) {
             LOG.info("Failed to save changes for {} {}: {}", metaData.getType(), entityId, exception.getMessage());
         } catch (ValidationException exception) {

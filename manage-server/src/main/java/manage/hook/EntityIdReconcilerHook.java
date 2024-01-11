@@ -1,5 +1,6 @@
 package manage.hook;
 
+import manage.api.AbstractUser;
 import manage.model.EntityType;
 import manage.model.MetaData;
 import manage.repository.MetaDataRepository;
@@ -31,7 +32,7 @@ public class EntityIdReconcilerHook extends MetaDataHookAdapter {
     }
 
     @Override
-    public MetaData prePut(MetaData previous, MetaData newMetaData) {
+    public MetaData prePut(MetaData previous, MetaData newMetaData, AbstractUser user) {
         String oldEntityId = entityId(previous);
         String newEntityId = entityId(newMetaData);
 
@@ -59,7 +60,7 @@ public class EntityIdReconcilerHook extends MetaDataHookAdapter {
     }
 
     @Override
-    public MetaData preDelete(MetaData metaDataToBeDeleted) {
+    public MetaData preDelete(MetaData metaDataToBeDeleted, AbstractUser user) {
         String entityId = entityId(metaDataToBeDeleted);
         String metaDataType = metaDataToBeDeleted.getType();
 
