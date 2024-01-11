@@ -91,6 +91,7 @@ public class MetaDataFeedParser {
         boolean inCorrectTypeDescriptor = false;
         boolean inExtensions = false;
 
+        boolean eduGainSource = false;
         result.put("type", entityType.getJanusDbValue());
         boolean isSp = entityType.equals(EntityType.SP);
 
@@ -116,6 +117,8 @@ public class MetaDataFeedParser {
                     String startLocalName = reader.getLocalName();
                     switch (startLocalName) {
                         case "EntitiesDescriptor":
+                            Optional<String> optionalId = getAttributeValue(reader, "ID");
+                            eduGainSource = optionalId.isPresent() && optionalId.get().equalsIgnoreCase("eduGAIN");
                             break;
                         case "EntityDescriptor":
                             Optional<String> optional = getAttributeValue(reader, "entityID");
@@ -125,12 +128,15 @@ public class MetaDataFeedParser {
                                 }
                                 if (inCorrectEntityDescriptor || !entityIDOptional.isPresent()) {
                                     result.put("entityid", optional.get());
-                                    Optional<String> optionalId = getAttributeValue(reader, "ID");
-                                    optionalId.ifPresent(id -> {
+                                    Optional<String> optionalIdAttribute = getAttributeValue(reader, "ID");
+                                    optionalIdAttribute.ifPresent(id -> {
                                         if (id.equalsIgnoreCase("eduGAIN")) {
                                             metaDataFields.put("coin:interfed_source", "eduGAIN");
                                         }
                                     });
+                                    if (eduGainSource) {
+                                        metaDataFields.put("coin:interfed_source", "eduGAIN");
+                                    }
                                 }
                             }
                             break;
