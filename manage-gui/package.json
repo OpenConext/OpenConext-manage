@@ -4,14 +4,14 @@
   "private": true,
   "dependencies": {
     "@uiw/react-md-editor": "^3.9.5",
+    "dompurify": "^3.0.6",
     "http-proxy-middleware": "^2.0.3",
     "lodash.merge": "^4.6.2",
     "marked": "^4.0.12",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-json-view": "^1.21.3",
-    "source-map-explorer": "^2.5.2",
-    "dompurify": "^3.0.6"
+    "source-map-explorer": "^2.5.2"
   },
   "devDependencies": {
     "codemirror": "^5.65.1",
