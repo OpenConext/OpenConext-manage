@@ -13,6 +13,7 @@ export default class Manipulation extends React.PureComponent {
 
     constructor(props) {
         super(props);
+
         this.state = {
             tabs: ["manipulation", "notes"],
             selectedTab: "manipulation",
@@ -49,7 +50,8 @@ export default class Manipulation extends React.PureComponent {
         </span>;
 
     renderNotes() {
-        const {notes} = this.props;
+        const {notes, currentUser} = this.props;
+        const allowed = currentUser.authorities.some(authority => authority.authority === "ROLE_SUPER_USER");
         return (
             <div className="manipulation-info">
                 <h2>
@@ -59,17 +61,20 @@ export default class Manipulation extends React.PureComponent {
                     </a>
                 </h2>
                 <section className="notes">
-                    <MDEditor value={notes} onChange={this.onChange("data.manipulationNotes")}/>
+                    {allowed && <MDEditor value={notes}
+                                          onChange={this.onChange("data.manipulationNotes")}/>}
+
+                    {!allowed && <MDEditor value={notes} />}
                 </section>
             </div>
         );
     }
 
     renderManipulation() {
-        const {content, guest} = this.props;
+        const {content, currentUser} = this.props;
+        const allowed = currentUser.authorities.some(authority => authority.authority === "ROLE_SUPER_USER");
         const optionsForInfo = {lineNumbers: false, mode: "javascript", readOnly: true};
-        const optionsForContent = {lineNumbers: true, mode: "javascript", readOnly: guest};
-
+        const optionsForContent = {lineNumbers: true, mode: "javascript", readOnly: !allowed};
         const info = `
 /**
  * PHP code for advanced Response Manipulation.
@@ -89,9 +94,14 @@ export default class Manipulation extends React.PureComponent {
                         {I18n.t("manipulation.manipulationInfo")}
                     </a>
                 </h2>
-                <CodeMirror className="comments" value={info} options={optionsForInfo}/>
+                <CodeMirror className="comments"
+                            value={info}
+                            options={optionsForInfo}/>
                 <div className="spacer"></div>
-                <CodeMirror value={content} onChange={this.onChange("data.manipulation")} options={optionsForContent}/>
+                <CodeMirror className={allowed ? "" : "read-only"}
+                            value={content}
+                            onChange={this.onChange("data.manipulation")}
+                            options={optionsForContent}/>
             </div>
         );
     }
@@ -113,6 +123,6 @@ Manipulation.propTypes = {
     content: PropTypes.string,
     notes: PropTypes.string,
     onChange: PropTypes.func.isRequired,
-    guest: PropTypes.bool.isRequired
+    currentUser: PropTypes.any.isRequired
 };
 
