@@ -988,19 +988,18 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 .get("manage/api/client/metadata/saml20_sp/" + id)
                 .getBody()
                 .as(MetaData.class);
+        Map<String, Object> metaDataFields = metaData.metaDataFields();
+        assertEquals("eduGAIN", metaDataFields.get("coin:interfed_source"));
+        assertEquals(true, metaDataFields.get("coin:imported_from_edugain"));
 
         importRequest = new Import(urlS, "https://impacter.eu/sso/metadata");
-        result = given()
+        result= given()
                 .body(importRequest)
                 .header("Content-type", "application/json")
                 .post("manage/api/client/import/endpoint/xml/saml20_sp")
                 .getBody()
                 .as(Map.class);
-        Set<String> keysFromMetaData = metaData.metaDataFields().keySet();
-        Set<String> metaDataFields = ((Map) result.get("metaDataFields")).keySet();
-
-        keysFromMetaData.removeAll(metaDataFields);
-        assertEquals(Arrays.asList("coin:imported_from_edugain", "coin:interfed_source"), new ArrayList(keysFromMetaData));
+        assertEquals("eduGAIN", ((Map)result.get("metaDataFields")).get("coin:interfed_source"));
     }
 
 
