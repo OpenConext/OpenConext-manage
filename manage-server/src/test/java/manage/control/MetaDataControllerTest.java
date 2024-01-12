@@ -1283,6 +1283,21 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void notAllowed() throws java.io.IOException {
+        Map<String, Object> data = readValueFromFile("/json/valid_service_provider.json");
+        MetaData metaData = new MetaData(EntityType.SP.getType(), data);
+        given().auth()
+                .preemptive()
+                .basic("pdp", "secret")
+                .when()
+                .body(metaData)
+                .header("Content-type", "application/json")
+                .post("manage/api/internal/metadata")
+                .then()
+                .statusCode(SC_FORBIDDEN);
+    }
+
+    @Test
     public void createChangeRequest() throws JsonProcessingException {
         doCreateChangeRequest();
 

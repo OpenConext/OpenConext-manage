@@ -21,8 +21,8 @@ import {
     allResourceServers,
     changeRequests,
     detail,
-    relyingPartiesByResourceServer,
     provisioningById,
+    relyingPartiesByResourceServer,
     remove,
     revisions,
     save,
@@ -741,7 +741,8 @@ class Detail extends React.PureComponent {
         const configuration = this.props.configuration.find(
             conf => conf.title === this.state.type
         );
-        const guest = this.props.currentUser.guest;
+        const {currentUser} = this.props
+        const {guest} = currentUser;
         const {
             isNew,
             originalEntityId,
@@ -837,7 +838,7 @@ class Detail extends React.PureComponent {
                         content={metaData.data.manipulation || ""}
                         notes={metaData.data.manipulationNotes || ""}
                         onChange={this.onChange("manipulation")}
-                        guest={guest}
+                        currentUser={currentUser}
                     />
                 );
             case "consent_disabling":

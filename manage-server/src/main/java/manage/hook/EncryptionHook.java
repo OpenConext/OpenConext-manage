@@ -1,6 +1,7 @@
 package manage.hook;
 
 import crypto.KeyStore;
+import manage.api.AbstractUser;
 import manage.model.EntityType;
 import manage.model.MetaData;
 import org.springframework.util.CollectionUtils;
@@ -23,12 +24,12 @@ public class EncryptionHook extends MetaDataHookAdapter {
     }
 
     @Override
-    public MetaData prePut(MetaData previous, MetaData newMetaData) {
+    public MetaData prePut(MetaData previous, MetaData newMetaData, AbstractUser user) {
         return encryptSecrets(newMetaData);
     }
 
     @Override
-    public MetaData prePost(MetaData metaData) {
+    public MetaData prePost(MetaData metaData, AbstractUser user) {
         return encryptSecrets(metaData);
     }
 

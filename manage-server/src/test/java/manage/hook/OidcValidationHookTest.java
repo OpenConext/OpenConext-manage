@@ -13,9 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static java.util.Collections.emptyList;
-import static java.util.Collections.emptyMap;
-import static java.util.Collections.singletonList;
+import static java.util.Collections.*;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -37,34 +35,34 @@ public class OidcValidationHookTest implements TestUtils {
 
     @Test
     public void prePut() {
-        subject.prePut(null, metaData(singletonList("client_credentials"), emptyList()));
-        subject.prePut(null, metaData(singletonList("authorization_code"), singletonList("https://redirect")));
+        subject.prePut(null, metaData(singletonList("client_credentials"), emptyList()), apiUser());
+        subject.prePut(null, metaData(singletonList("authorization_code"), singletonList("https://redirect")), apiUser());
     }
 
     @Test(expected = ValidationException.class)
     public void prePutValidationException() {
-        subject.prePut(null, metaData(singletonList("authorization_code"), emptyList()));
+        subject.prePut(null, metaData(singletonList("authorization_code"), emptyList()), apiUser());
     }
 
     @Test
     public void prePost() {
-        subject.prePut(null, metaData(singletonList("client_credentials"), emptyList()));
-        subject.prePut(null, metaData(singletonList("authorization_code"), singletonList("https://redirect")));
+        subject.prePut(null, metaData(singletonList("client_credentials"), emptyList()), apiUser());
+        subject.prePut(null, metaData(singletonList("authorization_code"), singletonList("https://redirect")), apiUser());
     }
 
     @Test(expected = ValidationException.class)
     public void prePostValidationException() {
-        subject.prePut(null, metaData(singletonList("authorization_code"), emptyList()));
+        subject.prePut(null, metaData(singletonList("authorization_code"), emptyList()), apiUser());
     }
 
     @Test(expected = ValidationException.class)
     public void orphanRefreshToken() {
-        subject.prePut(null, metaData(singletonList("refresh_token"), singletonList("https://redirect")));
+        subject.prePut(null, metaData(singletonList("refresh_token"), singletonList("https://redirect")), apiUser());
     }
 
     @Test(expected = ValidationException.class)
     public void clientCredentialsWithRedirect() {
-        subject.prePut(null, metaData(singletonList("client_credentials"), singletonList("https://redirect")));
+        subject.prePut(null, metaData(singletonList("client_credentials"), singletonList("https://redirect")), apiUser());
     }
 
     @SuppressWarnings("unchecked")

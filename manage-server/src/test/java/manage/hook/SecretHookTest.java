@@ -1,12 +1,12 @@
 package manage.hook;
 
 import manage.AbstractIntegrationTest;
+import manage.TestUtils;
 import manage.model.EntityType;
 import manage.model.MetaData;
 import org.everit.json.schema.ValidationException;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 import static java.util.Collections.emptyMap;
 import static org.junit.Assert.*;
 
-public class SecretHookTest extends AbstractIntegrationTest {
+public class SecretHookTest extends AbstractIntegrationTest implements TestUtils {
 
     private SecretHook subject;
     private final Pattern bcryptPattern = Pattern.compile("\\A\\$2(a|y|b)?\\$(\\d\\d)\\$[./0-9A-Za-z]{53}");
@@ -42,11 +42,11 @@ public class SecretHookTest extends AbstractIntegrationTest {
 
     @Test
     public void prePut() {
-        MetaData metaData = subject.prePut(null, metaData("secret1234567890"));
+        MetaData metaData = subject.prePut(null, metaData("secret1234567890"), apiUser());
         assertTrue(subject.isBCryptEncoded((String) metaData.metaDataFields().get("secret")));
 
         String secret = (String) metaData.metaDataFields().get("secret");
-        metaData = subject.prePut(null, metaData);
+        metaData = subject.prePut(null, metaData, apiUser());
 
         String unchangedSecret = (String) metaData.metaDataFields().get("secret");
         assertEquals(secret, unchangedSecret);
@@ -54,13 +54,13 @@ public class SecretHookTest extends AbstractIntegrationTest {
 
     @Test
     public void prePost() {
-        MetaData metaData = subject.prePost(metaData("secret1234567890"));
+        MetaData metaData = subject.prePost(metaData("secret1234567890"), apiUser());
         String encodedPassword = (String) metaData.metaDataFields().get("secret");
 
         assertTrue(subject.isBCryptEncoded(encodedPassword));
         assertEquals(5, this.getStrength(encodedPassword));
 
-        metaData = subject.prePost(metaData);
+        metaData = subject.prePost(metaData, apiUser());
 
         String unchangedSecret = (String) metaData.metaDataFields().get("secret");
         assertEquals(encodedPassword, unchangedSecret);
@@ -79,7 +79,7 @@ public class SecretHookTest extends AbstractIntegrationTest {
 
     @Test
     public void resourceServerWeakerStrength() {
-        MetaData metaData = subject.prePost(metaData("secret1234567890", EntityType.RS));
+        MetaData metaData = subject.prePost(metaData("secret1234567890", EntityType.RS), apiUser());
         String encodedPassword = (String) metaData.metaDataFields().get("secret");
 
         assertTrue(subject.isBCryptEncoded(encodedPassword));
@@ -88,7 +88,7 @@ public class SecretHookTest extends AbstractIntegrationTest {
 
     @Test(expected = ValidationException.class)
     public void minimalLength() {
-        subject.prePost(metaData("secret", EntityType.RS));
+        subject.prePost(metaData("secret", EntityType.RS), apiUser());
     }
 
     private int getStrength(String encodedPassword) {

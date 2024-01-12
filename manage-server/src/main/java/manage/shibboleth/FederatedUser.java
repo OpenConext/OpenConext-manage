@@ -3,6 +3,7 @@ package manage.shibboleth;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import manage.api.AbstractUser;
+import manage.api.Scope;
 import manage.conf.Features;
 import manage.conf.Product;
 import manage.conf.Push;
@@ -10,7 +11,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 public class FederatedUser extends User implements Serializable, AbstractUser {
@@ -21,9 +24,11 @@ public class FederatedUser extends User implements Serializable, AbstractUser {
     private final List<Features> featureToggles;
     private final Product product;
     private final Push push;
+    private final String environment;
+    private final List<Scope> scopes;
 
     public FederatedUser(String uid, String displayName, String schacHomeOrganization, List<GrantedAuthority>
-            authorities, List<Features> featureToggles, Product product, Push push) {
+            authorities, List<Features> featureToggles, Product product, Push push, String environment) {
         super(uid, "N/A", authorities);
         this.uid = uid;
         this.displayName = displayName;
@@ -31,11 +36,10 @@ public class FederatedUser extends User implements Serializable, AbstractUser {
         this.featureToggles = featureToggles;
         this.product = product;
         this.push = push;
-    }
-
-    public boolean isGuest() {
-        return getAuthorities().stream()
-                .noneMatch(authority -> authority.getAuthority().equalsIgnoreCase("ROLE_ADMIN"));
+        this.environment = environment;
+        this.scopes = authorities.stream()
+                .map(authority -> Scope.valueOf(authority.getAuthority().replaceAll("ROLE_", "")))
+                .collect(Collectors.toList());
     }
 
     public boolean featureAllowed(Features feature) {
@@ -56,5 +60,16 @@ public class FederatedUser extends User implements Serializable, AbstractUser {
     @JsonIgnore
     public String getPassword() {
         return super.getPassword();
+    }
+
+    @Override
+    public boolean isAllowed(Scope... scopes) {
+        return this.scopes.containsAll(Arrays.asList(scopes));
+    }
+
+    @Override
+    public boolean isSystemUser() {
+        return getAuthorities().stream()
+                .noneMatch(authority -> authority.getAuthority().equalsIgnoreCase("ROLE".concat(Scope.SYSTEM.name())));
     }
 }

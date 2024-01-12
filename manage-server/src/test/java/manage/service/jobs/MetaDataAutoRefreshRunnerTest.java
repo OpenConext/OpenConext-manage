@@ -3,6 +3,7 @@ package manage.service.jobs;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import manage.TestUtils;
 import manage.conf.Features;
 import manage.conf.MetaDataAutoConfiguration;
 import manage.model.EntityType;
@@ -31,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
-class MetaDataAutoRefreshRunnerTest {
+class MetaDataAutoRefreshRunnerTest implements TestUtils {
 
     @Mock
     MetaDataService metaDataService;
@@ -117,7 +118,7 @@ class MetaDataAutoRefreshRunnerTest {
 
         verify(metaDataAutoConfiguration, times(1)).schemaRepresentation(EntityType.SP);
         verify(importerService, times(1)).importXMLUrl(eq(EntityType.SP), any());
-        verify(metaDataService, times(1)).doPut(metaDataCaptor.capture(), anyString(), anyBoolean());
+        verify(metaDataService, times(1)).doPut(metaDataCaptor.capture(), any(), anyBoolean());
 
         MetaData result = metaDataCaptor.getValue();
         assertEquals("value", result.metaDataFields().get("field1"));
@@ -144,7 +145,7 @@ class MetaDataAutoRefreshRunnerTest {
 
         verify(metaDataAutoConfiguration, times(0)).schemaRepresentation(EntityType.SP);
         verify(importerService, times(1)).importXMLUrl(eq(EntityType.SP), any());
-        verify(metaDataService, times(1)).doPut(metaDataCaptor.capture(), anyString(), anyBoolean());
+        verify(metaDataService, times(1)).doPut(metaDataCaptor.capture(), any(), anyBoolean());
 
         MetaData result = metaDataCaptor.getValue();
         assertEquals("value", result.metaDataFields().get("field1"));
@@ -168,7 +169,7 @@ class MetaDataAutoRefreshRunnerTest {
 
         verify(metaDataAutoConfiguration, times(0)).schemaRepresentation(EntityType.SP);
         verify(importerService, times(1)).importXMLUrl(eq(EntityType.SP), any());
-        verify(metaDataService, times(0)).doPut(any(), anyString(), anyBoolean());
+        verify(metaDataService, times(0)).doPut(any(), any(), anyBoolean());
     }
 
     @Test
@@ -185,7 +186,7 @@ class MetaDataAutoRefreshRunnerTest {
 
         verify(metaDataAutoConfiguration, times(0)).schemaRepresentation(EntityType.SP);
         verify(importerService, times(1)).importXMLUrl(eq(EntityType.SP), any());
-        verify(metaDataService, times(1)).doPut(metaDataCaptor.capture(), anyString(), anyBoolean());
+        verify(metaDataService, times(1)).doPut(metaDataCaptor.capture(), any(), anyBoolean());
 
         MetaData result = metaDataCaptor.getValue();
         assertFalse(result.metaDataFields().containsKey("field5"));
@@ -201,7 +202,7 @@ class MetaDataAutoRefreshRunnerTest {
 
         autoRefreshRunner.run();
 
-        verify(metaDataService, times(0)).doPut(any(), anyString(), anyBoolean());
+        verify(metaDataService, times(0)).doPut(any(), any(), anyBoolean());
         verifyNoInteractions(metaDataAutoConfiguration);
         verifyNoInteractions(importerService);
     }
@@ -212,12 +213,12 @@ class MetaDataAutoRefreshRunnerTest {
                 buildMetadata(EntityType.SP, "entityId", "metadataUrl", true, true, new HashMap<>())
         ));
         when(metaDataService.findAllByType(EntityType.IDP.getType())).thenReturn(Collections.emptyList());
-        when(metaDataService.doPut(any(), anyString(), anyBoolean()))
+        when(metaDataService.doPut(any(), any(), anyBoolean()))
                 .thenThrow(new ValidationException(null, "No data is changed", ""));
 
         autoRefreshRunner.run();
 
-        verify(metaDataService, times(1)).doPut(any(), anyString(), anyBoolean());
+        verify(metaDataService, times(1)).doPut(any(), any(), anyBoolean());
         verify(metaDataAutoConfiguration, times(1)).schemaRepresentation(EntityType.SP);
         verify(importerService, times(1)).importXMLUrl(eq(EntityType.SP), any());
     }
@@ -232,7 +233,7 @@ class MetaDataAutoRefreshRunnerTest {
 
         autoRefreshRunner.run();
 
-        verify(metaDataService, times(0)).doPut(any(), anyString(), anyBoolean());
+        verify(metaDataService, times(0)).doPut(any(), any(), anyBoolean());
         verify(metaDataAutoConfiguration, times(1)).schemaRepresentation(EntityType.SP);
         verify(importerService, times(1)).importXMLUrl(eq(EntityType.SP), any());
     }
@@ -243,12 +244,12 @@ class MetaDataAutoRefreshRunnerTest {
                 buildMetadata(EntityType.SP, "entityId", "metadataUrl", true, true, new HashMap<>())
         ));
         when(metaDataService.findAllByType(EntityType.IDP.getType())).thenReturn(Collections.emptyList());
-        when(metaDataService.doPut(any(), anyString(), anyBoolean()))
+        when(metaDataService.doPut(any(), any(), anyBoolean()))
                 .thenThrow(new ValidationException(null, "some error occurred", ""));
 
         autoRefreshRunner.run();
 
-        verify(metaDataService, times(1)).doPut(any(), anyString(), anyBoolean());
+        verify(metaDataService, times(1)).doPut(any(), any(), anyBoolean());
         verify(metaDataAutoConfiguration, times(1)).schemaRepresentation(EntityType.SP);
         verify(importerService, times(1)).importXMLUrl(eq(EntityType.SP), any());
         assertTrue(memoryAppender.contains("Failed to save changes for saml20_sp entityId: #: some error occurred", Level.INFO));
@@ -260,12 +261,12 @@ class MetaDataAutoRefreshRunnerTest {
                 buildMetadata(EntityType.SP, "entityId", "metadataUrl", true, true, new HashMap<>())
         ));
         when(metaDataService.findAllByType(EntityType.IDP.getType())).thenReturn(Collections.emptyList());
-        when(metaDataService.doPut(any(), anyString(), anyBoolean()))
+        when(metaDataService.doPut(any(), any(), anyBoolean()))
                 .thenThrow(new MockJsonProcessingException("some error occurred"));
 
         autoRefreshRunner.run();
 
-        verify(metaDataService, times(1)).doPut(any(), anyString(), anyBoolean());
+        verify(metaDataService, times(1)).doPut(any(), any(), anyBoolean());
         verify(metaDataAutoConfiguration, times(1)).schemaRepresentation(EntityType.SP);
         verify(importerService, times(1)).importXMLUrl(eq(EntityType.SP), any());
         assertTrue(memoryAppender.contains("Failed to save changes for saml20_sp entityId: some error occurred", Level.INFO));
@@ -280,7 +281,7 @@ class MetaDataAutoRefreshRunnerTest {
 
         autoRefreshRunner.run();
 
-        verify(metaDataService, times(0)).doPut(any(), anyString(), anyBoolean());
+        verify(metaDataService, times(0)).doPut(any(), any(), anyBoolean());
         verifyNoInteractions(metaDataAutoConfiguration);
         verifyNoInteractions(importerService);
     }
@@ -294,7 +295,7 @@ class MetaDataAutoRefreshRunnerTest {
 
         autoRefreshRunner.run();
 
-        verify(metaDataService, times(0)).doPut(any(), anyString(), anyBoolean());
+        verify(metaDataService, times(0)).doPut(any(), any(), anyBoolean());
         verifyNoInteractions(metaDataAutoConfiguration);
         verifyNoInteractions(importerService);
     }
@@ -308,7 +309,7 @@ class MetaDataAutoRefreshRunnerTest {
 
         autoRefreshRunner.run();
 
-        verify(metaDataService, times(0)).doPut(any(), anyString(), anyBoolean());
+        verify(metaDataService, times(0)).doPut(any(), any(), anyBoolean());
         verifyNoInteractions(metaDataAutoConfiguration);
         verifyNoInteractions(importerService);
     }
@@ -327,7 +328,7 @@ class MetaDataAutoRefreshRunnerTest {
 
         verify(metaDataAutoConfiguration, times(1)).schemaRepresentation(EntityType.IDP);
         verify(importerService, times(1)).importXMLUrl(eq(EntityType.IDP), any());
-        verify(metaDataService, times(1)).doPut(metaDataCaptor.capture(), anyString(), anyBoolean());
+        verify(metaDataService, times(1)).doPut(metaDataCaptor.capture(), any(), anyBoolean());
 
         MetaData result = metaDataCaptor.getValue();
         assertEquals("value", result.metaDataFields().get("field1"));
@@ -354,7 +355,7 @@ class MetaDataAutoRefreshRunnerTest {
 
         verify(metaDataAutoConfiguration, times(0)).schemaRepresentation(EntityType.IDP);
         verify(importerService, times(1)).importXMLUrl(eq(EntityType.IDP), any());
-        verify(metaDataService, times(1)).doPut(metaDataCaptor.capture(), anyString(), anyBoolean());
+        verify(metaDataService, times(1)).doPut(metaDataCaptor.capture(), any(), anyBoolean());
 
         MetaData result = metaDataCaptor.getValue();
         assertEquals("value", result.metaDataFields().get("field1"));
@@ -378,7 +379,7 @@ class MetaDataAutoRefreshRunnerTest {
 
         verify(metaDataAutoConfiguration, times(0)).schemaRepresentation(EntityType.IDP);
         verify(importerService, times(1)).importXMLUrl(eq(EntityType.IDP), any());
-        verify(metaDataService, times(0)).doPut(any(), anyString(), anyBoolean());
+        verify(metaDataService, times(0)).doPut(any(), any(), anyBoolean());
     }
 
     @Test
@@ -395,7 +396,7 @@ class MetaDataAutoRefreshRunnerTest {
 
         verify(metaDataAutoConfiguration, times(0)).schemaRepresentation(EntityType.IDP);
         verify(importerService, times(1)).importXMLUrl(eq(EntityType.IDP), any());
-        verify(metaDataService, times(1)).doPut(metaDataCaptor.capture(), anyString(), anyBoolean());
+        verify(metaDataService, times(1)).doPut(metaDataCaptor.capture(), any(), anyBoolean());
 
         MetaData result = metaDataCaptor.getValue();
         assertFalse(result.metaDataFields().containsKey("field5"));
@@ -410,7 +411,7 @@ class MetaDataAutoRefreshRunnerTest {
 
         autoRefreshRunner.run();
 
-        verify(metaDataService, times(0)).doPut(any(), anyString(), anyBoolean());
+        verify(metaDataService, times(0)).doPut(any(), any(), anyBoolean());
         verifyNoInteractions(metaDataAutoConfiguration);
         verifyNoInteractions(importerService);
     }
@@ -420,12 +421,12 @@ class MetaDataAutoRefreshRunnerTest {
         MetaData current = buildMetadata(EntityType.IDP, "entityId", "metadataUrl", true, true, new HashMap<>());
         when(metaDataService.findAllByType(EntityType.IDP.getType())).thenReturn(Collections.singletonList(current));
         when(metaDataService.findAllByType(EntityType.SP.getType())).thenReturn(Collections.emptyList());
-        when(metaDataService.doPut(any(), anyString(), anyBoolean()))
+        when(metaDataService.doPut(any(), any(), anyBoolean()))
                 .thenThrow(new ValidationException(null, "No data is changed", ""));
 
         autoRefreshRunner.run();
 
-        verify(metaDataService, times(1)).doPut(any(), anyString(), anyBoolean());
+        verify(metaDataService, times(1)).doPut(any(), any(), anyBoolean());
         verify(metaDataAutoConfiguration, times(1)).schemaRepresentation(EntityType.IDP);
         verify(importerService, times(1)).importXMLUrl(eq(EntityType.IDP), any());
     }
@@ -439,7 +440,7 @@ class MetaDataAutoRefreshRunnerTest {
 
         autoRefreshRunner.run();
 
-        verify(metaDataService, times(0)).doPut(any(), anyString(), anyBoolean());
+        verify(metaDataService, times(0)).doPut(any(), any(), anyBoolean());
         verify(metaDataAutoConfiguration, times(1)).schemaRepresentation(EntityType.IDP);
         verify(importerService, times(1)).importXMLUrl(eq(EntityType.IDP), any());
     }
@@ -449,12 +450,12 @@ class MetaDataAutoRefreshRunnerTest {
         MetaData current = buildMetadata(EntityType.IDP, "entityId", "metadataUrl", true, true, new HashMap<>());
         when(metaDataService.findAllByType(EntityType.IDP.getType())).thenReturn(Collections.singletonList(current));
         when(metaDataService.findAllByType(EntityType.SP.getType())).thenReturn(Collections.emptyList());
-        when(metaDataService.doPut(any(), anyString(), anyBoolean()))
+        when(metaDataService.doPut(any(), any(), anyBoolean()))
                 .thenThrow(new ValidationException(null, "some error occurred", ""));
 
         autoRefreshRunner.run();
 
-        verify(metaDataService, times(1)).doPut(any(), anyString(), anyBoolean());
+        verify(metaDataService, times(1)).doPut(any(), any(), anyBoolean());
         verify(metaDataAutoConfiguration, times(1)).schemaRepresentation(EntityType.IDP);
         verify(importerService, times(1)).importXMLUrl(eq(EntityType.IDP), any());
         assertTrue(memoryAppender.contains("Failed to save changes for saml20_idp entityId: #: some error occurred", Level.INFO));
@@ -465,12 +466,12 @@ class MetaDataAutoRefreshRunnerTest {
         MetaData current = buildMetadata(EntityType.IDP, "entityId", "metadataUrl", true, true, new HashMap<>());
         when(metaDataService.findAllByType(EntityType.IDP.getType())).thenReturn(Collections.singletonList(current));
         when(metaDataService.findAllByType(EntityType.SP.getType())).thenReturn(Collections.emptyList());
-        when(metaDataService.doPut(any(), anyString(), anyBoolean()))
+        when(metaDataService.doPut(any(), any(), anyBoolean()))
                 .thenThrow(new MockJsonProcessingException("some error occurred"));
 
         autoRefreshRunner.run();
 
-        verify(metaDataService, times(1)).doPut(any(), anyString(), anyBoolean());
+        verify(metaDataService, times(1)).doPut(any(), any(), anyBoolean());
         verify(metaDataAutoConfiguration, times(1)).schemaRepresentation(EntityType.IDP);
         verify(importerService, times(1)).importXMLUrl(eq(EntityType.IDP), any());
         assertTrue(memoryAppender.contains("Failed to save changes for saml20_idp entityId: some error occurred", Level.INFO));
@@ -485,7 +486,7 @@ class MetaDataAutoRefreshRunnerTest {
 
         autoRefreshRunner.run();
 
-        verify(metaDataService, times(0)).doPut(any(), anyString(), anyBoolean());
+        verify(metaDataService, times(0)).doPut(any(), any(), anyBoolean());
         verifyNoInteractions(metaDataAutoConfiguration);
         verifyNoInteractions(importerService);
     }
@@ -499,7 +500,7 @@ class MetaDataAutoRefreshRunnerTest {
 
         autoRefreshRunner.run();
 
-        verify(metaDataService, times(0)).doPut(any(), anyString(), anyBoolean());
+        verify(metaDataService, times(0)).doPut(any(), any(), anyBoolean());
         verifyNoInteractions(metaDataAutoConfiguration);
         verifyNoInteractions(importerService);
     }
@@ -513,7 +514,7 @@ class MetaDataAutoRefreshRunnerTest {
 
         autoRefreshRunner.run();
 
-        verify(metaDataService, times(0)).doPut(any(), anyString(), anyBoolean());
+        verify(metaDataService, times(0)).doPut(any(), any(), anyBoolean());
         verifyNoInteractions(metaDataAutoConfiguration);
         verifyNoInteractions(importerService);
     }

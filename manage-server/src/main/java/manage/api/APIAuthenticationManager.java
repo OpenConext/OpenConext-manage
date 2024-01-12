@@ -23,7 +23,8 @@ public class APIAuthenticationManager implements AuthenticationManager {
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String name = String.class.cast(authentication.getPrincipal());
         Optional<APIUser> apiUserOptional = apiUserConfiguration.getApiUsers().stream()
-                .filter(apiUser -> apiUser.getName().equals(name)).findFirst();
+                .filter(apiUser -> apiUser.getName().equals(name))
+                .findFirst();
         APIUser apiUser = apiUserOptional.orElseThrow(() -> new UsernameNotFoundException("Unknown user: " + name));
         if (!apiUser.getPassword().equals(authentication.getCredentials())) {
             throw new BadCredentialsException("Bad credentials");
@@ -31,7 +32,8 @@ public class APIAuthenticationManager implements AuthenticationManager {
         return new UsernamePasswordAuthenticationToken(
                 apiUser,
                 authentication.getCredentials(),
-                apiUser.getScopes().stream().map(scope -> new SimpleGrantedAuthority("ROLE_".concat(scope.name())))
+                apiUser.getScopes().stream()
+                        .map(scope -> new SimpleGrantedAuthority("ROLE_".concat(scope.name())))
                         .collect(Collectors.toList()));
     }
 }

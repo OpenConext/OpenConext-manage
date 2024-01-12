@@ -38,7 +38,7 @@ public class EmptyRevisionHookTest implements TestUtils {
         MetaData newMetaData = readMetaData();
 
         newMetaData.getData().put("revisionnote", "has changed");
-        subject.prePut(prevMetaData, newMetaData);
+        subject.prePut(prevMetaData, newMetaData, apiUser());
     }
 
     @Test(expected = ValidationException.class)
@@ -49,7 +49,7 @@ public class EmptyRevisionHookTest implements TestUtils {
         newMetaData.getData().put("notes", null);
 
         newMetaData.getData().put("revisionnote", "has changed");
-        subject.prePut(prevMetaData, newMetaData);
+        subject.prePut(prevMetaData, newMetaData,apiUser() );
     }
 
     @Test
@@ -60,7 +60,7 @@ public class EmptyRevisionHookTest implements TestUtils {
         newMetaData.getData().put("notes", null);
 
         newMetaData.getData().put("revisionnote", "has changed");
-        subject.prePut(prevMetaData, newMetaData);
+        subject.prePut(prevMetaData, newMetaData, apiUser());
     }
 
     @Test
@@ -71,7 +71,7 @@ public class EmptyRevisionHookTest implements TestUtils {
         newMetaData.getData().put("notes", "changed");
 
         newMetaData.getData().put("revisionnote", "has changed");
-        subject.prePut(prevMetaData, newMetaData);
+        subject.prePut(prevMetaData, newMetaData, apiUser());
     }
 
     @Test
@@ -81,7 +81,7 @@ public class EmptyRevisionHookTest implements TestUtils {
         prevMetaData.metaDataFields().put("coin:institution_id", UUID.randomUUID().toString());
 
         newMetaData.getData().put("revisionnote", "has changed");
-        subject.prePut(prevMetaData, newMetaData);
+        subject.prePut(prevMetaData, newMetaData,apiUser() );
     }
 
     private MetaData readMetaData() throws IOException {

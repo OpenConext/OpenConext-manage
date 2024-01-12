@@ -1,5 +1,6 @@
 package manage.hook;
 
+import manage.api.AbstractUser;
 import manage.model.MetaData;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
@@ -27,20 +28,20 @@ public class CompositeMetaDataHook implements MetaDataHook {
     }
 
     @Override
-    public MetaData prePut(MetaData previous, MetaData newMetaData) {
+    public MetaData prePut(MetaData previous, MetaData newMetaData, AbstractUser user) {
         AtomicReference<MetaData> ref = new AtomicReference<>(newMetaData);
-        hooks.stream().filter(hook -> hook.appliesForMetaData(newMetaData)).forEach(hook -> ref.set(hook.prePut(previous, ref.get())));
+        hooks.stream().filter(hook -> hook.appliesForMetaData(newMetaData)).forEach(hook -> ref.set(hook.prePut(previous, ref.get(), user)));
         return ref.get();
     }
 
     @Override
-    public MetaData prePost(MetaData metaData) {
-        return this.callback(metaData, (md, hook) -> hook.prePost(md));
+    public MetaData prePost(MetaData metaData, AbstractUser user) {
+        return this.callback(metaData, (md, hook) -> hook.prePost(md, user));
     }
 
     @Override
-    public MetaData preDelete(MetaData metaData) {
-        return this.callback(metaData, (md, hook) -> hook.preDelete(md));
+    public MetaData preDelete(MetaData metaData, AbstractUser user) {
+        return this.callback(metaData, (md, hook) -> hook.preDelete(md, user));
     }
 
     @Override

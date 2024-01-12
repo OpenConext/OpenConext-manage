@@ -1,5 +1,6 @@
 package manage.hook;
 
+import manage.api.AbstractUser;
 import manage.conf.MetaDataAutoConfiguration;
 import manage.model.EntityType;
 import manage.model.MetaData;
@@ -32,15 +33,15 @@ public class SSIDValidationHook extends MetaDataHookAdapter {
     }
 
     @Override
-    public MetaData prePut(MetaData previous, MetaData newMetaData) {
+    public MetaData prePut(MetaData previous, MetaData newMetaData, AbstractUser user) {
         validate(newMetaData);
-        return super.prePut(previous, newMetaData);
+        return super.prePut(previous, newMetaData, user);
     }
 
     @Override
-    public MetaData prePost(MetaData metaData) {
+    public MetaData prePost(MetaData metaData, AbstractUser user) {
         validate(metaData);
-        return super.prePost(metaData);
+        return super.prePost(metaData, user);
     }
 
     @SuppressWarnings("unchecked")

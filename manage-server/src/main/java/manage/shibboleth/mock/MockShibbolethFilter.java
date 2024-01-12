@@ -17,6 +17,7 @@ import java.util.HashMap;
 public class MockShibbolethFilter extends GenericFilterBean {
 
     public static final String SAML2_USER = "saml2_user.com";
+    private static final boolean isSuperUSer = true;
 
     private static class SetHeader extends HttpServletRequestWrapper {
 
@@ -49,6 +50,10 @@ public class MockShibbolethFilter extends GenericFilterBean {
             wrapper.setHeader(ShibbolethPreAuthenticatedProcessingFilter.NAME_ID_HEADER_NAME, SAML2_USER);
             wrapper.setHeader(ShibbolethPreAuthenticatedProcessingFilter.DISPLAY_NAME_HEADER_NAME, "John Doe");
             wrapper.setHeader(ShibbolethPreAuthenticatedProcessingFilter.SCHAC_HOME_HEADER, "http://mock-idp");
+            if (isSuperUSer) {
+                wrapper.setHeader(ShibbolethPreAuthenticatedProcessingFilter.IS_MEMBER_OF_HEADER,
+                        "urn:collab:group:test.surfteams.nl:nl:surfnet:diensten:manage_super_users");
+            }
             filterChain.doFilter(wrapper, servletResponse);
         } else {
             filterChain.doFilter(servletRequest, servletResponse);

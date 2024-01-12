@@ -104,6 +104,12 @@ public class WebSecurityConfigurer {
         @Value("${push.oidc.name}")
         private String pushOidcName;
 
+        @Value("${security.super_user_team_names}")
+        private String superUserTeamNamesJoined;
+
+        @Value("${environment}")
+        private String environmentType;
+
         @Override
         public void configure(WebSecurity web) throws Exception {
             web.ignoring().antMatchers("/client/users/disclaimer");
@@ -112,7 +118,7 @@ public class WebSecurityConfigurer {
         @Override
         protected void configure(HttpSecurity http) throws Exception {
             List<String> allFeatures = Arrays.asList(Features.values()).stream()
-                    .map(feature -> feature.name())
+                    .map(Enum::name)
                     .collect(toList());
 
             List<Features> featuresList = Stream.of(this.features.split(","))
@@ -140,13 +146,18 @@ public class WebSecurityConfigurer {
                     .addFilterAfter(new CsrfTokenResponseHeaderBindingFilter(), CsrfFilter.class)
                     .addFilterBefore(new SessionAliveFilter(), CsrfFilter.class)
                     .addFilterBefore(
-                            new ShibbolethPreAuthenticatedProcessingFilter(authenticationManagerBean(), featuresList,
-                                    product, push),
+                            new ShibbolethPreAuthenticatedProcessingFilter(
+                                    authenticationManagerBean(),
+                                    featuresList,
+                                    product,
+                                    push,
+                                    superUserTeamNamesJoined,
+                                    environmentType),
                             AbstractPreAuthenticatedProcessingFilter.class
                     )
                     .addFilterBefore(
                             new BasicAuthenticationFilter(
-                                    new BasicAuthenticationManager(user, password, featuresList, product, push)),
+                                    new BasicAuthenticationManager(user, password, featuresList, product, push, environmentType)),
                             ShibbolethPreAuthenticatedProcessingFilter.class
                     )
                     .authorizeRequests()
@@ -170,6 +181,9 @@ public class WebSecurityConfigurer {
         @Autowired
         private ResourceLoader resourceLoader;
 
+        @Value("${environment}")
+        private String environmentType;
+
         @Override
         public void configure(WebSecurity web) {
             web.ignoring().antMatchers("/internal/health", "/internal/info");
@@ -180,6 +194,7 @@ public class WebSecurityConfigurer {
             APIUserConfiguration apiUserConfiguration = new Yaml()
                     .loadAs(resourceLoader.getResource(configApiUsersFileLocation).getInputStream(), APIUserConfiguration
                             .class);
+            apiUserConfiguration.getApiUsers().forEach(apiUser -> apiUser.setEnvironment(environmentType));
             http
                     .antMatcher("/internal/**")
                     .sessionManagement()

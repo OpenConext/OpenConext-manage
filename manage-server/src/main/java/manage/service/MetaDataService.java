@@ -1,10 +1,9 @@
 package manage.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mongodb.client.result.DeleteResult;
 import manage.api.APIUser;
 import manage.api.AbstractUser;
+import manage.api.Scope;
 import manage.conf.MetaDataAutoConfiguration;
 import manage.control.DatabaseController;
 import manage.exception.DuplicateEntityIdException;
@@ -23,7 +22,6 @@ import org.springframework.core.env.Profiles;
 import org.springframework.core.io.Resource;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.CriteriaDefinition;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -50,6 +48,8 @@ import static manage.mongo.MongoChangelog.CHANGE_REQUEST_POSTFIX;
 public class MetaDataService {
 
     private static final Logger LOG = LoggerFactory.getLogger(MetaDataService.class);
+
+    private static final APIUser EDUGAIN_IMPORT_USER = new APIUser("edugain-import", List.of(Scope.SYSTEM));
 
     public static final String REQUESTED_ATTRIBUTES = "REQUESTED_ATTRIBUTES";
 
@@ -133,7 +133,7 @@ public class MetaDataService {
                             MetaDataUpdate metaDataUpdate =
                                     importToMetaDataUpdate(existingServiceProvider.getId(), entityType, sp, feedUrl);
                             Optional<MetaData> metaData = doMergeUpdate(metaDataUpdate,
-                                    "edugain-import",
+                                    EDUGAIN_IMPORT_USER,
                                     "edugain-import",
                                     false);
                             if (metaData.isPresent()) {
@@ -154,7 +154,7 @@ public class MetaDataService {
                 } else {
                     try {
                         MetaData metaData = importToMetaData(sp, entityType);
-                        MetaData persistedMetaData = doPost(metaData, "edugain-import", false);
+                        MetaData persistedMetaData = doPost(metaData, EDUGAIN_IMPORT_USER, false);
                         List imported = results.computeIfAbsent("imported", s -> new ArrayList());
                         imported.add(new ServiceProvider(persistedMetaData.getId(), entityId, false, false, null));
                     } catch (JsonProcessingException | ValidationException e) {
@@ -168,7 +168,7 @@ public class MetaDataService {
                     .collect(toList());
             notInFeedAnymore.forEach(sp -> doRemove(entityType.getType(),
                     sp.getId(),
-                    "edugain-import",
+                    EDUGAIN_IMPORT_USER,
                     "Removed from eduGain feed"));
 
             List deleted = results.computeIfAbsent("deleted", s -> new ArrayList());
@@ -182,31 +182,31 @@ public class MetaDataService {
         }
     }
 
-    public MetaData doPost(@Validated MetaData metaData, String uid, boolean excludeFromPushRequired)
+    public MetaData doPost(@Validated MetaData metaData, AbstractUser user, boolean excludeFromPushRequired)
             throws JsonProcessingException {
         checkForDuplicateEntityId(metaData, true);
 
         sanitizeExcludeFromPush(metaData, excludeFromPushRequired);
-        metaData = metaDataHook.prePost(metaData);
+        metaData = metaDataHook.prePost(metaData, user);
 
         metaData = validate(metaData);
         Long eid = metaDataRepository.incrementEid();
-        metaData.initial(UUID.randomUUID().toString(), uid, eid);
+        metaData.initial(UUID.randomUUID().toString(), user.getName(), eid);
 
-        LOG.info("Saving new metaData {} by {}", metaData.getId(), uid);
+        LOG.info("Saving new metaData {} by {}", metaData.getId(), user.getName());
 
         metaDataRepository.save(metaData);
 
         return getMetaDataAndValidate(metaData.getType(), metaData.getId());
     }
 
-    public boolean doRemove(String type, String id, String uid, String revisionNote) {
+    public boolean doRemove(String type, String id, AbstractUser user, String revisionNote) {
         MetaData current = metaDataRepository.findById(id, type);
         checkNull(type, id, current);
-        current = metaDataHook.preDelete(current);
+        current = metaDataHook.preDelete(current, user);
         metaDataRepository.remove(current);
 
-        LOG.info("Deleted metaData {} by {}", current.getId(), uid);
+        LOG.info("Deleted metaData {} by {}", current.getId(), user.getName());
 
         String changeRequestCollection = type.concat(CHANGE_REQUEST_POSTFIX);
         Criteria criteria = Criteria.where("metaDataId").is(id);
@@ -214,17 +214,19 @@ public class MetaDataService {
         List<MetaDataChangeRequest> changeRequests = mongoTemplate
                 .findAllAndRemove(Query.query(criteria), MetaDataChangeRequest.class, changeRequestCollection);
 
-        LOG.info("Deleted changeRequests {} by {}", changeRequests.stream().map(cr -> cr.getId()).collect(Collectors.joining()), uid);
+        LOG.info("Deleted changeRequests {} by {}",
+                changeRequests.stream().map(MetaDataChangeRequest::getId).collect(Collectors.joining()),
+                user.getName());
 
         current.revision(UUID.randomUUID().toString());
         metaDataRepository.save(current);
 
-        current.terminate(UUID.randomUUID().toString(), revisionNote, uid);
+        current.terminate(UUID.randomUUID().toString(), revisionNote, user.getName());
         metaDataRepository.save(current);
         return true;
     }
 
-    public MetaData doPut(@Validated MetaData metaData, String updatedBy, boolean excludeFromPushRequired)
+    public MetaData doPut(@Validated MetaData metaData, AbstractUser user, boolean excludeFromPushRequired)
             throws JsonProcessingException {
         checkForDuplicateEntityId(metaData, false);
 
@@ -233,16 +235,16 @@ public class MetaDataService {
         MetaData previous = metaDataRepository.findById(id, metaData.getType());
         checkNull(metaData.getType(), id, previous);
 
-        metaData = metaDataHook.prePut(previous, metaData);
+        metaData = metaDataHook.prePut(previous, metaData, user);
         metaData = validate(metaData);
 
         previous.revision(UUID.randomUUID().toString());
         metaDataRepository.save(previous);
 
-        metaData.promoteToLatest(updatedBy, (String) metaData.getData().get("revisionnote"));
+        metaData.promoteToLatest(user.getName(), (String) metaData.getData().get("revisionnote"));
         metaDataRepository.update(metaData);
 
-        LOG.info("Updated metaData {} by {}", metaData.getId(), updatedBy);
+        LOG.info("Updated metaData {} by {}", metaData.getId(), user.getName());
 
         return getMetaDataAndValidate(metaData.getType(), metaData.getId());
     }
@@ -272,7 +274,7 @@ public class MetaDataService {
     }
 
     public Optional<MetaData> doMergeUpdate(PathUpdates metaDataUpdate,
-                                            String name,
+                                            AbstractUser user,
                                             String revisionNote,
                                             boolean forceNewRevision) throws JsonProcessingException {
         String id = metaDataUpdate.getMetaDataId();
@@ -282,14 +284,14 @@ public class MetaDataService {
         previous.revision(UUID.randomUUID().toString());
 
         MetaData metaData = metaDataRepository.findById(id, metaDataUpdate.getType());
-        metaData.promoteToLatest(name, revisionNote);
+        metaData.promoteToLatest(user.getName(), revisionNote);
         metaData.merge(metaDataUpdate);
 
         if (!CollectionUtils.isEmpty(metaDataUpdate.getExternalReferenceData())) {
             metaData.getData().putAll(metaDataUpdate.getExternalReferenceData());
         }
-        if (!name.equals("edugain-import")) {
-            metaData = metaDataHook.prePut(previous, metaData);
+        if (!user.getName().equals("edugain-import")) {
+            metaData = metaDataHook.prePut(previous, metaData, user);
         }
         metaData = validate(metaData);
         //Only save and update if there are changes
@@ -299,7 +301,7 @@ public class MetaDataService {
             metaDataRepository.save(previous);
             metaDataRepository.update(metaData);
 
-            LOG.info("Merging new metaData {} by {}", metaData.getId(), name);
+            LOG.info("Merging new metaData {} by {}", metaData.getId(), user.getName());
 
             return Optional.of(getMetaDataAndValidate(metaData.getType(), metaData.getId()));
         } else {
@@ -354,7 +356,7 @@ public class MetaDataService {
                 revision.getRevision().getNumber(), revisionRestore.getParentType());
         //It might be that the revision is no longer valid as metaData configuration has changed
         revision = validate(revision);
-        metaDataHook.prePost(revision);
+        metaDataHook.prePost(revision, federatedUser);
 
         checkForDuplicateEntityId(revision, true);
 
@@ -532,7 +534,7 @@ public class MetaDataService {
             needsUpdate = true;
         }
         if (needsUpdate) {
-            doPut(metaData, apiUser.getName(), false);
+            doPut(metaData, apiUser, false);
         }
 
     }

@@ -2,6 +2,7 @@ package manage.hook;
 
 import crypto.KeyStore;
 import crypto.RSAKeyStore;
+import manage.TestUtils;
 import manage.model.EntityType;
 import manage.model.MetaData;
 import org.junit.jupiter.api.Test;
@@ -14,7 +15,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class EncryptionHookTest {
+class EncryptionHookTest implements TestUtils {
 
     private final EncryptionHook encryptionHook;
     private final KeyStore keyStore;
@@ -39,12 +40,12 @@ class EncryptionHookTest {
         decryptionAttributes.forEach(attr -> {
             String plainSecret = UUID.randomUUID().toString();
             MetaData metaData = metaData(attr, plainSecret);
-            metaData = encryptionHook.prePost(metaData);
+            metaData = encryptionHook.prePost(metaData, apiUser());
             String encrypted = (String) metaData.metaDataFields().get(attr);
             assertNotEquals(plainSecret, encrypted);
             assertTrue(keyStore.isEncryptedSecret(encrypted));
 
-            metaData = encryptionHook.prePut(metaData, metaData);
+            metaData = encryptionHook.prePut(metaData, metaData, apiUser());
             String encryptedSecret = (String) metaData.metaDataFields().get(attr);
             assertEquals(encrypted, encryptedSecret);
         });

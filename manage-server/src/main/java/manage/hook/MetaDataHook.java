@@ -1,5 +1,6 @@
 package manage.hook;
 
+import manage.api.AbstractUser;
 import manage.model.MetaData;
 
 public interface MetaDataHook {
@@ -8,11 +9,11 @@ public interface MetaDataHook {
 
     MetaData postGet(MetaData metaData);
 
-    MetaData prePut(MetaData previous, MetaData newMetaData);
+    MetaData prePut(MetaData previous, MetaData newMetaData, AbstractUser user);
 
-    MetaData prePost(MetaData metaData);
+    MetaData prePost(MetaData metaData, AbstractUser user);
 
-    MetaData preDelete(MetaData metaData);
+    MetaData preDelete(MetaData metaData, AbstractUser user);
 
     MetaData preValidate(MetaData metaData);
 

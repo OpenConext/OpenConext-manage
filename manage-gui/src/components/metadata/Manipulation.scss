@@ -77,4 +77,15 @@
             background-color: $lightest-grey;
         }
     }
+    .read-only {
+        .CodeMirror {
+            background-color: $hover;
+        }
+    }
+
+    .remarks {
+        font-weight: 600;
+        margin: 15px;
+        font-size: 18px;
+    }
 }

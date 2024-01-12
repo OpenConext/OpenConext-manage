@@ -38,27 +38,27 @@ public class SSIDValidationHookTest extends AbstractIntegrationTest {
 
     @Test(expected = ValidationException.class)
     public void prePutSpInStepUpIdp() {
-        subject.prePut(null, metaData(mockSP, "loa", EntityType.SP));
+        subject.prePut(null, metaData(mockSP, "loa", EntityType.SP), apiUser());
     }
 
     @Test(expected = ValidationException.class)
     public void prePostSpInStepUpIdp() {
-        subject.prePost(metaData(mockSP, "loa", EntityType.SP));
+        subject.prePost(metaData(mockSP, "loa", EntityType.SP), apiUser());
     }
 
     @Test
     public void prePutNoLoa() {
-        subject.prePut(null, metaData(mockSP, null, EntityType.SP));
+        subject.prePut(null, metaData(mockSP, null, EntityType.SP), apiUser());
     }
 
     @Test
     public void prePostNoLoa() {
-        subject.prePost(metaData(mockSP, null, EntityType.SP));
+        subject.prePost(metaData(mockSP, null, EntityType.SP),apiUser() );
     }
 
     @Test
     public void prePutNotInStepUp() {
-        subject.prePut(null, metaData(profileSP, "loa", EntityType.SP));
+        subject.prePut(null, metaData(profileSP, "loa", EntityType.SP), apiUser());
     }
 
     private MetaData metaData(String spEntityId, String loa, EntityType entityType) {
