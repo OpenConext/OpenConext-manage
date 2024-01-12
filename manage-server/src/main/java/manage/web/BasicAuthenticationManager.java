@@ -26,10 +26,15 @@ public class BasicAuthenticationManager implements AuthenticationManager {
     private final List<Features> featureToggles;
     private final Product product;
     private final Push push;
+    private final String environment;
 
 
-    public BasicAuthenticationManager(String userName, String password, List<Features> featureToggles, Product
-            product, Push push) {
+    public BasicAuthenticationManager(String userName,
+                                      String password,
+                                      List<Features> featureToggles,
+                                      Product product,
+                                      Push push,
+                                      String environment) {
         Assert.notNull(userName, "userName is required");
         Assert.notNull(password, "password is required");
 
@@ -38,6 +43,7 @@ public class BasicAuthenticationManager implements AuthenticationManager {
         this.featureToggles = featureToggles;
         this.product = product;
         this.push = push;
+        this.environment = environment;
     }
 
     @Override
@@ -58,7 +64,8 @@ public class BasicAuthenticationManager implements AuthenticationManager {
                         createAuthorityList("ROLE_USER", "ROLE_ADMIN"),
                         featureToggles,
                         product,
-                        push
+                        push,
+                        environment
                 ), authentication.getCredentials(), createAuthorityList("ROLE_USER", "ROLE_ADMIN"));
     }
 

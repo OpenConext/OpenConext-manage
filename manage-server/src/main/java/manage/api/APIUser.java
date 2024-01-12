@@ -18,6 +18,7 @@ public class APIUser implements AbstractUser {
     private String name;
     private String password;
     private List<Scope> scopes;
+    private String environment;
     private boolean isAPIUser = true;
 
     public APIUser(String name, List<Scope> scopes) {

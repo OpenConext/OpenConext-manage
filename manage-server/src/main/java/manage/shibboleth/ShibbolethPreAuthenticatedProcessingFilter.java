@@ -34,18 +34,22 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
     private final Product product;
     private final Push push;
     private final List<String> superUserTeamNames;
+    private final String environment;
 
     public ShibbolethPreAuthenticatedProcessingFilter(AuthenticationManager authenticationManager,
                                                       List<Features> featureToggles,
                                                       Product product,
                                                       Push push,
-                                                      String superUserTeamNamesJoined) {
+                                                      String superUserTeamNamesJoined,
+                                                      String environment) {
+
         super();
         setAuthenticationManager(authenticationManager);
         this.featureToggles = featureToggles;
         this.product = product;
         this.push = push;
         this.superUserTeamNames = parseJoinedTeamNames(superUserTeamNamesJoined, ",");
+        this.environment = environment;
     }
 
     private List<String> parseJoinedTeamNames(String names, String delimiter) {
@@ -75,7 +79,7 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
             }
         }
         return new FederatedUser(uid, displayName, schacHomeOrganization,
-                authorityList, featureToggles, product, push);
+                authorityList, featureToggles, product, push, environment);
     }
 
     @Override

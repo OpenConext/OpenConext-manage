@@ -12,4 +12,10 @@ public interface AbstractUser {
     Collection<GrantedAuthority> getAuthorities();
 
     boolean isSuperUser();
+
+    String getEnvironment() ;
+
+    default boolean isProductionEnvironment() {
+        return getEnvironment().equals("prod");
+    }
 }

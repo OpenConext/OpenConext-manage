@@ -22,9 +22,10 @@ public class FederatedUser extends User implements Serializable, AbstractUser {
     private final List<Features> featureToggles;
     private final Product product;
     private final Push push;
+    private final String environment;
 
     public FederatedUser(String uid, String displayName, String schacHomeOrganization, List<GrantedAuthority>
-            authorities, List<Features> featureToggles, Product product, Push push) {
+            authorities, List<Features> featureToggles, Product product, Push push, String environment) {
         super(uid, "N/A", authorities);
         this.uid = uid;
         this.displayName = displayName;
@@ -32,6 +33,7 @@ public class FederatedUser extends User implements Serializable, AbstractUser {
         this.featureToggles = featureToggles;
         this.product = product;
         this.push = push;
+        this.environment = environment;
     }
 
     public boolean featureAllowed(Features feature) {

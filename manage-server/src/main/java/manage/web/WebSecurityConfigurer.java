@@ -107,6 +107,9 @@ public class WebSecurityConfigurer {
         @Value("${security.super_user_team_names}")
         private String superUserTeamNamesJoined;
 
+        @Value("${environment}")
+        private String environmentType;
+
         @Override
         public void configure(WebSecurity web) throws Exception {
             web.ignoring().antMatchers("/client/users/disclaimer");
@@ -148,12 +151,13 @@ public class WebSecurityConfigurer {
                                     featuresList,
                                     product,
                                     push,
-                                    superUserTeamNamesJoined),
+                                    superUserTeamNamesJoined,
+                                    environmentType),
                             AbstractPreAuthenticatedProcessingFilter.class
                     )
                     .addFilterBefore(
                             new BasicAuthenticationFilter(
-                                    new BasicAuthenticationManager(user, password, featuresList, product, push)),
+                                    new BasicAuthenticationManager(user, password, featuresList, product, push, environmentType)),
                             ShibbolethPreAuthenticatedProcessingFilter.class
                     )
                     .authorizeRequests()
@@ -177,6 +181,9 @@ public class WebSecurityConfigurer {
         @Autowired
         private ResourceLoader resourceLoader;
 
+        @Value("${environment}")
+        private String environmentType;
+
         @Override
         public void configure(WebSecurity web) {
             web.ignoring().antMatchers("/internal/health", "/internal/info");
@@ -187,6 +194,7 @@ public class WebSecurityConfigurer {
             APIUserConfiguration apiUserConfiguration = new Yaml()
                     .loadAs(resourceLoader.getResource(configApiUsersFileLocation).getInputStream(), APIUserConfiguration
                             .class);
+            apiUserConfiguration.getApiUsers().forEach(apiUser -> apiUser.setEnvironment(environmentType));
             http
                     .antMatcher("/internal/**")
                     .sessionManagement()
