@@ -118,7 +118,7 @@ public class WebSecurityConfigurer {
         @Override
         protected void configure(HttpSecurity http) throws Exception {
             List<String> allFeatures = Arrays.asList(Features.values()).stream()
-                    .map(feature -> feature.name())
+                    .map(Enum::name)
                     .collect(toList());
 
             List<Features> featuresList = Stream.of(this.features.split(","))

@@ -49,7 +49,7 @@ public class MetaDataService {
 
     private static final Logger LOG = LoggerFactory.getLogger(MetaDataService.class);
 
-    private static final APIUser EDUGAIN_IMPORT_USER = new APIUser("edugain-import", List.of(Scope.SUPER_USER));
+    private static final APIUser EDUGAIN_IMPORT_USER = new APIUser("edugain-import", List.of(Scope.SYSTEM));
 
     public static final String REQUESTED_ATTRIBUTES = "REQUESTED_ATTRIBUTES";
 

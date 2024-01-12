@@ -44,7 +44,7 @@ public interface TestUtils {
     }
 
     default APIUser apiUser() {
-        return new APIUser("test", List.of(Scope.SUPER_USER));
+        return new APIUser("test", List.of(Scope.SYSTEM));
     }
 
 }

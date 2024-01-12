@@ -75,7 +75,7 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
         if (StringUtils.hasText(memberOf)) {
             List<String> groups = parseJoinedTeamNames(memberOf, ";");
             if (this.superUserTeamNames.stream().anyMatch(groups::contains)) {
-                authorityList.add(new SimpleGrantedAuthority("ROLE_".concat(Scope.SUPER_USER.name())));
+                authorityList.add(new SimpleGrantedAuthority("ROLE_".concat(Scope.SYSTEM.name())));
             }
         }
         return new FederatedUser(uid, displayName, schacHomeOrganization,

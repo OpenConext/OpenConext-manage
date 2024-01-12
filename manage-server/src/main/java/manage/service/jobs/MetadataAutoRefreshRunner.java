@@ -84,7 +84,7 @@ public class MetadataAutoRefreshRunner implements Runnable {
         this.metaDataAutoConfiguration = metaDataAutoConfiguration;
         this.featureService = featureService;
         this.cronJobResponsible = cronJobResponsible;
-        this.apiUser = new APIUser(REFRESH_UPDATE_USER, List.of(Scope.SUPER_USER));
+        this.apiUser = new APIUser(REFRESH_UPDATE_USER, List.of(Scope.SYSTEM));
     }
 
     @Override

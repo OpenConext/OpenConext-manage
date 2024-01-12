@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,14 +28,12 @@ public class APIUser implements AbstractUser {
     }
 
     @Override
-    public Collection<GrantedAuthority> getAuthorities() {
-        return scopes.stream()
-                .map(scope -> new SimpleGrantedAuthority("ROLE_".concat(scope.name())))
-                .collect(Collectors.toList());
+    public boolean isAllowed(Scope... scopes) {
+        return this.scopes.containsAll(Arrays.asList(scopes));
     }
 
     @Override
-    public boolean isSuperUser() {
-        return false;
+    public boolean isSystemUser() {
+        return this.scopes.contains(Scope.SYSTEM);
     }
 }

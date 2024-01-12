@@ -1,6 +1,7 @@
 package manage.hook;
 
 import manage.api.AbstractUser;
+import manage.api.Scope;
 import manage.exception.EndpointNotAllowed;
 import manage.model.EntityType;
 import manage.model.MetaData;
@@ -18,15 +19,21 @@ public class SecurityHook extends MetaDataHookAdapter {
 
     @Override
     public MetaData prePost(MetaData metaData, AbstractUser user) {
-        return assertUserIsSuperUser(metaData, user);
+        if (metaData.getType().equals(EntityType.IDP.getType()) && !user.isSystemUser()) {
+            throw new EndpointNotAllowed("Only system users are allowed to create IdP's");
+        }
+        return metaData;
     }
 
     @Override
     public MetaData preDelete(MetaData metaData, AbstractUser user) {
-        if (user.isAPIUser() && user.isProductionEnvironment()) {
-            throw new EndpointNotAllowed("API users are not allowed to delete entities");
+        if (user.isAllowed(Scope.DELETE)) {
+            throw new EndpointNotAllowed(String.format("User %s is not allowed to delete entities", user.getName()));
         }
-        return assertUserIsSuperUser(metaData, user);
+        if (metaData.getType().equals(EntityType.IDP.getType()) && !user.isSystemUser()) {
+            throw new EndpointNotAllowed(String.format("User %s is not allowed to delete identity providers", user.getName()));
+        }
+        return metaData;
     }
 
     @Override
@@ -37,21 +44,15 @@ public class SecurityHook extends MetaDataHookAdapter {
         String manipulationNew = (String) newData.get("manipulation");
         String manipulationNotes = (String) previousData.get("manipulationNotes");
         String manipulationNotesNew = (String) newData.get("manipulationNotes");
-        boolean superUser = user.isSuperUser();
-        if (!Objects.equals(manipulation, manipulationNew) && !superUser && user.isProductionEnvironment()) {
-            throw new EndpointNotAllowed("Only super_users are allowed to change manipulations");
+        boolean systemUser = user.isSystemUser();
+        if (!Objects.equals(manipulation, manipulationNew) && !systemUser) {
+            throw new EndpointNotAllowed(String.format("User %s is not allowed to change manipulations", user.getName()));
         }
-        if (!Objects.equals(manipulationNotes, manipulationNotesNew) && !superUser && user.isProductionEnvironment()) {
-            throw new EndpointNotAllowed("Only super_users are allowed to change manipulationNotes");
+        if (!Objects.equals(manipulationNotes, manipulationNotesNew) && !systemUser) {
+            throw new EndpointNotAllowed(String.format("User %s is not allowed to change manipulationNotes", user.getName()));
         }
         return newMetaData;
     }
 
-    private static MetaData assertUserIsSuperUser(MetaData metaData, AbstractUser user) {
-        if (metaData.getType().equals(EntityType.IDP.getType()) && !user.isSuperUser() && user.isProductionEnvironment()) {
-            throw new EndpointNotAllowed("Only super_users are allowed ro create IdP's");
-        }
-        return metaData;
-    }
 
 }
