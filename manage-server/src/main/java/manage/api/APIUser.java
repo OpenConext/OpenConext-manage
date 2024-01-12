@@ -31,4 +31,9 @@ public class APIUser implements AbstractUser {
                 .map(scope -> new SimpleGrantedAuthority("ROLE_".concat(scope.name())))
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public boolean isSuperUser() {
+        return false;
+    }
 }

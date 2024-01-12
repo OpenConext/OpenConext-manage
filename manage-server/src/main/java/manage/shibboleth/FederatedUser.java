@@ -3,6 +3,7 @@ package manage.shibboleth;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import manage.api.AbstractUser;
+import manage.api.Scope;
 import manage.conf.Features;
 import manage.conf.Product;
 import manage.conf.Push;
@@ -33,11 +34,6 @@ public class FederatedUser extends User implements Serializable, AbstractUser {
         this.push = push;
     }
 
-    public boolean isGuest() {
-        return getAuthorities().stream()
-                .noneMatch(authority -> authority.getAuthority().equalsIgnoreCase("ROLE_ADMIN"));
-    }
-
     public boolean featureAllowed(Features feature) {
         return featureToggles.contains(feature);
     }
@@ -56,5 +52,11 @@ public class FederatedUser extends User implements Serializable, AbstractUser {
     @JsonIgnore
     public String getPassword() {
         return super.getPassword();
+    }
+
+    @Override
+    public boolean isSuperUser() {
+        return getAuthorities().stream()
+                .noneMatch(authority -> authority.getAuthority().equalsIgnoreCase("ROLE".concat(Scope.SUPER_USER.name())));
     }
 }

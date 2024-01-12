@@ -10,4 +10,6 @@ public interface AbstractUser {
     boolean isAPIUser();
 
     Collection<GrantedAuthority> getAuthorities();
+
+    boolean isSuperUser();
 }
