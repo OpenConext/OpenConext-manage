@@ -270,7 +270,8 @@ I18n.translations.en = {
         manipulationInfo: "Documentation on attribute manipulations",
         notesInfo: "Documentation on attribute manipulations notes",
         manipulation: "PHP Code",
-        notes: "Notes"
+        notes: "Notes",
+        allowedDisclaimer: "You are not allowed to edit manipulations"
     },
 
     metaDataFields: {

@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import CodeMirror from "react-codemirror";
 import "codemirror/mode/javascript/javascript";
 import "codemirror/lib/codemirror.css";
-import "@uiw/react-md-editor/dist/mdeditor.css";
+import "@uiw/react-md-editor/markdown-editor.css";
 import "./Manipulation.scss";
 import {isEmpty, stop} from "../../utils/Utils";
 
@@ -64,7 +64,7 @@ export default class Manipulation extends React.PureComponent {
                     {allowed && <MDEditor value={notes}
                                           onChange={this.onChange("data.manipulationNotes")}/>}
 
-                    {!allowed && <MDEditor value={notes} />}
+                    {!allowed && <MDEditor.Markdown source={notes} style={{whiteSpace: 'pre-wrap'}}/>}
                 </section>
             </div>
         );
@@ -97,7 +97,7 @@ export default class Manipulation extends React.PureComponent {
                 <CodeMirror className="comments"
                             value={info}
                             options={optionsForInfo}/>
-                <div className="spacer"></div>
+                {!allowed && <div className="remarks">{I18n.t("manipulation.allowedDisclaimer")}</div>}
                 <CodeMirror className={allowed ? "" : "read-only"}
                             value={content}
                             onChange={this.onChange("data.manipulation")}
