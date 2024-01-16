@@ -18,7 +18,7 @@ class ApplicationIntegrationTest {
                 .when()
                 .accept(ContentType.JSON)
                 .contentType(ContentType.JSON)
-                .get("/internal/health")
+                .get("/manage/api/internal/health")
                 .then()
                 .body("status", equalTo("UP"));
     }
