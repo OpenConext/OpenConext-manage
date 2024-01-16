@@ -69,7 +69,6 @@ public class FederatedUser extends User implements Serializable, AbstractUser {
 
     @Override
     public boolean isSystemUser() {
-        return getAuthorities().stream()
-                .noneMatch(authority -> authority.getAuthority().equalsIgnoreCase("ROLE".concat(Scope.SYSTEM.name())));
+        return this.scopes.contains(Scope.SYSTEM);
     }
 }

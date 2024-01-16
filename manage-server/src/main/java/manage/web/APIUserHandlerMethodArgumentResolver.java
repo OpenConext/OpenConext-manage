@@ -24,9 +24,9 @@ public class APIUserHandlerMethodArgumentResolver implements
                                    WebDataBinderFactory binderFactory) {
         Principal principal = webRequest.getUserPrincipal();
         if (principal instanceof PreAuthenticatedAuthenticationToken) {
-            return APIUser.class.cast(PreAuthenticatedAuthenticationToken.class.cast(principal).getPrincipal());
+            return (APIUser) ((PreAuthenticatedAuthenticationToken) principal).getPrincipal();
         } else {
-            return APIUser.class.cast(UsernamePasswordAuthenticationToken.class.cast(principal).getPrincipal());
+            return (APIUser) ((UsernamePasswordAuthenticationToken) principal).getPrincipal();
         }
     }
 }

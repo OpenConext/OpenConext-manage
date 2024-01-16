@@ -27,9 +27,6 @@ public class SecurityHook extends MetaDataHookAdapter {
 
     @Override
     public MetaData preDelete(MetaData metaData, AbstractUser user) {
-        if (user.isAllowed(Scope.DELETE)) {
-            throw new EndpointNotAllowed(String.format("User %s is not allowed to delete entities", user.getName()));
-        }
         if (metaData.getType().equals(EntityType.IDP.getType()) && !user.isSystemUser()) {
             throw new EndpointNotAllowed(String.format("User %s is not allowed to delete identity providers", user.getName()));
         }

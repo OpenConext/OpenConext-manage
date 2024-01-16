@@ -1,5 +1,6 @@
 package manage.web;
 
+import manage.api.Scope;
 import manage.conf.Features;
 import manage.conf.Product;
 import manage.conf.Push;
@@ -9,6 +10,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.util.Assert;
 
@@ -17,7 +19,7 @@ import java.util.List;
 import static org.springframework.security.core.authority.AuthorityUtils.createAuthorityList;
 
 /**
- * Internal APIs are trusted clients
+ * Only used for the backdoor user if for some reason manage is causing an SSO failure
  */
 public class BasicAuthenticationManager implements AuthenticationManager {
 
@@ -56,17 +58,18 @@ public class BasicAuthenticationManager implements AuthenticationManager {
             throw new BadCredentialsException("Bad credentials");
         }
         String name = String.class.cast(authentication.getPrincipal());
+        List<GrantedAuthority> authorityList = createAuthorityList("ROLE_".concat(Scope.ADMIN.name()));
         return new UsernamePasswordAuthenticationToken(
                 new FederatedUser(
                         name,
                         name,
                         name,
-                        createAuthorityList("ROLE_USER", "ROLE_ADMIN"),
+                        authorityList,
                         featureToggles,
                         product,
                         push,
                         environment
-                ), authentication.getCredentials(), createAuthorityList("ROLE_USER", "ROLE_ADMIN"));
+                ), authentication.getCredentials(), authorityList);
     }
 
 }

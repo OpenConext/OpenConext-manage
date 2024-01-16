@@ -44,11 +44,11 @@ import static manage.model.EntityType.RS;
 public class ScopeController {
 
     private static final Logger LOG = LoggerFactory.getLogger(ScopeController.class);
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
 
-    private MongoTemplate mongoTemplate;
-    private ScopeRepository scopeRepository;
-    private List<String> supportedLanguages;
+    private final MongoTemplate mongoTemplate;
+    private final ScopeRepository scopeRepository;
+    private final List<String> supportedLanguages;
 
     @Autowired
     public ScopeController(MongoTemplate mongoTemplate,
@@ -61,13 +61,13 @@ public class ScopeController {
         this.supportedLanguages = Stream.of(supportedLanguages.split(",")).map(String::trim).collect(toList());
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping({"/client/scopes_languages"})
     public List<String> supportedLanguages() {
         return supportedLanguages;
     }
 
-    @PreAuthorize("hasAnyRole('USER', 'READ')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'READ')")
     @GetMapping({"/client/scopes", "/internal/scopes"})
     public List<Scope> allScopes() {
         return scopeRepository.findAll();
@@ -88,19 +88,19 @@ public class ScopeController {
         return scope;
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping(value = "/client/fetch/scopes", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<String> fetchValues() {
         return scopeRepository.findAll().stream().map(Scope::getName).collect(Collectors.toList());
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping({"/client/scopes/{id}"})
     public Scope get(@PathVariable("id") String id) {
         return scopeById(id);
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/client/inuse/scopes")
     public List<MetaData> scopesInUse(@RequestParam(value = "scopes") String scopes) {
         String scopesIn = Stream.of(scopes.split(",")).map(s -> String.format("\"%s\"", s.trim())).collect(Collectors.joining(","));

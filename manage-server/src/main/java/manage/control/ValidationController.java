@@ -87,7 +87,7 @@ public class ValidationController {
         }).validate(validation.getValue()).isPresent();
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping(value = "/client/secret", produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, String> secret() {
         return Collections.singletonMap("secret", passwordGenerator.generatePassword(36, rules));

@@ -71,7 +71,7 @@ public class SystemController {
         return databaseController.doPush();
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/client/playground/validate")
     public Map<String, Object> validate(FederatedUser federatedUser) {
         if (!federatedUser.featureAllowed(Features.VALIDATION)) {
@@ -80,7 +80,7 @@ public class SystemController {
         return metaDataValidator.validateMigration();
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('SYSTEM')")
     @DeleteMapping({"/client/playground/deleteOrphans"})
     public void deleteOrphans() {
         doDeleteOrphans();
@@ -111,7 +111,7 @@ public class SystemController {
         });
     }
 
-    @PreAuthorize("hasAnyRole('USER', 'READ')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'READ')")
     @GetMapping({"/client/playground/orphans", "/internal/playground/orphans"})
     public List<OrphanMetaData> orphans() {
         return Stream.of(EntityType.values())

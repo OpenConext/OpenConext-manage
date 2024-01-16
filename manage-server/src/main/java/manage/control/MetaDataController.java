@@ -65,20 +65,20 @@ public class MetaDataController {
 
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/client/template/{type}")
     public MetaData template(@PathVariable("type") String type) {
         Map<String, Object> data = metaDataAutoConfiguration.metaDataTemplate(type);
         return new MetaData(type, data);
     }
 
-    @PreAuthorize("hasAnyRole('USER', 'READ')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'READ')")
     @GetMapping({"/client/metadata/{type}/{id}", "/internal/metadata/{type}/{id}"})
     public MetaData get(@PathVariable("type") String type, @PathVariable("id") String id) {
         return metaDataService.getMetaDataAndValidate(type, id);
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/client/metadata/configuration")
     public List<Map<String, Object>> configuration() {
         return metaDataAutoConfiguration.schemaRepresentations();
@@ -105,9 +105,10 @@ public class MetaDataController {
         return metaDataService.doPut(metaData, federatedUser, false);
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/client/metadata/stats")
-    public List<StatsEntry> stats() {
+    public List<StatsEntry> stats(FederatedUser user) {
+
         return metaDataRepository.stats();
     }
 
@@ -141,7 +142,7 @@ public class MetaDataController {
         return Collections.singletonMap("deleted", deleted);
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping(value = "/client/count/feed")
     public Map<String, Long> countFeed() {
         long count = this.metaDataRepository.countAllImportedServiceProviders();
@@ -205,19 +206,17 @@ public class MetaDataController {
                           @PathVariable("id") String id,
                           @RequestBody(required = false) Map body,
                           FederatedUser user) {
-
         String defaultValue = "Deleted by " + user.getUid();
         String revisionNote = body != null ? (String) body.getOrDefault("revisionNote", defaultValue) : defaultValue;
         revisionNote = StringUtils.hasText(revisionNote) ? revisionNote : defaultValue;
         return metaDataService.doRemove(type, id, user, revisionNote);
     }
 
-    @PreAuthorize("hasRole('WRITE')")
+    @PreAuthorize("hasRole('DELETE')")
     @DeleteMapping("/internal/metadata/{type}/{id}")
     public boolean removeInternal(@PathVariable("type") String type,
                                   @PathVariable("id") String id,
                                   APIUser apiUser) {
-
         return metaDataService.doRemove(type, id, apiUser, "Deleted by APIUser " + apiUser.getName());
     }
 
@@ -227,7 +226,6 @@ public class MetaDataController {
     @Transactional
     public MetaData put(@Validated @RequestBody MetaData metaData, FederatedUser user)
             throws JsonProcessingException {
-
         return metaDataService.doPut(metaData, user, false);
     }
 
@@ -236,7 +234,6 @@ public class MetaDataController {
     @Transactional
     public MetaData putInternal(@Validated @RequestBody MetaData metaData, APIUser apiUser)
             throws JsonProcessingException {
-
         return metaDataService.doPut(metaData, apiUser, !apiUser.getScopes().contains(TEST));
     }
 
@@ -245,7 +242,6 @@ public class MetaDataController {
     @Transactional
     public List<String> deleteMetaDataKey(@Validated @RequestBody MetaDataKeyDelete metaDataKeyDelete,
                                           APIUser apiUser) throws IOException {
-
         return metaDataService.deleteMetaDataKey(metaDataKeyDelete, apiUser);
     }
 
@@ -259,13 +255,14 @@ public class MetaDataController {
                 .get();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/client/change-requests/{type}/{metaDataId}")
     public List<MetaDataChangeRequest> changeRequests(@PathVariable("type") String type,
                                                       @PathVariable("metaDataId") String metaDataId) {
         return metaDataRepository.changeRequests(metaDataId, type.concat(CHANGE_REQUEST_POSTFIX));
     }
 
-    @PreAuthorize("hasRole('WRITE')")
+    @PreAuthorize("hasAnyRole('CHANGE_REQUEST', 'WRITE')")
     @GetMapping("/internal/change-requests/{type}/{metaDataId}")
     public List<MetaDataChangeRequest> internalChangeRequests(@PathVariable("type") String type,
                                                               @PathVariable("metaDataId") String metaDataId) {
@@ -344,7 +341,7 @@ public class MetaDataController {
         return metaDataService.restoreRevision(revisionRestore, federatedUser);
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/client/revisions/{type}/{parentId}")
     public List<MetaData> revisions(@PathVariable("type") String type,
                                     @PathVariable("parentId") String parentId) {
@@ -352,7 +349,7 @@ public class MetaDataController {
         return metaDataRepository.revisions(type.concat(REVISION_POSTFIX), parentId);
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/client/autocomplete/{type}")
     public Map<String, List<Map>> autoCompleteEntities(@PathVariable("type") String type,
                                                        @RequestParam("query") String query) {
@@ -360,39 +357,39 @@ public class MetaDataController {
         return metaDataService.autoCompleteEntities(type, query);
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/client/whiteListing/{type}")
     public List<Map> whiteListing(@PathVariable("type") String type, @RequestParam(value = "state") String state) {
         return metaDataRepository.whiteListing(type, state);
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/client/relyingParties")
     public List<Map> relyingParties(@RequestParam("resourceServerEntityID") String resourceServerEntityID) {
         return metaDataRepository.relyingParties(resourceServerEntityID);
     }
 
-    @PreAuthorize("hasAnyRole('USER', 'READ')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'READ')")
     @PostMapping({"/client/provisioning", "/internal/provisioning"})
     public List<Map> provisioning(@RequestBody List<String> identifiers) {
         return metaDataRepository.provisioning(identifiers);
     }
 
-    @PreAuthorize("hasAnyRole('USER', 'READ')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'READ')")
     @GetMapping({"/client/allowedEntities/{type}/{id}", "/internal/allowedEntities/{type}/{id}"})
     public List<Map> allowedEntities(@PathVariable("type") String type, @PathVariable("id") String id) {
         return metaDataRepository.allowedEntities(id, EntityType.fromType(type));
     }
 
 
-    @PreAuthorize("hasAnyRole('USER', 'READ')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'READ')")
     @PostMapping({"/client/uniqueEntityId/{type}", "/internal/uniqueEntityId/{type}"})
     public List<Map> uniqueEntityId(@PathVariable("type") String type, @RequestBody Map<String, Object> properties) {
         String entityId = (String) properties.get("entityid");
         return metaDataService.uniqueEntityId(type, entityId);
     }
 
-    @PreAuthorize("hasAnyRole('USER', 'READ')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'READ')")
     @PostMapping({"/client/search/{type}", "/internal/search/{type}"})
     public List<Map> searchEntities(@PathVariable("type") String type,
                                     @RequestBody Map<String, Object> properties,
@@ -401,7 +398,7 @@ public class MetaDataController {
         return metaDataService.searchEntityByType(type, properties, nested);
     }
 
-    @PreAuthorize("hasAnyRole('USER', 'READ')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'READ')")
     @GetMapping({"/client/rawSearch/{type}", "/internal/rawSearch/{type}"})
     public List<MetaData> rawSearch(@PathVariable("type") String type, @RequestParam("query") String query)
             throws UnsupportedEncodingException {
@@ -409,17 +406,16 @@ public class MetaDataController {
         return metaDataService.retrieveRawSearch(type, query);
     }
 
-    @PreAuthorize("hasAnyRole('USER', 'READ')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'READ')")
     @PostMapping({"/client/recent-activity", "/internal/recent-activity"})
     public List<MetaData> recentActivity(@RequestBody(required = false) Map<String, Object> properties) {
         return metaDataService.retrieveRecentActivity(properties);
     }
 
-    @Secured("ROLE_WRITE")
+    @PreAuthorize("hasAnyRole('CHANGE_REQUEST', 'WRITE')")
     @PutMapping(value = "/internal/connectWithoutInteraction")
     public HttpEntity<HttpStatus> connectWithoutInteraction(@RequestBody Map<String, String> connectionData,
                                                             APIUser apiUser) throws JsonProcessingException {
-
         LOG.debug("connectWithoutInteraction, connectionData: " + connectionData);
         metaDataService.createConnectWithoutInteraction(connectionData, apiUser);
         return new HttpEntity<>(HttpStatus.OK);

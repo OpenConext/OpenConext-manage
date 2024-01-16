@@ -36,19 +36,19 @@ public class UserController {
     @Value("${gui.disclaimer.content}")
     private String disclaimerContent;
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/client/users/me")
     public FederatedUser me(FederatedUser federatedUser) throws JsonProcessingException {
         return federatedUser;
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/client/users/ping")
     public Map<String, String> ping() {
         return Collections.singletonMap("Ping", "Ok");
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/client/users/logout")
     public void logout(HttpServletRequest request) {
         request.getSession().invalidate();

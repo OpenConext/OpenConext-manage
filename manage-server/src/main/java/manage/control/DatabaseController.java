@@ -131,7 +131,7 @@ public class DatabaseController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/client/playground/pushPreview")
     public Map<String, Map<String, Map<String, Object>>> pushPreview() {
         EngineBlockFormatter formatter = new EngineBlockFormatter();

@@ -43,6 +43,7 @@ import MetaDataChangeRequests from "../components/metadata/MetaDataChangeRequest
 import RelyingParties from "../components/metadata/RelyingParties";
 import ProvisioningApplications from "../components/metadata/ProvisioningApplications";
 import AutoRefresh from "../components/metadata/AutoRefresh";
+import {isSystemUser} from "../utils/User";
 
 let tabsSp = [
     "connection",
@@ -594,9 +595,6 @@ class Detail extends React.PureComponent {
     }
 
     renderActions = revisionNote => {
-        if (this.props.currentUser.guest) {
-            return null;
-        }
         const {errors, revisionNoteError} = this.state;
         const hasErrors = this.hasGlobalErrors(errors);
         const revisionNoteRequired = revisionNoteError && isEmpty(revisionNote);
@@ -1126,7 +1124,7 @@ class Detail extends React.PureComponent {
                         <section className="inner-detail">
                             {this.renderTopBanner(name, organization, metaData, resourceServers, whiteListing, isNew, whiteListingLoaded)}
                             {hasErrors && this.renderErrors(errors)}
-                            {!isNew && (
+                            {(!isNew && isSystemUser(this.props.currentUser)) && (
                                 <a
                                     className="button red delete-metadata"
                                     onClick={e => {
@@ -1151,7 +1149,7 @@ class Detail extends React.PureComponent {
                                     {I18n.t("metadata.remove")}
                                 </a>
                             )}
-                            {!isNew && (
+                            {(!isNew && isSystemUser(this.props.currentUser)) && (
                                 <a
                                     className="button green clone-metadata"
                                     onClick={e => {

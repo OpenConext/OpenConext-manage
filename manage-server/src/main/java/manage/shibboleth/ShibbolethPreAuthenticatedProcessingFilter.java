@@ -71,7 +71,7 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
             LOG.error("Missing required attribute(s): uid {} displayName {}", uid, displayName);
             return null;
         }
-        List<GrantedAuthority> authorityList = createAuthorityList("ROLE_USER", "ROLE_ADMIN");
+        List<GrantedAuthority> authorityList = createAuthorityList("ROLE_".concat(Scope.ADMIN.name()));
         if (StringUtils.hasText(memberOf)) {
             List<String> groups = parseJoinedTeamNames(memberOf, ";");
             if (this.superUserTeamNames.stream().anyMatch(groups::contains)) {

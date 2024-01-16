@@ -22,8 +22,8 @@ public class MetaDataValidator {
     private static final Logger LOG = LoggerFactory.getLogger(MetaDataValidator.class);
     private final TypeSafetyHook metaDataHook;
 
-    private MetaDataRepository metaDataRepository;
-    private MetaDataAutoConfiguration metaDataAutoConfiguration;
+    private final MetaDataRepository metaDataRepository;
+    private final MetaDataAutoConfiguration metaDataAutoConfiguration;
 
     @Autowired
     public MetaDataValidator(MetaDataRepository metaDataRepository, MetaDataAutoConfiguration
@@ -37,7 +37,7 @@ public class MetaDataValidator {
         Map<String, Object> results = new HashMap<>();
         Stream.of(EntityType.values()).map(EntityType::getType).forEach(type -> {
             metaDataRepository.getMongoTemplate().findAll(MetaData.class, type)
-                    .stream().forEach(metaData -> this.validate(metaData, type, results));
+                    .forEach(metaData -> this.validate(metaData, type, results));
         });
         return results;
     }

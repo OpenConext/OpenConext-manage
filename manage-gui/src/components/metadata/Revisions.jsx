@@ -101,7 +101,6 @@ class Revisions extends React.Component {
     };
 
     renderDiff = (revision, previous) => {
-        debugger;
         const rev = cloneDeep(revision.data);
         ignoreInDiff.forEach(ignore => delete rev[ignore]);
         sortDict(rev);

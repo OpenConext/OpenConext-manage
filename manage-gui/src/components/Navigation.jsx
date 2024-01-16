@@ -124,13 +124,12 @@ export default class Navigation extends React.PureComponent {
                                     question={confirmationQuestion}/>
                 <div className="navigation">
                     {this.renderItem("/search", "search")}
-                    {/*{!currentUser.guest && this.renderItem("/import", "import")}*/}
-                    {!currentUser.guest && this.renderItem("/system", "system")}
-                    {(!currentUser.guest && currentUser.featureToggles.some(feature => feature.toLowerCase() === "edugain")) && this.renderItem("/edugain", "edugain")}
+                    {this.renderItem("/system", "system")}
+                    {(currentUser.featureToggles.some(feature => feature.toLowerCase() === "edugain")) && this.renderItem("/edugain", "edugain")}
                     {this.renderItem("/api", "api")}
-                    {!currentUser.guest && this.renderItem("/staging", "staging", openChangeRequestsCount === 0 ? null : openChangeRequestsCount)}
-                    {!currentUser.guest && this.renderItem("/scopes", "scopes")}
-                    {!currentUser.guest && this.renderItem("/activity", "activity")}
+                    {this.renderItem("/staging", "staging", openChangeRequestsCount === 0 ? null : openChangeRequestsCount)}
+                    {this.renderItem("/scopes", "scopes")}
+                    {this.renderItem("/activity", "activity")}
                     {this.renderSpinner()}
                     {this.renderPushButton()}
                 </div>
