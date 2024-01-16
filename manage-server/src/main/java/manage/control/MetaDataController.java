@@ -280,7 +280,7 @@ public class MetaDataController {
     }
 
 
-    @PreAuthorize("hasRole('WRITE')")
+    @PreAuthorize("hasAnyRole('CHANGE_REQUEST', 'WRITE')")
     @PostMapping("internal/change-requests")
     @Transactional
     public MetaDataChangeRequest changeRequestInternal(@Validated @RequestBody MetaDataChangeRequest metaDataChangeRequest, APIUser apiUser) throws JsonProcessingException {
