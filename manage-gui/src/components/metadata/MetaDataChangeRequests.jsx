@@ -137,9 +137,9 @@ class MetaDataChangeRequests extends React.Component {
                     //first remove everything, could be an attribute value change like loa-level
                     const newValue = newData[key];
                     if (Array.isArray(newValue)) {
-                        const newValue = newValue.filter(entry => !value.some(ent => entry.name === ent.name));
-                        //this alters the order and confuses the differ
-                        newData[key] = newValue.concat(value);
+                        const newValues = newValue.filter(entry => !value.some(ent => entry.name === ent.name));
+                        //this alters the order and confuses the diff
+                        newData[key] = newValues.concat(value);
                         newData[key].sort((a, b) => a.name.localeCompare(b.name));
                     }
                     const currentValue = data[key];
