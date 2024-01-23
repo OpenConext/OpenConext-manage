@@ -217,6 +217,24 @@ public class MongoChangelog {
         mongoTemplate.indexOps(schema).ensureIndex(textIndexDefinition);
     }
 
+    @ChangeSet(order = "013", id = "addPolicy", author = "okke.harsta@surf.nl")
+    public void addPolicy(MongockTemplate mongoTemplate) {
+        String schema = EntityType.PDP.getType();
+        if (!mongoTemplate.collectionExists(schema)) {
+            mongoTemplate.createCollection(schema);
+        }
+        String revision = schema.concat(REVISION_POSTFIX);
+        if (!mongoTemplate.collectionExists(revision)) {
+            mongoTemplate.createCollection(revision);
+        }
+        mongoTemplate.indexOps(revision).ensureIndex(new Index("revision.parentId", Sort.Direction.ASC));
+        TextIndexDefinition textIndexDefinition = new TextIndexDefinition.TextIndexDefinitionBuilder()
+                .onField("$**")
+                .build();
+        mongoTemplate.indexOps(schema).ensureIndex(textIndexDefinition);
+    }
+
+
     private void migrateRelayingPartyToResourceServer(Map<String, Map<String, Object>> properties, List<Pattern> patterns, Map<String, Object> simpleProperties, MetaData rs) {
         rs.setType(EntityType.RS.getType());
         rs.getData().entrySet().removeIf(entry -> !properties.containsKey(entry.getKey()));

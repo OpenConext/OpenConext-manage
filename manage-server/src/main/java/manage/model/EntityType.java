@@ -10,7 +10,8 @@ public enum EntityType {
     RP("oidc10_rp", SP.getJanusDbValue()),
     RS("oauth20_rs"),
     STT("single_tenant_template", SP.getJanusDbValue()),
-    PROV("provisioning");
+    PROV("provisioning"),
+    PDP("policy");
 
     private final String type;
     private final String janusDbValue;
