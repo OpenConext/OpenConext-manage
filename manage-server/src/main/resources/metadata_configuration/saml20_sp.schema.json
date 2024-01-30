@@ -575,6 +575,10 @@
           "default": "license_required_by_service_provider",
           "info": "Set the applicable license for this service as provisioned by the SP Dashboard."
         },
+        "coin:stepup:forceauthn": {
+          "type": "boolean",
+          "info": "When Stepup Authentication is required for this SP, disable Single Sign On on the token validation and require the user to always present the token."
+        },
         "coin:stepup:requireloa": {
           "type": "string",
           "format": "url",
