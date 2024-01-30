@@ -7,13 +7,22 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.util.StringUtils;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class APIAuthenticationManager implements AuthenticationManager {
 
-    private APIUserConfiguration apiUserConfiguration;
+    //trusted API headers
+    private static final String X_IDP_ENTITY_ID = "X-IDP-ENTITY-ID";
+    private static final String X_UNSPECIFIED_NAME_ID = "X-UNSPECIFIED-NAME-ID";
+    private static final String X_DISPLAY_NAME = "X-DISPLAY-NAME";
+
+    private final APIUserConfiguration apiUserConfiguration;
 
     public APIAuthenticationManager(APIUserConfiguration apiUserConfiguration) {
         this.apiUserConfiguration = apiUserConfiguration;
@@ -29,11 +38,28 @@ public class APIAuthenticationManager implements AuthenticationManager {
         if (!apiUser.getPassword().equals(authentication.getCredentials())) {
             throw new BadCredentialsException("Bad credentials");
         }
+
+        APIUser principal = new APIUser(apiUser);
+        Optional<ImpersonatedUser> impersonatedUserOptional = impersonatedUser();
+        impersonatedUserOptional.ifPresent(principal::setImpersonatedUser);
+
         return new UsernamePasswordAuthenticationToken(
-                apiUser,
+                principal,
                 authentication.getCredentials(),
                 apiUser.getScopes().stream()
                         .map(scope -> new SimpleGrantedAuthority("ROLE_".concat(scope.name())))
                         .collect(Collectors.toList()));
     }
+
+    private Optional<ImpersonatedUser> impersonatedUser() {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        String idpEntityId = request.getHeader(X_IDP_ENTITY_ID);
+        String unspecifiedNameId = request.getHeader(X_UNSPECIFIED_NAME_ID);
+        String displayName = request.getHeader(X_DISPLAY_NAME);
+        if (StringUtils.hasText(idpEntityId) && StringUtils.hasText(unspecifiedNameId) && StringUtils.hasText(displayName)) {
+            return Optional.of(new ImpersonatedUser(idpEntityId, unspecifiedNameId, displayName));
+        }
+        return Optional.empty();
+    }
+
 }

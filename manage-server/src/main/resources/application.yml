@@ -72,6 +72,11 @@ spring:
   data:
     mongodb:
       uri: mongodb://localhost:27017/metadata_test
+  datasource:
+    url: jdbc:mysql://localhost/pdpserver?autoReconnect=true&useSSL=false
+    username: root
+    password:
+    driverClassName: org.mariadb.jdbc.Driver
 
   main:
     banner-mode: "off"

@@ -13,21 +13,20 @@
     "entityid": {
       "type": "string"
     },
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
     "type": {
       "type": "string",
       "enum": [
-        "provisioning"
+        "policy"
       ]
     },
     "revisionid": {
       "type": "number"
-    },
-    "state": {
-      "type": "string",
-      "enum": [
-        "prodaccepted",
-        "testaccepted"
-      ]
     },
     "created": {
       "type": "string"
@@ -41,105 +40,127 @@
         "null"
       ]
     },
-    "applications": {
+    "serviceProviderIds": {
       "type": "array",
       "items": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "type": {
-            "type": "string",
-            "enum": [
-              "saml20_sp",
-              "oidc10_rp"
-            ]
-          }
+        "type": "string"
         }
+    },
+    "identityProviderIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
       }
     },
     "metaDataFields": {
       "type": "object",
-      "properties": {
-        "provisioning_type": {
-          "type": "string",
-          "enum": [
-            "scim",
-            "eva",
-            "graph"
-          ],
-          "info": "From the pull down, select the type of provisioning.",
-          "disabledAfterPersisted": true
-        },
-        "scim_url": {
-          "type": "string",
-          "format": "url",
-          "info": "Enter the URL for the SCIM endpoint"
-        },
-        "scim_user": {
-          "type": "string",
-          "info": "The user of the SCIM endpoint."
-        },
-        "scim_password": {
-          "type": "string",
-          "info": "The password of the SCIM endpoint."
-        },
-        "scim_update_role_put_method": {
-          "type": "boolean",
-          "default": false,
-          "info": "If checked then we use the PUT method for Group updates thus sending all information (e.g. all members), otherwise PATCH with only the added or removed member."
-        },
-        "eva_url": {
-          "type": "string",
-          "format": "url",
-          "info": "Enter the URL for the Eva endpoint"
-        },
-        "eva_token": {
-          "type": "string",
-          "info": "The token of the EVA endpoint."
-        },
-        "eva_guest_account_duration": {
-          "type": "number",
-          "info": "The number of days the EVA guest account will be valid."
-        },
-        "graph_url": {
-          "type": "string",
-          "format": "url",
-          "info": "Enter the URL for the Graph endpoint"
-        },
-        "graph_client_id": {
-          "type": "string",
-          "info": "The client ID of the Graph endpoint."
-        },
-        "graph_secret": {
-          "type": "string",
-          "info": "The secret of the Graph endpoint."
-        },
-        "graph_tenant": {
-          "type": "string",
-          "info": "The tenant of the Graph endpoint."
-        }
-      },
-      "patternProperties": {
-        "^name:(en|nl)$": {
-          "type": "string",
-          "info": "Set the name of the provisioning group."
-        },
-        "^description:(en|nl)$": {
-          "type": "string",
-          "info": "The description of the service."
-        }
-      },
-      "required": [
-        "provisioning_type",
-        "name:en"
-      ],
+      "properties": {},
+      "patternProperties": {},
+      "required": [],
       "additionalProperties": false
+    },
+    "attributes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          },
+          "negated": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "loas": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "level": {
+            "type": "string"
+          },
+          "allAttributesMustMatch": {
+            "type": "boolean"
+          },
+          "negateCidrNotation": {
+            "type": "boolean"
+          },
+          "attributes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": "string"
+                },
+                "negated": {
+                  "type": "boolean"
+                }
+              }
+            }
+          },
+          "cidrNotations": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "ipAddress": {
+                  "type": "string"
+                },
+                "prefix": {
+                  "type": "integer"
+                },
+                "ipInfo": {
+                  "type": "object",
+                  "properties": {
+                    "networkAddress": {
+                      "type": "string"
+                    },
+                    "broadcastAddress": {
+                      "type": "string"
+                    },
+                    "capacity": {
+                      "type": "integer"
+                    },
+                    "ipv4": {
+                      "type": "boolean"
+                    },
+                    "prefix": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "allAttributesMustMatch": {
+      "type": "boolean"
+    },
+    "denyRule": {
+      "type": "boolean"
+    },
+    "userDisplayName": {
+      "type": "string"
+    },
+    "authenticatingAuthorityName": {
+      "type": "string"
     }
   },
   "required": [
-    "metaDataFields"
+    "name",
+    "description",
+    "serviceProviderIds"
   ],
   "additionalProperties": false,
   "indexes": []

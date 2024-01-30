@@ -1,7 +1,9 @@
 package manage.policies;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import manage.model.MetaData;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -10,6 +12,7 @@ import java.util.List;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class PdpPolicyDefinition {
 
     private Long id;
@@ -58,4 +61,7 @@ public class PdpPolicyDefinition {
 
     private Long parentId;
 
+    public PdpPolicyDefinition(MetaData metaData) {
+
+    }
 }

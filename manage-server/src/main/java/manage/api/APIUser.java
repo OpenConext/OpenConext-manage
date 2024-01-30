@@ -21,10 +21,17 @@ public class APIUser implements AbstractUser {
     private List<Scope> scopes;
     private String environment;
     private boolean isAPIUser = true;
+    private ImpersonatedUser impersonatedUser;
 
     public APIUser(String name, List<Scope> scopes) {
         this.name = name;
         this.scopes = scopes;
+    }
+
+    public APIUser(APIUser apiUser) {
+        this.name = apiUser.getName();
+        this.scopes = apiUser.getScopes();
+        this.environment = apiUser.getEnvironment();
     }
 
     @Override

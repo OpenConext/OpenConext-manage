@@ -1,0 +1,43 @@
+{
+  "id": 1248,
+  "name": "Jortt Policy",
+  "description": "A user is only allowed to access 'Jortt' when he/she has the value 'example.com' for attribute 'urn:mace:terena.org:attribute-def:schacHomeOrganization'",
+  "serviceProviderIds": [
+    "urn:kelder:jort"
+  ],
+  "serviceProviderNames": [
+    "Jortt"
+  ],
+  "serviceProviderNamesNl": [
+    "Jortt"
+  ],
+  "identityProviderIds": [
+    "https://localhost.surf.id"
+  ],
+  "identityProviderNames": [
+    "Local SURFconext Guest IdP"
+  ],
+  "identityProviderNamesNl": [
+    "Local SURFconext Guest IdP"
+  ],
+  "identityProviderNamesPt": [],
+  "attributes": [
+    {
+      "name": "urn:mace:terena.org:attribute-def:schacHomeOrganization",
+      "value": "example.com"
+    }
+  ],
+  "denyAdvice": "Access Denied",
+  "denyAdviceNl": "Verboden",
+  "denyRule": false,
+  "allAttributesMustMatch": false,
+  "userDisplayName": "Admin Doe",
+  "authenticatingAuthorityName": "OpenConext Mujina IDP",
+  "numberOfRevisions": 0,
+  "revisionNbr": 0,
+  "created": "2024-01-30T12:04:28.000+00:00",
+  "isActivatedSr": false,
+  "active": true,
+  "actionsAllowed": false,
+  "type": "reg"
+}
