@@ -78,26 +78,13 @@ public class PdpPolicyDefinition {
                                 .map(cidr -> new CidrNotation((String) cidr.get("ipAddress"), (Integer) cidr.get("prefix"))).collect(Collectors.toList())
                 )).collect(Collectors.toList());
         this.denyRule = (boolean) data.getOrDefault("denyRule", false);
-
         this.allAttributesMustMatch = (boolean) data.getOrDefault("allAttributesMustMatch", false);
-
         this.created = (Date) data.get("created");
-
         this.userDisplayName = (String) data.get("userDisplayName");
-
         this.authenticatingAuthorityName = (String) data.get("authenticatingAuthorityName");
-
         this.denyAdvice = (String) data.get("denyAdvice");
-
         this.denyAdviceNl = (String) data.get("denyAdvice");
-
-        this.isActivatedSr = ;
-
-        this.active;
-
-        this.actionsAllowed;
-
-        this.type;
-
+        this.active=(boolean) data.getOrDefault("allAttributesMustMatch", false);
+        this.type=(String) data.get("type");
     }
 }

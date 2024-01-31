@@ -1,33 +1,30 @@
 package manage.policies;
 
-import lombok.SneakyThrows;
 import manage.api.APIUser;
 import manage.api.ImpersonatedUser;
 import manage.model.EntityType;
-import manage.model.MetaData;
 import manage.service.MetaDataService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
-import pdp.domain.*;
+
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
-import static java.util.stream.StreamSupport.stream;
 import static manage.service.MetaDataService.REQUESTED_ATTRIBUTES;
 import static org.springframework.util.CollectionUtils.isEmpty;
-import static pdp.access.PolicyAccess.READ;
-import static pdp.util.StreamUtils.singletonCollector;
-import static pdp.xacml.PdpPolicyDefinitionParser.IDP_ENTITY_ID;
 
 @Component
+@SuppressWarnings("unchecked")
 public class PolicyIdpAccessEnforcer{
 
-    private static final Logger LOG = LoggerFactory.getLogger(PolicyIdpAccessEnforcer.class);
+    private static final List<String> requiredAttributes = List.of(
+            "metaDataFields.coin:institution_id",
+            "entityid",
+            "allowedall",
+            "allowedEntities");
 
     private final MetaDataService metaDataService;
 
@@ -37,27 +34,15 @@ public class PolicyIdpAccessEnforcer{
 
     /**
      * Create, update or delete actions and access to the (read-only) revisions are only allowed if the
-     * AuthenticatingAuthority of the signed-in user equals the AuthenticatingAuthority of the PdpPolicy or the
-     * AuthenticatingAuthority of the user is linked (through the InstitutionID) to the AuthenticatingAuthority of
-     * the PdpPolicy.
+     * IdP of the signed-in user equals the IdP of the PdpPolicy or the
+     * IdP of the user is linked (through the InstitutionID) to the IdP of the PdpPolicy.
      * The CUD actions are also only allowed if all the Idps of the pdpPolicy equal or are linked to the
      * AuthenticatingAuthority of the signed-in user.
      * If the Idp list of the policy is empty then the SP must have the same institutionID as the institutionID of the
      * AuthenticatingAuthority of the signed-in user.
      *
      */
-    public void actionAllowed(PdpPolicyDefinition policy, PolicyAccess policyAccess, APIUser apiUser) {
-        doActionAllowed(policy, policyAccess, apiUser, true);
-    }
-
-    public boolean actionAllowedIndicator(PdpPolicyDefinition policy, PolicyAccess policyAccess, APIUser apiUser) {
-        return doActionAllowed(policy, policyAccess, apiUser, false);
-    }
-
-    private boolean doActionAllowed(PdpPolicyDefinition policy, PolicyAccess policyAccess, APIUser apiUser, boolean throwException) {
-        List<String> serviceProviderIds = policy.getServiceProviderIds();
-        List<String> identityProviderIds = policy.getIdentityProviderIds();
-
+    public boolean actionAllowed(PdpPolicyDefinition policy, PolicyAccess policyAccess, APIUser apiUser, boolean throwException) {
         ImpersonatedUser impersonatedUser = apiUser.getImpersonatedUser();
 
         if (impersonatedUser == null) {
@@ -67,79 +52,89 @@ public class PolicyIdpAccessEnforcer{
             return false;
         }
 
-        if (CollectionUtils.isEmpty(serviceProviderIds)) {
-            throw new IllegalArgumentException("ServiceProvider Ids must not be empty");
-        }
-        String authenticatingAuthorityUser = impersonatedUser.getIdpEntityId();
-        String userIdentifier = impersonatedUser.getUnspecifiedNameId();
+        String idpEntityId = impersonatedUser.getIdpEntityId();
 
-        Set<String> idpsOfUserEntityIds = getEntityIds(user.getIdpEntities());
-        Set<String> spsOfUserEntityIds = getEntityIds(user.getSpEntities());
+        List<Provider> userIdentityProviders = this.getUserIdentityProviders(idpEntityId);
+        List<Provider> userServiceProviders = this.getUserServiceProviders(userIdentityProviders);
 
-        if (isEmpty(identityProviderIds)) {
+        return doInternalActionAllowed(policy, policyAccess, throwException, userIdentityProviders, userServiceProviders, impersonatedUser);
+    }
+
+    private boolean doInternalActionAllowed(PdpPolicyDefinition policy,
+                                            PolicyAccess policyAccess,
+                                            boolean throwException,
+                                            List<Provider> userIdentityProviders,
+                                            List<Provider> userServiceProviders,
+                                            ImpersonatedUser impersonatedUser) {
+        Set<String> userIdentityProvidersEntityIds = userIdentityProviders.stream().map(Provider::getEntityId).collect(toSet());
+        Set<String> userServiceProvidersEntityIds = userServiceProviders.stream().map(Provider::getEntityId).collect(toSet());
+
+        List<String> policyServiceProviderIds = policy.getServiceProviderIds();
+        List<String> policyIdentityProviderIds = policy.getIdentityProviderIds();
+
+
+        if (isEmpty(policyIdentityProviderIds)) {
             switch (policyAccess) {
                 case READ:
-                    //Valid to have no identityProvidersIds, but then the SP must be allowed access by these users IdP
-                    if (!idpIsAllowed(user, new ArrayList<>(serviceProviderIds))) {
+                    //One of the policy SP must be allowed access by these users IdP
+                    if (!idpIsAllowed(userIdentityProviders, policyServiceProviderIds)) {
                         if (throwException) {
-                            throw new PolicyIdpAccessMismatchServiceProviderException(String.format(
+                            throw new IllegalArgumentException(String.format(
                                     "Policy for target SP '%s' requested by '%s', but this SP is not allowed access by users from IdP '%s'",
-                                    serviceProviderIds,
-                                    userIdentifier,
-                                    authenticatingAuthorityUser)
+                                    policyServiceProviderIds,
+                                    impersonatedUser.getUnspecifiedNameId(),
+                                    impersonatedUser.getIdpEntityId())
                             );
                         }
                         return false;
                     }
                     break;
                 case WRITE:
-                    //Valid to have no identityProvidersIds, but then the SP must be linked by this users IdP
-                    if (!spsOfUserEntityIds.containsAll(serviceProviderIds)) {
+                    //The SP must be owned by the IdP of the user
+                    if (!userServiceProvidersEntityIds.containsAll(policyServiceProviderIds)) {
                         if (throwException) {
-                            throw new PolicyIdpAccessMismatchServiceProviderException(String.format(
-                                    "Policy for target SP '%s' requested by '%s', but this SP is not linked to users IdP '%s'",
-                                    serviceProviderIds,
-                                    userIdentifier,
-                                    authenticatingAuthorityUser)
+                            throw new IllegalArgumentException(String.format(
+                                    "Policy for target SP '%s' requested by '%s', but this SP is not owned to users IdP '%s'",
+                                    policyServiceProviderIds,
+                                    impersonatedUser.getUnspecifiedNameId(),
+                                    impersonatedUser.getIdpEntityId())
                             );
                         }
                         return false;
                     }
                     break;
-                default:
-                    throw new IllegalArgumentException("Not handled PolicyAccess " + policyAccess);
             }
         } else {
             //now the SP may be anything, however all selected IDPs for this policy must be linked to this users IDP
-            if (!idpsOfUserEntityIds.containsAll(identityProviderIds)) {
+            if (!userIdentityProvidersEntityIds.containsAll(policyIdentityProviderIds)) {
                 if (throwException) {
-                    throw new PolicyIdpAccessMismatchIdentityProvidersException(String.format(
+                    throw new IllegalArgumentException(String.format(
                             "Policy for target IdPs '%s' requested by '%s', but not all are linked to users IdP '%s",
-                            identityProviderIds,
-                            userIdentifier,
-                            authenticatingAuthorityUser)
+                            policyIdentityProviderIds,
+                            impersonatedUser.getUnspecifiedNameId(),
+                            impersonatedUser.getIdpEntityId())
                     );
                 }
                 return false;
             }
 
         }
-        if (policyAccess.equals(READ)) {
-            //Revisions may be seen when we get to this point
+        if (policyAccess.equals(PolicyAccess.READ)) {
+            //When we get to this point the policy may be read by the user
             return true;
         }
 
-        //finally check (e.g. for update and delete actions) if the getAuthenticatingAuthority of the policy is owned by this user
-        String authenticatingAuthorityPolicy = pdpPolicy.getAuthenticatingAuthority();
-        if (!authenticatingAuthorityPolicy.equals(authenticatingAuthorityUser) &&
-                !idpsOfUserEntityIds.contains(authenticatingAuthorityPolicy)) {
+        //finally check (e.g. for update and delete actions) if the policy is owned by this user
+        String authenticatingAuthorityPolicy = policy.getAuthenticatingAuthorityName();
+        if (!authenticatingAuthorityPolicy.equals(impersonatedUser.getIdpEntityId()) &&
+                !userIdentityProvidersEntityIds.contains(authenticatingAuthorityPolicy)) {
             if (throwException) {
-                throw new PolicyIdpAccessOriginatingIdentityProviderException(String.format(
+                throw new IllegalArgumentException(String.format(
                         "Policy created by admin '%s' of IdP '%s' can not be updated / deleted by admin '%s' of IdP '%s'",
-                        pdpPolicy.getUserIdentifier(),
+                        policy.getUserDisplayName(),
                         authenticatingAuthorityPolicy,
-                        userIdentifier,
-                        authenticatingAuthorityUser)
+                        impersonatedUser.getUnspecifiedNameId(),
+                        impersonatedUser.getIdpEntityId())
                 );
             }
             return false;
@@ -148,48 +143,34 @@ public class PolicyIdpAccessEnforcer{
     }
 
     /**
-     * If the logged in FederatedUser requires policyIdpAccessEnforcement then only those violations are
-     * returned which the user may see
+     * Filter out  the policies that may be seen by the user
      */
-    public Iterable<PdpPolicyViolation> filterViolations(Iterable<PdpPolicyViolation> violations) {
-        FederatedUser user = federatedUser();
-        if (!user.isPolicyIdpAccessEnforcementRequired()) {
-            return violations;
+    public List<PdpPolicyDefinition> filterPdpPolicies(APIUser apiUser, List<PdpPolicyDefinition> policies) {
+        ImpersonatedUser impersonatedUser = apiUser.getImpersonatedUser();
+
+        if (impersonatedUser == null) {
+            return Collections.emptyList();
         }
-        Set<String> idpsOfUserEntityIds = getEntityIds(user.getIdpEntities());
+        String idpEntityId = impersonatedUser.getIdpEntityId();
 
-        return stream(violations.spliterator(), false).filter(violation -> maySeeViolation(violation, idpsOfUserEntityIds)).collect(toList());
-    }
+        List<Provider> userIdentityProviders = this.getUserIdentityProviders(idpEntityId);
+        List<Provider> userServiceProviders = this.getUserServiceProviders(userIdentityProviders);
 
-    /**
-     * Only PdpPolicyViolation are returned where the Idp of the violation is owned by the user
-     */
-    @SneakyThrows
-    private boolean maySeeViolation(PdpPolicyViolation violation, Set<String> idpsOfUserEntityIds) {
-        JsonPolicyRequest jsonPolicyRequest = objectMapper.readValue(violation.getJsonRequest(), JsonPolicyRequest.class);
-        String idp = getEntityAttributeValue(jsonPolicyRequest, IDP_ENTITY_ID);
+        Set<String> userServiceProviderIds = userServiceProviders.stream().map(Provider::getEntityId).collect(toSet());
 
-        return idpsOfUserEntityIds.contains(idp);
-    }
-
-    private String getEntityAttributeValue(JsonPolicyRequest jsonPolicyRequest, String attributeName) {
-        return jsonPolicyRequest.request.resource.attributes.stream()
-                .filter(attr -> attr.attributeId.equals(attributeName))
-                .collect(singletonCollector()).value;
-    }
-
-    /**
-     * If the logged in FederatedUser requires policyIdpAccessEnforcement then only those PdpPolicyDefinitions are
-     * returned which the user may see
-     */
-    public List<PdpPolicyDefinition> filterPdpPolicies(List<PdpPolicyDefinition> policies) {
-        FederatedUser user = federatedUser();
-        if (!user.isPolicyIdpAccessEnforcementRequired()) {
-            return policies;
-        }
-        Set<String> idpsOfUserEntityIds = getEntityIds(user.getIdpEntities());
-        Set<String> spsOfUserEntityIds = getEntityIds(user.getSpEntities());
-        return policies.stream().filter(policy -> maySeePolicy(policy, user, idpsOfUserEntityIds, spsOfUserEntityIds)).collect(toList());
+        List<PdpPolicyDefinition> pdpPolicyDefinitions = policies.stream()
+                .filter(policy -> maySeePolicy(policy, userIdentityProviders, userServiceProviderIds))
+                .collect(toList());
+        //Prevent to load everything twice
+        pdpPolicyDefinitions.forEach(policy ->
+                policy.setActionsAllowed(this.doInternalActionAllowed(
+                        policy,
+                        PolicyAccess.WRITE,
+                        false,
+                        userIdentityProviders,
+                        userServiceProviders,
+                        impersonatedUser)));
+        return pdpPolicyDefinitions;
     }
 
     /**
@@ -201,47 +182,65 @@ public class PolicyIdpAccessEnforcer{
      * <p>
      * the IdPs of the policy are empty and the SP of the policy is owned by the user
      */
-    private boolean maySeePolicy(PdpPolicyDefinition pdpPolicyDefinition, FederatedUser user,
-                                 Set<String> idpsOfUserEntityIds, Set<String> spsOfUserEntityIds) {
-        List<String> identityProviderIds = pdpPolicyDefinition.getIdentityProviderIds();
-        List<String> serviceProviderIds = pdpPolicyDefinition.getServiceProviderIds();
-        return (isEmpty(identityProviderIds) &&
-                (idpIsAllowed(user, serviceProviderIds)
-                        || serviceProviderIds.stream().anyMatch(spsOfUserEntityIds::contains)))
-                || identityProviderIds.stream().anyMatch(idpsOfUserEntityIds::contains);
-    }
+    private boolean maySeePolicy(PdpPolicyDefinition pdpPolicyDefinition,
+                                 List<Provider> userIdentityProviders,
+                                 Set<String> userServiceProviderIds) {
 
-    private boolean idpIsAllowed(FederatedUser user, List<String> serviceProviderIds) {
-        return user.getIdpEntities().stream().anyMatch(idp -> idp.isAllowedFrom(serviceProviderIds.toArray(new String[0])));
-    }
+        Set<String> userIdentityProvidersIds = userIdentityProviders.stream().map(Provider::getEntityId).collect(toSet());
 
-    public List<EntityMetaData> filterIdentityProviders(List<EntityMetaData> identityProviders) {
-        FederatedUser user = federatedUser();
-        if (!user.isPolicyIdpAccessEnforcementRequired()) {
-            return identityProviders;
+        List<String> policyIdentityProviderIds = pdpPolicyDefinition.getIdentityProviderIds();
+        List<String> policyServiceProviderIds = pdpPolicyDefinition.getServiceProviderIds();
+
+        if (isEmpty(policyIdentityProviderIds)) {
+            //If there are no IdPs on the policy, then one of the SPs of the policy must be connected to the IdP of the user
+            return idpIsAllowed(userIdentityProviders, policyServiceProviderIds) ||
+                    policyServiceProviderIds.stream().anyMatch(spId -> userServiceProviderIds.contains(spId));
         }
-        Set<String> idpsOfUserEntityIds = getEntityIds(user.getIdpEntities());
-
-        return identityProviders.stream().filter(idp -> idpsOfUserEntityIds.contains(idp.getEntityId())).collect(toList());
+        return policyIdentityProviderIds.stream().anyMatch(idp -> userIdentityProvidersIds.contains(idp));
     }
 
-    private Set<String> getEntityIds(String entityId) {
-        Map<String, Object> properties = new HashMap<>();
-        properties.put(REQUESTED_ATTRIBUTES, List.of(
+    private boolean idpIsAllowed(List<Provider> userIdentityProviders, List<String> serviceProviderIds) {
+        return userIdentityProviders.stream().anyMatch(idp -> idp.isAllowedFrom(serviceProviderIds.toArray(new String[0])));
+    }
+
+    private List<Provider> getUserIdentityProviders(String entityId) {
+        EntityType entityType = EntityType.IDP;
+        Map<String, Object> searchOptions = new HashMap<>();
+        searchOptions.put(REQUESTED_ATTRIBUTES, requiredAttributes);
+        searchOptions.put("entityid", entityId);
+        List<Provider> providers = this.metaDataService.searchEntityByType(entityType.getType(), searchOptions, false).stream()
+                .map(entity -> new Provider(entityType, entity))
+                .collect(toList());
+        if (CollectionUtils.isEmpty(providers)) {
+            return Collections.emptyList();
+        }
+        List<String> institutionIds = providers.stream().map(provider -> provider.getInstitutionId()).collect(toList());
+        if (!CollectionUtils.isEmpty(institutionIds)) {
+            searchOptions = new HashMap<>();
+            searchOptions.put(REQUESTED_ATTRIBUTES, requiredAttributes);
+            searchOptions.put("metaDataFields.coin:institution_id", institutionIds);
+            providers = this.metaDataService.searchEntityByType(entityType.getType(), searchOptions, false).stream()
+                    .map(entity -> new Provider(entityType, entity))
+                    .collect(toList());
+        }
+        return providers;
+    }
+
+    private List<Provider> getUserServiceProviders(List<Provider> userIdentityProviders) {
+        if (CollectionUtils.isEmpty(userIdentityProviders)) {
+            return Collections.emptyList();
+        }
+        EntityType entityType = EntityType.SP;
+        Map<String, Object> searchOptions = new HashMap<>();
+        List<String> requiredAttributes = List.of(
                 "metaDataFields.coin:institution_id",
-                "metaDataFields"))
-        List<Map> entities = this.metaDataService.searchEntityByType(EntityType.IDP.getType(), properties, false);
-        private final String requestedAttributes = "REQUESTED_ATTRIBUTES\":[\"metaDataFields.coin:institution_id\"," +
-                " \"metaDataFields" +
-                ".coin:policy_enforcement_decision_required\", \"allowedall\", \"allowedEntities\"]";
-
-        private final String body = "{\"" + requestedAttributes + "}";
-        private final String bodyForEntity = "{\"entityid\":\"@@entityid@@\", \"" + requestedAttributes + "}";
-        private final String bodyForInstitutionId = "{\"metaDataFields.coin:institution_id\":\"@@institution_id@@\", \"" +
-                requestedAttributes + "}";
-
-        return entities.stream().map(EntityMetaData::getEntityId).collect(toSet());
+                "entityid",
+                "allowedall",
+                "allowedEntities");
+        searchOptions.put(REQUESTED_ATTRIBUTES, requiredAttributes);
+        searchOptions.put("metaDataFields.coin:institution_id", userIdentityProviders.get(0).getInstitutionId());
+        return this.metaDataService.searchEntityByType(entityType.getType(), searchOptions, false).stream()
+                .map(entity -> new Provider(entityType, entity))
+                .collect(toList());
     }
-
-
 }
