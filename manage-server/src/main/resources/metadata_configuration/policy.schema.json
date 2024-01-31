@@ -147,6 +147,9 @@
     "allAttributesMustMatch": {
       "type": "boolean"
     },
+    "active": {
+      "type": "boolean"
+    },
     "denyRule": {
       "type": "boolean"
     },

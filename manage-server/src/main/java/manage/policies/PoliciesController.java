@@ -105,6 +105,8 @@ public class PoliciesController {
             }
             policyDefinition.setServiceProviderNames(serviceProviders.stream().map(sp -> name(sp)).collect(toList()));
             policyDefinition.setServiceProviderNamesNl(serviceProviders.stream().map(sp -> nameNL(sp)).collect(toList()));
+            policyDefinition.setActivatedSr(serviceProviders.stream().allMatch(sp -> policyEnforcementDecisionRequired(sp)));
+            policyDefinition.setActionsAllowed(policyIdpAccessEnforcer.actionAllowedIndicator());
         }
         List<String> identityProviderIds = policyDefinition.getIdentityProviderIds();
         if (!CollectionUtils.isEmpty(identityProviderIds)) {
@@ -124,6 +126,11 @@ public class PoliciesController {
     @SuppressWarnings("unchecked")
     private String entityID(Map<String, Object> entity) {
         return (String) ((Map)entity.get("data")).get("entity");
+    }
+
+    @SuppressWarnings("unchecked")
+    private boolean policyEnforcementDecisionRequired(Map<String, Object> entity) {
+        return (boolean) ((Map)((Map)entity.get("data")).get("metaDataFields")).getOrDefault("coin:policy_enforcement_decision_required", false);
     }
 
     @SuppressWarnings("unchecked")

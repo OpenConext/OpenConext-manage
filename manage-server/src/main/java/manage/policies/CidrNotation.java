@@ -13,7 +13,12 @@ import lombok.Setter;
 public class CidrNotation {
 
     private String ipAddress;
-    private int prefix;
+    private Integer prefix;
     private IPInfo ipInfo;
 
+    public CidrNotation(String ipAddress, Integer prefix) {
+        this.ipAddress = ipAddress;
+        this.prefix = prefix;
+        this.ipInfo = IPAddressProvider.getIpInfo(ipAddress, prefix);
+    }
 }
