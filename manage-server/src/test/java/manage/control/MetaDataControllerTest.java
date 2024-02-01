@@ -127,8 +127,9 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 .get("manage/api/client/metadata/configuration")
                 .then()
                 .statusCode(SC_OK)
-                .body("size()", is(6))
-                .body("title", hasItems("saml20_sp", "saml20_idp", "single_tenant_template", "oidc10_rp", "oauth20_rs", "provisioning"));
+                .body("size()", is(7))
+                .body("title", hasItems("saml20_sp", "saml20_idp", "single_tenant_template", "oidc10_rp",
+                        "oauth20_rs","policy", "provisioning"));
     }
 
     @Test
@@ -1691,6 +1692,24 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         assertEquals(1, revisions.size());
     }
 
+    @Test
+    public void flowRegPolicyMetaData() {
+        Map<String, Object> data = readValueFromFile("/json/valid_policy_reg.json");
+        MetaData metaData = new MetaData(EntityType.PDP.getType(), data);
+        MetaData newMetaData = given()
+                .when()
+                .body(metaData)
+                .header("Content-type", "application/json")
+                .post("manage/api/client/metadata")
+                .as(MetaData.class);
+        MetaData retrievedMetaData = given()
+                .when()
+                .get("manage/api/client/metadata/policy/" + newMetaData.getId())
+                .as(MetaData.class);
+        assertEquals(EntityType.PDP.getType(), retrievedMetaData.getType());
+        assertNotNull(retrievedMetaData.getId());
+        assertEquals("reg", retrievedMetaData.getData().get("type"));
+    }
 
     private void doCreateChangeRequest() {
         Map<String, Object> pathUpdates = new HashMap<>();
