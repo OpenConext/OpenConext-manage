@@ -4,10 +4,14 @@
   "name": " open conextpdp no i d ponly group clause",
   "description": "Personen die tot de managementvo behoren (bepaald aan de hand van een group) hebben toegang tot de VO dienst Zit dus geen IDP regel op (kan ook niet in dit VO scenario) ",
   "serviceProviderIds": [
-    "https://profile.test2.surfconext.nl/authentication/metadata"
+    {
+      "name": "https://profile.test2.surfconext.nl/authentication/metadata"
+    }
   ],
   "identityProviderIds": [
-    "http://mock-idp"
+    {
+      "name": "http://mock-idp"
+    }
   ],
   "identityProviderNames": [],
   "identityProviderNamesNl": [],

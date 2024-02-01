@@ -21,8 +21,9 @@ public class Provider {
 
     public Provider(EntityType entityType, Map<String, Object> metaData) {
         this.entityType = entityType;
-        this.entityId = (String) metaData.get("entityId");
-        Map<String, Object> metaDataFields = (Map<String, Object>) metaData.get("metaDataFields");
+        Map<String, Object> data = (Map<String, Object>) metaData.get("data");
+        this.entityId = (String) data.get("entityid");
+        Map<String, Object> metaDataFields = (Map<String, Object>) data.get("metaDataFields");
         this.institutionId = (String) metaDataFields.get("coin:institution_id");
         this.allowedAll = (boolean) metaData.getOrDefault("allowedall", false);
         this.allowedEntityIds = (List<String>) metaData.getOrDefault("allowedEntities", new ArrayList<>());

@@ -6,6 +6,7 @@ import manage.model.EntityType;
 import manage.service.MetaDataService;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.*;
 
@@ -123,21 +124,21 @@ public class PolicyIdpAccessEnforcer{
         }
 
         //finally check (e.g. for update and delete actions) if the policy is owned by this user
-        String authenticatingAuthorityPolicy = policy.getAuthenticatingAuthorityName();
-        if (!authenticatingAuthorityPolicy.equals(impersonatedUser.getIdpEntityId()) &&
-                !userIdentityProvidersEntityIds.contains(authenticatingAuthorityPolicy)) {
-            if (throwException) {
-                throw new IllegalArgumentException(String.format(
-                        "Policy created by admin '%s' of IdP '%s' can not be updated / deleted by admin '%s' of IdP '%s'",
-                        policy.getUserDisplayName(),
-                        authenticatingAuthorityPolicy,
-                        impersonatedUser.getUnspecifiedNameId(),
-                        impersonatedUser.getIdpEntityId())
-                );
-            }
-            return false;
+        String idpEntityId = impersonatedUser.getIdpEntityId();
+        String authenticatingAuthorityName = policy.getAuthenticatingAuthorityName();
+        if (xxx-TODO userIdentityProvidersEntityIds.contains(authenticatingAuthorityName)) {
+            return true;
         }
-        return true;
+        if (throwException) {
+            throw new IllegalArgumentException(String.format(
+                    "Policy created by admin '%s' of IdP '%s' can not be updated / deleted by admin '%s' of IdP '%s'",
+                    policy.getUserDisplayName(),
+                    authenticatingAuthorityName,
+                    impersonatedUser.getUnspecifiedNameId(),
+                    impersonatedUser.getIdpEntityId())
+            );
+        }
+        return false;
     }
 
     /**
@@ -212,7 +213,10 @@ public class PolicyIdpAccessEnforcer{
         if (CollectionUtils.isEmpty(providers)) {
             return Collections.emptyList();
         }
-        List<String> institutionIds = providers.stream().map(provider -> provider.getInstitutionId()).collect(toList());
+        List<String> institutionIds = providers.stream()
+                .map(provider -> provider.getInstitutionId())
+                .filter(institutionId -> StringUtils.hasText(institutionId))
+                .collect(toList());
         if (!CollectionUtils.isEmpty(institutionIds)) {
             searchOptions = new HashMap<>();
             searchOptions.put(REQUESTED_ATTRIBUTES, requiredAttributes);

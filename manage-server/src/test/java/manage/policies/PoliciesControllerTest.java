@@ -1,14 +1,13 @@
 package manage.policies;
 
 import manage.AbstractIntegrationTest;
-import manage.model.EntityType;
 import manage.model.MetaData;
 import org.junit.Test;
 
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
-import static org.apache.http.HttpStatus.SC_OK;
+import static manage.api.APIAuthenticationManager.*;
 
 public class PoliciesControllerTest extends AbstractIntegrationTest {
 
@@ -21,22 +20,31 @@ public class PoliciesControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void create() {
-        Map<String, Object> data = readValueFromFile("/json/valid_policy_step.json");
-        MetaData metaData = new MetaData(EntityType.PDP.getType(), data);
-        String path = given()
+    public void createRegPolicy() {
+        Map<String, Object> data = readValueFromFile("/policies/dashboard_reg_post.json");
+        PdpPolicyDefinition policy = given()
                 .auth()
                 .preemptive()
                 .basic("dashboard", "secret")
+                .headers(this.headers())
                 .when()
-                .body(metaData)
+                .body(data)
                 .header("Content-type", "application/json")
                 .post("manage/api/internal/protected/policies")
-                .then()
-                .statusCode(SC_OK)
-                .extract()
-                .path("id");
-        System.out.println(path);
+                .as(PdpPolicyDefinition.class);
+        MetaData retrievedMetaData = given()
+                .when()
+                .get("manage/api/client/metadata/policy/" + policy.getId())
+                .as(MetaData.class);
+        System.out.println(retrievedMetaData);
+    }
+
+    private Map<String, String> headers() {
+        return Map.of(
+                X_DISPLAY_NAME, "John Doe",
+                X_UNSPECIFIED_NAME_ID, "urn:john",
+                X_IDP_ENTITY_ID, "http://mock-idp"
+        );
     }
 
     @Test

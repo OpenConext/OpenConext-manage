@@ -18,9 +18,9 @@ import java.util.stream.Collectors;
 public class APIAuthenticationManager implements AuthenticationManager {
 
     //trusted API headers
-    private static final String X_IDP_ENTITY_ID = "X-IDP-ENTITY-ID";
-    private static final String X_UNSPECIFIED_NAME_ID = "X-UNSPECIFIED-NAME-ID";
-    private static final String X_DISPLAY_NAME = "X-DISPLAY-NAME";
+    public static final String X_IDP_ENTITY_ID = "X-IDP-ENTITY-ID";
+    public static final String X_UNSPECIFIED_NAME_ID = "X-UNSPECIFIED-NAME-ID";
+    public static final String X_DISPLAY_NAME = "X-DISPLAY-NAME";
 
     private final APIUserConfiguration apiUserConfiguration;
 

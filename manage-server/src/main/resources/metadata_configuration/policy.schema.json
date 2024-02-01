@@ -44,13 +44,23 @@
     "serviceProviderIds": {
       "type": "array",
       "items": {
-        "type": "string"
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
         }
+      }
     },
     "identityProviderIds": {
       "type": "array",
       "items": {
-        "type": "string"
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
       }
     },
     "metaDataFields": {
@@ -170,7 +180,9 @@
   "required": [
     "name",
     "entityid",
-    "serviceProviderIds"
+    "serviceProviderIds",
+    "authenticatingAuthorityName",
+    "userDisplayName"
   ],
   "additionalProperties": false,
   "indexes": []

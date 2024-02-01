@@ -7,7 +7,7 @@
   ],
   "serviceProviderNamesNl": [],
   "identityProviderIds": [
-    "https://localhost.surf.id"
+    "http://mock-idp"
   ],
   "identityProviderNames": [],
   "identityProviderNamesNl": [],

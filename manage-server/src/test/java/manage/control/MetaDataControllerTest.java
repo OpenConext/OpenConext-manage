@@ -1695,6 +1695,8 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     @Test
     public void flowRegPolicyMetaData() {
         Map<String, Object> data = readValueFromFile("/json/valid_policy_reg.json");
+        ((List) data.get("identityProviderIds")).add(Map.of("name", "nope-not-an-idp"));
+        ((List) data.get("serviceProviderIds")).add(Map.of("name", "nope-not-an-idp"));
         MetaData metaData = new MetaData(EntityType.PDP.getType(), data);
         MetaData newMetaData = given()
                 .when()
@@ -1706,6 +1708,8 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 .when()
                 .get("manage/api/client/metadata/policy/" + newMetaData.getId())
                 .as(MetaData.class);
+        assertEquals(1, ((List) retrievedMetaData.getData().get("identityProviderIds")).size());
+        assertEquals(1, ((List) retrievedMetaData.getData().get("serviceProviderIds")).size());
         assertEquals(EntityType.PDP.getType(), retrievedMetaData.getType());
         assertNotNull(retrievedMetaData.getId());
         assertEquals("reg", retrievedMetaData.getData().get("type"));

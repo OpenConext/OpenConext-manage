@@ -1,5 +1,6 @@
 package manage.policies;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 @SuppressWarnings("unchecked")
 public class PdpPolicyDefinition {
 
@@ -67,8 +69,8 @@ public class PdpPolicyDefinition {
         Map<String, Object> data = metaData.getData();
         this.name = (String) data.get("name");
         this.description = (String) data.get("description");
-        this.serviceProviderIds = (List<String>) data.get("serviceProviderIds");
-        this.identityProviderIds = (List<String>) data.getOrDefault("identityProviderIds", new ArrayList<>());
+        this.serviceProviderIds = new ArrayList<>(((Map<String, String>) data.get("serviceProviderIds")).values());
+        this.identityProviderIds = new ArrayList<>(((Map<String, String>) data.getOrDefault("identityProviderIds", new ArrayList<>())).values());
         this.attributes = ((List<Map<String, String>>) data.getOrDefault("attributes", new ArrayList<>())).stream()
                 .map(m -> new PdpAttribute(m.get("name"), m.get("value"))).collect(Collectors.toList());
         this.loas = ((List<Map<String, Object>>) data.getOrDefault("loas", new ArrayList<>()))
@@ -87,7 +89,7 @@ public class PdpPolicyDefinition {
         this.authenticatingAuthorityName = (String) data.get("authenticatingAuthorityName");
         this.denyAdvice = (String) data.get("denyAdvice");
         this.denyAdviceNl = (String) data.get("denyAdvice");
-        this.active=(boolean) data.getOrDefault("allAttributesMustMatch", false);
+        this.active=(boolean) data.getOrDefault("active", false);
         this.type=(String) data.get("type");
         Revision revision = metaData.getRevision();
         this.created = revision.getCreated();

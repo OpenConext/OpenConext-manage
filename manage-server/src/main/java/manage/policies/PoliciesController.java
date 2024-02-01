@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import manage.api.APIUser;
+import manage.api.ImpersonatedUser;
 import manage.control.MetaDataController;
 import manage.model.EntityType;
 import manage.model.MetaData;
@@ -18,11 +19,13 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 import static manage.mongo.MongoChangelog.REVISION_POSTFIX;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
@@ -81,10 +84,12 @@ public class PoliciesController {
     }
 
     @PreAuthorize("hasRole('POLICIES')")
-    @PostMapping("/internal/protected/policies/{id}")
+    @PostMapping("/internal/protected/policies")
     public PdpPolicyDefinition create(APIUser apiUser, @RequestBody PdpPolicyDefinition policyDefinition) throws JsonProcessingException {
+        this.initialPolicyValues(apiUser, policyDefinition, true);
         policyIdpAccessEnforcer.actionAllowed(policyDefinition, PolicyAccess.WRITE, apiUser, true);
         Map<String, Object> data = objectMapper.convertValue(policyDefinition, new TypeReference<>() {});
+        this.updateProviderStructure(data);
         MetaData metaData = new MetaData(EntityType.PDP.getType(), data);
         MetaData metaDataSaved = this.metaDataService.doPost(metaData, apiUser, false);
         policyDefinition.setId(metaDataSaved.getId());
@@ -94,8 +99,14 @@ public class PoliciesController {
     @PreAuthorize("hasRole('POLICIES')")
     @PutMapping("/internal/protected/policies")
     public PdpPolicyDefinition update(APIUser apiUser, @RequestBody PdpPolicyDefinition policyDefinition) throws JsonProcessingException {
+        this.initialPolicyValues(apiUser, policyDefinition, false);
+        MetaData existingMetaData = this.metaDataService.getMetaDataAndValidate(EntityType.PDP.getType(), policyDefinition.getId());
+        String authenticatingAuthorityName = (String) existingMetaData.getData().get("authenticatingAuthorityName");
+        policyDefinition.setAuthenticatingAuthorityName(authenticatingAuthorityName);
+
         policyIdpAccessEnforcer.actionAllowed(policyDefinition, PolicyAccess.WRITE, apiUser, true);
         Map<String, Object> data = objectMapper.convertValue(policyDefinition, new TypeReference<>() {});
+        this.updateProviderStructure(data);
         MetaData metaData = new MetaData(EntityType.PDP.getType(), data);
         this.metaDataService.doPut(metaData, apiUser, false);
         return policyDefinition;
@@ -164,6 +175,26 @@ public class PoliciesController {
         return policyDefinition;
     }
 
+    private void updateProviderStructure(Map<String, Object> data) {
+        List.of("identityProviderIds", "identityProviderIds")
+                .forEach(reference -> {
+                            List<String> names = (List<String>) data.getOrDefault(reference, new ArrayList<>());
+                            data.put(reference, names.stream().collect(toMap(name -> "name", name -> name)));
+                        }
+                );
+    }
+
+    private void initialPolicyValues(APIUser apiUser, PdpPolicyDefinition policyDefinition, boolean includeAuthenticatingAuthority) {
+        ImpersonatedUser impersonatedUser = apiUser.getImpersonatedUser();
+
+        if (impersonatedUser == null) {
+            throw new IllegalArgumentException("ImpersonatedUser is null for apiUser: " + apiUser.getName());
+        }
+        if (includeAuthenticatingAuthority) {
+            policyDefinition.setAuthenticatingAuthorityName(impersonatedUser.getIdpEntityId());
+        }
+        policyDefinition.setUserDisplayName(impersonatedUser.getUnspecifiedNameId());
+    }
 
     private String entityID(Map<String, Object> entity) {
         return (String) ((Map)entity.get("data")).get("entity");

@@ -11,11 +11,7 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
-import static manage.model.EntityType.IDP;
-import static manage.model.EntityType.RP;
-import static manage.model.EntityType.RS;
-import static manage.model.EntityType.SP;
-import static manage.model.EntityType.STT;
+import static manage.model.EntityType.*;
 
 @SuppressWarnings("unchecked")
 public class EntityIdReconcilerHook extends MetaDataHookAdapter {
@@ -50,7 +46,8 @@ public class EntityIdReconcilerHook extends MetaDataHookAdapter {
 
                     references.forEach(metaData -> {
                         List<Map<String, String>> entities = (List<Map<String, String>>) metaData.getData().getOrDefault(name, new ArrayList<>());
-                        entities.stream().filter(entry -> oldEntityId.equals(entry.get("name")))
+                        entities.stream()
+                                .filter(entry -> oldEntityId.equals(entry.get("name")))
                                 .findAny()
                                 .ifPresent(entry -> entry.put("name", newEntityId));
                         this.revision(metaData, revisionNote);
@@ -110,6 +107,9 @@ public class EntityIdReconcilerHook extends MetaDataHookAdapter {
         if (type.equals(RS.getType())) {
             return singletonList("allowedResourceServers");
         }
+        if (type.equals(PDP.getType())) {
+            return asList("serviceProviderIds", "identityProviderIds");
+        }
         return Collections.emptyList();
     }
 
@@ -126,6 +126,9 @@ public class EntityIdReconcilerHook extends MetaDataHookAdapter {
         }
         if (type.equals(RS.getType())) {
             return singletonList(RP.getType());
+        }
+        if (type.equals(PDP.getType())) {
+            return asList(IDP.getType(), SP.getType(), RP.getType());
         }
         return Collections.emptyList();
     }
