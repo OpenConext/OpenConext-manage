@@ -1,7 +1,6 @@
 package manage.control;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import io.restassured.common.mapper.TypeRef;
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
@@ -1628,7 +1627,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void searchWithEntityCategoriesMultpleKeys() throws JsonProcessingException {
+    public void searchWithEntityCategoriesMultipleKeys() throws JsonProcessingException {
         Map<String, Object> searchOptions = readValueFromFile("/api/search_multiple_equal_keys.json");
 
         List<Map<String, Object>> results = given()
@@ -1655,10 +1654,43 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         assertEquals(3, results.size());
     }
 
-    private Map<String, Object> readValueFromFile(String path) throws JsonProcessingException {
-        return objectMapper.readValue(readFile(path), new TypeReference<>() {
-        });
+    @Test
+    public void flowStepUpPolicyMetaData() {
+        Map<String, Object> data = readValueFromFile("/json/valid_policy_step.json");
+        MetaData metaData = new MetaData(EntityType.PDP.getType(), data);
+        MetaData newMetaData = given()
+                .when()
+                .body(metaData)
+                .header("Content-type", "application/json")
+                .post("manage/api/client/metadata")
+                .as(MetaData.class);
+        MetaData retrievedMetaData = given()
+                .when()
+                .get("manage/api/client/metadata/policy/" + newMetaData.getId())
+                .as(MetaData.class);
+        assertEquals(EntityType.PDP.getType(), retrievedMetaData.getType());
+
+        retrievedMetaData.getData().put("revisionnote", "Update test");
+        retrievedMetaData.getData().put("denyAdvice", "Changed");
+
+        MetaData updatedMetaData = given()
+                .when()
+                .body(retrievedMetaData)
+                .header("Content-type", "application/json")
+                .put("manage/api/client/metadata")
+                .as(MetaData.class);
+        assertEquals(updatedMetaData.getId(), retrievedMetaData.getId());
+
+        List<MetaData> revisions = given()
+                .when()
+                .pathParam("type", EntityType.PDP.getType())
+                .pathParam("parentId", newMetaData.getId())
+                .get("manage/api/client/revisions/{type}/{parentId}")
+                .as(new TypeRef<>() {
+                });
+        assertEquals(1, revisions.size());
     }
+
 
     private void doCreateChangeRequest() {
         Map<String, Object> pathUpdates = new HashMap<>();

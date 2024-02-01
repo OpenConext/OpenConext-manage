@@ -7,9 +7,7 @@ import manage.service.MetaDataService;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
-
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
@@ -232,11 +230,6 @@ public class PolicyIdpAccessEnforcer{
         }
         EntityType entityType = EntityType.SP;
         Map<String, Object> searchOptions = new HashMap<>();
-        List<String> requiredAttributes = List.of(
-                "metaDataFields.coin:institution_id",
-                "entityid",
-                "allowedall",
-                "allowedEntities");
         searchOptions.put(REQUESTED_ATTRIBUTES, requiredAttributes);
         searchOptions.put("metaDataFields.coin:institution_id", userIdentityProviders.get(0).getInstitutionId());
         return this.metaDataService.searchEntityByType(entityType.getType(), searchOptions, false).stream()

@@ -38,6 +38,7 @@ I18n.translations.en = {
         oidc10_rp: "Relying Parties",
         oauth20_rs: "Resource Servers",
         provisioning: "Provisionings",
+        policy: "Policies",
         saml20_sp_single: "Service Provider",
         saml20_idp_single: "Identity Provider",
         oidc10_rp_single: "Relying Party",

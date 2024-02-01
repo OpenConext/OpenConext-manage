@@ -8,6 +8,7 @@ import manage.api.APIUser;
 import manage.control.MetaDataController;
 import manage.model.EntityType;
 import manage.model.MetaData;
+import manage.repository.MetaDataRepository;
 import manage.service.MetaDataService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import static java.util.stream.Collectors.toList;
+import static manage.mongo.MongoChangelog.REVISION_POSTFIX;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 @RestController
@@ -33,6 +35,8 @@ public class PoliciesController {
     private final MetaDataService metaDataService;
     private final ObjectMapper objectMapper;
     private final PolicyIdpAccessEnforcer policyIdpAccessEnforcer;
+    private final MetaDataRepository metaDataRepository;
+    private final PolicyRepository policyRepository;
     private final List<Map<String, String>> allowedAttributes;
     private final List<Map<String, String>> samlAllowedAttributes;
     private final TypeReference<List<Map<String, String>>> typeReference = new TypeReference<>() {
@@ -41,10 +45,14 @@ public class PoliciesController {
     @SneakyThrows
     public PoliciesController(MetaDataService metaDataService,
                               ObjectMapper objectMapper,
-                              PolicyIdpAccessEnforcer policyIdpAccessEnforcer) {
+                              PolicyIdpAccessEnforcer policyIdpAccessEnforcer,
+                              MetaDataRepository metaDataRepository,
+                              PolicyRepository policyRepository) {
         this.metaDataService = metaDataService;
         this.objectMapper = objectMapper;
         this.policyIdpAccessEnforcer = policyIdpAccessEnforcer;
+        this.metaDataRepository = metaDataRepository;
+        this.policyRepository = policyRepository;
         this.allowedAttributes = this.attributes("policies/allowed_attributes.json");
         this.samlAllowedAttributes = this.attributes("policies/extra_saml_attributes.json");
     }
@@ -53,7 +61,7 @@ public class PoliciesController {
         return this.objectMapper.readValue(new ClassPathResource(path).getInputStream(), typeReference);
     }
 
-    @PreAuthorize("hasRole('READ')")
+    @PreAuthorize("hasRole('POLICIES')")
     @GetMapping("/internal/protected/policies")
     public List<PdpPolicyDefinition> policies(APIUser apiUser) {
         List<PdpPolicyDefinition> policies = this.metaDataService.findAllByType(EntityType.PDP.getType()).stream()
@@ -64,7 +72,7 @@ public class PoliciesController {
                 .collect(toList());
     }
 
-    @PreAuthorize("hasRole('READ')")
+    @PreAuthorize("hasRole('POLICIES')")
     @GetMapping("/internal/protected/policies/{id}")
     public PdpPolicyDefinition policies(APIUser apiUser, @PathVariable("id") String id) {
         PdpPolicyDefinition policy = new PdpPolicyDefinition(this.metaDataService.getMetaDataAndValidate(EntityType.PDP.getType(), id));
@@ -72,7 +80,7 @@ public class PoliciesController {
         return enrichPolicyDefinition(policy);
     }
 
-    @PreAuthorize("hasRole('READ')")
+    @PreAuthorize("hasRole('POLICIES')")
     @PostMapping("/internal/protected/policies/{id}")
     public PdpPolicyDefinition create(APIUser apiUser, @RequestBody PdpPolicyDefinition policyDefinition) throws JsonProcessingException {
         policyIdpAccessEnforcer.actionAllowed(policyDefinition, PolicyAccess.WRITE, apiUser, true);
@@ -83,8 +91,8 @@ public class PoliciesController {
         return policyDefinition;
     }
 
-    @PreAuthorize("hasRole('READ')")
-    @PutMapping("/internal/protected/policies/{id}")
+    @PreAuthorize("hasRole('POLICIES')")
+    @PutMapping("/internal/protected/policies")
     public PdpPolicyDefinition update(APIUser apiUser, @RequestBody PdpPolicyDefinition policyDefinition) throws JsonProcessingException {
         policyIdpAccessEnforcer.actionAllowed(policyDefinition, PolicyAccess.WRITE, apiUser, true);
         Map<String, Object> data = objectMapper.convertValue(policyDefinition, new TypeReference<>() {});
@@ -93,12 +101,31 @@ public class PoliciesController {
         return policyDefinition;
     }
 
-    @PreAuthorize("hasRole('READ')")
+    @PreAuthorize("hasRole('POLICIES')")
+    @DeleteMapping("/internal/protected/policies/{id}")
+    public void delete(APIUser apiUser, @PathVariable("id") String id) {
+        PdpPolicyDefinition policy = new PdpPolicyDefinition(this.metaDataService.getMetaDataAndValidate(EntityType.PDP.getType(), id));
+        policyIdpAccessEnforcer.actionAllowed(policy, PolicyAccess.WRITE, apiUser, true);
+        this.metaDataService.doRemove(EntityType.PDP.getType(), id, apiUser, "Deleted by dashboard API");
+    }
+
+    @PreAuthorize("hasRole('POLICIES')")
+    @GetMapping("/internal/protected/revisions/{id}")
+    public List<PdpPolicyDefinition> revisions(APIUser apiUser, @PathVariable("id") String id) {
+        String type = EntityType.PDP.getType();
+        PdpPolicyDefinition policy = new PdpPolicyDefinition(this.metaDataService.getMetaDataAndValidate(type, id));
+        policyIdpAccessEnforcer.actionAllowed(policy, PolicyAccess.READ, apiUser, true);
+        List<MetaData> revisions = metaDataRepository.revisions(type.concat(REVISION_POSTFIX), id);
+        return revisions.stream().map(revision -> enrichPolicyDefinition(new PdpPolicyDefinition(revision))).collect(toList());
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'POLICIES')")
     @RequestMapping(method = GET, value = {"/client/attributes", "/internal/protected/attributes"})
     public List<Map<String, String>> getAllowedAttributes() {
         return this.allowedAttributes;
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'POLICIES')")
     @RequestMapping(method = GET, value = {"/client/saml-attributes", "/internal/protected/saml-attributes"})
     public List<Map<String, String>> getAllowedSamlAttributes() {
         return this.samlAllowedAttributes;

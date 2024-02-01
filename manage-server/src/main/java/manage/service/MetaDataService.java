@@ -565,10 +565,12 @@ public class MetaDataService {
     }
 
     private void sanitizeExcludeFromPush(@RequestBody @Validated MetaData metaData, boolean excludeFromPushRequired) {
-        Map metaDataFields = metaData.metaDataFields();
-        Object val = metaDataFields.get("coin:exclude_from_push");
-        if (excludeFromPushRequired && ("0".equals(val) || Boolean.FALSE == val)) {
-            metaDataFields.put("coin:exclude_from_push", true);
+        if (excludeFromPushRequired) {
+            Map metaDataFields = metaData.metaDataFields();
+            Object val = metaDataFields.get("coin:exclude_from_push");
+            if ("0".equals(val) || Boolean.FALSE == val) {
+                metaDataFields.put("coin:exclude_from_push", true);
+            }
         }
     }
 

@@ -345,7 +345,6 @@ public class MetaDataController {
     @GetMapping("/client/revisions/{type}/{parentId}")
     public List<MetaData> revisions(@PathVariable("type") String type,
                                     @PathVariable("parentId") String parentId) {
-
         return metaDataRepository.revisions(type.concat(REVISION_POSTFIX), parentId);
     }
 

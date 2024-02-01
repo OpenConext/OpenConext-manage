@@ -22,7 +22,8 @@
     "type": {
       "type": "string",
       "enum": [
-        "policy"
+        "reg",
+        "step"
       ]
     },
     "revisionid": {
@@ -128,7 +129,7 @@
                       "type": "string"
                     },
                     "capacity": {
-                      "type": "integer"
+                      "type": "number"
                     },
                     "ipv4": {
                       "type": "boolean"
@@ -158,11 +159,17 @@
     },
     "authenticatingAuthorityName": {
       "type": "string"
+    },
+    "denyAdvice": {
+      "type": "string"
+    },
+    "denyAdviceNl": {
+      "type": "string"
     }
   },
   "required": [
     "name",
-    "description",
+    "entityid",
     "serviceProviderIds"
   ],
   "additionalProperties": false,

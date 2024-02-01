@@ -73,7 +73,7 @@ spring:
     mongodb:
       uri: mongodb://localhost:27017/metadata_test
   datasource:
-    url: jdbc:mysql://localhost/pdpserver?autoReconnect=true&useSSL=false
+    url: jdbc:mysql://localhost:3306/pdpserver?permitMysqlScheme
     username: root
     password:
     driverClassName: org.mariadb.jdbc.Driver

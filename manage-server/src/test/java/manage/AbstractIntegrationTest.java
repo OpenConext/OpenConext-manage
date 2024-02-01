@@ -4,6 +4,7 @@ package manage;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
+import lombok.SneakyThrows;
 import manage.conf.MetaDataAutoConfiguration;
 import manage.model.EntityType;
 import manage.model.MetaData;
@@ -22,6 +23,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -82,6 +84,12 @@ public abstract class AbstractIntegrationTest implements TestUtils {
                             .size()));
             Stream.of(EntityType.values()).forEach(entityType -> mongoTemplate.remove(query, entityType.getType().concat(CHANGE_REQUEST_POSTFIX)));
         }
+    }
+
+    @SneakyThrows
+    protected Map<String, Object> readValueFromFile(String path) {
+        return objectMapper.readValue(readFile(path), new TypeReference<>() {
+        });
     }
 
     protected boolean insertSeedData() {

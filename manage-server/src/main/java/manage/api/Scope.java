@@ -8,7 +8,9 @@ public enum Scope {
     SYSTEM, //Allowed everything including Attribute Manipulation and updating / deleting Identity Providers
     TEST, //Only used internally
     WRITE, //Allowed to create (excluding Identity Providers) and update all entities
+    POLICIES, //Allowed to create (excluding Identity Providers) and update all entities
     DELETE, //Allowed to delete entities (excluding Identity Providers)
     ADMIN //Standard scope for all GUI related endpoint (e.g. /manage/api/client/** endpoints)
+
 
 }

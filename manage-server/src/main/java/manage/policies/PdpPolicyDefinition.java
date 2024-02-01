@@ -4,7 +4,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import manage.model.MetaData;
+import manage.model.Revision;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -40,7 +42,7 @@ public class PdpPolicyDefinition {
 
     private boolean allAttributesMustMatch;
 
-    private Date created;
+    private Instant created;
 
     private String userDisplayName;
 
@@ -57,6 +59,8 @@ public class PdpPolicyDefinition {
     private boolean actionsAllowed;
 
     private String type;
+
+    private int revisionNbr;
 
     public PdpPolicyDefinition(MetaData metaData) {
         this.id = metaData.getId();
@@ -79,12 +83,14 @@ public class PdpPolicyDefinition {
                 )).collect(Collectors.toList());
         this.denyRule = (boolean) data.getOrDefault("denyRule", false);
         this.allAttributesMustMatch = (boolean) data.getOrDefault("allAttributesMustMatch", false);
-        this.created = (Date) data.get("created");
         this.userDisplayName = (String) data.get("userDisplayName");
         this.authenticatingAuthorityName = (String) data.get("authenticatingAuthorityName");
         this.denyAdvice = (String) data.get("denyAdvice");
         this.denyAdviceNl = (String) data.get("denyAdvice");
         this.active=(boolean) data.getOrDefault("allAttributesMustMatch", false);
         this.type=(String) data.get("type");
+        Revision revision = metaData.getRevision();
+        this.created = revision.getCreated();
+        this.revisionNbr = revision.getNumber();
     }
 }
