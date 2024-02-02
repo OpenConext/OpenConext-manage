@@ -184,10 +184,10 @@ public class MetaDataService {
 
     public MetaData doPost(@Validated MetaData metaData, AbstractUser user, boolean excludeFromPushRequired)
             throws JsonProcessingException {
+        metaData = metaDataHook.prePost(metaData, user);
         checkForDuplicateEntityId(metaData, true);
 
         sanitizeExcludeFromPush(metaData, excludeFromPushRequired);
-        metaData = metaDataHook.prePost(metaData, user);
 
         metaData = validate(metaData);
         Long eid = metaDataRepository.incrementEid();

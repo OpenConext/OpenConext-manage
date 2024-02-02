@@ -1,7 +1,7 @@
 {
   "id": 617,
   "metaDataFields": {},
-  "name": " open conextpdp no i d ponly group clause",
+  "name": "Reg Policy",
   "description": "Personen die tot de managementvo behoren (bepaald aan de hand van een group) hebben toegang tot de VO dienst Zit dus geen IDP regel op (kan ook niet in dit VO scenario) ",
   "serviceProviderIds": [
     {

@@ -38,30 +38,25 @@ import java.util.List;
  */
 public class CIDRUtils {
 
-    private InetAddress inetAddress;
+    private final InetAddress inetAddress;
     private InetAddress startAddress;
     private InetAddress endAddress;
     private final int prefixLength;
 
     public CIDRUtils(String cidr) throws UnknownHostException {
         // split CIDR to address and prefix part
-        if (cidr.contains("/")) {
-            int index = cidr.indexOf("/");
-            String addressPart = cidr.substring(0, index);
-            String networkPart = cidr.substring(index + 1);
+        int index = cidr.indexOf("/");
+        String addressPart = cidr.substring(0, index);
+        String networkPart = cidr.substring(index + 1);
 
-            inetAddress = InetAddress.getByName(addressPart);
-            prefixLength = Integer.parseInt(networkPart);
+        inetAddress = InetAddress.getByName(addressPart);
+        prefixLength = Integer.parseInt(networkPart);
 
-            calculate();
-        } else {
-            throw new IllegalArgumentException("not an valid CIDR format!");
-        }
+        calculate();
     }
 
 
     private void calculate() throws UnknownHostException {
-
         ByteBuffer maskBuffer;
         int targetSize;
         if (inetAddress.getAddress().length == 4) {

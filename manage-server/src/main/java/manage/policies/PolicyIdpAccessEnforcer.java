@@ -208,7 +208,7 @@ public class PolicyIdpAccessEnforcer{
         searchOptions.put(REQUESTED_ATTRIBUTES, requiredAttributes);
         searchOptions.put("entityid", entityId);
         List<Provider> providers = this.metaDataService.searchEntityByType(entityType.getType(), searchOptions, false).stream()
-                .map(entity -> new Provider(entityType, entity))
+                .map(entity -> new Provider(entity))
                 .collect(toList());
         if (CollectionUtils.isEmpty(providers)) {
             return Collections.emptyList();
@@ -223,7 +223,7 @@ public class PolicyIdpAccessEnforcer{
             searchOptions.put("metaDataFields.coin:institution_id", institutionIds);
             //Will at least return one provider, possible more
             providers = this.metaDataService.searchEntityByType(entityType.getType(), searchOptions, false).stream()
-                    .map(entity -> new Provider(entityType, entity))
+                    .map(entity -> new Provider(entity))
                     .collect(toList());
         }
         return providers;
@@ -238,7 +238,7 @@ public class PolicyIdpAccessEnforcer{
         searchOptions.put(REQUESTED_ATTRIBUTES, requiredAttributes);
         searchOptions.put("metaDataFields.coin:institution_id", userIdentityProviders.get(0).getInstitutionId());
         return this.metaDataService.searchEntityByType(entityType.getType(), searchOptions, false).stream()
-                .map(entity -> new Provider(entityType, entity))
+                .map(entity -> new Provider(entity))
                 .collect(toList());
     }
 }

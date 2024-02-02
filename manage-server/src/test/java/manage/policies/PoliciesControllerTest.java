@@ -9,6 +9,9 @@ import org.springframework.data.mongodb.core.query.Query;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static io.restassured.RestAssured.given;
 import static manage.api.APIAuthenticationManager.*;
@@ -47,6 +50,41 @@ public class PoliciesControllerTest extends AbstractIntegrationTest {
                 .as(PdpPolicyDefinition.class);
         assertEquals("http://mock-idp", policy.getIdentityProviderIds().get(0));
         assertTrue(policy.isActionsAllowed());
+    }
+
+    @Test
+    public void stepPolicyById() {
+        PdpPolicyDefinition policy = given()
+                .auth()
+                .preemptive()
+                .basic("dashboard", "secret")
+                .headers(this.headers("https://idp.test2.surfconext.nl"))
+                .when()
+                .header("Content-type", "application/json")
+                .get("manage/api/internal/protected/policies/14")
+                .as(PdpPolicyDefinition.class);
+        assertEquals("https://idp.test2.surfconext.nl", policy.getIdentityProviderIds().get(0));
+        assertTrue(policy.isActionsAllowed());
+        //The ipInfo is appended to stepUp policies
+        List<IPInfo> ipInfos = policy.getLoas().stream()
+                .flatMap(loa -> loa.getCidrNotations().stream().map(cidrNotation -> cidrNotation.getIpInfo()))
+                .collect(Collectors.toList());
+        assertEquals(2, ipInfos.size());
+
+    }
+
+    @Test
+    public void policyByIdNotAllowed() {
+        given()
+                .auth()
+                .preemptive()
+                .basic("dashboard", "secret")
+                .headers(this.headers())
+                .when()
+                .header("Content-type", "application/json")
+                .get("manage/api/internal/protected/policies/14")
+                .then()
+                        .statusCode(403);
     }
 
     @Test
@@ -110,6 +148,7 @@ public class PoliciesControllerTest extends AbstractIntegrationTest {
                 .as(PdpPolicyDefinition.class);
         policy.setAuthenticatingAuthorityName("Not allowed to change");
         policy.setDescription("Changed");
+        policy.getServiceProviderIds().add("https@//oidc.rp");
 
         PdpPolicyDefinition updatedPolicy = given()
                 .auth()
@@ -123,6 +162,7 @@ public class PoliciesControllerTest extends AbstractIntegrationTest {
                 .as(PdpPolicyDefinition.class);
         assertEquals(policy.getDescription(), updatedPolicy.getDescription());
         assertEquals("http://mock-idp", updatedPolicy.getAuthenticatingAuthorityName());
+        assertEquals(2, updatedPolicy.getServiceProviderIds().size());
 
         List<PdpPolicyDefinition> revisions = given()
                 .auth()
@@ -198,11 +238,14 @@ public class PoliciesControllerTest extends AbstractIntegrationTest {
     }
 
     private Map<String, String> headers() {
+        return this.headers("http://mock-idp");
+    }
+
+    private Map<String, String> headers(String entityId) {
         return Map.of(
                 X_DISPLAY_NAME, "John Doe",
                 X_UNSPECIFIED_NAME_ID, "urn:john",
-                X_IDP_ENTITY_ID, "http://mock-idp"
+                X_IDP_ENTITY_ID, entityId
         );
     }
-
 }
