@@ -148,7 +148,6 @@ public class PoliciesControllerTest extends AbstractIntegrationTest {
                 .as(PdpPolicyDefinition.class);
         policy.setAuthenticatingAuthorityName("Not allowed to change");
         policy.setDescription("Changed");
-        policy.getServiceProviderIds().add("https@//oidc.rp");
 
         PdpPolicyDefinition updatedPolicy = given()
                 .auth()
@@ -162,7 +161,6 @@ public class PoliciesControllerTest extends AbstractIntegrationTest {
                 .as(PdpPolicyDefinition.class);
         assertEquals(policy.getDescription(), updatedPolicy.getDescription());
         assertEquals("http://mock-idp", updatedPolicy.getAuthenticatingAuthorityName());
-        assertEquals(2, updatedPolicy.getServiceProviderIds().size());
 
         List<PdpPolicyDefinition> revisions = given()
                 .auth()

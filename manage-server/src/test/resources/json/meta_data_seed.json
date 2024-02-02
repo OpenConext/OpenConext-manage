@@ -686,6 +686,9 @@
       "serviceProviderIds": [
         {
           "name": "https://1234aaab.nl"
+        },
+        {
+          "name": "https@//oidc.rp"
         }
       ],
       "identityProviderIds": [
