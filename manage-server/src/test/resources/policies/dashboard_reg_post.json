@@ -1,6 +1,6 @@
 {
   "serviceProviderIds": [
-    "https://surfdrive-tst.surf.nl/"
+    "http://mock-sp"
   ],
   "serviceProviderNames": [
     "SURFdrive test"

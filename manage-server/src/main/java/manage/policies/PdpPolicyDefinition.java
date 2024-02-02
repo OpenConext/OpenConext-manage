@@ -9,7 +9,6 @@ import manage.model.Revision;
 
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -65,12 +64,13 @@ public class PdpPolicyDefinition {
     private int revisionNbr;
 
     public PdpPolicyDefinition(MetaData metaData) {
+        //this code ensures backward-compatibility for Dashboard if it switches from PdP API to Manage API
         this.id = metaData.getId();
         Map<String, Object> data = metaData.getData();
         this.name = (String) data.get("name");
         this.description = (String) data.get("description");
-        this.serviceProviderIds = new ArrayList<>(((Map<String, String>) data.get("serviceProviderIds")).values());
-        this.identityProviderIds = new ArrayList<>(((Map<String, String>) data.getOrDefault("identityProviderIds", new ArrayList<>())).values());
+        this.serviceProviderIds = convertProviders(data, "serviceProviderIds");
+        this.identityProviderIds = convertProviders(data, "identityProviderIds");
         this.attributes = ((List<Map<String, String>>) data.getOrDefault("attributes", new ArrayList<>())).stream()
                 .map(m -> new PdpAttribute(m.get("name"), m.get("value"))).collect(Collectors.toList());
         this.loas = ((List<Map<String, Object>>) data.getOrDefault("loas", new ArrayList<>()))
@@ -94,5 +94,9 @@ public class PdpPolicyDefinition {
         Revision revision = metaData.getRevision();
         this.created = revision.getCreated();
         this.revisionNbr = revision.getNumber();
+    }
+
+    private List<String> convertProviders(Map<String, Object> data, String name) {
+        return ((List<Map<String, String>>) data.get(name)).stream().map(m -> m.get("name")).collect(Collectors.toList());
     }
 }

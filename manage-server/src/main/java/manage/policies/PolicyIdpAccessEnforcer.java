@@ -2,6 +2,7 @@ package manage.policies;
 
 import manage.api.APIUser;
 import manage.api.ImpersonatedUser;
+import manage.exception.EndpointNotAllowed;
 import manage.model.EntityType;
 import manage.service.MetaDataService;
 import org.springframework.stereotype.Component;
@@ -46,7 +47,7 @@ public class PolicyIdpAccessEnforcer{
 
         if (impersonatedUser == null) {
             if (throwException) {
-                throw new IllegalArgumentException("ImpersonatedUser is null for apiUser: " + apiUser.getName());
+                throw new EndpointNotAllowed("ImpersonatedUser is null for apiUser: " + apiUser.getName());
             }
             return false;
         }
@@ -78,7 +79,7 @@ public class PolicyIdpAccessEnforcer{
                     //One of the policy SP must be allowed access by these users IdP
                     if (!idpIsAllowed(userIdentityProviders, policyServiceProviderIds)) {
                         if (throwException) {
-                            throw new IllegalArgumentException(String.format(
+                            throw new EndpointNotAllowed(String.format(
                                     "Policy for target SP '%s' requested by '%s', but this SP is not allowed access by users from IdP '%s'",
                                     policyServiceProviderIds,
                                     impersonatedUser.getUnspecifiedNameId(),
@@ -92,7 +93,7 @@ public class PolicyIdpAccessEnforcer{
                     //The SP must be owned by the IdP of the user
                     if (!userServiceProvidersEntityIds.containsAll(policyServiceProviderIds)) {
                         if (throwException) {
-                            throw new IllegalArgumentException(String.format(
+                            throw new EndpointNotAllowed(String.format(
                                     "Policy for target SP '%s' requested by '%s', but this SP is not owned to users IdP '%s'",
                                     policyServiceProviderIds,
                                     impersonatedUser.getUnspecifiedNameId(),
@@ -107,7 +108,7 @@ public class PolicyIdpAccessEnforcer{
             //now the SP may be anything, however all selected IDPs for this policy must be linked to this users IDP
             if (!userIdentityProvidersEntityIds.containsAll(policyIdentityProviderIds)) {
                 if (throwException) {
-                    throw new IllegalArgumentException(String.format(
+                    throw new EndpointNotAllowed(String.format(
                             "Policy for target IdPs '%s' requested by '%s', but not all are linked to users IdP '%s",
                             policyIdentityProviderIds,
                             impersonatedUser.getUnspecifiedNameId(),
@@ -124,13 +125,12 @@ public class PolicyIdpAccessEnforcer{
         }
 
         //finally check (e.g. for update and delete actions) if the policy is owned by this user
-        String idpEntityId = impersonatedUser.getIdpEntityId();
         String authenticatingAuthorityName = policy.getAuthenticatingAuthorityName();
-        if (xxx-TODO userIdentityProvidersEntityIds.contains(authenticatingAuthorityName)) {
+        if (userIdentityProvidersEntityIds.contains(authenticatingAuthorityName)) {
             return true;
         }
         if (throwException) {
-            throw new IllegalArgumentException(String.format(
+            throw new EndpointNotAllowed(String.format(
                     "Policy created by admin '%s' of IdP '%s' can not be updated / deleted by admin '%s' of IdP '%s'",
                     policy.getUserDisplayName(),
                     authenticatingAuthorityName,
@@ -221,6 +221,7 @@ public class PolicyIdpAccessEnforcer{
             searchOptions = new HashMap<>();
             searchOptions.put(REQUESTED_ATTRIBUTES, requiredAttributes);
             searchOptions.put("metaDataFields.coin:institution_id", institutionIds);
+            //Will at least return one provider, possible more
             providers = this.metaDataService.searchEntityByType(entityType.getType(), searchOptions, false).stream()
                     .map(entity -> new Provider(entityType, entity))
                     .collect(toList());

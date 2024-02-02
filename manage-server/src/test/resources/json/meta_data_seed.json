@@ -690,7 +690,7 @@
       ],
       "identityProviderIds": [
         {
-          "name": "http://mock-idp"
+          "name": "https://idp.test2.surfconext.nl"
         }
       ],
       "loas": [

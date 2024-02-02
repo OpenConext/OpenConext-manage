@@ -5,7 +5,10 @@
   "type": "object",
   "properties": {
     "id": {
-      "type": "number"
+      "type": [
+        "string",
+        "null"
+      ]
     },
     "eid": {
       "type": "number"
@@ -30,7 +33,10 @@
       "type": "number"
     },
     "created": {
-      "type": "string"
+      "type": [
+        "string",
+        "null"
+      ]
     },
     "revisionnote": {
       "type": "string"
@@ -171,10 +177,16 @@
       "type": "string"
     },
     "denyAdvice": {
-      "type": "string"
+      "type": [
+        "string",
+        "null"
+      ]
     },
     "denyAdviceNl": {
-      "type": "string"
+      "type": [
+        "string",
+        "null"
+      ]
     }
   },
   "required": [

@@ -6,13 +6,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import manage.api.APIUser;
 import manage.api.ImpersonatedUser;
-import manage.control.MetaDataController;
 import manage.model.EntityType;
 import manage.model.MetaData;
 import manage.repository.MetaDataRepository;
 import manage.service.MetaDataService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.CollectionUtils;
@@ -25,15 +22,12 @@ import java.util.List;
 import java.util.Map;
 
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
 import static manage.mongo.MongoChangelog.REVISION_POSTFIX;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 @RestController
 @SuppressWarnings("unchecked")
 public class PoliciesController {
-
-    private static final Logger LOG = LoggerFactory.getLogger(MetaDataController.class);
 
     private final MetaDataService metaDataService;
     private final ObjectMapper objectMapper;
@@ -60,17 +54,14 @@ public class PoliciesController {
         this.samlAllowedAttributes = this.attributes("policies/extra_saml_attributes.json");
     }
 
-    private List<Map<String, String>> attributes(String path) throws IOException {
-        return this.objectMapper.readValue(new ClassPathResource(path).getInputStream(), typeReference);
-    }
-
     @PreAuthorize("hasRole('POLICIES')")
     @GetMapping("/internal/protected/policies")
     public List<PdpPolicyDefinition> policies(APIUser apiUser) {
         List<PdpPolicyDefinition> policies = this.metaDataService.findAllByType(EntityType.PDP.getType()).stream()
                 .map(metaData -> new PdpPolicyDefinition(metaData))
                 .collect(toList());
-        return policyIdpAccessEnforcer.filterPdpPolicies(apiUser, policies).stream()
+        return policyIdpAccessEnforcer
+                .filterPdpPolicies(apiUser, policies).stream()
                 .map(policy -> enrichPolicyDefinition(policy))
                 .collect(toList());
     }
@@ -79,7 +70,8 @@ public class PoliciesController {
     @GetMapping("/internal/protected/policies/{id}")
     public PdpPolicyDefinition policies(APIUser apiUser, @PathVariable("id") String id) {
         PdpPolicyDefinition policy = new PdpPolicyDefinition(this.metaDataService.getMetaDataAndValidate(EntityType.PDP.getType(), id));
-        policyIdpAccessEnforcer.actionAllowed(policy, PolicyAccess.READ, apiUser, true);
+        boolean actionsAllowed = policyIdpAccessEnforcer.actionAllowed(policy, PolicyAccess.READ, apiUser, true);
+        policy.setActionsAllowed(actionsAllowed);
         return enrichPolicyDefinition(policy);
     }
 
@@ -102,21 +94,25 @@ public class PoliciesController {
         this.initialPolicyValues(apiUser, policyDefinition, false);
         MetaData existingMetaData = this.metaDataService.getMetaDataAndValidate(EntityType.PDP.getType(), policyDefinition.getId());
         String authenticatingAuthorityName = (String) existingMetaData.getData().get("authenticatingAuthorityName");
+        //This is needed to check if the action is allowed
         policyDefinition.setAuthenticatingAuthorityName(authenticatingAuthorityName);
-
         policyIdpAccessEnforcer.actionAllowed(policyDefinition, PolicyAccess.WRITE, apiUser, true);
+
         Map<String, Object> data = objectMapper.convertValue(policyDefinition, new TypeReference<>() {});
         this.updateProviderStructure(data);
-        MetaData metaData = new MetaData(EntityType.PDP.getType(), data);
-        this.metaDataService.doPut(metaData, apiUser, false);
+        existingMetaData.setData(data);
+        MetaData metaData = this.metaDataService.doPut(existingMetaData, apiUser, false);
+        policyDefinition.setRevisionNbr(metaData.getRevision().getNumber());
         return policyDefinition;
     }
 
     @PreAuthorize("hasRole('POLICIES')")
     @DeleteMapping("/internal/protected/policies/{id}")
     public void delete(APIUser apiUser, @PathVariable("id") String id) {
-        PdpPolicyDefinition policy = new PdpPolicyDefinition(this.metaDataService.getMetaDataAndValidate(EntityType.PDP.getType(), id));
-        policyIdpAccessEnforcer.actionAllowed(policy, PolicyAccess.WRITE, apiUser, true);
+        PdpPolicyDefinition policyDefinition = new PdpPolicyDefinition(this.metaDataService.getMetaDataAndValidate(EntityType.PDP.getType(), id));
+        this.initialPolicyValues(apiUser, policyDefinition, false);
+
+        policyIdpAccessEnforcer.actionAllowed(policyDefinition, PolicyAccess.WRITE, apiUser, true);
         this.metaDataService.doRemove(EntityType.PDP.getType(), id, apiUser, "Deleted by dashboard API");
     }
 
@@ -176,12 +172,15 @@ public class PoliciesController {
     }
 
     private void updateProviderStructure(Map<String, Object> data) {
-        List.of("identityProviderIds", "identityProviderIds")
+        List.of("identityProviderIds", "serviceProviderIds")
                 .forEach(reference -> {
                             List<String> names = (List<String>) data.getOrDefault(reference, new ArrayList<>());
-                            data.put(reference, names.stream().collect(toMap(name -> "name", name -> name)));
+                    //The map needs to be mutable hence the extra HashMap constructor
+                    data.put(reference, names.stream().map(name -> new HashMap<>(Map.of("name", name))).collect(toList()));
                         }
                 );
+        data.put("metaDataFields", new HashMap<>());
+        List.of("id", "created").forEach(name -> data.remove(name));
     }
 
     private void initialPolicyValues(APIUser apiUser, PdpPolicyDefinition policyDefinition, boolean includeAuthenticatingAuthority) {
@@ -196,20 +195,21 @@ public class PoliciesController {
         policyDefinition.setUserDisplayName(impersonatedUser.getUnspecifiedNameId());
     }
 
+    private List<Map<String, String>> attributes(String path) throws IOException {
+        return this.objectMapper.readValue(new ClassPathResource(path).getInputStream(), typeReference);
+    }
+
     private String entityID(Map<String, Object> entity) {
         return (String) ((Map)entity.get("data")).get("entity");
     }
-
 
     private boolean policyEnforcementDecisionRequired(Map<String, Object> entity) {
         return (boolean) ((Map)((Map)entity.get("data")).get("metaDataFields")).getOrDefault("coin:policy_enforcement_decision_required", false);
     }
 
-
     private String name(Map<String, Object> entity) {
         return (String) ((Map)((Map)entity.get("data")).get("metaDataFields")).get("name:en");
     }
-
 
     private String nameNL(Map<String, Object> entity) {
         return (String) ((Map)((Map)entity.get("data")).get("metaDataFields")).get("name:nl");
