@@ -104,7 +104,7 @@ public class MetaDataRepository {
     }
 
     public List<Map> autoComplete(String type, String search) {
-        Query query = queryWithSamlFields();
+        Query query = queryWithSamlFields(EntityType.fromType(type));
         if ("*".equals(search)) {
             return mongoTemplate.find(query, Map.class, type);
         }
@@ -116,12 +116,17 @@ public class MetaDataRepository {
         criteria.andOperator(parts.stream().map(part -> {
             List<Criteria> orCriterias = new ArrayList<>();
             orCriterias.add(regex("data.entityid", part));
-            this.supportedLanguages.forEach(lang -> {
-                orCriterias.add(regex("data.metaDataFields.name:" + lang, part));
-                orCriterias.add(regex("data.metaDataFields.displayName:" + lang, part));
-                orCriterias.add(regex("data.metaDataFields.keywords:" + lang, part));
-                orCriterias.add(regex("data.metaDataFields.OrganizationName:" + lang, part));
-            });
+            if (EntityType.PDP.getType().equals(type)) {
+                orCriterias.add(regex("data.name", part));
+                orCriterias.add(regex("data.description", part));
+            } else {
+                this.supportedLanguages.forEach(lang -> {
+                    orCriterias.add(regex("data.metaDataFields.name:" + lang, part));
+                    orCriterias.add(regex("data.metaDataFields.displayName:" + lang, part));
+                    orCriterias.add(regex("data.metaDataFields.keywords:" + lang, part));
+                    orCriterias.add(regex("data.metaDataFields.OrganizationName:" + lang, part));
+                });
+            }
             return new Criteria().orOperator(orCriterias.toArray(new Criteria[orCriterias.size()]));
         }).toArray(Criteria[]::new));
         query.addCriteria(criteria);
@@ -178,7 +183,7 @@ public class MetaDataRepository {
 
     public List<Map> search(String type, Map<String, Object> properties, List<String> requestedAttributes, Boolean
             allAttributes, Boolean logicalOperatorIsAnd) {
-        Query query = allAttributes ? new Query() : queryWithSamlFields();
+        Query query = allAttributes ? new Query() : queryWithSamlFields(EntityType.fromType(type));
         if (!allAttributes) {
             requestedAttributes.forEach(requestedAttribute -> {
                 String key = escapeMetaDataField(requestedAttribute);
@@ -291,7 +296,7 @@ public class MetaDataRepository {
     }
 
     public List<Map> whiteListing(String type, String state) {
-        Query query = queryWithSamlFields().addCriteria(Criteria.where("data.state").is(state));
+        Query query = queryWithSamlFields(EntityType.fromType(type)).addCriteria(Criteria.where("data.state").is(state));
         query.fields()
                 .include("data.allowedall")
                 .include("data.allowedEntities")
@@ -305,14 +310,14 @@ public class MetaDataRepository {
     }
 
     public List<Map> relyingParties(String resourceServerEntityID) {
-        Query query = queryWithSamlFields()
+        Query query = queryWithSamlFields(EntityType.RP)
                 .addCriteria(Criteria.where("data.allowedResourceServers.name").is(resourceServerEntityID));
         return mongoTemplate.find(query, Map.class, EntityType.RP.getType());
     }
 
     public List<Map> allowedEntities(String id, EntityType entityType) {
         Map byId = mongoTemplate.findById(id, Map.class, entityType.getType());
-        Query query = queryWithSamlFields()
+        Query query = queryWithSamlFields(entityType)
                 .addCriteria(new Criteria().orOperator(
                         Criteria.where("data.allowedEntities.name").is(((Map) byId.get("data")).get("entityid")),
                         Criteria.where("data.allowedall").is(true)
@@ -340,21 +345,24 @@ public class MetaDataRepository {
                 .collect(toList());
     }
 
-    private Query queryWithSamlFields() {
+    private Query queryWithSamlFields(EntityType entityType) {
         Query query = new Query();
         //When we have multiple types then we need to delegate depending on the type.
-        Field fields = query
-                .fields();
+        Field fields = query.fields();
         fields
                 .include("version")
                 .include("type")
                 .include("data.state")
                 .include("data.entityid")
                 .include("data.notes");
-        this.supportedLanguages.forEach(lang -> {
-            fields.include("data.metaDataFields.name:" + lang);
-            fields.include("data.metaDataFields.OrganizationName:" + lang);
-        });
+        if (entityType.equals(EntityType.PDP)) {
+            fields.include("data.name", "data.description", "data.type");
+        } else {
+            this.supportedLanguages.forEach(lang -> {
+                fields.include("data.metaDataFields.name:" + lang);
+                fields.include("data.metaDataFields.OrganizationName:" + lang);
+            });
+        }
         return query;
     }
 

@@ -286,3 +286,12 @@ export function scopeInUse(scopes) {
 export function recentActivity(types, limit) {
     return postPutJson("recent-activity", {types, limit}, "POST")
 }
+
+//Policies
+export function policyAttributes() {
+    return fetchJson("attributes")
+}
+
+export function policySAMLAttributes() {
+    return fetchJson("saml-attributes")
+}

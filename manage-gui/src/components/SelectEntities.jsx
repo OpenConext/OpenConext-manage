@@ -5,6 +5,7 @@ import {Select} from "../components";
 import "./SelectEntities.scss";
 
 export default class SelectEntities extends React.PureComponent {
+
     options() {
         const {whiteListing, allowedEntities} = this.props;
         const allowedEntityNames = allowedEntities.map(entity => entity.name);

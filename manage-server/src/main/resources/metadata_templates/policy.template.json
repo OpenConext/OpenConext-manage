@@ -1,0 +1,17 @@
+{
+  "metaDataFields": {},
+  "name": "",
+  "entityid": "",
+  "description": "",
+  "serviceProviderIds": [],
+  "identityProviderIds": [],
+  "attributes": [],
+  "denyAdvice": "",
+  "denyRule": false,
+  "allAttributesMustMatch": false,
+  "userDisplayName": "",
+  "authenticatingAuthorityName": "",
+  "denyAdviceNl": "",
+  "active": true,
+  "type": "reg"
+}

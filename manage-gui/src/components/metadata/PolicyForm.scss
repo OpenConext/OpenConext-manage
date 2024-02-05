@@ -1,0 +1,71 @@
+@import "../../stylesheets/mixins.scss";
+
+.metadata-policy-form {
+    background-color: white;
+    padding: 10px 20px 20px 20px;
+
+    section.policy-form {
+        margin-top: 15px;
+
+        label > span {
+
+            margin-bottom: 5px;
+        }
+
+        .input-field {
+            margin-bottom: 25px;
+            display: flex;
+            flex-direction: column;
+
+            label {
+                margin-bottom: 5px;
+                display: inline-block;
+            }
+
+
+        }
+
+        input, textarea {
+            width: 50%;
+            padding: 5px;
+            border-radius: 3px;
+            border: 1px solid #d9d9d8;
+            line-height: 22px;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        }
+
+        .policy-select {
+            width: 50%;
+        }
+
+        .fa-info-circle {
+            color: $blue;
+            margin-left: 5px;
+        }
+
+    }
+
+    div.__react_component_tooltip {
+        max-width: 400px;
+    }
+
+    .checkbox-options {
+        display: flex;
+        width: 50%;
+        flex-direction: row;
+        padding: 15px;
+        border-radius: 3px;
+        border: 1px solid #d9d9d8;
+        margin-bottom: 25px;
+
+        .checkbox-container {
+            &:last-child {
+                margin-left: 160px;
+            }
+            &.adjustment {
+                margin-left: 118px;
+
+            }
+        }
+    }
+}

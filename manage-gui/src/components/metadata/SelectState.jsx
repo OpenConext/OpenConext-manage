@@ -18,7 +18,7 @@ export default class SelectState extends React.PureComponent {
     };
 
     render() {
-        const {onChange, state, states, disabled} = this.props;
+        const {onChange, state, states = [], disabled} = this.props;
         const options = states.map(s => {
             return {value: s, label: I18n.t(`metadata.${s}`)};
         });

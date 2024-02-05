@@ -375,8 +375,8 @@
       ],
       "manipulation": "PHP code",
       "metaDataFields": {
-        "name:en": "OpenConext ServiceRegistry Mock",
-        "name:nl": "OpenConext ServiceRegistry",
+        "name:en": "IdP test 2",
+        "name:nl": "IdP test 2",
         "description:en": "OpenConext Service Registry, register all SPs and IdPs here",
         "description:nl": "OpenConext Service Registry, register all SPs and IdPs here",
         "displayName:en": "OpenConext ServiceRegistry",

@@ -131,20 +131,17 @@ class App extends React.PureComponent {
                                element={<API configuration={configuration}/>}/>
 
                         <Route path="/system"
-
                                element={<System currentUser={currentUser}
                                                 configuration={configuration}/>}/>
                         <Route path="/staging"
-
                                element={<Staging/>}/>
 
                         <Route path="/scopes"
-
                                element={<Scopes/>}/>
 
                         <Route path="/activity"
-
                                element={<Activity/>}/>
+
                         <Route path="/refresh-route/:path"
                                element={<RefreshRoute/>}/>
 

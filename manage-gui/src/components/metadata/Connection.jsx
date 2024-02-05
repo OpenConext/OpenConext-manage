@@ -39,7 +39,7 @@ export default class Connection extends React.PureComponent {
         const isResourceServer = type === "oauth20_rs";
         const isProvisioning = type === "provisioning";
         const entityIdFormat = this.props.configuration.properties.entityid.format;
-        const states = this.props.configuration.properties.state.enum;
+        const states = (this.props.configuration.properties.state || {}).enum;
 
         const logo = data.metaDataFields["logo:0:url"];
         const name =
