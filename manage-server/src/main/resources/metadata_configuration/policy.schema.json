@@ -21,7 +21,8 @@
       "enum": [
         "reg",
         "step"
-      ]
+      ],
+      "default": "reg"
     },
     "revisionid": {
       "type": "number"
@@ -72,6 +73,7 @@
     },
     "attributes": {
       "type": "array",
+      "required": ["name", "value"],
       "items": {
         "type": "object",
         "properties": {
@@ -82,7 +84,8 @@
             "type": "string"
           },
           "negated": {
-            "type": "boolean"
+            "type": "boolean",
+            "default": "false"
           }
         }
       }
@@ -186,9 +189,7 @@
   "required": [
     "name",
     "entityid",
-    "serviceProviderIds",
-    "authenticatingAuthorityName",
-    "userDisplayName"
+    "serviceProviderIds"
   ],
   "additionalProperties": false,
   "indexes": []

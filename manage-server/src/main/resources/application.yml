@@ -42,6 +42,8 @@ product:
   supported_languages: en,nl
   show_oidc_rp: true
 
+loa_levels: "http://localhost/assurance/loa1.5,http://localhost/assurance/loa2,http://localhost/assurance/loa3"
+
 metadata_configuration_path: classpath:/metadata_configuration
 metadata_templates_path: classpath:/metadata_templates
 metadata_export_path: classpath:/metadata_export

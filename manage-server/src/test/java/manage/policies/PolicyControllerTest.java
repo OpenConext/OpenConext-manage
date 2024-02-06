@@ -9,16 +9,14 @@ import org.springframework.data.mongodb.core.query.Query;
 
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static io.restassured.RestAssured.given;
 import static manage.api.APIAuthenticationManager.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class PoliciesControllerTest extends AbstractIntegrationTest {
+public class PolicyControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void policies() {

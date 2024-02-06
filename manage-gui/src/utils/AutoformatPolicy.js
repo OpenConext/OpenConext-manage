@@ -1,12 +1,4 @@
-import {isEmpty} from "./Utils";
-
-const groupByName = attributes => attributes.reduce((acc, attr) => {
-    const {name} = product;
-    attr[name] = attr[name] ?? [];
-    attr[name].push(attr);
-    return acc;
-}, {});
-
+import {groupBy, isEmpty} from "./Utils";
 
 export const AutoFormat = {
 
@@ -22,9 +14,7 @@ export const AutoFormat = {
         if (otherAttr.length === 0) {
             return ".";
         }
-        attributes = groupByName(otherAttr, attr => {
-            return attr.name;
-        });
+        attributes = groupBy(attributes, "name");
         const attributeNames = Object.keys(attributes);
         const length = attributeNames.length;
         const lines = attributeNames.map((attributeName, index) => {

@@ -20,7 +20,7 @@ import ConfirmationDialog from "../components/ConfirmationDialog";
 import {
     allResourceServers,
     changeRequests,
-    detail, policyAttributes,
+    detail, getAllowedLoas, policyAttributes,
     provisioningById,
     relyingPartiesByResourceServer,
     remove,
@@ -246,12 +246,14 @@ class Detail extends React.PureComponent {
                             search({}, "saml20_idp"),
                             search({}, "saml20_sp"),
                             search({}, "oidc10_rp"),
-                            policyAttributes()
+                            policyAttributes(),
+                            getAllowedLoas()
                         ]).then(res => {
                             this.setState({
                                 identityProviders: res[0],
                                 serviceProviders: res[1].concat(res[2]),
-                                policyAttributes: res[3]
+                                policyAttributes: res[3],
+                                allowedLoas: res[4]
                             })
                         })
 
@@ -324,7 +326,6 @@ class Detail extends React.PureComponent {
     };
 
     validate = (metaData, configurations, type) => {
-        debugger;//TODO there are bugs in here, add policy_form errors. Change the policy.schema.json
         const configuration = configurations.find(conf => conf.title === type);
         const requiredMetaData = configuration.properties.metaDataFields.required;
         const metaDataFields = metaData.data.metaDataFields;
@@ -341,6 +342,7 @@ class Detail extends React.PureComponent {
             }
         });
         const connectionErrors = {};
+        const policyFormErrors = {};
         const required = configuration.required;
         if ("policy" !== type) {
             Object.keys(metaData.data).forEach(key => {
@@ -353,11 +355,18 @@ class Detail extends React.PureComponent {
                     connectionErrors[req] = true;
                 }
             });
+        } else {
+            required.forEach(req => {
+                if (metaData.data[req] === undefined) {
+                    policyFormErrors[req] = true;
+                }
+            });
         }
         const newErrors = {
             ...this.state.errors,
             connection: connectionErrors,
-            metadata: metaDataErrors
+            metadata: metaDataErrors,
+            policy_from: policyFormErrors
         };
         this.setState({errors: newErrors});
     };
@@ -372,7 +381,6 @@ class Detail extends React.PureComponent {
     };
 
     onError = name => (key, isError) => {
-        debugger;
         const errors = {...this.state.errors};
         errors[name][key] = isError;
         this.setState({errors: errors});
@@ -776,6 +784,7 @@ class Detail extends React.PureComponent {
         identityProviders,
         serviceProviders,
         policyAttributes,
+        allowedLoas,
         initial
     ) => {
         const configuration = this.props.configuration.find(
@@ -971,6 +980,7 @@ class Detail extends React.PureComponent {
                     <PolicyForm identityProviders={identityProviders}
                                 serviceProviders={serviceProviders}
                                 policyAttributes={policyAttributes}
+                                allowedLoas={allowedLoas}
                                 initial={initial}
                                 data={metaData.data}
                                 isNew={isNew}
@@ -1124,6 +1134,7 @@ class Detail extends React.PureComponent {
             identityProviders,
             serviceProviders,
             policyAttributes,
+            allowedLoas,
             initial,
             whiteListing,
             revisions,
@@ -1261,6 +1272,7 @@ class Detail extends React.PureComponent {
                     identityProviders,
                     serviceProviders,
                     policyAttributes,
+                    allowedLoas,
                     initial
                 )}
                 {renderContent && this.renderActions(revisionNote)}

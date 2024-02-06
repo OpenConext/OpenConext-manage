@@ -10,6 +10,7 @@ import manage.model.EntityType;
 import manage.model.MetaData;
 import manage.repository.MetaDataRepository;
 import manage.service.MetaDataService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.CollectionUtils;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 import static manage.mongo.MongoChangelog.REVISION_POSTFIX;
@@ -27,7 +29,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 @RestController
 @SuppressWarnings("unchecked")
-public class PoliciesController {
+public class PolicyController {
 
     private final MetaDataService metaDataService;
     private final ObjectMapper objectMapper;
@@ -36,15 +38,17 @@ public class PoliciesController {
     private final PolicyRepository policyRepository;
     private final List<Map<String, String>> allowedAttributes;
     private final List<Map<String, String>> samlAllowedAttributes;
+    private final List<String> loaLevels;
     private final TypeReference<List<Map<String, String>>> typeReference = new TypeReference<>() {
     };
 
     @SneakyThrows
-    public PoliciesController(MetaDataService metaDataService,
-                              ObjectMapper objectMapper,
-                              PolicyIdpAccessEnforcer policyIdpAccessEnforcer,
-                              MetaDataRepository metaDataRepository,
-                              PolicyRepository policyRepository) {
+    public PolicyController(MetaDataService metaDataService,
+                            ObjectMapper objectMapper,
+                            PolicyIdpAccessEnforcer policyIdpAccessEnforcer,
+                            MetaDataRepository metaDataRepository,
+                            PolicyRepository policyRepository,
+                            @Value("${loa_levels}") String loaLevelsCommaSeparated) {
         this.metaDataService = metaDataService;
         this.objectMapper = objectMapper;
         this.policyIdpAccessEnforcer = policyIdpAccessEnforcer;
@@ -52,6 +56,7 @@ public class PoliciesController {
         this.policyRepository = policyRepository;
         this.allowedAttributes = this.attributes("policies/allowed_attributes.json");
         this.samlAllowedAttributes = this.attributes("policies/extra_saml_attributes.json");
+        this.loaLevels = Stream.of(loaLevelsCommaSeparated.split(",")).map(String::trim).collect(toList());
     }
 
     @PreAuthorize("hasRole('POLICIES')")
@@ -137,6 +142,12 @@ public class PoliciesController {
     public List<Map<String, String>> getAllowedSamlAttributes() {
         return this.samlAllowedAttributes;
     }
+
+    @RequestMapping(method = GET, value = {"/client/loas"})
+    public List<String> allowedLevelOfAssurances() {
+        return this.loaLevels;
+    }
+
 
     private PdpPolicyDefinition enrichPolicyDefinition(PdpPolicyDefinition policyDefinition) {
         List<String> serviceProviderIds = policyDefinition.getServiceProviderIds();

@@ -295,3 +295,8 @@ export function policyAttributes() {
 export function policySAMLAttributes() {
     return fetchJson("saml-attributes")
 }
+
+export function getAllowedLoas() {
+    return fetchJson("loas");
+}
+
