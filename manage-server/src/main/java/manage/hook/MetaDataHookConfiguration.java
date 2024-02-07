@@ -33,6 +33,7 @@ public class MetaDataHookConfiguration {
                 Arrays.asList(
                         new SecurityHook(),
                         new EmptyRevisionHook(metaDataAutoConfiguration),
+                        new PolicyValidationHook(metaDataAutoConfiguration),
                         new ExtraneousKeysPoliciesHook(metaDataAutoConfiguration),
                         new OidcValidationHook(metaDataAutoConfiguration),
                         new TypeSafetyHook(metaDataAutoConfiguration),

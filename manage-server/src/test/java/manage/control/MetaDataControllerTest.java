@@ -16,6 +16,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.*;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.config.RestAssuredConfig.newConfig;
@@ -1713,6 +1714,37 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         assertEquals(EntityType.PDP.getType(), retrievedMetaData.getType());
         assertNotNull(retrievedMetaData.getId());
         assertEquals("reg", retrievedMetaData.getData().get("type"));
+    }
+
+    @Test
+    public void policyMetaDataRegularValidation() {
+        Map<String, Object> data = readValueFromFile("/metadata_templates/policy.template.json");
+        MetaData metaData = new MetaData(EntityType.PDP.getType(), data);
+        Map<String, Object> result = given()
+                .when()
+                .body(metaData)
+                .header("Content-type", "application/json")
+                .post("manage/api/client/metadata")
+                .as(new TypeRef<>() {
+                });
+        long nbrValidations = Stream.of(((String) result.get("validations")).split("#:")).filter(s -> !s.trim().isEmpty()).count();
+        assertEquals(3L, nbrValidations);
+    }
+
+    @Test
+    public void policyMetaDataStepUpValidation() {
+        Map<String, Object> data = readValueFromFile("/metadata_templates/policy.template.json");
+        data.put("type", "step");
+        MetaData metaData = new MetaData(EntityType.PDP.getType(), data);
+        Map<String, Object> result = given()
+                .when()
+                .body(metaData)
+                .header("Content-type", "application/json")
+                .post("manage/api/client/metadata")
+                .as(new TypeRef<>() {
+                });
+        long nbrValidations = Stream.of(((String) result.get("validations")).split("#:")).filter(s -> !s.trim().isEmpty()).count();
+        assertEquals(1L, nbrValidations);
     }
 
     private void doCreateChangeRequest() {

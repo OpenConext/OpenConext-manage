@@ -6,6 +6,7 @@
   "serviceProviderIds": [],
   "identityProviderIds": [],
   "attributes": [],
+  "loas": [],
   "denyAdvice": "",
   "denyRule": false,
   "allAttributesMustMatch": false,

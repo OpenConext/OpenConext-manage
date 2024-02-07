@@ -20,7 +20,9 @@ import ConfirmationDialog from "../components/ConfirmationDialog";
 import {
     allResourceServers,
     changeRequests,
-    detail, getAllowedLoas, policyAttributes,
+    detail,
+    getAllowedLoas,
+    policyAttributes,
     provisioningById,
     relyingPartiesByResourceServer,
     remove,
@@ -329,7 +331,8 @@ class Detail extends React.PureComponent {
         const configuration = configurations.find(conf => conf.title === type);
         const requiredMetaData = configuration.properties.metaDataFields.required;
         const metaDataFields = metaData.data.metaDataFields;
-        const metaDataErrors = {};
+        const currentErrors = {...this.state.errors};
+        const metaDataErrors = currentErrors.metadata || {};
         Object.keys(metaDataFields).forEach(key => {
             if (isEmpty(metaDataFields[key]) && requiredMetaData.indexOf(key) > -1) {
                 metaDataErrors[key] = true;
@@ -341,8 +344,8 @@ class Detail extends React.PureComponent {
                 this.onChange("metadata", `data.metaDataFields.${req}`, "");
             }
         });
-        const connectionErrors = {};
-        const policyFormErrors = {};
+        const connectionErrors = currentErrors.connection || {};
+        const policyFormErrors = currentErrors.policy_form || {};
         const required = configuration.required;
         if ("policy" !== type) {
             Object.keys(metaData.data).forEach(key => {
@@ -351,22 +354,22 @@ class Detail extends React.PureComponent {
                 }
             });
             required.forEach(req => {
-                if (metaData.data[req] === undefined) {
+                if (isEmpty(metaData.data[req])) {
                     connectionErrors[req] = true;
                 }
             });
         } else {
             required.forEach(req => {
-                if (metaData.data[req] === undefined) {
+                if (isEmpty(metaData.data[req])) {
                     policyFormErrors[req] = true;
                 }
             });
         }
         const newErrors = {
-            ...this.state.errors,
+            currentErrors,
             connection: connectionErrors,
             metadata: metaDataErrors,
-            policy_from: policyFormErrors
+            policy_form: policyFormErrors
         };
         this.setState({errors: newErrors});
     };
@@ -400,7 +403,7 @@ class Detail extends React.PureComponent {
     onChange = component => (
         name,
         value,
-        replaceAtSignWithDotsInName = false
+        callback
     ) => {
         const currentState = this.state.metaData;
         const metaData = {
@@ -414,16 +417,14 @@ class Detail extends React.PureComponent {
                 this.changeValueReference(
                     metaData,
                     name[i],
-                    value[i],
-                    replaceAtSignWithDotsInName
+                    value[i]
                 );
             }
         } else {
             this.changeValueReference(
                 metaData,
                 name,
-                value,
-                replaceAtSignWithDotsInName
+                value
             );
         }
         const changes = {...this.state.changes};
@@ -439,6 +440,7 @@ class Detail extends React.PureComponent {
             });
         }
         this.setState({metaData: metaData, changes: changes}, () => {
+            callback && callback();
             if (component === "connection" && name === "data.state") {
                 this.refreshWhiteListing();
             }
@@ -483,9 +485,9 @@ class Detail extends React.PureComponent {
     changeValueReference = (
         metaData,
         name,
-        value,
-        replaceAtSignWithDotsInName
+        value
     ) => {
+        let replaceAtSignWithDotsInName = false;
         if (name.endsWith("redirect.sign")) {
             name = name.replace(/redirect\.sign/, "redirect@sign");
             replaceAtSignWithDotsInName = true;
@@ -798,7 +800,8 @@ class Detail extends React.PureComponent {
             type,
             removedWhiteListedEntities,
             addedWhiteListedEntities,
-            provisioningGroups
+            provisioningGroups,
+            errors
         } = this.state;
         const name =
             metaData.data.metaDataFields["name:en"] ||
@@ -813,7 +816,7 @@ class Detail extends React.PureComponent {
                         revisionNote={revisionNoteClone}
                         onChange={this.onChange("connection")}
                         onError={this.onError("connection")}
-                        errors={this.state.errors["connection"]}
+                        errors={errors["connection"]}
                         guest={guest}
                         isNew={isNew}
                         originalEntityId={originalEntityId}
@@ -847,7 +850,7 @@ class Detail extends React.PureComponent {
                         isNewEntity={this.state.isNew}
                         originalEntityId={this.state.originalEntityId}
                         onError={this.onError("metadata")}
-                        errors={this.state.errors["metadata"]}
+                        errors={errors["metadata"]}
                         guest={guest}
                     />
                 );
@@ -981,12 +984,11 @@ class Detail extends React.PureComponent {
                                 serviceProviders={serviceProviders}
                                 policyAttributes={policyAttributes}
                                 allowedLoas={allowedLoas}
-                                initial={initial}
                                 data={metaData.data}
                                 isNew={isNew}
                                 onChange={this.onChange("policy_form")}
                                 onError={this.onError("policy_form")}
-                                errors={this.state.errors["policy_form"]}/>
+                                errors={errors["policy_form"]}/>
                 );
             default:
                 throw new Error(`Unknown tab ${tab}`);

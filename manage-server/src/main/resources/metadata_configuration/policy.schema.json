@@ -8,13 +8,16 @@
       "type": "number"
     },
     "entityid": {
-      "type": "string"
+      "type": "string",
+      "minLength": 1
     },
     "name": {
-      "type": "string"
+      "type": "string",
+      "minLength": 1
     },
     "description": {
-      "type": "string"
+      "type": "string",
+      "minLength": 1
     },
     "type": {
       "type": "string",
@@ -44,6 +47,7 @@
     },
     "serviceProviderIds": {
       "type": "array",
+      "minItems": 1,
       "items": {
         "type": "object",
         "properties": {
@@ -188,7 +192,6 @@
   },
   "required": [
     "name",
-    "entityid",
     "serviceProviderIds"
   ],
   "additionalProperties": false,
