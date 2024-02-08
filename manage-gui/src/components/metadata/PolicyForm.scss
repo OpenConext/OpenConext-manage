@@ -1,4 +1,5 @@
-@import "../../stylesheets/mixins.scss";
+@import "../../stylesheets/vars.scss";
+@import "../../stylesheets/media_queries.scss";
 
 .metadata-policy-form {
     background-color: white;
@@ -44,10 +45,24 @@
             &.max {
                 width: 100%;
             }
+
+            @include desktop {
+                width: 100%;
+            }
+
         }
 
         .policy-select {
             width: 50%;
+
+            &.max {
+                width: 100%;
+            }
+
+            @include desktop {
+                width: 100%;
+            }
+
         }
 
         .fa-info-circle {
@@ -56,6 +71,43 @@
         }
 
     }
+
+    .loas {
+        margin-bottom: 25px;
+        padding: 15px;
+        border-radius: 3px;
+        border: 1px solid #d9d9d8;
+        max-width: 50%;
+
+        @include desktop {
+            width: 100%;
+        }
+
+        .loa {
+            display: flex;
+
+            i.fa-trash-o {
+                color: $red;
+                font-size: 26px;
+                margin: 4px 0 0 10px;
+                cursor: pointer;
+            }
+        }
+
+        .loa-container {
+            margin: 0 0 25px 60px;
+            display: flex;
+            flex-direction: column;
+
+            p {
+                margin-top: 15px;
+            }
+
+        }
+
+
+    }
+
 
     div.__react_component_tooltip {
         max-width: 400px;
@@ -70,6 +122,14 @@
         border: 1px solid #d9d9d8;
         margin-bottom: 25px;
 
+        &.max {
+            width: 100%;
+        }
+
+        @include desktop {
+            width: 100%;
+        }
+
         .checkbox-container {
             &:last-child {
                 margin-left: 160px;
@@ -81,40 +141,4 @@
         }
     }
 
-    .attributes {
-        margin-bottom: 25px;
-
-        i.fa-trash-o {
-            color: $red;
-            font-size: 26px;
-            margin: 4px 0 0 10px;
-            cursor: pointer;
-        }
-    }
-
-    .attribute-container {
-        margin-bottom: 25px;
-        max-width: 50%;
-        display: flex;
-        flex-direction: column;
-
-        p {
-            margin: 15px 0 0 60px;
-        }
-
-        a {
-            margin: 8px 0 0 60px;
-        }
-
-        .attribute {
-            display: flex;
-        }
-
-        .value {
-            display: flex;
-            margin: 8px 0 0 60px;
-        }
-
-
-    }
 }

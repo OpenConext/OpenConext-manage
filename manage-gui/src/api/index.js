@@ -127,6 +127,11 @@ export function validation(format, value) {
     return postPutJson("validation", {type: format, value: value}, "post");
 }
 
+export function ipInfo(ipAddress, networkPrefix) {
+    const networkPrefixParam = isEmpty(networkPrefix) ? "" : "&networkPrefix=" + networkPrefix;
+    return fetchJson("/ipinfo?ipAddress=" + encodeURIComponent(ipAddress) + networkPrefixParam);
+}
+
 export function fetchEnumValues(fetchValue) {
     return fetchJson(`fetch/${fetchValue}`);
 }

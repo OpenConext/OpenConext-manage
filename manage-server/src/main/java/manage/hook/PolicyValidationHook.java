@@ -4,20 +4,18 @@ import manage.api.AbstractUser;
 import manage.conf.MetaDataAutoConfiguration;
 import manage.model.EntityType;
 import manage.model.MetaData;
-import manage.shibboleth.FederatedUser;
 import org.everit.json.schema.Schema;
 import org.everit.json.schema.ValidationException;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 public class PolicyValidationHook extends MetaDataHookAdapter {
 
-    private MetaDataAutoConfiguration metaDataAutoConfiguration;
+    private final MetaDataAutoConfiguration metaDataAutoConfiguration;
 
     public PolicyValidationHook(MetaDataAutoConfiguration metaDataAutoConfiguration) {
         this.metaDataAutoConfiguration = metaDataAutoConfiguration;
@@ -54,16 +52,24 @@ public class PolicyValidationHook extends MetaDataHookAdapter {
                 failures.add(new ValidationException(schema, "Deny advice is required for regular policies", "denyAdvice"));
             }
             List<Map<String, Object>> attributes = (List<Map<String, Object>>) data.get("attributes");
-            if (CollectionUtils.isEmpty(attributes) || attributes.get(0).isEmpty()) {
-                failures.add(new ValidationException(schema, "One or more attributes are required for regular policies", "attributes"));
+            if (CollectionUtils.isEmpty(attributes) || attributes.stream().anyMatch(this::invalidAttribute)) {
+                failures.add(new ValidationException(schema, "One or more attributes with non-empty value(s) are required for regular policies", "attributes"));
             }
         } else {
             List<Map<String, Object>> loas = (List<Map<String, Object>>) data.get("loas");
-            if (CollectionUtils.isEmpty(loas) || loas.get(0).isEmpty()) {
-                failures.add(new ValidationException(schema, "One or more level of assurances are required for regular policies", "loas"));
+            if (CollectionUtils.isEmpty(loas) ||
+                    loas.stream().anyMatch(loa -> ((List<Map<String, Object>>) loa.get("attributes")).stream().anyMatch(this::invalidAttribute))) {
+                failures.add(new ValidationException(
+                        schema,
+                        "One or more level of assurances are required for regular policies (without invalid attributes)",
+                        "loas"));
             }
         }
         ValidationException.throwFor(schema, failures);
+    }
+
+    private boolean invalidAttribute(Map<String, Object> attribute) {
+        return !StringUtils.hasText((String) attribute.get("value"));
     }
 
 }

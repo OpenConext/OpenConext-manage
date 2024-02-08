@@ -592,6 +592,19 @@ class Detail extends React.PureComponent {
         }
     };
 
+    sanitizeMetaData = metaData => {
+        if (metaData.type === "policy") {
+            //Remove empty attributes and loas
+            if (metaData.data.type === "step") {
+                metaData.data.loas.forEach(loa => {
+                    loa.attributes = loa.attributes.filter(attribute => !isEmpty(attribute.value))
+                });
+            } else {
+                metaData.data.attributes = metaData.data.attributes.filter(attribute => !isEmpty(attribute.value));
+            }
+        }
+    }
+
     submit = e => {
         stop(e);
         const {errors, revisionNote} = this.state;
@@ -610,6 +623,7 @@ class Detail extends React.PureComponent {
         const promise = this.state.isNew ? save : update;
         const metaData = this.state.metaData;
         metaData.data.revisionnote = revisionNote;
+        this.sanitizeMetaData(metaData);
         promise(metaData).then(json => {
             if (json.exception || json.error) {
                 setFlash(json.validations, "error");

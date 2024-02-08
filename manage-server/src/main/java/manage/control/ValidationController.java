@@ -1,32 +1,20 @@
 package manage.control;
 
 import manage.model.Validation;
-import manage.validations.BasicAuthenticationUsernameFormatValidator;
-import manage.validations.BooleanFormatValidator;
-import manage.validations.CertificateFormatValidator;
-import manage.validations.JSONFormatValidator;
-import manage.validations.ListFormatValidator;
-import manage.validations.LocalEmailFormatValidator;
-import manage.validations.NoopFormatValidator;
-import manage.validations.NumberFormatValidator;
-import manage.validations.PasswordFormatValidator;
-import manage.validations.PatternFormatValidator;
-import manage.validations.URIFormatValidator;
-import manage.validations.URLFormatValidator;
-import manage.validations.UUIDFormatValidator;
-import manage.validations.XMLFormatValidator;
+import manage.policies.IPAddressProvider;
+import manage.policies.IPInfo;
+import manage.validations.*;
 import org.everit.json.schema.FormatValidator;
 import org.everit.json.schema.internal.DateTimeFormatValidator;
+
+
 import org.passay.CharacterRule;
 import org.passay.EnglishCharacterData;
 import org.passay.PasswordGenerator;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -60,6 +48,7 @@ public class ValidationController {
                 new ListFormatValidator(),
                 new PasswordFormatValidator(),
                 new BasicAuthenticationUsernameFormatValidator(),
+                new IPAddressValidator(),
                 new URIFormatValidator())
                 .stream()
                 .collect(toMap(FormatValidator::formatName, Function.identity()));
@@ -82,14 +71,24 @@ public class ValidationController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/client/validation")
     public boolean validation(@Validated @RequestBody Validation validation) {
-        return !validators.computeIfAbsent(validation.getType(), key -> {
+        return validators.computeIfAbsent(validation.getType(), key -> {
             throw new IllegalArgumentException(String.format("No validation defined for %s", key));
-        }).validate(validation.getValue()).isPresent();
+        }).validate(validation.getValue()).isEmpty();
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping(value = "/client/secret", produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, String> secret() {
         return Collections.singletonMap("secret", passwordGenerator.generatePassword(36, rules));
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping(value = "/client/ipinfo", produces = MediaType.APPLICATION_JSON_VALUE)
+    public IPInfo ipInfo(@RequestParam String ipAddress,
+                         @RequestParam(required = false) Integer networkPrefix) {
+        if (!validation(new Validation("ip", ipAddress))) {
+            return new IPInfo();
+        }
+        return IPAddressProvider.getIpInfo(ipAddress, networkPrefix);
     }
 }

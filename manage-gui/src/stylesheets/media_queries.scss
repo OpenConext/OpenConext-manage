@@ -1,9 +1,9 @@
-$minDesktop: 1024px;
+$maxDesktop: 1024px;
 $minTablet: 768px;
 $maxSmallPhone: 400px;
 
 @mixin desktop {
-    @media (min-width: #{$minDesktop}) {
+    @media (max-width: #{$maxDesktop}) {
         @content
     }
 }
