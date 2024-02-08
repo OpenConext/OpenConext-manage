@@ -58,7 +58,9 @@ public class BasicAuthenticationManager implements AuthenticationManager {
             throw new BadCredentialsException("Bad credentials");
         }
         String name = String.class.cast(authentication.getPrincipal());
-        List<GrantedAuthority> authorityList = createAuthorityList("ROLE_".concat(Scope.ADMIN.name()));
+        List<GrantedAuthority> authorityList = createAuthorityList(
+                "ROLE_".concat(Scope.ADMIN.name()),
+                "ROLE_".concat(Scope.SYSTEM.name()));
         return new UsernamePasswordAuthenticationToken(
                 new FederatedUser(
                         name,
