@@ -1185,6 +1185,8 @@ class Detail extends React.PureComponent {
 
         const hasErrors = this.hasGlobalErrors(errors) && !isEmpty(metaData.id);
 
+        const allowedDelete = !isNew && (isSystemUser(this.props.currentUser) || metaData.type !== "saml20_idp");
+
         return (
             <div className="detail-metadata">
                 <ConfirmationDialog
@@ -1204,7 +1206,7 @@ class Detail extends React.PureComponent {
                             {this.renderTopBanner(name, organization, metaData, resourceServers, whiteListing,
                                 isNew, whiteListingLoaded)}
                             {hasErrors && this.renderErrors(errors)}
-                            {(!isNew && isSystemUser(this.props.currentUser)) && (
+                            {allowedDelete && (
                                 <a
                                     className="button red delete-metadata"
                                     onClick={e => {
@@ -1229,7 +1231,7 @@ class Detail extends React.PureComponent {
                                     {I18n.t("metadata.remove")}
                                 </a>
                             )}
-                            {(!isNew && isSystemUser(this.props.currentUser)) && (
+                            {allowedDelete && (
                                 <a
                                     className="button green clone-metadata"
                                     onClick={e => {
