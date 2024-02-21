@@ -1,0 +1,85 @@
+---
+metadata_configuration_path: file:///config/metadata_configuration/
+metadata_templates_path: file:///config/metadata_templates/
+
+base_domain: dev.openconext.local
+environment: prod
+
+push:
+  eb:
+    url: https://engine.dev.openconext.local/api/connections
+    name: OpenConext EngineBlock
+    user: manage
+    password: secret
+    exclude_edugain_imports: true
+    exclude_oidc_rp: false
+  oidc:
+    url: https:///manage.dev.openconext.local/connections
+    user: manage
+    name: OpenConext OIDC-NG
+    password: secret
+    enabled: true
+
+product:
+  name: Manage
+  organization: OpenConext DEV
+  #  service_provider_feed_url: http://mds.edugain.org/edugain-v2.xml
+  service_provider_feed_url: https://mds.edugain.org/edugain-v2.xl
+  supported_languages: en,nl
+  show_oidc_rp: true
+
+crypto:
+  development-mode: True
+  public-key-location: classpath:nope
+#  development-mode: False
+#  public-key-location: classpath:/invite_public_key.pem
+
+spring:
+  mail:
+    host: mailcatcher
+    port: 25
+  data:
+    mongodb:
+      uri: mongodb://managerw:secret@mongo:27017/manage?ssl=false
+  main:
+    banner-mode: "off"
+
+cookie:
+  secure: true
+  # Options are 'Strict', 'Lax' or 'None'
+  same_site: None
+
+# We disable all endpoints except health for the load-balancer and info for git information.
+management:
+  health:
+    mail:
+      enabled: false
+  endpoints:
+    web:
+      exposure:
+        include: "health,info"
+      base-path: "/internal"
+  endpoint:
+    info:
+      enabled: true
+  info:
+    git:
+      mode: full
+
+gui:
+  disclaimer:
+    background-color: red
+    content: DEV
+
+metadata_import:
+  auto_refresh:
+    cronSchedule: "-"
+
+cron:
+  node-cron-job-responsible: True
+
+# used by the git plugin
+info:
+  build:
+    artifact: "@project.artifactId@"
+    version: "@project.version@"
