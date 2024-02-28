@@ -74,11 +74,11 @@ class Search extends React.PureComponent {
                 const suggestions = results.suggestions || [];
                 const alternatives = results.alternatives || [];
                 this.setState({
-                    suggestions: suggestions.length > 15 ? suggestions.slice(0, suggestions.length - 1) : suggestions,
+                    suggestions: suggestions,
                     loadingAutoComplete: false,
-                    alternatives: alternatives.length > 15 ? alternatives.slice(0, alternatives.length - 1) : alternatives,
-                    moreToShow: suggestions.length > 15 && this.state.query !== "*",
-                    moreAlternativesToShow: alternatives.length > 15
+                    alternatives: alternatives,
+                    moreToShow: suggestions.length === 16 && this.state.query !== "*",
+                    moreAlternativesToShow: alternatives.length === 16
                 })
             }), 200);
 

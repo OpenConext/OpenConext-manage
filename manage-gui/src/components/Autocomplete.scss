@@ -29,6 +29,10 @@ section.metadata-autocomplete {
             padding: 10px;
             text-align: left;
 
+            &.count {
+                min-width: 58px;
+            }
+
             &.name {
                 width: 20%;
             }
