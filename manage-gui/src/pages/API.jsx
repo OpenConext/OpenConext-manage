@@ -8,6 +8,7 @@ import "./API.scss";
 import debounce from "lodash.debounce";
 import {CheckBox, NotesTooltip, Select} from '../components'
 import {SelectMetaDataType, SelectNewEntityAttribute, SelectNewMetaDataField} from "../components/metadata"
+import {getNameForLanguage} from "../utils/Language";
 
 export default class API extends React.PureComponent {
 
@@ -275,7 +276,7 @@ export default class API extends React.PureComponent {
                         <td className="name">
                             <Link
                                 to={`/metadata/${selectedType}/${isEmpty(fullTextSearch) ? entity["_id"] : entity.id}`}
-                                target="_blank">{entity.data.metaDataFields["name:en"] || entity.data.metaDataFields["name:nl"]}</Link>
+                                target="_blank">{getNameForLanguage(entity.data.metaDataFields)}</Link>
                         </td>
                         <td className="entityId">{entity.data.entityid}</td>
                         <td className="notes">
@@ -318,7 +319,7 @@ export default class API extends React.PureComponent {
     renderSearchResultsTablePrintable = (searchResults) =>
         <section id={"search-results-printable"}>
             {searchResults
-                .map(entity => `${entity.data.state},${entity.data.metaDataFields["name:en"] || entity.data.metaDataFields["name:nl"]},${entity.data.entityid}`)
+                .map(entity => `${entity.data.state},${getNameForLanguage(entity.data.metaDataFields)},${entity.data.entityid}`)
                 .join("\n")}</section>;
 
     renderSearch = () => {

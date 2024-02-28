@@ -7,6 +7,7 @@ import {isEmpty} from "../utils/Utils";
 import CheckBox from "./CheckBox";
 import "./Autocomplete.scss";
 import NotesTooltip from "./NotesTooltip";
+import {getNameForLanguage, getOrganisationForLanguage} from "../utils/Language";
 
 export default class Autocomplete extends React.PureComponent {
 
@@ -94,8 +95,8 @@ export default class Autocomplete extends React.PureComponent {
                                 }
                             }}>
                             <td className="count">{index + 1}</td>
-                            <td>{this.item(item.data.metaDataFields["name:en"] || item.data.metaDataFields["name:nl"], query)}</td>
-                            <td>{this.item(item.data.metaDataFields["OrganizationName:en"] || item.data.metaDataFields["OrganizationName:nl"], query)}</td>
+                            <td>{this.item(getNameForLanguage(item.data.metaDataFields), query)}</td>
+                            <td>{this.item(getOrganisationForLanguage(item.data.metaDataFields), query)}</td>
                             <td>{item.type}</td>
                             <td className="state">
                                 <CheckBox name="state" value={item.data.state === "prodaccepted"}

@@ -24,6 +24,7 @@ import CheckBox from "../components/CheckBox";
 import JSONPretty from "react-json-pretty";
 import "react-json-pretty/themes/monikai.css";
 import {isSystemUser} from "../utils/User";
+import {getNameForLanguage} from "../utils/Language";
 
 export default class System extends React.PureComponent {
 
@@ -179,7 +180,7 @@ export default class System extends React.PureComponent {
             } else if (json.error) {
                 setFlash(json.message, "error");
             } else {
-                const name = json.data.metaDataFields["name:en"] || json.data.metaDataFields["name:nl"] || "this service";
+                const name = getNameForLanguage(json.data.metaDataFields) || "this service";
                 setFlash(I18n.t("metadata.flash.restored", {
                     name: name,
                     revision: number,
@@ -197,7 +198,7 @@ export default class System extends React.PureComponent {
             this.setState({
                 confirmationDialogOpen: true,
                 confirmationQuestion: I18n.t("playground.restoreConfirmation", {
-                    name: entity.data.metaDataFields["name:en"] || entity.data.entityid,
+                    name: getNameForLanguage(entity.data.metaDataFields) || entity.data.entityid,
                     number: number
                 }),
                 confirmationDialogAction: this.doRestoreDeleted(entity._id, revisionType, parentType, number)
@@ -226,7 +227,7 @@ export default class System extends React.PureComponent {
                     const restoreClassName = `button ${isTerminated ? "blue" : "grey"}`;
                     return (<tr key={`${entity.data.entityid}_${index}`}>
                         <td className="state">{I18n.t(`metadata.${entity.data.state}`)}</td>
-                        <td className="name">{metaDataFields["name:en"] || metaDataFields["name:nl"]}</td>
+                        <td className="name">{getNameForLanguage(metaDataFields)}</td>
                         <td className="entityId">{entity.data.entityid}</td>
                         <td className="terminated">{this.terminationDate(revision)}</td>
                         <td className="revisionNumber">{revision.number}</td>

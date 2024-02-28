@@ -70,10 +70,19 @@
                     }
                 }
 
-                &.profile {
-                    margin-left: auto;
-                    @include phone {
-                        display: none;
+                &.language {
+                    margin: 0 25px 0 auto;
+                    display: flex;
+                    gap: 10px;
+
+                    span {
+                        cursor: pointer;
+                        color: $blue;
+
+                        &.active {
+                            color: black;
+                            cursor: default;
+                        }
                     }
                 }
 

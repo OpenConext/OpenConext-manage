@@ -9,6 +9,8 @@ import FormatInput from "./../FormatInput";
 import "./Connection.scss";
 import {isEmpty} from "../../utils/Utils";
 import {Link} from "react-router-dom";
+import {getNameForLanguage} from "../../utils/Language";
+
 
 export default class Connection extends React.PureComponent {
 
@@ -42,8 +44,7 @@ export default class Connection extends React.PureComponent {
         const states = this.props.configuration.properties.state.enum;
 
         const logo = data.metaDataFields["logo:0:url"];
-        const name =
-            data.metaDataFields["name:en"] || data.metaDataFields["name:nl"] || "";
+        const name = getNameForLanguage(data.metaDataFields);
         const fullName = I18n.t(`metadata.${type}_single`) + " - " + name;
 
         return (
@@ -125,7 +126,7 @@ export default class Connection extends React.PureComponent {
                                 provisioningGroups.map(prov =>
                                     <Link to={`/metadata/${prov.type}/${prov._id}`} target="_blank">
                                         <span className="provisioning">
-                                            {prov.data.metaDataFields["name:en"]} - {I18n.t(`metadata.provisioningTypes.${prov.data.metaDataFields.provisioning_type}`)}
+                                            {getNameForLanguage(prov.data.metaDataFields)} - {I18n.t(`metadata.provisioningTypes.${prov.data.metaDataFields.provisioning_type}`)}
                                         </span>
                                     </Link>
                                 )}

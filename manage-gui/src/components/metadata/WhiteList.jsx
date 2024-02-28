@@ -9,6 +9,7 @@ import {copyToClip, isEmpty, stop} from "../../utils/Utils";
 
 import "./WhiteList.scss";
 import NotesTooltip from "../NotesTooltip";
+import {getNameForLanguage, getOrganisationForLanguage} from "../../utils/Language";
 
 export default class WhiteList extends React.Component {
 
@@ -72,13 +73,8 @@ export default class WhiteList extends React.Component {
         return {
             status: I18n.t(`metadata.${moreInfo.data.state}`),
             entityid: allowedEntry.name,
-            name:
-                moreInfo.data.metaDataFields["name:en"] ||
-                moreInfo.data.metaDataFields["name:nl"] ||
-                "",
-            organization: moreInfo.data.metaDataFields["OrganizationName:en"] ||
-                moreInfo.data.metaDataFields["OrganizationName:nl"] ||
-                "",
+            name: getNameForLanguage(moreInfo.data.metaDataFields) || "",
+            organization: getOrganisationForLanguage(moreInfo.data.metaDataFields) || "",
             id: moreInfo["_id"],
             blocked:
                 !moreInfo.data.allowedall &&

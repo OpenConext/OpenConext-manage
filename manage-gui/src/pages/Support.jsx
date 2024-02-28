@@ -9,6 +9,7 @@ import {Select} from "../components";
 import NotesTooltip from "../components/NotesTooltip";
 import CheckBox from "../components/CheckBox";
 import ConfirmationDialog from "../components/ConfirmationDialog";
+import {getNameForLanguage, getOrganisationForLanguage} from "../utils/Language";
 
 export default class Support extends React.PureComponent {
 
@@ -40,8 +41,8 @@ export default class Support extends React.PureComponent {
                 state: entity.data.state,
                 type: entity.type,
                 entityid: entity.data.entityid,
-                name: entity.data.metaDataFields["name:en"] || entity.data.metaDataFields["name:nl"] || entity.data.entityid,
-                organization: entity.data.metaDataFields["OrganizationName:en"] || entity.data.metaDataFields["OrganizationName:nl"] || "",
+                name: getNameForLanguage(entity.data.metaDataFields) || "",
+                organization: getOrganisationForLanguage(entity.data.metaDataFields) || "",
                 notes: entity.data.notes,
                 id: entity["_id"]
             }));

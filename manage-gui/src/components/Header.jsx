@@ -8,6 +8,7 @@ import logoOpenConext from "../images/open-conext-logo.png";
 import {logOut} from "../api";
 import "./Header.scss";
 import {isEmpty} from "../utils/Utils";
+import {getInitialLanguage, getLanguage, setLanguage} from "../utils/Language";
 
 export default class Header extends React.PureComponent {
 
@@ -44,6 +45,7 @@ export default class Header extends React.PureComponent {
         if (isEmpty(currentUser)) {
             currentUser = {product: {}}
         }
+        const lang = getInitialLanguage();
         const logo = currentUser.product.organization.startsWith('SURFconext') ? logoSurfConext : logoOpenConext;
         return (
             <div className="header-container">
@@ -51,6 +53,13 @@ export default class Header extends React.PureComponent {
                     <Link to="/" className="logo"><img src={logo} alt=""/></Link>
                     <ul className="links">
                         <li className="title"><span>{currentUser.product.name}</span></li>
+                        <li className="language">
+                            <span className={`${lang === "en" ? "active" : ""}`}
+                                  onClick={() => setLanguage("en")}>EN</span>
+                            <p>|</p>
+                            <span className={`${lang === "nl" ? "active" : ""}`}
+                                  onClick={() => setLanguage("nl")}>NL</span>
+                        </li>
                         <li className="profile"
                             tabIndex="1" onBlur={() => this.setState({dropDownActive: false})}>
                             {this.renderProfileLink(currentUser)}

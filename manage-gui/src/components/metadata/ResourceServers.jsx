@@ -7,6 +7,7 @@ import {copyToClip, isEmpty, stop} from "../../utils/Utils";
 
 import "./ResourceServers.scss";
 import NotesTooltip from "../NotesTooltip";
+import {getNameForLanguage, getOrganisationForLanguage} from "../../utils/Language";
 
 export default class ResourceServers extends React.Component {
     constructor(props) {
@@ -53,14 +54,8 @@ export default class ResourceServers extends React.Component {
         return {
             status: I18n.t(`metadata.${moreInfo.data.state}`),
             entityid: resourceServer.name,
-            name:
-                moreInfo.data.metaDataFields["name:en"] ||
-                moreInfo.data.metaDataFields["name:nl"] ||
-                "",
-            organization:
-                moreInfo.data.metaDataFields["OrganizationName:en"] ||
-                moreInfo.data.metaDataFields["OrganizationName:nl"] ||
-                "",
+            name: getNameForLanguage(moreInfo.data.metaDataFields) || "",
+            organization: getOrganisationForLanguage(moreInfo.data.metaDataFields) || "",
             id: moreInfo["_id"],
             notes: moreInfo.data.notes
         };
