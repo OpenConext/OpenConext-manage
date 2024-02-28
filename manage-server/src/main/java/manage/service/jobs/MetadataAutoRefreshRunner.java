@@ -130,7 +130,7 @@ public class MetadataAutoRefreshRunner implements Runnable {
         String entityId = metaData.getData().get(METADATA_ENTITYID_KEY).toString();
 
         if (!metaData.isMetadataRefreshEnabled()) {
-            LOG.info("Auto refresh is disabled - skipping for {}: {}", metaData.getType(), entityId);
+            LOG.debug("Auto refresh is not enabled for entity - skipping for {}: {}", metaData.getType(), entityId);
             return;
         }
 
