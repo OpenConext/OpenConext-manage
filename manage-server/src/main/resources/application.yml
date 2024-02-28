@@ -86,10 +86,12 @@ management:
   health:
     mail:
       enabled: false
+    mongo:
+      enabled: true
   endpoints:
     web:
       exposure:
-        include: "health,info"
+        include: "health,info,mongo"
       base-path: "/internal"
   endpoint:
     info:
