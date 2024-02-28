@@ -72,6 +72,7 @@ export default class Autocomplete extends React.PureComponent {
         return <table className="result">
             <thead>
             <tr>
+                <th className="count"></th>
                 <th className="name">{I18n.t("metadata_autocomplete.name")}</th>
                 <th className="organization">{I18n.t("metadata_autocomplete.organization")}</th>
                 <th className="type">{I18n.t("metadata_autocomplete.type")}</th>
@@ -92,6 +93,7 @@ export default class Autocomplete extends React.PureComponent {
                                     this.selectedRow = ref;
                                 }
                             }}>
+                            <td className="count">{index + 1}</td>
                             <td>{this.item(item.data.metaDataFields["name:en"] || item.data.metaDataFields["name:nl"], query)}</td>
                             <td>{this.item(item.data.metaDataFields["OrganizationName:en"] || item.data.metaDataFields["OrganizationName:nl"], query)}</td>
                             <td>{item.type}</td>
