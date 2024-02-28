@@ -2,6 +2,7 @@ package manage.control;
 
 import manage.AbstractIntegrationTest;
 import manage.model.Validation;
+import manage.policies.IPInfo;
 import org.junit.Test;
 
 import java.util.Map;
@@ -85,6 +86,31 @@ public class ValidationControllerTest extends AbstractIntegrationTest {
                 .get("manage/api/client/secret")
                 .as(Map.class);
         assertEquals(36, res.get("secret").length());
+    }
+
+    @Test
+    public void ipInfo() {
+        IPInfo ipInfo = given()
+                .when()
+                .header("Content-type", "application/json")
+                .queryParam("ipAddress", "192.2.2.15")
+                .queryParam("networkPrefix", 32)
+                .get("manage/api/client/ipinfo")
+                .as(IPInfo.class);
+        assertEquals(true, ipInfo.isIpv4());
+        assertEquals("192.2.2.15", ipInfo.getBroadcastAddress());
+    }
+
+    @Test
+    public void ipInfoDefault() {
+        IPInfo ipInfo = given()
+                .when()
+                .header("Content-type", "application/json")
+                .queryParam("ipAddress", "192.2.2.15")
+                .get("manage/api/client/ipinfo")
+                .as(IPInfo.class);
+        assertEquals(true, ipInfo.isIpv4());
+        assertEquals("192.2.2.255", ipInfo.getBroadcastAddress());
     }
 
     private void doValidation(String type, String value, boolean valid) throws Exception {

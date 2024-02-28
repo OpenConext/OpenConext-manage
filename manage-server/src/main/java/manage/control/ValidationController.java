@@ -84,7 +84,7 @@ public class ValidationController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping(value = "/client/ipinfo", produces = MediaType.APPLICATION_JSON_VALUE)
-    public IPInfo ipInfo(@RequestParam String ipAddress,
+    public IPInfo ipInfo(@RequestParam(value = "ipAddress") String ipAddress,
                          @RequestParam(required = false) Integer networkPrefix) {
         if (!validation(new Validation("ip", ipAddress))) {
             return new IPInfo();
