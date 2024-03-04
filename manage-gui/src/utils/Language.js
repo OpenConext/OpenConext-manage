@@ -30,7 +30,6 @@ export function getInitialLanguage() {
 }
 
 export function getNameForLanguage(metaDataFields) {
-    if ()
     return language === "en" ? (metaDataFields["name:en"] || metaDataFields["name:nl"]) : (metaDataFields["name:nl"] || metaDataFields["name:en"]);
 }
 
