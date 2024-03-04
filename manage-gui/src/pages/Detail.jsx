@@ -48,6 +48,7 @@ import ProvisioningApplications from "../components/metadata/ProvisioningApplica
 import AutoRefresh from "../components/metadata/AutoRefresh";
 import {isSystemUser} from "../utils/User";
 import PolicyForm from "../components/metadata/PolicyForm";
+import {getNameForLanguage, getOrganisationForLanguage} from "../utils/Language";
 
 let tabsSp = [
     "connection",
@@ -390,15 +391,10 @@ class Detail extends React.PureComponent {
     };
 
     nameOfMetaData = metaData =>
-        metaData.data.metaDataFields["name:en"] ||
-        metaData.data.metaDataFields["name:nl"] ||
-        metaData.data.name ||
-        metaData.data["entityid"];
+        metaData.data.name || getNameForLanguage(metaData.data.metaDataFields) || metaData.data["entityid"];
 
     organisationOfMetaData = metaData =>
-        metaData.data.metaDataFields["OrganizationName:en"] ||
-        metaData.data.metaDataFields["OrganizationName:nl"] ||
-        "";
+        getOrganisationForLanguage(metaData.data.metaDataFields) || "";
 
     onChange = component => (
         name,
@@ -629,11 +625,7 @@ class Detail extends React.PureComponent {
                 setFlash(json.validations, "error");
                 window.scrollTo(0, 0);
             } else {
-                const name =
-                    json.data.metaDataFields["name:en"] ||
-                    json.data.metaDataFields["name:nl"] ||
-                    json.data.name ||
-                    "this service";
+                const name = json.data.name || getNameForLanguage(json.data.metaDataFields) || "this service";
                 setFlash(
                     I18n.t("metadata.flash.updated", {
                         name: name,
@@ -817,11 +809,7 @@ class Detail extends React.PureComponent {
             provisioningGroups,
             errors
         } = this.state;
-        const name =
-            metaData.data.metaDataFields["name:en"] ||
-            metaData.data.metaDataFields["name:nl"] ||
-            metaData.data.name ||
-            "this service";
+        const name = metaData.data.name || getNameForLanguage(metaData.data.metaDataFields) || "this service";
         switch (tab) {
             case "connection":
                 return (
@@ -1251,11 +1239,7 @@ class Detail extends React.PureComponent {
                                     onClick={e => {
                                         stop(e);
                                         setTimeout(() => {
-                                            const name =
-                                                metaData.data.metaDataFields["name:en"] ||
-                                                metaData.data.metaDataFields["name:nl"] ||
-                                                metaData.data.name ||
-                                                "this service";
+                                            const name = metaData.data.name || getNameForLanguage(metaData.data.metaDataFields) || "this service";
                                             setFlash(I18n.t("metadata.flash.cloned", {name: name}));
                                         }, 50);
                                         const path = encodeURIComponent(`/clone/${type}/${metaData.id}`);

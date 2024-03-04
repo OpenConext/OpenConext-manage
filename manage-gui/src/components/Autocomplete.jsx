@@ -7,6 +7,7 @@ import {isEmpty} from "../utils/Utils";
 import CheckBox from "./CheckBox";
 import "./Autocomplete.scss";
 import NotesTooltip from "./NotesTooltip";
+import {getNameForLanguage, getOrganisationForLanguage} from "../utils/Language";
 
 export default class Autocomplete extends React.PureComponent {
 
@@ -73,6 +74,7 @@ export default class Autocomplete extends React.PureComponent {
         return <table className="result">
             <thead>
             <tr>
+                <th className="count"></th>
                 <th className="name">{I18n.t("metadata_autocomplete.name")}</th>
                 {!isPolicy && <th className="organization">{I18n.t("metadata_autocomplete.organization")}</th>}
                 {isPolicy && <th className="organization">{I18n.t("metadata_autocomplete.policy")}</th>}
@@ -95,12 +97,22 @@ export default class Autocomplete extends React.PureComponent {
                                     this.selectedRow = ref;
                                 }
                             }}>
+
                             <td>
                                 {!isPolicy && this.item(item.data.metaDataFields["name:en"] || item.data.metaDataFields["name:nl"], query)}
                                 {isPolicy && this.item(item.data.name, query)}
                             </td>
                             <td>
                                 {!isPolicy && this.item(item.data.metaDataFields["OrganizationName:en"] || item.data.metaDataFields["OrganizationName:nl"], query)}
+                                {isPolicy && I18n.t(`topBannerDetails.${item.data.type}`)}
+                            </td>
+                            <td className="count">{index + 1}</td>
+                            <td>
+                                {!isPolicy && this.item(getNameForLanguage(item.data.metaDataFields), query)}
+                                {isPolicy && this.item(item.data.name, query)}
+                            </td>
+                            <td>
+                                {!isPolicy && this.item(getOrganisationForLanguage(item.data.metaDataFields), query)}
                                 {isPolicy && I18n.t(`topBannerDetails.${item.data.type}`)}
                             </td>
                             <td>{item.type}</td>

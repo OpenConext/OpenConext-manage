@@ -8,6 +8,7 @@ import {isEmpty, stop} from "../../utils/Utils";
 import ReactTooltip from "react-tooltip";
 
 import "./Stepup.scss";
+import {getNameForLanguage, getOrganisationForLanguage} from "../../utils/Language";
 
 export default class Stepup extends React.Component {
     constructor(props) {
@@ -60,14 +61,8 @@ export default class Stepup extends React.Component {
         return {
             status: I18n.t(`metadata.${moreInfo.data.state}`),
             entityid: stepupEntity.name,
-            name:
-                moreInfo.data.metaDataFields["name:en"] ||
-                moreInfo.data.metaDataFields["name:nl"] ||
-                "",
-            organization:
-                moreInfo.data.metaDataFields["OrganizationName:en"] ||
-                moreInfo.data.metaDataFields["OrganizationName:nl"] ||
-                "",
+            name: getNameForLanguage(moreInfo.data.metaDataFields) || "",
+            organization: getOrganisationForLanguage(moreInfo.data.metaDataFields) || "",
             id: moreInfo["_id"],
             requireloa: moreInfo.data.metaDataFields["coin:stepup:requireloa"] || undefined,
             type: moreInfo.type,

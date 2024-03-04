@@ -7,6 +7,7 @@ import "./ConnectedIdps.scss";
 import {copyToClip, isEmpty} from "../../utils/Utils";
 import NotesTooltip from "../NotesTooltip";
 import {getConnectedEntities} from "../../utils/TabNumbers";
+import {getNameForLanguage, getOrganisationForLanguage} from "../../utils/Language";
 
 export default class ConnectedIdps extends React.Component {
 
@@ -33,9 +34,9 @@ export default class ConnectedIdps extends React.Component {
         const entities = getConnectedEntities(whiteListing, allowedAll, allowedEntities, entityId, state)
             .map(idp => ({
                 id: idp._id,
-                name: idp.data.metaDataFields["name:en"] || idp.data.metaDataFields["name:nl"] || idp.data.entityid,
-                organization: idp.data.metaDataFields["OrganizationName:en"] || idp.data.metaDataFields["OrganizationName:nl"] ||
-                    idp.data.metaDataFields["name:en"] || idp.data.metaDataFields["name:nl"] || idp.data.entityid,
+                name: getNameForLanguage(idp.data.metaDataFields) || idp.data.entityid,
+                organization: getOrganisationForLanguage(idp.data.metaDataFields) ||
+                    getNameForLanguage(idp.data.metaDataFields) || idp.data.entityid,
                 status: idp.data.state,
                 entityid: idp.data.entityid,
                 notes: idp.data.notes

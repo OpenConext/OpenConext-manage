@@ -14,6 +14,7 @@ import "./MetaDataChangeRequests.scss";
 import {acceptChangeRequest, rejectChangeRequest} from "../../api";
 import {emitter, setFlash} from "../../utils/Flash";
 import withRouterHooks from "../../utils/RouterBackwardCompatability";
+import {getNameForLanguage} from "../../utils/Language";
 
 
 class MetaDataChangeRequests extends React.Component {
@@ -87,7 +88,7 @@ class MetaDataChangeRequests extends React.Component {
                 setFlash(json.validations, "error");
                 window.scrollTo(0, 0);
             } else {
-                const name = json.data.metaDataFields["name:en"] || json.data.metaDataFields["name:nl"] || "this service";
+                const name = getNameForLanguage(json.data.metaDataFields) || "this service";
                 setFlash(I18n.t(`changeRequests.flash.${accept ? "accepted" : "rejected"}`, {
                     name: name
                 }));
@@ -275,7 +276,7 @@ class MetaDataChangeRequests extends React.Component {
                     <h2>{I18n.t("changeRequests.noChangeRequests")}</h2>
                 </div>}
                 {requests.length > 0 && <div className="change-request-info">
-                    <h2>{I18n.t("changeRequests.info", {name: metaData.data.metaDataFields["name:en"]})}</h2>
+                    <h2>{I18n.t("changeRequests.info", {name: getNameForLanguage(metaData.data.metaDataFields)})}</h2>
                     {requests.length > 1 && <CheckBox name="toggleDiffs" value={showAllDetails || false}
                                                       info={I18n.t("changeRequests.toggleAllDetails")}
                                                       onChange={this.toggleAllShowDetail}/>}

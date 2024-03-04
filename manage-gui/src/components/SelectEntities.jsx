@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import {Select} from "../components";
 
 import "./SelectEntities.scss";
+import {getLanguage} from "../utils/Language";
 
 export default class SelectEntities extends React.PureComponent {
 
@@ -20,7 +21,7 @@ export default class SelectEntities extends React.PureComponent {
                 } = entry.data;
 
                 return {
-                    label: `${eng || nl || value} - ${value} (${state})`,
+                    label: `${getLanguage() === "en" ? (eng || nl || value) : (nl || eng || value)} - ${value} (${state})`,
                     state,
                     value,
                     _id

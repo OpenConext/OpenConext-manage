@@ -14,6 +14,7 @@ import "./Revisions.scss";
 import {restoreRevision} from "../../api";
 import {setFlash} from "../../utils/Flash";
 import withRouterHooks from "../../utils/RouterBackwardCompatability";
+import {getNameForLanguage} from "../../utils/Language";
 
 const ignoreInDiff = ["id", "eid", "revisionid", "user", "created", "ip", "revisionnote"];
 
@@ -77,7 +78,7 @@ class Revisions extends React.Component {
                 setFlash(json.validations, "error");
                 window.scrollTo(0, 0);
             } else {
-                const name = json.data.metaDataFields["name:en"] || json.data.metaDataFields["name:nl"] || "this service";
+                const name = getNameForLanguage(json.data.metaDataFields) || "this service";
                 setFlash(I18n.t("metadata.flash.restored", {
                     name: name,
                     revision: number,

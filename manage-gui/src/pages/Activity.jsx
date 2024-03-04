@@ -8,6 +8,7 @@ import {Link} from "react-router-dom";
 import Select from "../components/Select";
 import NotesTooltip from "../components/NotesTooltip";
 import CheckBox from "../components/CheckBox";
+import {getNameForLanguage, getOrganisationForLanguage} from "../utils/Language";
 
 const limitOptions = ["25", "50", "75", "100"].map(s => ({value: s, label: s}));
 
@@ -47,8 +48,8 @@ export default class Activity extends React.Component {
                     state: a.data.state,
                     terminated: a.revision.terminated,
                     revisionNote: a.data.revisionnote,
-                    name: a.data.metaDataFields["name:en"],
-                    organization: a.data.metaDataFields["OrganizationName:en"] || a.data.metaDataFields["OrganizationName:nl"] || "",
+                    name: getNameForLanguage(a.data.metaDataFields),
+                    organization: getOrganisationForLanguage(a.data.metaDataFields) || "",
                     created: new Date(a.revision.created),
                     updatedBy: a.revision.updatedBy,
                 }));

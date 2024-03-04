@@ -6,6 +6,7 @@ import {Link} from "react-router-dom";
 import "./RelyingParties.scss";
 import {copyToClip, isEmpty} from "../../utils/Utils";
 import NotesTooltip from "../NotesTooltip";
+import {getNameForLanguage, getOrganisationForLanguage} from "../../utils/Language";
 
 export default class RelyingParties extends React.Component {
 
@@ -29,9 +30,8 @@ export default class RelyingParties extends React.Component {
         window.scrollTo(0, 0);
         const entities = relyingParties.map(rp => ({
             id: rp._id,
-            name: rp.data.metaDataFields["name:en"] || rp.data.metaDataFields["name:nl"] || rp.data.entityid,
-            organization: rp.data.metaDataFields["OrganizationName:en"] || rp.data.metaDataFields["OrganizationName:nl"] ||
-                rp.data.metaDataFields["name:en"] || rp.data.metaDataFields["name:nl"] || rp.data.entityid,
+            name: getNameForLanguage(rp.data.metaDataFields) || rp.data.entityid,
+            organization: getOrganisationForLanguage(rp.data.metaDataFields) || "",
             status: rp.data.state,
             entityid: rp.data.entityid,
             notes: rp.data.notes

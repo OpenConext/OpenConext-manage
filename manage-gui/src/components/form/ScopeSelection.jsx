@@ -3,6 +3,7 @@ import {Select} from "./../../components";
 import {fetchEnumValues, scopeInUse} from "../../api";
 import I18n from "i18n-js";
 import "./ScopeSelection.scss";
+import {getNameForLanguage} from "../../utils/Language";
 
 export default class ScopeSelection extends React.PureComponent {
 
@@ -44,9 +45,8 @@ export default class ScopeSelection extends React.PureComponent {
                 let warningMsg = alreadyUsedScopes.map(scope => I18n.t("scopes.duplicateScope", {
                     name: scope,
                     entities: res.filter(entity => entity.data.metaDataFields.scopes.includes(scope))
-                        .map(entity => `<a href="/metadata/oauth20_rs/${entity.id}/metadata" target="_blank">${entity.data.metaDataFields["name:en"]}</a>`).join(" and ")
+                        .map(entity => `<a href="/metadata/oauth20_rs/${entity.id}/metadata" target="_blank">${getNameForLanguage(entity.data.metaDataFields)}</a>`).join(" and ")
                 }));
-                // warningMsg = alreadyUsedScopes.map(scope => I18n.t("scopes.duplicateScope", {name: "what", entities: "rs1, rs1"}));
                 this.setState({alreadyUsedScopes: warningMsg});
             } else {
                 this.setState({alreadyUsedScopes: []});

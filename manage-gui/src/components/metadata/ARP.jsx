@@ -109,7 +109,8 @@ export default class ARP extends React.Component {
             this.setState({addInput: false, keyForNewInput: undefined, value: ""});
         } else {
             const currentArpValues = [...this.props.arp.attributes[key] || []];
-            currentArpValues.push({value: value, source: "idp", motivation: ""});
+            const motivation = this.getMotivation(currentArpValues);
+            currentArpValues.push({value: value, source: "idp", motivation: motivation});
             this.setState({addInput: false, keyForNewInput: undefined, value: "", newArpAttributeAddedKey: key});
             this.onChange(key, currentArpValues);
         }
@@ -132,13 +133,15 @@ export default class ARP extends React.Component {
             <ul className="values">
                 {attributeValues.map((attributeValue, index) =>
                     <li key={`${attributeValue.value}-${index}`}>
-                        <CheckBox name={`${attributeKey}_${attributeValue.value}_${index}`} value={true}
+                        <CheckBox name={`${attributeKey}_${attributeValue.value}_${index}`}
+                                  value={true}
                                   onChange={() => {
                                       const currentArpValues = [...this.props.arp.attributes[attributeKey]];
                                       currentArpValues.splice(index, 1);
                                       this.onChange(attributeKey,
                                           currentArpValues.length === 0 ? null : currentArpValues)
-                                  }} readOnly={guest}
+                                  }}
+                                  readOnly={guest}
                                   info={attributeValue.value}/>
                     </li>)}
                 {(attributeValues.length === 0 && !doAddInput) &&
@@ -161,15 +164,19 @@ export default class ARP extends React.Component {
 
     renderValueCellWithInput = (key, index, display) => {
         const {value} = this.state;
-        return (<tr className={index % 2 === 0 ? "even" : "odd"}>
+        return (
+            <tr className={index % 2 === 0 ? "even" : "odd"}>
             <td className="new-attribute-value"
                 colSpan={2}>{I18n.t("arp.new_attribute_value", {key: this.nameOfKey(key, display)})}</td>
             <td><input ref={ref => this.newAttributeValue = ref}
-                       type="text" onKeyUp={this.onKeyUp(key)}
+                       type="text"
+                       onKeyUp={this.onKeyUp(key)}
                        onChange={e => this.setState({value: e.target.value})}
-                       value={value} onBlur={this.attributeInputValueBlur(key)}/></td>
+                       value={value}
+                       onBlur={this.attributeInputValueBlur(key)}/></td>
             <td colSpan={2}></td>
-        </tr>);
+            </tr>
+        );
     };
 
     matchingRule = value => {
@@ -222,7 +229,8 @@ export default class ARP extends React.Component {
         //id's need to be unique for our checkboxes to work
         const reactTooltipId = `${attributeKey}_tooltip`;
 
-        return <tbody key={attributeKey}>
+        return (
+            <tbody key={attributeKey}>
         <tr>
             <td className={`name ${deprecated ? "deprecated" : ""}`}><span
                 className="display-name">{displayKey}</span><i className="fa fa-info-circle"
@@ -241,18 +249,27 @@ export default class ARP extends React.Component {
         <tr>
             <td className="new-attribute-value"
                 colSpan={2}>{I18n.t("arp.new_attribute_motivation", {key: this.nameOfKey(display, attributeKey)})}</td>
-            <td colSpan={3}><input
-                ref={ref => {
+            <td colSpan={3}>
+                <input ref={ref => {
                     if (this.state.newArpAttributeAddedKey === attributeKey) {
                         setTimeout(() => ref.focus(), 75);
                     }
                 }}
-                type="text" value={attributeValues[0].motivation} className="motivation"
+                       type="text"
+                       value={this.getMotivation(attributeValues)}
+                       className="motivation"
                 onChange={this.motivationChange(attributeKey)}
                 placeholder={I18n.t("arp.new_attribute_motivation_placeholder")}/></td>
         </tr>}
-        </tbody>
+            </tbody>)
     };
+
+    getMotivation = attributeValues => {
+        const motivations = attributeValues
+            .filter(attributeValue => !isEmpty(attributeValue.motivation))
+            .map(attributeValue => attributeValue.motivation);
+        return isEmpty(motivations) ? "" : motivations[0];
+    }
 
     renderArpAttributesTable = (arp, onChange, arpConfiguration, guest) => {
         const arpConfAttributes = arpConfiguration.properties.attributes.properties;
