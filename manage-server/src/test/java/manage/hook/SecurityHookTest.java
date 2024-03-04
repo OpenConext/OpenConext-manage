@@ -5,6 +5,7 @@ import manage.api.Scope;
 import manage.exception.EndpointNotAllowed;
 import manage.model.EntityType;
 import manage.model.MetaData;
+import manage.shibboleth.FederatedUser;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -20,6 +21,7 @@ class SecurityHookTest {
     private final SecurityHook securityHook = new SecurityHook();
     private final APIUser apiUser = new APIUser("test", emptyList());
     private final APIUser apiSystemUser = new APIUser("test", List.of(Scope.SYSTEM));
+    private final FederatedUser federatedUser= new FederatedUser(List.of(Scope.SYSTEM));
 
     @Test
     void appliesForMetaData() {
@@ -42,7 +44,7 @@ class SecurityHookTest {
     @Test
     void prePostAllowed() {
         MetaData metaData = new MetaData(EntityType.IDP.getType(), emptyMap());
-        securityHook.prePost(metaData, apiSystemUser);
+        securityHook.prePost(metaData, federatedUser);
     }
 
     @Test

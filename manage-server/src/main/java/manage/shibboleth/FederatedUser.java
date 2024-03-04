@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.User;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,7 +26,12 @@ public class FederatedUser extends User implements Serializable, AbstractUser {
     private final Product product;
     private final Push push;
     private final String environment;
-    private final List<Scope> scopes;
+    private List<Scope> scopes;
+
+    public FederatedUser(List<Scope> scopes) {
+        this("uid", "displayName", "schacHomeOrganization", Collections.emptyList(), Collections.emptyList(), null, null, "environment");
+        this.scopes = scopes;
+    }
 
     public FederatedUser(String uid, String displayName, String schacHomeOrganization, List<GrantedAuthority>
             authorities, List<Features> featureToggles, Product product, Push push, String environment) {

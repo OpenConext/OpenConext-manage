@@ -23,7 +23,6 @@ import NotesTooltip from "../components/NotesTooltip";
 import CheckBox from "../components/CheckBox";
 import JSONPretty from "react-json-pretty";
 import "react-json-pretty/themes/monikai.css";
-import {isSystemUser} from "../utils/User";
 import {getNameForLanguage} from "../utils/Language";
 
 export default class System extends React.PureComponent {
@@ -365,7 +364,7 @@ export default class System extends React.PureComponent {
                 <section className="results">
                     <JSONPretty json={orphansResults}></JSONPretty>
                 </section>}
-                {(orphansResults && orphansResults.length > 0 && isSystemUser(this.props.currentUser)) &&
+                {(orphansResults && orphansResults.length > 0) &&
                 <a className={`button ${loading ? "grey disabled" : "blue"}`}
                    onClick={() => this.setState({
                        confirmationDialogOpen: true,
