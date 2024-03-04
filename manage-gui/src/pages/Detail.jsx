@@ -43,7 +43,6 @@ import MetaDataChangeRequests from "../components/metadata/MetaDataChangeRequest
 import RelyingParties from "../components/metadata/RelyingParties";
 import ProvisioningApplications from "../components/metadata/ProvisioningApplications";
 import AutoRefresh from "../components/metadata/AutoRefresh";
-import {isSystemUser} from "../utils/User";
 import {getNameForLanguage, getOrganisationForLanguage} from "../utils/Language";
 
 let tabsSp = [
@@ -1097,7 +1096,7 @@ class Detail extends React.PureComponent {
 
         const hasErrors = this.hasGlobalErrors(errors) && !isEmpty(metaData.id);
 
-        const allowedDelete = !isNew && (isSystemUser(this.props.currentUser) || metaData.type !== "saml20_idp");
+        const allowedDelete = !isNew;
 
         return (
             <div className="detail-metadata">

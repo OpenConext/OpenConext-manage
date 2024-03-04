@@ -8,6 +8,7 @@ import "codemirror/lib/codemirror.css";
 import "@uiw/react-md-editor/markdown-editor.css";
 import "./Manipulation.scss";
 import {isEmpty, stop} from "../../utils/Utils";
+import {isSystemUser} from "../../utils/User";
 
 export default class Manipulation extends React.PureComponent {
 
@@ -51,7 +52,7 @@ export default class Manipulation extends React.PureComponent {
 
     renderNotes() {
         const {notes, currentUser} = this.props;
-        const allowed = currentUser.authorities.some(authority => authority.authority === "ROLE_SUPER_USER");
+        const allowed = isSystemUser(currentUser);
         return (
             <div className="manipulation-info">
                 <h2>

@@ -8,7 +8,6 @@ import {isEmpty, stop} from "../utils/Utils";
 
 import "./Search.scss";
 import withRouterHooks from "../utils/RouterBackwardCompatability";
-import {isSystemUser} from "../utils/User";
 
 class Search extends React.PureComponent {
 
@@ -135,10 +134,10 @@ class Search extends React.PureComponent {
                                                             moreAlternativesToShow={moreAlternativesToShow}
                         />}
                     </div>
-                    {(this.state.selectedTab !== "saml20_idp" ||  isSystemUser(this.props.currentUser)) &&
-                        <a className="new button green" onClick={this.newMetaData}>
+
+                    <a className="new button green" onClick={this.newMetaData}>
                         {I18n.t("metadata.new")}<i className="fa fa-plus"></i>
-                    </a>}
+                    </a>
                 </section>
             </div>
         );

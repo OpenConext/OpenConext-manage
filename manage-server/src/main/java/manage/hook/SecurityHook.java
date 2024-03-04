@@ -19,16 +19,16 @@ public class SecurityHook extends MetaDataHookAdapter {
 
     @Override
     public MetaData prePost(MetaData metaData, AbstractUser user) {
-        if (metaData.getType().equals(EntityType.IDP.getType()) && !user.isSystemUser()) {
-            throw new EndpointNotAllowed("Only system users are allowed to create IdP's");
+        if (metaData.getType().equals(EntityType.IDP.getType()) && user.isAPIUser()) {
+            throw new EndpointNotAllowed(String.format("APIUser %s is not allowed to create IdP's", user.getName()));
         }
         return metaData;
     }
 
     @Override
     public MetaData preDelete(MetaData metaData, AbstractUser user) {
-        if (metaData.getType().equals(EntityType.IDP.getType()) && !user.isSystemUser()) {
-            throw new EndpointNotAllowed(String.format("User %s is not allowed to delete identity providers", user.getName()));
+        if (metaData.getType().equals(EntityType.IDP.getType()) && user.isAPIUser()) {
+            throw new EndpointNotAllowed(String.format("APIUser %s is not allowed to delete IdP's", user.getName()));
         }
         return metaData;
     }
