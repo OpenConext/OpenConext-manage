@@ -83,15 +83,16 @@
             width: 100%;
         }
 
+        i.fa-trash-o {
+            color: $red;
+            font-size: 26px;
+            margin: 4px 0 0 10px;
+            cursor: pointer;
+        }
+
         .loa {
             display: flex;
 
-            i.fa-trash-o {
-                color: $red;
-                font-size: 26px;
-                margin: 4px 0 0 10px;
-                cursor: pointer;
-            }
         }
 
         .loa-container {
@@ -140,5 +141,50 @@
             }
         }
     }
+
+    .cidr-notation {
+        display: flex;
+        width: 100%;
+        align-items: center;
+        margin-top: 12px;
+
+        input {
+            flex-grow: 2;
+            height: 36px;
+        }
+
+        .cidr-divider {
+            margin: 0 5px;
+            font-size: 20px;
+        }
+
+        .policy-cidr-prefix {
+            width: 90px;
+        }
+
+        .policy-cidr-prefix__control {
+            height: 36px;
+        }
+    }
+
+    section.ip-info {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        font-size: 12px;
+        line-height: 16px;
+        margin-bottom: 4px;
+
+        span.label {
+            margin-right: 5px;
+        }
+
+    }
+
+    a.add-cidr-notation {
+        margin-top: 8px;
+        display: inline-block;
+    }
+
 
 }

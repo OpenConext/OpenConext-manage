@@ -9,9 +9,13 @@ import CheckBox from "../CheckBox";
 import {AutoFormat} from "../../utils/AutoformatPolicy";
 import PolicyAttributes from "./PolicyAttributes";
 import PolicyRules from "./PolicyRules";
+import {ipInfo} from "../../api";
 
-const ipv4Prefixes = [...Array(33).keys()].filter(i => i > 7);
-const ipv6Prefixes = [...Array(129).keys()].filter(i => i > 31 && i % 8 === 0);
+const ipv4Prefixes = [...Array(33).keys()].filter(i => i > 7).map(prefix => ({value: prefix, label: prefix}));
+const ipv6Prefixes = [...Array(129).keys()].filter(i => i > 31 && i % 8 === 0).map(prefix => ({
+    value: prefix,
+    label: prefix
+}));
 
 export default function PolicyForm({
                                        identityProviders = [],
@@ -312,6 +316,23 @@ export default function PolicyForm({
         }
     }
 
+    const renderIpInfo = ipInfo =>
+        <section className="ip-info">
+            <div>
+                <span className="label">{I18n.t("policies.networkAddress")}</span>
+                <span>{ipInfo.networkAddress}</span>
+            </div>
+            <div>
+                <span className="label">{I18n.t("policies.broadcastAddress")}</span>
+                <span>{ipInfo.broadcastAddress}</span>
+            </div>
+            {ipInfo.ipv4 &&
+                <div>
+                    <span className="label">{I18n.t("policies.capacity")}</span>
+                    <span>{parseInt(ipInfo.capacity).toLocaleString("nl")}</span>
+                </div>}
+        </section>;
+
     const addCidrNotation = (e, index) => {
         stop(e);
         const newLoas = [...data.loas]
@@ -321,12 +342,40 @@ export default function PolicyForm({
         onChange("data.loas", newLoas);
     }
 
+    const cidrNotationChanged = (loaIndex, cidrIndex, attr, value) => {
+        const newLoas = [...data.loas]
+        const newLoa = newLoas[loaIndex];
+        const cidrNotation = newLoa.cidrNotations[cidrIndex];
+        cidrNotation[attr] = value;
+        onChange("data.loas", newLoas);
+        if (attr === "prefix") {
+            validateIPAddress(null, loaIndex, cidrIndex);
+        }
+    }
+
     const removeCidrNotation = (loaIndex, cidrIndex) => {
         const newLoas = [...data.loas]
         const newLoa = newLoas[loaIndex];
         newLoa.cidrNotations = newLoa.cidrNotations.filter(cidr => cidr.index !== cidrIndex);
         onChange("data.loas", newLoas);
     }
+
+    const validateIPAddress = (e, loaIndex, cidrIndex) => {
+        stop(e);
+        const newLoas = [...data.loas]
+        const loa = newLoas[loaIndex]
+        const cidrNotation = loa.cidrNotations[cidrIndex];
+        ipInfo(cidrNotation.ipAddress, cidrNotation.prefix).then(ipInfo => {
+            cidrNotation.invalid = !ipInfo.networkAddress;
+            if (ipInfo.networkAddress) {
+                cidrNotation.ipInfo = ipInfo;
+                cidrNotation.prefix = ipInfo.prefix;
+            } else {
+                cidrNotation.ipInfo = undefined;
+            }
+            onChange("data.loas", newLoas);
+        });
+    };
 
     const renderLoas = () => {
         return (
@@ -367,9 +416,30 @@ export default function PolicyForm({
                                         </div>}
                                     {(loa.cidrNotations || []).map((cidrNotation,  index)=>
                                         <div key={index} className="cidr-notations">
-
+                                            <div className="cidr-notation">
+                                                <input type="text"
+                                                       value={cidrNotation.ipAddress}
+                                                       onChange={e => cidrNotationChanged(i, index, "ipAddress", e.target.value)}
+                                                       onBlur={e => validateIPAddress(e, i, index)}
+                                                />
+                                                <span className="cidr-divider">/</span>
+                                                <Select
+                                                    className="policy-cidr-prefix"
+                                                    classNamePrefix="policy-cidr-prefix"
+                                                    onChange={e => cidrNotationChanged(i, index, "prefix", e.value)}
+                                                    value={{label: cidrNotation.prefix, value: cidrNotation.prefix}}
+                                                    options={getPrefixes(cidrNotation)}
+                                                    isSearchable={false}
+                                                />
+                                                <span onClick={() => removeCidrNotation(i, index)}>
+                                                    <i className="fa fa-trash-o"/>
+                                                </span>
+                                            </div>
+                                            {cidrNotation.invalid &&
+                                                <span className="error">{I18n.t("policies.invalidCidr")}</span>}
+                                            {cidrNotation.ipInfo && renderIpInfo(cidrNotation.ipInfo)}
                                         </div>)}
-                                    <a href="#" onClick={e => addCidrNotation(e, i)}>{I18n.t("policies.addIp")}</a>
+                                    <a href="#" className="add-cidr-notation" onClick={e => addCidrNotation(e, i)}>{I18n.t("policies.addIp")}</a>
                                 </div>
                             </div>
                         </div>
@@ -476,6 +546,14 @@ export default function PolicyForm({
         );
     }
 
+    const getPrefixes = cidrNotation => {
+        if (cidrNotation.invalid || !cidrNotation.ipInfo || isEmpty(cidrNotation.ipInfo.networkAddress)) {
+            return [];
+        }
+        return cidrNotation.ipInfo.ipv4 ? ipv4Prefixes : ipv6Prefixes;
+    };
+
+
     const renderActive = () => {
         return (
             <div className="input-field row">
@@ -510,7 +588,6 @@ export default function PolicyForm({
     return (
         <section className="metadata-policy-form">
             <section className="policy-form">
-                <div>{JSON.stringify(errors)}</div>
                 {renderPolicyType()}
                 {renderPolicyName()}
                 {renderServiceProviders()}

@@ -97,15 +97,6 @@ export default class Autocomplete extends React.PureComponent {
                                     this.selectedRow = ref;
                                 }
                             }}>
-
-                            <td>
-                                {!isPolicy && this.item(item.data.metaDataFields["name:en"] || item.data.metaDataFields["name:nl"], query)}
-                                {isPolicy && this.item(item.data.name, query)}
-                            </td>
-                            <td>
-                                {!isPolicy && this.item(item.data.metaDataFields["OrganizationName:en"] || item.data.metaDataFields["OrganizationName:nl"], query)}
-                                {isPolicy && I18n.t(`topBannerDetails.${item.data.type}`)}
-                            </td>
                             <td className="count">{index + 1}</td>
                             <td>
                                 {!isPolicy && this.item(getNameForLanguage(item.data.metaDataFields), query)}
