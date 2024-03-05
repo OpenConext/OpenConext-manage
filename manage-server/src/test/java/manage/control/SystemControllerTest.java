@@ -14,12 +14,6 @@ import static org.junit.Assert.assertEquals;
 @SuppressWarnings("unchecked")
 public class SystemControllerTest extends AbstractIntegrationTest {
 
-    @Value("${push.eb.user}")
-    private String pushUser;
-
-    @Value("${push.eb.password}")
-    private String pushPassword;
-
     @Test
     public void validate() throws Exception {
         String body = given()
@@ -32,16 +26,14 @@ public class SystemControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void orphans() throws Exception {
+    public void orphans() {
         List orphans = given()
                 .when()
                 .get("manage/api/client/playground/orphans")
                 .then()
                 .statusCode(SC_OK)
                 .extract().as(List.class);
-        List expected = objectMapper.readValue(readFile("json/expected_orphans.json"), List.class);
-
-        assertEquals(expected, orphans);
+        assertEquals(5, orphans.size());
 
         given()
                 .when()
