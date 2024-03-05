@@ -7,6 +7,7 @@ import manage.hook.EntityIdReconcilerHook;
 import manage.model.EntityType;
 import manage.model.MetaData;
 import manage.model.OrphanMetaData;
+import manage.model.PushOptions;
 import manage.repository.MetaDataRepository;
 import manage.shibboleth.FederatedUser;
 import manage.validations.MetaDataValidator;
@@ -20,9 +21,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -56,19 +55,19 @@ public class SystemController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/client/playground/push")
-    public ResponseEntity<Map> push(FederatedUser federatedUser) {
+    @PutMapping("/client/playground/push")
+    public ResponseEntity<Map> push(@RequestBody PushOptions pushOptions, FederatedUser federatedUser) {
         if (!federatedUser.featureAllowed(Features.PUSH)) {
             throw new EndpointNotAllowed();
         }
-        return databaseController.doPush();
+        return databaseController.doPush(pushOptions);
     }
 
     @PreAuthorize("hasRole('PUSH')")
     @GetMapping("/internal/push")
     public ResponseEntity<Map> pushInternal(APIUser apiUser) {
         LOG.info("Push initiated by {}", apiUser.getName());
-        return databaseController.doPush();
+        return databaseController.doPush(new PushOptions(true, true, false));
     }
 
     @PreAuthorize("hasRole('ADMIN')")

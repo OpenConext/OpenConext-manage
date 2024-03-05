@@ -35,7 +35,6 @@ public class PolicyController {
     private final ObjectMapper objectMapper;
     private final PolicyIdpAccessEnforcer policyIdpAccessEnforcer;
     private final MetaDataRepository metaDataRepository;
-    private final PolicyRepository policyRepository;
     private final List<Map<String, String>> allowedAttributes;
     private final List<Map<String, String>> samlAllowedAttributes;
     private final List<String> loaLevels;
@@ -47,13 +46,11 @@ public class PolicyController {
                             ObjectMapper objectMapper,
                             PolicyIdpAccessEnforcer policyIdpAccessEnforcer,
                             MetaDataRepository metaDataRepository,
-                            PolicyRepository policyRepository,
                             @Value("${loa_levels}") String loaLevelsCommaSeparated) {
         this.metaDataService = metaDataService;
         this.objectMapper = objectMapper;
         this.policyIdpAccessEnforcer = policyIdpAccessEnforcer;
         this.metaDataRepository = metaDataRepository;
-        this.policyRepository = policyRepository;
         this.allowedAttributes = this.attributes("policies/allowed_attributes.json");
         this.samlAllowedAttributes = this.attributes("policies/extra_saml_attributes.json");
         this.loaLevels = Stream.of(loaLevelsCommaSeparated.split(",")).map(String::trim).collect(toList());
@@ -86,7 +83,7 @@ public class PolicyController {
         this.initialPolicyValues(apiUser, policyDefinition, true);
         policyIdpAccessEnforcer.actionAllowed(policyDefinition, PolicyAccess.WRITE, apiUser, true);
         Map<String, Object> data = objectMapper.convertValue(policyDefinition, new TypeReference<>() {});
-        this.updateProviderStructure(data);
+        PdpPolicyDefinition.updateProviderStructure(data);
         MetaData metaData = new MetaData(EntityType.PDP.getType(), data);
         MetaData metaDataSaved = this.metaDataService.doPost(metaData, apiUser, false);
         policyDefinition.setId(metaDataSaved.getId());
@@ -104,7 +101,7 @@ public class PolicyController {
         policyIdpAccessEnforcer.actionAllowed(policyDefinition, PolicyAccess.WRITE, apiUser, true);
 
         Map<String, Object> data = objectMapper.convertValue(policyDefinition, new TypeReference<>() {});
-        this.updateProviderStructure(data);
+        PdpPolicyDefinition.updateProviderStructure(data);
         existingMetaData.setData(data);
         MetaData metaData = this.metaDataService.doPut(existingMetaData, apiUser, false);
         policyDefinition.setRevisionNbr(metaData.getRevision().getNumber());
@@ -180,18 +177,6 @@ public class PolicyController {
                     .forEach(notation -> notation.setIpInfo(IPAddressProvider.getIpInfo(notation.getIpAddress(), notation.getPrefix()))));
         }
         return policyDefinition;
-    }
-
-    private void updateProviderStructure(Map<String, Object> data) {
-        List.of("identityProviderIds", "serviceProviderIds")
-                .forEach(reference -> {
-                            List<String> names = (List<String>) data.getOrDefault(reference, new ArrayList<>());
-                    //The map needs to be mutable hence the extra HashMap constructor
-                    data.put(reference, names.stream().map(name -> new HashMap<>(Map.of("name", name))).collect(toList()));
-                        }
-                );
-        data.put("metaDataFields", new HashMap<>());
-        List.of("id", "created").forEach(name -> data.remove(name));
     }
 
     private void initialPolicyValues(APIUser apiUser, PdpPolicyDefinition policyDefinition, boolean includeAuthenticatingAuthority) {

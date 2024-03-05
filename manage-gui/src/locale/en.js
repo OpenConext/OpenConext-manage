@@ -29,7 +29,7 @@ I18n.translations.en = {
         edugain: "eduGAIN",
         staging: "Staging",
         scopes: "Scopes",
-        activity: "Activity"
+        activity: "Activity",
     },
 
     metadata: {
@@ -153,7 +153,7 @@ I18n.translations.en = {
         pushPreviewInfo: "Collect all relevant metadata and perform a simulation of the {{name}} push",
         pushInfo: "Collect all relevant metadata and push the metadata to {{name}}. The metadata will be pushed to {{url}}.",
         pushedOk: "Metadata successfully pushed to {{name}}",
-        pushedOkWithOidc: "Metadata successfully pushed to {{name}} and {{oidcName}}",
+        pushedOkWithOidc: "Metadata successfully pushed",
         pushedNotOk: "Error during the push of the Metadata to {{name}}. Check the logs for the details.",
         pushedNotOkWithOidc: "Error during the push of the Metadata to {{name}} and {{oidcName}}. Check the logs for the details.",
         runPushPreview: "Preview MetaData",
@@ -164,7 +164,13 @@ I18n.translations.en = {
         orphanConfirmation: "Are you sure you want to delete the above references?",
         orphansDeleted: "References to deleted / renamed MetaData removed",
         pushConfirmation: "Are you sure you want to push all metadata to {{name}} to the endpoint {{url}}?",
-        pushConfirmationWithOidc: "Are you sure you want to push all metadata to {{name}} and {{oidcName}} to the endpoints {{url}} and {{oidcUrl}}?",
+        pushConfirmationWithOidc: "Are you sure you want to push all metadata to:<br/><br/> " +
+            "{{name}} to {{url}}<br/><br/>" +
+            "{{oidcName}} to {{oidcUrl}}<br/><br/>" +
+            "{{pdpName}} to {{pdpUrl}}<br/><br/>",
+        includeEB: "Include EB?",
+        includeOIDC: "Include OIDC?",
+        includePdP: "Include PdP?",
         headers: {
             status: "Status",
             entityid: "Entity ID",

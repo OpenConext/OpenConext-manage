@@ -183,7 +183,7 @@ public class MetaDataRepository {
 
     public List<Map> search(String type, Map<String, Object> properties, List<String> requestedAttributes, Boolean
             allAttributes, Boolean logicalOperatorIsAnd) {
-        Query query = allAttributes ? new Query() : queryWithSamlFields(EntityType.fromType(type));
+        Query query = allAttributes ? new Query() : queryWithSamlFields(EntityType.fromType(type.replaceAll("_revision", "")));
         if (!allAttributes) {
             requestedAttributes.forEach(requestedAttribute -> {
                 String key = escapeMetaDataField(requestedAttribute);

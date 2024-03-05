@@ -1,6 +1,7 @@
 package manage.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import lombok.SneakyThrows;
 import manage.api.APIUser;
 import manage.api.AbstractUser;
 import manage.api.Scope;
@@ -62,7 +63,6 @@ public class MetaDataService {
     private static final List<String> entityTypesSuggestions = Arrays.asList(
             EntityType.RP.getType(), EntityType.SP.getType(), EntityType.RS.getType()
     );
-
     private final MetaDataRepository metaDataRepository;
 
     private final MetaDataAutoConfiguration metaDataAutoConfiguration;
@@ -157,7 +157,7 @@ public class MetaDataService {
                         MetaData persistedMetaData = doPost(metaData, EDUGAIN_IMPORT_USER, false);
                         List imported = results.computeIfAbsent("imported", s -> new ArrayList());
                         imported.add(new ServiceProvider(persistedMetaData.getId(), entityId, false, false, null));
-                    } catch (JsonProcessingException | ValidationException e) {
+                    } catch (RuntimeException e) {
                         addNoValid(results, entityId, e);
                     }
                 }
@@ -182,8 +182,9 @@ public class MetaDataService {
         }
     }
 
+    @SneakyThrows
     public MetaData doPost(@Validated MetaData metaData, AbstractUser user, boolean excludeFromPushRequired)
-            throws JsonProcessingException {
+            {
         metaData = metaDataHook.prePost(metaData, user);
         checkForDuplicateEntityId(metaData, true);
 
@@ -497,7 +498,7 @@ public class MetaDataService {
         addAllowedEntity(sp, idpEntityId, connectionData, apiUser, false);
         addAllowedEntity(idp, spEntityId, connectionData, apiUser, true);
 
-        databaseController.doPush();
+        databaseController.doPush(new PushOptions(true, true, false));
     }
 
     private void addAllowedEntity(MetaData metaData,
@@ -609,6 +610,10 @@ public class MetaDataService {
         innerJson.put("allowedall", true);
         innerJson.put("state", "testaccepted");
         innerJson.put("allowedEntities", new ArrayList<>());
+    }
+
+    public void deleteCollection(EntityType entityType) {
+        this.metaDataRepository.getMongoTemplate().remove(new Query(),entityType.getType());
     }
 
 }

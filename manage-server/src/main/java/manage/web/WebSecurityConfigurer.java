@@ -104,6 +104,12 @@ public class WebSecurityConfigurer {
         @Value("${push.oidc.name}")
         private String pushOidcName;
 
+        @Value("${push.pdp.url}")
+        private String pdpPushUri;
+
+        @Value("${push.pdp.name}")
+        private String pdpName;
+
         @Value("${security.super_user_team_names}")
         private String superUserTeamNamesJoined;
 
@@ -127,7 +133,7 @@ public class WebSecurityConfigurer {
                     .collect(toList());
 
             Product product = new Product(productOrganization, productName, serviceProviderFeedUrl, showOidcRp);
-            Push push = new Push(pushUrl, pushName, pushOidcUrl, pushOidcName, excludeOidcRP);
+            Push push = new Push(pushUrl, pushName, pushOidcUrl, pushOidcName, pdpPushUri,pdpName, excludeOidcRP);
 
             BasicAuthenticationEntryPoint authenticationEntryPoint = new BasicAuthenticationEntryPoint();
             authenticationEntryPoint.setRealmName("manage");

@@ -33,6 +33,12 @@ push:
     name: OpenConext OIDC-NG
     password: secret
     enabled: true
+  pdp:
+    url: http://localhost:8081/pdp/api/manage/push
+    policy_url: http://localhost:8081/pdp/api/manage/policies
+    user: pdp_admin
+    name: OpenConext PDP
+    password: secret
 
 product:
   name: Manage

@@ -3,6 +3,7 @@ package manage.control;
 import manage.format.EngineBlockFormatter;
 import manage.model.EntityType;
 import manage.model.MetaData;
+import manage.model.PushOptions;
 import manage.model.Scope;
 import manage.repository.MetaDataRepository;
 import manage.web.HttpHostProvider;
@@ -55,6 +56,8 @@ public class DatabaseController {
     private final MetaDataRepository metaDataRepository;
 
     private final Environment environment;
+    private final String pdpPushUri;
+    private final RestTemplate pdpRestTemplate;
 
     @Autowired
     DatabaseController(MetaDataRepository metaDataRepository,
@@ -66,6 +69,9 @@ public class DatabaseController {
                        @Value("${push.oidc.url}") String oidcPushUri,
                        @Value("${push.oidc.user}") String oidcUser,
                        @Value("${push.oidc.password}") String oidcPassword,
+                       @Value("${push.pdp.url}") String pdpPushUri,
+                       @Value("${push.pdp.user}") String pdpUser,
+                       @Value("${push.pdp.password}") String pdpPassword,
                        @Value("${push.oidc.enabled}") boolean oidcEnabled,
                        Environment environment) throws MalformedURLException {
         this.metaDataRepository = metaDataRepository;
@@ -78,25 +84,29 @@ public class DatabaseController {
         this.oidcPushUri = oidcPushUri;
         this.oidcEnabled = oidcEnabled;
 
+        this.pdpRestTemplate = new RestTemplate(getRequestFactory(pdpUser, pdpPassword));
+        this.pdpPushUri = pdpPushUri;
+
         this.environment = environment;
     }
 
-    public ResponseEntity<Map> doPush() {
+    public ResponseEntity<Map> doPush(PushOptions pushOptions) {
         if (environment.acceptsProfiles(Profiles.of("dev"))) {
             return new ResponseEntity<>(Collections.singletonMap("status", 200), HttpStatus.OK);
         }
-
-        Map<String, Map<String, Map<String, Object>>> json = this.pushPreview();
-
-        ResponseEntity<String> response = this.restTemplate.postForEntity(pushUri, json, String.class);
-        HttpStatus statusCode = response.getStatusCode();
-
         Map<String, Object> result = new HashMap<>();
-        result.put("status", statusCode);
-        result.put("response", response);
+        if (pushOptions.isIncludeEB()) {
+            Map<String, Map<String, Map<String, Object>>> json = this.pushPreview();
+
+            ResponseEntity<String> response = this.restTemplate.postForEntity(pushUri, json, String.class);
+            HttpStatus statusCode = response.getStatusCode();
+
+            result.put("status", statusCode);
+            result.put("response", response);
+        }
 
         // Now push all oidc_rp metadata to OIDC proxy
-        if (!environment.acceptsProfiles(Profiles.of("dev")) && oidcEnabled) {
+        if (!environment.acceptsProfiles(Profiles.of("dev")) && oidcEnabled && pushOptions.isIncludeOIDC()) {
             List<MetaData> relyingParties = metaDataRepository.getMongoTemplate().findAll(MetaData.class, EntityType.RP.getType());
             List<MetaData> resourceServers = metaDataRepository.getMongoTemplate().findAll(MetaData.class, EntityType.RS.getType());
             List<Scope> scopes = metaDataRepository.getMongoTemplate().findAll(Scope.class);
@@ -127,6 +137,11 @@ public class DatabaseController {
                     .collect(toList());
             this.oidcRestTemplate.postForEntity(oidcPushUri, filteredEntities, Void.class);
             result.put("oidc", true);
+        }
+        if (pushOptions.isIncludePdP()) {
+            List<MetaData> policies = metaDataRepository.getMongoTemplate().findAll(MetaData.class, EntityType.PDP.getType());
+            this.pdpRestTemplate.postForEntity(pdpPushUri, policies, Void.class);
+            result.put("pdp", true);
         }
         return new ResponseEntity<>(result, HttpStatus.OK);
     }

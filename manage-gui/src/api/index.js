@@ -241,8 +241,8 @@ export function logOut() {
     return fetchDelete("users/logout");
 }
 
-export function push() {
-    return fetchJson("playground/push");
+export function push(includeEB, includeOIDC, includePdP) {
+    return postPutJson("playground/push", {includeEB:includeEB, includeOIDC:includeOIDC, includePdP:includePdP}, "PUT");
 }
 
 export function pushPreview() {
@@ -304,4 +304,17 @@ export function policySAMLAttributes() {
 export function getAllowedLoas() {
     return fetchJson("loas");
 }
+
+export function getPdPPolicies() {
+    return fetchJson("policies");
+}
+
+export function getMigratedPdPPolicies() {
+    return fetchJson("lomigrated_policiesas");
+}
+
+export function getAllowedLoas() {
+    return fetchJson("loas");
+}
+
 

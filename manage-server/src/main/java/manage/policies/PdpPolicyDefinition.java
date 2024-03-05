@@ -9,9 +9,12 @@ import manage.model.Revision;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 
 @Getter
@@ -99,4 +102,17 @@ public class PdpPolicyDefinition {
     private List<String> convertProviders(Map<String, Object> data, String name) {
         return ((List<Map<String, String>>) data.get(name)).stream().map(m -> m.get("name")).collect(Collectors.toList());
     }
+
+    public static void updateProviderStructure(Map<String, Object> data) {
+        List.of("identityProviderIds", "serviceProviderIds")
+                .forEach(reference -> {
+                            List<String> names = (List<String>) data.getOrDefault(reference, new ArrayList<>());
+                            //The map needs to be mutable hence the extra HashMap constructor
+                            data.put(reference, names.stream().map(name -> new HashMap<>(Map.of("name", name))).collect(toList()));
+                        }
+                );
+        data.put("metaDataFields", new HashMap<>());
+        List.of("id", "created").forEach(name -> data.remove(name));
+    }
+
 }
