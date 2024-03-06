@@ -5,6 +5,7 @@ import manage.model.EntityType;
 import manage.model.MetaData;
 import manage.model.PushOptions;
 import manage.model.Scope;
+import manage.policies.PdpPolicyDefinition;
 import manage.repository.MetaDataRepository;
 import manage.web.HttpHostProvider;
 import manage.web.PreemptiveAuthenticationHttpComponentsClientHttpRequestFactory;
@@ -76,25 +77,33 @@ public class DatabaseController {
                        Environment environment) throws MalformedURLException {
         this.metaDataRepository = metaDataRepository;
         this.pushUri = pushUri;
-        this.restTemplate = new RestTemplate(getRequestFactory(user, password));
+        this.restTemplate = new RestTemplate(getRequestFactory(user, password, pushUri));
         this.excludeEduGainImported = excludeEduGainImported;
         this.excludeOidcRP = excludeOidcRP;
 
-        this.oidcRestTemplate = new RestTemplate(getRequestFactory(oidcUser, oidcPassword));
+        this.oidcRestTemplate = new RestTemplate(getRequestFactory(oidcUser, oidcPassword,oidcPushUri ));
         this.oidcPushUri = oidcPushUri;
         this.oidcEnabled = oidcEnabled;
 
-        this.pdpRestTemplate = new RestTemplate(getRequestFactory(pdpUser, pdpPassword));
+        this.pdpRestTemplate = new RestTemplate(getRequestFactory(pdpUser, pdpPassword, pdpPushUri));
         this.pdpPushUri = pdpPushUri;
 
         this.environment = environment;
     }
 
     public ResponseEntity<Map> doPush(PushOptions pushOptions) {
+        Map<String, Object> result = new HashMap<>();
+        if (pushOptions.isIncludePdP()) {
+            List<PdpPolicyDefinition> policies = this.metaDataRepository
+                    .findAllByType(EntityType.PDP.getType()).stream()
+                    .map(metaData -> new PdpPolicyDefinition(metaData))
+                    .collect(toList());
+            this.pdpRestTemplate.put(pdpPushUri, policies);
+            result.put("pdp", true);
+        }
         if (environment.acceptsProfiles(Profiles.of("dev"))) {
             return new ResponseEntity<>(Collections.singletonMap("status", 200), HttpStatus.OK);
         }
-        Map<String, Object> result = new HashMap<>();
         if (pushOptions.isIncludeEB()) {
             Map<String, Map<String, Map<String, Object>>> json = this.pushPreview();
 
@@ -137,11 +146,6 @@ public class DatabaseController {
                     .collect(toList());
             this.oidcRestTemplate.postForEntity(oidcPushUri, filteredEntities, Void.class);
             result.put("oidc", true);
-        }
-        if (pushOptions.isIncludePdP()) {
-            List<MetaData> policies = metaDataRepository.getMongoTemplate().findAll(MetaData.class, EntityType.PDP.getType());
-            this.pdpRestTemplate.postForEntity(pdpPushUri, policies, Void.class);
-            result.put("pdp", true);
         }
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
@@ -215,17 +219,17 @@ public class DatabaseController {
         });
     }
 
-    private ClientHttpRequestFactory getRequestFactory(String user, String password) throws MalformedURLException {
+    private ClientHttpRequestFactory getRequestFactory(String user, String password, String uri) throws MalformedURLException {
         HttpClientBuilder httpClientBuilder = HttpClientBuilder.create().evictExpiredConnections()
                 .evictIdleConnections(10l, TimeUnit.SECONDS);
         BasicCredentialsProvider basicCredentialsProvider = new BasicCredentialsProvider();
         basicCredentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(user, password));
         httpClientBuilder.setDefaultCredentialsProvider(basicCredentialsProvider);
 
-        Optional<HttpHost> optionalHttpHost = HttpHostProvider.resolveHttpHost(new URL(pushUri));
+        Optional<HttpHost> optionalHttpHost = HttpHostProvider.resolveHttpHost(new URL(uri));
         optionalHttpHost.ifPresent(httpHost -> httpClientBuilder.setRoutePlanner(new DefaultProxyRoutePlanner(httpHost)));
 
         CloseableHttpClient httpClient = httpClientBuilder.build();
-        return new PreemptiveAuthenticationHttpComponentsClientHttpRequestFactory(httpClient, pushUri);
+        return new PreemptiveAuthenticationHttpComponentsClientHttpRequestFactory(httpClient, uri);
     }
 }

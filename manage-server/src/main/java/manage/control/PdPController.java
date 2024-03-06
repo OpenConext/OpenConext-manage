@@ -10,7 +10,12 @@ import manage.model.MetaData;
 import manage.policies.PdpPolicyDefinition;
 import manage.policies.PolicyRepository;
 import manage.service.MetaDataService;
+import org.everit.json.schema.ValidationException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -60,8 +65,11 @@ public class PdPController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/client/import_policies")
-    public List<MetaData> importPolicies() throws JsonProcessingException {
-        List<PdpPolicyDefinition> policyDefinitions = pdpRestTemplate.getForObject(this.policyUrl, List.class);
+    public List<Object> importPolicies() throws JsonProcessingException {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+        HttpEntity<?> requestEntity = new HttpEntity<>(headers);
+        List<PdpPolicyDefinition> policyDefinitions = pdpRestTemplate.exchange(this.policyUrl, HttpMethod.GET, requestEntity, List.class).getBody();
         String json = objectMapper.writeValueAsString(policyDefinitions);
         List<Map<String, Object>> dataList = objectMapper.readValue(json, new TypeReference<>() {
         });
@@ -70,7 +78,12 @@ public class PdPController {
                 .map(data -> {
                     PdpPolicyDefinition.updateProviderStructure(data);
                     MetaData metaData = new MetaData(EntityType.PDP.getType(), data);
-                    return this.metaDataService.doPost(metaData, new APIUser("PDP import", List.of(Scope.SYSTEM)), false);
+                    try {
+                        MetaData savedMetaData = this.metaDataService.doPost(metaData, new APIUser("PDP import", List.of(Scope.SYSTEM)), false);
+                        return savedMetaData;
+                    } catch (ValidationException e) {
+                        return e.getMessage();
+                    }
                 }).collect(Collectors.toList());
     }
 

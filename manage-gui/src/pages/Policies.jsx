@@ -1,10 +1,9 @@
 import React from "react";
 import I18n from "i18n-js";
-import {stop} from "../utils/Utils";
+import {isEmpty, stop} from "../utils/Utils";
 import ConfirmationDialog from "../components/ConfirmationDialog";
 import "./Policies.scss";
-import JSONPretty from "react-json-pretty";
-import ReactDiffViewer from 'react-diff-viewer-continued';
+import {importPdPPolicies} from "../api";
 
 export default class Policies extends React.PureComponent {
 
@@ -43,7 +42,9 @@ export default class Policies extends React.PureComponent {
         </span>;
 
     runImport = () => {
-
+        this.setState({loading: true})
+        importPdPPolicies()
+            .then(res => this.setState({importResults: res, loading: false}))
     }
 
     renderImport = () => {
@@ -51,27 +52,34 @@ export default class Policies extends React.PureComponent {
         return (
             <section className="import">
                 <p>Import the current PdP policies into Manage. Once imported they can be pushed.</p>
-                <p>For now PdP does not overwrite the current policies, but  stores then in a policy migrations table</p>
+                <p>For now PdP does not overwrite the current policies, but stores them in a policy migrations table</p>
                 <a className={`button ${loading ? "grey disabled" : "green"}`}
                    onClick={this.runImport}>
                     {I18n.t("policies.runImport")}
                 </a>
-                {importResults &&
+                {!isEmpty(importResults) &&
                     <section className="results">
-
-                        <ReactDiffViewer oldValue={oldCode} newValue={newCode} splitView={true} />
+                        {JSON.stringify(importResults)}
+                        {/*<ReactDiffViewer oldValue={oldCode} newValue={newCode} splitView={true} />*/}
                     </section>}
             </section>
         );
     };
 
+    renderPlayground = () => {
+        return (
+            <section className="playground">
+                <span>TODO</span>
+            </section>
+        );
+    };
 
     renderCurrentTab = selectedTab => {
         switch (selectedTab) {
             case "import" :
-                return this.renderValidate();
+                return this.renderImport();
             case "playground" :
-                return this.renderOrphans();
+                return this.renderPlayground();
             default :
                 throw new Error(`Unknown tab: ${selectedTab}`);
         }
@@ -94,7 +102,6 @@ export default class Policies extends React.PureComponent {
                                     question={confirmationQuestion}/>
                 <section className="tabs">
                     {tabs.map(tab => this.renderTab(tab, selectedTab))}
-
                 </section>
                 {this.renderCurrentTab(selectedTab)}
             </div>

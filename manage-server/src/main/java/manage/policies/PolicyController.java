@@ -59,7 +59,8 @@ public class PolicyController {
     @PreAuthorize("hasRole('POLICIES')")
     @GetMapping("/internal/protected/policies")
     public List<PdpPolicyDefinition> policies(APIUser apiUser) {
-        List<PdpPolicyDefinition> policies = this.metaDataService.findAllByType(EntityType.PDP.getType()).stream()
+        List<PdpPolicyDefinition> policies = this.metaDataService
+                .findAllByType(EntityType.PDP.getType()).stream()
                 .map(metaData -> new PdpPolicyDefinition(metaData))
                 .collect(toList());
         return policyIdpAccessEnforcer

@@ -310,11 +310,11 @@ export function getPdPPolicies() {
 }
 
 export function getMigratedPdPPolicies() {
-    return fetchJson("lomigrated_policiesas");
+    return fetchJson("migrated_policies");
 }
 
-export function getAllowedLoas() {
-    return fetchJson("loas");
+export function importPdPPolicies() {
+    return postPutJson("import_policies", {}, "PUT")
 }
 
 

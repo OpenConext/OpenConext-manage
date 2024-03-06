@@ -24,7 +24,13 @@ export default class Navigation extends React.PureComponent {
             confirmationDialogOpen: false,
             confirmationQuestion: "",
             confirmationDialogAction: () => this,
-            cancelDialogAction: () => this.setState({confirmationDialogOpen: false}),
+            cancelDialogAction: () => this.setState({
+                confirmationDialogOpen: false, pushOptions: {
+                    includeEB: true,
+                    includeOIDC: true,
+                    includePdP: true
+                }
+            }),
             pushOptions: {
                 includeEB: true,
                 includeOIDC: true,
@@ -75,7 +81,13 @@ export default class Navigation extends React.PureComponent {
 
         const {pushOptions} = this.state;
         push(pushOptions.includeEB, pushOptions.includeOIDC, pushOptions.includePdP).then(json => {
-            this.setState({loading: false, pushResults: json.deltas});
+            this.setState({
+                loading: false, pushResults: json.deltas, pushOptions: {
+                    includeEB: true,
+                    includeOIDC: true,
+                    includePdP: true
+                }
+            });
             const ok = json.status === "OK" || json.status === 200;
             setFlash(pushFlash(ok, this.props.currentUser), ok ? "info" : "error");
         });
@@ -174,6 +186,7 @@ export default class Navigation extends React.PureComponent {
                     {this.renderItem("/staging", "staging", openChangeRequestsCount === 0 ? null : openChangeRequestsCount)}
                     {this.renderItem("/scopes", "scopes")}
                     {this.renderItem("/activity", "activity")}
+                    {this.renderItem("/policies", "policies")}
                     {this.renderSpinner()}
                     {this.renderPushButton()}
                 </div>
