@@ -23,9 +23,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestController
 @SuppressWarnings("unchecked")
@@ -36,6 +36,7 @@ public class PdPController {
     private final RestTemplate pdpRestTemplate;
     private final ObjectMapper objectMapper;
     private final MetaDataService metaDataService;
+    private final HttpHeaders headers;
 
     public PdPController(PolicyRepository policyRepository,
                          @Value("${push.pdp.policy_url}") String policyUrl,
@@ -49,42 +50,43 @@ public class PdPController {
         this.metaDataService = metaDataService;
         this.pdpRestTemplate = new RestTemplate();
         this.pdpRestTemplate.getInterceptors().add(new BasicAuthenticationInterceptor(pdpUser, pdpPassword));
+        this.headers = new HttpHeaders();
+        this.headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/client/policies")
+    @GetMapping("/client/pdp/policies")
     public List<Map<String, String>> policies() {
         return policyRepository.policies();
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/client/migrated_policies")
+    @GetMapping("/client/pdp/migrated_policies")
     public List<Map<String, String>> migratedPolicies() {
         return policyRepository.migratedPolicies();
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("/client/import_policies")
-    public List<Object> importPolicies() throws JsonProcessingException {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+    @PutMapping("/client/pdp/import_policies")
+    public Map<String, List<Object>> importPolicies() throws JsonProcessingException {
         HttpEntity<?> requestEntity = new HttpEntity<>(headers);
         List<PdpPolicyDefinition> policyDefinitions = pdpRestTemplate.exchange(this.policyUrl, HttpMethod.GET, requestEntity, List.class).getBody();
         String json = objectMapper.writeValueAsString(policyDefinitions);
         List<Map<String, Object>> dataList = objectMapper.readValue(json, new TypeReference<>() {
         });
         this.metaDataService.deleteCollection(EntityType.PDP);
-        return dataList.stream()
-                .map(data -> {
+        Map<String, List<Object>> results = Map.of("imported", new ArrayList<>(), "errors", new ArrayList<>());
+        dataList.forEach(data -> {
                     PdpPolicyDefinition.updateProviderStructure(data);
                     MetaData metaData = new MetaData(EntityType.PDP.getType(), data);
                     try {
                         MetaData savedMetaData = this.metaDataService.doPost(metaData, new APIUser("PDP import", List.of(Scope.SYSTEM)), false);
-                        return savedMetaData;
+                        results.get("imported").add(savedMetaData);
                     } catch (ValidationException e) {
-                        return e.getMessage();
+                        results.get("errors").add(Map.of("name", metaData.getData().get("name"), "error", e.getMessage()));
                     }
-                }).collect(Collectors.toList());
+        });
+        return results;
     }
 
 

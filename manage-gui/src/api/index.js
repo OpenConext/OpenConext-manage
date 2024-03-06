@@ -182,7 +182,7 @@ export function countFeed() {
 }
 
 export function allResourceServers(state) {
-    return search({"state": state}, "oauth20_rs")
+    return search({"state": state}, "oauth20_rs");
 }
 
 export function relyingPartiesByResourceServer(resourceServerEntityID) {
@@ -306,15 +306,27 @@ export function getAllowedLoas() {
 }
 
 export function getPdPPolicies() {
-    return fetchJson("policies");
+    return fetchJson("pdp/policies");
 }
 
 export function getMigratedPdPPolicies() {
-    return fetchJson("migrated_policies");
+    return fetchJson("pdp/migrated_policies");
 }
 
 export function importPdPPolicies() {
-    return postPutJson("import_policies", {}, "PUT")
+    return postPutJson("pdp/import_policies", {}, "PUT")
+}
+
+export function getPlaygroundPolicies() {
+    return search({}, "policy")
+}
+
+export function idpPolicies(idpEntityID) {
+    return fetchJson(`idpPolicies?entityId=${encodeURIComponent(idpEntityID)}`);
+}
+
+export function spPolicies(spEntityID) {
+    return fetchJson(`spPolicies?entityId=${encodeURIComponent(spEntityID)}`);
 }
 
 

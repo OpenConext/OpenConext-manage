@@ -71,7 +71,8 @@ I18n.translations.en = {
             export: "Export",
             connected_applications: "Applications ({{nbr}})",
             auto_refresh: "Auto refresh",
-            policy_form: "Configuration"
+            policy_form: "Configuration",
+            policies: "Policies ({{nbr}})"
         },
         notFound: "No Metadata found",
         entityId: "Entity ID",
@@ -637,7 +638,14 @@ I18n.translations.en = {
         orTooltip: 'Policies defined with a logical OR only require one of the attributes to match the attributes of the person requesting access. Note that a Deny access authorization policy always and implicitly uses the logical AND for different attribute names.',
         import: "Import",
         playground: "Playground",
-        runImport: "Import policies from PdP"
+        push: "Push analysis",
+        runImport: "Import policies from PdP",
+        noPolicies: "This entity is not used in PDP policies",
+        searchPlaceHolder: "Search for policies...",
+        identityProviders: "Identity providers",
+        notes: "Notes",
+        type: "Type",
+        reload: "Reload"
     }
 };
 

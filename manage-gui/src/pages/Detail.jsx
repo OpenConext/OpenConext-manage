@@ -22,6 +22,7 @@ import {
     changeRequests,
     detail,
     getAllowedLoas,
+    idpPolicies,
     policyAttributes,
     provisioningById,
     relyingPartiesByResourceServer,
@@ -29,6 +30,7 @@ import {
     revisions,
     save,
     search,
+    spPolicies,
     template,
     update,
     whiteListing
@@ -48,6 +50,7 @@ import ProvisioningApplications from "../components/metadata/ProvisioningApplica
 import AutoRefresh from "../components/metadata/AutoRefresh";
 import PolicyForm from "../components/metadata/PolicyForm";
 import {getNameForLanguage, getOrganisationForLanguage} from "../utils/Language";
+import Policies from "../components/metadata/Policies";
 
 let tabsSp = [
     "connection",
@@ -55,6 +58,7 @@ let tabsSp = [
     "metadata",
     "arp",
     "whitelist",
+    "policies",
     "manipulation",
     "requests",
     "revisions",
@@ -68,6 +72,7 @@ let tabsIdP = [
     "consent_disabling",
     "stepup_entities",
     "metadata",
+    "policies",
     "manipulation",
     "requests",
     "revisions",
@@ -82,6 +87,7 @@ const tabsRp = [
     "resource_servers",
     "arp",
     "whitelist",
+    "policies",
     "manipulation",
     "requests",
     "revisions",
@@ -143,6 +149,7 @@ class Detail extends React.PureComponent {
             resourceServers: [],
             relyingParties: [],
             applications: [],
+            policies: [],
             revisions: [],
             requests: [],
             provisioningGroups: [],
@@ -178,6 +185,7 @@ class Detail extends React.PureComponent {
         promise
             .then(metaData => {
                 const isSp = type === "saml20_sp" || type === "oidc10_rp";
+                const isIdp = type === "saml20_idp";
                 const isOidcRP = type === "oidc10_rp";
                 const isResourceServer = type === "oauth20_rs";
                 const isProvisioning = type === "provisioning";
@@ -242,6 +250,13 @@ class Detail extends React.PureComponent {
                         allResourceServers(state).then(json =>
                             this.setState({resourceServers: json})
                         );
+                    }
+                    if (isIdp && !isNew) {
+                        idpPolicies(metaData.data.entityid).then(policies => this.setState({policies: policies}))
+                    }
+                    if (isSp && !isNew) {
+                        spPolicies(metaData.data.entityid).then(policies => this.setState({policies: policies}))
+
                     }
                     if (isPolicy) {
                         Promise.all([
@@ -706,7 +721,7 @@ class Detail extends React.PureComponent {
         return hasErrors;
     }
 
-    renderTabTitle = (tab, metaData, resourceServers, whiteListing, revisions, requests, relyingParties) => {
+    renderTabTitle = (tab, metaData, resourceServers, whiteListing, revisions, requests, relyingParties, policies) => {
         const allowedAll = metaData.data.allowedall;
         const allowedEntities = metaData.data.allowedEntities;
         const applications = metaData.data.applications;
@@ -748,6 +763,9 @@ class Detail extends React.PureComponent {
             case "connected_rps":
                 args = {nbr: (relyingParties || []).length};
                 break;
+            case "policies":
+                args = {nbr: (policies || []).length};
+                break;
             case "connected_applications":
                 args = {nbr: (applications || []).length};
                 break;
@@ -757,7 +775,7 @@ class Detail extends React.PureComponent {
         return I18n.t(`metadata.tabs.${tab}`, args);
     }
 
-    renderTab = (tab, metaData, resourceServers, whiteListing, revisions, requests, relyingParties) => {
+    renderTab = (tab, metaData, resourceServers, whiteListing, revisions, requests, relyingParties, policies) => {
         const tabErrors = this.state.errors[tab] || {};
         const tabChanges = this.state.changes[tab] || false;
         const hasChanges = tabChanges ? "changes" : "";
@@ -771,7 +789,7 @@ class Detail extends React.PureComponent {
                 key={tab}
                 className={`${className} ${hasErrors} ${hasChanges}`}
                 onClick={this.switchTab(tab)}>
-        {this.renderTabTitle(tab, metaData, resourceServers, whiteListing, revisions, requests, relyingParties)}
+        {this.renderTabTitle(tab, metaData, resourceServers, whiteListing, revisions, requests, relyingParties, policies)}
                 {hasErrors && <i className="fa fa-warning"/>}
                 {!hasErrors && tabChanges && <i className="fa fa-asterisk"/>}
       </span>
@@ -788,6 +806,7 @@ class Detail extends React.PureComponent {
         revisionNoteClone,
         changeRequestsLoaded,
         relyingParties,
+        policies,
         identityProviders,
         serviceProviders,
         policyAttributes,
@@ -969,6 +988,13 @@ class Detail extends React.PureComponent {
                         applications={whiteListing}
                         name={name}/>
                 );
+            case "policies":
+                return (
+                    <Policies
+                        policies={policies}
+                        name={name}
+                    />
+                );
             case "auto_refresh":
                 return (
                     <AutoRefresh
@@ -1134,6 +1160,7 @@ class Detail extends React.PureComponent {
             metaData,
             resourceServers,
             relyingParties,
+            policies,
             identityProviders,
             serviceProviders,
             policyAttributes,
@@ -1256,7 +1283,7 @@ class Detail extends React.PureComponent {
                 {renderNotFound && <section>{I18n.t("metadata.notFound")}</section>}
                 {!notFound && (
                     <section className="tabs">
-                        {tabs.map(tab => this.renderTab(tab, metaData, resourceServers, whiteListing, revisions, requests, relyingParties))}
+                        {tabs.map(tab => this.renderTab(tab, metaData, resourceServers, whiteListing, revisions, requests, relyingParties, policies))}
                     </section>
                 )}
                 {renderContent &&
@@ -1270,6 +1297,7 @@ class Detail extends React.PureComponent {
                     revisionNoteClone,
                     changeRequestsLoaded,
                     relyingParties,
+                    policies,
                     identityProviders,
                     serviceProviders,
                     policyAttributes,

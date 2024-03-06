@@ -368,6 +368,18 @@ public class MetaDataController {
         return metaDataRepository.relyingParties(resourceServerEntityID);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/client/spPolicies")
+    public List<Map> spPolicies(@RequestParam("entityId") String entityId) {
+        return metaDataRepository.spPolicies(entityId);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/client/idpPolicies")
+    public List<Map> idpPolicies(@RequestParam("entityId") String entityId) {
+        return metaDataRepository.idpPolicies(entityId);
+    }
+
     @PreAuthorize("hasAnyRole('ADMIN', 'READ')")
     @PostMapping({"/client/provisioning", "/internal/provisioning"})
     public List<Map> provisioning(@RequestBody List<String> identifiers) {

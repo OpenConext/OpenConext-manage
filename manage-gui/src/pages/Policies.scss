@@ -54,9 +54,18 @@
         padding: 30px;
         background-color: white;
         border: 1px solid $light-grey;
+    }
 
-        &.pushPreviewResults {
-            font-family: "Courier New";
+    ul.policies {
+        margin-bottom: 20px;
+
+        li {
+            margin-left: 10px;
+
+            span {
+                display: block;
+
+            }
         }
     }
 

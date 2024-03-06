@@ -740,6 +740,29 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void spPolicies() {
+        List<Map<String, Object>> policies = given()
+                .when()
+                .queryParam("entityId", "https@//oidc.rp")
+                .get("manage/api/client/spPolicies")
+                .as(mapListTypeRef);
+        assertEquals(1, policies.size());
+        Map<String, Object> data = (Map<String, Object>) policies.get(0).get("data");
+        assertTrue(data.containsKey("identityProviderIds"));
+        assertTrue(data.containsKey("serviceProviderIds"));
+    }
+
+    @Test
+    public void idpPolicies() {
+        List<Map<String, Object>> policies = given()
+                .when()
+                .queryParam("entityId", "http://mock-idp")
+                .get("manage/api/client/idpPolicies")
+                .as(mapListTypeRef);
+        assertEquals(1, policies.size());
+    }
+
+    @Test
     public void provisioning() {
         List<Map<String, Object>> applications = given()
                 .auth()

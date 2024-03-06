@@ -315,6 +315,18 @@ public class MetaDataRepository {
         return mongoTemplate.find(query, Map.class, EntityType.RP.getType());
     }
 
+    public List<Map> spPolicies(String entityID) {
+        Query query = queryWithSamlFields(EntityType.PDP)
+                .addCriteria(Criteria.where("data.serviceProviderIds.name").is(entityID));
+        return mongoTemplate.find(query, Map.class, EntityType.PDP.getType());
+    }
+
+    public List<Map> idpPolicies(String entityID) {
+        Query query = queryWithSamlFields(EntityType.PDP)
+                .addCriteria(Criteria.where("data.identityProviderIds.name").is(entityID));
+        return mongoTemplate.find(query, Map.class, EntityType.PDP.getType());
+    }
+
     public List<Map> allowedEntities(String id, EntityType entityType) {
         Map byId = mongoTemplate.findById(id, Map.class, entityType.getType());
         Query query = queryWithSamlFields(entityType)
@@ -356,7 +368,7 @@ public class MetaDataRepository {
                 .include("data.entityid")
                 .include("data.notes");
         if (entityType.equals(EntityType.PDP)) {
-            fields.include("data.name", "data.description", "data.type");
+            fields.include("data.name", "data.description", "data.type", "data.serviceProviderIds", "data.identityProviderIds");
         } else {
             this.supportedLanguages.forEach(lang -> {
                 fields.include("data.metaDataFields.name:" + lang);
