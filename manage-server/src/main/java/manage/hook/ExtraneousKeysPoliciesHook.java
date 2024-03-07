@@ -43,9 +43,9 @@ public class ExtraneousKeysPoliciesHook extends MetaDataHookAdapter {
         String name = (String) data.get("name");
         data.put("entityid", name);
         data.put("policyId", "urn:surfconext:xacml:policy:id:" + name.replaceAll("\\W+", "_").toLowerCase());
-        data.put("authenticatingAuthorityName",
-                user instanceof FederatedUser ? ((FederatedUser)user).getSchacHomeOrganization() : "api");
-        data.put("userDisplayName", user.getName());
+        data.computeIfAbsent("authenticatingAuthorityName",
+                k -> user instanceof FederatedUser ? ((FederatedUser) user).getSchacHomeOrganization() : "api");
+        data.computeIfAbsent("userDisplayName", k -> user.getName());
     }
 
 }

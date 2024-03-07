@@ -509,8 +509,8 @@
           }
         ],
         "name": {
-          "en": "OpenConext ServiceRegistry Mock",
-          "nl": "OpenConext ServiceRegistry"
+          "en": "IdP test 2",
+          "nl": "IdP test 2"
         },
         "redirect": {
           "sign": true
