@@ -11,6 +11,10 @@
       "type": "string",
       "minLength": 1
     },
+    "policyId": {
+      "type": "string",
+      "minLength": 1
+    },
     "name": {
       "type": "string",
       "minLength": 1

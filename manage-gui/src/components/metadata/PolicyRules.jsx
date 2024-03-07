@@ -32,7 +32,7 @@ export default function PolicyRules({
                     <CheckBox
                         name={andName}
                         onChange={e => setRule(!e.target.checked)}
-                        value={!value}
+                        value={value}
                     />
                 </div>
                 <div className="checkbox-container adjustment">
@@ -52,7 +52,7 @@ export default function PolicyRules({
                     <CheckBox
                         name={orName}
                         onChange={e => setRule(e.target.checked)}
-                        value={value}
+                        value={!value}
                     />
                 </div>
             </div>

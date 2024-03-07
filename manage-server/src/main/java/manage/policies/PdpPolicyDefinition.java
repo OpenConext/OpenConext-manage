@@ -25,6 +25,7 @@ import static java.util.stream.Collectors.toList;
 public class PdpPolicyDefinition {
 
     private String id;
+    private String policyId;
     private String name;
     private String description;
 
@@ -74,24 +75,36 @@ public class PdpPolicyDefinition {
         this.description = (String) data.get("description");
         this.serviceProviderIds = convertProviders(data, "serviceProviderIds");
         this.identityProviderIds = convertProviders(data, "identityProviderIds");
-        this.attributes = ((List<Map<String, String>>) data.getOrDefault("attributes", new ArrayList<>())).stream()
-                .map(m -> new PdpAttribute(m.get("name"), m.get("value"))).collect(Collectors.toList());
+        this.attributes = ((List<Map<String, Object>>) data.getOrDefault("attributes", new ArrayList<>())).stream()
+                .map(m -> new PdpAttribute(
+                        (String) m.get("name"),
+                        (String) m.get("value"),
+                        (boolean) m.getOrDefault("negated", false)))
+                .collect(Collectors.toList());
         this.loas = ((List<Map<String, Object>>) data.getOrDefault("loas", new ArrayList<>()))
-                .stream().map(m -> new LoA(
-                        (String) m.get("level"),
-                        (boolean) m.getOrDefault("allAttributesMustMatch", false),
-                        (boolean) m.getOrDefault("negateCidrNotation", false),
-                        ((List<Map<String, String>>) m.getOrDefault("attributes", new ArrayList<>())).stream()
-                                .map(attr -> new PdpAttribute(attr.get("name"), attr.get("value"))).collect(Collectors.toList()),
-                        ((List<Map<String, Object>>) m.getOrDefault("cidrNotations", new ArrayList<>())).stream()
-                                .map(cidr -> new CidrNotation((String) cidr.get("ipAddress"), (Integer) cidr.get("prefix"))).collect(Collectors.toList())
-                )).collect(Collectors.toList());
+                .stream().map(m -> {
+                    List<Map<String, Object>> loaAttributes = (List<Map<String, Object>>) m.getOrDefault("attributes", new ArrayList<>());
+                    return new LoA(
+                            (String) m.get("level"),
+                            (boolean) m.getOrDefault("allAttributesMustMatch", false),
+                            (boolean) m.getOrDefault("negateCidrNotation", false),
+                            loaAttributes.stream()
+                                    .map(attr -> new PdpAttribute(
+                                            (String) attr.get("name"),
+                                            (String) attr.get("value"),
+                                            (boolean) attr.getOrDefault("negated", false)))
+                                    .collect(Collectors.toList()),
+                            ((List<Map<String, Object>>) m.getOrDefault("cidrNotations", new ArrayList<>())).stream()
+                                    .map(cidr -> new CidrNotation((String) cidr.get("ipAddress"), (Integer) cidr.get("prefix"))).collect(Collectors.toList())
+                    );
+                }).collect(toList());
         this.denyRule = (boolean) data.getOrDefault("denyRule", false);
         this.allAttributesMustMatch = (boolean) data.getOrDefault("allAttributesMustMatch", false);
         this.userDisplayName = (String) data.get("userDisplayName");
         this.authenticatingAuthorityName = (String) data.get("authenticatingAuthorityName");
         this.denyAdvice = (String) data.get("denyAdvice");
-        this.denyAdviceNl = (String) data.get("denyAdvice");
+        this.denyAdviceNl = (String) data.get("denyAdviceNl");
+        this.policyId = (String) data.get("policyId");
         this.active=(boolean) data.getOrDefault("active", false);
         this.type=(String) data.get("type");
         Revision revision = metaData.getRevision();

@@ -11,7 +11,7 @@ import {
     policyAttributes,
     policySAMLAttributes
 } from "../api";
-import ReactDiffViewer from 'react-diff-viewer-continued';
+import ReactDiffViewer, {DiffMethod} from 'react-diff-viewer-continued';
 
 export default class Policies extends React.PureComponent {
 
@@ -25,7 +25,7 @@ export default class Policies extends React.PureComponent {
             playGroundData: {},
             pdpPolicies: [],
             pdpMigratedPolicies: [],
-            loading: true,
+            loading: false,
             copiedToClipboardClassName: "",
             confirmationDialogOpen: false,
             confirmationQuestion: "",
@@ -34,15 +34,9 @@ export default class Policies extends React.PureComponent {
         };
     }
 
-    componentDidMount() {
-        this.setState({loading: true})
-        Promise.all([getPlaygroundPolicies(), policyAttributes(), policySAMLAttributes()])
-            .then(res => this.setState({
-                policies: res[0],
-                attributes: res[1],
-                samlAttributes: res[2],
-                loading: false
-            }));
+    initialState = e => {
+        stop(e);
+        this.setState({loading: true});
         Promise.all([getMigratedPdPPolicies(), getPdPPolicies()])
             .then(res => this.setState({
                 pdpMigratedPolicies: res[0],
@@ -66,6 +60,25 @@ export default class Policies extends React.PureComponent {
                 pdpMigratedPolicies: []
             });
         }
+        if (tab === "playground") {
+            this.setState({loading: true});
+            Promise.all([getPlaygroundPolicies(), policyAttributes(), policySAMLAttributes()])
+                .then(res => this.setState({
+                    policies: res[0],
+                    attributes: res[1],
+                    samlAttributes: res[2],
+                    loading: false
+                }));
+        }
+        if (tab === "push") {
+            this.setState({loading: true});
+            Promise.all([getMigratedPdPPolicies(), getPdPPolicies()])
+                .then(res => this.setState({
+                    pdpMigratedPolicies: res[0],
+                    pdpPolicies: res[1],
+                    loading: false
+                }));
+        }
     };
 
     renderTab = (tab, selectedTab) =>
@@ -86,7 +99,8 @@ export default class Policies extends React.PureComponent {
         return (
             <section className="import">
                 <p>Import the current PdP policies into Manage. Once imported they can be pushed.</p>
-                <p>For now PdP does not overwrite the current policies, but stores them in a policy migrations table</p>
+                <p>For now PdP does not overwrite the current policies in the push-endpoint, but stores them in a policy
+                    migrations table</p>
                 <a className={`button ${loading ? "grey disabled" : "green"}`}
                    onClick={this.runImport}>
                     {I18n.t("policies.runImport")}
@@ -116,18 +130,19 @@ export default class Policies extends React.PureComponent {
         const {pdpMigratedPolicies, pdpPolicies, loading} = this.state;
         const missingPolicies = pdpPolicies
             .filter(p => !pdpMigratedPolicies.some(mp => mp.name === p.name));
-
+        const forgotToPush = pdpMigratedPolicies.some(policy => !pdpPolicies.find(p => p.name === policy.name))
         return (
             <section className="import">
                 <p>After importing the current PdP policies into Manage and subsequently pushing those Manage policies
                     to PdP,
                     we now can compare the original PdP policies with the pushed ones.</p>
                 <a className={`button ${loading ? "grey disabled" : "green"}`}
-                   onClick={this.componentDidMount}>
+                   onClick={e => this.initialState(e)}>
                     {I18n.t("policies.reload")}
                 </a>
-                {!isEmpty(pdpPolicies) &&
+                {(!isEmpty(pdpPolicies)) &&
                     <section className="results">
+                        {!isEmpty(missingPolicies) && <div>
                         <h2>Not imported policies</h2>
                         <ul className="policies">
                             {missingPolicies.map(policy => <li>
@@ -135,17 +150,20 @@ export default class Policies extends React.PureComponent {
                                 <span>{policy.description}</span>
                             </li>)}
                         </ul>
+                        </div>}
                         <h2>Policies compared</h2>
-                        <ul className="policies">
+                        {!forgotToPush && <ul className="policies">
                             {pdpMigratedPolicies.map(policy => <li>
                                 <span>{policy.name}</span>
                                 <span>{policy.description}</span>
                                 <ReactDiffViewer oldValue={pdpPolicies.find(p => p.name === policy.name).xml}
                                                  newValue={policy.xml}
+                                                 compareMethod={DiffMethod.TRIMMED_LINES}
                                                  splitView={true}/>
                             </li>)}
-                        </ul>
-
+                        </ul>}
+                        {forgotToPush &&
+                            <p>You did not push the latest policies to PdP. Can't compare before you do.</p>}
                     </section>}
             </section>
         );

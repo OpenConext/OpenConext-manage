@@ -104,7 +104,7 @@ export default function PolicyForm({
         loas.push({
             level: option.value,
             index: loas.length,
-            allAttributesMustMatch: false,
+            allAttributesMustMatch: true,
             negateCidrNotation: false,
             attributes: [],
             cidrNotations: []

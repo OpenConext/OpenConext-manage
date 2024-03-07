@@ -38,9 +38,11 @@ public class ExtraneousKeysPoliciesHook extends MetaDataHookAdapter {
         Map<String, Object> data = newMetaData.getData();
         Map<String, Object> schemaRepresentation = this.metaDataAutoConfiguration.schemaRepresentation(EntityType.PDP);
         Map<String, Object> schemaProperties = (Map<String, Object>) schemaRepresentation.get("properties");
-        //Alternative is very big refactor in IdP-Dashboard
+        //Alternative is very, very big refactor in IdP-Dashboard
         data.keySet().removeIf(key -> !schemaProperties.containsKey(key));
-        data.put("entityid", data.get("name"));
+        String name = (String) data.get("name");
+        data.put("entityid", name);
+        data.put("policyId", "urn:surfconext:xacml:policy:id:" + name.replaceAll("\\W+", "_").toLowerCase());
         data.put("authenticatingAuthorityName",
                 user instanceof FederatedUser ? ((FederatedUser)user).getSchacHomeOrganization() : "api");
         data.put("userDisplayName", user.getName());

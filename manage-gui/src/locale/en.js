@@ -174,6 +174,7 @@ I18n.translations.en = {
         includeOIDC: "Include OIDC?",
         includePdP: "Include PdP?",
         headers: {
+            count: "",
             status: "Status",
             entityid: "Entity ID",
             name: "Name",
