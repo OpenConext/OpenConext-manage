@@ -153,7 +153,8 @@ export default class Policies extends React.PureComponent {
                         </div>}
                         <h2>Policies compared</h2>
                         {!forgotToPush && <ul className="policies">
-                            {pdpMigratedPolicies.map(policy => <li>
+                            {pdpMigratedPolicies
+                                .map(policy => <li>
                                 <span>{policy.name}</span>
                                 <span>{policy.description}</span>
                                 <ReactDiffViewer oldValue={pdpPolicies.find(p => p.name === policy.name).xml}
