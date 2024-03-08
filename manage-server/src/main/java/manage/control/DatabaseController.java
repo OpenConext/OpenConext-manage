@@ -99,6 +99,7 @@ public class DatabaseController {
                     .map(metaData -> new PdpPolicyDefinition(metaData))
                     .collect(toList());
             this.pdpRestTemplate.put(pdpPushUri, policies);
+            result.put("status", 200);
             result.put("pdp", true);
         }
         if (environment.acceptsProfiles(Profiles.of("dev"))) {
@@ -146,6 +147,7 @@ public class DatabaseController {
                     .collect(toList());
             this.oidcRestTemplate.postForEntity(oidcPushUri, filteredEntities, Void.class);
             result.put("oidc", true);
+            result.put("status", 200);
         }
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
