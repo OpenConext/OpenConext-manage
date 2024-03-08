@@ -318,7 +318,19 @@ export function importPdPPolicies() {
 }
 
 export function getPlaygroundPolicies() {
-    return search({}, "policy")
+    return search({ALL_ATTRIBUTES: true}, "policy")
+}
+
+export function getPlaygroundServiceProviders() {
+    return search({}, "saml20_sp")
+}
+
+export function getPlaygroundRelyingParties() {
+    return search({}, "oidc10_rp")
+}
+
+export function getPlaygroundIdentityProviders() {
+    return search({}, "saml20_idp")
 }
 
 export function idpPolicies(idpEntityID) {
@@ -329,4 +341,7 @@ export function spPolicies(spEntityID) {
     return fetchJson(`spPolicies?entityId=${encodeURIComponent(spEntityID)}`);
 }
 
+export function playGroundPolicyDecision(pdpRequest) {
+    return postPutJson("pdp/decide", pdpRequest, "POST", false);
+}
 

@@ -3,26 +3,21 @@ import I18n from "i18n-js";
 import {isEmpty, stop} from "../utils/Utils";
 import ConfirmationDialog from "../components/ConfirmationDialog";
 import "./Policies.scss";
-import {
-    getMigratedPdPPolicies,
-    getPdPPolicies,
-    getPlaygroundPolicies,
-    importPdPPolicies,
-    policyAttributes,
-    policySAMLAttributes
-} from "../api";
+import {getMigratedPdPPolicies, getPdPPolicies, importPdPPolicies} from "../api";
 import ReactDiffViewer, {DiffMethod} from 'react-diff-viewer-continued';
+import PolicyPlayground from "../components/PolicyPlaygound";
+import withRouterHooks from "../utils/RouterBackwardCompatability";
 
-export default class Policies extends React.PureComponent {
+class Policies extends React.PureComponent {
 
     constructor(props) {
         super(props);
         const tabs = ["import", "push", "playground"];
+        const {tab = "import"} = props.params || {};
         this.state = {
             tabs: tabs,
-            selectedTab: tabs[0],
+            selectedTab: tab,
             importResults: {},
-            playGroundData: {},
             pdpPolicies: [],
             pdpMigratedPolicies: [],
             loading: false,
@@ -60,16 +55,6 @@ export default class Policies extends React.PureComponent {
                 pdpMigratedPolicies: []
             });
         }
-        if (tab === "playground") {
-            this.setState({loading: true});
-            Promise.all([getPlaygroundPolicies(), policyAttributes(), policySAMLAttributes()])
-                .then(res => this.setState({
-                    policies: res[0],
-                    attributes: res[1],
-                    samlAttributes: res[2],
-                    loading: false
-                }));
-        }
         if (tab === "push") {
             this.setState({loading: true});
             Promise.all([getMigratedPdPPolicies(), getPdPPolicies()])
@@ -79,6 +64,7 @@ export default class Policies extends React.PureComponent {
                     loading: false
                 }));
         }
+        this.props.navigate(`/policies/${tab}`);
     };
 
     renderTab = (tab, selectedTab) =>
@@ -109,14 +95,14 @@ export default class Policies extends React.PureComponent {
                     <section className="results">
                         <h2>Imported policies</h2>
                         <ul className="policies">
-                            {importResults.imported.map(metaData => <li>
+                            {importResults.imported.map((metaData,index ) => <li key={index}>
                                 <span>{metaData.data.name}</span>
                                 <span>{metaData.data.description}</span>
                             </li>)}
                         </ul>
                         <h2>Not imported policies</h2>
                         <ul className="policies">
-                            {importResults.errors.map(data => <li>
+                            {importResults.errors.map((data, index) => <li key={index}>
                                 <span>{data.name}</span>
                                 <span>{data.error}</span>
                             </li>)}
@@ -145,7 +131,7 @@ export default class Policies extends React.PureComponent {
                         {!isEmpty(missingPolicies) && <div>
                         <h2>Not imported policies</h2>
                         <ul className="policies">
-                            {missingPolicies.map(policy => <li>
+                            {missingPolicies.map((policy, index) => <li key={index}>
                                 <span>{policy.name}</span>
                                 <span>{policy.description}</span>
                             </li>)}
@@ -154,7 +140,7 @@ export default class Policies extends React.PureComponent {
                         <h2>Policies compared</h2>
                         {!forgotToPush && <ul className="policies">
                             {pdpMigratedPolicies
-                                .map(policy => <li>
+                                .map((policy, index) => <li key={index}>
                                 <span>{policy.name}</span>
                                 <span>{policy.description}</span>
                                 <ReactDiffViewer oldValue={pdpPolicies.find(p => p.name === policy.name).xml}
@@ -172,9 +158,7 @@ export default class Policies extends React.PureComponent {
 
     renderPlayground = () => {
         return (
-            <section className="playground">
-                <span>TODO</span>
-            </section>
+            <PolicyPlayground/>
         );
     };
 
@@ -214,3 +198,4 @@ export default class Policies extends React.PureComponent {
         );
     }
 }
+export default withRouterHooks(Policies);

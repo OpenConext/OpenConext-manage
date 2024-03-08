@@ -646,8 +646,17 @@ I18n.translations.en = {
         identityProviders: "Identity providers",
         notes: "Notes",
         type: "Type",
-        reload: "Reload"
+        reload: "Reload",
+    },
+    policyPlayGround :{
+        institutionProviderPlaceholder: 'Select the Identity Provider - required',
+        serviceProviderPlaceholder: 'Select the Service Provider - required',
+        runDecision: 'Run decision',
+        clear: 'Clear',
+        policy: "Policy",
+        policyPlaceholder: "Select a policy to initiate the PDP request data"
     }
+
 };
 
 export default I18n.translations.en;

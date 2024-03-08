@@ -17,10 +17,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
@@ -52,7 +49,10 @@ public class PolicyController {
         this.policyIdpAccessEnforcer = policyIdpAccessEnforcer;
         this.metaDataRepository = metaDataRepository;
         this.allowedAttributes = this.attributes("policies/allowed_attributes.json");
+        this.allowedAttributes.sort(Comparator.comparing(o -> o.get("label")));
         this.samlAllowedAttributes = this.attributes("policies/extra_saml_attributes.json");
+        this.samlAllowedAttributes.addAll(this.allowedAttributes);
+        this.samlAllowedAttributes.sort(Comparator.comparing(o -> o.get("label")));
         this.loaLevels = Stream.of(loaLevelsCommaSeparated.split(",")).map(String::trim).collect(toList());
     }
 

@@ -362,13 +362,13 @@ public class MetaDataRepository {
         //When we have multiple types then we need to delegate depending on the type.
         Field fields = query.fields();
         fields
-                .include("version")
-                .include("type")
-                .include("data.state")
-                .include("data.entityid")
-                .include("data.notes");
+                .include("version", "type","data.state","data.entityid", "data.notes");
         if (entityType.equals(EntityType.PDP)) {
-            fields.include("data.name", "data.description", "data.type", "data.serviceProviderIds", "data.identityProviderIds");
+            fields.include("data.name",
+                    "data.description",
+                    "data.type",
+                    "data.serviceProviderIds",
+                    "data.identityProviderIds");
         } else {
             this.supportedLanguages.forEach(lang -> {
                 fields.include("data.metaDataFields.name:" + lang);

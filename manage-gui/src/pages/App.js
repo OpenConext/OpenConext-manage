@@ -137,6 +137,10 @@ class App extends React.PureComponent {
 
                         <Route path="/policies"
                                element={<Policies currentUser={currentUser}
+                                                  configuration={configuration}/>}/>
+
+                        <Route path="/policies/:tab"
+                               element={<Policies currentUser={currentUser}
                                                 configuration={configuration}/>}/>
 
                         <Route path="/staging"

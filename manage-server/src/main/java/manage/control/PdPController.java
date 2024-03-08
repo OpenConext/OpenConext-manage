@@ -20,9 +20,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
@@ -42,6 +40,7 @@ public class PdPController {
 
     private final PolicyRepository policyRepository;
     private final String policyUrl;
+    private final String decideUrl;
     private final RestTemplate pdpRestTemplate;
     private final ObjectMapper objectMapper;
     private final MetaDataService metaDataService;
@@ -51,6 +50,7 @@ public class PdPController {
 
     public PdPController(PolicyRepository policyRepository,
                          @Value("${push.pdp.policy_url}") String policyUrl,
+                         @Value("${push.pdp.decide_url}") String decideUrl,
                          @Value("${push.pdp.user}") String pdpUser,
                          @Value("${push.pdp.password}") String pdpPassword,
                          ObjectMapper objectMapper,
@@ -58,6 +58,7 @@ public class PdPController {
                          MetaDataRepository metaDataRepository) {
         this.policyRepository = policyRepository;
         this.policyUrl = policyUrl;
+        this.decideUrl = decideUrl;
         this.objectMapper = objectMapper;
         this.metaDataService = metaDataService;
         this.metaDataRepository = metaDataRepository;
@@ -81,6 +82,14 @@ public class PdPController {
         List<Map<String, String>> policies = policyRepository.migratedPolicies();
         addDescription(policies);
         return policies;
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping(value =  "/client/pdp/decide")
+    public String decideManage(@RequestBody String payload) {
+        HttpEntity<?> requestEntity = new HttpEntity<>(payload, headers);
+        String body = pdpRestTemplate.exchange(this.decideUrl, HttpMethod.POST, requestEntity, String.class).getBody();
+        return body;
     }
 
     @PreAuthorize("hasRole('ADMIN')")
