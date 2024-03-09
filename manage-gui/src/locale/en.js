@@ -649,6 +649,8 @@ I18n.translations.en = {
         reload: "Reload",
     },
     policyPlayGround :{
+        institutionProvider: "Identity provider",
+        serviceProvider: "Service provider",
         institutionProviderPlaceholder: 'Select the Identity Provider - required',
         serviceProviderPlaceholder: 'Select the Service Provider - required',
         runDecision: 'Run decision',

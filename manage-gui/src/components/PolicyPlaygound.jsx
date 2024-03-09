@@ -3,7 +3,7 @@ import React, {useEffect, useState} from "react";
 import "./PolicyPlayground.scss";
 import I18n from "i18n-js";
 import CodeMirror from '@uiw/react-codemirror';
-import {javascript} from '@codemirror/lang-javascript';
+import {json} from '@codemirror/lang-json';
 import {
     getPlaygroundIdentityProviders,
     getPlaygroundPolicies,
@@ -14,7 +14,7 @@ import {
 } from "../api";
 import Select from "./Select";
 import {getNameForLanguage} from "../utils/Language";
-import {determineStatus, isEmpty} from "../utils/Utils";
+import {determineStatus, isEmpty, stop} from "../utils/Utils";
 import PolicyAttributes from "./metadata/PolicyAttributes";
 import {setFlash} from "../utils/Flash";
 
@@ -38,6 +38,7 @@ export default function PolicyPlayground({}) {
     const [selectedIdentityProvider, setSelectedIdentityProvider] = useState(null);
     const [pdpResponse, setPdpResponse] = useState(null);
     const [pdpRequest, setPdpRequest] = useState(null);
+    const [showResponse, setShowResponse] = useState(true);
 
     useEffect(() => {
         Promise.all([
@@ -107,11 +108,11 @@ export default function PolicyPlayground({}) {
         );
     }
 
-    const renderServiceProviders = () => {
+    const renderServiceProvider = () => {
         return (
             <div className="input-field">
                 <label htmlFor="serviceProvider">
-                    <span>{I18n.t("policies.serviceProviders")}</span>
+                    <span>{I18n.t("policyPlayGround.serviceProvider")}</span>
                 </label>
                 <Select
                     className="policy-select"
@@ -125,11 +126,11 @@ export default function PolicyPlayground({}) {
         );
     }
 
-    const renderIdentityProviders = () => {
+    const renderIdentityProvider = () => {
         return (
             <div className="input-field">
                 <label htmlFor="institutionProvider">
-                    <span>{I18n.t("policies.institutionProviders")}</span>
+                    <span>{I18n.t("policyPlayGround.institutionProvider")}</span>
                 </label>
                 <Select
                     className="policy-select"
@@ -143,6 +144,10 @@ export default function PolicyPlayground({}) {
         );
     }
 
+    const doSetAttributes = attrs => {
+            setAttributes(attrs);
+    }
+
     const renderAttributes = () => {
         return (
             <>
@@ -151,7 +156,7 @@ export default function PolicyPlayground({}) {
                     attributes={attributes}
                     embedded={true}
                     allowedAttributes={samlAttributes}
-                    setAttributes={setAttributes}
+                    setAttributes={doSetAttributes}
                     includeNegate={false}
                     isRequired={false}
                 />
@@ -197,11 +202,11 @@ export default function PolicyPlayground({}) {
                     "Attribute": [
                         {
                             "AttributeId": "SPentityID",
-                            "Value": selectedServiceProvider
+                            "Value": selectedServiceProvider.value
                         },
                         {
                             "AttributeId": "IDPentityID",
-                            "Value": selectedIdentityProvider
+                            "Value": selectedIdentityProvider.value
                         },
                         {
                             "AttributeId": "ClientID",
@@ -216,10 +221,14 @@ export default function PolicyPlayground({}) {
             .then(res => {
                 setPdpResponse(res);
                 setPdpRequest(pdpRequestInstance);
+                setShowResponse(true);
                 setLoading(false);
             })
             .catch(() => {
                 setLoading(false);
+                setPdpResponse(null);
+                setPdpRequest(pdpRequestInstance);
+                setShowResponse(false);
                 setFlash("Exception from PdP decision endpoint. Check the logs", "error")
             });
     }
@@ -228,9 +237,11 @@ export default function PolicyPlayground({}) {
         setPolicy(null);
         setPdpResponse(null);
         setPdpRequest(null);
+        setShowResponse(true);
         setSelectedIdentityProvider(null);
         setSelectedServiceProvider(null);
         setAttributes([]);
+        setInitial(true);
     }
 
     const renderActions = () => {
@@ -248,14 +259,39 @@ export default function PolicyPlayground({}) {
         );
     }
 
+    const toggleResponseRequestView = e => {
+        stop(e);
+        setShowResponse(!showResponse);
+    }
+
     const renderPolicyResponse = () => {
+        const codeValue = showResponse ? pdpResponse : pdpRequest;
         return (
             <>
-                {renderStatus()}
-                <CodeMirror value={JSON.stringify(pdpResponse, null, 3)}
-                            readOnly={true}/>;
+                <div className="pdp-response-options">
+                    <a href="/"
+                       onClick={toggleResponseRequestView}
+                       className={!showResponse ? "active" : ""}>PdP Request</a>
+                    <span>|</span>
+                    <a href="/"
+                       onClick={toggleResponseRequestView}
+                       className={showResponse ? "active" : ""}>PdP Response</a>
+                </div>
+                <div className="pdp-response">
+                    <CodeMirror value={JSON.stringify(codeValue, null, 3)}
+                                basicSetup={{
+                                    lineNumbers: false,
+                                    foldGutter: false,
+                                    highlightActiveLineGutter: false,
+                                    highlightActiveLine: false,
+
+                                }}
+                                extensions={[json({})]}
+                                readOnly={true}/>;
+                </div>
             </>
-        );
+        )
+            ;
 
     }
 
@@ -263,8 +299,8 @@ export default function PolicyPlayground({}) {
         <section className="playground-policy-form">
             <section className="policy-form">
                 {renderPolicies()}
-                {renderServiceProviders()}
-                {renderIdentityProviders()}
+                {renderServiceProvider()}
+                {renderIdentityProvider()}
                 {renderAttributes()}
                 {renderActions()}
             </section>

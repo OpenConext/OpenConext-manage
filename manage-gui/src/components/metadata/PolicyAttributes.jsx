@@ -33,7 +33,7 @@ export default function PolicyAttributes({
     }
 
     const deleteValue = (name, index) => {
-        const newAttributes = attributes.filter(attr => attr.name === name && attr.index !== index);
+        const newAttributes = attributes.filter(attr => attr.name !== name || (attr.name === name && attr.index !== index));
         setAttributes(newAttributes, () => hasAttributes())
     }
 
