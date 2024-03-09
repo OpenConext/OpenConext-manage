@@ -256,6 +256,7 @@ public class MetaDataRepository {
                 .include("type")
                 .include("data.state")
                 .include("data.entityid")
+                .include("data.name")
                 .include("data.metaDataFields.name:en")
                 .include("data.metaDataFields.OrganizationName:en")
                 .include("data.metaDataFields.OrganizationName:en")

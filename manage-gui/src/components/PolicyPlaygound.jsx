@@ -39,6 +39,7 @@ export default function PolicyPlayground({}) {
     const [pdpResponse, setPdpResponse] = useState(null);
     const [pdpRequest, setPdpRequest] = useState(null);
     const [showResponse, setShowResponse] = useState(true);
+    const [took, setTook] = useState(0);
 
     useEffect(() => {
         Promise.all([
@@ -217,14 +218,17 @@ export default function PolicyPlayground({}) {
             }
         }
         setLoading(true);
+        const now = new Date().getTime();
         playGroundPolicyDecision(pdpRequestInstance)
             .then(res => {
                 setPdpResponse(res);
                 setPdpRequest(pdpRequestInstance);
                 setShowResponse(true);
                 setLoading(false);
+                setTook(new Date().getTime() - now);
             })
             .catch(() => {
+                setTook(new Date().getTime() - now);
                 setLoading(false);
                 setPdpResponse(null);
                 setPdpRequest(pdpRequestInstance);
@@ -275,7 +279,7 @@ export default function PolicyPlayground({}) {
                     <span>|</span>
                     <a href="/"
                        onClick={toggleResponseRequestView}
-                       className={showResponse ? "active" : ""}>PdP Response</a>
+                       className={showResponse ? "active" : ""}>{`PdP Response (took ${took} ms)`}</a>
                 </div>
                 <div className="pdp-response">
                     <CodeMirror value={JSON.stringify(codeValue, null, 3)}
