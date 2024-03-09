@@ -640,6 +640,7 @@ I18n.translations.en = {
         import: "Import",
         playground: "Playground",
         push: "Push analysis",
+        missing_enforcements: "Missing enforcements",
         runImport: "Import policies from PdP",
         noPolicies: "This entity is not used in PDP policies",
         searchPlaceHolder: "Search for policies...",

@@ -7,12 +7,13 @@ import {getMigratedPdPPolicies, getPdPPolicies, importPdPPolicies} from "../api"
 import ReactDiffViewer, {DiffMethod} from 'react-diff-viewer-continued';
 import PolicyPlayground from "../components/PolicyPlaygound";
 import withRouterHooks from "../utils/RouterBackwardCompatability";
+import PolicyMissingEnforcements from "../components/PolicyMissingEnforcements";
 
 class Policies extends React.PureComponent {
 
     constructor(props) {
         super(props);
-        const tabs = ["import", "push", "playground"];
+        const tabs = ["import", "push", "playground", "missing_enforcements"];
         const {tab = "import"} = props.params || {};
         this.state = {
             tabs: tabs,
@@ -45,9 +46,6 @@ class Policies extends React.PureComponent {
         this.setState({selectedTab: tab});
         if (tab !== "import") {
             this.setState({importResults: []});
-        }
-        if (tab !== "playground") {
-            this.setState({playGroundData: {}});
         }
         if (tab !== "push") {
             this.setState({
@@ -162,6 +160,11 @@ class Policies extends React.PureComponent {
         );
     };
 
+    renderMissingEnforcements = () => {
+        return (
+            <PolicyMissingEnforcements/>
+        );
+    };
     renderCurrentTab = selectedTab => {
         switch (selectedTab) {
             case "import" :
@@ -170,6 +173,8 @@ class Policies extends React.PureComponent {
                 return this.renderPlayground();
             case "push" :
                 return this.renderPush();
+            case "missing_enforcements" :
+                return this.renderMissingEnforcements();
             default :
                 throw new Error(`Unknown tab: ${selectedTab}`);
         }

@@ -13,6 +13,7 @@ import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.*;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.time.Instant;
@@ -20,6 +21,8 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Stream;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.emptyMap;
 import static java.util.stream.Collectors.toList;
 import static manage.mongo.MongoChangelog.CHANGE_REQUEST_POSTFIX;
 import static manage.mongo.MongoChangelog.REVISION_POSTFIX;
@@ -342,6 +345,45 @@ public class MetaDataRepository {
         Query query = new Query()
                 .addCriteria(Criteria.where("data.applications.id").in(identifiers));
         return mongoTemplate.find(query, Map.class, EntityType.PROV.getType());
+    }
+
+    public List<MetaData> policiesWithMissingPolicyEnforcementDecisionRequired() {
+        List<MetaData> policies = this.mongoTemplate.findAll(MetaData.class, EntityType.PDP.getType());
+        return policies.stream().filter(policy -> {
+            List<Map<String, String>> serviceProviderIds = (List<Map<String, String>>) policy.getData().get("serviceProviderIds");
+            List<MetaData> providers = serviceProviderIds.stream()
+                    .map(serviceProviderId -> {
+                        Query query = new Query()
+                                .addCriteria(Criteria.where("data.entityid").is(serviceProviderId.get("name")));
+                        MetaData provider = mongoTemplate.findOne(query, MetaData.class, EntityType.SP.getType());
+                        if (provider == null) {
+                            provider = mongoTemplate.findOne(query, MetaData.class, EntityType.RP.getType());
+                        }
+                        return provider;
+                    })
+                    .filter(Objects::nonNull)
+                    .filter(provider -> isPolicyEnforcementDecisionRequiredAbsent(provider))
+                    .collect(toList());
+            boolean hasMissingEnforcementProviders = !providers.isEmpty();
+            if (hasMissingEnforcementProviders) {
+                policy.getData().put("policyEnforcementDecisionAbsent", providers);
+            }
+            return hasMissingEnforcementProviders;
+        }).collect(toList());
+    }
+
+    private boolean isPolicyEnforcementDecisionRequiredAbsent(MetaData provider) {
+        Map<String, Object> metaDataFields = provider.metaDataFields();
+        if (!metaDataFields.containsKey("coin:policy_enforcement_decision_required")) {
+            return true;
+        }
+        Object required = metaDataFields.getOrDefault("coin:policy_enforcement_decision_required", false);
+        if (required instanceof Boolean) {
+            return !(boolean) required;
+        } else if (required instanceof String) {
+            return !"1".equals(required);
+        }
+        return true;
     }
 
     public synchronized Long incrementEid() {

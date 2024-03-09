@@ -88,8 +88,13 @@ public class PdPController {
     @PostMapping(value =  "/client/pdp/decide")
     public String decideManage(@RequestBody String payload) {
         HttpEntity<?> requestEntity = new HttpEntity<>(payload, headers);
-        String body = pdpRestTemplate.exchange(this.decideUrl, HttpMethod.POST, requestEntity, String.class).getBody();
-        return body;
+        return pdpRestTemplate.exchange(this.decideUrl, HttpMethod.POST, requestEntity, String.class).getBody();
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping(value =  "/client/pdp/missing-enforcements")
+    public List<MetaData> policiesWithMissingPolicyEnforcementDecisionRequired() {
+        return metaDataRepository.policiesWithMissingPolicyEnforcementDecisionRequired();
     }
 
     @PreAuthorize("hasRole('ADMIN')")
