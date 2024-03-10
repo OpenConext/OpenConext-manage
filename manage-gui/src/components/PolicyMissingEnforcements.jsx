@@ -1,8 +1,9 @@
 import React, {useEffect, useState} from "react";
-
-import "./PolicyPlayground.scss";
+import I18n from "i18n-js";
+import "./PolicyMissingEnforcements.scss";
 import {missingEnforcementPolicies} from "../api";
 import {isEmpty} from "../utils/Utils";
+import {getNameForLanguage, getOrganisationForLanguage} from "../utils/Language";
 
 export default function PolicyMissingEnforcements({}) {
     const [loading, setLoading] = useState(true);
@@ -15,17 +16,46 @@ export default function PolicyMissingEnforcements({}) {
         });
     }, []);
 
+    const organisationName = provider => {
+        const org = getOrganisationForLanguage(provider.data.metaDataFields);
+        return isEmpty(org) ? "" : ` (${org})`;
+    }
 
+    const headers = ["name", "type", "description", "providers"]
     return (
         <section className="missing-enforcement-policies">
-            {(!loading && isEmpty(policies)) && <p>All of the SP's and RP's used in policies have
-                set <em>coin:policy_enforcement_decision_required</em> to true</p>}
+            {(!loading && isEmpty(policies)) && <h2>All of the SP's and RP's used in policies have
+                set <em>coin:policy_enforcement_decision_required</em> to true</h2>}
             {(!loading && !isEmpty(policies)) &&
                 <>
-                    <p>All of the SP's and RP's below are used in policies, but have not
-                        set <em>coin:policy_enforcement_decision_required</em> to true</p>
+                    <h2>The policies below are for SP's or RP's that have not
+                        set <em>coin:policy_enforcement_decision_required</em> to true</h2>
                     <section className="policy-response">
-                        {JSON.stringify(policies)}
+                        <table>
+                            <thead>
+                            {headers.map((header, index) => <th className={header} key={index}>
+                                {I18n.t(`policies.${header}`)}
+                            </th>)}
+                            </thead>
+                            <tbody>
+                            {policies.map((policy, index) => <tr>
+                                <td><a href={`/metadata/policy/${policy.id}`} target="_blank">
+                                    {policy.data.name}
+                                </a></td>
+                                <td>{I18n.t(`policies.${policy.data.type}`)}</td>
+                                <td>{policy.data.description}</td>
+                                <td>
+                                    <div className="providers">
+                                    {policy.data.policyEnforcementDecisionAbsent.map((provider, index) =>
+                                        <a href={`/metadata/${provider.type}/${provider.id}`} target="_blank">
+                                            {`${getNameForLanguage(provider.data.metaDataFields)}${organisationName(provider)}`}
+                                        </a>
+                                    )}
+                                    </div>
+                                </td>
+                            </tr>)}
+                            </tbody>
+                        </table>
                     </section>
                 </>}
         </section>

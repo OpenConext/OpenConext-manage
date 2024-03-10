@@ -648,6 +648,7 @@ I18n.translations.en = {
         notes: "Notes",
         type: "Type",
         reload: "Reload",
+        providers: "Services"
     },
     policyPlayGround :{
         institutionProvider: "Identity provider",

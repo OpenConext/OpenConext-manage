@@ -4,6 +4,38 @@
     background-color: white;
     padding: 10px 20px 20px 20px;
     display: flex;
-    gap: 60px;
+    flex-direction: column;
+    gap: 20px;
 
+    table {
+        th {
+            text-align: left;
+            padding: 5px;
+            &.name {
+                width: 15%;
+            }
+
+            &.type {
+                width: 10%;
+            }
+
+            &.description {
+                width: 35%;
+            }
+
+            &.providers {
+                width: 40%;
+            }
+        }
+
+        td {
+            padding: 5px;
+
+            div.providers {
+                display: flex;
+                gap: 5px;
+                flex-direction: column;
+            }
+        }
+    }
 }
