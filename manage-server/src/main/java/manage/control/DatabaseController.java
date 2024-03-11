@@ -99,11 +99,11 @@ public class DatabaseController {
                     .map(metaData -> new PdpPolicyDefinition(metaData))
                     .collect(toList());
             this.pdpRestTemplate.put(pdpPushUri, policies);
-            result.put("status", 200);
+            result.put("status", "OK");
             result.put("pdp", true);
         }
         if (environment.acceptsProfiles(Profiles.of("dev"))) {
-            return new ResponseEntity<>(Collections.singletonMap("status", 200), HttpStatus.OK);
+            return new ResponseEntity<>(Collections.singletonMap("status", "OK"), HttpStatus.OK);
         }
         if (pushOptions.isIncludeEB()) {
             Map<String, Map<String, Map<String, Object>>> json = this.pushPreview();
@@ -111,7 +111,7 @@ public class DatabaseController {
             ResponseEntity<String> response = this.restTemplate.postForEntity(pushUri, json, String.class);
             HttpStatus statusCode = response.getStatusCode();
 
-            result.put("status", statusCode);
+            result.put("status", "OK");
             result.put("response", response);
         }
 
@@ -147,7 +147,7 @@ public class DatabaseController {
                     .collect(toList());
             this.oidcRestTemplate.postForEntity(oidcPushUri, filteredEntities, Void.class);
             result.put("oidc", true);
-            result.put("status", 200);
+            result.put("status", "OK");
         }
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
