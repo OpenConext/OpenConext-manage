@@ -1,0 +1,64 @@
+{
+  "id": 644,
+  "metaDataFields": {},
+  "name": "StepUp Policy",
+  "description": "A user from 'ADFS 2012 test2.surfconext.nl' is required to authenticate with LoA 'http://localhost/assurance/loa1.5' with an IP address NOT in the range(s): '255.0.0.1/24' or '194.1.1.0/32' when accessing 'Dashboard test | SURF EN'",
+  "serviceProviderIds": [
+    {
+      "name": "https://oidc.test.client"
+    }
+  ],
+  "serviceProviderNames": [],
+  "serviceProviderNamesNl": [],
+  "serviceProviderInvalidOrMissing": false,
+  "identityProviderIds": [
+    {
+      "name": "http://adfs-2012.test2.surfconext.nl/adfs/services/trust"
+    }
+  ],
+  "identityProviderNames": [],
+  "identityProviderNamesNl": [],
+  "clientId": "EngineBlock",
+  "attributes": [],
+  "loas": [
+    {
+      "level": "http://localhost/assurance/loa1.5",
+      "allAttributesMustMatch": true,
+      "negateCidrNotation": true,
+      "attributes": [],
+      "cidrNotations": [
+        {
+          "ipAddress": "255.0.0.1",
+          "prefix": 24
+        },
+        {
+          "ipAddress": "194.1.1.0",
+          "prefix": 32,
+          "ipInfo": {
+            "networkAddress": "194.1.1.0",
+            "broadcastAddress": "194.1.1.0",
+            "capacity": 1.0,
+            "ipv4": true,
+            "prefix": 32
+          }
+        }
+      ]
+    }
+  ],
+  "denyAdvice": "Not allowed",
+  "denyRule": false,
+  "allAttributesMustMatch": false,
+  "created": "2024-01-30T12:53:19.000+00:00",
+  "userDisplayName": "John Doe",
+  "authenticatingAuthorityName": "http://mock-idp",
+  "numberOfViolations": 0,
+  "numberOfRevisions": 0,
+  "denyAdviceNl": "Geen toegang",
+  "revisionNbr": 0,
+  "active": true,
+  "actionsAllowed": false,
+  "type": "step",
+  "parentId": null,
+  "activatedSr": false,
+  "policyId": "urn:surfconext:xacml:policy:id:stepup"
+}

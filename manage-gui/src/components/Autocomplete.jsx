@@ -52,7 +52,7 @@ export default class Autocomplete extends React.PureComponent {
     render() {
         const {
             suggestions, query, selected, itemSelected, moreToShow, alternatives,
-            moreAlternativesToShow
+            moreAlternativesToShow, type
         } = this.props;
         const showSuggestions = (suggestions && suggestions.length > 0);
         return (
@@ -63,19 +63,21 @@ export default class Autocomplete extends React.PureComponent {
                     {moreToShow && <div className="results-info">
                         <p>{I18n.t("metadata_autocomplete.results_limited")}</p>
                     </div>}
-                    {this.getTable(suggestions, selected, itemSelected, query)}
+                    {this.getTable(suggestions, selected, itemSelected, query, type)}
                 </div>}
             </section>
         );
     }
 
-    getTable(suggestions, selected, itemSelected, query) {
+    getTable(suggestions, selected, itemSelected, query, type) {
+        const isPolicy = type === "policy";
         return <table className="result">
             <thead>
             <tr>
                 <th className="count"></th>
                 <th className="name">{I18n.t("metadata_autocomplete.name")}</th>
-                <th className="organization">{I18n.t("metadata_autocomplete.organization")}</th>
+                {!isPolicy && <th className="organization">{I18n.t("metadata_autocomplete.organization")}</th>}
+                {isPolicy && <th className="organization">{I18n.t("metadata_autocomplete.policy")}</th>}
                 <th className="type">{I18n.t("metadata_autocomplete.type")}</th>
                 <th className="state">{I18n.t("metadata_autocomplete.state")}</th>
                 <th className="entity_id">{I18n.t("metadata_autocomplete.entity_id")}</th>
@@ -85,7 +87,8 @@ export default class Autocomplete extends React.PureComponent {
             </thead>
             <tbody>
             {suggestions
-                .map((item, index) => (
+                .map((item, index) =>
+                    (
                         <tr key={index}
                             className={selected === index ? "active" : ""}
                             onClick={() => itemSelected(item)}
@@ -95,11 +98,17 @@ export default class Autocomplete extends React.PureComponent {
                                 }
                             }}>
                             <td className="count">{index + 1}</td>
-                            <td>{this.item(getNameForLanguage(item.data.metaDataFields), query)}</td>
-                            <td>{this.item(getOrganisationForLanguage(item.data.metaDataFields), query)}</td>
+                            <td>
+                                {!isPolicy && this.item(getNameForLanguage(item.data.metaDataFields), query)}
+                                {isPolicy && this.item(item.data.name, query)}
+                            </td>
+                            <td>
+                                {!isPolicy && this.item(getOrganisationForLanguage(item.data.metaDataFields), query)}
+                                {isPolicy && I18n.t(`topBannerDetails.${item.data.type}`)}
+                            </td>
                             <td>{item.type}</td>
                             <td className="state">
-                                <CheckBox name="state" value={item.data.state === "prodaccepted"}
+                                <CheckBox name="state" value={item.data.state === "prodaccepted" || isPolicy}
                                           onChange={() => this} readOnly={true}/>
                             </td>
                             <td>{this.item(item.data.entityid, query)}</td>
@@ -123,6 +132,7 @@ Autocomplete.propTypes = {
     suggestions: PropTypes.array.isRequired,
     alternatives: PropTypes.array,
     query: PropTypes.string.isRequired,
+    type: PropTypes.string,
     selected: PropTypes.number.isRequired,
     itemSelected: PropTypes.func.isRequired,
     moreToShow: PropTypes.bool,

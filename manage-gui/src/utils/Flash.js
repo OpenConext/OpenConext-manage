@@ -39,6 +39,8 @@ export function pushConfirmationFlash(currentUser) {
         url: currentUser.push.url,
         name: currentUser.push.name,
         oidcName: currentUser.push.oidcName,
-        oidcUrl: currentUser.push.oidcUrl
+        oidcUrl: currentUser.push.oidcUrl,
+        pdpName: currentUser.push.pdpName,
+        pdpUrl: currentUser.push.pdpUrl
     });
 }

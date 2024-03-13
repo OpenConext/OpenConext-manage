@@ -375,8 +375,8 @@
       ],
       "manipulation": "PHP code",
       "metaDataFields": {
-        "name:en": "OpenConext ServiceRegistry Mock",
-        "name:nl": "OpenConext ServiceRegistry",
+        "name:en": "IdP test 2",
+        "name:nl": "IdP test 2",
         "description:en": "OpenConext Service Registry, register all SPs and IdPs here",
         "description:nl": "OpenConext Service Registry, register all SPs and IdPs here",
         "displayName:en": "OpenConext ServiceRegistry",
@@ -626,6 +626,102 @@
       ],
       "revisionnote": "test",
       "eid": 1234
+    }
+  },
+  {
+    "id": "13",
+    "version": 0,
+    "type": "policy",
+    "revision": {
+      "number": 0,
+      "created": "2018-06-15T08:20:34.575Z",
+      "updatedBy": "sp-dashboard"
+    },
+    "data": {
+      "metaDataFields": {},
+      "name": "Regular policy",
+      "entityid": "Regular policy",
+      "description": "Regular policy",
+      "serviceProviderIds": [
+        {
+          "name": "https://1234aaab.nl"
+        }
+      ],
+      "identityProviderIds": [
+        {
+          "name": "http://mock-idp"
+        }
+      ],
+      "attributes": [
+        {
+          "name": "urn:collab:group:surfteams.nl",
+          "value": "urn:collab:group:test.surfteams.nl:nl:surfnet:diensten:managementvo",
+          "negated": false
+        }
+      ],
+      "denyAdvice": "You are not part of us.",
+      "denyRule": false,
+      "allAttributesMustMatch": false,
+      "userDisplayName": "system",
+      "authenticatingAuthorityName": "http://mock-idp",
+      "denyAdviceNl": "Je bent geen lid van ons.",
+      "active": true,
+      "type": "reg"
+    }
+  },
+  {
+    "id": "14",
+    "version": 0,
+    "type": "policy",
+    "revision": {
+      "number": 0,
+      "created": "2018-06-15T08:20:34.575Z",
+      "updatedBy": "sp-dashboard"
+    },
+    "data": {
+      "metaDataFields": {},
+      "name": "StepUp",
+      "entityid": "StepUp",
+      "description": "A user from 'ADFS 2012 test2.surfconext.nl' is required to authenticate with LoA 'http://localhost/assurance/loa1.5' with an IP address NOT in the range(s): '255.0.0.1/24' or '194.1.1.0/32' when accessing 'Dashboard test | SURF EN'",
+      "serviceProviderIds": [
+        {
+          "name": "https://1234aaab.nl"
+        },
+        {
+          "name": "https@//oidc.rp"
+        }
+      ],
+      "identityProviderIds": [
+        {
+          "name": "https://idp.test2.surfconext.nl"
+        }
+      ],
+      "loas": [
+        {
+          "level": "http://localhost/assurance/loa1.5",
+          "allAttributesMustMatch": true,
+          "negateCidrNotation": true,
+          "attributes": [],
+          "cidrNotations": [
+            {
+              "ipAddress": "255.0.0.1",
+              "prefix": 24
+            },
+            {
+              "ipAddress": "2a00:1450:400e:810::2003",
+              "prefix": 64
+            }
+          ]
+        }
+      ],
+      "denyAdvice": "Not allowed",
+      "denyRule": false,
+      "allAttributesMustMatch": false,
+      "userDisplayName": "John Doe",
+      "authenticatingAuthorityName": "http://mock-idp",
+      "denyAdviceNl": "Geen toegang",
+      "active": true,
+      "type": "step"
     }
   }
 ]

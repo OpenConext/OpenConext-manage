@@ -29,7 +29,7 @@ export default function ConfirmationDialog({
                     <p>{I18n.t("confirmation_dialog.leavePageSub")}</p>
                 </section> :
                 <section className="dialog-content">
-                    <h2>{question}</h2>
+                    <h2 dangerouslySetInnerHTML={{__html: question}}/>
                 </section>}
             {children && children}
             <section className="dialog-buttons">

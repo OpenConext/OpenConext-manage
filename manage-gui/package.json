@@ -3,12 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@codemirror/lang-json": "^6.0.1",
+    "@uiw/react-codemirror": "^4.21.24",
     "@uiw/react-md-editor": "^4.0.3",
     "dompurify": "^3.0.6",
     "http-proxy-middleware": "^2.0.3",
-    "lodash.merge": "^4.6.2",
     "js-cookie": "^3.0.5",
+    "lodash.merge": "^4.6.2",
     "react": "^18.2.0",
+    "react-diff-viewer-continued": "^3.4.0",
     "react-dom": "^18.2.0",
     "react-json-view": "^1.21.3",
     "source-map-explorer": "^2.5.2"

@@ -29,7 +29,7 @@ export default class System extends React.PureComponent {
 
     constructor(props) {
         super(props);
-        const systemFeatures = ["push", "validation", "push_preview", "orphans", "find_my_data"];
+        const systemFeatures = ["validation", "push_preview", "orphans", "find_my_data"];
         const tabs = props.currentUser.featureToggles
             .map(feature => feature.toLowerCase())
             .filter(feature => systemFeatures.includes(feature));
@@ -418,8 +418,8 @@ export default class System extends React.PureComponent {
                 return this.renderValidate();
             case "orphans" :
                 return this.renderOrphans();
-            case "push":
-                return this.renderPush();
+            // case "push":
+            //     return this.renderPush();
             case "push_preview":
                 return this.renderPushPreview();
             case "find_my_data":

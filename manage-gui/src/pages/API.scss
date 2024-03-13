@@ -131,6 +131,10 @@
                     }
                 }
 
+                &.count {
+                    width: 3%;
+                }
+
                 &.state {
                     width: 10%;
                 }
@@ -146,7 +150,7 @@
                 }
 
                 &.name {
-                    width: 20%;
+                    width: 15%;
                 }
 
                 &.entityId {

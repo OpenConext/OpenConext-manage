@@ -1,0 +1,82 @@
+{
+  "id": null,
+  "name": "StepUp policy",
+  "description": "A user from 'OpenConext Mujina IDP' is required to authenticate with LoA 'http://test2.surfconext.nl/assurance/loa1.5' when he/she has the value NOT 'example.com' for attribute 'urn:mace:terena.org:attribute-def:schacHomeOrganization' and with an IP address NOT in the range(s): '255.0.0.1/30' or '192.0.0.1/24' when accessing 'Mujina SP Name EN | Mujina SP OrganizationName EN'",
+  "serviceProviderIds": [
+    "http://mock-sp"
+  ],
+  "serviceProviderNames": [
+    "Mujina SP Name EN | Mujina SP OrganizationName EN"
+  ],
+  "serviceProviderNamesNl": [],
+  "serviceProviderInvalidOrMissing": false,
+  "identityProviderIds": [
+    "http://mock-idp"
+  ],
+  "identityProviderNames": [
+    "OpenConext Mujina IDP"
+  ],
+  "identityProviderNamesNl": [],
+  "clientId": null,
+  "attributes": [],
+  "loas": [
+    {
+      "level": "http://test2.surfconext.nl/assurance/loa1.5",
+      "allAttributesMustMatch": true,
+      "attributes": [
+        {
+          "name": "urn:mace:terena.org:attribute-def:schacHomeOrganization",
+          "value": "example.com",
+          "index": 0,
+          "negated": true
+        }
+      ],
+      "cidrNotations": [
+        {
+          "ipAddress": "255.0.0.1",
+          "index": 0,
+          "invalid": false,
+          "ipInfo": {
+            "networkAddress": "255.0.0.0",
+            "broadcastAddress": "255.0.0.3",
+            "capacity": 4,
+            "ipv4": true,
+            "prefix": 30
+          },
+          "prefix": "30"
+        },
+        {
+          "ipAddress": "192.0.0.1",
+          "index": 1,
+          "invalid": false,
+          "ipInfo": {
+            "networkAddress": "192.0.0.0",
+            "broadcastAddress": "192.0.0.255",
+            "capacity": 256,
+            "ipv4": true,
+            "prefix": 24
+          },
+          "prefix": 24
+        }
+      ],
+      "index": 0,
+      "negateCidrNotation": true
+    }
+  ],
+  "denyAdvice": "null",
+  "denyRule": false,
+  "allAttributesMustMatch": false,
+  "created": null,
+  "userDisplayName": null,
+  "authenticatingAuthorityName": null,
+  "numberOfViolations": 0,
+  "numberOfRevisions": 0,
+  "denyAdviceNl": null,
+  "revisionNbr": 0,
+  "active": true,
+  "actionsAllowed": false,
+  "type": "step",
+  "parentId": null,
+  "activatedSr": false,
+  "policyId": null
+}

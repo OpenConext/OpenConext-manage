@@ -127,6 +127,7 @@ class Search extends React.PureComponent {
                         <i className="fa fa-search"></i>
                         {showAutoCompletes && <Autocomplete suggestions={suggestions}
                                                             query={query}
+                                                            type={selectedTab}
                                                             alternatives={alternatives}
                                                             selected={selected}
                                                             itemSelected={this.itemSelected}
@@ -134,7 +135,6 @@ class Search extends React.PureComponent {
                                                             moreAlternativesToShow={moreAlternativesToShow}
                         />}
                     </div>
-
                     <a className="new button green" onClick={this.newMetaData}>
                         {I18n.t("metadata.new")}<i className="fa fa-plus"></i>
                     </a>

@@ -23,7 +23,6 @@ public class TypeSafetyHook extends MetaDataHookAdapter {
         return !metaData.getType().equals(EntityType.PROV.getType());
     }
 
-
     @Override
     @SuppressWarnings("unchecked")
     public MetaData preValidate(MetaData metaData) {

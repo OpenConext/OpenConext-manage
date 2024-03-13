@@ -12,6 +12,7 @@ import {stop} from "../utils/Utils";
 import {emitter, pushConfirmationFlash, pushFlash, setFlash} from "../utils/Flash";
 import {hasOpenChangeRequests, push} from "../api";
 import ConfirmationDialog from "./ConfirmationDialog";
+import CheckBox from "./CheckBox";
 
 export default class Navigation extends React.PureComponent {
 
@@ -23,7 +24,18 @@ export default class Navigation extends React.PureComponent {
             confirmationDialogOpen: false,
             confirmationQuestion: "",
             confirmationDialogAction: () => this,
-            cancelDialogAction: () => this.setState({confirmationDialogOpen: false}),
+            cancelDialogAction: () => this.setState({
+                confirmationDialogOpen: false, pushOptions: {
+                    includeEB: true,
+                    includeOIDC: true,
+                    includePdP: true
+                }
+            }),
+            pushOptions: {
+                includeEB: true,
+                includeOIDC: true,
+                includePdP: true,
+            }
         };
     }
 
@@ -66,8 +78,16 @@ export default class Navigation extends React.PureComponent {
             return;
         }
         this.setState({loading: true});
-        push().then(json => {
-            this.setState({loading: false, pushResults: json.deltas});
+
+        const {pushOptions} = this.state;
+        push(pushOptions.includeEB, pushOptions.includeOIDC, pushOptions.includePdP).then(json => {
+            this.setState({
+                loading: false, pushResults: json.deltas, pushOptions: {
+                    includeEB: true,
+                    includeOIDC: true,
+                    includePdP: true
+                }
+            });
             const ok = json.status === "OK" || json.status === 200;
             setFlash(pushFlash(ok, this.props.currentUser), ok ? "info" : "error");
         });
@@ -83,7 +103,8 @@ export default class Navigation extends React.PureComponent {
             this.setState({confirmationDialogOpen: false});
             this.runPush();
         };
-        return <a className={`push button ${loading ? "grey disabled" : "white"}`}
+        return (
+            <a className={`push button ${loading ? "grey disabled" : "white"}`}
                   onClick={() => !this.state.loading && this.setState({
                       confirmationDialogOpen: true,
                       confirmationQuestion: pushConfirmationFlash(currentUser),
@@ -91,6 +112,7 @@ export default class Navigation extends React.PureComponent {
                   })}>{I18n.t("playground.runPush")}
             <i className="fa fa-refresh"></i>
         </a>
+        );
     };
 
     renderItem(href, value, details = null) {
@@ -113,7 +135,7 @@ export default class Navigation extends React.PureComponent {
     render() {
         const {
             confirmationDialogOpen, cancelDialogAction, confirmationDialogAction, confirmationQuestion,
-            openChangeRequestsCount
+            openChangeRequestsCount, pushOptions
         } = this.state;
         const {currentUser} = this.props;
         return (
@@ -121,7 +143,41 @@ export default class Navigation extends React.PureComponent {
                 <ConfirmationDialog isOpen={confirmationDialogOpen}
                                     cancel={cancelDialogAction}
                                     confirm={confirmationDialogAction}
-                                    question={confirmationQuestion}/>
+                                    disableConfirm={!pushOptions.includeEB && !pushOptions.includeOIDC && !pushOptions.includePdP}
+                                    question={confirmationQuestion}>
+                    <div className="push-options">
+                        <CheckBox name={I18n.t("playground.includeEB")}
+                                  info={I18n.t("playground.includeEB")}
+                                  value={pushOptions.includeEB}
+                                  onChange={e => this.setState({
+                                      pushOptions: {
+                                          ...pushOptions,
+                                          includeEB: e.target.checked
+                                      }
+                                  })}
+                        />
+                        <CheckBox name={I18n.t("playground.includeOIDC")}
+                                  info={I18n.t("playground.includeOIDC")}
+                                  value={pushOptions.includeOIDC}
+                                  onChange={e => this.setState({
+                                      pushOptions: {
+                                          ...pushOptions,
+                                          includeOIDC: e.target.checked
+                                      }
+                                  })}
+                        />
+                        <CheckBox name={I18n.t("playground.includePdP")}
+                                  info={I18n.t("playground.includePdP")}
+                                  value={pushOptions.includePdP}
+                                  onChange={e => this.setState({
+                                      pushOptions: {
+                                          ...pushOptions,
+                                          includePdP: e.target.checked
+                                      }
+                                  })}
+                        />
+                    </div>
+                </ConfirmationDialog>
                 <div className="navigation">
                     {this.renderItem("/search", "search")}
                     {this.renderItem("/system", "system")}
@@ -130,6 +186,7 @@ export default class Navigation extends React.PureComponent {
                     {this.renderItem("/staging", "staging", openChangeRequestsCount === 0 ? null : openChangeRequestsCount)}
                     {this.renderItem("/scopes", "scopes")}
                     {this.renderItem("/activity", "activity")}
+                    {this.renderItem("/policies", "policies")}
                     {this.renderSpinner()}
                     {this.renderPushButton()}
                 </div>

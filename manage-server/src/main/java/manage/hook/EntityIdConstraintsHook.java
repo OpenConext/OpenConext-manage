@@ -21,7 +21,7 @@ import static manage.model.EntityType.SP;
 @SuppressWarnings("unchecked")
 public class EntityIdConstraintsHook extends MetaDataHookAdapter {
 
-    private MetaDataRepository metaDataRepository;
+    private final MetaDataRepository metaDataRepository;
 
     public EntityIdConstraintsHook(MetaDataRepository metaDataRepository) {
         this.metaDataRepository = metaDataRepository;
@@ -29,7 +29,8 @@ public class EntityIdConstraintsHook extends MetaDataHookAdapter {
 
     @Override
     public boolean appliesForMetaData(MetaData metaData) {
-        return !metaData.getType().equals(EntityType.STT.getType()) && !metaData.getType().equals(EntityType.PROV.getType());
+        return !metaData.getType().equals(EntityType.STT.getType())
+                && !metaData.getType().equals(EntityType.PROV.getType());
     }
 
     @Override
@@ -52,6 +53,8 @@ public class EntityIdConstraintsHook extends MetaDataHookAdapter {
         relationsToCheck.put("stepupEntities", Arrays.asList(SP, RP));
         relationsToCheck.put("mfaEntities", Arrays.asList(SP, RP));
         relationsToCheck.put("allowedResourceServers", singletonList(RS));
+        relationsToCheck.put("serviceProviderIds", Arrays.asList(SP, RP));
+        relationsToCheck.put("identityProviderIds", singletonList(IDP));
 
         relationsToCheck.forEach((key, value) -> {
             if (newMetaData.getData().containsKey(key)) {

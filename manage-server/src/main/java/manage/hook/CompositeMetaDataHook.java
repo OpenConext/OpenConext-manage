@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class CompositeMetaDataHook implements MetaDataHook {
 
-    private List<MetaDataHook> hooks;
+    private final List<MetaDataHook> hooks;
 
     public CompositeMetaDataHook(List<MetaDataHook> hooks) {
         Assert.isTrue(!CollectionUtils.isEmpty(hooks), "Hooks may not be empty");

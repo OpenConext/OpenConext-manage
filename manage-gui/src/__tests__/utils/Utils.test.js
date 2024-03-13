@@ -1,4 +1,4 @@
-import {collapseDotKeys, createDiffObject, sortDict} from "../../utils/Utils";
+import {collapseDotKeys, createDiffObject, groupBy, sortDict} from "../../utils/Utils";
 
 test("collapseDotKeys", () => {
     const res = collapseDotKeys({
@@ -100,5 +100,19 @@ test("createDiffObjectArpNull", () => {
     );
     const expected = {"metaDataFields": {"accessTokenValidity": 9999}, "arp": {}}
     expect(res).toStrictEqual(expected);
+})
+
+test("groupBy", () => {
+    let arr = [
+        {specie: "sheep", name: "joe"},
+        {specie: "sheep", name: "margret"},
+        {specie: "wolf", name: "growll"},
+    ];
+    let res = groupBy(arr, "specie");
+    expect(res.sheep.map(s => s.name)).toEqual(["joe", "margret"]);
+
+    arr = [{"name":"urn:mace:terena.org:attribute-def:schacHomeOrganization","value":"","negated":false,"index":0}]
+    res = groupBy(arr, "name");
+    expect(Object.keys(res)[0]).toEqual("urn:mace:terena.org:attribute-def:schacHomeOrganization");
 })
 

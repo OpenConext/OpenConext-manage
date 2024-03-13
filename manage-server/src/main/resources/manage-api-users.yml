@@ -1,9 +1,9 @@
-# Valid scopes are manage.api.Scope.values(); =>  ["READ", "WRITE", "PUSH", "SYSTEM", "TEST"]
+# Valid scopes are manage.api.Scope.values(); =>
 apiUsers:
   - {
     name: "dashboard",
     password: "secret",
-    scopes: [READ, CHANGE_REQUEST, TEST]
+    scopes: [READ, CHANGE_REQUEST, TEST, POLICIES]
   }
   - {
     name: "pdp",

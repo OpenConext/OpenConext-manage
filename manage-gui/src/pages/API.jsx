@@ -213,6 +213,7 @@ export default class API extends React.PureComponent {
                                     <input
                                         ref={ref => this.newMetaDataFieldRendered(ref, this.state.newMetaDataFieldKey === key)}
                                         type="text" value={searchAttributes[key]}
+                                        onKeyDown={e => e.key === "Enter" ? this.doSearch(e) : false}
                                         onChange={this.changeSearchValue(key)}/>
                                     {error && <span className="error">{I18n.t("playground.error")}</span>}
                                 </td>
@@ -258,7 +259,9 @@ export default class API extends React.PureComponent {
     };
 
     renderSearchResultsTable = (searchResults, selectedType, searchAttributes, globalSearchAttributes, status, fullTextSearch) => {
-        const searchHeaders = ["status", "name", "entityid", "notes"].concat(Object.keys(searchAttributes)).concat(Object.keys(globalSearchAttributes));
+        const searchHeaders = ["count", "status", "name", "entityid", "notes"]
+            .concat(Object.keys(searchAttributes))
+            .concat(Object.keys(globalSearchAttributes));
         searchResults = status === "all" ? searchResults : searchResults.filter(entity => entity.data.state === status);
         return (
             <section>
@@ -271,44 +274,46 @@ export default class API extends React.PureComponent {
                     </tr>
                     </thead>
                     <tbody>
-                    {searchResults.map((entity, index) => <tr key={`${entity.data.entityid}_${index}`}>
-                        <td className="state">{I18n.t(`metadata.${entity.data.state}`)}</td>
-                        <td className="name">
+                    {searchResults.map((entity, index) =>
+                        <tr key={`${entity.data.entityid}_${index}`}>
+                            <td className="count">{index + 1}</td>
+                            <td className="state">{I18n.t(`metadata.${entity.data.state}`)}</td>
+                            <td className="name">
                             <Link
                                 to={`/metadata/${selectedType}/${isEmpty(fullTextSearch) ? entity["_id"] : entity.id}`}
                                 target="_blank">{getNameForLanguage(entity.data.metaDataFields)}</Link>
-                        </td>
-                        <td className="entityId">{entity.data.entityid}</td>
-                        <td className="notes">
-                            {isEmpty(entity.data.notes) ? <span></span> :
-                                <NotesTooltip identifier={entity.data.entityid} notes={entity.data.notes}/>}
-                        </td>
-                        {Object.keys(searchAttributes).map(attr => {
-                            return <td key={attr}>{"" + entity.data.metaDataFields[attr]}</td>
-                        })}
-                        {Object.keys(globalSearchAttributes).map(attr => {
-                                //split by dot results in too many parts for
-                                // "arp.attributes.urn:mace:terena.org:attribute-def:schacHomeOrganization"
+                            </td>
+                            <td className="entityId">{entity.data.entityid}</td>
+                            <td className="notes">
+                                {isEmpty(entity.data.notes) ? <span></span> :
+                                    <NotesTooltip identifier={entity.data.entityid} notes={entity.data.notes}/>}
+                            </td>
+                            {Object.keys(searchAttributes).map(attr => {
+                                return <td key={attr}>{"" + entity.data.metaDataFields[attr]}</td>
+                            })}
+                            {Object.keys(globalSearchAttributes).map(attr => {
+                                    //split by dot results in too many parts for
+                                    // "arp.attributes.urn:mace:terena.org:attribute-def:schacHomeOrganization"
 
-                                const arpAttribute = attr.startsWith("arp.attributes");
-                                if (arpAttribute) {
-                                    attr = "arp.attributes." + attr.substring("arp.attributes.".length).replace(/\./g, "@")
+                                    const arpAttribute = attr.startsWith("arp.attributes");
+                                    if (arpAttribute) {
+                                        attr = "arp.attributes." + attr.substring("arp.attributes.".length).replace(/\./g, "@")
+                                    }
+                                    let parts = attr.split(".");
+                                    if (arpAttribute) {
+                                        parts = parts.map(p => p.replace(/@/g, "."));
+                                    }
+                                    let last = parts.pop();
+                                    let ref = entity.data;
+                                    parts.forEach(part => ref = ref ? ref[part] : {});
+                                    if (ref) {
+                                        const val = Array.isArray(ref) ? ref.map(x => x[last]) : ref[last];
+                                        return <td key={attr}>{JSON.stringify(val)}</td>
+                                    }
+                                    return <td key={attr}></td>
                                 }
-                                let parts = attr.split(".");
-                                if (arpAttribute) {
-                                    parts = parts.map(p => p.replace(/@/g, "."));
-                                }
-                                let last = parts.pop();
-                                let ref = entity.data;
-                                parts.forEach(part => ref = ref ? ref[part] : {});
-                                if (ref) {
-                                    const val = Array.isArray(ref) ? ref.map(x => x[last]) : ref[last];
-                                    return <td key={attr}>{JSON.stringify(val)}</td>
-                                }
-                                return <td key={attr}></td>
-                            }
-                        )}
-                    </tr>)}
+                            )}
+                        </tr>)}
                     </tbody>
 
                 </table>
@@ -361,7 +366,7 @@ export default class API extends React.PureComponent {
                     space separated terms.</p>
                 <input className="fullTextSearch" type="text" value={fullTextSearch}
                        onChange={e => this.setState({fullTextSearch: e.target.value})}
-                       onKeyPress={e => e.key === "Enter" ? this.doSearch(e) : false}/>
+                       onKeyDown={e => e.key === "Enter" ? this.doSearch(e) : false}/>
                 <CheckBox name="logicalOperatorIsAnd" value={logicalOperatorIsAnd}
                           info="Use the logical operater AND (instead of OR) for the different search criteria"
                           onChange={() => this.setState({logicalOperatorIsAnd: !this.state.logicalOperatorIsAnd})}/>

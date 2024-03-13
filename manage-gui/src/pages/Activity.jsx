@@ -19,9 +19,9 @@ export default class Activity extends React.Component {
         this.state = {
             activity: [],
             filteredActivity: [],
-            types: ["saml20_idp", "saml20_sp", "oidc10_rp", "oauth20_rs", "provisioning"],
+            types: ["saml20_idp", "saml20_sp", "oidc10_rp", "oauth20_rs", "provisioning", "policy"],
             reverse: false,
-            allTypes: ["saml20_idp", "saml20_sp", "oidc10_rp", "oauth20_rs", "provisioning", "single_tenant_template"],
+            allTypes: ["saml20_idp", "saml20_sp", "oidc10_rp", "oauth20_rs", "provisioning", "policy", "single_tenant_template"],
             limit: "25",
             query: "",
             loaded: false,
@@ -48,8 +48,8 @@ export default class Activity extends React.Component {
                     state: a.data.state,
                     terminated: a.revision.terminated,
                     revisionNote: a.data.revisionnote,
-                    name: getNameForLanguage(a.data.metaDataFields),
-                    organization: getOrganisationForLanguage(a.data.metaDataFields) || "",
+                    name: a.type === "policy" ? a.data.name : getNameForLanguage(a.data.metaDataFields),
+                    organization: a.type === "policy" ? "-" : getOrganisationForLanguage(a.data.metaDataFields) || "",
                     created: new Date(a.revision.created),
                     updatedBy: a.revision.updatedBy,
                 }));

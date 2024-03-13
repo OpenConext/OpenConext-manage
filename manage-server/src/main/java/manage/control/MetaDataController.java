@@ -345,7 +345,6 @@ public class MetaDataController {
     @GetMapping("/client/revisions/{type}/{parentId}")
     public List<MetaData> revisions(@PathVariable("type") String type,
                                     @PathVariable("parentId") String parentId) {
-
         return metaDataRepository.revisions(type.concat(REVISION_POSTFIX), parentId);
     }
 
@@ -367,6 +366,18 @@ public class MetaDataController {
     @GetMapping("/client/relyingParties")
     public List<Map> relyingParties(@RequestParam("resourceServerEntityID") String resourceServerEntityID) {
         return metaDataRepository.relyingParties(resourceServerEntityID);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/client/spPolicies")
+    public List<Map> spPolicies(@RequestParam("entityId") String entityId) {
+        return metaDataRepository.spPolicies(entityId);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/client/idpPolicies")
+    public List<Map> idpPolicies(@RequestParam("entityId") String entityId) {
+        return metaDataRepository.idpPolicies(entityId);
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'READ')")

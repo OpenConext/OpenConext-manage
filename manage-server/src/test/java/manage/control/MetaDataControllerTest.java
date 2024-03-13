@@ -1,7 +1,6 @@
 package manage.control;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import io.restassured.common.mapper.TypeRef;
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
@@ -17,6 +16,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.*;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.config.RestAssuredConfig.newConfig;
@@ -128,8 +128,9 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 .get("manage/api/client/metadata/configuration")
                 .then()
                 .statusCode(SC_OK)
-                .body("size()", is(6))
-                .body("title", hasItems("saml20_sp", "saml20_idp", "single_tenant_template", "oidc10_rp", "oauth20_rs", "provisioning"));
+                .body("size()", is(7))
+                .body("title", hasItems("saml20_sp", "saml20_idp", "single_tenant_template", "oidc10_rp",
+                        "oauth20_rs","policy", "provisioning"));
     }
 
     @Test
@@ -736,6 +737,29 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 .get("manage/api/client/relyingParties")
                 .as(mapListTypeRef);
         assertEquals(1, relyingParties.size());
+    }
+
+    @Test
+    public void spPolicies() {
+        List<Map<String, Object>> policies = given()
+                .when()
+                .queryParam("entityId", "https@//oidc.rp")
+                .get("manage/api/client/spPolicies")
+                .as(mapListTypeRef);
+        assertEquals(1, policies.size());
+        Map<String, Object> data = (Map<String, Object>) policies.get(0).get("data");
+        assertTrue(data.containsKey("identityProviderIds"));
+        assertTrue(data.containsKey("serviceProviderIds"));
+    }
+
+    @Test
+    public void idpPolicies() {
+        List<Map<String, Object>> policies = given()
+                .when()
+                .queryParam("entityId", "http://mock-idp")
+                .get("manage/api/client/idpPolicies")
+                .as(mapListTypeRef);
+        assertEquals(1, policies.size());
     }
 
     @Test
@@ -1628,7 +1652,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void searchWithEntityCategoriesMultpleKeys() throws JsonProcessingException {
+    public void searchWithEntityCategoriesMultipleKeys() throws JsonProcessingException {
         Map<String, Object> searchOptions = readValueFromFile("/api/search_multiple_equal_keys.json");
 
         List<Map<String, Object>> results = given()
@@ -1655,9 +1679,95 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         assertEquals(3, results.size());
     }
 
-    private Map<String, Object> readValueFromFile(String path) throws JsonProcessingException {
-        return objectMapper.readValue(readFile(path), new TypeReference<>() {
-        });
+    @Test
+    public void flowStepUpPolicyMetaData() {
+        Map<String, Object> data = readValueFromFile("/json/valid_policy_step.json");
+        MetaData metaData = new MetaData(EntityType.PDP.getType(), data);
+        MetaData newMetaData = given()
+                .when()
+                .body(metaData)
+                .header("Content-type", "application/json")
+                .post("manage/api/client/metadata")
+                .as(MetaData.class);
+        MetaData retrievedMetaData = given()
+                .when()
+                .get("manage/api/client/metadata/policy/" + newMetaData.getId())
+                .as(MetaData.class);
+        assertEquals(EntityType.PDP.getType(), retrievedMetaData.getType());
+
+        retrievedMetaData.getData().put("revisionnote", "Update test");
+        retrievedMetaData.getData().put("denyAdvice", "Changed");
+
+        MetaData updatedMetaData = given()
+                .when()
+                .body(retrievedMetaData)
+                .header("Content-type", "application/json")
+                .put("manage/api/client/metadata")
+                .as(MetaData.class);
+        assertEquals(updatedMetaData.getId(), retrievedMetaData.getId());
+
+        List<MetaData> revisions = given()
+                .when()
+                .pathParam("type", EntityType.PDP.getType())
+                .pathParam("parentId", newMetaData.getId())
+                .get("manage/api/client/revisions/{type}/{parentId}")
+                .as(new TypeRef<>() {
+                });
+        assertEquals(1, revisions.size());
+    }
+
+    @Test
+    public void flowRegPolicyMetaData() {
+        Map<String, Object> data = readValueFromFile("/json/valid_policy_reg.json");
+        ((List) data.get("identityProviderIds")).add(Map.of("name", "nope-not-an-idp"));
+        ((List) data.get("serviceProviderIds")).add(Map.of("name", "nope-not-an-idp"));
+        MetaData metaData = new MetaData(EntityType.PDP.getType(), data);
+        MetaData newMetaData = given()
+                .when()
+                .body(metaData)
+                .header("Content-type", "application/json")
+                .post("manage/api/client/metadata")
+                .as(MetaData.class);
+        MetaData retrievedMetaData = given()
+                .when()
+                .get("manage/api/client/metadata/policy/" + newMetaData.getId())
+                .as(MetaData.class);
+        assertEquals(1, ((List) retrievedMetaData.getData().get("identityProviderIds")).size());
+        assertEquals(1, ((List) retrievedMetaData.getData().get("serviceProviderIds")).size());
+        assertEquals(EntityType.PDP.getType(), retrievedMetaData.getType());
+        assertNotNull(retrievedMetaData.getId());
+        assertEquals("reg", retrievedMetaData.getData().get("type"));
+    }
+
+    @Test
+    public void policyMetaDataRegularValidation() {
+        Map<String, Object> data = readValueFromFile("/metadata_templates/policy.template.json");
+        MetaData metaData = new MetaData(EntityType.PDP.getType(), data);
+        Map<String, Object> result = given()
+                .when()
+                .body(metaData)
+                .header("Content-type", "application/json")
+                .post("manage/api/client/metadata")
+                .as(new TypeRef<>() {
+                });
+        long nbrValidations = Stream.of(((String) result.get("validations")).split("#:")).filter(s -> !s.trim().isEmpty()).count();
+        assertEquals(3L, nbrValidations);
+    }
+
+    @Test
+    public void policyMetaDataStepUpValidation() {
+        Map<String, Object> data = readValueFromFile("/metadata_templates/policy.template.json");
+        data.put("type", "step");
+        MetaData metaData = new MetaData(EntityType.PDP.getType(), data);
+        Map<String, Object> result = given()
+                .when()
+                .body(metaData)
+                .header("Content-type", "application/json")
+                .post("manage/api/client/metadata")
+                .as(new TypeRef<>() {
+                });
+        long nbrValidations = Stream.of(((String) result.get("validations")).split("#:")).filter(s -> !s.trim().isEmpty()).count();
+        assertEquals(1L, nbrValidations);
     }
 
     private void doCreateChangeRequest() {

@@ -47,7 +47,7 @@ public class MetaDataValidator {
     }
 
     private void doValidate(MetaData metaData, String type, Map<String, Object> results, boolean tryToMigrate) {
-        if (Map.class.cast(metaData.getData()).get("state").equals("testaccepted")) {
+        if ("testaccepted".equals(Map.class.cast(metaData.getData()).get("state"))) {
             //we are only interested in invalid prodaccepted states
             return;
         }

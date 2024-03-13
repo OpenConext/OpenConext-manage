@@ -1,0 +1,512 @@
+[
+  {
+    "id": 617,
+    "name": " open conextpdp no i d ponly group clause",
+    "description": "Personen die tot de managementvo behoren (bepaald aan de hand van een group) hebben toegang tot de VO dienst Zit dus geen IDP regel op (kan ook niet in dit VO scenario) ",
+    "serviceProviderIds": [
+      "https://profile.test2.surfconext.nl/authentication/metadata"
+    ],
+    "serviceProviderNames": [],
+    "serviceProviderNamesNl": [],
+    "serviceProviderInvalidOrMissing": false,
+    "identityProviderIds": [
+      "http://mock-idp"
+    ],
+    "identityProviderNames": [],
+    "identityProviderNamesNl": [],
+    "clientId": "EngineBlock",
+    "attributes": [
+      {
+        "name": "urn:collab:group:surfteams.nl",
+        "value": "urn:collab:group:test.surfteams.nl:nl:surfnet:diensten:managementvo",
+        "negated": false
+      }
+    ],
+    "loas": [],
+    "denyAdvice": "You are not part of managementvo. Please contact us if you think this is incorrect.",
+    "denyRule": false,
+    "allAttributesMustMatch": false,
+    "created": "2023-11-02T07:00:36.000+00:00",
+    "userDisplayName": "system",
+    "authenticatingAuthorityName": "http://mock-idp",
+    "numberOfViolations": 0,
+    "numberOfRevisions": 0,
+    "denyAdviceNl": "Je bent geen lid van de groep managementvo.",
+    "revisionNbr": 0,
+    "active": true,
+    "actionsAllowed": false,
+    "type": "reg",
+    "parentId": null,
+    "activatedSr": false,
+    "policyId": "urn:surfconext:xacml:policy:id:_open_conextpdp_no_i_d_ponly_group_clause"
+  },
+  {
+    "id": 618,
+    "name": " open conextpdp multiple identity provers policy",
+    "description": "Policy met multiple IDP's in target Toegang tot wiki is voor gebruikers van SURFnet.nl en OneGini.nl IDP's die lid zijn van SURFnetWikiAccess group NB: dit is niet een heel goed voorbeeld maar is slechts ter illustratie van het gebruik van multiple IDP's in een target ",
+    "serviceProviderIds": [
+      "http://mock-sp"
+    ],
+    "serviceProviderNames": [],
+    "serviceProviderNamesNl": [],
+    "serviceProviderInvalidOrMissing": false,
+    "identityProviderIds": [
+      "urn:test:idp:bas",
+      "https://thki-sid.pt-48.utr.surfcloud.nl/ssp/saml2/idp/metadata.php"
+    ],
+    "identityProviderNames": [],
+    "identityProviderNamesNl": [],
+    "clientId": "EngineBlock",
+    "attributes": [
+      {
+        "name": "urn:collab:group:surfteams.nl",
+        "value": "urn:collab:group:surfteams.nl:nl:surfnet:diensten:SURFnetWikiAccess",
+        "negated": false
+      }
+    ],
+    "loas": [],
+    "denyAdvice": "You are not authorized to access the SURFnet wiki. Please contact SURFnet for details",
+    "denyRule": false,
+    "allAttributesMustMatch": false,
+    "created": "2023-11-02T07:00:36.000+00:00",
+    "userDisplayName": "system",
+    "authenticatingAuthorityName": "http://mock-idp",
+    "numberOfViolations": 0,
+    "numberOfRevisions": 0,
+    "denyAdviceNl": "je bent niet geautoriseerd voor de SURFnet wiki. Neem contact op met SURFnet voor meer informatie",
+    "revisionNbr": 0,
+    "active": true,
+    "actionsAllowed": false,
+    "type": "reg",
+    "parentId": null,
+    "activatedSr": false,
+    "policyId": "urn:surfconext:xacml:policy:id:_open_conextpdp_multiple_identity_provers_policy"
+  },
+  {
+    "id": 619,
+    "name": " open conextpdp i d pand group clause",
+    "description": "Personen van Avans in de groep HRM hebben toegang tot Youforce",
+    "serviceProviderIds": [
+      "https://serviceregistry.test2.surfconext.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp"
+    ],
+    "serviceProviderNames": [],
+    "serviceProviderNamesNl": [],
+    "serviceProviderInvalidOrMissing": false,
+    "identityProviderIds": [
+      "https://openidp.feide.no"
+    ],
+    "identityProviderNames": [],
+    "identityProviderNamesNl": [],
+    "clientId": "EngineBlock",
+    "attributes": [
+      {
+        "name": "urn:collab:group:surfteams.nl",
+        "value": "urn:collab:group:avans.nl:HRemployees",
+        "negated": false
+      },
+      {
+        "name": "urn:mace:dir:attribute-def:eduPersonAffiliation",
+        "value": "employee",
+        "negated": false
+      },
+      {
+        "name": "urn:mace:terena.org:attribute-def:schacHomeOrganization",
+        "value": "surfnet.nl",
+        "negated": false
+      }
+    ],
+    "loas": [],
+    "denyAdvice": "You are not authorized to access Avans Youforce. Please contact Avans HRM for details.",
+    "denyRule": false,
+    "allAttributesMustMatch": true,
+    "created": "2023-11-02T07:00:36.000+00:00",
+    "userDisplayName": "system",
+    "authenticatingAuthorityName": "http://mock-idp",
+    "numberOfViolations": 0,
+    "numberOfRevisions": 0,
+    "denyAdviceNl": "Je bent niet geautoriseerd voor Avans Youforce. Neem contact op met Avans HRM voor meer informatie.",
+    "revisionNbr": 0,
+    "active": true,
+    "actionsAllowed": false,
+    "type": "reg",
+    "parentId": null,
+    "activatedSr": false,
+    "policyId": "urn:surfconext:xacml:policy:id:_open_conextpdp_i_d_pand_group_clause"
+  },
+  {
+    "id": 620,
+    "name": " open conextpdp multiple different attributes logical and",
+    "description": "Policy met multiple different attributes AND-ed together Medewerkers van de lerarenopleiding in Leiden hebben toegang tot Enquetetool van Leiden ",
+    "serviceProviderIds": [
+      "https://serviceregistry.test2.surfconext.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp-2"
+    ],
+    "serviceProviderNames": [],
+    "serviceProviderNamesNl": [],
+    "serviceProviderInvalidOrMissing": false,
+    "identityProviderIds": [
+      "http://mock-idp"
+    ],
+    "identityProviderNames": [],
+    "identityProviderNamesNl": [],
+    "clientId": "EngineBlock",
+    "attributes": [
+      {
+        "name": "faculty",
+        "value": "lerarenopleiding",
+        "negated": false
+      },
+      {
+        "name": "urn:mace:dir:attribute-def:eduPersonAffiliation",
+        "value": "employee",
+        "negated": false
+      }
+    ],
+    "loas": [],
+    "denyAdvice": "You are not authorized to access Enquetetool.",
+    "denyRule": false,
+    "allAttributesMustMatch": true,
+    "created": "2023-11-02T07:00:36.000+00:00",
+    "userDisplayName": "system",
+    "authenticatingAuthorityName": "http://mock-idp",
+    "numberOfViolations": 0,
+    "numberOfRevisions": 0,
+    "denyAdviceNl": "Je bent niet bevoegd om de Enquete applicatie te gebruiken.",
+    "revisionNbr": 0,
+    "active": true,
+    "actionsAllowed": false,
+    "type": "reg",
+    "parentId": null,
+    "activatedSr": false,
+    "policyId": "urn:surfconext:xacml:policy:id:_open_conextpdp_multiple_different_attributes_logical_and"
+  },
+  {
+    "id": 622,
+    "name": " open conextpdp multiple different attributes logical or",
+    "description": "Policy met multiple different attributes AND-ed together Medewerkers van de lerarenopleiding in Leiden hebben toegang tot Enquetetool van Leiden ",
+    "serviceProviderIds": [
+      "https://grouper.test.surfconext.nl/grouper/shibboleth"
+    ],
+    "serviceProviderNames": [],
+    "serviceProviderNamesNl": [],
+    "serviceProviderInvalidOrMissing": false,
+    "identityProviderIds": [
+      "https://idp.test2.surfconext.nl"
+    ],
+    "identityProviderNames": [],
+    "identityProviderNamesNl": [],
+    "clientId": "EngineBlock",
+    "attributes": [
+      {
+        "name": "urn:mace:dir:attribute-def:eduPersonAffiliation",
+        "value": "lerarenopleiding",
+        "negated": false
+      },
+      {
+        "name": "urn:mace:dir:attribute-def:eduPersonAffiliation",
+        "value": "employee",
+        "negated": false
+      },
+      {
+        "name": "urn:mace:terena.org:attribute-def:schacHomeOrganization",
+        "value": "tilburg",
+        "negated": false
+      }
+    ],
+    "loas": [],
+    "denyAdvice": "You are not authorized to access Enquetetool.",
+    "denyRule": false,
+    "allAttributesMustMatch": false,
+    "created": "2023-11-02T07:00:36.000+00:00",
+    "userDisplayName": "system",
+    "authenticatingAuthorityName": "http://mock-idp",
+    "numberOfViolations": 0,
+    "numberOfRevisions": 0,
+    "denyAdviceNl": "Je bent niet geautoriseerd voor de Enquetetool.",
+    "revisionNbr": 0,
+    "active": true,
+    "actionsAllowed": false,
+    "type": "reg",
+    "parentId": null,
+    "activatedSr": false,
+    "policyId": "urn:surfconext:xacml:policy:id:_open_conextpdp_multiple_different_attributes_logical_or"
+  },
+  {
+    "id": 623,
+    "name": " open conextpdp multiple same attributes logical or",
+    "description": "Docenten en assistenten hebben toegang tot Mentorix.",
+    "serviceProviderIds": [
+      "https://oidc.test.client"
+    ],
+    "serviceProviderNames": [],
+    "serviceProviderNamesNl": [],
+    "serviceProviderInvalidOrMissing": false,
+    "identityProviderIds": [
+    ],
+    "identityProviderNames": [],
+    "identityProviderNamesNl": [],
+    "clientId": "EngineBlock",
+    "attributes": [
+      {
+        "name": "urn:mace:dir:attribute-def:eduPersonEntitlement",
+        "value": "teacher",
+        "negated": false
+      },
+      {
+        "name": "urn:mace:dir:attribute-def:eduPersonEntitlement",
+        "value": "assistant",
+        "negated": false
+      }
+    ],
+    "loas": [],
+    "denyAdvice": "You are not authorized to access Mentorix from Hogeschool Utrecht. Please contact us for details ",
+    "denyRule": false,
+    "allAttributesMustMatch": false,
+    "created": "2023-11-02T07:00:36.000+00:00",
+    "userDisplayName": "system",
+    "authenticatingAuthorityName": "http://mock-idp",
+    "numberOfViolations": 0,
+    "numberOfRevisions": 0,
+    "denyAdviceNl": "Je bent niet geautoriseerd voor Mentorix van Hogeschool Utrecht. Neem contact op met de HU voor meer details.",
+    "revisionNbr": 0,
+    "active": true,
+    "actionsAllowed": false,
+    "type": "reg",
+    "parentId": null,
+    "activatedSr": false,
+    "policyId": "urn:surfconext:xacml:policy:id:_open_conextpdp_multiple_same_attributes_logical_or"
+  },
+  {
+    "id": 625,
+    "name": " open conextpdp multiple same attributes logical or2",
+    "description": "No access to SURFspot unless subject is a student, employee, staff or member",
+    "serviceProviderIds": [
+      "https://1234aaab.nl"
+    ],
+    "serviceProviderNames": [],
+    "serviceProviderNamesNl": [],
+    "serviceProviderInvalidOrMissing": false,
+    "identityProviderIds": [],
+    "identityProviderNames": [],
+    "identityProviderNamesNl": [],
+    "clientId": "EngineBlock",
+    "attributes": [
+      {
+        "name": "urn:mace:dir:attribute-def:eduPersonAffiliation",
+        "value": "student",
+        "negated": false
+      },
+      {
+        "name": "urn:mace:dir:attribute-def:eduPersonAffiliation",
+        "value": "employee",
+        "negated": false
+      },
+      {
+        "name": "urn:mace:dir:attribute-def:eduPersonAffiliation",
+        "value": "staff",
+        "negated": false
+      },
+      {
+        "name": "urn:mace:dir:attribute-def:eduPersonAffiliation",
+        "value": "member",
+        "negated": false
+      }
+    ],
+    "loas": [],
+    "denyAdvice": "Je hebt geen toegang tot SURFspot.",
+    "denyRule": false,
+    "allAttributesMustMatch": false,
+    "created": "2023-11-02T07:00:36.000+00:00",
+    "userDisplayName": "system",
+    "authenticatingAuthorityName": "http://mock-idp",
+    "numberOfViolations": 0,
+    "numberOfRevisions": 0,
+    "denyAdviceNl": "You do not have access to SURFspot.",
+    "revisionNbr": 0,
+    "active": true,
+    "actionsAllowed": false,
+    "type": "reg",
+    "parentId": null,
+    "activatedSr": false,
+    "policyId": "urn:surfconext:xacml:policy:id:_open_conextpdp_multiple_same_attributes_logical_or2"
+  },
+  {
+    "id": 627,
+    "name": "some name",
+    "description": "Guests can access SURFspot when they are a member of the SURF organization",
+    "serviceProviderIds": [
+      "https://oidc.localhost.surfconext.nl"
+    ],
+    "serviceProviderNames": [],
+    "serviceProviderNamesNl": [],
+    "serviceProviderInvalidOrMissing": false,
+    "identityProviderIds": [
+      "http://mock-idp"
+    ],
+    "identityProviderNames": [],
+    "identityProviderNamesNl": [],
+    "clientId": "EngineBlock",
+    "attributes": [
+      {
+        "name": "urn:mace:dir:attribute-def:isMemberOf",
+        "value": "urn:collab:org:surf.nl",
+        "negated": false
+      }
+    ],
+    "loas": [],
+    "denyAdvice": "You are not a member of the SURF organization",
+    "denyRule": false,
+    "allAttributesMustMatch": false,
+    "created": "2023-11-02T07:00:37.000+00:00",
+    "userDisplayName": "John Doe",
+    "authenticatingAuthorityName": "http://mock-idp",
+    "numberOfViolations": 0,
+    "numberOfRevisions": 0,
+    "denyAdviceNl": "Je bent geen lid van de SURF organisatie",
+    "revisionNbr": 0,
+    "active": true,
+    "actionsAllowed": false,
+    "type": "reg",
+    "parentId": null,
+    "activatedSr": false,
+    "policyId": "urn:surfconext:xacml:policy:id:some_name"
+  },
+  {
+    "id": 629,
+    "name": " open conextpdp single attribute",
+    "description": "Guests can access SURFspot when they are a member of the SURF organization",
+    "serviceProviderIds": [
+      "https://serviceregistry.test2.surfconext.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp-2"
+    ],
+    "serviceProviderNames": [],
+    "serviceProviderNamesNl": [],
+    "serviceProviderInvalidOrMissing": false,
+    "identityProviderIds": [
+      "http://mock-idp"
+    ],
+    "identityProviderNames": [],
+    "identityProviderNamesNl": [],
+    "clientId": "EngineBlock",
+    "attributes": [
+      {
+        "name": "urn:mace:dir:attribute-def:isMemberOf",
+        "value": "urn:collab:org:surf.nl",
+        "negated": false
+      }
+    ],
+    "loas": [],
+    "denyAdvice": "advice_changed_again",
+    "denyRule": false,
+    "allAttributesMustMatch": false,
+    "created": "2023-11-02T07:00:37.000+00:00",
+    "userDisplayName": "John Doe",
+    "authenticatingAuthorityName": "http://mock-idp",
+    "numberOfViolations": 0,
+    "numberOfRevisions": 0,
+    "denyAdviceNl": "Je bent geen lid van de SURF organisatie",
+    "revisionNbr": 2,
+    "active": true,
+    "actionsAllowed": false,
+    "type": "reg",
+    "parentId": null,
+    "activatedSr": false,
+    "policyId": "urn:surfconext:xacml:policy:id:_open_conextpdp_single_attribute"
+  },
+  {
+    "id": 643,
+    "name": "Test Policy",
+    "description": "A user is only allowed to access 'Bart test RP | SURF EN' when he/she has the value 'example.com' for attribute 'urn:mace:terena.org:attribute-def:schacHomeOrganization'",
+    "serviceProviderIds": [
+      "https://serviceregistry.test2.surfconext.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp-2"
+    ],
+    "serviceProviderNames": [],
+    "serviceProviderNamesNl": [],
+    "serviceProviderInvalidOrMissing": false,
+    "identityProviderIds": [],
+    "identityProviderNames": [],
+    "identityProviderNamesNl": [],
+    "clientId": "EngineBlock",
+    "attributes": [
+      {
+        "name": "urn:mace:terena.org:attribute-def:schacHomeOrganization",
+        "value": "example.com",
+        "negated": false
+      }
+    ],
+    "loas": [],
+    "denyAdvice": "Deny EN II",
+    "denyRule": false,
+    "allAttributesMustMatch": false,
+    "created": "2024-01-30T12:39:34.000+00:00",
+    "userDisplayName": "John Doe",
+    "authenticatingAuthorityName": "http://mock-idp",
+    "numberOfViolations": 0,
+    "numberOfRevisions": 0,
+    "denyAdviceNl": "Deny NL",
+    "revisionNbr": 1,
+    "active": true,
+    "actionsAllowed": false,
+    "type": "reg",
+    "parentId": null,
+    "activatedSr": false,
+    "policyId": "urn:surfconext:xacml:policy:id:test_policy"
+  },
+  {
+    "id": 644,
+    "name": "StepUp",
+    "description": "A user from 'ADFS 2012 test2.surfconext.nl' is required to authenticate with LoA 'http://localhost/assurance/loa1.5' with an IP address NOT in the range(s): '255.0.0.1/24' or '194.1.1.0/32' when accessing 'Dashboard test | SURF EN'",
+    "serviceProviderIds": [
+      "https://oidc.test.client"
+    ],
+    "serviceProviderNames": [],
+    "serviceProviderNamesNl": [],
+    "serviceProviderInvalidOrMissing": false,
+    "identityProviderIds": [
+      "http://adfs-2012.test2.surfconext.nl/adfs/services/trust"
+    ],
+    "identityProviderNames": [],
+    "identityProviderNamesNl": [],
+    "clientId": "EngineBlock",
+    "attributes": [],
+    "loas": [
+      {
+        "level": "http://localhost/assurance/loa1.5",
+        "allAttributesMustMatch": true,
+        "negateCidrNotation": true,
+        "attributes": [],
+        "cidrNotations": [
+          {
+            "ipAddress": "255.0.0.1",
+            "prefix": 24
+          },
+          {
+            "ipAddress": "194.1.1.0",
+            "prefix": 32,
+            "ipInfo": {
+              "networkAddress": "194.1.1.0",
+              "broadcastAddress": "194.1.1.0",
+              "capacity": 1.0,
+              "ipv4": true,
+              "prefix": 32
+            }
+          }
+        ]
+      }
+    ],
+    "denyAdvice": null,
+    "denyRule": false,
+    "allAttributesMustMatch": false,
+    "created": "2024-01-30T12:53:19.000+00:00",
+    "userDisplayName": "John Doe",
+    "authenticatingAuthorityName": "http://mock-idp",
+    "numberOfViolations": 0,
+    "numberOfRevisions": 0,
+    "denyAdviceNl": null,
+    "revisionNbr": 0,
+    "active": true,
+    "actionsAllowed": false,
+    "type": "step",
+    "parentId": null,
+    "activatedSr": false,
+    "policyId": "urn:surfconext:xacml:policy:id:stepup"
+  }
+]

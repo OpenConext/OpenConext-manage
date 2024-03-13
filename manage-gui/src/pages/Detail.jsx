@@ -21,11 +21,16 @@ import {
     allResourceServers,
     changeRequests,
     detail,
+    getAllowedLoas,
+    idpPolicies,
+    policyAttributes,
     provisioningById,
     relyingPartiesByResourceServer,
     remove,
     revisions,
     save,
+    search,
+    spPolicies,
     template,
     update,
     whiteListing
@@ -43,7 +48,9 @@ import MetaDataChangeRequests from "../components/metadata/MetaDataChangeRequest
 import RelyingParties from "../components/metadata/RelyingParties";
 import ProvisioningApplications from "../components/metadata/ProvisioningApplications";
 import AutoRefresh from "../components/metadata/AutoRefresh";
+import PolicyForm from "../components/metadata/PolicyForm";
 import {getNameForLanguage, getOrganisationForLanguage} from "../utils/Language";
+import Policies from "../components/metadata/Policies";
 
 let tabsSp = [
     "connection",
@@ -51,6 +58,7 @@ let tabsSp = [
     "metadata",
     "arp",
     "whitelist",
+    "policies",
     "manipulation",
     "requests",
     "revisions",
@@ -64,6 +72,7 @@ let tabsIdP = [
     "consent_disabling",
     "stepup_entities",
     "metadata",
+    "policies",
     "manipulation",
     "requests",
     "revisions",
@@ -78,6 +87,7 @@ const tabsRp = [
     "resource_servers",
     "arp",
     "whitelist",
+    "policies",
     "manipulation",
     "requests",
     "revisions",
@@ -102,6 +112,11 @@ const tabsPr = [
     "revisions"
 ];
 
+const tabsPolicy = [
+    "policy_form",
+    "revisions"
+];
+
 const tabsSingleTenant = [
     "connection",
     "metadata",
@@ -111,6 +126,7 @@ const tabsSingleTenant = [
     "export"
 ];
 
+
 const aliasTabChanges = {
     "mfa_entities": "stepup_entities"
 }
@@ -119,10 +135,13 @@ class Detail extends React.PureComponent {
 
     constructor(props) {
         super(props);
-        const {tab = "connection"} = this.props.params;
         const type = isEmpty(props.newMetaData)
             ? this.props.params.type
             : props.newMetaData.connection.type.value.replace(/-/g, "_");
+        let {tab = "connection"} = this.props.params;
+        if (tab === "connection" && type === "policy") {
+            tab = "policy_form";
+        }
         const id = isEmpty(props.newMetaData) ? this.props.params.id : "new";
         this.state = {
             metaData: {},
@@ -130,12 +149,13 @@ class Detail extends React.PureComponent {
             resourceServers: [],
             relyingParties: [],
             applications: [],
+            policies: [],
             revisions: [],
             requests: [],
             provisioningGroups: [],
             notFound: false,
             loaded: false,
-            selectedTab: "connection",
+            selectedTab: tab,
             revisionNote: "",
             revisionNoteClone: "",
             confirmationDialogOpen: false,
@@ -152,7 +172,8 @@ class Detail extends React.PureComponent {
             addedWhiteListedEntities: [],
             removedWhiteListedEntities: [],
             whiteListingLoaded: false,
-            changeRequestsLoaded: false
+            changeRequestsLoaded: false,
+            initial: true
         };
     }
 
@@ -164,11 +185,13 @@ class Detail extends React.PureComponent {
         promise
             .then(metaData => {
                 const isSp = type === "saml20_sp" || type === "oidc10_rp";
+                const isIdp = type === "saml20_idp";
                 const isOidcRP = type === "oidc10_rp";
                 const isResourceServer = type === "oauth20_rs";
                 const isProvisioning = type === "provisioning";
+                const isPolicy = type === "policy";
                 const whiteListingType = isSp ? "saml20_idp" : "saml20_sp";
-                const errorKeys = isSp ? tabsSp : isProvisioning ? tabsPr :tabsIdP;
+                const errorKeys = isSp ? tabsSp : isProvisioning ? tabsPr : isPolicy ? tabsPolicy : tabsIdP;
                 const autoRefreshFeature = "AUTO_REFRESH";
                 if (this.props.clone) {
                     //Clean all
@@ -182,14 +205,14 @@ class Detail extends React.PureComponent {
                         "notes",
                         "revisionid",
                         "revisionnote",
-                        "user"
+                        "user",
+                        "name"
                     ];
                     metaData.id = undefined;
                     metaData.revision = undefined;
                     clonedClearFields.forEach(attr => delete metaData.data[attr]);
                     id = undefined;
                 }
-                const selectedTab = this.props.params.tab || "connection";
                 this.setState({
                     metaData: metaData,
                     revisionNoteClone: metaData.data.revisionnote,
@@ -203,8 +226,7 @@ class Detail extends React.PureComponent {
                     changes: errorKeys.reduce((acc, tab) => {
                         acc[tab] = false;
                         return acc;
-                    }, {}),
-                    selectedTab: selectedTab
+                    }, {})
                 });
                 if (!isEmpty(newMetaData)) {
                     this.applyImportChanges(newMetaData, {
@@ -221,16 +243,42 @@ class Detail extends React.PureComponent {
                 }
                 const state = (!isEmpty(newMetaData) && !isEmpty(newMetaData.connection) && !isEmpty(newMetaData.connection.state)
                     && newMetaData.connection.state.selected) ? newMetaData.connection.state.value : metaData.data.state;
-                whiteListing(whiteListingType, state).then(whiteListing => {
+                const promise = (isPolicy || isProvisioning) ? Promise.resolve([]) : whiteListing(whiteListingType, state);
+                promise.then(whiteListing => {
                     this.setState({whiteListing: whiteListing, whiteListingLoaded: true});
                     if (isOidcRP) {
                         allResourceServers(state).then(json =>
                             this.setState({resourceServers: json})
                         );
                     }
+                    if (isIdp && !isNew) {
+                        idpPolicies(metaData.data.entityid).then(policies => this.setState({policies: policies}))
+                    }
+                    if (isSp && !isNew) {
+                        spPolicies(metaData.data.entityid).then(policies => this.setState({policies: policies}))
+
+                    }
+                    if (isPolicy) {
+                        Promise.all([
+                            search({}, "saml20_idp"),
+                            search({}, "saml20_sp"),
+                            search({}, "oidc10_rp"),
+                            policyAttributes(),
+                            getAllowedLoas()
+                        ]).then(res => {
+                            this.setState({
+                                identityProviders: res[0],
+                                serviceProviders: res[1].concat(res[2]),
+                                policyAttributes: res[3],
+                                allowedLoas: res[4]
+                            })
+                        })
+
+                    }
                     if (isResourceServer && !isNew) {
-                        relyingPartiesByResourceServer(metaData.data.entityid).then(res =>
-                        this.setState({"relyingParties": res}));
+                        relyingPartiesByResourceServer(metaData.data.entityid).then(res => {
+                            this.setState({"relyingParties": res})
+                        });
                     }
                     if (isSp && !isNew) {
                         provisioningById(id).then(res => {
@@ -298,7 +346,8 @@ class Detail extends React.PureComponent {
         const configuration = configurations.find(conf => conf.title === type);
         const requiredMetaData = configuration.properties.metaDataFields.required;
         const metaDataFields = metaData.data.metaDataFields;
-        const metaDataErrors = {};
+        const currentErrors = {...this.state.errors};
+        const metaDataErrors = currentErrors.metadata || {};
         Object.keys(metaDataFields).forEach(key => {
             if (isEmpty(metaDataFields[key]) && requiredMetaData.indexOf(key) > -1) {
                 metaDataErrors[key] = true;
@@ -310,22 +359,32 @@ class Detail extends React.PureComponent {
                 this.onChange("metadata", `data.metaDataFields.${req}`, "");
             }
         });
-        const connectionErrors = {};
+        const connectionErrors = currentErrors.connection || {};
+        const policyFormErrors = currentErrors.policy_form || {};
         const required = configuration.required;
-        Object.keys(metaData.data).forEach(key => {
-            if (isEmpty(metaData.data[key]) && required.indexOf(key) > -1) {
-                connectionErrors[key] = true;
-            }
-        });
-        required.forEach(req => {
-            if (metaData.data[req] === undefined) {
-                connectionErrors[req] = true;
-            }
-        });
+        if ("policy" !== type) {
+            Object.keys(metaData.data).forEach(key => {
+                if (isEmpty(metaData.data[key]) && required.indexOf(key) > -1) {
+                    connectionErrors[key] = true;
+                }
+            });
+            required.forEach(req => {
+                if (isEmpty(metaData.data[req])) {
+                    connectionErrors[req] = true;
+                }
+            });
+        } else {
+            required.forEach(req => {
+                if (isEmpty(metaData.data[req])) {
+                    policyFormErrors[req] = true;
+                }
+            });
+        }
         const newErrors = {
-            ...this.state.errors,
+            currentErrors,
             connection: connectionErrors,
-            metadata: metaDataErrors
+            metadata: metaDataErrors,
+            policy_form: policyFormErrors
         };
         this.setState({errors: newErrors});
     };
@@ -346,7 +405,7 @@ class Detail extends React.PureComponent {
     };
 
     nameOfMetaData = metaData =>
-        getNameForLanguage(metaData.data.metaDataFields) || metaData.data["entityid"];
+        metaData.data.name || getNameForLanguage(metaData.data.metaDataFields) || metaData.data["entityid"];
 
     organisationOfMetaData = metaData =>
         getOrganisationForLanguage(metaData.data.metaDataFields) || "";
@@ -354,7 +413,7 @@ class Detail extends React.PureComponent {
     onChange = component => (
         name,
         value,
-        replaceAtSignWithDotsInName = false
+        callback
     ) => {
         const currentState = this.state.metaData;
         const metaData = {
@@ -368,16 +427,14 @@ class Detail extends React.PureComponent {
                 this.changeValueReference(
                     metaData,
                     name[i],
-                    value[i],
-                    replaceAtSignWithDotsInName
+                    value[i]
                 );
             }
         } else {
             this.changeValueReference(
                 metaData,
                 name,
-                value,
-                replaceAtSignWithDotsInName
+                value
             );
         }
         const changes = {...this.state.changes};
@@ -393,6 +450,7 @@ class Detail extends React.PureComponent {
             });
         }
         this.setState({metaData: metaData, changes: changes}, () => {
+            callback && callback();
             if (component === "connection" && name === "data.state") {
                 this.refreshWhiteListing();
             }
@@ -437,9 +495,9 @@ class Detail extends React.PureComponent {
     changeValueReference = (
         metaData,
         name,
-        value,
-        replaceAtSignWithDotsInName
+        value
     ) => {
+        let replaceAtSignWithDotsInName = false;
         if (name.endsWith("redirect.sign")) {
             name = name.replace(/redirect\.sign/, "redirect@sign");
             replaceAtSignWithDotsInName = true;
@@ -544,6 +602,19 @@ class Detail extends React.PureComponent {
         }
     };
 
+    sanitizeMetaData = metaData => {
+        if (metaData.type === "policy") {
+            //Remove empty attributes and loas
+            if (metaData.data.type === "step") {
+                metaData.data.loas.forEach(loa => {
+                    loa.attributes = loa.attributes.filter(attribute => !isEmpty(attribute.value))
+                });
+            } else {
+                metaData.data.attributes = metaData.data.attributes.filter(attribute => !isEmpty(attribute.value));
+            }
+        }
+    }
+
     submit = e => {
         stop(e);
         const {errors, revisionNote} = this.state;
@@ -555,18 +626,20 @@ class Detail extends React.PureComponent {
             return false;
         }
         if (hasErrors) {
+            this.setState({initial: false})
             return false;
         }
         this.setState({revisionNoteError: false});
         const promise = this.state.isNew ? save : update;
         const metaData = this.state.metaData;
         metaData.data.revisionnote = revisionNote;
+        this.sanitizeMetaData(metaData);
         promise(metaData).then(json => {
             if (json.exception || json.error) {
                 setFlash(json.validations, "error");
                 window.scrollTo(0, 0);
             } else {
-                const name = getNameForLanguage(json.data.metaDataFields) || "this service";
+                const name = json.data.name || getNameForLanguage(json.data.metaDataFields) || "this service";
                 setFlash(
                     I18n.t("metadata.flash.updated", {
                         name: name,
@@ -641,12 +714,14 @@ class Detail extends React.PureComponent {
         );
     };
 
-    hasGlobalErrors = errors =>
-        Object.keys(errors).find(key =>
+    hasGlobalErrors = errors => {
+        const hasErrors = Object.keys(errors).find(key =>
             Object.keys(errors[key]).find(subKey => errors[key][subKey])
         ) !== undefined;
+        return hasErrors;
+    }
 
-    renderTabTitle = (tab, metaData, resourceServers, whiteListing, revisions, requests, relyingParties) => {
+    renderTabTitle = (tab, metaData, resourceServers, whiteListing, revisions, requests, relyingParties, policies) => {
         const allowedAll = metaData.data.allowedall;
         const allowedEntities = metaData.data.allowedEntities;
         const applications = metaData.data.applications;
@@ -688,6 +763,9 @@ class Detail extends React.PureComponent {
             case "connected_rps":
                 args = {nbr: (relyingParties || []).length};
                 break;
+            case "policies":
+                args = {nbr: (policies || []).length};
+                break;
             case "connected_applications":
                 args = {nbr: (applications || []).length};
                 break;
@@ -697,7 +775,7 @@ class Detail extends React.PureComponent {
         return I18n.t(`metadata.tabs.${tab}`, args);
     }
 
-    renderTab = (tab, metaData, resourceServers, whiteListing, revisions, requests, relyingParties) => {
+    renderTab = (tab, metaData, resourceServers, whiteListing, revisions, requests, relyingParties, policies) => {
         const tabErrors = this.state.errors[tab] || {};
         const tabChanges = this.state.changes[tab] || false;
         const hasChanges = tabChanges ? "changes" : "";
@@ -711,7 +789,7 @@ class Detail extends React.PureComponent {
                 key={tab}
                 className={`${className} ${hasErrors} ${hasChanges}`}
                 onClick={this.switchTab(tab)}>
-        {this.renderTabTitle(tab, metaData, resourceServers, whiteListing, revisions, requests, relyingParties)}
+        {this.renderTabTitle(tab, metaData, resourceServers, whiteListing, revisions, requests, relyingParties, policies)}
                 {hasErrors && <i className="fa fa-warning"/>}
                 {!hasErrors && tabChanges && <i className="fa fa-asterisk"/>}
       </span>
@@ -727,7 +805,13 @@ class Detail extends React.PureComponent {
         requests,
         revisionNoteClone,
         changeRequestsLoaded,
-        relyingParties
+        relyingParties,
+        policies,
+        identityProviders,
+        serviceProviders,
+        policyAttributes,
+        allowedLoas,
+        initial
     ) => {
         const configuration = this.props.configuration.find(
             conf => conf.title === this.state.type
@@ -740,9 +824,10 @@ class Detail extends React.PureComponent {
             type,
             removedWhiteListedEntities,
             addedWhiteListedEntities,
-            provisioningGroups
+            provisioningGroups,
+            errors
         } = this.state;
-        const name = getNameForLanguage(metaData.data.metaDataFields) || "this service";
+        const name = metaData.data.name || getNameForLanguage(metaData.data.metaDataFields) || "this service";
         switch (tab) {
             case "connection":
                 return (
@@ -751,7 +836,7 @@ class Detail extends React.PureComponent {
                         revisionNote={revisionNoteClone}
                         onChange={this.onChange("connection")}
                         onError={this.onError("connection")}
-                        errors={this.state.errors["connection"]}
+                        errors={errors["connection"]}
                         guest={guest}
                         isNew={isNew}
                         originalEntityId={originalEntityId}
@@ -785,7 +870,7 @@ class Detail extends React.PureComponent {
                         isNewEntity={this.state.isNew}
                         originalEntityId={this.state.originalEntityId}
                         onError={this.onError("metadata")}
-                        errors={this.state.errors["metadata"]}
+                        errors={errors["metadata"]}
                         guest={guest}
                     />
                 );
@@ -903,6 +988,13 @@ class Detail extends React.PureComponent {
                         applications={whiteListing}
                         name={name}/>
                 );
+            case "policies":
+                return (
+                    <Policies
+                        policies={policies}
+                        name={name}
+                    />
+                );
             case "auto_refresh":
                 return (
                     <AutoRefresh
@@ -912,6 +1004,18 @@ class Detail extends React.PureComponent {
                         onChange={this.onChange("autoRefresh")}
                         guest={guest}
                     />
+                );
+            case "policy_form":
+                return (
+                    <PolicyForm identityProviders={identityProviders}
+                                serviceProviders={serviceProviders}
+                                policyAttributes={policyAttributes}
+                                allowedLoas={allowedLoas}
+                                data={metaData.data}
+                                isNew={isNew}
+                                onChange={this.onChange("policy_form")}
+                                onError={this.onError("policy_form")}
+                                errors={errors["policy_form"]}/>
                 );
             default:
                 throw new Error(`Unknown tab ${tab}`);
@@ -967,6 +1071,7 @@ class Detail extends React.PureComponent {
         const isRs = type === "oauth20_rs";
         const isProvisioning = type === "provisioning";
         const isSingleTenantTemplate = type === "single_tenant_template";
+        const isPolicy = type === "policy";
         const nonExistentAllowedEntities = this.renderWarningNonExistentAllowedEntities();
         const importedFromEdugain = metaData.data.metaDataFields["coin:imported_from_edugain"];
         const excludedFromPush = metaData.data.metaDataFields["coin:exclude_from_push"];
@@ -984,9 +1089,10 @@ class Detail extends React.PureComponent {
                     <thead>
                     <tr>
                         <th>{I18n.t("topBannerDetails.name")}</th>
-                        <th>{I18n.t("topBannerDetails.organization")}</th>
+                        {!isPolicy && <th>{I18n.t("topBannerDetails.organization")}</th>}
                         <th>{I18n.t("topBannerDetails.type")}</th>
-                        <th>{I18n.t("topBannerDetails.workflow")}</th>
+                        {!isPolicy && <th>{I18n.t("topBannerDetails.workflow")}</th>}
+                        {isPolicy && <th>{I18n.t("topBannerDetails.policyType")}</th>}
                         {(isSp || isRp) && <th>
                             {I18n.t("topBannerDetails.reviewState")}
                             {excludedFromPush && <span className="info">
@@ -1010,9 +1116,10 @@ class Detail extends React.PureComponent {
                     <tbody>
                     <tr>
                         <td>{name}</td>
-                        <td>{organization}</td>
+                        {!isPolicy && <td>{organization}</td>}
                         <td>{typeMetaData}</td>
-                        <td className={state === "prodaccepted" ? "green" : "orange"}>{state}</td>
+                        {!isPolicy && <td className={state === "prodaccepted" ? "green" : "orange"}>{state}</td>}
+                        {isPolicy && <td>{I18n.t(`topBannerDetails.${metaData.data.type}`)}</td>}
                         {(isSp || isRp) && <td className={excludedFromPush ? "orange" : "green"}>
                             {excludedFromPush ? I18n.t("topBannerDetails.staging") : I18n.t("topBannerDetails.production")}
                         </td>}
@@ -1022,6 +1129,7 @@ class Detail extends React.PureComponent {
                     </tbody>
                 </table>
                 {(!isEmpty(nonExistentAllowedEntities) && !isSingleTenantTemplate && !isRs
+                        && !isPolicy
                     && !isNew && whiteListingLoaded) &&
                 <section className="warning">
                     <i className="fa fa-exclamation-circle"></i>
@@ -1030,7 +1138,8 @@ class Detail extends React.PureComponent {
                         entities: nonExistentAllowedEntities.join(", ")
                     })}</span>
                 </section>}
-                {(isEmpty(connectedEntities) && !isSingleTenantTemplate && !isNew && !isRs && whiteListingLoaded && !isProvisioning) &&
+                {(isEmpty(connectedEntities) && !isSingleTenantTemplate && !isNew && !isRs
+                        && whiteListingLoaded && !isProvisioning) && !isPolicy &&
                 <section className="warning">
                     <i className="fa fa-exclamation-circle"></i>
                     <span>{I18n.t("topBannerDetails.noEntitiesConnected", {type: typeMetaData})}</span>
@@ -1051,6 +1160,12 @@ class Detail extends React.PureComponent {
             metaData,
             resourceServers,
             relyingParties,
+            policies,
+            identityProviders,
+            serviceProviders,
+            policyAttributes,
+            allowedLoas,
+            initial,
             whiteListing,
             revisions,
             requests,
@@ -1083,6 +1198,8 @@ class Detail extends React.PureComponent {
                     return tabsSingleTenant;
                 case "provisioning":
                     return tabsPr;
+                case "policy":
+                    return tabsPolicy;
                 default:
                     return [];
             }
@@ -1114,7 +1231,8 @@ class Detail extends React.PureComponent {
                 {renderContent && (
                     <section className="top-detail">
                         <section className="inner-detail">
-                            {this.renderTopBanner(name, organization, metaData, resourceServers, whiteListing, isNew, whiteListingLoaded)}
+                            {this.renderTopBanner(name, organization, metaData, resourceServers, whiteListing,
+                                isNew, whiteListingLoaded)}
                             {hasErrors && this.renderErrors(errors)}
                             {allowedDelete && (
                                 <a
@@ -1147,7 +1265,7 @@ class Detail extends React.PureComponent {
                                     onClick={e => {
                                         stop(e);
                                         setTimeout(() => {
-                                            const name = getNameForLanguage(metaData.data.metaDataFields) || "this service";
+                                            const name = metaData.data.name || getNameForLanguage(metaData.data.metaDataFields) || "this service";
                                             setFlash(I18n.t("metadata.flash.cloned", {name: name}));
                                         }, 50);
                                         const path = encodeURIComponent(`/clone/${type}/${metaData.id}`);
@@ -1165,7 +1283,7 @@ class Detail extends React.PureComponent {
                 {renderNotFound && <section>{I18n.t("metadata.notFound")}</section>}
                 {!notFound && (
                     <section className="tabs">
-                        {tabs.map(tab => this.renderTab(tab, metaData, resourceServers, whiteListing, revisions, requests, relyingParties))}
+                        {tabs.map(tab => this.renderTab(tab, metaData, resourceServers, whiteListing, revisions, requests, relyingParties, policies))}
                     </section>
                 )}
                 {renderContent &&
@@ -1178,7 +1296,13 @@ class Detail extends React.PureComponent {
                     requests,
                     revisionNoteClone,
                     changeRequestsLoaded,
-                    relyingParties
+                    relyingParties,
+                    policies,
+                    identityProviders,
+                    serviceProviders,
+                    policyAttributes,
+                    allowedLoas,
+                    initial
                 )}
                 {renderContent && this.renderActions(revisionNote)}
             </div>

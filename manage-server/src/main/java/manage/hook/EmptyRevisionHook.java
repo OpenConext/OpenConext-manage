@@ -13,9 +13,9 @@ import java.util.Map;
 
 public class EmptyRevisionHook extends MetaDataHookAdapter {
 
-    private MetaDataAutoConfiguration metaDataAutoConfiguration;
+    private final MetaDataAutoConfiguration metaDataAutoConfiguration;
 
-    private List<String> ignoreInDiff = Arrays.asList("revisionnote");
+    private final List<String> ignoreInDiff = Arrays.asList("revisionnote");
 
     public EmptyRevisionHook(MetaDataAutoConfiguration metaDataAutoConfiguration) {
         this.metaDataAutoConfiguration = metaDataAutoConfiguration;

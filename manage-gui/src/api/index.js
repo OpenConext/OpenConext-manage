@@ -127,6 +127,11 @@ export function validation(format, value) {
     return postPutJson("validation", {type: format, value: value}, "post");
 }
 
+export function ipInfo(ipAddress, networkPrefix) {
+    const networkPrefixParam = isEmpty(networkPrefix) ? "" : "&networkPrefix=" + networkPrefix;
+    return fetchJson("/ipinfo?ipAddress=" + encodeURIComponent(ipAddress) + networkPrefixParam);
+}
+
 export function fetchEnumValues(fetchValue) {
     return fetchJson(`fetch/${fetchValue}`);
 }
@@ -177,7 +182,7 @@ export function countFeed() {
 }
 
 export function allResourceServers(state) {
-    return search({"state": state}, "oauth20_rs")
+    return search({"state": state}, "oauth20_rs");
 }
 
 export function relyingPartiesByResourceServer(resourceServerEntityID) {
@@ -236,8 +241,8 @@ export function logOut() {
     return fetchDelete("users/logout");
 }
 
-export function push() {
-    return fetchJson("playground/push");
+export function push(includeEB, includeOIDC, includePdP) {
+    return postPutJson("playground/push", {includeEB:includeEB, includeOIDC:includeOIDC, includePdP:includePdP}, "PUT");
 }
 
 export function pushPreview() {
@@ -286,3 +291,61 @@ export function scopeInUse(scopes) {
 export function recentActivity(types, limit) {
     return postPutJson("recent-activity", {types, limit}, "POST")
 }
+
+//Policies
+export function policyAttributes() {
+    return fetchJson("attributes")
+}
+
+export function policySAMLAttributes() {
+    return fetchJson("saml-attributes")
+}
+
+export function getAllowedLoas() {
+    return fetchJson("loas");
+}
+
+export function getPdPPolicies() {
+    return fetchJson("pdp/policies");
+}
+
+export function getMigratedPdPPolicies() {
+    return fetchJson("pdp/migrated_policies");
+}
+
+export function importPdPPolicies() {
+    return postPutJson("pdp/import_policies", {}, "PUT")
+}
+
+export function getPlaygroundPolicies() {
+    return search({ALL_ATTRIBUTES: true}, "policy")
+}
+
+export function getPlaygroundServiceProviders() {
+    return search({}, "saml20_sp")
+}
+
+export function getPlaygroundRelyingParties() {
+    return search({}, "oidc10_rp")
+}
+
+export function getPlaygroundIdentityProviders() {
+    return search({}, "saml20_idp")
+}
+
+export function idpPolicies(idpEntityID) {
+    return fetchJson(`idpPolicies?entityId=${encodeURIComponent(idpEntityID)}`);
+}
+
+export function spPolicies(spEntityID) {
+    return fetchJson(`spPolicies?entityId=${encodeURIComponent(spEntityID)}`);
+}
+
+export function missingEnforcementPolicies() {
+    return fetchJson("pdp/missing-enforcements");
+}
+
+export function playGroundPolicyDecision(pdpRequest) {
+    return postPutJson("pdp/decide", pdpRequest, "POST", false);
+}
+

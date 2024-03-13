@@ -1,0 +1,35 @@
+{
+  "serviceProviderIds": [
+    "http://mock-sp"
+  ],
+  "serviceProviderNames": [
+    "SURFdrive test"
+  ],
+  "serviceProviderNamesNl": [],
+  "identityProviderIds": [
+    "http://mock-idp"
+  ],
+  "identityProviderNames": [],
+  "identityProviderNamesNl": [],
+  "identityProviderNamesPt": [],
+  "attributes": [
+    {
+      "name": "urn:mace:terena.org:attribute-def:schacHomeOrganization",
+      "value": "example.com"
+    }
+  ],
+  "denyRule": false,
+  "allAttributesMustMatch": false,
+  "numberOfRevisions": 0,
+  "revisionNbr": 0,
+  "isActivatedSr": false,
+  "active": true,
+  "actionsAllowed": false,
+  "type": "reg",
+  "serviceProviderId": "https://surfdrive-tst.surf.nl/",
+  "serviceProviderName": "SURFdrive test",
+  "name": "Delme Policy",
+  "denyAdvice": "No access",
+  "denyAdviceNl": "Geen toegang",
+  "description": "A user is only allowed to access 'SURFdrive test' when he/she has the value 'example.com' for attribute 'urn:mace:terena.org:attribute-def:schacHomeOrganization'"
+}

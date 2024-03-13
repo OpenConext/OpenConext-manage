@@ -1,5 +1,3 @@
-import React from "react";
-
 export function stop(e) {
     if (e !== undefined && e !== null) {
         e.preventDefault();
@@ -111,3 +109,30 @@ export function sortDict(data) {
         }
     })
 }
+
+export function groupBy(arr, property) {
+    return arr.reduce((acc, item) => {
+        const value = item[property];
+        acc[value] = acc[value] ?? [];
+        acc[value].push(item);
+        return acc;
+    }, {});
+}
+
+export function determineStatus(decision) {
+    switch (decision) {
+        case "Permit":
+            return "check";
+        case "Indeterminate":
+        case "Deny":
+            return "remove";
+        case "NotApplicable":
+            return "question";
+        default:
+            throw "Unknown decision" + decision;
+    }
+}
+
+
+
+

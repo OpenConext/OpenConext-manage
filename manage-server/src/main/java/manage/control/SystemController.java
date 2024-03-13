@@ -3,10 +3,10 @@ package manage.control;
 import manage.api.APIUser;
 import manage.conf.Features;
 import manage.exception.EndpointNotAllowed;
-import manage.hook.EntityIdReconcilerHook;
 import manage.model.EntityType;
 import manage.model.MetaData;
 import manage.model.OrphanMetaData;
+import manage.model.PushOptions;
 import manage.repository.MetaDataRepository;
 import manage.shibboleth.FederatedUser;
 import manage.validations.MetaDataValidator;
@@ -20,16 +20,9 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -56,19 +49,19 @@ public class SystemController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/client/playground/push")
-    public ResponseEntity<Map> push(FederatedUser federatedUser) {
+    @PutMapping("/client/playground/push")
+    public ResponseEntity<Map> push(@RequestBody PushOptions pushOptions, FederatedUser federatedUser) {
         if (!federatedUser.featureAllowed(Features.PUSH)) {
             throw new EndpointNotAllowed();
         }
-        return databaseController.doPush();
+        return databaseController.doPush(pushOptions);
     }
 
     @PreAuthorize("hasRole('PUSH')")
     @GetMapping("/internal/push")
     public ResponseEntity<Map> pushInternal(APIUser apiUser) {
         LOG.info("Push initiated by {}", apiUser.getName());
-        return databaseController.doPush();
+        return databaseController.doPush(new PushOptions(true, true, false));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -125,7 +118,10 @@ public class SystemController {
                 .include("data.entityid")
                 .include("type")
                 .include("data.metaDataFields.name:en")
+                .include("data.name")
                 .include("data.allowedEntities.name")
+                .include("data.identityProviderIds.name")
+                .include("data.serviceProviderIds.name")
                 .include("data.allowedResourceServers.name")
                 .include("data.stepupEntities.name")
                 .include("data.mfaEntities.name")
@@ -135,6 +131,8 @@ public class SystemController {
                 Criteria.where("data.allowedEntities").exists(true),
                 Criteria.where("data.disableConsent").exists(true),
                 Criteria.where("data.stepupEntities").exists(true),
+                Criteria.where("data.serviceProviderIds").exists(true),
+                Criteria.where("data.identityProviderIds").exists(true),
                 Criteria.where("data.mfaEntities").exists(true),
                 Criteria.where("data.allowedResourceServers").exists(true)));
 
@@ -142,7 +140,7 @@ public class SystemController {
         List<MetaData> metaDataWithReferences = mongoTemplate.find(query, MetaData.class, type.getType());
 
         Map<String, Map<String, List<MetaData>>> groupedByEntityIdReference = new HashMap<>();
-        Stream.of("allowedEntities", "disableConsent", "stepupEntities", "mfaEntities", "allowedResourceServers").forEach(propertyName -> {
+        Stream.of("allowedEntities", "disableConsent", "stepupEntities", "identityProviderIds", "serviceProviderIds", "mfaEntities", "allowedResourceServers").forEach(propertyName -> {
             metaDataWithReferences.stream().forEach(metaData -> {
                 List<Map<String, Object>> entries = (List<Map<String, Object>>) metaData.getData().get(propertyName);
                 if (!CollectionUtils.isEmpty(entries)) {
@@ -161,7 +159,8 @@ public class SystemController {
                         m.getValue().stream().map(metaData -> new OrphanMetaData(
                                 entry.getKey(),
                                 (String) metaData.getData().get("entityid"),
-                                (String) ((Map) metaData.getData().get("metaDataFields")).get("name:en"),
+                                type.equals(EntityType.PDP) ? (String) metaData.getData().get("name") :
+                                        (String) metaData.metaDataFields().get("name:en"),
                                 m.getKey(),
                                 metaData.getId(),
                                 type.getType()

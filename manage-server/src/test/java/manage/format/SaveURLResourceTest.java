@@ -21,7 +21,7 @@ public class SaveURLResourceTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testNotAllowedProtocol() throws MalformedURLException {
-        SaveURLResource resource = new SaveURLResource(new URL("file://local"), false, null);
+        new SaveURLResource(new URL("file://local"), false, null);
     }
 
     @Test

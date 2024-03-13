@@ -1,0 +1,190 @@
+@import "../../stylesheets/vars.scss";
+@import "../../stylesheets/media_queries.scss";
+
+.metadata-policy-form {
+    background-color: white;
+    padding: 10px 20px 20px 20px;
+
+    section.policy-form {
+        margin-top: 15px;
+
+        .error {
+            color: $red;
+            margin-top: 5px;
+        }
+
+        label > span {
+            margin-bottom: 5px;
+        }
+
+        .input-field {
+            margin-bottom: 25px;
+            display: flex;
+            flex-direction: column;
+
+            &.row {
+                flex-direction: row;
+            }
+
+            label {
+                margin-bottom: 5px;
+                display: inline-block;
+            }
+
+
+        }
+
+        input, textarea {
+            width: 50%;
+            padding: 5px;
+            border-radius: 3px;
+            border: 1px solid #d9d9d8;
+            line-height: 22px;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+            &.max {
+                width: 100%;
+            }
+
+            @include desktop {
+                width: 100%;
+            }
+
+        }
+
+        .policy-select {
+            width: 50%;
+
+            &.max {
+                width: 100%;
+            }
+
+            @include desktop {
+                width: 100%;
+            }
+
+        }
+
+        .fa-info-circle {
+            color: $blue;
+            margin-left: 5px;
+        }
+
+    }
+
+    .loas {
+        margin-bottom: 25px;
+        padding: 15px;
+        border-radius: 3px;
+        border: 1px solid #d9d9d8;
+        width: 50%;
+
+        @include desktop {
+            width: 100%;
+        }
+
+        i.fa-trash-o {
+            color: $red;
+            font-size: 26px;
+            margin: 4px 0 0 10px;
+            cursor: pointer;
+        }
+
+        .loa {
+            display: flex;
+
+        }
+
+        .loa-container {
+            margin: 0 0 25px 60px;
+            display: flex;
+            flex-direction: column;
+
+            p {
+                margin-top: 15px;
+            }
+
+        }
+
+
+    }
+
+
+    div.__react_component_tooltip {
+        max-width: 400px;
+    }
+
+    .checkbox-options {
+        display: flex;
+        width: 50%;
+        flex-direction: row;
+        padding: 15px;
+        border-radius: 3px;
+        border: 1px solid #d9d9d8;
+        margin-bottom: 25px;
+
+        &.max {
+            width: 100%;
+        }
+
+        @include desktop {
+            width: 100%;
+        }
+
+        .checkbox-container {
+            &:last-child {
+                margin-left: 160px;
+            }
+            &.adjustment {
+                margin-left: 118px;
+
+            }
+        }
+    }
+
+    .cidr-notation {
+        display: flex;
+        width: 100%;
+        align-items: center;
+        margin-top: 12px;
+
+        input {
+            flex-grow: 2;
+            height: 36px;
+        }
+
+        .cidr-divider {
+            margin: 0 5px;
+            font-size: 20px;
+        }
+
+        .policy-cidr-prefix {
+            width: 90px;
+        }
+
+        .policy-cidr-prefix__control {
+            height: 36px;
+        }
+    }
+
+    section.ip-info {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        font-size: 12px;
+        line-height: 16px;
+        margin-bottom: 4px;
+
+        span.label {
+            margin-right: 5px;
+        }
+
+    }
+
+    a.add-cidr-notation {
+        margin-top: 8px;
+        display: inline-block;
+    }
+
+
+}

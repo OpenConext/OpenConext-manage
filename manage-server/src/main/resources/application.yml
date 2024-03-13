@@ -33,6 +33,13 @@ push:
     name: OpenConext OIDC-NG
     password: secret
     enabled: true
+  pdp:
+    url: http://localhost:8081/pdp/api/manage/push
+    policy_url: http://localhost:8081/pdp/api/manage/policies
+    decide_url: http://localhost:8081/pdp/api/manage/decide
+    user: pdp_admin
+    name: OpenConext PDP
+    password: secret
 
 product:
   name: Manage
@@ -41,6 +48,8 @@ product:
   service_provider_feed_url: http://localhost:8000/edugain.xml
   supported_languages: en,nl
   show_oidc_rp: true
+
+loa_levels: "http://localhost/assurance/loa1.5,http://localhost/assurance/loa2,http://localhost/assurance/loa3"
 
 metadata_configuration_path: classpath:/metadata_configuration
 metadata_templates_path: classpath:/metadata_templates
@@ -72,6 +81,11 @@ spring:
   data:
     mongodb:
       uri: mongodb://localhost:27017/metadata_test
+  datasource:
+    url: jdbc:mysql://localhost:3306/pdpserver?permitMysqlScheme
+    username: root
+    password:
+    driverClassName: org.mariadb.jdbc.Driver
 
   main:
     banner-mode: "off"

@@ -1,0 +1,43 @@
+{
+  "id": 617,
+  "metaDataFields": {},
+  "name": "Reg Policy",
+  "description": "Personen die tot de managementvo behoren (bepaald aan de hand van een group) hebben toegang tot de VO dienst Zit dus geen IDP regel op (kan ook niet in dit VO scenario) ",
+  "serviceProviderIds": [
+    {
+      "name": "https://profile.test2.surfconext.nl/authentication/metadata"
+    }
+  ],
+  "identityProviderIds": [
+    {
+      "name": "http://mock-idp"
+    }
+  ],
+  "identityProviderNames": [],
+  "identityProviderNamesNl": [],
+  "clientId": "EngineBlock",
+  "attributes": [
+    {
+      "name": "urn:collab:group:surfteams.nl",
+      "value": "urn:collab:group:test.surfteams.nl:nl:surfnet:diensten:managementvo",
+      "negated": false
+    }
+  ],
+  "loas": [],
+  "denyAdvice": "You are not part of managementvo. Please contact us if you think this is incorrect.",
+  "denyRule": false,
+  "allAttributesMustMatch": false,
+  "created": "2023-11-02T07:00:36.000+00:00",
+  "userDisplayName": "system",
+  "authenticatingAuthorityName": "http://mock-idp",
+  "numberOfViolations": 0,
+  "numberOfRevisions": 0,
+  "denyAdviceNl": "Je bent geen lid van de groep managementvo.",
+  "revisionNbr": 0,
+  "active": true,
+  "actionsAllowed": false,
+  "type": "reg",
+  "parentId": null,
+  "activatedSr": false,
+  "policyId": "urn:surfconext:xacml:policy:id:_open_conextpdp_no_i_d_ponly_group_clause"
+}

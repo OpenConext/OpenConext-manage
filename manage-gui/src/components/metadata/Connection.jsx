@@ -41,7 +41,7 @@ export default class Connection extends React.PureComponent {
         const isResourceServer = type === "oauth20_rs";
         const isProvisioning = type === "provisioning";
         const entityIdFormat = this.props.configuration.properties.entityid.format;
-        const states = this.props.configuration.properties.state.enum;
+        const states = (this.props.configuration.properties.state || {}).enum;
 
         const logo = data.metaDataFields["logo:0:url"];
         const name = getNameForLanguage(data.metaDataFields);
@@ -123,8 +123,8 @@ export default class Connection extends React.PureComponent {
                         <td className="key">{I18n.t("metadata.provisioning")}</td>
                         <td className="value provisioning">
                             {isEmpty(provisioningGroups) ? I18n.t("metadata.noProvisioning") :
-                                provisioningGroups.map(prov =>
-                                    <Link to={`/metadata/${prov.type}/${prov._id}`} target="_blank">
+                                provisioningGroups.map((prov, index) =>
+                                    <Link key={index} to={`/metadata/${prov.type}/${prov._id}`} target="_blank">
                                         <span className="provisioning">
                                             {getNameForLanguage(prov.data.metaDataFields)} - {I18n.t(`metadata.provisioningTypes.${prov.data.metaDataFields.provisioning_type}`)}
                                         </span>
@@ -175,7 +175,7 @@ Connection.propTypes = {
     onChange: PropTypes.func.isRequired,
     onError: PropTypes.func.isRequired,
     errors: PropTypes.object.isRequired,
-    guest: PropTypes.bool.isRequired,
+    guest: PropTypes.bool,
     isNew: PropTypes.bool.isRequired,
     configuration: PropTypes.object.isRequired,
     originalEntityId: PropTypes.string.isRequired,

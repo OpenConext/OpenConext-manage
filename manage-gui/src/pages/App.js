@@ -21,6 +21,7 @@ import Scopes from "./Scopes";
 import Activity from "./Activity";
 import Staging from "./Staging";
 import RefreshRoute from "./RefreshRoute";
+import Policies from "./Policies";
 
 const S4 = () => (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
 
@@ -131,20 +132,26 @@ class App extends React.PureComponent {
                                element={<API configuration={configuration}/>}/>
 
                         <Route path="/system"
-
                                element={<System currentUser={currentUser}
                                                 configuration={configuration}/>}/>
-                        <Route path="/staging"
 
+                        <Route path="/policies"
+                               element={<Policies currentUser={currentUser}
+                                                  configuration={configuration}/>}/>
+
+                        <Route path="/policies/:tab"
+                               element={<Policies currentUser={currentUser}
+                                                configuration={configuration}/>}/>
+
+                        <Route path="/staging"
                                element={<Staging/>}/>
 
                         <Route path="/scopes"
-
                                element={<Scopes/>}/>
 
                         <Route path="/activity"
-
                                element={<Activity/>}/>
+
                         <Route path="/refresh-route/:path"
                                element={<RefreshRoute/>}/>
 
