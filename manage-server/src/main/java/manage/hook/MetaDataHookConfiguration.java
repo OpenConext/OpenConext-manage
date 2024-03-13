@@ -43,7 +43,8 @@ public class MetaDataHookConfiguration {
                         new SecretHook(metaDataAutoConfiguration),
                         new RequiredAttributesHook(metaDataAutoConfiguration),
                         new ProvisioningHook(metaDataRepository, metaDataAutoConfiguration),
-                        new EncryptionHook(keyStore)));
+                        new EncryptionHook(keyStore),
+                        new ProvisioningApplicationDeletionHook(metaDataRepository)));
     }
 
 

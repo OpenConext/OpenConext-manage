@@ -230,7 +230,7 @@ public class PolicyControllerTest extends AbstractIntegrationTest {
                 .get("manage/api/internal/protected/saml-attributes")
                 .as(new TypeRef<>() {
                 });
-        assertEquals(2, allowedSamlAttributes.size());
+        assertEquals(11, allowedSamlAttributes.size());
     }
 
     private Map<String, String> headers() {

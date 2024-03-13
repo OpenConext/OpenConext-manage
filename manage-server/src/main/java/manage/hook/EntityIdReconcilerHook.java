@@ -94,41 +94,29 @@ public class EntityIdReconcilerHook extends MetaDataHookAdapter {
         metaDataRepository.update(metaData);
 
     }
+
     private List<String> getCollectionReferenceNames(String type) {
-        if (type.equals(STT.getType())) {
-            return emptyList();
-        }
         if (type.equals(SP.getType()) || type.equals(RP.getType())) {
-            return asList("allowedEntities", "stepupEntities", "mfaEntities", "disableConsent");
+            return asList("allowedEntities", "stepupEntities", "mfaEntities", "disableConsent", "serviceProviderIds");
         }
         if (type.equals(IDP.getType())) {
-            return singletonList("allowedEntities");
+            return asList("allowedEntities", "identityProviderIds");
         }
         if (type.equals(RS.getType())) {
             return singletonList("allowedResourceServers");
         }
-        if (type.equals(PDP.getType())) {
-            return asList("serviceProviderIds", "identityProviderIds");
-        }
         return Collections.emptyList();
     }
 
-
-    public static List<String> metaDataTypesForeignKeyRelations(String type) {
-        if (type.equals(STT.getType())) {
-            return emptyList();
-        }
+    private List<String> metaDataTypesForeignKeyRelations(String type) {
         if (type.equals(SP.getType()) || type.equals(RP.getType())) {
-            return singletonList(IDP.getType());
+            return asList(IDP.getType(), PDP.getType());
         }
         if (type.equals(IDP.getType())) {
-            return asList(SP.getType(), RP.getType());
+            return asList(SP.getType(), RP.getType(), PDP.getType());
         }
         if (type.equals(RS.getType())) {
             return singletonList(RP.getType());
-        }
-        if (type.equals(PDP.getType())) {
-            return asList(IDP.getType(), SP.getType(), RP.getType());
         }
         return Collections.emptyList();
     }

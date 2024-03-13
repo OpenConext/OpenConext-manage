@@ -40,6 +40,15 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-maven-
 
+    - name: Set up MySQL
+      uses: shogo82148/actions-setup-mysql@v1
+      with:
+        mysql-version: '8.0'
+    - run: |
+        mysql -uroot -h127.0.0.1 -e \
+        "CREATE DATABASE pdpserver CHARACTER SET utf8mb4 \
+        COLLATE utf8mb4_0900_ai_ci;"
+
     - name: Build with Maven
       run: mvn -B clean install
 
