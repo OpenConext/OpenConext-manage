@@ -73,7 +73,7 @@ export default function PolicyAttributes({
 
 
     return (
-        <div className={`attributes ${embedded ? "max" : ""}`}>
+        <div className={`policy-attributes ${embedded ? "max" : ""}`}>
             {Object.keys(groupedAttributes).map((name, i) =>
                 <div key={i} className="attribute-container">
                     <div className="attribute">
