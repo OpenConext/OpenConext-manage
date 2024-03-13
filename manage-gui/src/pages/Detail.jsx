@@ -243,7 +243,7 @@ class Detail extends React.PureComponent {
                 }
                 const state = (!isEmpty(newMetaData) && !isEmpty(newMetaData.connection) && !isEmpty(newMetaData.connection.state)
                     && newMetaData.connection.state.selected) ? newMetaData.connection.state.value : metaData.data.state;
-                const promise = (isPolicy || isProvisioning) ? Promise.resolve([]) : whiteListing(whiteListingType, state);
+                const promise = isPolicy ? Promise.resolve([]) : whiteListing(whiteListingType, state);
                 promise.then(whiteListing => {
                     this.setState({whiteListing: whiteListing, whiteListingLoaded: true});
                     if (isOidcRP) {
