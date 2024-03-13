@@ -73,7 +73,7 @@ export default class Manipulation extends React.PureComponent {
 
     renderManipulation() {
         const {content, currentUser} = this.props;
-        const allowed = currentUser.authorities.some(authority => authority.authority === "ROLE_SUPER_USER");
+        const allowed = isSystemUser(currentUser);
         const optionsForInfo = {lineNumbers: false, mode: "javascript", readOnly: true};
         const optionsForContent = {lineNumbers: true, mode: "javascript", readOnly: !allowed};
         const info = `
