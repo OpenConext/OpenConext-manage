@@ -4,10 +4,11 @@ import PropTypes from "prop-types";
 import {Link} from "react-router-dom";
 
 import "./Policies.scss";
-import {copyToClip, isEmpty} from "../../utils/Utils";
+import {copyToClip, isEmpty, stop} from "../../utils/Utils";
 import NotesTooltip from "../NotesTooltip";
+import withRouterHooks from "../../utils/RouterBackwardCompatability";
 
-export default class Policies extends React.Component {
+class Policies extends React.Component {
 
     constructor(props) {
         super(props);
@@ -132,6 +133,15 @@ export default class Policies extends React.Component {
         </section>
     };
 
+    newMetaData = e => {
+        stop(e);
+        const {metaData} = this.props;
+        const type = metaData.type === "saml20_sp" ? "sp" : "idp";
+        const path = encodeURIComponent(`/metadata/policy/new?${type}=${metaData.data.entityid}`);
+        this.props.navigate(`/refresh-route/${path}`, {replace: true});
+    };
+
+
     render() {
         const {
             filteredPolicies,
@@ -158,11 +168,19 @@ export default class Policies extends React.Component {
                 {policies.length > 0 && this.renderPolicyTable(filteredPolicies)}
                 {this.renderPolicyTablePrintable(filteredPolicies)}
                 {policies.length === 0 &&
-                    <h3>{I18n.t("policies.noPolicies", {name: name})}</h3>}
-            </div>
-        );
+                    <div className="no-policies">
+                    <h3>{I18n.t("policies.noPolicies", {name: name})}</h3>
+                        <a className="new button green" onClick={this.newMetaData}>
+                            {I18n.t("metadata.newPolicy")}<i className="fa fa-plus"></i>
+                        </a>
+                    </div>}
+    </div>
+    )
+        ;
     }
 }
+
+export default withRouterHooks(Policies);
 
 Policies.propTypes = {
     policies: PropTypes.array.isRequired,

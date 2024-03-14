@@ -349,6 +349,6 @@ MetaData.propTypes = {
     metaDataFields: PropTypes.object.isRequired,
     name: PropTypes.string.isRequired,
     configuration: PropTypes.object.isRequired,
-    guest: PropTypes.bool.isRequired,
+    guest: PropTypes.bool,
     isNewEntity: PropTypes.bool.isRequired
 };

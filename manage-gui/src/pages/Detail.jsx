@@ -259,10 +259,11 @@ class Detail extends React.PureComponent {
 
                     }
                     if (isPolicy) {
+                        const options = {"REQUESTED_ATTRIBUTES": ["metaDataFields.coin:policy_enforcement_decision_required"]};
                         Promise.all([
                             search({}, "saml20_idp"),
-                            search({}, "saml20_sp"),
-                            search({}, "oidc10_rp"),
+                            search(options, "saml20_sp"),
+                            search(options, "oidc10_rp"),
                             policyAttributes(),
                             getAllowedLoas()
                         ]).then(res => {
@@ -992,6 +993,7 @@ class Detail extends React.PureComponent {
                 return (
                     <Policies
                         policies={policies}
+                        metaData={metaData}
                         name={name}
                     />
                 );
@@ -1014,8 +1016,7 @@ class Detail extends React.PureComponent {
                                 data={metaData.data}
                                 isNew={isNew}
                                 onChange={this.onChange("policy_form")}
-                                onError={this.onError("policy_form")}
-                                errors={errors["policy_form"]}/>
+                                onError={this.onError("policy_form")}/>
                 );
             default:
                 throw new Error(`Unknown tab ${tab}`);
@@ -1076,6 +1077,7 @@ class Detail extends React.PureComponent {
         const importedFromEdugain = metaData.data.metaDataFields["coin:imported_from_edugain"];
         const excludedFromPush = metaData.data.metaDataFields["coin:exclude_from_push"];
         const pushEnabled = metaData.data.metaDataFields["coin:push_enabled"];
+        const isActive = metaData.data.active;
         const connectedEntities = whiteListing
             .filter(idp => idp.data.allowedall || (idp.data.allowedEntities || []).some(entity => entity.name === entityid))
             .filter(idp => idp.data.state === state)
@@ -1096,11 +1098,20 @@ class Detail extends React.PureComponent {
                         {(isSp || isRp) && <th>
                             {I18n.t("topBannerDetails.reviewState")}
                             {excludedFromPush && <span className="info">
-                <i className="fa fa-info-circle" data-for="push-excluded-tooltip" data-tip/>
-                <ReactTooltip id="push-excluded-tooltip" type="info" class="tool-tip" effect="solid">
-                  <span dangerouslySetInnerHTML={{__html: I18n.t("topBannerDetails.pushExcludedTooltip")}}/>
-                </ReactTooltip>
+                            <i className="fa fa-info-circle" data-for="push-excluded-tooltip" data-tip/>
+                            <ReactTooltip id="push-excluded-tooltip" type="info" class="tool-tip" effect="solid">
+                                <span dangerouslySetInnerHTML={{__html: I18n.t("topBannerDetails.pushExcludedTooltip")}}/>
+                            </ReactTooltip>
               </span>}
+                        </th>}
+                        {isPolicy && <th>
+                            {I18n.t("topBannerDetails.reviewState")}
+                            {!isActive && <span className="info">
+                                <i className="fa fa-info-circle" data-for="not-active-tooltip" data-tip/>
+                                <ReactTooltip id="not-active-tooltip" type="info" class="tool-tip" effect="solid">
+                                    <span dangerouslySetInnerHTML={{__html: I18n.t("topBannerDetails.notActiveTooltip")}}/>
+                                </ReactTooltip>
+                        </span>}
                         </th>}
                         {importedFromEdugain && <th>{I18n.t("topBannerDetails.edugainImported")}</th>}
                         {importedFromEdugain && <th>
@@ -1122,6 +1133,9 @@ class Detail extends React.PureComponent {
                         {isPolicy && <td>{I18n.t(`topBannerDetails.${metaData.data.type}`)}</td>}
                         {(isSp || isRp) && <td className={excludedFromPush ? "orange" : "green"}>
                             {excludedFromPush ? I18n.t("topBannerDetails.staging") : I18n.t("topBannerDetails.production")}
+                        </td>}
+                        {isPolicy && <td className={!isActive ? "orange" : "green"}>
+                            {isActive ? I18n.t("topBannerDetails.active") : I18n.t("topBannerDetails.notActive")}
                         </td>}
                         {importedFromEdugain && <td className={"blue"}>{isTrue}</td>}
                         {importedFromEdugain && <td className={"blue"}>{pushEnabled ? isTrue : isFalse}</td>}

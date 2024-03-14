@@ -97,6 +97,7 @@ public class DatabaseController {
             List<PdpPolicyDefinition> policies = this.metaDataRepository
                     .findAllByType(EntityType.PDP.getType()).stream()
                     .map(metaData -> new PdpPolicyDefinition(metaData))
+                    .filter(policyDefinition -> policyDefinition.isActive())
                     .collect(toList());
             this.pdpRestTemplate.put(pdpPushUri, policies);
             result.put("status", "OK");

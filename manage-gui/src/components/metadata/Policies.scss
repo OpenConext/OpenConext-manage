@@ -135,4 +135,15 @@
             }
         }
     }
+
+    .no-policies {
+        display: flex;
+
+        a.button {
+            margin-left: auto;
+            i.fa {
+                margin-left: 20px;
+            }
+        }
+    }
 }

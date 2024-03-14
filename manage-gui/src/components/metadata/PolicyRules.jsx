@@ -31,7 +31,7 @@ export default function PolicyRules({
                     </label>
                     <CheckBox
                         name={andName}
-                        onChange={e => setRule(!e.target.checked)}
+                        onChange={e=> setRule(e.target.checked)}
                         value={value}
                     />
                 </div>
@@ -51,7 +51,7 @@ export default function PolicyRules({
                     </label>
                     <CheckBox
                         name={orName}
-                        onChange={e => setRule(e.target.checked)}
+                        onChange={e => setRule(!e.target.checked)}
                         value={!value}
                     />
                 </div>

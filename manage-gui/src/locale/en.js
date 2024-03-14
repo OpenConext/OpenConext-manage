@@ -53,6 +53,7 @@ I18n.translations.en = {
         single_tenant_template_single: "Single Tenant Template",
         searchPlaceHolder: "Search for metadata",
         new: "New",
+        newPolicy: "New policy",
         tabs: {
             connection: "Connection",
             whitelist: "Whitelisting{{info}}",
@@ -124,6 +125,8 @@ I18n.translations.en = {
         workflow: "Workflow",
         reviewState: "Review state",
         staging: "Staging",
+        active: "Active",
+        notActive: "Not active",
         production: "Production",
         policyType: "Policy type",
         step: "Step-up",
@@ -132,7 +135,8 @@ I18n.translations.en = {
         pushEnabled: "Push enabled",
         pushEnabledTooltip: "If <code>True</code> then this entity is pushed to EB<br/>because <code>coin:push_enabled</code> is set to <code>True</code><br/>despite it is imported from eduGain.<br/>",
         pushExcluded: "Push excluded",
-        pushExcludedTooltip: "This entity is <strong>NOT</strong> pushed to EB as <code>coin:exclude_from_push</code>  is set to <code>True</code>",
+        pushExcludedTooltip: "This entity is <strong>NOT</strong> pushed to EB as <code>coin:exclude_from_push</code> is set to <code>True</code>",
+        notActiveTooltip: "This policy is <strong>NOT</strong> pushed to PDP as <code>active</code> is set to <code>False</code>",
         noEntitiesConnected: "There are no entities connected to this {{type}}",
         noApplicationsConnected: "There are no applications connected to this {{type}}",
         unknownEntitiesConnected: "There are unknown entities connected to this {{type}}: {{entities}}",
@@ -648,7 +652,8 @@ I18n.translations.en = {
         notes: "Notes",
         type: "Type",
         reload: "Reload",
-        providers: "Services"
+        providers: "Services",
+        providerExcludedFromPush: "<strong>{{name}}</strong> is not configured to be included in the Push to PdP"
     },
     policyPlayGround :{
         institutionProvider: "Identity provider",
