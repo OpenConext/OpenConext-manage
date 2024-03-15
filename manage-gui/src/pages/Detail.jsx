@@ -414,7 +414,8 @@ class Detail extends React.PureComponent {
     onChange = component => (
         name,
         value,
-        callback
+        replaceAtSignWithDotsInName = false,
+        callback = undefined
     ) => {
         const currentState = this.state.metaData;
         const metaData = {
@@ -428,14 +429,16 @@ class Detail extends React.PureComponent {
                 this.changeValueReference(
                     metaData,
                     name[i],
-                    value[i]
+                    value[i],
+                    replaceAtSignWithDotsInName
                 );
             }
         } else {
             this.changeValueReference(
                 metaData,
                 name,
-                value
+                value,
+                replaceAtSignWithDotsInName
             );
         }
         const changes = {...this.state.changes};
@@ -451,7 +454,7 @@ class Detail extends React.PureComponent {
             });
         }
         this.setState({metaData: metaData, changes: changes}, () => {
-            callback && callback();
+            callback && typeof callback === "function" && callback();
             if (component === "connection" && name === "data.state") {
                 this.refreshWhiteListing();
             }
@@ -496,9 +499,9 @@ class Detail extends React.PureComponent {
     changeValueReference = (
         metaData,
         name,
-        value
+        value,
+        replaceAtSignWithDotsInName
     ) => {
-        let replaceAtSignWithDotsInName = false;
         if (name.endsWith("redirect.sign")) {
             name = name.replace(/redirect\.sign/, "redirect@sign");
             replaceAtSignWithDotsInName = true;

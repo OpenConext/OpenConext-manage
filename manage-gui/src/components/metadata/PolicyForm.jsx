@@ -136,7 +136,7 @@ export default function PolicyForm({
     }
 
     const onChangePolicyType = option => {
-        onChange("data.type", option.value, () => {
+        onChange("data.type", option.value, false, () => {
             const isRegPolicy = option.value === "reg";
             ["denyAdvice", "denyAdviceNl"].forEach(attr => {
                 onError(attr, isRegPolicy);
@@ -337,7 +337,7 @@ export default function PolicyForm({
         const newLoas = [...data.loas]
         const newLoa = {...newLoas[index], [attrName]: value}
         newLoas.splice(index, 1, newLoa);
-        onChange("data.loas", newLoas, callback);
+        onChange("data.loas", newLoas, false, callback);
     }
 
     const deleteLoa = level => {
@@ -500,7 +500,7 @@ export default function PolicyForm({
                     attributes={data.attributes}
                     onError={onError}
                     allowedAttributes={policyAttributes}
-                    setAttributes={(attributes, callback) => onChange("data.attributes", attributes, callback)}
+                    setAttributes={(attributes, callback) => onChange("data.attributes", attributes, false, callback)}
                     includeNegate={false}
                     isRequired={true}
                 />
