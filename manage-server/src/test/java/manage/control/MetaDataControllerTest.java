@@ -1322,6 +1322,27 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void validationErrors() {
+        Map<String, Object> data = readValueFromFile("/json/valid_service_provider.json");
+        MetaData metaData = new MetaData(EntityType.SP.getType(), data);
+        metaData.metaDataFields().clear();
+        metaData.getData().put("entityid", UUID.randomUUID().toString());
+
+        Map<String, Object> result = given().auth()
+                .preemptive()
+                .basic("sp-portal", "secret")
+                .when()
+                .body(metaData)
+                .header("Content-type", "application/json")
+                .post("manage/api/internal/metadata")
+                .as(new TypeRef<>() {
+                });
+        long nbrValidations = Stream.of(((String) result.get("validations")).split("#")).filter(s -> !s.trim().isEmpty()).count();
+        assertEquals(3L, nbrValidations);
+
+    }
+
+    @Test
     public void createChangeRequest() throws JsonProcessingException {
         doCreateChangeRequest();
 

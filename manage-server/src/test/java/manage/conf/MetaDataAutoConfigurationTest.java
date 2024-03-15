@@ -1,6 +1,7 @@
 package manage.conf;
 
 import manage.TestUtils;
+import manage.exception.CustomValidationException;
 import manage.model.EntityType;
 import org.everit.json.schema.ValidationException;
 import org.everit.json.schema.internal.URIFormatValidator;
@@ -21,7 +22,7 @@ import static org.junit.Assert.fail;
 @SuppressWarnings("unchecked")
 public class MetaDataAutoConfigurationTest implements TestUtils {
 
-    private MetaDataAutoConfiguration subject = new MetaDataAutoConfiguration(
+    private final MetaDataAutoConfiguration subject = new MetaDataAutoConfiguration(
             objectMapper,
             new ClassPathResource("metadata_configuration"),
             new ClassPathResource("metadata_templates"));
@@ -78,8 +79,8 @@ public class MetaDataAutoConfigurationTest implements TestUtils {
         try {
             subject.validate(data, type.getType());
             fail();
-        } catch (ValidationException e) {
-            assertEquals(errorsExpected, e.getAllMessages().size());
+        } catch (CustomValidationException e) {
+            assertEquals(errorsExpected, e.getValidationException().getAllMessages().size());
         }
     }
 

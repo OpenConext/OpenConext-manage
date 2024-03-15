@@ -1,6 +1,7 @@
 package manage.control;
 
 import com.mongodb.DuplicateKeyException;
+import manage.exception.CustomValidationException;
 import manage.exception.DuplicateEntityIdException;
 import manage.exception.ScopeInUseException;
 import org.everit.json.schema.ValidationException;
@@ -50,12 +51,13 @@ public class ErrorController  implements org.springframework.boot.web.servlet.er
         //Determine which status to return - GUI expects 200 and other API clients normal behaviour
         boolean isInternalCall = StringUtils.hasText(request.getHeader(HttpHeaders.AUTHORIZATION));
         HttpStatus status = isInternalCall ? HttpStatus.BAD_REQUEST : HttpStatus.OK;
+        if (error instanceof CustomValidationException) {
+            ValidationException validationException = CustomValidationException.class.cast(error).getValidationException();
+            return validationExceptionResponse(result, validationException, status);
+        }
         if (error instanceof ValidationException) {
             ValidationException validationException = ValidationException.class.cast(error);
-            result.put("validations", String.join(", ", validationException.getAllMessages()));
-            result.put("status", status.value());
-            result.put("error", ValidationException.class.getName());
-            return new ResponseEntity<>(result, status);
+            return validationExceptionResponse(result, validationException, status);
         } else if (error instanceof OptimisticLockingFailureException) {
             result.put("validations", "Optimistic locking failure e.g. mid-air collision. Refresh your screen to get " +
                     "the latest version.");
@@ -86,6 +88,13 @@ public class ErrorController  implements org.springframework.boot.web.servlet.er
             result.put("exception", error.getClass().getCanonicalName());
         }
         return new ResponseEntity<>(result, statusCode);
+    }
+
+    private static ResponseEntity<Map<String, Object>> validationExceptionResponse(Map<String, Object> result, ValidationException validationException, HttpStatus status) {
+        result.put("validations", String.join(", ", validationException.getAllMessages()));
+        result.put("status", status.value());
+        result.put("error", ValidationException.class.getName());
+        return new ResponseEntity<>(result, status);
     }
 
 }

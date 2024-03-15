@@ -2,6 +2,7 @@ package manage.conf;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import manage.exception.CustomValidationException;
 import manage.model.EntityType;
 import manage.validations.BooleanFormatValidator;
 import manage.validations.CertificateFormatValidator;
@@ -15,6 +16,7 @@ import manage.validations.UUIDFormatValidator;
 import manage.validations.XMLFormatValidator;
 import org.everit.json.schema.FormatValidator;
 import org.everit.json.schema.Schema;
+import org.everit.json.schema.ValidationException;
 import org.everit.json.schema.loader.SchemaLoader;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -86,7 +88,13 @@ public class MetaDataAutoConfiguration {
 
         String json = objectMapper.writeValueAsString(data);
         JSONObject jsonObject = new JSONObject(new JSONTokener(json));
-        schema.validate(jsonObject);
+        try {
+            schema.validate(jsonObject);
+        } catch (ValidationException e) {
+            //We want to log the actual violations
+            throw new CustomValidationException(e);
+        }
+
     }
 
     public Set<String> schemaNames() {

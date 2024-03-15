@@ -2,6 +2,7 @@ package manage.service;
 
 import manage.TestUtils;
 import manage.conf.MetaDataAutoConfiguration;
+import manage.exception.CustomValidationException;
 import manage.format.GZIPClassPathResource;
 import manage.model.EntityType;
 import org.everit.json.schema.ValidationException;
@@ -91,8 +92,8 @@ public class ImporterServiceTest implements TestUtils {
         Map map = objectMapper.readValue(json, Map.class);
         try {
             subject.importJSON(EntityType.SP, map);
-        } catch (ValidationException e) {
-            assertEquals(2, List.class.cast(e.toJSON().toMap().get("causingExceptions")).size());
+        } catch (CustomValidationException e) {
+            assertEquals(2, List.class.cast(e.getValidationException().toJSON().toMap().get("causingExceptions")).size());
         }
     }
 
