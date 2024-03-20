@@ -1021,6 +1021,7 @@ class Detail extends React.PureComponent {
                                 data={metaData.data}
                                 isNew={isNew}
                                 onChange={this.onChange("policy_form")}
+                                errors={errors.policy_form}
                                 onError={this.onError("policy_form")}/>
                 );
             default:

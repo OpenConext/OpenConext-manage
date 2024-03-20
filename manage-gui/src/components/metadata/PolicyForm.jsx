@@ -26,6 +26,7 @@ export default function PolicyForm({
                                        data,
                                        isNew,
                                        onChange,
+                                       errors,
                                        onError
                                    }) {
 
@@ -42,6 +43,7 @@ export default function PolicyForm({
             if (urlSearchParams.has("sp")) {
                 const sp = urlSearchParams.get("sp");
                 onChange("data.serviceProviderIds", [{name: sp}]);
+                onError("serviceProviderIds", false);
             } else if (urlSearchParams.has("idp")) {
                 const idp = urlSearchParams.get("idp");
                 onChange("data.identityProviderIds", [{name: idp}]);
@@ -619,6 +621,7 @@ export default function PolicyForm({
 
     return (
         <section className="metadata-policy-form">
+            {/*{JSON.stringify(errors)}*/}
             <section className="policy-form">
                 {renderPolicyType()}
                 {renderPolicyName()}
