@@ -164,19 +164,23 @@ class Policies extends React.Component {
                     <span className={`button green ${copiedToClipboardClassName}`} onClick={this.copyToClipboard}>
                             {I18n.t("clipboard.copy")}<i className="fa fa-clone"></i>
                         </span>
+                    <a className="new button green" onClick={this.newMetaData}>
+                        {I18n.t("metadata.newPolicy")}<i className="fa fa-plus"></i>
+                    </a>
                 </section>}
-                {policies.length > 0 && this.renderPolicyTable(filteredPolicies)}
-                {this.renderPolicyTablePrintable(filteredPolicies)}
                 {policies.length === 0 &&
                     <div className="no-policies">
-                    <h3>{I18n.t("policies.noPolicies", {name: name})}</h3>
+                        <h3>{I18n.t("policies.noPolicies", {name: name})}</h3>
                         <a className="new button green" onClick={this.newMetaData}>
                             {I18n.t("metadata.newPolicy")}<i className="fa fa-plus"></i>
                         </a>
                     </div>}
-    </div>
-    )
-        ;
+                {policies.length > 0 && this.renderPolicyTable(filteredPolicies)}
+                {this.renderPolicyTablePrintable(filteredPolicies)}
+
+            </div>
+        )
+            ;
     }
 }
 

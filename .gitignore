@@ -19,6 +19,8 @@ manage-prd
 manage-server/mongo_db_queries.txt
 dependency.tree
 invite_public_key.pem
+invite_public_2_key.pem
+private_key.pem
 NOTES.md
 yarn.list
 spiel-data

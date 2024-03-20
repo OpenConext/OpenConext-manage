@@ -162,8 +162,8 @@ export default function PolicyForm({
         }
         return (
           <div className="excluded-providers">
-              {excludedServiceProviders.map(provider =>
-                  <span dangerouslySetInnerHTML={{__html: I18n.t("policies.providerExcludedFromPush", {name: provider.label})}}/>
+              {excludedServiceProviders.map((provider, index) =>
+                  <span key={index} dangerouslySetInnerHTML={{__html: I18n.t("policies.providerExcludedFromPush", {name: provider.label})}}/>
                   )}
           </div>
         );

@@ -173,6 +173,7 @@ class Detail extends React.PureComponent {
             removedWhiteListedEntities: [],
             whiteListingLoaded: false,
             changeRequestsLoaded: false,
+            policyProvidersLoaded: false,
             initial: true
         };
     }
@@ -271,7 +272,8 @@ class Detail extends React.PureComponent {
                                 identityProviders: res[0],
                                 serviceProviders: res[1].concat(res[2]),
                                 policyAttributes: res[3],
-                                allowedLoas: res[4]
+                                allowedLoas: res[4],
+                                policyProvidersLoaded: true
                             })
                         })
 
@@ -1066,7 +1068,8 @@ class Detail extends React.PureComponent {
         );
     };
 
-    renderTopBanner = (name, organization, metaData, resourceServers, whiteListing, isNew, whiteListingLoaded) => {
+    renderTopBanner = (name, organization, metaData, resourceServers, whiteListing, isNew, whiteListingLoaded,
+                       serviceProviders, policyProvidersLoaded) => {
         const type = metaData.type;
         const {allowedall, state, allowedEntities, entityid} = metaData.data;
         const typeMetaData = I18n.t(`metadata.${type}_single`);
@@ -1085,6 +1088,12 @@ class Detail extends React.PureComponent {
             .filter(idp => idp.data.allowedall || (idp.data.allowedEntities || []).some(entity => entity.name === entityid))
             .filter(idp => idp.data.state === state)
             .filter(idp => allowedall || (allowedEntities || []).some(entity => entity.name === idp.data.entityid));
+        let missingEvaluations = false;
+        if (isPolicy && policyProvidersLoaded) {
+            const providerEntityIds = metaData.data.serviceProviderIds.map(sp => sp.name);
+            missingEvaluations = serviceProviders.some(entity => providerEntityIds.includes(entity.data.entityid) &&
+                !entity.data.metaDataFields["coin:policy_enforcement_decision_required"]);
+        }
         const connectedApplications = metaData.data.applications;
         const isTrue = I18n.t("topBannerDetails.isTrue");
         const isFalse = I18n.t("topBannerDetails.isFalse");
@@ -1100,21 +1109,33 @@ class Detail extends React.PureComponent {
                         {isPolicy && <th>{I18n.t("topBannerDetails.policyType")}</th>}
                         {(isSp || isRp) && <th>
                             {I18n.t("topBannerDetails.reviewState")}
-                            {excludedFromPush && <span className="info">
-                            <i className="fa fa-info-circle" data-for="push-excluded-tooltip" data-tip/>
-                            <ReactTooltip id="push-excluded-tooltip" type="info" class="tool-tip" effect="solid">
-                                <span dangerouslySetInnerHTML={{__html: I18n.t("topBannerDetails.pushExcludedTooltip")}}/>
-                            </ReactTooltip>
-              </span>}
+                            {excludedFromPush &&
+                                <span className="info">
+                                    <i className="fa fa-info-circle" data-for="push-excluded-tooltip" data-tip/>
+                                    <ReactTooltip id="push-excluded-tooltip" type="info" class="tool-tip" effect="solid">
+                                        <span dangerouslySetInnerHTML={{__html: I18n.t("topBannerDetails.pushExcludedTooltip")}}/>
+                                    </ReactTooltip>
+                                </span>}
                         </th>}
                         {isPolicy && <th>
                             {I18n.t("topBannerDetails.reviewState")}
-                            {!isActive && <span className="info">
-                                <i className="fa fa-info-circle" data-for="not-active-tooltip" data-tip/>
-                                <ReactTooltip id="not-active-tooltip" type="info" class="tool-tip" effect="solid">
-                                    <span dangerouslySetInnerHTML={{__html: I18n.t("topBannerDetails.notActiveTooltip")}}/>
-                                </ReactTooltip>
-                        </span>}
+                            {!isActive &&
+                                <span className="info">
+                                    <i className="fa fa-info-circle" data-for="not-active-tooltip" data-tip/>
+                                    <ReactTooltip id="not-active-tooltip" type="info" class="tool-tip" effect="solid">
+                                        <span dangerouslySetInnerHTML={{__html: I18n.t("topBannerDetails.notActiveTooltip")}}/>
+                                    </ReactTooltip>
+                            </span>}
+                        </th>}
+                        {isPolicy && <th>
+                                {I18n.t("topBannerDetails.evaluatedHeader")}
+                                {missingEvaluations &&
+                                    <span className="info">
+                                        <i className="fa fa-info-circle" data-for="not-configured-tooltip" data-tip/>
+                                        <ReactTooltip id="not-configured-tooltip" type="info" class="tool-tip" effect="solid">
+                                            <span dangerouslySetInnerHTML={{__html: I18n.t("topBannerDetails.notEvaluatedTooltip")}}/>
+                                        </ReactTooltip>
+                            </span>}
                         </th>}
                         {importedFromEdugain && <th>{I18n.t("topBannerDetails.edugainImported")}</th>}
                         {importedFromEdugain && <th>
@@ -1139,6 +1160,9 @@ class Detail extends React.PureComponent {
                         </td>}
                         {isPolicy && <td className={!isActive ? "orange" : "green"}>
                             {isActive ? I18n.t("topBannerDetails.active") : I18n.t("topBannerDetails.notActive")}
+                        </td>}
+                        {isPolicy && <td className={missingEvaluations ? "orange" : "green"}>
+                            {missingEvaluations ? I18n.t("topBannerDetails.notEvaluated") : I18n.t("topBannerDetails.evaluated")}
                         </td>}
                         {importedFromEdugain && <td className={"blue"}>{isTrue}</td>}
                         {importedFromEdugain && <td className={"blue"}>{pushEnabled ? isTrue : isFalse}</td>}
@@ -1196,6 +1220,7 @@ class Detail extends React.PureComponent {
             errors,
             revisionNoteClone,
             changeRequestsLoaded,
+            policyProvidersLoaded,
             whiteListingLoaded
         } = this.state;
 
@@ -1249,7 +1274,7 @@ class Detail extends React.PureComponent {
                     <section className="top-detail">
                         <section className="inner-detail">
                             {this.renderTopBanner(name, organization, metaData, resourceServers, whiteListing,
-                                isNew, whiteListingLoaded)}
+                                isNew, whiteListingLoaded, serviceProviders, policyProvidersLoaded)}
                             {hasErrors && this.renderErrors(errors)}
                             {allowedDelete && (
                                 <a
