@@ -15,6 +15,7 @@ import static io.restassured.RestAssured.given;
 import static manage.api.APIAuthenticationManager.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class PolicyControllerTest extends AbstractIntegrationTest {
 
@@ -62,7 +63,7 @@ public class PolicyControllerTest extends AbstractIntegrationTest {
                 .get("manage/api/internal/protected/policies/14")
                 .as(PdpPolicyDefinition.class);
         assertEquals("https://idp.test2.surfconext.nl", policy.getIdentityProviderIds().get(0));
-        assertTrue(policy.isActionsAllowed());
+        assertFalse(policy.isActionsAllowed());
         //The ipInfo is appended to stepUp policies
         List<IPInfo> ipInfos = policy.getLoas().stream()
                 .flatMap(loa -> loa.getCidrNotations().stream().map(cidrNotation -> cidrNotation.getIpInfo()))

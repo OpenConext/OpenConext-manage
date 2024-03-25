@@ -64,7 +64,8 @@ public class PolicyController {
                 .map(metaData -> new PdpPolicyDefinition(metaData))
                 .collect(toList());
         return policyIdpAccessEnforcer
-                .filterPdpPolicies(apiUser, policies).stream()
+                .filterPdpPolicies(apiUser, policies)
+                .stream()
                 .map(policy -> enrichPolicyDefinition(policy))
                 .collect(toList());
     }
@@ -74,7 +75,7 @@ public class PolicyController {
     public PdpPolicyDefinition policies(APIUser apiUser, @PathVariable("id") String id) {
         PdpPolicyDefinition policy = new PdpPolicyDefinition(this.metaDataService.getMetaDataAndValidate(EntityType.PDP.getType(), id));
         boolean actionsAllowed = policyIdpAccessEnforcer.actionAllowed(policy, PolicyAccess.READ, apiUser, true);
-        policy.setActionsAllowed(actionsAllowed);
+        policy.setActionsAllowed(actionsAllowed && !policy.getType().equals("step"));
         return enrichPolicyDefinition(policy);
     }
 
@@ -183,11 +184,12 @@ public class PolicyController {
             properties.put("entityid", identityProviderIds);
             List<Map> identityProviders = metaDataService.searchEntityByType(EntityType.IDP.getType(), properties, false);
             policyDefinition.setIdentityProviderNames(identityProviders.stream().map(idp -> name(idp)).collect(toList()));
-            policyDefinition.setServiceProviderNamesNl(identityProviders.stream().map(idp -> nameNL(idp)).collect(toList()));
+            policyDefinition.setIdentityProviderNamesNl(identityProviders.stream().map(idp -> nameNL(idp)).collect(toList()));
         }
         if (policyDefinition.getType().equals("step")) {
             policyDefinition.getLoas().forEach(loa -> loa.getCidrNotations()
                     .forEach(notation -> notation.setIpInfo(IPAddressProvider.getIpInfo(notation.getIpAddress(), notation.getPrefix()))));
+            policyDefinition.setActionsAllowed(false);
         }
         return policyDefinition;
     }
