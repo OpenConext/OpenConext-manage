@@ -1168,7 +1168,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         given()
                 .auth()
                 .preemptive()
-                .basic("sp-portal", "secret")
+                .basic("dashboard", "secret")
                 .header("Content-type", "application/json")
                 .body(connectionData)
                 .put("manage/api/internal/connectWithoutInteraction/")
@@ -1380,7 +1380,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void arpAdditionChangeRequest() throws IOException {
+    public void arpAdditionChangeRequest() {
         String changeRequestJson = readFile("json/incremental_arp_change_request.json");
         given().auth().preemptive().basic("sp-portal", "secret")
                 .when()
@@ -1407,7 +1407,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void arpRemovalChangeRequest() throws IOException {
+    public void arpRemovalChangeRequest() {
         String changeRequestJson = readFile("json/incremental_arp_removal_change_request.json");
         given().auth().preemptive().basic("sp-portal", "secret")
                 .when()
@@ -1473,7 +1473,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         MetaDataChangeRequest changeRequest = new MetaDataChangeRequest(
                 "6", EntityType.IDP.getType(), "Because....", pathUpdates, auditData
         );
-        Map results = given().auth().preemptive().basic("sp-portal", "secret")
+        Map results = given().auth().preemptive().basic("dashboard", "secret")
                 .when()
                 .body(changeRequest)
                 .header("Content-type", "application/json")
@@ -1505,7 +1505,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         MetaDataChangeRequest changeRequest = new MetaDataChangeRequest(
                 "6", EntityType.IDP.getType(), "Because....", pathUpdates, auditData
         );
-        Map results = given().auth().preemptive().basic("sp-portal", "secret")
+        Map results = given().auth().preemptive().basic("dashboard", "secret")
                 .when()
                 .body(changeRequest)
                 .header("Content-type", "application/json")
@@ -1622,7 +1622,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         changeRequest.setIncrementalChange(true);
         changeRequest.setPathUpdateType(PathUpdateType.REMOVAL);
 
-        Map results = given().auth().preemptive().basic("sp-portal", "secret")
+        Map results = given().auth().preemptive().basic("dashboard", "secret")
                 .when()
                 .body(changeRequest)
                 .header("Content-type", "application/json")
@@ -1653,7 +1653,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         changeRequest.setIncrementalChange(true);
         changeRequest.setPathUpdateType(PathUpdateType.ADDITION);
 
-        Map results = given().auth().preemptive().basic("sp-portal", "secret")
+        Map results = given().auth().preemptive().basic("dashboard", "secret")
                 .when()
                 .body(changeRequest)
                 .header("Content-type", "application/json")
@@ -1803,7 +1803,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         MetaDataChangeRequest changeRequest = new MetaDataChangeRequest(
                 "1", EntityType.SP.getType(), "Because....", pathUpdates, auditData
         );
-        given().auth().preemptive().basic("sp-portal", "secret")
+        given().auth().preemptive().basic("dashboard", "secret")
                 .when()
                 .body(changeRequest)
                 .header("Content-type", "application/json")

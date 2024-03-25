@@ -2,15 +2,15 @@ package manage.api;
 
 public enum Scope {
 
-    CHANGE_REQUEST, //Allowed to create change requests
+    ADMIN, //Standard scope for all GUI related endpoint (e.g. /manage/api/client/** endpoints)
+    CHANGE_REQUEST_IDP, //Allowed to create change requests for IdP
+    CHANGE_REQUEST_SP, //Allowed to create change requests for SP
+    POLICIES, //Allowed to create (excluding Identity Providers) and update all entities
     PUSH, //Allowed to push changes to EB & OIDC-NG
     READ, //Allowed to read entities
-    SYSTEM, //Allowed everything including Attribute Manipulation and updating / deleting Identity Providers
+    SYSTEM, //Allowed everything including Attribute Manipulation
     TEST, //Only used internally
-    WRITE, //Allowed to create (excluding Identity Providers) and update all entities
-    POLICIES, //Allowed to create (excluding Identity Providers) and update all entities
-    DELETE, //Allowed to delete entities (excluding Identity Providers)
-    ADMIN //Standard scope for all GUI related endpoint (e.g. /manage/api/client/** endpoints)
-
+    WRITE_SP, //Allowed to CRUD SP / RP /RS
+    WRITE_IDP //Allowed to CRUD IdP
 
 }

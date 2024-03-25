@@ -3,12 +3,14 @@ package manage.control;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import manage.api.APIUser;
 import manage.conf.MetaDataAutoConfiguration;
+import manage.exception.EndpointNotAllowed;
 import manage.model.*;
 import manage.repository.MetaDataRepository;
 import manage.service.ExporterService;
 import manage.service.ImporterService;
 import manage.service.MetaDataService;
 import manage.shibboleth.FederatedUser;
+import manage.web.ScopeEnforcer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ByteArrayResource;
@@ -32,6 +34,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static manage.api.Scope.TEST;
+import static manage.api.Scope.WRITE_IDP;
 import static manage.mongo.MongoChangelog.CHANGE_REQUEST_POSTFIX;
 import static manage.mongo.MongoChangelog.REVISION_POSTFIX;
 
@@ -112,19 +115,18 @@ public class MetaDataController {
         return metaDataRepository.stats();
     }
 
-    @PreAuthorize("hasRole('WRITE')")
+    @PreAuthorize("hasAnyRole('WRITE_SP', 'WRITE_IDP')")
     @PostMapping("/internal/metadata")
     public MetaData postInternal(@Validated @RequestBody MetaData metaData, APIUser apiUser)
             throws JsonProcessingException {
-
+        ScopeEnforcer.enforceWriteScope(apiUser, EntityType.fromType(metaData.getType()) );
         return metaDataService.doPost(metaData, apiUser, !apiUser.getScopes().contains(TEST));
     }
 
-    @PreAuthorize("hasRole('WRITE')")
+    @PreAuthorize("hasRole('WRITE_SP')")
     @PostMapping("/internal/new-sp")
     public MetaData newSP(@Validated @RequestBody XML container, APIUser apiUser)
             throws IOException, XMLStreamException {
-
         Map<String, Object> innerJson = importerService.importXML(new ByteArrayResource(container.getXml()
                 .getBytes()), EntityType.SP, Optional.empty());
 
@@ -156,7 +158,7 @@ public class MetaDataController {
         return metaDataService.importFeed(importRequest);
     }
 
-    @PreAuthorize("hasRole('WRITE')")
+    @PreAuthorize("hasRole('WRITE_SP')")
     @PostMapping("/internal/update-sp/{id}/{version}")
     public MetaData updateSP(@PathVariable("id") String id,
                              @PathVariable("version") Long version,
@@ -229,27 +231,30 @@ public class MetaDataController {
         return metaDataService.doPut(metaData, user, false);
     }
 
-    @PreAuthorize("hasRole('WRITE')")
+    @PreAuthorize("hasAnyRole('WRITE_SP', 'WRITE_IDP')")
     @PutMapping("/internal/metadata")
     @Transactional
     public MetaData putInternal(@Validated @RequestBody MetaData metaData, APIUser apiUser)
             throws JsonProcessingException {
+        ScopeEnforcer.enforceWriteScope(apiUser, EntityType.fromType(metaData.getType()) );
         return metaDataService.doPut(metaData, apiUser, !apiUser.getScopes().contains(TEST));
     }
 
-    @PreAuthorize("hasRole('WRITE')")
+    @PreAuthorize("hasAnyRole('WRITE_SP', 'WRITE_IDP')")
     @PutMapping("/internal/delete-metadata-key")
     @Transactional
     public List<String> deleteMetaDataKey(@Validated @RequestBody MetaDataKeyDelete metaDataKeyDelete,
                                           APIUser apiUser) throws IOException {
+        ScopeEnforcer.enforceWriteScope(apiUser, EntityType.fromType(metaDataKeyDelete.getType()) );
         return metaDataService.deleteMetaDataKey(metaDataKeyDelete, apiUser);
     }
 
-    @PreAuthorize("hasRole('WRITE')")
+    @PreAuthorize("hasAnyRole('WRITE_SP', 'WRITE_IDP')")
     @PutMapping("internal/merge")
     @Transactional
     public MetaData update(@Validated @RequestBody MetaDataUpdate metaDataUpdate, APIUser apiUser)
             throws JsonProcessingException {
+        ScopeEnforcer.enforceWriteScope(apiUser, EntityType.fromType(metaDataUpdate.getType()) );
         return metaDataService
                 .doMergeUpdate(metaDataUpdate, apiUser, "Internal API merge", true)
                 .get();
@@ -262,28 +267,33 @@ public class MetaDataController {
         return metaDataRepository.changeRequests(metaDataId, type.concat(CHANGE_REQUEST_POSTFIX));
     }
 
-    @PreAuthorize("hasAnyRole('CHANGE_REQUEST', 'WRITE')")
+    @PreAuthorize("hasAnyRole('CHANGE_REQUEST_SP', 'CHANGE_REQUEST_IDP')")
     @GetMapping("/internal/change-requests/{type}/{metaDataId}")
     public List<MetaDataChangeRequest> internalChangeRequests(@PathVariable("type") String type,
-                                                              @PathVariable("metaDataId") String metaDataId) {
+                                                              @PathVariable("metaDataId") String metaDataId,
+                                                              APIUser apiUser) {
+        ScopeEnforcer.enforceChangeRequestScope(apiUser, EntityType.fromType(type) );
         return metaDataRepository.changeRequests(metaDataId, type.concat(CHANGE_REQUEST_POSTFIX));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/client/change-requests/all")
     public List<MetaDataChangeRequest> allChangeRequests() {
         return metaDataRepository.allChangeRequests();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("client/change-requests/count")
     public long openChangeRequests() {
         return metaDataRepository.openChangeRequests();
     }
 
 
-    @PreAuthorize("hasAnyRole('CHANGE_REQUEST', 'WRITE')")
+    @PreAuthorize("hasAnyRole('CHANGE_REQUEST_SP', 'CHANGE_REQUEST_IDP')")
     @PostMapping("internal/change-requests")
     @Transactional
     public MetaDataChangeRequest changeRequestInternal(@Validated @RequestBody MetaDataChangeRequest metaDataChangeRequest, APIUser apiUser) throws JsonProcessingException {
+        ScopeEnforcer.enforceChangeRequestScope(apiUser, EntityType.fromType(metaDataChangeRequest.getType()) );
         return metaDataService.doChangeRequest(metaDataChangeRequest, apiUser);
     }
 
@@ -316,11 +326,12 @@ public class MetaDataController {
         return metaDataService.doRejectChangeRequest(changeRequest, user);
     }
 
-    @PreAuthorize("hasRole('WRITE')")
+    @PreAuthorize("hasAnyRole('CHANGE_REQUEST_IDP', 'CHANGE_REQUEST_SP')")
     @PutMapping("/internal/change-requests/reject")
     @Transactional
-    public MetaData internalRejectChangeRequest(@RequestBody @Validated ChangeRequest changeRequest, APIUser user) {
-        return metaDataService.doRejectChangeRequest(changeRequest, user);
+    public MetaData internalRejectChangeRequest(@RequestBody @Validated ChangeRequest changeRequest, APIUser apiUser) {
+        ScopeEnforcer.enforceChangeRequestScope(apiUser, EntityType.fromType(changeRequest.getType()) );
+        return metaDataService.doRejectChangeRequest(changeRequest, apiUser);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -423,7 +434,7 @@ public class MetaDataController {
         return metaDataService.retrieveRecentActivity(properties);
     }
 
-    @PreAuthorize("hasAnyRole('CHANGE_REQUEST', 'WRITE')")
+    @PreAuthorize("hasRole('CHANGE_REQUEST_IDP')")
     @PutMapping(value = "/internal/connectWithoutInteraction")
     public HttpEntity<HttpStatus> connectWithoutInteraction(@RequestBody Map<String, String> connectionData,
                                                             APIUser apiUser) throws JsonProcessingException {

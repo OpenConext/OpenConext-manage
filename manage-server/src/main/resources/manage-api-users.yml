@@ -3,7 +3,7 @@ apiUsers:
   - {
     name: "dashboard",
     password: "secret",
-    scopes: [READ, CHANGE_REQUEST, TEST, POLICIES]
+    scopes: [ READ, CHANGE_REQUEST_SP,CHANGE_REQUEST_IDP, TEST, POLICIES ]
   }
   - {
     name: "pdp",
@@ -18,10 +18,10 @@ apiUsers:
   - {
     name: "sp-portal",
     password: "secret",
-    scopes: [READ, WRITE, PUSH, TEST]
+    scopes: [ READ, WRITE_SP, PUSH, CHANGE_REQUEST_SP, TEST ]
   }
   - {
     name: "sysadmin",
     password: "secret",
-    scopes: [READ, WRITE, PUSH, SYSTEM]
+    scopes: [ READ, WRITE_IDP, WRITE_SP, PUSH, SYSTEM ]
   }

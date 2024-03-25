@@ -7,7 +7,6 @@ import manage.model.EntityType;
 import manage.model.MetaData;
 import org.junit.jupiter.api.Test;
 
-import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,17 +16,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class EncryptionHookTest implements TestUtils {
 
-    private final EncryptionHook encryptionHook;
-    private final KeyStore keyStore;
+    private final KeyStore keyStore = new RSAKeyStore();
+    private final EncryptionHook encryptionHook = new EncryptionHook(keyStore);;
 
-    {
-        try {
-            keyStore = new RSAKeyStore();
-            encryptionHook = new EncryptionHook(keyStore);
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     @Test
     void appliesForMetaData() {
