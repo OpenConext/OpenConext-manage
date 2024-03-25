@@ -170,7 +170,7 @@ public class PolicyControllerTest extends AbstractIntegrationTest {
                 .get("manage/api/internal/protected/revisions/13")
                 .as(new TypeRef<>() {
                 });
-        assertEquals(1, revisions.size());
+        assertEquals(2, revisions.size());
     }
 
     @Test

@@ -126,13 +126,25 @@ public class PolicyController {
         PdpPolicyDefinition policy = new PdpPolicyDefinition(this.metaDataService.getMetaDataAndValidate(type, id));
         policyIdpAccessEnforcer.actionAllowed(policy, PolicyAccess.READ, apiUser, true);
         List<MetaData> revisions = metaDataRepository.revisions(type.concat(REVISION_POSTFIX), id);
-        return revisions.stream().map(revision -> enrichPolicyDefinition(new PdpPolicyDefinition(revision))).collect(toList());
+        //Needs to be mutables
+        List<PdpPolicyDefinition> pdpPolicyDefinitionRevisions = new ArrayList<>(revisions.stream().map(revision -> enrichPolicyDefinition(new PdpPolicyDefinition(revision))).collect(toList()));
+        //Backward compatibility for Dashboard
+        pdpPolicyDefinitionRevisions.add(policy);
+        return pdpPolicyDefinitionRevisions;
+
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'POLICIES')")
-    @RequestMapping(method = GET, value = {"/client/attributes", "/internal/protected/attributes"})
+    @PreAuthorize("hasRole('ADMIN')")
+    @RequestMapping(method = GET, value = {"/client/attributes"})
     public List<Map<String, String>> getAllowedAttributes() {
         return this.allowedAttributes;
+    }
+
+    @PreAuthorize("hasRole('POLICIES')")
+    @RequestMapping(method = GET, value = { "/internal/protected/attributes"})
+    public List<Map<String, String>> getAllowedAttributesForDashboard() {
+        //Backward compatibility for dashboard
+        return this.allowedAttributes.stream().map(attr -> Map.of("AttributeId", attr.get("value"), "Value", attr.get("label"))).collect(toList());
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'POLICIES')")
