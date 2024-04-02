@@ -31,7 +31,6 @@ public class SecurityHook extends MetaDataHookAdapter {
 
     @Override
     public MetaData prePut(MetaData previous, MetaData newMetaData, AbstractUser user) {
-        validateIdPScope(newMetaData, user);
         Map<String, Object> previousData = previous.getData();
         Map<String, Object> newData = newMetaData.getData();
         String manipulation = (String) previousData.get("manipulation");
