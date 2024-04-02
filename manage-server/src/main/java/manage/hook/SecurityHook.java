@@ -19,22 +19,19 @@ public class SecurityHook extends MetaDataHookAdapter {
 
     @Override
     public MetaData prePost(MetaData metaData, AbstractUser user) {
-        if (metaData.getType().equals(EntityType.IDP.getType()) && user.isAPIUser()) {
-            throw new EndpointNotAllowed(String.format("APIUser %s is not allowed to create IdP's", user.getName()));
-        }
+        validateIdPScope(metaData, user);
         return metaData;
     }
 
     @Override
     public MetaData preDelete(MetaData metaData, AbstractUser user) {
-        if (metaData.getType().equals(EntityType.IDP.getType()) && user.isAPIUser()) {
-            throw new EndpointNotAllowed(String.format("APIUser %s is not allowed to delete IdP's", user.getName()));
-        }
+        validateIdPScope(metaData, user);
         return metaData;
     }
 
     @Override
     public MetaData prePut(MetaData previous, MetaData newMetaData, AbstractUser user) {
+        validateIdPScope(newMetaData, user);
         Map<String, Object> previousData = previous.getData();
         Map<String, Object> newData = newMetaData.getData();
         String manipulation = (String) previousData.get("manipulation");
@@ -49,6 +46,12 @@ public class SecurityHook extends MetaDataHookAdapter {
             throw new EndpointNotAllowed(String.format("User %s is not allowed to change manipulationNotes", user.getName()));
         }
         return newMetaData;
+    }
+
+    private static void validateIdPScope(MetaData metaData, AbstractUser user) {
+        if (metaData.getType().equals(EntityType.IDP.getType()) && !user.isAllowed(Scope.WRITE_IDP) && !user.isAllowed(Scope.ADMIN) && !user.isSystemUser()) {
+            throw new EndpointNotAllowed(String.format("APIUser %s is not allowed to create IdP's", user.getName()));
+        }
     }
 
 

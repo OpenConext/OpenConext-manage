@@ -115,7 +115,7 @@ public class MetaDataController {
         return metaDataRepository.stats();
     }
 
-    @PreAuthorize("hasAnyRole('WRITE_SP', 'WRITE_IDP')")
+    @PreAuthorize("hasAnyRole('WRITE_SP', 'WRITE_IDP', 'SYSTEM')")
     @PostMapping("/internal/metadata")
     public MetaData postInternal(@Validated @RequestBody MetaData metaData, APIUser apiUser)
             throws JsonProcessingException {
@@ -231,7 +231,7 @@ public class MetaDataController {
         return metaDataService.doPut(metaData, user, false);
     }
 
-    @PreAuthorize("hasAnyRole('WRITE_SP', 'WRITE_IDP')")
+    @PreAuthorize("hasAnyRole('WRITE_SP', 'WRITE_IDP', 'SYSTEM')")
     @PutMapping("/internal/metadata")
     @Transactional
     public MetaData putInternal(@Validated @RequestBody MetaData metaData, APIUser apiUser)
@@ -240,7 +240,7 @@ public class MetaDataController {
         return metaDataService.doPut(metaData, apiUser, !apiUser.getScopes().contains(TEST));
     }
 
-    @PreAuthorize("hasAnyRole('WRITE_SP', 'WRITE_IDP')")
+    @PreAuthorize("hasAnyRole('WRITE_SP', 'WRITE_IDP', 'SYSTEM')")
     @PutMapping("/internal/delete-metadata-key")
     @Transactional
     public List<String> deleteMetaDataKey(@Validated @RequestBody MetaDataKeyDelete metaDataKeyDelete,
@@ -249,7 +249,7 @@ public class MetaDataController {
         return metaDataService.deleteMetaDataKey(metaDataKeyDelete, apiUser);
     }
 
-    @PreAuthorize("hasAnyRole('WRITE_SP', 'WRITE_IDP')")
+    @PreAuthorize("hasAnyRole('WRITE_SP', 'WRITE_IDP', 'SYSTEM')")
     @PutMapping("internal/merge")
     @Transactional
     public MetaData update(@Validated @RequestBody MetaDataUpdate metaDataUpdate, APIUser apiUser)
