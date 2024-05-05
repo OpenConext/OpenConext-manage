@@ -37,6 +37,15 @@
           },
           "value": {
             "type": "string"
+          },
+          "motivation": {
+            "type": "string"
+          },
+          "releaseAs": {
+            "type": "string"
+          },
+          "useAsNameId": {
+            "type": "boolean"
           }
         }
       }

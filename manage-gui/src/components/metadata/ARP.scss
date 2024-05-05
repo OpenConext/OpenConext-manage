@@ -47,15 +47,14 @@
     }
 
     table.arp-attributes {
-        border: 1px solid white;
         width: 100%;
         height: 100%;
 
         thead th {
-            border: 2px solid white;
             text-align: left;
-            padding: 5px;
+            padding: 7px 0 12px 0;
             font-size: larger;
+            border-bottom: 1px solid $lighter-grey;
 
             &.name {
                 width: 30%;
@@ -78,12 +77,25 @@
             }
         }
 
+        tbody {
+            tr:first-child td {
+                padding-top: 12px;
+
+            }
+
+            tr:last-child td {
+                padding-bottom: 12px;
+                border-bottom: 1px solid $lighter-grey;
+            }
+        }
+
         tbody:nth-child(odd) {
             background-color: $lightest-grey;
         }
 
+
         td {
-            border: 3px solid white;
+            padding: 3px 0;
             vertical-align: top;
             height: 100%;
 
@@ -117,8 +129,6 @@
 
             &.new-attribute-value {
                 vertical-align: middle;
-                font-style: italic;
-                color: $blue;
                 margin: 5px 2px;
             }
 

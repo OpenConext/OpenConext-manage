@@ -109,19 +109,21 @@ export default class ARP extends React.Component {
             this.setState({addInput: false, keyForNewInput: undefined, value: ""});
         } else {
             const currentArpValues = [...this.props.arp.attributes[key] || []];
-            const motivation = this.getMotivation(currentArpValues);
+            const motivation = this.getArpAttribute(currentArpValues);
             currentArpValues.push({value: value, source: "idp", motivation: motivation});
             this.setState({addInput: false, keyForNewInput: undefined, value: "", newArpAttributeAddedKey: key});
             this.onChange(key, currentArpValues);
         }
     };
 
-    motivationChange = key => e => {
-        const value = e.target.value;
-        const currentArpValues = [...this.props.arp.attributes[key] || []];
-        const newArpValues = currentArpValues.map(arpValue => (
-            {value: arpValue.value, source: arpValue.source, motivation: value}
-        ));
+    arpAttributeChange = (key, attribute, boolean = false) => e => {
+        const value = boolean ? e.target.checked : e.target.value;
+        const {attributes :arpAttributes} = this.props.arp;
+        debugger;
+        //TODO if attribute === "useAsNameId" , set all other ARP attributes the "useAsNameId" t0 false, there can only be one
+        const currentArpValues = [...arpAttributes[key] || []];
+        const newArpValues = currentArpValues
+            .map(arpValue => ({...arpValue, [attribute]: value}));
         this.onChange(key, newArpValues);
     };
 
@@ -256,19 +258,47 @@ export default class ARP extends React.Component {
                     }
                 }}
                        type="text"
-                       value={this.getMotivation(attributeValues)}
+                       value={this.getArpAttribute(attributeValues, "motivation")}
                        className="motivation"
-                onChange={this.motivationChange(attributeKey)}
+                       onChange={this.arpAttributeChange(attributeKey, "motivation")}
                 placeholder={I18n.t("arp.new_attribute_motivation_placeholder")}/></td>
         </tr>}
+        {(!doAddInput && attributeValues.length > 0) &&
+            <tr>
+                <td className="new-attribute-value"
+                    colSpan={2}>{I18n.t("arp.new_attribute_release_as", {key: this.nameOfKey(display, attributeKey)})}</td>
+                <td colSpan={3}>
+                    <input type="text"
+                           value={this.getArpAttribute(attributeValues, "releaseAt")}
+                           className="release-as"
+                           onChange={this.arpAttributeChange(attributeKey, "releaseAt")}
+                           placeholder={I18n.t("arp.new_attribute_release_as_placeholder")}/></td>
+            </tr>}
+        {(!doAddInput && attributeValues.length > 0) &&
+            <tr>
+                <td className="new-attribute-value"
+                    colSpan={2}>{I18n.t("arp.new_attribute_use_as_nameid", {key: this.nameOfKey(display, attributeKey)})}</td>
+                <td colSpan={3}>
+                    <CheckBox name={attributeKey}
+                              onChange={this.arpAttributeChange(attributeKey, "useAsNameId", true)}
+                              value={this.getArpAttribute(attributeValues, "useAsNameId", true)}/>
+                </td>
+            </tr>}
             </tbody>)
     };
 
-    getMotivation = attributeValues => {
-        const motivations = attributeValues
-            .filter(attributeValue => !isEmpty(attributeValue.motivation))
-            .map(attributeValue => attributeValue.motivation);
-        return isEmpty(motivations) ? "" : motivations[0];
+    getArpAttribute = (attributeValues, attributeName, isBoolean = false) => {
+        const values = attributeValues
+            .filter(attributeValue => !isEmpty(attributeValue[attributeName]))
+            .map(attributeValue => attributeValue[attributeName]);
+        return isEmpty(values) ? (isBoolean ? false : "") : values[0];
+    }
+
+    getReleaseAs = attributeValues => {
+        const releaseAsValues = attributeValues
+            .filter(attributeValue => !isEmpty(attributeValue.releaseAt))
+            .map(attributeValue => attributeValue.releaseAt);
+        return isEmpty(releaseAsValues) ? "" : releaseAsValues[0];
     }
 
     renderArpAttributesTable = (arp, onChange, arpConfiguration, guest) => {
@@ -315,8 +345,10 @@ export default class ARP extends React.Component {
         return (
             <div className="metadata-arp">
                 <section className="options">
-                    <CheckBox name="arp-enabled" value={!sanitizedArp.enabled}
-                              onChange={this.arpEnabled} readOnly={guest}
+                    <CheckBox name="arp-enabled"
+                              value={!sanitizedArp.enabled}
+                              onChange={this.arpEnabled}
+                              readOnly={guest}
                               info={I18n.t("arp.arp_enabled")}/>
                     <span className={`button green ${copiedToClipboardClassName}`} onClick={this.copyToClipboard}>
                         {I18n.t("clipboard.copy")}<i className="fa fa-clone"></i>
