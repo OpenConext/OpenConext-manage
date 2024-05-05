@@ -1791,6 +1791,42 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         assertEquals(1L, nbrValidations);
     }
 
+    @Test
+    public void acsChangeRequest() {
+        String changeRequestJson = readFile("json/invalid_acs_change_request.json");
+        given().auth().preemptive().basic("sp-portal", "secret")
+                .when()
+                .body(changeRequestJson)
+                .header("Content-type", "application/json")
+                .post("manage/api/internal/change-requests")
+                .then()
+                .statusCode(SC_OK);
+        MetaDataChangeRequest metaDataChangeRequest = mongoTemplate()
+                .find(new Query(), MetaDataChangeRequest.class, EntityType.SP.getType().concat(CHANGE_REQUEST_POSTFIX)).get(0);
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .body(new ChangeRequest(metaDataChangeRequest.getId(), EntityType.SP.getType(), metaDataChangeRequest.getMetaDataId(), "Rev notes"))
+                .put("/manage/api/client/change-requests/accept")
+                .then()
+                .statusCode(200);
+
+        MetaData metaData = metaDataRepository.findById("1", EntityType.SP.getType());
+        Map<String, Object> metaDataFields = metaData.metaDataFields();
+
+        assertEquals("https://print.saxion.nl/end-user/saml/SSO", metaDataFields.get("AssertionConsumerService:0:Location"));
+        List.of("metaDataFields.AssertionConsumerService:1:Location",
+                        "metaDataFields.AssertionConsumerService:1:Binding",
+                        "metaDataFields.AssertionConsumerService:2:Location",
+                        "metaDataFields.AssertionConsumerService:2:Binding",
+                        "metaDataFields.AssertionConsumerService:3:Location",
+                        "metaDataFields.AssertionConsumerService:3:Binding")
+                .forEach(key -> assertFalse(metaDataFields.containsKey(key)));
+
+        assertTrue(((String) metaDataFields.get("certData")).startsWith("MIIG5jCCBM6gAwIBAgIBCDANBgkqhkiG9w0BA"));
+    }
+
+
     private void doCreateChangeRequest() {
         Map<String, Object> pathUpdates = new HashMap<>();
         pathUpdates.put("metaDataFields.description:en", "New description");

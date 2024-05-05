@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public class CertificateFormatValidator implements FormatValidator {
 
-    private CertificateFactory certificateFactory;
+    private final CertificateFactory certificateFactory;
 
     public CertificateFormatValidator() {
         try {
