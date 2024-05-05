@@ -350,6 +350,12 @@ class Detail extends React.PureComponent {
         const requiredMetaData = configuration.properties.metaDataFields.required;
         const metaDataFields = metaData.data.metaDataFields;
         const currentErrors = {...this.state.errors};
+        //Bugfix for after import validation
+        Object.keys(currentErrors).forEach(errorKey => {
+            if (isEmpty(currentErrors[errorKey])) {
+                delete currentErrors[errorKey];
+            }
+        })
         const metaDataErrors = currentErrors.metadata || {};
         Object.keys(metaDataFields).forEach(key => {
             if (isEmpty(metaDataFields[key]) && requiredMetaData.indexOf(key) > -1) {

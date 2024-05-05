@@ -360,6 +360,14 @@ public class MetaDataFeedParser {
                                         reader.getElementText());
                             }
                             break;
+                        case "NameIDFormat": {
+                            if (inCorrectEntityDescriptor) {
+                                String elementText = reader.getElementText();
+                                metaDataFields.put("NameIDFormat", elementText);
+                            }
+                            break;
+                        }
+
                     }
                     break;
                 case END_ELEMENT:
