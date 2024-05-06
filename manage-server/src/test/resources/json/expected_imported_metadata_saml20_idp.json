@@ -1,4 +1,5 @@
 {
+  "NameIDFormat" : "urn:oasis:names:tc:SAML:2.0:nameid-format:transient",
   "OrganizationDisplayName:en" : "SURFdropjes Beta",
   "OrganizationDisplayName:nl" : "SURFdropjes Beta",
   "OrganizationName:en" : "SURFdropjes Beta",

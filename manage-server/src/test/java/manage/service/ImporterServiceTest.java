@@ -54,8 +54,8 @@ public class ImporterServiceTest implements TestUtils {
         assertEquals("https://teams.surfconext.nl/shibboleth", result.get("entityid"));
 
         Map metaDataFields = Map.class.cast(result.get(ImporterService.META_DATA_FIELDS));
-
         String json = this.readFile("/json/expected_imported_metadata_saml20_sp.json");
+
         assertEquals(json, objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(metaDataFields));
     }
 
