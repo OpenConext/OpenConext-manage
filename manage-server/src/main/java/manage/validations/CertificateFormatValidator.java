@@ -37,6 +37,7 @@ public class CertificateFormatValidator implements FormatValidator {
     }
 
     private String wrapCert(String certificate) {
-        return "-----BEGIN CERTIFICATE-----\n" + certificate + "\n-----END CERTIFICATE-----";
+        return certificate.startsWith("-----BEGIN CERTIFICATE-----") ? certificate :
+                "-----BEGIN CERTIFICATE-----\n" + certificate + "\n-----END CERTIFICATE-----";
     }
 }

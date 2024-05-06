@@ -2,6 +2,7 @@ package manage.format;
 
 import manage.model.EntityType;
 import manage.model.MetaData;
+import org.springframework.util.StringUtils;
 
 import java.util.*;
 import java.util.stream.IntStream;
@@ -277,22 +278,18 @@ public class EngineBlockFormatter {
         }
         Map<String, Object> arp = (Map<String, Object>) possibleArp;
         Object enabled = arp.get("enabled");
-        if (enabled != null && Boolean.class.cast(enabled)) {
+        if (enabled != null && (Boolean) enabled) {
             Object possibleAttributes = arp.get("attributes");
-            if (possibleAttributes != null && possibleAttributes instanceof List) {
-                List<String> listAttributes = (List<String>) possibleAttributes;
-                result.put("arp_attributes", listAttributes);
-
-            } else if (possibleAttributes != null && possibleAttributes instanceof Map) {
-                Map<String, List<Map<String, String>>> attributes = (Map<String, List<Map<String, String>>>) possibleAttributes;
-
+            if (possibleAttributes instanceof List) {
+                result.put("arp_attributes", possibleAttributes);
+            } else if (possibleAttributes instanceof Map) {
+                Map<String, List<Map<String, Object>>> attributes = (Map<String, List<Map<String, Object>>>) possibleAttributes;
                 //bugfix for EB not having the knowledge that 'idp' source is special
-                Collection<List<Map<String, String>>> values = attributes.values();
+                Collection<List<Map<String, Object>>> values = attributes.values();
                 values.forEach(arpValues -> arpValues.forEach(map -> map.entrySet()
-                        .removeIf(entry -> entry.getKey().equals("source") && entry.getValue().equals("idp"))));
-
+                        .removeIf(entry -> ("source".equals(entry.getKey()) && "idp".equals(entry.getValue()))
+                        || (entry.getValue() instanceof String && !StringUtils.hasText((String) entry.getValue())))));
                 result.put("arp_attributes", attributes);
-
             }
         }
     }

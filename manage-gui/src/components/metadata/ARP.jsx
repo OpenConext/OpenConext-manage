@@ -9,7 +9,7 @@ import {copyToClip, isEmpty} from "../../utils/Utils";
 
 import "./ARP.scss";
 
-//PureComponent only does a shallow comparison and we use derived values from deeply nested objects
+//PureComponent only does a shallow comparison, and we use derived values from deeply nested objects
 export default class ARP extends React.Component {
 
     constructor(props) {
@@ -98,7 +98,7 @@ export default class ARP extends React.Component {
         if (arpConf.multiplicity) {
             this.setState({addInput: true, keyForNewInput: key});
         } else {
-            this.onChange(key, [{value: "*", source: "idp", motivation: ""}]);
+            this.onChange(key, [{value: "*", source: "idp", motivation: "", releaseAs: "", useAsNameId: false}]);
             this.setState({newArpAttributeAddedKey: key});
         }
     };
@@ -109,8 +109,10 @@ export default class ARP extends React.Component {
             this.setState({addInput: false, keyForNewInput: undefined, value: ""});
         } else {
             const currentArpValues = [...this.props.arp.attributes[key] || []];
-            const motivation = this.getArpAttribute(currentArpValues);
-            currentArpValues.push({value: value, source: "idp", motivation: motivation});
+            const motivation = this.getArpAttribute(currentArpValues, "motivation");
+            const releaseAs = this.getArpAttribute(currentArpValues, "release_as");
+            const useAsNameId = this.getArpAttribute(currentArpValues, "use_as_name_id", true);
+            currentArpValues.push({value: value, source: "idp", motivation: motivation, releaseAs: releaseAs, useAsNameId:useAsNameId});
             this.setState({addInput: false, keyForNewInput: undefined, value: "", newArpAttributeAddedKey: key});
             this.onChange(key, currentArpValues);
         }
@@ -119,12 +121,20 @@ export default class ARP extends React.Component {
     arpAttributeChange = (key, attribute, boolean = false) => e => {
         const value = boolean ? e.target.checked : e.target.value;
         const {attributes :arpAttributes} = this.props.arp;
-        debugger;
-        //TODO if attribute === "useAsNameId" , set all other ARP attributes the "useAsNameId" t0 false, there can only be one
-        const currentArpValues = [...arpAttributes[key] || []];
-        const newArpValues = currentArpValues
-            .map(arpValue => ({...arpValue, [attribute]: value}));
-        this.onChange(key, newArpValues);
+        if (attribute === "use_as_name_id") {
+            const newArpAttributes = {...arpAttributes};
+            Object.keys(newArpAttributes).forEach(arpKey => {
+                arpAttributes[arpKey].forEach(arpValue => {
+                    arpValue[attribute] = arpKey === key ? value : false
+                });
+            });
+            this.props.onChange("data.arp.attributes", newArpAttributes);
+        } else {
+            const currentArpValues = [...arpAttributes[key] || []];
+            const newArpValues = currentArpValues
+                .map(arpValue => ({...arpValue, [attribute]: value}));
+            this.onChange(key, newArpValues);
+        }
     };
 
 
@@ -269,9 +279,9 @@ export default class ARP extends React.Component {
                     colSpan={2}>{I18n.t("arp.new_attribute_release_as", {key: this.nameOfKey(display, attributeKey)})}</td>
                 <td colSpan={3}>
                     <input type="text"
-                           value={this.getArpAttribute(attributeValues, "releaseAt")}
+                           value={this.getArpAttribute(attributeValues, "release_as")}
                            className="release-as"
-                           onChange={this.arpAttributeChange(attributeKey, "releaseAt")}
+                           onChange={this.arpAttributeChange(attributeKey, "release_as")}
                            placeholder={I18n.t("arp.new_attribute_release_as_placeholder")}/></td>
             </tr>}
         {(!doAddInput && attributeValues.length > 0) &&
@@ -280,8 +290,8 @@ export default class ARP extends React.Component {
                     colSpan={2}>{I18n.t("arp.new_attribute_use_as_nameid", {key: this.nameOfKey(display, attributeKey)})}</td>
                 <td colSpan={3}>
                     <CheckBox name={attributeKey}
-                              onChange={this.arpAttributeChange(attributeKey, "useAsNameId", true)}
-                              value={this.getArpAttribute(attributeValues, "useAsNameId", true)}/>
+                              onChange={this.arpAttributeChange(attributeKey, "use_as_name_id", true)}
+                              value={this.getArpAttribute(attributeValues, "use_as_name_id", true)}/>
                 </td>
             </tr>}
             </tbody>)
@@ -296,8 +306,8 @@ export default class ARP extends React.Component {
 
     getReleaseAs = attributeValues => {
         const releaseAsValues = attributeValues
-            .filter(attributeValue => !isEmpty(attributeValue.releaseAt))
-            .map(attributeValue => attributeValue.releaseAt);
+            .filter(attributeValue => !isEmpty(attributeValue.releaseAs))
+            .map(attributeValue => attributeValue.releaseAs);
         return isEmpty(releaseAsValues) ? "" : releaseAsValues[0];
     }
 
@@ -373,5 +383,5 @@ ARP.propTypes = {
     arp: PropTypes.object,
     onChange: PropTypes.func.isRequired,
     arpConfiguration: PropTypes.object.isRequired,
-    guest: PropTypes.bool.isRequired
+    guest: PropTypes.bool
 };

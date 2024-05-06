@@ -27,13 +27,16 @@
         "urn:mace:dir:attribute-def:displayName": [
           {
             "value": "*",
-            "source": "idp"
+            "source": "idp",
+            "motivation": "Pretty please"
           }
         ],
         "urn:mace:dir:attribute-def:mail": [
           {
             "value": "*",
-            "source": "idp"
+            "source": "idp",
+            "motivation": "",
+            "release_as": "email"
           }
         ],
         "urn:mace:dir:attribute-def:isMemberOf": [
@@ -53,7 +56,8 @@
         "urn:mace:dir:attribute-def:uid": [
           {
             "value": "*",
-            "source": "idp"
+            "source": "idp",
+            "use_as_nameid": true
           }
         ],
         "urn:mace:terena.org:attribute-def:schacHomeOrganization": [

@@ -4,12 +4,14 @@
   "arp_attributes": {
     "urn:mace:dir:attribute-def:displayName": [
       {
-        "value": "*"
+        "value": "*",
+        "motivation": "Pretty please"
       }
     ],
     "urn:mace:dir:attribute-def:mail": [
       {
-        "value": "*"
+        "value": "*",
+        "release_as": "email"
       }
     ],
     "urn:mace:dir:attribute-def:isMemberOf": [
@@ -27,7 +29,8 @@
     ],
     "urn:mace:dir:attribute-def:uid": [
       {
-        "value": "*"
+        "value": "*",
+        "use_as_nameid": true
       }
     ],
     "urn:mace:terena.org:attribute-def:schacHomeOrganization": [

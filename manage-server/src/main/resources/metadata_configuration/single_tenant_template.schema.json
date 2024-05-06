@@ -41,10 +41,10 @@
           "motivation": {
             "type": "string"
           },
-          "releaseAs": {
+          "release_as": {
             "type": "string"
           },
-          "useAsNameId": {
+          "use_as_nameid": {
             "type": "boolean"
           }
         }
