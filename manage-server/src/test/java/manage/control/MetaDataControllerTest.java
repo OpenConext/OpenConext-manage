@@ -1826,6 +1826,33 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         assertTrue(((String) metaDataFields.get("certData")).startsWith("MIIG5jCCBM6gAwIBAgIBCDANBgkqhkiG9w0BA"));
     }
 
+    @Test
+    public void deleteServiceProviderWithScopeDeleteSP() {
+        given()
+                .auth()
+                .preemptive()
+                .basic("sp-portal", "secret")
+                .pathParam("type", EntityType.SP.getType())
+                .pathParam("id", "1")
+                .delete("/manage/api/internal/metadata/{type}/{id}")
+                .then()
+                .statusCode(SC_OK);
+        MetaData metaData = metaDataRepository.findById("1", EntityType.SP.getType());
+        assertNull(metaData);
+    }
+
+    @Test
+    public void deleteIdentityProviderWithScopeDeleteSPForbidden() {
+        given()
+                .auth()
+                .preemptive()
+                .basic("sp-portal", "secret")
+                .pathParam("type", EntityType.IDP.getType())
+                .pathParam("id", "6")
+                .delete("/manage/api/internal/metadata/{type}/{id}")
+                .then()
+                .statusCode(SC_FORBIDDEN);
+    }
 
     private void doCreateChangeRequest() {
         Map<String, Object> pathUpdates = new HashMap<>();

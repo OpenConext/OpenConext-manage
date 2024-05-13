@@ -48,7 +48,10 @@ public class SecurityHook extends MetaDataHookAdapter {
     }
 
     private static void validateIdPScope(MetaData metaData, AbstractUser user) {
-        if (metaData.getType().equals(EntityType.IDP.getType()) && !user.isAllowed(Scope.WRITE_IDP) && !user.isAllowed(Scope.ADMIN) && !user.isSystemUser()) {
+        if (metaData.getType().equals(EntityType.IDP.getType())
+                && !user.isAllowed(Scope.WRITE_IDP)
+                && !user.isAllowed(Scope.ADMIN)
+                && !user.isSystemUser()) {
             throw new EndpointNotAllowed(String.format("APIUser %s is not allowed to create IdP's", user.getName()));
         }
     }

@@ -204,6 +204,7 @@ public class MetaDataService {
     public boolean doRemove(String type, String id, AbstractUser user, String revisionNote) {
         MetaData current = metaDataRepository.findById(id, type);
         checkNull(type, id, current);
+        //For security enforcement see th SecurityHook#preDelete
         current = metaDataHook.preDelete(current, user);
         metaDataRepository.remove(current);
 

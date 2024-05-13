@@ -214,7 +214,7 @@ public class MetaDataController {
         return metaDataService.doRemove(type, id, user, revisionNote);
     }
 
-    @PreAuthorize("hasRole('DELETE')")
+    @PreAuthorize("hasRole('DELETE_SP')")
     @DeleteMapping("/internal/metadata/{type}/{id}")
     public boolean removeInternal(@PathVariable("type") String type,
                                   @PathVariable("id") String id,
