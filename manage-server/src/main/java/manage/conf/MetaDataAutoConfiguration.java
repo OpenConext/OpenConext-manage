@@ -130,6 +130,11 @@ public class MetaDataAutoConfiguration {
         return this.schemas.get(type);
     }
 
+    public Schema anySchema() {
+        return this.schemas.getOrDefault(EntityType.SP.getType(),
+                this.schemas.values().stream().findAny().orElseThrow(IllegalAccessError::new));
+    }
+
     public ObjectMapper getObjectMapper() {
         return objectMapper;
     }

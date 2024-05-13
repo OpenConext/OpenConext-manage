@@ -28,7 +28,7 @@ public class EmptyRevisionHook extends MetaDataHookAdapter {
         boolean eq = mapEquality(previousData, newData) && mapEquality(newData, previousData);
         if (eq) {
             //we need a schema, does not matter for which entityType
-            Schema schema = metaDataAutoConfiguration.schema(EntityType.RP.getType());
+            Schema schema = metaDataAutoConfiguration.anySchema();
             throw new ValidationException(schema, "No data is changed. An update would result in an empty revision", "empty-revision");
         }
         return super.prePut(previous, newMetaData, user);
