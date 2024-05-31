@@ -49,6 +49,7 @@ public class ValidationController {
                 new PasswordFormatValidator(),
                 new BasicAuthenticationUsernameFormatValidator(),
                 new IPAddressValidator(),
+                        new BRINValidator(),
                 new URIFormatValidator())
                 .stream()
                 .collect(toMap(FormatValidator::formatName, Function.identity()));

@@ -8,7 +8,7 @@ import static org.junit.Assert.assertFalse;
 
 public class UUIDFormatValidatorTest {
 
-    private UUIDFormatValidator subject = new UUIDFormatValidator();
+    private final UUIDFormatValidator subject = new UUIDFormatValidator();
 
     @Test
     public void validate() {
