@@ -17,7 +17,7 @@ import {
 import {capitalize, isEmpty, stop} from "../utils/Utils";
 import ConfirmationDialog from "../components/ConfirmationDialog";
 import "./System.scss";
-import {pushConfirmationFlash, pushFlash, setFlash} from "../utils/Flash";
+import {pushFlash, setFlash} from "../utils/Flash";
 import SelectMetaDataType from "../components/metadata/SelectMetaDataType";
 import NotesTooltip from "../components/NotesTooltip";
 import CheckBox from "../components/CheckBox";
@@ -256,28 +256,6 @@ export default class System extends React.PureComponent {
         </section>;
     };
 
-    renderPush = () => {
-        const {loading} = this.state;
-        const {currentUser} = this.props;
-        const action = () => {
-            this.setState({confirmationDialogOpen: false});
-            this.runPush();
-        };
-        return (
-            <section className="push">
-                <p>{I18n.t("playground.pushInfo", {url: currentUser.push.url, name: currentUser.push.name})}</p>
-                <a className={`button ${loading ? "grey disabled" : "green"}`}
-                   onClick={() => this.setState({
-                       confirmationDialogOpen: true,
-                       confirmationQuestion: pushConfirmationFlash(currentUser),
-                       confirmationDialogAction: action
-                   })}>{I18n.t("playground.runPush")}
-                    <i className="fa fa-refresh"></i>
-                </a>
-            </section>
-        );
-    };
-
     copiedToClipboard = () => {
         this.setState({copiedToClipboardClassName: "copied"});
         setTimeout(() => this.setState({copiedToClipboardClassName: ""}), 5000);
@@ -418,8 +396,6 @@ export default class System extends React.PureComponent {
                 return this.renderValidate();
             case "orphans" :
                 return this.renderOrphans();
-            // case "push":
-            //     return this.renderPush();
             case "push_preview":
                 return this.renderPushPreview();
             case "find_my_data":

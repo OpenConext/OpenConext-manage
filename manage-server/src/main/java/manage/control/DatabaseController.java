@@ -92,6 +92,9 @@ public class DatabaseController {
     }
 
     public ResponseEntity<Map> doPush(PushOptions pushOptions) {
+        if (environment.acceptsProfiles(Profiles.of("dev"))) {
+            return new ResponseEntity<>(Collections.singletonMap("status", "OK"), HttpStatus.OK);
+        }
         Map<String, Object> result = new HashMap<>();
         if (pushOptions.isIncludePdP()) {
             List<PdpPolicyDefinition> policies = this.metaDataRepository
@@ -102,9 +105,6 @@ public class DatabaseController {
             this.pdpRestTemplate.put(pdpPushUri, policies);
             result.put("status", "OK");
             result.put("pdp", true);
-        }
-        if (environment.acceptsProfiles(Profiles.of("dev"))) {
-            return new ResponseEntity<>(Collections.singletonMap("status", "OK"), HttpStatus.OK);
         }
         if (pushOptions.isIncludeEB()) {
             Map<String, Map<String, Map<String, Object>>> json = this.pushPreview();
