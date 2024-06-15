@@ -46,7 +46,7 @@ export default class Connection extends React.PureComponent {
         const logo = data.metaDataFields["logo:0:url"];
         const name = getNameForLanguage(data.metaDataFields);
         const fullName = I18n.t(`metadata.${type}_single`) + " - " + name;
-
+        const {errors} = this.props;
         return (
             <div className="metadata-connection">
                 <table className="data">
@@ -69,7 +69,7 @@ export default class Connection extends React.PureComponent {
                                 onChange={this.onChange("data.entityid")}
                                 onError={this.onError("entityid")}
                                 {...{originalEntityId, type, entityIdFormat}}
-                                hasError={this.props.errors["entityid"] || false}
+                                hasError={errors["entityid"] || false}
                             />
                         </td>
                     </tr>
@@ -83,7 +83,7 @@ export default class Connection extends React.PureComponent {
                                     format="url"
                                     onChange={this.onChange("data.discoveryurl")}
                                     onError={this.onError("discoveryUrl")}
-                                    isError={this.props.errors["discoveryUrl"] || false}
+                                    isError={errors["discoveryUrl"] || false}
                                     readOnly={guest}
                                     isRequired={false}
                                 />
@@ -100,7 +100,7 @@ export default class Connection extends React.PureComponent {
                                     format="url"
                                     onChange={this.onChange("data.metadataurl")}
                                     onError={this.onError("metaDataUrl")}
-                                    isError={this.props.errors["metaDataUrl"] || false}
+                                    isError={errors["metaDataUrl"] || false}
                                     readOnly={guest}
                                     isRequired={false}
                                 />

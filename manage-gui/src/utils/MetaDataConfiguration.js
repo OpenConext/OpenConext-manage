@@ -112,3 +112,15 @@ export const options = (configuration, metaDataFields) => {
     }).sort((a, b) => a.value.toLowerCase().localeCompare(b.value.toLowerCase()));
 };
 
+export const deleteFalseErrorKeys = errors => {
+    Object.keys(errors).forEach(key => {
+        const value = errors[key];
+        if (!value) {
+            delete errors[key];
+        }
+        if (typeof value === "object") {
+            deleteFalseErrorKeys(value);
+        }
+    });
+}
+

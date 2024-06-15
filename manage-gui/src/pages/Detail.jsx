@@ -51,6 +51,7 @@ import AutoRefresh from "../components/metadata/AutoRefresh";
 import PolicyForm from "../components/metadata/PolicyForm";
 import {getNameForLanguage, getOrganisationForLanguage} from "../utils/Language";
 import Policies from "../components/metadata/Policies";
+import {deleteFalseErrorKeys} from "../utils/MetaDataConfiguration";
 
 let tabsSp = [
     "connection",
@@ -358,9 +359,7 @@ class Detail extends React.PureComponent {
         })
         const metaDataErrors = currentErrors.metadata || {};
         Object.keys(metaDataFields).forEach(key => {
-            if (isEmpty(metaDataFields[key]) && requiredMetaData.indexOf(key) > -1) {
-                metaDataErrors[key] = true;
-            }
+            metaDataErrors[key] = isEmpty(metaDataFields[key]) && requiredMetaData.indexOf(key) > -1;
         });
         requiredMetaData.forEach(req => {
             if (!metaDataFields[req]) {
@@ -373,28 +372,24 @@ class Detail extends React.PureComponent {
         const required = configuration.required;
         if ("policy" !== type) {
             Object.keys(metaData.data).forEach(key => {
-                if (isEmpty(metaData.data[key]) && required.indexOf(key) > -1) {
-                    connectionErrors[key] = true;
-                }
+                connectionErrors[key] = isEmpty(metaData.data[key]) && required.indexOf(key) > -1;
             });
             required.forEach(req => {
-                if (isEmpty(metaData.data[req])) {
-                    connectionErrors[req] = true;
-                }
+                connectionErrors[req] = isEmpty(metaData.data[req]);
             });
         } else {
             required.forEach(req => {
-                if (isEmpty(metaData.data[req])) {
-                    policyFormErrors[req] = true;
-                }
+                policyFormErrors[req] = isEmpty(metaData.data[req]);
             });
         }
         const newErrors = {
-            currentErrors,
+            ...currentErrors,
             connection: connectionErrors,
             metadata: metaDataErrors,
             policy_form: policyFormErrors
         };
+        //Filter out false entries
+        deleteFalseErrorKeys(newErrors);
         this.setState({errors: newErrors});
     };
 
@@ -727,10 +722,10 @@ class Detail extends React.PureComponent {
     };
 
     hasGlobalErrors = errors => {
-        const hasErrors = Object.keys(errors).find(key =>
+        const errorKeys = Object.keys(errors).find(key =>
             Object.keys(errors[key]).find(subKey => errors[key][subKey])
-        ) !== undefined;
-        return hasErrors;
+        )
+        return errorKeys !== undefined;
     }
 
     renderTabTitle = (tab, metaData, resourceServers, whiteListing, revisions, requests, relyingParties, policies) => {
@@ -1282,6 +1277,7 @@ class Detail extends React.PureComponent {
                         <section className="inner-detail">
                             {this.renderTopBanner(name, organization, metaData, resourceServers, whiteListing,
                                 isNew, whiteListingLoaded, serviceProviders, policyProvidersLoaded)}
+                            {/*{JSON.stringify(errors)}*/}
                             {hasErrors && this.renderErrors(errors)}
                             {allowedDelete && (
                                 <a
