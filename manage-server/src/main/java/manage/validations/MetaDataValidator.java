@@ -2,6 +2,7 @@ package manage.validations;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import manage.conf.MetaDataAutoConfiguration;
+import manage.exception.CustomValidationException;
 import manage.hook.TypeSafetyHook;
 import manage.model.EntityType;
 import manage.model.MetaData;
@@ -53,14 +54,15 @@ public class MetaDataValidator {
         }
         try {
             metaDataAutoConfiguration.validate(metaData.getData(), type);
-        } catch (ValidationException e) {
+        } catch (ValidationException | CustomValidationException e) {
             if (tryToMigrate) {
                 MetaData transformedMetaData = this.metaDataHook.preValidate(metaData);
                 metaDataRepository.update(transformedMetaData);
                 doValidate(transformedMetaData, type, results, false);
             } else {
                 Map data = Map.class.cast(metaData.getData());
-                Map<String, Object> resultsMap = e.toJSON().toMap();
+                ValidationException ex = e instanceof ValidationException ? (ValidationException) e : ((CustomValidationException) e).getValidationException();
+                Map<String, Object> resultsMap = ex.toJSON().toMap();
                 LOG.info("ValidationException for id {} eid {} entityId {} type {} with exception {}",
                         data.get("id"), data.get("eid"), data.get("entityid"), type, resultsMap);
                 results.put(String.class.cast(data.get("entityid")), resultsMap);
