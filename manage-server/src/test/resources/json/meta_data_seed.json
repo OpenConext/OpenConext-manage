@@ -558,7 +558,9 @@
             {
               "source": "idp",
               "value": "*",
-              "motivation": "1234"
+              "motivation": "1234",
+              "release_as": "aliasGivenName",
+              "use_as_nameid": true
             }
           ]
         },

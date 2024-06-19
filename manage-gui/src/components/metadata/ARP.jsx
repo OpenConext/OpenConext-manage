@@ -98,7 +98,7 @@ export default class ARP extends React.Component {
         if (arpConf.multiplicity) {
             this.setState({addInput: true, keyForNewInput: key});
         } else {
-            this.onChange(key, [{value: "*", source: "idp", motivation: "", releaseAs: "", useAsNameId: false}]);
+            this.onChange(key, [{value: "*", source: "idp", motivation: "", release_as: "", use_as_nameid: false}]);
             this.setState({newArpAttributeAddedKey: key});
         }
     };
@@ -110,9 +110,15 @@ export default class ARP extends React.Component {
         } else {
             const currentArpValues = [...this.props.arp.attributes[key] || []];
             const motivation = this.getArpAttribute(currentArpValues, "motivation");
-            const releaseAs = this.getArpAttribute(currentArpValues, "release_as");
-            const useAsNameId = this.getArpAttribute(currentArpValues, "use_as_name_id", true);
-            currentArpValues.push({value: value, source: "idp", motivation: motivation, releaseAs: releaseAs, useAsNameId:useAsNameId});
+            const release_as = this.getArpAttribute(currentArpValues, "release_as");
+            const use_as_nameid = this.getArpAttribute(currentArpValues, "use_as_nameid", true);
+            currentArpValues.push({
+                value: value,
+                source: "idp",
+                motivation: motivation,
+                release_as: release_as,
+                use_as_nameid: use_as_nameid
+            });
             this.setState({addInput: false, keyForNewInput: undefined, value: "", newArpAttributeAddedKey: key});
             this.onChange(key, currentArpValues);
         }
@@ -121,7 +127,7 @@ export default class ARP extends React.Component {
     arpAttributeChange = (key, attribute, boolean = false) => e => {
         const value = boolean ? e.target.checked : e.target.value;
         const {attributes :arpAttributes} = this.props.arp;
-        if (attribute === "use_as_name_id") {
+        if (attribute === "use_as_nameid") {
             const newArpAttributes = {...arpAttributes};
             Object.keys(newArpAttributes).forEach(arpKey => {
                 arpAttributes[arpKey].forEach(arpValue => {
@@ -290,8 +296,8 @@ export default class ARP extends React.Component {
                     colSpan={2}>{I18n.t("arp.new_attribute_use_as_nameid", {key: this.nameOfKey(display, attributeKey)})}</td>
                 <td colSpan={3}>
                     <CheckBox name={attributeKey}
-                              onChange={this.arpAttributeChange(attributeKey, "use_as_name_id", true)}
-                              value={this.getArpAttribute(attributeValues, "use_as_name_id", true)}/>
+                              onChange={this.arpAttributeChange(attributeKey, "use_as_nameid", true)}
+                              value={this.getArpAttribute(attributeValues, "use_as_nameid", true)}/>
                 </td>
             </tr>}
             </tbody>)

@@ -3,7 +3,9 @@ package manage.control;
 import manage.AbstractIntegrationTest;
 import org.junit.Test;
 
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static io.restassured.RestAssured.given;
 import static org.apache.http.HttpStatus.SC_OK;
@@ -12,6 +14,7 @@ import static org.junit.Assert.assertEquals;
 public class DatabaseControllerTest extends AbstractIntegrationTest {
 
     @Test
+    @SuppressWarnings("unchecked")
     public void pushPreview() throws Exception {
         Map connections = given()
                 .when()
@@ -30,6 +33,17 @@ public class DatabaseControllerTest extends AbstractIntegrationTest {
                 .get("coin"))
                 .get("imported_from_edugain");
         assertEquals(importFromEdugain, "1");
+
+        //ensure the correct ARP is exported
+        List<Map<String, Object>> arpGivenNames = (List<Map<String, Object>>) ((Map) ((Map) ((Map) connections.get("connections"))
+                .get("11"))
+                .get("arp_attributes"))
+                .get("urn:mace:dir:attribute-def:givenName");
+        Map<String, Object> arpGivenName = arpGivenNames.get(0);
+        List<String> keys = arpGivenName.keySet().stream().sorted().collect(Collectors.toList());
+        assertEquals(List.of("motivation", "release_as", "use_as_nameid", "value"), keys);
+        assertEquals("aliasGivenName", arpGivenName.get("release_as"));
+        assertEquals(true, arpGivenName.get("use_as_nameid"));
     }
 
 }
