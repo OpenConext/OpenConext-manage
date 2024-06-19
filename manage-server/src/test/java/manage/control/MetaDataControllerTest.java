@@ -1874,4 +1874,33 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 .then()
                 .statusCode(SC_OK);
     }
+
+    @Test
+    public void saveInvalidARPMetaData() {
+        MetaData existingMetaData = given()
+                .when()
+                .pathParam("id", "11")
+                .get("manage/api/client/metadata/saml20_sp/{id}")
+                .as(MetaData.class);
+        Map<String, Object> arp = (Map<String, Object>) existingMetaData.getData().get("arp");
+        Map<String, List<Map<String, Object>>> attributes = (Map<String, List<Map<String, Object>>>) arp.get("attributes");
+        List<Map<String, Object>> givenNameArpAttributes = attributes.get("urn:mace:dir:attribute-def:givenName");
+        Map<String, Object> arpAttribute = givenNameArpAttributes.get(0);
+        arpAttribute.put("useAsNameId", true);
+        arpAttribute.put("use_as_name_id", true);
+        arpAttribute.put("releaseAs", true);
+
+        Map errors = given()
+                .when()
+                .body(existingMetaData)
+                .header("Content-type", "application/json")
+                .put("manage/api/client/metadata")
+                .as(Map.class);
+        String validations = (String) errors.get("validations");
+        assertEquals("#/arp/attributes/urn:mace:dir:attribute-def:givenName/0: extraneous key [use_as_name_id] is not permitted, " +
+                "#/arp/attributes/urn:mace:dir:attribute-def:givenName/0: extraneous key [releaseAs] is not permitted, " +
+                "#/arp/attributes/urn:mace:dir:attribute-def:givenName/0: extraneous key [useAsNameId] is not permitted",
+                validations);
+    }
+
 }
