@@ -25,6 +25,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -253,6 +254,7 @@ public class MongoChangelog {
                         } else if (attributesObject instanceof Map) {
                             Map<String, List<Map<String, Object>>> attributes = (Map<String, List<Map<String, Object>>>) arp.get("attributes");
                             if (!CollectionUtils.isEmpty(attributes)) {
+                                AtomicBoolean needsSaving = new AtomicBoolean(false);
                                 attributes.forEach((arpName, value) -> value.forEach(attribute -> {
                                     boolean useAsNameId = (boolean) attribute.getOrDefault("use_as_nameid",
                                             attribute.getOrDefault("use_as_name_id",
@@ -263,12 +265,16 @@ public class MongoChangelog {
                                         attribute.put("release_as", releaseAt);
                                     }
                                     if (attribute.keySet().removeIf(key -> !allowedKeys.contains(key))) {
-                                        //We don't make a new revision as this is a cleanup action
-                                        LOG.info(String.format("Saving %s metadata type %s where ARP values are fixed",
-                                                metaData.getData().get("entityid"), entityType));
-                                        mongoTemplate.save(metaData, entityType.getType());
+                                        needsSaving.set(true);
                                     }
                                 }));
+                                if (needsSaving.get()) {
+                                    //We don't make a new revision as this is a cleanup action
+                                    LOG.info(String.format("Saving %s metadata type %s where ARP values are fixed",
+                                            metaData.getData().get("entityid"), entityType.getType()));
+                                    mongoTemplate.save(metaData, entityType.getType());
+
+                                }
                             }
                         } else {
                             LOG.info(String.format("Unknown attributes type in metadata %s type %s",
