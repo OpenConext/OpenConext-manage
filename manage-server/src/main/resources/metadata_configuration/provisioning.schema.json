@@ -90,6 +90,19 @@
           "default": false,
           "info": "If checked then we use the PUT method for Group updates thus sending all information (e.g. all members), otherwise PATCH with only the added or removed member."
         },
+        "scim_user_identifier": {
+          "type": "string",
+          "enum": [
+            "subject_id",
+            "eduperson_principal_name",
+            "uids",
+            "email",
+            "eduID"
+          ],
+          "default": "eduperson_principal_name",
+          "info": "From the pull down, select the scim identifier used for the user provisioning.",
+          "disabledAfterPersisted": true
+        },
         "eva_url": {
           "type": "string",
           "format": "url",
