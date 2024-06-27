@@ -121,6 +121,7 @@ class Search extends React.PureComponent {
                                ref={ref => this.searchInput = ref}
                                placeholder={I18n.t("metadata.searchPlaceHolder")}
                                type="text"
+                               maxLength={250}
                                onChange={this.search}
                                value={query}
                                onKeyDown={this.onSearchKeyDown}/>
