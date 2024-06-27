@@ -117,8 +117,7 @@ public class MetaDataController {
 
     @PreAuthorize("hasAnyRole('WRITE_SP', 'WRITE_IDP', 'SYSTEM')")
     @PostMapping("/internal/metadata")
-    public MetaData postInternal(@Validated @RequestBody MetaData metaData, APIUser apiUser)
-            throws JsonProcessingException {
+    public MetaData postInternal(@Validated @RequestBody MetaData metaData, APIUser apiUser) {
         ScopeEnforcer.enforceWriteScope(apiUser, EntityType.fromType(metaData.getType()) );
         return metaDataService.doPost(metaData, apiUser, !apiUser.getScopes().contains(TEST));
     }

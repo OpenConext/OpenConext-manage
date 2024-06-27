@@ -10,8 +10,8 @@ public enum Scope {
     READ, //Allowed to read entities
     SYSTEM, //Allowed everything including Attribute Manipulation
     TEST, //Only used internally
-    WRITE_SP, //Allowed to CRU SP / RP /RS
-    DELETE_SP, //Allowed to Delete SP / RP /RS
+    WRITE_SP, //Allowed to CRU SP / RP / RS / SRAM
+    DELETE_SP, //Allowed to Delete SP / RP / RS
     WRITE_IDP //Allowed to CRUD IdP
 
 }

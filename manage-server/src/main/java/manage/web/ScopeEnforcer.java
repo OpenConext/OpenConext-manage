@@ -11,7 +11,7 @@ import static manage.api.Scope.*;
 
 public class ScopeEnforcer {
 
-    private final static List<EntityType> spEntityTypes = List.of(EntityType.SP, EntityType.RP, EntityType.RS);
+    private final static List<EntityType> spEntityTypes = List.of(EntityType.SP, EntityType.RP, EntityType.RS, EntityType.SRAM);
 
     private final static List<EntityType> allEntityTypes = List.of(EntityType.SP, EntityType.RP, EntityType.RS, EntityType.IDP);
 
