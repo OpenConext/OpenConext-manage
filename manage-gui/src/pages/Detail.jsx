@@ -127,6 +127,13 @@ const tabsSingleTenant = [
     "export"
 ];
 
+const tabsSram = [
+    "connection",
+    "metadata",
+    "manipulation",
+    "revisions"
+];
+
 
 const aliasTabChanges = {
     "mfa_entities": "stepup_entities"
@@ -1244,6 +1251,8 @@ class Detail extends React.PureComponent {
                     return tabsPr;
                 case "policy":
                     return tabsPolicy;
+                case "sram":
+                    return tabsSram;
                 default:
                     return [];
             }

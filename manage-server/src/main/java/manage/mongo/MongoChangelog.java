@@ -286,6 +286,23 @@ public class MongoChangelog {
         });
     }
 
+    @ChangeSet(order = "015", id = "addSRAMServices", author = "okke.harsta@surf.nl")
+    public void addSRAMServices(MongockTemplate mongoTemplate) {
+        String schema = EntityType.SRAM.getType();
+        if (!mongoTemplate.collectionExists(schema)) {
+            mongoTemplate.createCollection(schema);
+        }
+        String revision = schema.concat(REVISION_POSTFIX);
+        if (!mongoTemplate.collectionExists(revision)) {
+            mongoTemplate.createCollection(revision);
+        }
+        mongoTemplate.indexOps(revision).ensureIndex(new Index("revision.parentId", Sort.Direction.ASC));
+        TextIndexDefinition textIndexDefinition = new TextIndexDefinition.TextIndexDefinitionBuilder()
+                .onField("$**")
+                .build();
+        mongoTemplate.indexOps(schema).ensureIndex(textIndexDefinition);
+    }
+
     private void migrateRelayingPartyToResourceServer(Map<String, Map<String, Object>> properties, List<Pattern> patterns, Map<String, Object> simpleProperties, MetaData rs) {
         rs.setType(EntityType.RS.getType());
         rs.getData().entrySet().removeIf(entry -> !properties.containsKey(entry.getKey()));

@@ -16,6 +16,7 @@ import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static java.util.Collections.emptyMap;
 import static manage.mongo.MongoChangelog.REVISION_POSTFIX;
 
 @Getter
@@ -166,7 +167,7 @@ public class MetaData implements Serializable {
 
     @Transient
     public Map<String, Object> metaDataFields() {
-        return (Map) data.get("metaDataFields");
+        return (Map) data.getOrDefault("metaDataFields", emptyMap());
     }
 
     @Transient

@@ -14,7 +14,7 @@ import java.util.Map;
 
 public class OidcValidationHook extends MetaDataHookAdapter {
 
-    private MetaDataAutoConfiguration metaDataAutoConfiguration;
+    private final MetaDataAutoConfiguration metaDataAutoConfiguration;
 
     public OidcValidationHook(MetaDataAutoConfiguration metaDataAutoConfiguration) {
         this.metaDataAutoConfiguration = metaDataAutoConfiguration;
@@ -22,7 +22,9 @@ public class OidcValidationHook extends MetaDataHookAdapter {
 
     @Override
     public boolean appliesForMetaData(MetaData metaData) {
-        return metaData.getType().equals(EntityType.RP.getType());
+        return metaData.getType().equals(EntityType.RP.getType()) ||
+                (metaData.getType().equals(EntityType.SRAM.getType()) &&
+                        "oidc_rp".equals(metaData.metaDataFields().get("connection_type")));
     }
 
     @Override

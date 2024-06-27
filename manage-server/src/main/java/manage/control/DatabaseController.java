@@ -110,7 +110,6 @@ public class DatabaseController {
             Map<String, Map<String, Map<String, Object>>> json = this.pushPreview();
 
             ResponseEntity<String> response = this.restTemplate.postForEntity(pushUri, json, String.class);
-            HttpStatus statusCode = response.getStatusCode();
 
             result.put("status", "OK");
             result.put("response", response);

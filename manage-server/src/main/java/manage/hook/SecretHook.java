@@ -24,7 +24,9 @@ public class SecretHook extends MetaDataHookAdapter {
 
     @Override
     public boolean appliesForMetaData(MetaData metaData) {
-        return metaData.getType().equals(EntityType.RP.getType()) || metaData.getType().equals(EntityType.RS.getType());
+        return metaData.getType().equals(EntityType.RP.getType()) ||
+                metaData.getType().equals(EntityType.RS.getType()) ||
+                metaData.getType().equals(EntityType.SRAM.getType());
     }
 
     @Override

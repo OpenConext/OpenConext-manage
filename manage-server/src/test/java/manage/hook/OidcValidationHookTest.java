@@ -19,7 +19,7 @@ import static org.junit.Assert.assertTrue;
 
 public class OidcValidationHookTest implements TestUtils {
 
-    private OidcValidationHook subject = new OidcValidationHook(new MetaDataAutoConfiguration(
+    private final OidcValidationHook subject = new OidcValidationHook(new MetaDataAutoConfiguration(
             objectMapper,
             new ClassPathResource("metadata_configuration"),
             new ClassPathResource("metadata_templates")));
@@ -30,7 +30,11 @@ public class OidcValidationHookTest implements TestUtils {
     @Test
     public void appliesForMetaData() {
         assertTrue(subject.appliesForMetaData(new MetaData(EntityType.RP.getType(), emptyMap())));
+        assertTrue(subject.appliesForMetaData(new MetaData(EntityType.SRAM.getType(), Map.of("metaDataFields",
+                Map.of("connection_type", "oidc_rp")))));
+
         assertFalse(subject.appliesForMetaData(new MetaData(EntityType.SP.getType(), emptyMap())));
+        assertFalse(subject.appliesForMetaData(new MetaData(EntityType.SRAM.getType(), emptyMap())));
     }
 
     @Test
