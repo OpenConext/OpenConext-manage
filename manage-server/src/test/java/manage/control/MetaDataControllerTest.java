@@ -5,6 +5,7 @@ import io.restassured.common.mapper.TypeRef;
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
+import lombok.SneakyThrows;
 import manage.AbstractIntegrationTest;
 import manage.model.*;
 import org.junit.Test;
@@ -153,9 +154,11 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         assertNotNull(revision.getCreated());
     }
 
-    private String createServiceProviderMetaData(boolean client) throws java.io.IOException {
+    @SneakyThrows
+    private String createServiceProviderMetaData(boolean client) {
         Map<String, Object> data = readValueFromFile("/json/valid_service_provider.json");
         MetaData metaData = new MetaData(EntityType.SP.getType(), data);
+//        System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(metaData));
         RequestSpecification given = given();
         if (!client) {
             given
