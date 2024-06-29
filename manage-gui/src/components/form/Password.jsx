@@ -27,7 +27,6 @@ export default class Password extends React.PureComponent {
         secret().then(json => this.setState({
             value: json.secret,
         }, () => {
-            this.props.hasError(this.props.name, false);
             this.props.onChange(this.state.value);
         }));
 
@@ -68,7 +67,7 @@ export default class Password extends React.PureComponent {
 
     render() {
         const {value, copied} = this.state;
-        const {hasFormatError, onChange, hasError, ...rest} = this.props;
+        const {hasFormatError, onChange, ...rest} = this.props;
 
         const disabled = this.state.disabled || this.props.disabled;
 
@@ -100,7 +99,6 @@ Password.propTypes = {
     value: PropTypes.string.isRequired,
     format: PropTypes.string.isRequired,
     onChange: PropTypes.func.isRequired,
-    hasError: PropTypes.func.isRequired,
     autoFocus: PropTypes.bool,
     isRequired: PropTypes.bool,
     disabled: PropTypes.bool

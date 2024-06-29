@@ -300,13 +300,7 @@ class Detail extends React.PureComponent {
                         .then(results => {
                             const revisions = results[0];
                             revisions.push(metaData);
-                            revisions.sort((r1, r2) =>
-                                r1.revision.number < r2.revision.number
-                                    ? 1
-                                    : r1.revision.number > r2.revision.number
-                                        ? -1
-                                        : 0
-                            );
+                            revisions.sort((r1, r2) => new Date(r2.revision.created) - new Date(r1.revision.created));
                             const requests = results[1];
                             requests.forEach(cr => cr.createdAt = new Date(cr.created));
                             requests.sort((a, b) => b.createdAt - a.createdAt);

@@ -66,7 +66,7 @@ public class MetaData implements Serializable {
     private Revision getNonNullRevision() {
         if (this.revision == null) {
             //can only happen when MetaData is inserted not by API code, but by scripts like testing
-            this.revision = new Revision(0, Instant.now(), null, "system");
+            this.revision = new Revision(this.version.intValue(), Instant.now(), null, "system");
         }
         return this.revision;
     }

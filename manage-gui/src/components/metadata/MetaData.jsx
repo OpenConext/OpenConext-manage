@@ -142,7 +142,6 @@ export default class MetaData extends React.Component {
                             format={keyConfiguration.format}
                             minLength={keyConfiguration.minLength}
                             hasFormatError={hasFormatError}
-                            hasError={this.hasError}
                             onChange={value => this.doChange(key, value)}
                             onBlur={value =>
                                 this.validateFormat(key, value, keyConfiguration.format)

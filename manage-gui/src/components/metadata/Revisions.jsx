@@ -116,13 +116,13 @@ class Revisions extends React.Component {
         return diffs ? <p dangerouslySetInnerHTML={{__html: html}}/> : <p>{I18n.t("revisions.identical")}</p>
     };
 
-    renderRevisionTable = (revision, isLatest, entityType, firstRevisionNote) => {
+    renderRevisionTable = (revision, isLatest, entityType, firstRevisionNote, index) => {
         const showDetail = this.state.showRevisionDetails[revision.id];
         const headers = ["number", "created", "updatedBy", "status", "notes", "nope"];
         const isFirstRevision = revision.revision.number === 0;
         const restoreClassName = `button blue ${isLatest ? "grey" : ""}`;
         return (
-            <table className="revision-table" key={revision.revision.number}>
+            <table className="revision-table" key={index}>
                 <thead>
                 <tr>
                     {headers.map((header, index) => <th key={index}
@@ -183,7 +183,7 @@ class Revisions extends React.Component {
                 </div>}
                 {!isNew && <div className="revisions">
 
-                    {revisions.map((rev, index) => this.renderRevisionTable(rev, index === 0, entityType, firstRevisionNote))}
+                    {revisions.map((rev, index) => this.renderRevisionTable(rev, index === 0, entityType, firstRevisionNote, index))}
                 </div>}
             </div>
         );

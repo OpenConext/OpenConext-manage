@@ -141,10 +141,25 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void postInternal() throws IOException {
-        doPost(false, "sp-portal");
+        String id = doPost(false, "sp-portal");
+        MetaData savedMetaData = metaDataRepository.findById(id, EntityType.SP.getType());
+        savedMetaData.metaDataFields().put("name:en", "changedName");
+        given()
+                .auth()
+                .preemptive()
+                .basic("sp-portal", "secret")
+                .when()
+                .body(savedMetaData)
+                .header("Content-type", "application/json")
+                .put("manage/api/internal/metadata")
+                .then()
+                .statusCode(SC_OK)
+                .extract().path("id");
+        MetaData updatedMetaData = metaDataRepository.findById(id, EntityType.SP.getType());
+        assertEquals("changedName", updatedMetaData.metaDataFields().get("name:en"));
     }
 
-    private void doPost(boolean client, String expectedUpdatedBy) throws java.io.IOException {
+    private String doPost(boolean client, String expectedUpdatedBy) throws java.io.IOException {
         String id = createServiceProviderMetaData(client);
 
         MetaData savedMetaData = metaDataRepository.findById(id, EntityType.SP.getType());
@@ -152,6 +167,8 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         assertEquals(expectedUpdatedBy, revision.getUpdatedBy());
         assertEquals(0, revision.getNumber());
         assertNotNull(revision.getCreated());
+
+        return id;
     }
 
     @SneakyThrows

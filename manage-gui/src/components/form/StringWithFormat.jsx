@@ -41,7 +41,6 @@ StringWithFormat.propTypes = {
     value: PropTypes.string.isRequired,
     format: PropTypes.string.isRequired,
     onChange: PropTypes.func.isRequired,
-    hasError: PropTypes.func.isRequired,
     hasFormatError: PropTypes.bool.isRequired,
     minLength: PropTypes.number,
     autoFocus: PropTypes.bool,
