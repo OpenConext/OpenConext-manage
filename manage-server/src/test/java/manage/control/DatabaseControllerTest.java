@@ -44,6 +44,16 @@ public class DatabaseControllerTest extends AbstractIntegrationTest {
         assertEquals(List.of("motivation", "release_as", "use_as_nameid", "value"), keys);
         assertEquals("aliasGivenName", arpGivenName.get("release_as"));
         assertEquals(true, arpGivenName.get("use_as_nameid"));
+
+        String nameSramRP = (String) ((Map) ((Map) connections.get("connections"))
+                .get("15"))
+                .get("name");
+        assertEquals("https://sram.service.api.oidc_rp", nameSramRP);
+
+        String nameSramSP = (String) ((Map) ((Map) connections.get("connections"))
+                .get("16"))
+                .get("name");
+        assertEquals("https://sram.service.api.saml_sp", nameSramSP);
     }
 
 }

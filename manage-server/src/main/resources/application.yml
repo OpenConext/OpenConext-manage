@@ -27,6 +27,7 @@ push:
     password: password
     exclude_edugain_imports: true
     exclude_oidc_rp: false
+    exclude_sram: false
   oidc:
     url: http://localhost:9898/manage/connections
     user: manage

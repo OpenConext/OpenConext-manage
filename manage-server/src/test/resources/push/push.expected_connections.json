@@ -335,6 +335,31 @@
       "state": "prodaccepted",
       "type": "saml20-sp"
     },
+    "15": {
+      "allow_all_entities": true,
+      "allowed_connections": [],
+      "metadata": {
+        "AssertionConsumerService": [
+          {
+            "Binding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
+            "Location": "https://trusted.proxy.acs.location.rules"
+          }
+        ],
+        "NameIDFormat": "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent",
+        "OrganizationName": {
+          "en": "SURF"
+        },
+        "coin": {
+          "signature_method": "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"
+        },
+        "name": {
+          "en": "SRAM Service (Test)"
+        }
+      },
+      "name": "https://sram.service.api.oidc_rp",
+      "state": "prodaccepted",
+      "type": "saml20-sp"
+    },
     "5": {
       "allow_all_entities": true,
       "allowed_connections": [],
@@ -399,6 +424,31 @@
         }
       },
       "name": "https://serviceregistry.test2.surfconext.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp-2",
+      "state": "prodaccepted",
+      "type": "saml20-sp"
+    },
+    "16": {
+      "allow_all_entities": true,
+      "allowed_connections": [],
+      "metadata": {
+        "AssertionConsumerService": [
+          {
+            "Binding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
+            "Location": "https://sram.service.api.saml_sp/acs"
+          }
+        ],
+        "NameIDFormat": "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent",
+        "OrganizationName": {
+          "en": "SURF"
+        },
+        "coin": {
+          "signature_method": "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"
+        },
+        "name": {
+          "en": "SRAM Service (Test)"
+        }
+      },
+      "name": "https://sram.service.api.saml_sp",
       "state": "prodaccepted",
       "type": "saml20-sp"
     },

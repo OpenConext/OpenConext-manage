@@ -463,6 +463,20 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void uniqueEntityIdIncludingSRAM() {
+        Map<String, Object> searchOptions = new HashMap<>();
+        searchOptions.put("entityid", "https@//oidc.rp");
+        given()
+                .when()
+                .body(searchOptions)
+                .header("Content-type", "application/json")
+                .post("manage/api/client/uniqueEntityId/sram")
+                .then()
+                .statusCode(SC_OK)
+                .body("size()", is(1));
+    }
+
+    @Test
     public void uniqueEntityIdCaseInsensitive() {
         Map<String, Object> searchOptions = new HashMap<>();
         searchOptions.put("entityid", "https@//OIDC.RP");

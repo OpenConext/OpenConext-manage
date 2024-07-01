@@ -53,6 +53,7 @@ public class DatabaseController {
 
     private final boolean excludeEduGainImported;
     private final boolean excludeOidcRP;
+    private final boolean excludeSRAM;
 
     private final MetaDataRepository metaDataRepository;
 
@@ -67,6 +68,7 @@ public class DatabaseController {
                        @Value("${push.eb.password}") String password,
                        @Value("${push.eb.exclude_edugain_imports}") boolean excludeEduGainImported,
                        @Value("${push.eb.exclude_oidc_rp}") boolean excludeOidcRP,
+                       @Value("${push.eb.exclude_sram}") boolean excludeSRAM,
                        @Value("${push.oidc.url}") String oidcPushUri,
                        @Value("${push.oidc.user}") String oidcUser,
                        @Value("${push.oidc.password}") String oidcPassword,
@@ -80,6 +82,7 @@ public class DatabaseController {
         this.restTemplate = new RestTemplate(getRequestFactory(user, password, pushUri));
         this.excludeEduGainImported = excludeEduGainImported;
         this.excludeOidcRP = excludeOidcRP;
+        this.excludeSRAM = excludeSRAM;
 
         this.oidcRestTemplate = new RestTemplate(getRequestFactory(oidcUser, oidcPassword,oidcPushUri ));
         this.oidcPushUri = oidcPushUri;
@@ -135,6 +138,14 @@ public class DatabaseController {
                     metaDataFields.put("scopes", transformedScope);
                 }
             });
+            if (!excludeSRAM) {
+                List<MetaData> sramRelyingParties = metaDataRepository.getMongoTemplate()
+                        .findAll(MetaData.class, EntityType.SRAM.getType())
+                        .stream()
+                        .filter(sramRP -> "oidc_rp".equals(sramRP.metaDataFields().get("connection_type")))
+                        .collect(toList());
+                relyingParties.addAll(sramRelyingParties);
+            }
             relyingParties.forEach(rp -> {
                 //Once we want to get rid of this cleanup, but for now backward compatibility
                 Map<String, Object> metaDataFields = rp.metaDataFields();
@@ -157,7 +168,7 @@ public class DatabaseController {
     public Map<String, Map<String, Map<String, Object>>> pushPreview() {
         EngineBlockFormatter formatter = new EngineBlockFormatter();
 
-        List<MetaData> serviceProviders = metaDataRepository.getMongoTemplate().findAll(MetaData.class, "saml20_sp");
+        List<MetaData> serviceProviders = metaDataRepository.getMongoTemplate().findAll(MetaData.class, EntityType.SP.getType());
         Stream<MetaData> metaDataStream = excludeEduGainImported ?
                 serviceProviders.stream()
                         .filter(metaData -> {
@@ -171,7 +182,7 @@ public class DatabaseController {
                 .filter(metaData -> !excludeFromPush(metaData.metaDataFields()))
                 .collect(toMap(MetaData::getId, formatter::parseServiceProvider));
 
-        List<MetaData> identityProviders = metaDataRepository.getMongoTemplate().findAll(MetaData.class, "saml20_idp");
+        List<MetaData> identityProviders = metaDataRepository.getMongoTemplate().findAll(MetaData.class, EntityType.IDP.getType());
 
         //Explicit only filter out 'null' objects in the disableConsent as generically filtering out 'nulls' can break things
         filterOutNullDisableConsentExplanations(identityProviders);
@@ -185,10 +196,14 @@ public class DatabaseController {
             Map<String, Map<String, Object>> oidcClientsToPush = relyingParties.stream()
                     .filter(metaData -> !excludeFromPush(metaData.metaDataFields()))
                     .collect(toMap(MetaData::getId, formatter::parseOidcClient));
-
             serviceProvidersToPush.putAll(oidcClientsToPush);
         }
-
+        if (!excludeSRAM) {
+            List<MetaData> sramServices = metaDataRepository.getMongoTemplate().findAll(MetaData.class, EntityType.SRAM.getType());
+            Map<String, Map<String, Object>> sramServicesToProvidersToPush = sramServices.stream()
+                    .collect(toMap(MetaData::getId, formatter::parseServiceProvider));
+            serviceProvidersToPush.putAll(sramServicesToProvidersToPush);
+        }
         serviceProvidersToPush.putAll(identityProvidersToPush);
 
         Map<String, Map<String, Map<String, Object>>> results = new HashMap<>();
