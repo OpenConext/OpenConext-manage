@@ -28,6 +28,12 @@ public class ScopeEnforcer {
         enforceScope(entityType, apiUser, CHANGE_REQUEST_IDP, CHANGE_REQUEST_SP, "change request");
     }
 
+    public static void enforceDeleteScope(APIUser apiUser, EntityType entityType) {
+        if (!spEntityTypes.contains(entityType) || !apiUser.isAllowed(DELETE_SP)) {
+            throw new EndpointNotAllowed(String.format("APIUser %s is not allowed to delete an entity %s", apiUser.getName(), entityType.getType()));
+        }
+    }
+
     private static void enforceScope(EntityType entityType, APIUser apiUser, Scope writeIdp, Scope writeSp, String action) {
         if (entityType.equals(EntityType.IDP) && !apiUser.isAllowed(writeIdp)) {
             throw new EndpointNotAllowed(String.format("APIUser %s is not allowed to %s for entity %s", apiUser.getName(), action, entityType.getType()));

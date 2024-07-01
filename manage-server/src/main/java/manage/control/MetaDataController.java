@@ -218,6 +218,7 @@ public class MetaDataController {
     public boolean removeInternal(@PathVariable("type") String type,
                                   @PathVariable("id") String id,
                                   APIUser apiUser) {
+        ScopeEnforcer.enforceDeleteScope(apiUser, EntityType.fromType(type));
         return metaDataService.doRemove(type, id, apiUser, "Deleted by APIUser " + apiUser.getName());
     }
 

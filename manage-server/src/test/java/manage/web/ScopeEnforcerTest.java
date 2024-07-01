@@ -61,4 +61,15 @@ public class ScopeEnforcerTest {
     public void enforceChangeRequestScopeAllowedSP() {
         ScopeEnforcer.enforceChangeRequestScope(new APIUser("test", List.of(Scope.CHANGE_REQUEST_SP)), EntityType.SP);
     }
+
+    @Test(expected = EndpointNotAllowed.class)
+    public void enforceDeleteScopeIdP() {
+        ScopeEnforcer.enforceDeleteScope(new APIUser("test", List.of(Scope.DELETE_SP)), EntityType.IDP);
+    }
+
+    @Test
+    public void enforceDeleteScopeIdPNotAllowed() {
+        ScopeEnforcer.enforceDeleteScope(new APIUser("test", List.of(Scope.DELETE_SP)), EntityType.SRAM);
+    }
+
 }
