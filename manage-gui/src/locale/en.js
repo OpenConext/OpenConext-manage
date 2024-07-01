@@ -117,7 +117,8 @@ I18n.translations.en = {
             graph: "Graph",
             mail: "Mail",
             eva: "EVA"
-        }
+        },
+        readOnlyEntityType: "{{name}} is a read-only metadata collection"
     },
 
     topBannerDetails: {

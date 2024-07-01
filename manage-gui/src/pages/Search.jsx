@@ -8,6 +8,7 @@ import {isEmpty, stop} from "../utils/Utils";
 
 import "./Search.scss";
 import withRouterHooks from "../utils/RouterBackwardCompatability";
+import {isReadOnly} from "../utils/EntityTypes";
 
 class Search extends React.PureComponent {
 
@@ -88,7 +89,11 @@ class Search extends React.PureComponent {
 
     newMetaData = e => {
         stop(e);
-        this.props.navigate(`/metadata/${this.state.selectedTab}/new`);
+        const {selectedTab} = this.state;
+        if (!isReadOnly(selectedTab)) {
+            this.props.navigate(`/metadata/${selectedTab}/new`);
+        }
+
     };
 
     switchTab = tab => e => {
@@ -136,7 +141,8 @@ class Search extends React.PureComponent {
                                                             moreAlternativesToShow={moreAlternativesToShow}
                         />}
                     </div>
-                    <a className="new button green" onClick={this.newMetaData}>
+                    <a className={`new button ${isReadOnly(selectedTab) ? "grey disabled" : "green"}`}
+                       onClick={this.newMetaData}>
                         {I18n.t("metadata.new")}<i className="fa fa-plus"></i>
                     </a>
                 </section>

@@ -52,6 +52,7 @@ import PolicyForm from "../components/metadata/PolicyForm";
 import {getNameForLanguage, getOrganisationForLanguage} from "../utils/Language";
 import Policies from "../components/metadata/Policies";
 import {deleteFalseErrorKeys} from "../utils/MetaDataConfiguration";
+import {isReadOnly} from "../utils/EntityTypes";
 
 let tabsSp = [
     "connection",
@@ -669,7 +670,10 @@ class Detail extends React.PureComponent {
     }
 
     renderActions = revisionNote => {
-        const {errors, revisionNoteError} = this.state;
+        const {errors, revisionNoteError, metaData} = this.state;
+        if (isReadOnly(metaData.type)) {
+            return null;
+        }
         const hasErrors = this.hasGlobalErrors(errors);
         const revisionNoteRequired = revisionNoteError && isEmpty(revisionNote);
         return (
@@ -1260,7 +1264,7 @@ class Detail extends React.PureComponent {
 
         const hasErrors = this.hasGlobalErrors(errors) && !isEmpty(metaData.id);
 
-        const allowedDelete = !isNew;
+        const allowedDelete = !isNew && !isReadOnly(metaData.type);
 
         return (
             <div className="detail-metadata">
@@ -1323,6 +1327,8 @@ class Detail extends React.PureComponent {
                                     {I18n.t("metadata.clone")}
                                 </a>
                             )}
+                            {isReadOnly(metaData.type) &&
+                                <p className="read-only-warning">{I18n.t("metadata.readOnlyEntityType", {name: metaData.type.toUpperCase()})}</p>}
                         </section>
                         {(changeRequestsLoaded && !isEmpty(requests)) && this.renderHasChangeRequests()}
                     </section>
