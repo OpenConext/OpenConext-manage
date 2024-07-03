@@ -130,9 +130,12 @@ const tabsSingleTenant = [
 
 const tabsSram = [
     "connection",
+    "connected_idps",
     "metadata",
+    "whitelist",
     "manipulation",
-    "revisions"
+    "revisions",
+    "export"
 ];
 
 
