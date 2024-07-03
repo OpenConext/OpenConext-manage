@@ -19,9 +19,9 @@ export default class Activity extends React.Component {
         this.state = {
             activity: [],
             filteredActivity: [],
-            types: ["saml20_idp", "saml20_sp", "oidc10_rp", "oauth20_rs", "provisioning", "policy"],
+            types: ["saml20_idp", "saml20_sp", "oidc10_rp"],
             reverse: false,
-            allTypes: ["saml20_idp", "saml20_sp", "oidc10_rp", "oauth20_rs", "provisioning", "policy", "single_tenant_template"],
+            allTypes: ["saml20_idp", "saml20_sp", "oidc10_rp", "oauth20_rs", "provisioning", "policy", "sram", "single_tenant_template"],
             limit: "25",
             query: "",
             loaded: false,
