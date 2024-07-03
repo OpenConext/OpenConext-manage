@@ -426,7 +426,9 @@ public class MetaDataService {
             results = metaDataRepository.findByEntityId(entityType.getType(), entityId);
             String otherType = entityType.equals(EntityType.RP) ? EntityType.SP.getType() : EntityType.RP.getType();
             results.addAll(metaDataRepository.findByEntityId(otherType, entityId));
-            results.addAll(metaDataRepository.findByEntityId(EntityType.SRAM.getType(), entityId));
+            if (!entityType.equals(EntityType.SRAM)) {
+                results.addAll(metaDataRepository.findByEntityId(EntityType.SRAM.getType(), entityId));
+            }
             if (entityType.equals(EntityType.RP)) {
                 results.addAll(metaDataRepository.findByEntityId(EntityType.RS.getType(), entityId));
             }
