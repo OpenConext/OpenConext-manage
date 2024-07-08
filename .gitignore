@@ -24,4 +24,5 @@ private_key.pem
 NOTES.md
 yarn.list
 spiel-data
+manage-server/src/test/resources/change_requests
 
