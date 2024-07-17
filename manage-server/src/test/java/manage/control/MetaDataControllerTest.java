@@ -651,6 +651,23 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 .body("size()", is(5));
     }
 
+    @Test
+    public void rawSearchPost() {
+        String query = "{$and: [{$or:[{\"data.allowedEntities.name\": {$in: [\"http://mock-idp\"]}}, {\"data" +
+                ".allowedall\": true}]}, {\"data.state\":\"prodaccepted\"}]}";
+        given()
+                .auth()
+                .preemptive()
+                .basic("sp-portal", "secret")
+                .when()
+                .header("Content-type", "application/json")
+                .body(query)
+                .post("manage/api/internal/rawSearch/saml20_sp")
+                .then()
+                .statusCode(SC_OK)
+                .body("size()", is(5));
+    }
+
     private void doUpdate(EntityType type, String id, String revisionNote) {
         MetaData metaData = given()
                 .when()

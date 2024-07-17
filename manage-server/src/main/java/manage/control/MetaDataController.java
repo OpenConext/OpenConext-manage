@@ -424,7 +424,13 @@ public class MetaDataController {
     @GetMapping({"/client/rawSearch/{type}", "/internal/rawSearch/{type}"})
     public List<MetaData> rawSearch(@PathVariable("type") String type, @RequestParam("query") String query)
             throws UnsupportedEncodingException {
+        return metaDataService.retrieveRawSearch(type, query);
+    }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'READ')")
+    @PostMapping({"/client/rawSearch/{type}", "/internal/rawSearch/{type}"})
+    public List<MetaData> rawSearchPost(@PathVariable("type") String type, @RequestBody String query)
+            throws UnsupportedEncodingException {
         return metaDataService.retrieveRawSearch(type, query);
     }
 
