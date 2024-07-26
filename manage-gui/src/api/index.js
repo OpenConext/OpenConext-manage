@@ -221,6 +221,10 @@ export function rejectChangeRequest(changeRequest) {
     return postPutJson("change-requests/reject", changeRequest, "put");
 }
 
+export function removeChangeRequests(type, metaDataId) {
+    return fetchDelete(`change-requests/remove/${type}/${metaDataId}`);
+}
+
 export function uniqueEntityId(entityid, type) {
     return postPutJson(`uniqueEntityId/${type}`, {entityid}, "post");
 }

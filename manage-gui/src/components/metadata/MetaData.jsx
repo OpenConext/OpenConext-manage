@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import ReactTooltip from "react-tooltip";
 import scrollIntoView from "scroll-into-view";
 
-import {validation} from "./../../api";
+import {validation} from "../../api";
 import {Boolean, Number, SelectMulti, SelectOne, String, Strings, StringWithFormat} from "../form";
 import {SelectNewMetaDataField} from "../metadata";
 import {isEmpty} from "../../utils/Utils";

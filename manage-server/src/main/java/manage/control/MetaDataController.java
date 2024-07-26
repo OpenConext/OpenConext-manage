@@ -1,9 +1,9 @@
 package manage.control;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.mongodb.client.result.DeleteResult;
 import manage.api.APIUser;
 import manage.conf.MetaDataAutoConfiguration;
-import manage.exception.EndpointNotAllowed;
 import manage.model.*;
 import manage.repository.MetaDataRepository;
 import manage.service.ExporterService;
@@ -17,9 +17,7 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
@@ -34,7 +32,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import static manage.api.Scope.TEST;
-import static manage.api.Scope.WRITE_IDP;
 import static manage.mongo.MongoChangelog.CHANGE_REQUEST_POSTFIX;
 import static manage.mongo.MongoChangelog.REVISION_POSTFIX;
 
@@ -324,6 +321,14 @@ public class MetaDataController {
     @Transactional
     public MetaData rejectChangeRequest(@RequestBody @Validated ChangeRequest changeRequest, FederatedUser user) {
         return metaDataService.doRejectChangeRequest(changeRequest, user);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/client/change-requests/remove/{type}/{metaDataId}")
+    @Transactional
+    public DeleteResult removeChangeRequest(@PathVariable("type") String type,
+                                            @PathVariable("metaDataId") String metaDataId, FederatedUser user) {
+        return metaDataService.doDeleteChangeRequest(type, metaDataId, user);
     }
 
     @PreAuthorize("hasAnyRole('CHANGE_REQUEST_IDP', 'CHANGE_REQUEST_SP')")

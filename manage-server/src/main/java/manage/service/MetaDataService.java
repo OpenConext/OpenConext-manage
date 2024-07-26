@@ -1,6 +1,7 @@
 package manage.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.mongodb.client.result.DeleteResult;
 import lombok.SneakyThrows;
 import manage.api.APIUser;
 import manage.api.AbstractUser;
@@ -204,7 +205,7 @@ public class MetaDataService {
     public boolean doRemove(String type, String id, AbstractUser user, String revisionNote) {
         MetaData current = metaDataRepository.findById(id, type);
         checkNull(type, id, current);
-        //For security enforcement see th SecurityHook#preDelete
+        //For security enforcement see the SecurityHook#preDelete
         current = metaDataHook.preDelete(current, user);
         metaDataRepository.remove(current);
 
@@ -338,6 +339,15 @@ public class MetaDataService {
         mongoTemplate.remove(request, collectionName);
 
         return mongoTemplate.findById(changeRequest.getMetaDataId(), MetaData.class, changeRequest.getType());
+    }
+
+    public DeleteResult doDeleteChangeRequest(String type, String metaDataId, AbstractUser user) {
+        LOG.info("Deleting change requests {} by {}", metaDataId, user.getName());
+
+        MongoTemplate mongoTemplate = metaDataRepository.getMongoTemplate();
+        String collectionName = type.concat(CHANGE_REQUEST_POSTFIX);
+        Query query = new Query(Criteria.where("metaDataId").is(metaDataId));
+        return mongoTemplate.remove(query, MetaDataChangeRequest.class, collectionName);
     }
 
     public MetaData restoreDeleted(RevisionRestore revisionRestore, FederatedUser federatedUser)

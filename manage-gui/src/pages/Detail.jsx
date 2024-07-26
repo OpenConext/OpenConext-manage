@@ -27,6 +27,7 @@ import {
     provisioningById,
     relyingPartiesByResourceServer,
     remove,
+    removeChangeRequests,
     revisions,
     save,
     search,
@@ -330,6 +331,13 @@ class Detail extends React.PureComponent {
             .catch(err => {
                 if (err.response && err.response.status === 404) {
                     this.setState({notFound: true, loaded: true});
+                    if (!isNew) {
+                        changeRequests(type, id).then(requests => {
+                            requests.forEach(cr => cr.createdAt = new Date(cr.created));
+                            requests.sort((a, b) => b.createdAt - a.createdAt);
+                            this.setState({requests: requests, changeRequestsLoaded: true});
+                        })
+                    }
                 } else {
                     throw err;
                 }
@@ -1337,7 +1345,7 @@ class Detail extends React.PureComponent {
                     </section>
                 )}
 
-                {renderNotFound && <section>{I18n.t("metadata.notFound")}</section>}
+                {renderNotFound && this.renderMetaDataNotFound(changeRequestsLoaded, requests)}
                 {!notFound && (
                     <section className="tabs">
                         {tabs.map(tab => this.renderTab(tab, metaData, resourceServers, whiteListing, revisions, requests, relyingParties, policies))}
@@ -1364,6 +1372,51 @@ class Detail extends React.PureComponent {
                 {renderContent && this.renderActions(revisionNote)}
             </div>
         );
+    }
+
+    renderMetaDataNotFound = (changeRequestsLoaded, requests) => {
+        return (
+            <section className="not-found">
+                <p className="removed">{I18n.t("metadata.notFound")}</p>
+                {(changeRequestsLoaded && !isEmpty(requests)) &&
+                    <div className="change-requests">
+                        <p>{I18n.t("metadata.existingChangeRequests")}</p>
+                        <table className="change-requests-table">
+                            <thead>
+                            <tr>
+                                <th className="summary">{I18n.t("changeRequests.summary")}</th>
+                                <th className="type">{I18n.t("changeRequests.type")}</th>
+                                <th className="pathUpdateType">{I18n.t("changeRequests.pathUpdateType")}</th>
+                                <th className="content">{I18n.t("changeRequests.content")}</th>
+                                <th className="created">{I18n.t("changeRequests.created")}</th>
+                                <th className="note">{I18n.t("changeRequests.note")}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {requests.map(request => <tr>
+                                <td>{JSON.stringify(request.metaDataSummary)}</td>
+                                <td>{request.type}</td>
+                                <td>{request.pathUpdateType}</td>
+                                <td><code>{JSON.stringify(request.pathUpdates)}</code></td>
+                                <td>{request.created}</td>
+                                <td>{request.note}</td>
+                            </tr>)}
+                            </tbody>
+                        </table>
+                        <a className="button red" href="/#"
+                           onClick={e => {
+                               stop(e);
+                               const {type, id} = this.state;
+                               removeChangeRequests(type, id)
+                                   .then(() => {
+                                           setFlash(I18n.t("metadata.deleteChangeRequestsFlash"));
+                                           this.props.navigate(`/search`)
+                                       }
+                                   );
+                           }}>
+                            {I18n.t("metadata.deleteChangeRequests")}</a>
+                    </div>}
+            </section>);
     }
 }
 
