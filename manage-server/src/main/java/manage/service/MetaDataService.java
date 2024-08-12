@@ -172,7 +172,7 @@ public class MetaDataService {
                     EDUGAIN_IMPORT_USER,
                     "Removed from eduGain feed"));
 
-            List deleted = results.computeIfAbsent("deleted", s -> new ArrayList());
+            List deleted = results.computeIfAbsent("deleted", s -> new ArrayList<>());
             deleted.addAll(notInFeedAnymore.stream().map(ServiceProvider::getEntityId).collect(toList()));
 
             results.put("total", Collections.singletonList(imports.size()));
