@@ -11,8 +11,9 @@ public class Push implements Serializable {
     public final String pdpUrl;
     public final String pdpName;
     public final boolean excludeOidcRP;
+    public final boolean pdpEnabled;
 
-    public Push(String url, String name, String oidcUrl, String oidcName, String pdpUrl, String pdpName, boolean excludeOidcRP) {
+    public Push(String url, String name, String oidcUrl, String oidcName, String pdpUrl, String pdpName, boolean excludeOidcRP, boolean pdpEnabled) {
         this.url = url.replaceFirst("://(.*)@", "://");
         this.name = name;
         this.oidcName = oidcName;
@@ -20,5 +21,6 @@ public class Push implements Serializable {
         this.pdpUrl = pdpUrl;
         this.pdpName = pdpName;
         this.excludeOidcRP = excludeOidcRP;
+        this.pdpEnabled = pdpEnabled;
     }
 }

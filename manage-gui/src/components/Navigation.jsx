@@ -117,7 +117,7 @@ export default class Navigation extends React.PureComponent {
                     {this.renderItem("/staging", "staging", openChangeRequestsCount === 0 ? null : openChangeRequestsCount)}
                     {this.renderItem("/scopes", "scopes")}
                     {this.renderItem("/activity", "activity")}
-                    {this.renderItem("/policies", "policies")}
+                    {currentUser.push.pdpEnabled && this.renderItem("/policies", "policies")}
                     {this.renderSpinner()}
                     {this.renderPushButton()}
                 </div>

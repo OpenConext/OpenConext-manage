@@ -86,11 +86,11 @@ public class DatabaseController {
         this.excludeOidcRP = excludeOidcRP;
         this.excludeSRAM = excludeSRAM;
 
-        this.oidcRestTemplate = new RestTemplate(getRequestFactory(oidcUser, oidcPassword,oidcPushUri ));
+        this.oidcRestTemplate = oidcEnabled ? new RestTemplate(getRequestFactory(oidcUser, oidcPassword,oidcPushUri )) : null;
         this.oidcPushUri = oidcPushUri;
         this.oidcEnabled = oidcEnabled;
 
-        this.pdpRestTemplate = new RestTemplate(getRequestFactory(pdpUser, pdpPassword, pdpPushUri));
+        this.pdpRestTemplate = pdpEnabled ? new RestTemplate(getRequestFactory(pdpUser, pdpPassword, pdpPushUri)) : null;
         this.pdpPushUri = pdpPushUri;
         this.pdpEnabled = pdpEnabled;
 
