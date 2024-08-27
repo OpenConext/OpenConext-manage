@@ -12,15 +12,17 @@ import java.util.Map;
 public class EncryptionHook extends MetaDataHookAdapter {
 
     private final KeyStore keyStore;
+    private final boolean cryptoEnabled;
     private final List<String> decryptionAttributes = List.of("scim_password", "eva_token", "graph_secret");
 
-    public EncryptionHook(KeyStore keyStore) {
+    public EncryptionHook(KeyStore keyStore, boolean cryptoEnabled) {
         this.keyStore = keyStore;
+        this.cryptoEnabled = cryptoEnabled;
     }
 
     @Override
     public boolean appliesForMetaData(MetaData metaData) {
-        return metaData.getType().equals(EntityType.PROV.getType());
+        return metaData.getType().equals(EntityType.PROV.getType()) && cryptoEnabled;
     }
 
     @Override
@@ -53,7 +55,7 @@ public class EncryptionHook extends MetaDataHookAdapter {
         return newMetaData;
     }
 
-    boolean isEncryptedSecret(String secret) {
+    private boolean isEncryptedSecret(String secret) {
         return this.keyStore.isEncryptedSecret(secret);
     }
 }

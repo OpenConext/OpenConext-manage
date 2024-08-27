@@ -24,7 +24,8 @@ public class MetaDataHookConfiguration {
     CompositeMetaDataHook hooks(MetaDataRepository metaDataRepository,
                                 MetaDataAutoConfiguration metaDataAutoConfiguration,
                                 @Value("${crypto.public-key-location}") Resource publicKeyResource,
-                                @Value("${crypto.development-mode}") Boolean developmentMode) {
+                                @Value("${crypto.development-mode}") Boolean developmentMode,
+                                @Value("${crypto.enabled}") boolean cryptoEnabled) {
 
         KeyStore keyStore = developmentMode ? new RSAKeyStore() :
                 new RSAKeyStore(IOUtils.toString(publicKeyResource.getInputStream(), Charset.defaultCharset()), true);
@@ -43,7 +44,7 @@ public class MetaDataHookConfiguration {
                         new SecretHook(metaDataAutoConfiguration),
                         new RequiredAttributesHook(metaDataAutoConfiguration),
                         new ProvisioningHook(metaDataRepository, metaDataAutoConfiguration),
-                        new EncryptionHook(keyStore),
+                        new EncryptionHook(keyStore, cryptoEnabled),
                         new ProvisioningApplicationDeletionHook(metaDataRepository)));
     }
 

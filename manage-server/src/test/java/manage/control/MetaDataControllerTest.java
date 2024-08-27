@@ -89,8 +89,13 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void remove() {
-        MetaData metaData = metaDataRepository.findById("1", "saml20_sp");
+        MetaData metaData = metaDataRepository.findById("1", EntityType.SP.getType());
         assertNotNull(metaData);
+
+        MetaDataChangeRequest changeRequest = this.doCreateChangeRequest();
+        MetaData byId = metaDataRepository.findById(changeRequest.getId(), EntityType.SP.getType().concat(CHANGE_REQUEST_POSTFIX));
+
+        assertEquals(changeRequest.getId(), byId.getId());
 
         String reasonForDeletion = "Reason for deletion";
         given()
@@ -103,6 +108,9 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
 
         metaData = metaDataRepository.findById("1", "saml20_sp");
         assertNull(metaData);
+
+        byId = metaDataRepository.findById(changeRequest.getId(), EntityType.SP.getType().concat(CHANGE_REQUEST_POSTFIX));
+        assertNull(byId);
 
         List<MetaData> revisions = metaDataRepository.findRaw("saml20_sp_revision", "{\"revision.parentId\": \"1\"}");
         assertEquals(2, revisions.size());
@@ -1905,7 +1913,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 .statusCode(SC_FORBIDDEN);
     }
 
-    private void doCreateChangeRequest() {
+    private MetaDataChangeRequest doCreateChangeRequest() {
         Map<String, Object> pathUpdates = new HashMap<>();
         pathUpdates.put("metaDataFields.description:en", "New description");
         pathUpdates.put("allowedall", false);
@@ -1917,13 +1925,12 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         MetaDataChangeRequest changeRequest = new MetaDataChangeRequest(
                 "1", EntityType.SP.getType(), "Because....", pathUpdates, auditData
         );
-        given().auth().preemptive().basic("dashboard", "secret")
+        return given().auth().preemptive().basic("dashboard", "secret")
                 .when()
                 .body(changeRequest)
                 .header("Content-type", "application/json")
                 .post("manage/api/internal/change-requests")
-                .then()
-                .statusCode(SC_OK);
+                .as(MetaDataChangeRequest.class);
     }
 
     @Test

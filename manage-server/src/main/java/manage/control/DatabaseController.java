@@ -60,6 +60,7 @@ public class DatabaseController {
     private final Environment environment;
     private final String pdpPushUri;
     private final RestTemplate pdpRestTemplate;
+    private final boolean pdpEnabled;
 
     @Autowired
     DatabaseController(MetaDataRepository metaDataRepository,
@@ -75,6 +76,7 @@ public class DatabaseController {
                        @Value("${push.pdp.url}") String pdpPushUri,
                        @Value("${push.pdp.user}") String pdpUser,
                        @Value("${push.pdp.password}") String pdpPassword,
+                       @Value("${push.pdp.enabled}") boolean pdpEnabled,
                        @Value("${push.oidc.enabled}") boolean oidcEnabled,
                        Environment environment) throws MalformedURLException {
         this.metaDataRepository = metaDataRepository;
@@ -90,6 +92,7 @@ public class DatabaseController {
 
         this.pdpRestTemplate = new RestTemplate(getRequestFactory(pdpUser, pdpPassword, pdpPushUri));
         this.pdpPushUri = pdpPushUri;
+        this.pdpEnabled = pdpEnabled;
 
         this.environment = environment;
     }
@@ -99,7 +102,7 @@ public class DatabaseController {
             return new ResponseEntity<>(Collections.singletonMap("status", "OK"), HttpStatus.OK);
         }
         Map<String, Object> result = new HashMap<>();
-        if (pushOptions.isIncludePdP()) {
+        if (pushOptions.isIncludePdP() && pdpEnabled) {
             List<PdpPolicyDefinition> policies = this.metaDataRepository
                     .findAllByType(EntityType.PDP.getType()).stream()
                     .map(metaData -> new PdpPolicyDefinition(metaData))

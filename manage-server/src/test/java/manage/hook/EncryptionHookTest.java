@@ -17,12 +17,17 @@ import static org.junit.jupiter.api.Assertions.*;
 class EncryptionHookTest implements TestUtils {
 
     private final KeyStore keyStore = new RSAKeyStore();
-    private final EncryptionHook encryptionHook = new EncryptionHook(keyStore);;
-
+    private final EncryptionHook encryptionHook = new EncryptionHook(keyStore, true);
 
     @Test
     void appliesForMetaData() {
         assertTrue(encryptionHook.appliesForMetaData(new MetaData(EntityType.PROV.getType(), Map.of())));
+    }
+
+    @Test
+    void encryptionHookDisabled() {
+        EncryptionHook disabledEncryptionHook = new EncryptionHook(keyStore, false);
+        assertFalse(disabledEncryptionHook.appliesForMetaData(new MetaData(EntityType.PROV.getType(), Map.of())));
     }
 
     @Test
