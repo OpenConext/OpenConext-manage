@@ -9,9 +9,13 @@ import org.everit.json.schema.Schema;
 import org.everit.json.schema.ValidationException;
 import org.springframework.util.StringUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 import static java.util.stream.Collectors.toList;
+import static manage.model.EntityType.IDP;
 
 @SuppressWarnings("unchecked")
 public class ProvisioningHook extends MetaDataHookAdapter {
@@ -49,6 +53,7 @@ public class ProvisioningHook extends MetaDataHookAdapter {
     @Override
     public MetaData prePost(MetaData metaData, AbstractUser user) {
         validate(metaData);
+        validateScimIdentifier(metaData);
         return this.filterInvalidApplications(metaData);
     }
 
@@ -82,6 +87,31 @@ public class ProvisioningHook extends MetaDataHookAdapter {
                 .collect(toList());
         metaData.getData().put("applications", newApplications);
         return metaData;
+    }
+
+    private void validateScimIdentifier(MetaData newMetaData) {
+        Map<String, Object> metaDataFields = newMetaData.metaDataFields();
+        String provisioningType = (String) metaDataFields.get("provisioning_type");
+        String scimUserIdentifier = (String) metaDataFields.get("scim_user_identifier");
+        if ("scim".equals(provisioningType) && "eduID".equals(scimUserIdentifier)) {
+            //It is required that the coin:institution_guid is specified and points to an existing IdP
+            String institutionGuid = (String) metaDataFields.get("coin:institution_guid");
+            if (!StringUtils.hasText(institutionGuid)) {
+                Schema schema = metaDataAutoConfiguration.schema(EntityType.PROV.getType());
+                throw new ValidationException(
+                        schema,
+                        "coin:institution_guid is required, for scim provisioning with an eduID scim_user_identifier.");
+            } else {
+                List<MetaData> references = metaDataRepository.findRaw(IDP.getType(),
+                        String.format("{\"data.metaDataFields.coin:institution_guid\" : \"%s\"}", institutionGuid));
+                if (references.isEmpty()) {
+                    Schema schema = metaDataAutoConfiguration.schema(EntityType.PROV.getType());
+                    throw new ValidationException(
+                            schema,
+                            "coin:institution_guid must be a valid / existing IdP institution_guid.");
+                }
+            }
+        }
     }
 
 

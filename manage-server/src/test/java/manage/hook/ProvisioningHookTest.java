@@ -20,7 +20,6 @@ public class ProvisioningHookTest extends AbstractIntegrationTest {
     private ProvisioningHook provisioningHook;
     private final APIUser apiUser = new APIUser("test", emptyList());
 
-
     @Before
     public void before() throws Exception {
         super.before();
@@ -57,5 +56,54 @@ public class ProvisioningHookTest extends AbstractIntegrationTest {
         MetaData metaData = new MetaData(EntityType.PROV.getType(), new HashMap<>(Map.of("metaDataFields",
                 Map.of("provisioning_type", "scim"))));
         assertThrows(ValidationException.class, () -> provisioningHook.prePost(metaData, apiUser));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void prePostEduIDScimProvisioningMissingInstitutionGUID() {
+        MetaData metaData = new MetaData(EntityType.PROV.getType(), new HashMap<>(Map.of("metaDataFields",
+                Map.of("provisioning_type", "scim",
+                        "scim_url", "https://scim.url",
+                        "scim_user", "scim_user",
+                        "scim_password", "secret",
+                        "scim_user_identifier", "eduID"))));
+        try {
+            provisioningHook.prePost(metaData, apiUser);
+            fail();
+        } catch (ValidationException e) {
+            assertEquals("#: coin:institution_guid is required, for scim provisioning with an eduID scim_user_identifier.", e.getMessage());
+        }
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void prePostEduIDScimProvisioningInvalidInstitutionGUID() {
+        MetaData metaData = new MetaData(EntityType.PROV.getType(), new HashMap<>(Map.of("metaDataFields",
+                Map.of("provisioning_type", "scim",
+                        "scim_url", "https://scim.url",
+                        "scim_user", "scim_user",
+                        "scim_password", "secret",
+                        "scim_user_identifier", "eduID",
+                        "coin:institution_guid", "626C25B8-294A-402E-B3FF-368B57BE842F"))));
+        try {
+            provisioningHook.prePost(metaData, apiUser);
+            fail();
+        } catch (ValidationException e) {
+            assertEquals("#: coin:institution_guid must be a valid / existing IdP institution_guid.", e.getMessage());
+        }
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void prePostEduIDScimProvisioningValidInstitutionGUID() {
+        MetaData metaData = new MetaData(EntityType.PROV.getType(), new HashMap<>(Map.of("metaDataFields",
+                Map.of("provisioning_type", "scim",
+                        "scim_url", "https://scim.url",
+                        "scim_user", "scim_user",
+                        "scim_password", "secret",
+                        "scim_user_identifier", "eduID",
+                        //See src/test/resources/json/meta_data_seed.json
+                        "coin:institution_guid", "219092BE-B234-4C17-B910-B090C19CE3DB"))));
+        provisioningHook.prePost(metaData, apiUser);
     }
 }
