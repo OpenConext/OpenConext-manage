@@ -513,7 +513,7 @@
           "disable_scoping": "1",
           "guest_qualifier": "All",
           "hidden": "1",
-          "institution_id": "123",
+          "institution_guid": "219092BE-B234-4C17-B910-B090C19CE3DB",
           "publish_in_edugain": "1",
           "publish_in_edugain_date": "2018-06-15T08:20:34.575Z",
           "schachomeorganization": "schac_home"
@@ -662,7 +662,7 @@
           }
         ],
         "coin": {
-          "institution_id": "123",
+          "institution_guid": "219092BE-B234-4C17-B910-B090C19CE3DB",
           "stepup": {
             "allow_no_token": "1",
             "requireloa": "http://test.surfconext.nl/assurance/loa3"

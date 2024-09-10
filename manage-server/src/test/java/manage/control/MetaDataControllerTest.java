@@ -1212,7 +1212,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void connectSpWithSameInstitutionIdAsIdp() {
+    public void connectSpWithSameInstitutionGUIDAsIdp() {
         String idpEntityId = "https://idp.test2.surfconext.nl";
         String idUId = "6";
         String rpId = "https@//oidc.rp";

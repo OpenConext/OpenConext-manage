@@ -498,15 +498,15 @@ public class MetaDataService {
         boolean connectWithoutInteraction = StringUtils.hasText(dashboardConnectType) &&
                 DashboardConnectOption.fromType(dashboardConnectType).connectWithoutInteraction();
 
-        Object idpInstitutionId = idp.metaDataFields().get("coin:institution_id");
-        Object spInstitutionId = sp.metaDataFields().get("coin:institution_id");
+        Object idpInstitutionId = idp.metaDataFields().get("coin:institution_guid");
+        Object spInstitutionId = sp.metaDataFields().get("coin:institution_guid");
         boolean shareInstitutionId = idpInstitutionId != null && idpInstitutionId.equals(spInstitutionId) &&
                 !"connect_with_interaction".equals(dashboardConnectType);
         if (!connectWithoutInteraction && !shareInstitutionId) {
             throw new EndpointNotAllowed(
-                    String.format("SP %s does not allow an automatic connection with IdP %s. " +
+                    String.format("%s %s does not allow an automatic connection with IdP %s. " +
                                     "SP dashboardConnectType: %s, idpInstitutionId: %s, spInstitutionId %s",
-                            spEntityId, idpEntityId, dashboardConnectType, idpInstitutionId, spInstitutionId));
+                            spType, spEntityId, idpEntityId, dashboardConnectType, idpInstitutionId, spInstitutionId));
         }
 
         addAllowedEntity(sp, idpEntityId, connectionData, apiUser, false);
