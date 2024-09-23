@@ -33,12 +33,14 @@ export default function PolicyMissingEnforcements({}) {
                     <section className="policy-response">
                         <table>
                             <thead>
+                            <tr>
                             {headers.map((header, index) => <th className={header} key={index}>
                                 {I18n.t(`policies.${header}`)}
                             </th>)}
+                            </tr>
                             </thead>
                             <tbody>
-                            {policies.map((policy, index) => <tr>
+                            {policies.map((policy, index) => <tr key={index}>
                                 <td><a href={`/metadata/policy/${policy.id}`} target="_blank">
                                     {policy.data.name}
                                 </a></td>
@@ -47,7 +49,7 @@ export default function PolicyMissingEnforcements({}) {
                                 <td>
                                     <div className="providers">
                                     {policy.data.policyEnforcementDecisionAbsent.map((provider, index) =>
-                                        <a href={`/metadata/${provider.type}/${provider.id}`} target="_blank">
+                                        <a key={index} href={`/metadata/${provider.type}/${provider.id}`} target="_blank">
                                             {`${getNameForLanguage(provider.data.metaDataFields)}${organisationName(provider)}`}
                                         </a>
                                     )}

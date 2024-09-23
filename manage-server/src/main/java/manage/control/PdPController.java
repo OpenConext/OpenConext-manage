@@ -9,9 +9,9 @@ import manage.model.EntityType;
 import manage.model.MetaData;
 import manage.policies.PdpPolicyDefinition;
 import manage.policies.PolicyRepository;
+import manage.policies.PolicySummary;
 import manage.repository.MetaDataRepository;
 import manage.service.MetaDataService;
-import org.everit.json.schema.ValidationException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -22,6 +22,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import org.xmlunit.builder.DiffBuilder;
+import org.xmlunit.builder.Input;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -69,17 +71,54 @@ public class PdPController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/client/pdp/push_analysis")
+    public Map<String, Object> pushAnalysis() {
+        List<PolicySummary> policies = policyRepository.policies();
+        List<PolicySummary> migratedPolicies = policyRepository.migratedPolicies();
+        List<PolicySummary> missingPolicies = policies.stream()
+                .filter(policy -> policy.isActive() && migratedPolicies.stream()
+                        .noneMatch(migratedPolicy -> this.nameEquality(policy, migratedPolicy)))
+                .collect(toList());
+        this.addDescription(missingPolicies);
+        List<Map<String, String>> differences = migratedPolicies.stream()
+                .map(migratedPolicy -> policies.stream()
+                        .filter(policy -> this.nameEquality(policy, migratedPolicy))
+                        .findFirst()
+                        .map(policy -> Map.of(
+                                policy.getName(),
+                                DiffBuilder
+                                        .compare(Input.fromString(policy.getXml()))
+                                        .withTest(Input.fromString(migratedPolicy.getXml()))
+                                        .ignoreWhitespace()
+                                        .normalizeWhitespace()
+                                        .ignoreElementContentWhitespace()
+                                        .build()
+                                        .toString())))
+                .filter(optionalMap -> optionalMap.isPresent())
+                .map(optionalMap -> optionalMap.get())
+                .filter(map -> !map.containsValue("[identical]"))
+                .collect(toList());
+        return Map.of(
+                "policy_count", policies.size(),
+                "active_policy_count", policies.stream().filter(policy -> policy.isActive()).count(),
+                "migrated_policy_count", migratedPolicies.size(),
+                "missing_policies", missingPolicies,
+                "differences", differences
+        );
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/client/pdp/policies")
-    public List<Map<String, String>> policies() {
-        List<Map<String, String>> policies = policyRepository.policies();
+    public List<PolicySummary> policies() {
+        List<PolicySummary> policies = policyRepository.policies();
         addDescription(policies);
         return policies;
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/client/pdp/migrated_policies")
-    public List<Map<String, String>> migratedPolicies() {
-        List<Map<String, String>> policies = policyRepository.migratedPolicies();
+    public List<PolicySummary> migratedPolicies() {
+        List<PolicySummary> policies = policyRepository.migratedPolicies();
         addDescription(policies);
         return policies;
     }
@@ -108,28 +147,37 @@ public class PdPController {
         this.metaDataService.deleteCollection(EntityType.PDP);
         Map<String, List<Object>> results = Map.of("imported", new ArrayList<>(), "errors", new ArrayList<>());
         dataList.forEach(data -> {
-                    PdpPolicyDefinition.updateProviderStructure(data);
-                    MetaData metaData = new MetaData(EntityType.PDP.getType(), data);
+            PdpPolicyDefinition.updateProviderStructure(data);
+            MetaData metaData = new MetaData(EntityType.PDP.getType(), data);
             Map<String, List<String>> missingReferences = this.missingReferences(metaData);
             if (missingReferences.values().stream().anyMatch(references -> !references.isEmpty())) {
-                results.get("errors").add(Map.of("name", metaData.getData().get("name"), "error", missingReferences.toString()));
+                results.get("errors").add(Map.of(
+                        "name",
+                        metaData.getData().get("name"),
+                        "error",
+                        "Unknown providers: " +
+                                missingReferences.entrySet().stream().filter(e -> !e.getValue().isEmpty()).collect(toList())));
             } else {
                 try {
                     MetaData savedMetaData = this.metaDataService.doPost(metaData, new APIUser("PDP import", List.of(Scope.SYSTEM)), false);
                     results.get("imported").add(savedMetaData);
-                } catch (ValidationException e) {
-                    results.get("errors").add(Map.of("name", metaData.getData().get("name"), "error", e.getMessage()));
+                } catch (RuntimeException e) {
+                    results.get("errors").add(Map.of(
+                            "name",
+                            metaData.getData().get("name"),
+                            "error",
+                            e.getMessage()));
                 }
             }
         });
         return results;
     }
 
-    private void addDescription(List<Map<String, String>> policies) {
+    private void addDescription(List<PolicySummary> policies) {
         policies.forEach(policy -> {
-            Matcher matcher = descriptionPattern.matcher(policy.get("xml"));
+            Matcher matcher = descriptionPattern.matcher((String) policy.getXml());
             matcher.find();
-            policy.put("description", matcher.group(1));
+            policy.setDescription(matcher.group(1));
         });
     }
 
@@ -161,6 +209,10 @@ public class PdPController {
             }
         });
         return missingReferences;
+    }
+
+    private boolean nameEquality(PolicySummary policy, PolicySummary otherPolicy) {
+        return policy.getName().trim().equals(otherPolicy.getName().trim());
     }
 
 }

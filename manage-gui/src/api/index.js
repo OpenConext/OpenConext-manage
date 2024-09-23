@@ -317,6 +317,10 @@ export function getMigratedPdPPolicies() {
     return fetchJson("pdp/migrated_policies");
 }
 
+export function getPolicyPushAnalysis() {
+    return fetchJson("/pdp/push_analysis");
+}
+
 export function importPdPPolicies() {
     return postPutJson("pdp/import_policies", {}, "PUT")
 }
