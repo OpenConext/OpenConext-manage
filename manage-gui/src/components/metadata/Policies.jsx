@@ -136,7 +136,7 @@ class Policies extends React.Component {
     newMetaData = e => {
         stop(e);
         const {metaData} = this.props;
-        const type = metaData.type === "saml20_sp" ? "sp" : "idp";
+        const type = metaData.type === "saml20_idp" ? "idp" : "sp";
         const path = encodeURIComponent(`/metadata/policy/new?${type}=${metaData.data.entityid}`);
         this.props.navigate(`/refresh-route/${path}`, {replace: true});
     };

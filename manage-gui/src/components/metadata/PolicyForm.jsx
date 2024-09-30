@@ -26,7 +26,6 @@ export default function PolicyForm({
                                        data,
                                        isNew,
                                        onChange,
-                                       errors,
                                        onError
                                    }) {
 
