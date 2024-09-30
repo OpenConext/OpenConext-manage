@@ -427,7 +427,7 @@ public class MetaDataService {
     public List<Map> uniqueEntityId(String type, String entityId) {
         EntityType entityType = EntityType.fromType(type);
         List<Map> results;
-        if (entityType.equals(EntityType.IDP) || entityType.equals(EntityType.STT)) {
+        if (entityType.equals(EntityType.IDP) || entityType.equals(EntityType.STT) || entityType.equals(EntityType.PDP)) {
             results = metaDataRepository.findByEntityId(entityType.getType(), entityId);
         } else if (entityType.equals(EntityType.RS)) {
             results = metaDataRepository.findByEntityId(entityType.getType(), entityId);

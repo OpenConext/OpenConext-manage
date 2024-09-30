@@ -656,7 +656,7 @@ class Detail extends React.PureComponent {
         this.sanitizeMetaData(metaData);
         promise(metaData).then(json => {
             if (json.exception || json.error) {
-                setFlash(json.validations, "error");
+                setFlash(json.validations || json.message, "error");
                 window.scrollTo(0, 0);
             } else {
                 const name = json.data.name || getNameForLanguage(json.data.metaDataFields) || "this service";
