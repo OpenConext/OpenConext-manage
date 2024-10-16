@@ -500,7 +500,7 @@ I18n.translations.en = {
         wildcard: "Wildcard",
         exact: "Exact",
         prefix: "Prefix",
-        new_attribute_value: "Enter the new ARP value for {{key}}",
+        new_attribute_value: "Enter the value filter for {{key}}",
         new_attribute_motivation: "The motivation for the release of {{key}}",
         new_attribute_motivation_placeholder: "Motivation...",
         new_attribute_release_as: "Override the release of {{key}} with a different attribute name",
