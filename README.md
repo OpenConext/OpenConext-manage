@@ -13,11 +13,11 @@ Note that the original migration from Janus was removed in version 3.0.0. If you
 
 ### [System Requirements](#system-requirements)
 
-- Java 11
+- Java 21
 - Maven 3
 - MongoDB
 - yarn
-- NodeJS v16.13.2 (best managed with `nvm`, current version in [.nvmrc](manage-gui/.nvmrc))
+- Node v20.8.0 (best managed with `nvm`, current version in [.nvmrc](manage-gui/.nvmrc))
 - ansible
 
 If you have installed MongoDB with your package manager, you'll have to enable transactions:
