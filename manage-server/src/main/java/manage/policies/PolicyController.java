@@ -6,8 +6,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import manage.api.APIUser;
 import manage.api.ImpersonatedUser;
+import manage.control.DatabaseController;
 import manage.model.EntityType;
 import manage.model.MetaData;
+import manage.model.PushOptions;
 import manage.repository.MetaDataRepository;
 import manage.service.MetaDataService;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,6 +37,7 @@ public class PolicyController {
     private final List<Map<String, String>> allowedAttributes;
     private final List<Map<String, String>> samlAllowedAttributes;
     private final List<String> loaLevels;
+    private final DatabaseController databaseController;
     private final TypeReference<List<Map<String, String>>> typeReference = new TypeReference<>() {
     };
 
@@ -43,11 +46,13 @@ public class PolicyController {
                             ObjectMapper objectMapper,
                             PolicyIdpAccessEnforcer policyIdpAccessEnforcer,
                             MetaDataRepository metaDataRepository,
+                            DatabaseController databaseController,
                             @Value("${loa_levels}") String loaLevelsCommaSeparated) {
         this.metaDataService = metaDataService;
         this.objectMapper = objectMapper;
         this.policyIdpAccessEnforcer = policyIdpAccessEnforcer;
         this.metaDataRepository = metaDataRepository;
+        this.databaseController = databaseController;
         this.allowedAttributes = this.attributes("policies/allowed_attributes.json");
         this.allowedAttributes.sort(Comparator.comparing(o -> o.get("label")));
         this.samlAllowedAttributes = this.attributes("policies/extra_saml_attributes.json");
@@ -89,6 +94,7 @@ public class PolicyController {
         MetaData metaData = new MetaData(EntityType.PDP.getType(), data);
         MetaData metaDataSaved = this.metaDataService.doPost(metaData, apiUser, false);
         policyDefinition.setId(metaDataSaved.getId());
+        databaseController.doPush(new PushOptions(false, false, true));
         return policyDefinition;
     }
 
@@ -107,6 +113,7 @@ public class PolicyController {
         existingMetaData.setData(data);
         MetaData metaData = this.metaDataService.doPut(existingMetaData, apiUser, false);
         policyDefinition.setRevisionNbr(metaData.getRevision().getNumber());
+        databaseController.doPush(new PushOptions(false, false, true));
         return policyDefinition;
     }
 
@@ -118,6 +125,8 @@ public class PolicyController {
 
         policyIdpAccessEnforcer.actionAllowed(policyDefinition, PolicyAccess.WRITE, apiUser, true);
         this.metaDataService.doRemove(EntityType.PDP.getType(), id, apiUser, "Deleted by dashboard API");
+        databaseController.doPush(new PushOptions(false, false, true));
+
     }
 
     @PreAuthorize("hasRole('POLICIES')")
