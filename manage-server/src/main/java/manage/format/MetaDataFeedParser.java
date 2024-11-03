@@ -361,7 +361,7 @@ public class MetaDataFeedParser {
                             }
                             break;
                         case "NameIDFormat": {
-                            if (inCorrectEntityDescriptor) {
+                            if (inCorrectEntityDescriptor && !entityType.equals(EntityType.IDP)) {
                                 String elementText = reader.getElementText();
                                 metaDataFields.put("NameIDFormat", elementText);
                             }
