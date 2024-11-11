@@ -503,7 +503,7 @@ I18n.translations.en = {
         new_attribute_value: "Enter the value filter for {{key}}",
         new_attribute_motivation: "The motivation for the release of {{key}}",
         new_attribute_motivation_placeholder: "Motivation...",
-        new_attribute_release_as: "Override the release of {{key}} with a different attribute name",
+        new_attribute_release_as: "Release {{key}} as a different attribute",
         new_attribute_release_as_placeholder: "Release as...",
         new_attribute_use_as_nameid: "Use {{key}} as name-id in the SAML response"
     },
