@@ -455,7 +455,9 @@ I18n.translations.en = {
     },
     clipboard: {
         copied: "Copied!",
-        copy: "Copy to clipboard"
+        copy: "Copy to clipboard",
+        copyAsCSV: "Copy as CSV",
+        copyAsJSON: "Copy as JSON"
     },
     error_dialog: {
         title: "Unexpected error",

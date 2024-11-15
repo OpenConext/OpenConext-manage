@@ -26,7 +26,8 @@ export default class API extends React.PureComponent {
             newMetaDataFieldKey: null,
             newGlobalAttributeKey: null,
             status: "all",
-            copiedToClipboardClassName: ""
+            copiedToClipboardClassName: "",
+            copiedToClipboardJSONClassName: ""
         };
     }
 
@@ -188,6 +189,15 @@ export default class API extends React.PureComponent {
         }
     };
 
+    copyToClipboardJSON = e => {
+        stop(e);
+        if (!isEmpty(this.state.searchResults)) {
+            copyToClip("search-results-printable-json");
+            this.setState({copiedToClipboardJSONClassName: "copied"});
+            setTimeout(() => this.setState({copiedToClipboardJSONClassName: ""}), 5000);
+        }
+    };
+
     newMetaDataFieldRendered = (ref, autoFocus) => {
         if (autoFocus) {
             this.newMetaDataField = ref;
@@ -321,17 +331,30 @@ export default class API extends React.PureComponent {
     };
 
 
-    renderSearchResultsTablePrintable = (searchResults) =>
-        <section id={"search-results-printable"}>
-            {searchResults
-                .map(entity => `${entity.data.state},${getNameForLanguage(entity.data.metaDataFields)},${entity.data.entityid}`)
-                .join("\n")}</section>;
+    renderSearchResultsTablePrintable = (searchResults) => {
+        return (
+            <section id={"search-results-printable"}>
+                {`${["state", "name", "entity_id"].join(",")}\n`}
+                {searchResults
+                    .map(entity => `${entity.data.state},${getNameForLanguage(entity.data.metaDataFields)},${entity.data.entityid}`)
+                    .join("\n")}</section>
+        );
+    }
+
+    renderSearchResultsJSONPrintable = (searchResults) => {
+        return (
+            <section id={"search-results-printable-json"}>
+                {JSON.stringify(searchResults, null, 4)}
+            </section>
+        );
+    }
 
     renderSearch = () => {
         const {configuration} = this.props;
         const {
             selectedType, searchAttributes, errorAttributes, searchResults, status, copiedToClipboardClassName,
-            globalSearchAttributes, globalErrorAttributes, logicalOperatorIsAnd, fullTextSearch
+            copiedToClipboardJSONClassName, globalSearchAttributes, globalErrorAttributes, logicalOperatorIsAnd,
+            fullTextSearch
         } = this.state;
         const conf = configuration.find(conf => conf.title === selectedType);
         const hasSearchAttributes = Object.keys(searchAttributes).length > 0;
@@ -371,13 +394,19 @@ export default class API extends React.PureComponent {
                           info="Use the logical operater AND (instead of OR) for the different search criteria"
                           onChange={() => this.setState({logicalOperatorIsAnd: !this.state.logicalOperatorIsAnd})}/>
                 <section className="options">
-                    <a className="reset button" onClick={this.reset}>Reset<i className="fa fa-times"></i></a>
-                    <a className={`button ${valid ? "green" : "disabled grey"}`} onClick={this.doSearch}>Search<i
-                        className="fa fa-search-plus"></i></a>
-                    <a
-                        className={`clipboard-copy button ${showResults ? "green" : "disabled grey"} ${copiedToClipboardClassName}`}
-                        onClick={this.copyToClipboard}>
-                        {I18n.t("clipboard.copy")}<i className="fa fa-clone"></i>
+                    <a className="reset button"
+                       onClick={this.reset}>Reset<i className="fa fa-times"></i>
+                    </a>
+                    <a className={`button ${valid ? "green" : "disabled grey"}`}
+                       onClick={this.doSearch}>Search<i className="fa fa-search-plus"></i>
+                    </a>
+                    <a className={`clipboard-copy button ${showResults ? "green" : "disabled grey"} ${copiedToClipboardJSONClassName}`}
+                       onClick={this.copyToClipboardJSON}>
+                        {I18n.t("clipboard.copyAsJSON")}<i className="fa fa-clone"></i>
+                    </a>
+                    <a className={`clipboard-copy button ${showResults ? "green" : "disabled grey"} ${copiedToClipboardClassName}`}
+                       onClick={this.copyToClipboard}>
+                        {I18n.t("clipboard.copyAsCSV")}<i className="fa fa-clone"></i>
                     </a>
                 </section>
                 {hasNoResults && <h2>{I18n.t("playground.no_results")}</h2>}
@@ -389,6 +418,8 @@ export default class API extends React.PureComponent {
                                         className="status-select"/>}
                 {showResults && this.renderSearchResultsTable(searchResults, selectedType, searchAttributes, globalSearchAttributes, status, fullTextSearch)}
                 {showResults && this.renderSearchResultsTablePrintable(searchResults)}
+                {showResults && this.renderSearchResultsJSONPrintable(searchResults)}
+
             </section>
         );
     };

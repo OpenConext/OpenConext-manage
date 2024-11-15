@@ -21,6 +21,10 @@
             &.clipboard-copy {
                 margin-left: auto;
 
+                &:last-child {
+                    margin-left: 15px;
+                }
+
                 i.fa-clone {
                     margin-left: 25px;
                 }
