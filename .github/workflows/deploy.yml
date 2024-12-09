@@ -118,12 +118,15 @@ jobs:
             type=semver,pattern={{version}},value=${{ steps.versioncheck.outputs.version }}
             type=sha
 
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
       - name: Build and push the manage gui image
         uses: docker/build-push-action@v5
         with:
           context: manage-gui
           file: manage-gui/docker/Dockerfile
-          platforms: linux/amd64
+          platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ steps.meta_gui.outputs.tags }}
           labels: ${{ steps.meta_gui.outputs.labels }}
@@ -133,7 +136,7 @@ jobs:
         with:
           context: manage-server
           file: manage-server/docker/Dockerfile
-          platforms: linux/amd64
+          platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ steps.meta_server.outputs.tags }}
           labels: ${{ steps.meta_server.outputs.labels }}
