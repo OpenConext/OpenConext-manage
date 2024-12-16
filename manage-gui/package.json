@@ -14,7 +14,7 @@
     "react-diff-viewer-continued": "^3.4.0",
     "react-dom": "^18.2.0",
     "react-json-view": "^1.21.3",
-    "source-map-explorer": "^2.5.2"
+    "source-map-explorer": "^2.5.3"
   },
   "devDependencies": {
     "codemirror": "^5.65.1",
