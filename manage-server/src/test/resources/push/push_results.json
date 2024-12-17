@@ -24,7 +24,7 @@
       },
       {
         "value": "*",
-        "source": "sab"
+        "source": "sabrest"
       }
     ],
     "urn:mace:dir:attribute-def:uid": [
