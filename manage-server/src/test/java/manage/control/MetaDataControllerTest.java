@@ -1961,4 +1961,49 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 validations);
     }
 
+    @Test
+    public void saveWithNewValidationNameIDFormat() {
+        Map<String, Object> data = readValueFromFile("/metadata_templates/saml20_idp.template.json");
+
+        data.put("entityid", "https://unique_entity_id");
+        Map.class.cast(data.get("metaDataFields")).put("NameIDFormat", "urn:oasis:names:tc:SAML:2.0:nameid-format:emailAddress");
+
+        MetaData metaData = new MetaData(EntityType.IDP.getType(), data);
+        Map<String, Object> results = given()
+                .auth()
+                .preemptive()
+                .basic("sp-portal", "secret")
+                .when()
+                .body(metaData)
+                .header("Content-type", "application/json")
+                .post("manage/api/client/metadata")
+                .as(new TypeRef<>() {
+                });
+        assertNotNull(results.get("id"));
+        Map<String, Object> revision = (Map<String, Object>) results.get("revision");
+        assertEquals(0, revision.get("number"));
+    }
+
+    @Test
+    public void saveWithInvalidationNameIDFormat() {
+        Map<String, Object> data = readValueFromFile("/metadata_templates/saml20_idp.template.json");
+
+        data.put("entityid", "https://unique_entity_id");
+        Map.class.cast(data.get("metaDataFields")).put("NameIDFormat", "urn:oasis:names:tc:SAML:2.0:nameid-format:bogus");
+
+        MetaData metaData = new MetaData(EntityType.IDP.getType(), data);
+        Map<String, Object> results = given()
+                .auth()
+                .preemptive()
+                .basic("sp-portal", "secret")
+                .when()
+                .body(metaData)
+                .header("Content-type", "application/json")
+                .post("manage/api/client/metadata")
+                .as(new TypeRef<>() {
+                });
+        assertEquals("#/metaDataFields/NameIDFormat: urn:oasis:names:tc:SAML:2.0:nameid-format:bogus is not a valid enum value",
+                results.get("validations"));
+    }
+
 }
