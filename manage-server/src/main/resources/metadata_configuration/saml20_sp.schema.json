@@ -36,7 +36,9 @@
       "enum": [
         "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
         "urn:oasis:names:tc:SAML:2.0:nameid-format:transient",
-        "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"
+        "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent",
+        "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress",
+        "urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName"
       ],
       "default": "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent",
       "info": "This indicates whether the nameID is set to something random or the same every time the user logs in. Use transient if user does not need to be identified in a new session."

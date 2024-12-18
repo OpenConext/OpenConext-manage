@@ -8,6 +8,7 @@ import manage.api.AbstractUser;
 import manage.api.Scope;
 import manage.conf.MetaDataAutoConfiguration;
 import manage.control.DatabaseController;
+import manage.exception.CustomValidationException;
 import manage.exception.DuplicateEntityIdException;
 import manage.exception.EndpointNotAllowed;
 import manage.exception.ResourceNotFoundException;
@@ -179,13 +180,13 @@ public class MetaDataService {
 
             return results;
         } catch (IOException | XMLStreamException e) {
+            LOG.error("Error in client/import/feed", e);
             return singletonMap("errors", singletonList(e.getClass().getName()));
         }
     }
 
     @SneakyThrows
-    public MetaData doPost(@Validated MetaData metaData, AbstractUser user, boolean excludeFromPushRequired)
-            {
+    public MetaData doPost(@Validated MetaData metaData, AbstractUser user, boolean excludeFromPushRequired) {
         metaData = metaDataHook.prePost(metaData, user);
         checkForDuplicateEntityId(metaData, true);
 
@@ -591,7 +592,9 @@ public class MetaDataService {
 
     private void addNoValid(Map<String, List> results, String entityId, Exception e) {
         String msg = e instanceof ValidationException ?
-                String.join(", ", ValidationException.class.cast(e).getAllMessages()) : e.getClass().getName();
+                String.join(", ", ValidationException.class.cast(e).getAllMessages()) :
+                e instanceof CustomValidationException ? String.join(", ", CustomValidationException.class.cast(e).getValidationException().getAllMessages()) :
+                        e.getClass().getName();
         List notValid = results.computeIfAbsent("not_valid", s -> new ArrayList());
         Map<String, String> result = new HashMap<>();
         result.put("validationException", msg);
@@ -627,7 +630,7 @@ public class MetaDataService {
     }
 
     public void deleteCollection(EntityType entityType) {
-        this.metaDataRepository.getMongoTemplate().remove(new Query(),entityType.getType());
+        this.metaDataRepository.getMongoTemplate().remove(new Query(), entityType.getType());
     }
 
 }

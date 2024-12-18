@@ -1966,7 +1966,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         Map<String, Object> data = readValueFromFile("/metadata_templates/saml20_idp.template.json");
 
         data.put("entityid", "https://unique_entity_id");
-        Map.class.cast(data.get("metaDataFields")).put("NameIDFormat", "urn:oasis:names:tc:SAML:2.0:nameid-format:emailAddress");
+        Map.class.cast(data.get("metaDataFields")).put("NameIDFormat", "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress");
 
         MetaData metaData = new MetaData(EntityType.IDP.getType(), data);
         Map<String, Object> results = given()
