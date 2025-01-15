@@ -6,6 +6,13 @@ Stores and publishes metadata of all entities known to OpenConext
 
 ## Disclaimer
 
+### PdP integration
+
+The 8.x.x version of Manage contains functionality to import policies from PdP. This functionality has been removed in 
+9.0.0. Before migrating to Manage 9.0.0 ensure that all PdP policies are migrated.
+
+### Janus
+
 Note that the original migration from Janus was removed in version 3.0.0. If you want to run the migrations from a Janus
  database then install version 2.0.8.
 
