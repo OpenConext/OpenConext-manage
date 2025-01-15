@@ -84,16 +84,6 @@ spring:
   data:
     mongodb:
       uri: mongodb://localhost:27017/metadata_test
-  datasource:
-    url: jdbc:mysql://localhost:3306/pdpserver?permitMysqlScheme
-    username: root
-    password:
-    driverClassName: org.mariadb.jdbc.Driver
-  jpa:
-    database-platform: org.hibernate.dialect.MariaDB53Dialect
-  sql:
-    init:
-      continue-on-error: true
   main:
     banner-mode: "off"
 

@@ -1966,7 +1966,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         Map<String, Object> data = readValueFromFile("/metadata_templates/saml20_idp.template.json");
 
         data.put("entityid", "https://unique_entity_id");
-        Map.class.cast(data.get("metaDataFields")).put("NameIDFormat", "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress");
+        Map.class.cast(data.get("metaDataFields")).put("NameIDFormat", "urn:oasis:names:tc:SAML:2.0:nameid-format:emailAddress");
 
         MetaData metaData = new MetaData(EntityType.IDP.getType(), data);
         Map<String, Object> results = given()
@@ -2006,4 +2006,25 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 results.get("validations"));
     }
 
+    @Test
+    public void removeExtraneousKeys() {
+        MetaData metaData = metaDataRepository.findById("1", "saml20_sp");
+        metaData.metaDataFields().put("extraneous_key", "bogus");
+        metaData.metaDataFields().put("1_is_not_2", "bogus");
+        metaDataRepository.update(metaData);
+
+        List<String> entityIdentifiers = given()
+                .auth()
+                .preemptive()
+                .basic("sysadmin", "secret")
+                .when()
+                .body(List.of("extraneous_key", "1_is_not_2"))
+                .header("Content-type", "application/json")
+                .pathParam("type", "saml20_sp")
+                .put("manage/api/internal/removeExtraneousKeys/{type}")
+                .as(new TypeRef<>() {
+                });
+        assertEquals(1, entityIdentifiers.size());
+        assertEquals(metaData.getData().get("entityid"), entityIdentifiers.getFirst());
+    }
 }

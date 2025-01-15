@@ -309,22 +309,6 @@ export function getAllowedLoas() {
     return fetchJson("loas");
 }
 
-export function getPdPPolicies() {
-    return fetchJson("pdp/policies");
-}
-
-export function getMigratedPdPPolicies() {
-    return fetchJson("pdp/migrated_policies");
-}
-
-export function getPolicyPushAnalysis() {
-    return fetchJson("/pdp/push_analysis");
-}
-
-export function importPdPPolicies() {
-    return postPutJson("pdp/import_policies", {}, "PUT")
-}
-
 export function getPlaygroundPolicies() {
     return search({ALL_ATTRIBUTES: true}, "policy")
 }

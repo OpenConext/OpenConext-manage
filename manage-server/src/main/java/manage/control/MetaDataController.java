@@ -26,10 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static manage.api.Scope.TEST;
 import static manage.mongo.MongoChangelog.CHANGE_REQUEST_POSTFIX;
@@ -115,7 +112,7 @@ public class MetaDataController {
     @PreAuthorize("hasAnyRole('WRITE_SP', 'WRITE_IDP', 'SYSTEM')")
     @PostMapping("/internal/metadata")
     public MetaData postInternal(@Validated @RequestBody MetaData metaData, APIUser apiUser) {
-        ScopeEnforcer.enforceWriteScope(apiUser, EntityType.fromType(metaData.getType()) );
+        ScopeEnforcer.enforceWriteScope(apiUser, EntityType.fromType(metaData.getType()));
         return metaDataService.doPost(metaData, apiUser, !apiUser.getScopes().contains(TEST));
     }
 
@@ -233,8 +230,31 @@ public class MetaDataController {
     @Transactional
     public MetaData putInternal(@Validated @RequestBody MetaData metaData, APIUser apiUser)
             throws JsonProcessingException {
-        ScopeEnforcer.enforceWriteScope(apiUser, EntityType.fromType(metaData.getType()) );
+        ScopeEnforcer.enforceWriteScope(apiUser, EntityType.fromType(metaData.getType()));
         return metaDataService.doPut(metaData, apiUser, !apiUser.getScopes().contains(TEST));
+    }
+
+    @PreAuthorize("hasAnyRole('SYSTEM')")
+    @PutMapping("/internal/removeExtraneousKeys/{type}")
+    @Transactional
+    public ResponseEntity<List<String>> removeExtraneousKeys(@PathVariable("type") String type, @RequestBody List<String> extraneousKeys, APIUser apiUser) {
+        LOG.info("RemoveExtraneousKeys called by {}", apiUser.getName());
+
+        List<String> results = new ArrayList<>();
+        List<MetaData> metaDataEntries = metaDataRepository.findAllByType(type);
+        metaDataEntries.forEach(metaData -> {
+            Map<String, Object> metaDataFields = metaData.metaDataFields();
+            Set<String> keySet = metaDataFields.keySet();
+            if (keySet.stream().anyMatch(key -> extraneousKeys.contains(key))) {
+                keySet.removeIf(key -> extraneousKeys.contains(key));
+
+                LOG.info(String.format("Saving %s metadata where extraneousKeys are removed", metaData.getData().get("entityid")));
+
+                metaDataRepository.update(metaData);
+                results.add((String) metaData.getData().get("entityid"));
+            }
+        });
+        return ResponseEntity.ok(results);
     }
 
     @PreAuthorize("hasAnyRole('WRITE_SP', 'WRITE_IDP', 'SYSTEM')")
@@ -242,7 +262,7 @@ public class MetaDataController {
     @Transactional
     public List<String> deleteMetaDataKey(@Validated @RequestBody MetaDataKeyDelete metaDataKeyDelete,
                                           APIUser apiUser) throws IOException {
-        ScopeEnforcer.enforceWriteScope(apiUser, EntityType.fromType(metaDataKeyDelete.getType()) );
+        ScopeEnforcer.enforceWriteScope(apiUser, EntityType.fromType(metaDataKeyDelete.getType()));
         return metaDataService.deleteMetaDataKey(metaDataKeyDelete, apiUser);
     }
 
@@ -251,7 +271,7 @@ public class MetaDataController {
     @Transactional
     public MetaData update(@Validated @RequestBody MetaDataUpdate metaDataUpdate, APIUser apiUser)
             throws JsonProcessingException {
-        ScopeEnforcer.enforceWriteScope(apiUser, EntityType.fromType(metaDataUpdate.getType()) );
+        ScopeEnforcer.enforceWriteScope(apiUser, EntityType.fromType(metaDataUpdate.getType()));
         return metaDataService
                 .doMergeUpdate(metaDataUpdate, apiUser, "Internal API merge", true)
                 .get();
@@ -269,7 +289,7 @@ public class MetaDataController {
     public List<MetaDataChangeRequest> internalChangeRequests(@PathVariable("type") String type,
                                                               @PathVariable("metaDataId") String metaDataId,
                                                               APIUser apiUser) {
-        ScopeEnforcer.enforceChangeRequestScope(apiUser, EntityType.fromType(type) );
+        ScopeEnforcer.enforceChangeRequestScope(apiUser, EntityType.fromType(type));
         return metaDataRepository.changeRequests(metaDataId, type.concat(CHANGE_REQUEST_POSTFIX));
     }
 
@@ -290,7 +310,7 @@ public class MetaDataController {
     @PostMapping("internal/change-requests")
     @Transactional
     public MetaDataChangeRequest changeRequestInternal(@Validated @RequestBody MetaDataChangeRequest metaDataChangeRequest, APIUser apiUser) throws JsonProcessingException {
-        ScopeEnforcer.enforceChangeRequestScope(apiUser, EntityType.fromType(metaDataChangeRequest.getType()) );
+        ScopeEnforcer.enforceChangeRequestScope(apiUser, EntityType.fromType(metaDataChangeRequest.getType()));
         return metaDataService.doChangeRequest(metaDataChangeRequest, apiUser);
     }
 
@@ -335,7 +355,7 @@ public class MetaDataController {
     @PutMapping("/internal/change-requests/reject")
     @Transactional
     public MetaData internalRejectChangeRequest(@RequestBody @Validated ChangeRequest changeRequest, APIUser apiUser) {
-        ScopeEnforcer.enforceChangeRequestScope(apiUser, EntityType.fromType(changeRequest.getType()) );
+        ScopeEnforcer.enforceChangeRequestScope(apiUser, EntityType.fromType(changeRequest.getType()));
         return metaDataService.doRejectChangeRequest(changeRequest, apiUser);
     }
 
