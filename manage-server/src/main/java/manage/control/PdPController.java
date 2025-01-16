@@ -45,8 +45,8 @@ public class PdPController {
         return pdpRestTemplate.exchange(this.decideUrl, HttpMethod.POST, requestEntity, String.class).getBody();
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping(value = "/client/pdp/missing-enforcements")
+    @PreAuthorize("hasAnyRole('ADMIN', 'READ')")
+    @GetMapping(value = {"/client/pdp/missing-enforcements", "/internal/pdp/missing-enforcements"})
     public List<MetaData> policiesWithMissingPolicyEnforcementDecisionRequired() {
         return metaDataRepository.policiesWithMissingPolicyEnforcementDecisionRequired();
     }
