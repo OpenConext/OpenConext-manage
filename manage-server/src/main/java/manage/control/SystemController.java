@@ -92,8 +92,10 @@ public class SystemController {
             List<Map<String, Object>> entries =
                     (List<Map<String, Object>>) metaData.getData().get(orphanMetaData.getReferencedCollectionName());
 
-            List<Map<String, Object>> newEntries = entries.stream().filter(entry -> !entry.get("name").equals
-                    (orphanMetaData.getMissingEntityId())).collect(Collectors.toList());
+            List<Map<String, Object>> newEntries = entries.stream()
+                    .filter(entry -> entry.get("name") != null &&
+                            !entry.get("name").equals(orphanMetaData.getMissingEntityId()))
+                    .toList();
             metaData.getData().put(orphanMetaData.getReferencedCollectionName(), newEntries);
             MetaData previous = metaDataRepository.findById(metaData.getId(), orphanMetaData.getCollection());
             previous.revision(UUID.randomUUID().toString());
