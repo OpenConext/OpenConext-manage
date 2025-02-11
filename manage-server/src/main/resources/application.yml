@@ -63,9 +63,12 @@ security:
   api_users_config_path: classpath:/manage-api-users.yml
   super_user_team_names: urn:collab:group:test.surfteams.nl:nl:surfnet:diensten:manage_super_users, urn:collab:group:test.surfteams.nl:nl:surfnet:diensten:manage_super_users_2
 
+# Used in the EncryptionHook, if enabled then the scim_password, eva_token and graph_secret in the provisionings are stored encrypted
 crypto:
+  # If the development-mode is True, then a random generated public key is used, if False then the public-key-location must be valid
   development-mode: True
   public-key-location: classpath:nope
+  # If set to False, the provisioning secrets are not encrypted. Always enable encryption
   enabled: True
 #  development-mode: False
 #  public-key-location: classpath:/invite_public_key.pem
