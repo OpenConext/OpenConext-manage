@@ -274,19 +274,6 @@
           "type": "string",
           "info": "The name of the authority that can register a service provider or identity provider."
         },
-        "logo:0:url": {
-          "type": "string",
-          "format": "url",
-          "info": "Enter the URL to the logo used for this service. e.g. https://static.example-logo.nl/media/sp/logo.png."
-        },
-        "logo:0:width": {
-          "type": "number",
-          "info": "The width of the logo found at logo:0:url in pixels."
-        },
-        "logo:0:height": {
-          "type": "number",
-          "info": "The height of the logo found at logo:0:url in pixels."
-        },
         "redirect.sign": {
           "type": "boolean",
           "info": "Whether authentication request, logout requests and logout responses should be signed. The default is FALSE. This is generally set for trusted proxies like OpenID Connect Gateway."
@@ -445,6 +432,37 @@
           "sibblingIndependent": true,
           "info": "From the pull down, select the type of contact."
         },
+        "^logo:([0-9]{1}):url$": {
+          "type": "string",
+          "format": "url",
+          "multiplicity": 9,
+          "sibblingIndependent": true,
+          "info": "Enter the URL to the logo used for this service. e.g. https://static.example-logo.nl/media/sp/logo.png."
+        },
+        "^logo:([0-9]{1}):width$": {
+          "type": "number",
+          "multiplicity": 9,
+          "sibblingIndependent": true,
+          "info": "The width of the logo found at logo:x:url in pixels."
+        },
+        "^logo:([0-9]{1}):height$": {
+          "type": "number",
+          "multiplicity": 9,
+          "sibblingIndependent": true,
+          "info": "The height of the logo found at logo:x:url in pixels."
+        },
+        "^DiscoveryName:([0-9]{1}):en$": {
+          "type": "string",
+          "multiplicity": 9,
+          "sibblingIndependent": false,
+          "info": "The english discovery name(s) of the Identity Provider as displayed in applications."
+        },
+        "^DiscoveryName:([0-9]{1}):nl$": {
+          "type": "string",
+          "multiplicity": 9,
+          "sibblingIndependent": false,
+          "info": "The dutch discovery name(s) of the Identity Provider as displayed in applications."
+        },
         "^OrganizationName:(en|nl)$": {
           "type": "string"
         },
@@ -485,9 +503,15 @@
           "multiplicity": 10,
           "info": "The URL to the a SAML protocol endpoint at an IdP that a client can contact to obtain a SAML authentication assertion for use at an SP. e.g. https://idp.example.org/idp/profile/SAML2/Redirect/SSO"
         },
-        "^keywords:(en|nl)$": {
+        "^keywords:([0-9]{1}):en$": {
           "type": "string",
-          "info": "This field defines searchable words in the WAYF dialogue for this Identity Provider."
+          "multiplicity": 10,
+          "info": "This field defines searchable english words in the WAYF dialogue for this Identity Provider."
+        },
+        "^keywords:([0-9]{1}):nl$": {
+          "type": "string",
+          "multiplicity": 10,
+          "info": "This field defines searchable dutch words in the WAYF dialogue for this Identity Provider."
         },
         "^shibmd:scope:([0-9]{1}):allowed$": {
           "type": "string",

@@ -303,6 +303,29 @@ public class MongoChangelog {
         mongoTemplate.indexOps(schema).ensureIndex(textIndexDefinition);
     }
 
+    @ChangeSet(order = "016", id = "migrateMultiplicityKeys", author = "okke.harsta@surf.nl")
+    public void migrateMultiplicityKeys(MongockTemplate mongoTemplate) {
+        List<MetaData> identityProviders = mongoTemplate.findAll(MetaData.class, EntityType.IDP.getType());
+        identityProviders.forEach(metaData -> {
+            Map<String, Object> metaDataFields = metaData.metaDataFields();
+            List.of("en", "nl", "pt").forEach(language -> {
+                String name = (String) metaDataFields.get("name:" + language);
+                if (StringUtils.hasText(name)) {
+                    metaDataFields.put("DiscoveryName:0:" + language, name);
+                }
+                String keywords = (String) metaDataFields.get("keywords:" + language);
+                if (StringUtils.hasText(keywords)) {
+                    metaDataFields.put("keywords:0:" + language, keywords);
+                }
+                metaDataFields.remove("keywords:" + language);
+            });
+            //We don't make a new revision as this is a cleanup action
+            LOG.info(String.format("Saving %s metadata type %s where DiscoveryName and keywords are migrated",
+                    metaData.getData().get("entityid"), EntityType.IDP.getType()));
+            mongoTemplate.save(metaData, EntityType.IDP.getType());
+        });
+    }
+
     private void migrateRelayingPartyToResourceServer(Map<String, Map<String, Object>> properties, List<Pattern> patterns, Map<String, Object> simpleProperties, MetaData rs) {
         rs.setType(EntityType.RS.getType());
         rs.getData().entrySet().removeIf(entry -> !properties.containsKey(entry.getKey()));

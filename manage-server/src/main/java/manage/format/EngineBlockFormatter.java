@@ -92,7 +92,8 @@ public class EngineBlockFormatter {
 
         addCommonProviderAttributes(source, identityProvider);
         addSingleSignOnService(source, identityProvider);
-
+        addDiscoveryEntities(source, identityProvider);
+        addBackWardCompatabilityKeyWords(source, identityProvider);
         idpAttributes.forEach((key, value) -> this.addToResult(source, identityProvider, key, value));
 
         addShibMdScopes(source, identityProvider);
@@ -183,8 +184,49 @@ public class EngineBlockFormatter {
                 putIfHasText("surName", surName, contact);
                 contactsContainer.add(contact);
             }
-
         });
+    }
+
+    private void addDiscoveryEntities(Map<String, Object> source, Map<String, Object> result) {
+        final Map<String, Object> metadata = (Map<String, Object>) result.computeIfAbsent("metadata", key -> new
+                TreeMap<>());
+        Map<String, Object> metaDataFields = (Map<String, Object>) source.get("metaDataFields");
+        IntStream.range(0, 9).forEach(i -> {
+            //Combine all DiscoveryName, logo and keywords into discoveries element
+            Map<String, String> discovery = new TreeMap<>();
+            List.of("en", "nl", "pt").forEach(lang -> {
+                String discoveryName = (String) metaDataFields.get("DiscoveryName:" + i + ":" + lang);
+                putIfHasText("name_" + lang, discoveryName, discovery);
+                String keyWords = (String) metaDataFields.get("keywords:" + i + ":" + lang);
+                putIfHasText("keywords_" + lang, keyWords, discovery);
+            });
+            Object height = metaDataFields.get("logo:" + i + ":height");
+            putIfHasText("logo_height", height, discovery);
+            String url = (String) metaDataFields.get("logo:" + i + ":url");
+            putIfHasText("logo_url", url, discovery);
+            Object width = metaDataFields.get("logo:" + i + ":width");
+            putIfHasText("logo_width", width, discovery);
+
+            if (!discovery.isEmpty()) {
+                List<Object> discoveryContainer = (ArrayList<Object>) metadata.computeIfAbsent(
+                        "discoveries", key -> new ArrayList<>());
+                discoveryContainer.add(discovery);
+            }
+        });
+    }
+
+    private void addBackWardCompatabilityKeyWords(Map<String, Object> source, Map<String, Object> result) {
+        final Map<String, Object> metadata = (Map<String, Object>) result.computeIfAbsent("metadata", key -> new
+                TreeMap<>());
+        Map<String, Object> metaDataFields = (Map<String, Object>) source.get("metaDataFields");
+        Map<String, String> keywordsContainer = new TreeMap<>();
+        List.of("en", "nl", "pt").forEach(lang -> {
+            Object keywords = metaDataFields.get("keywords:0:" + lang);
+            this.putIfHasText(lang, keywords, keywordsContainer);
+        });
+        if (!keywordsContainer.isEmpty()) {
+            metadata.put("keywords", keywordsContainer);
+        }
     }
 
     private void putIfHasText(String key, Object value, Map<String, String> result) {
@@ -288,7 +330,7 @@ public class EngineBlockFormatter {
                 Collection<List<Map<String, Object>>> values = attributes.values();
                 values.forEach(arpValues -> arpValues.forEach(map -> map.entrySet()
                         .removeIf(entry -> ("source".equals(entry.getKey()) && "idp".equals(entry.getValue()))
-                        || (entry.getValue() instanceof String && !StringUtils.hasText((String) entry.getValue())))));
+                                || (entry.getValue() instanceof String && !StringUtils.hasText((String) entry.getValue())))));
                 result.put("arp_attributes", attributes);
             }
         }
