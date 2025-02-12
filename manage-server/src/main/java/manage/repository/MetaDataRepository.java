@@ -126,7 +126,7 @@ public class MetaDataRepository {
                 this.supportedLanguages.forEach(lang -> {
                     orCriterias.add(regex("data.metaDataFields.name:" + lang, part));
                     orCriterias.add(regex("data.metaDataFields.displayName:" + lang, part));
-                    orCriterias.add(regex("data.metaDataFields.keywords:" + lang, part));
+                    orCriterias.add(regex("data.metaDataFields.keywords:0:" + lang, part));
                     orCriterias.add(regex("data.metaDataFields.OrganizationName:" + lang, part));
                 });
             }

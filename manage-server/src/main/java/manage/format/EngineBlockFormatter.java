@@ -40,8 +40,6 @@ public class EngineBlockFormatter {
         commonAttributes.put("metadata:OrganizationURL:nl", empty());
         commonAttributes.put("metadata:OrganizationURL:en", empty());
 
-        commonAttributes.put("metadata:keywords:en", empty());
-        commonAttributes.put("metadata:keywords:nl", empty());
         commonAttributes.put("metadata:url:en", empty());
         commonAttributes.put("metadata:url:nl", empty());
 

@@ -527,7 +527,8 @@
       "required": [
         "name:en",
         "SingleSignOnService:0:Binding",
-        "SingleSignOnService:0:Location"
+        "SingleSignOnService:0:Location",
+        "DiscoveryName:0:en"
       ],
       "additionalProperties": false
     }

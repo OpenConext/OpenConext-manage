@@ -377,6 +377,7 @@
       "metaDataFields": {
         "name:en": "IdP test 2",
         "name:nl": "IdP test 2",
+        "DiscoveryName:0:en": "Discovery name 0 en",
         "description:en": "OpenConext Service Registry, register all SPs and IdPs here",
         "description:nl": "OpenConext Service Registry, register all SPs and IdPs here",
         "displayName:en": "OpenConext ServiceRegistry",
@@ -387,8 +388,8 @@
         "OrganizationDisplayName:nl": "OrganizationDisplayName name nl",
         "OrganizationURL:en": "https://organization-url/en",
         "OrganizationURL:nl": "https://organization-url/nl",
-        "keywords:en": "keywords, (test)",
-        "keywords:nl": "keywords, nl",
+        "keywords:0:en": "keywords, (test)",
+        "keywords:1:nl": "keywords, nl",
         "NameIDFormat": "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
         "coin:publish_in_edugain": true,
         "coin:publish_in_edugain_date": "2018-06-15T08:20:34.575Z",
@@ -451,7 +452,8 @@
       "metaDataFields": {
         "name:en": "OpenConext ServiceRegistry Mock",
         "SingleSignOnService:0:Binding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect",
-        "SingleSignOnService:0:Location": "https://sso0"
+        "SingleSignOnService:0:Location": "https://sso0",
+        "DiscoveryName:0:en": "Discovery name 0 en"
       }
     }
   },

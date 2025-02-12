@@ -22,6 +22,7 @@
   "metaDataFields": {
     "name:en": "OpenConext Valid IDP EN",
     "name:nl": "OpenConext Valid IDP NL",
+    "DiscoveryName:0:en": "OpenConext Valid IDP EN",
     "displayName:en": "OpenConext Valid IDP EN",
     "displayName:nl": "OpenConext Valid IDP NL",
     "description:en": "OpenConext Valid IDP EN",
@@ -60,8 +61,8 @@
     "SingleSignOnService:0:Location": "https://single-sing-service-0",
     "SingleSignOnService:1:Location": "https://single-sing-service-1",
     "SingleSignOnService:2:Location": "https://single-sing-service-2",
-    "keywords:en": "mock help test",
-    "keywords:nl": "mock help test",
+    "keywords:0:en": "mock help test",
+    "keywords:1:nl": "mock help test",
     "shibmd:scope:0:allowed": "value",
     "shibmd:scope:1:allowed": "value",
     "shibmd:scope:0:regexp": true,

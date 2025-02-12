@@ -545,13 +545,24 @@
           "en": "OpenConext Service Registry, register all SPs and IdPs here",
           "nl": "OpenConext Service Registry, register all SPs and IdPs here"
         },
+        "discoveries": [
+          {
+            "keywords_en": "keywords, (test)",
+            "logo_height": "96",
+            "logo_url": "https://static.test2.surfconext.nl/media/conext_logo.png",
+            "logo_width": "96",
+            "name_en": "Discovery name 0 en"
+          },
+          {
+            "keywords_nl": "keywords, nl"
+          }
+        ],
         "displayName": {
           "en": "OpenConext ServiceRegistry",
           "nl": "OpenConext ServiceRegistry"
         },
         "keywords": {
-          "en": "keywords, (test)",
-          "nl": "keywords, nl"
+          "en": "keywords, (test)"
         },
         "logo": [
           {
@@ -617,6 +628,11 @@
           {
             "Binding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect",
             "Location": "https://sso0"
+          }
+        ],
+        "discoveries": [
+          {
+            "name_en": "Discovery name 0 en"
           }
         ],
         "name": {
