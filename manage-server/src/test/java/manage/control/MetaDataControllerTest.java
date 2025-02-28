@@ -8,7 +8,7 @@ import io.restassured.specification.RequestSpecification;
 import lombok.SneakyThrows;
 import manage.AbstractIntegrationTest;
 import manage.model.*;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.mongodb.core.query.Query;
 
@@ -27,7 +27,7 @@ import static manage.mongo.MongoChangelog.CHANGE_REQUEST_POSTFIX;
 import static manage.service.MetaDataService.*;
 import static org.apache.http.HttpStatus.*;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("unchecked")
 public class MetaDataControllerTest extends AbstractIntegrationTest {
@@ -116,7 +116,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         assertEquals(2, revisions.size());
 
         MetaData revision = revisions.get(1);
-        assertEquals(revision.getData().get("revisionnote"), reasonForDeletion);
+        assertEquals(reasonForDeletion, revision.getData().get("revisionnote"));
         assertEquals("saml2_user.com", revision.getRevision().getUpdatedBy());
     }
 
@@ -933,8 +933,8 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
 
         MetaData updated = metaDataRepository.findById("1", EntityType.SP.getType());
         assertEquals(1L, updated.getVersion().longValue());
-        assertEquals(updated.getData().get("entityid"),
-                "https://engine.test2.surfconext.nl/authentication/sp/metadata");
+        assertEquals("https://engine.test2.surfconext.nl/authentication/sp/metadata",
+                updated.getData().get("entityid"));
     }
 
     @Test
@@ -1012,7 +1012,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
 
         revisions = metaDataRepository.getMongoTemplate().findAll(MetaData.class, "saml20_sp_revision");
         assertEquals(2, revisions.size());
-        revisions.forEach(rev -> assertEquals(rev.getRevision().getParentId(), "1"));
+        revisions.forEach(rev -> assertEquals("1", rev.getRevision().getParentId()));
     }
 
     @Test
@@ -1117,8 +1117,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
 
         revisions = metaDataRepository.getMongoTemplate().findAll(MetaData.class, "saml20_sp_revision");
         assertEquals(2, revisions.size());
-        revisions.forEach(rev -> assertEquals(rev.getRevision().getParentId(), "1"));
-
+        revisions.forEach(rev -> assertEquals("1", rev.getRevision().getParentId()));
     }
 
 
@@ -1173,7 +1172,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         result.forEach(entityId -> {
             MetaData metaData = metaDataRepository.findRaw("saml20_sp",
                     String.format("{\"data.entityid\":\"%s\"}", entityId)).get(0);
-            assertEquals(false, metaData.metaDataFields().containsKey(keyToDelete));
+            assertFalse(metaData.metaDataFields().containsKey(keyToDelete));
         });
     }
 
@@ -1196,7 +1195,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 .basic("dashboard", "secret")
                 .header("Content-type", "application/json")
                 .body(connectionData)
-                .put("manage/api/internal/connectWithoutInteraction/")
+                .put("manage/api/internal/connectWithoutInteraction")
                 .then()
                 .statusCode(SC_OK);
 
@@ -1230,13 +1229,13 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 .basic("dashboard", "secret")
                 .header("Content-type", "application/json")
                 .body(connectionData)
-                .put("manage/api/internal/connectWithoutInteraction/")
+                .put("manage/api/internal/connectWithoutInteraction")
                 .then()
                 .statusCode(SC_OK);
 
         MetaData idp = metaDataRepository.findById(idUId, EntityType.IDP.getType());
         Map<String, Object> data = idp.getData();
-        assertEquals(data.get("revisionnote"), "Connected https@//oidc.rp on request of John Doe - urn:collab:person:example.com:jdoe via Dashboard.");
+        assertEquals("Connected https@//oidc.rp on request of John Doe - urn:collab:person:example.com:jdoe via Dashboard.", data.get("revisionnote"));
 
         List<Map> allowedEntities = (List<Map>) data.get("allowedEntities");
 
@@ -1260,7 +1259,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 .basic("sp-portal", "secret")
                 .header("Content-type", "application/json")
                 .body(connectionData)
-                .put("manage/api/internal/connectWithoutInteraction/")
+                .put("manage/api/internal/connectWithoutInteraction")
                 .then()
                 .statusCode(SC_FORBIDDEN);
     }
@@ -1280,7 +1279,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 .basic("dashboard", "secret")
                 .header("Content-type", "application/json")
                 .body(connectionData)
-                .put("manage/api/internal/connectWithoutInteraction/")
+                .put("manage/api/internal/connectWithoutInteraction")
                 .then()
                 .statusCode(SC_OK);
 
@@ -1328,7 +1327,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 .basic("stats", "secret")
                 .header("Content-type", "application/json")
                 .body(connectionData)
-                .put("manage/api/internal/connectWithoutInteraction/")
+                .put("manage/api/internal/connectWithoutInteraction")
                 .then()
                 .statusCode(SC_FORBIDDEN);
     }

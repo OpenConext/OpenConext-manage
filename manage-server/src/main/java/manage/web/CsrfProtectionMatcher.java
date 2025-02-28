@@ -2,7 +2,7 @@ package manage.web;
 
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.regex.Pattern;
 
 public class CsrfProtectionMatcher implements RequestMatcher {

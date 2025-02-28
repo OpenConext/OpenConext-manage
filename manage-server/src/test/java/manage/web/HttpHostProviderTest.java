@@ -1,17 +1,13 @@
 package manage.web;
 
 import lombok.SneakyThrows;
-import org.apache.http.HttpHost;
+import org.apache.hc.core5.http.HttpHost;
 import org.junit.jupiter.api.Test;
 
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.List;
 import java.util.Optional;
-import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-import static org.apache.commons.io.FilenameUtils.wildcardMatch;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

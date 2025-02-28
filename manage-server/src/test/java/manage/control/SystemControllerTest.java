@@ -1,15 +1,14 @@
 package manage.control;
 
 import manage.AbstractIntegrationTest;
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Value;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static io.restassured.RestAssured.given;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SuppressWarnings("unchecked")
 public class SystemControllerTest extends AbstractIntegrationTest {

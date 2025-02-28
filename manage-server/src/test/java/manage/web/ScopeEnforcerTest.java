@@ -4,27 +4,31 @@ import manage.api.APIUser;
 import manage.api.Scope;
 import manage.exception.EndpointNotAllowed;
 import manage.model.EntityType;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 
 public class ScopeEnforcerTest {
 
-    @Test(expected = EndpointNotAllowed.class)
+    @Test
     public void enforceWriteScopeIdP() {
-        ScopeEnforcer.enforceWriteScope(new APIUser("test", List.of(Scope.WRITE_SP)), EntityType.IDP);
+        assertThrows(EndpointNotAllowed.class, () ->
+                ScopeEnforcer.enforceWriteScope(new APIUser("test", List.of(Scope.WRITE_SP)), EntityType.IDP));
     }
 
-    @Test(expected = EndpointNotAllowed.class)
+    @Test
     public void enforceWriteScopeSP() {
-        ScopeEnforcer.enforceWriteScope(new APIUser("test", List.of(Scope.WRITE_IDP)), EntityType.SP);
+        assertThrows(EndpointNotAllowed.class, () ->
+                ScopeEnforcer.enforceWriteScope(new APIUser("test", List.of(Scope.WRITE_IDP)), EntityType.SP));
     }
 
-    @Test(expected = EndpointNotAllowed.class)
+    @Test
     public void enforceWriteScopePDP() {
-        ScopeEnforcer.enforceWriteScope(new APIUser("test", List.of(Scope.WRITE_SP)), EntityType.PDP);
+        assertThrows(EndpointNotAllowed.class, () ->
+                ScopeEnforcer.enforceWriteScope(new APIUser("test", List.of(Scope.WRITE_SP)), EntityType.PDP));
     }
 
     @Test
@@ -37,19 +41,22 @@ public class ScopeEnforcerTest {
         ScopeEnforcer.enforceWriteScope(new APIUser("test", List.of(Scope.WRITE_SP)), EntityType.SP);
     }
 
-    @Test(expected = EndpointNotAllowed.class)
+    @Test
     public void enforceChangeRequestScopeIdP() {
-        ScopeEnforcer.enforceChangeRequestScope(new APIUser("test", List.of(Scope.CHANGE_REQUEST_SP)), EntityType.IDP);
+        assertThrows(EndpointNotAllowed.class, () ->
+                ScopeEnforcer.enforceChangeRequestScope(new APIUser("test", List.of(Scope.CHANGE_REQUEST_SP)), EntityType.IDP));
     }
 
-    @Test(expected = EndpointNotAllowed.class)
+    @Test
     public void enforceChangeRequestScopeSP() {
-        ScopeEnforcer.enforceChangeRequestScope(new APIUser("test", List.of(Scope.CHANGE_REQUEST_IDP)), EntityType.SP);
+        assertThrows(EndpointNotAllowed.class, () ->
+                ScopeEnforcer.enforceChangeRequestScope(new APIUser("test", List.of(Scope.CHANGE_REQUEST_IDP)), EntityType.SP));
     }
 
-    @Test(expected = EndpointNotAllowed.class)
+    @Test
     public void enforceChangeRequestScopePDP() {
-        ScopeEnforcer.enforceChangeRequestScope(new APIUser("test", List.of(Scope.CHANGE_REQUEST_SP)), EntityType.PDP);
+        assertThrows(EndpointNotAllowed.class, () ->
+                ScopeEnforcer.enforceChangeRequestScope(new APIUser("test", List.of(Scope.CHANGE_REQUEST_SP)), EntityType.PDP));
     }
 
     @Test
@@ -62,9 +69,10 @@ public class ScopeEnforcerTest {
         ScopeEnforcer.enforceChangeRequestScope(new APIUser("test", List.of(Scope.CHANGE_REQUEST_SP)), EntityType.SP);
     }
 
-    @Test(expected = EndpointNotAllowed.class)
+    @Test
     public void enforceDeleteScopeIdP() {
-        ScopeEnforcer.enforceDeleteScope(new APIUser("test", List.of(Scope.DELETE_SP)), EntityType.IDP);
+        assertThrows(EndpointNotAllowed.class, () ->
+                ScopeEnforcer.enforceDeleteScope(new APIUser("test", List.of(Scope.DELETE_SP)), EntityType.IDP));
     }
 
     @Test

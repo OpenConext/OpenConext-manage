@@ -5,7 +5,7 @@ import manage.conf.MetaDataAutoConfiguration;
 import manage.model.EntityType;
 import manage.model.MetaData;
 import org.everit.json.schema.ValidationException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
@@ -13,7 +13,8 @@ import java.util.UUID;
 import java.util.stream.Stream;
 
 import static java.util.Collections.emptyMap;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class EmptyRevisionHookTest implements TestUtils {
 
@@ -32,16 +33,16 @@ public class EmptyRevisionHookTest implements TestUtils {
         assertTrue(subject.appliesForMetaData(null));
     }
 
-    @Test(expected = ValidationException.class)
+    @Test
     public void prePutNotChanged() throws IOException {
         MetaData prevMetaData = readMetaData();
         MetaData newMetaData = readMetaData();
 
         newMetaData.getData().put("revisionnote", "has changed");
-        subject.prePut(prevMetaData, newMetaData, apiUser());
+        assertThrows(ValidationException.class, () -> subject.prePut(prevMetaData, newMetaData, apiUser()));
     }
 
-    @Test(expected = ValidationException.class)
+    @Test
     public void prePutNullNotChanged() throws IOException {
         MetaData prevMetaData = readMetaData();
         MetaData newMetaData = readMetaData();
@@ -49,7 +50,7 @@ public class EmptyRevisionHookTest implements TestUtils {
         newMetaData.getData().put("notes", null);
 
         newMetaData.getData().put("revisionnote", "has changed");
-        subject.prePut(prevMetaData, newMetaData,apiUser() );
+        assertThrows(ValidationException.class, () -> subject.prePut(prevMetaData, newMetaData,apiUser()));
     }
 
     @Test

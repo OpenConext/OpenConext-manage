@@ -5,8 +5,8 @@ import manage.api.APIUser;
 import manage.model.EntityType;
 import manage.model.MetaData;
 import org.everit.json.schema.ValidationException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.List;
@@ -20,7 +20,7 @@ public class ProvisioningHookTest extends AbstractIntegrationTest {
     private ProvisioningHook provisioningHook;
     private final APIUser apiUser = new APIUser("test", emptyList());
 
-    @Before
+    @BeforeEach
     public void before() throws Exception {
         super.before();
         provisioningHook = new ProvisioningHook(metaDataRepository, metaDataAutoConfiguration);

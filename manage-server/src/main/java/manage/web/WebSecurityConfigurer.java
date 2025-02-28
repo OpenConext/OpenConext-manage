@@ -17,13 +17,15 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
 import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
@@ -50,7 +52,7 @@ import static java.util.stream.Collectors.toList;
  */
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
+@EnableMethodSecurity
 public class WebSecurityConfigurer {
 
     @Autowired
@@ -63,7 +65,7 @@ public class WebSecurityConfigurer {
 
     @Order(1)
     @Configuration
-    public static class InternalSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
+    public static class InternalSecurityConfigurationAdapter {
 
         @Autowired
         private Environment environment;
@@ -119,16 +121,16 @@ public class WebSecurityConfigurer {
         @Value("${environment}")
         private String environmentType;
 
-        @Override
-        public void configure(WebSecurity web) throws Exception {
-            web.ignoring().antMatchers("/client/users/disclaimer");
+        @Bean
+        public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+            return authenticationConfiguration.getAuthenticationManager();
         }
 
-        @Override
-        protected void configure(HttpSecurity http) throws Exception {
-            List<String> allFeatures = Arrays.asList(Features.values()).stream()
+        @Bean
+        protected SecurityFilterChain internalSecurityWebFilterChain(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
+            List<String> allFeatures = Arrays.stream(Features.values())
                     .map(Enum::name)
-                    .collect(toList());
+                    .toList();
 
             List<Features> featuresList = Stream.of(this.features.split(","))
                     .filter(feature -> allFeatures.contains(feature.trim().toUpperCase()))
@@ -142,21 +144,23 @@ public class WebSecurityConfigurer {
             authenticationEntryPoint.setRealmName("manage");
 
             http
-                    .requestMatchers().antMatchers("/client/**")
-                    .and()
-                    .sessionManagement()
-                    .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                    .and()
-                    .csrf()
-                    .requireCsrfProtectionMatcher(new CsrfProtectionMatcher())
-                    .and()
-                    .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint)
-                    .and()
+                    .securityMatcher("/client/**")
+                    .authorizeHttpRequests(auth -> auth
+                            .requestMatchers("/client/users/disclaimer").permitAll()
+                            .requestMatchers("/client/**").hasRole("ADMIN")
+                            .requestMatchers("/client/**").authenticated()
+                    )
+                    .sessionManagement(session -> session
+                            .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
+                    .csrf(csrf -> csrf
+                            .requireCsrfProtectionMatcher(new CsrfProtectionMatcher()))
+                    .exceptionHandling(exceptions -> exceptions
+                            .authenticationEntryPoint(authenticationEntryPoint))
                     .addFilterAfter(new CsrfTokenResponseHeaderBindingFilter(), CsrfFilter.class)
                     .addFilterBefore(new SessionAliveFilter(), CsrfFilter.class)
                     .addFilterBefore(
                             new ShibbolethPreAuthenticatedProcessingFilter(
-                                    authenticationManagerBean(),
+                                    authenticationManager,
                                     featuresList,
                                     product,
                                     push,
@@ -168,21 +172,21 @@ public class WebSecurityConfigurer {
                             new BasicAuthenticationFilter(
                                     new BasicAuthenticationManager(user, password, featuresList, product, push, environmentType)),
                             ShibbolethPreAuthenticatedProcessingFilter.class
-                    )
-                    .authorizeRequests()
-                    .antMatchers("/client/**").hasRole("ADMIN");
+                    );
 
             if (environment.acceptsProfiles(Profiles.of("dev"))) {
                 //we can't use @Profile, because we need to add it before the real filter
-                http.csrf().disable();
+                http.csrf(AbstractHttpConfigurer::disable);
                 http.addFilterBefore(new MockShibbolethFilter(), ShibbolethPreAuthenticatedProcessingFilter.class);
             }
+
+            return http.build();
         }
     }
 
     @Configuration
     @Order
-    public static class SecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
+    public static class SecurityConfigurationAdapter {
 
         @Value("${security.api_users_config_path}")
         private String configApiUsersFileLocation;
@@ -193,31 +197,27 @@ public class WebSecurityConfigurer {
         @Value("${environment}")
         private String environmentType;
 
-        @Override
-        public void configure(WebSecurity web) {
-            web.ignoring().antMatchers("/internal/health", "/internal/info");
-        }
-
-        @Override
-        public void configure(HttpSecurity http) throws Exception {
+        @Bean
+        public SecurityFilterChain apiSecurityConfigurationChain(HttpSecurity http) throws Exception {
             APIUserConfiguration apiUserConfiguration = new Yaml()
                     .loadAs(resourceLoader.getResource(configApiUsersFileLocation).getInputStream(), APIUserConfiguration
                             .class);
             apiUserConfiguration.getApiUsers().forEach(apiUser -> apiUser.setEnvironment(environmentType));
-            http
-                    .antMatcher("/internal/**")
-                    .sessionManagement()
-                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                    .and()
-                    .csrf()
-                    .disable()
+            return http
+                    .securityMatcher("/internal/**")
+                    .authorizeHttpRequests(auth -> auth
+                            .requestMatchers("/internal/health", "/internal/info").permitAll()
+                            .requestMatchers("/internal/**").hasRole("READ")
+                            .requestMatchers("/internal/**").authenticated())
+                    .sessionManagement(session -> session
+                            .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                    .csrf(AbstractHttpConfigurer::disable)
                     .addFilterBefore(
                             new BasicAuthenticationFilter(
                                     new APIAuthenticationManager(apiUserConfiguration)
                             ), BasicAuthenticationFilter.class
                     )
-                    .authorizeRequests()
-                    .antMatchers("/internal/**").hasRole("READ");
+                    .build();
         }
 
     }

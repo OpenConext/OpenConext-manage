@@ -1,5 +1,6 @@
 package manage.shibboleth;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.SneakyThrows;
 import manage.api.Scope;
 import manage.conf.Features;
@@ -13,7 +14,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 import org.springframework.util.StringUtils;
 
-import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -60,7 +60,7 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
     }
 
     @Override
-    protected Object getPreAuthenticatedPrincipal(final HttpServletRequest request) {
+    protected Object getPreAuthenticatedPrincipal(HttpServletRequest request) {
         String uid = getHeader(NAME_ID_HEADER_NAME, request);
         String displayName = getHeader(DISPLAY_NAME_HEADER_NAME, request);
         String schacHomeOrganization = getHeader(SCHAC_HOME_HEADER, request);

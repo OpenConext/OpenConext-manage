@@ -4,15 +4,14 @@ import manage.AbstractIntegrationTest;
 import manage.model.EntityType;
 import manage.model.MetaData;
 import org.everit.json.schema.ValidationException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("unchecked")
 public class SSIDValidationHookTest extends AbstractIntegrationTest {
@@ -24,7 +23,7 @@ public class SSIDValidationHookTest extends AbstractIntegrationTest {
     private final String mockSP = "http://mock-sp";
     private final String profileSP = "https://profile.test2.surfconext.nl/authentication/metadata";
 
-    @Before
+    @BeforeEach
     public void before() throws Exception {
         super.before();
         subject = new SSIDValidationHook(metaDataRepository, metaDataAutoConfiguration);
@@ -36,14 +35,16 @@ public class SSIDValidationHookTest extends AbstractIntegrationTest {
         assertTrue(subject.appliesForMetaData(metaData(profileSP, "loa", EntityType.SP)));
     }
 
-    @Test(expected = ValidationException.class)
+    @Test
     public void prePutSpInStepUpIdp() {
-        subject.prePut(null, metaData(mockSP, "loa", EntityType.SP), apiUser());
+        assertThrows(ValidationException.class, () ->
+                subject.prePut(null, metaData(mockSP, "loa", EntityType.SP), apiUser()));
     }
 
-    @Test(expected = ValidationException.class)
+    @Test
     public void prePostSpInStepUpIdp() {
-        subject.prePost(metaData(mockSP, "loa", EntityType.SP), apiUser());
+        assertThrows(ValidationException.class, () ->
+                subject.prePost(metaData(mockSP, "loa", EntityType.SP), apiUser()));
     }
 
     @Test

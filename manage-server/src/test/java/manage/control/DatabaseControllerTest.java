@@ -1,7 +1,7 @@
 package manage.control;
 
 import manage.AbstractIntegrationTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Map;
@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 import static io.restassured.RestAssured.given;
 import static org.apache.http.HttpStatus.SC_OK;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DatabaseControllerTest extends AbstractIntegrationTest {
 
@@ -32,7 +32,7 @@ public class DatabaseControllerTest extends AbstractIntegrationTest {
                 .get("metadata"))
                 .get("coin"))
                 .get("imported_from_edugain");
-        assertEquals(importFromEdugain, "1");
+        assertEquals("1", importFromEdugain);
 
         //ensure the correct ARP is exported
         List<Map<String, Object>> arpGivenNames = (List<Map<String, Object>>) ((Map) ((Map) ((Map) connections.get("connections"))

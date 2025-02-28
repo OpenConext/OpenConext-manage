@@ -4,18 +4,15 @@ import io.restassured.common.mapper.TypeRef;
 import manage.AbstractIntegrationTest;
 import manage.model.EntityType;
 import manage.model.MetaData;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.data.mongodb.core.query.Query;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static io.restassured.RestAssured.given;
 import static manage.api.APIAuthenticationManager.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class PolicyControllerTest extends AbstractIntegrationTest {
 
@@ -67,7 +64,7 @@ public class PolicyControllerTest extends AbstractIntegrationTest {
         //The ipInfo is appended to stepUp policies
         List<IPInfo> ipInfos = policy.getLoas().stream()
                 .flatMap(loa -> loa.getCidrNotations().stream().map(cidrNotation -> cidrNotation.getIpInfo()))
-                .collect(Collectors.toList());
+                .toList();
         assertEquals(2, ipInfos.size());
 
     }

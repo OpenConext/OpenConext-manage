@@ -4,14 +4,14 @@ import manage.api.APIUser;
 import manage.api.ImpersonatedUser;
 import manage.exception.EndpointNotAllowed;
 import manage.service.MetaDataService;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
@@ -20,9 +20,10 @@ public class PolicyIdpAccessEnforcerTest {
     private final MetaDataService metaDataService = Mockito.mock(MetaDataService.class);
     private final PolicyIdpAccessEnforcer accessEnforcer = new PolicyIdpAccessEnforcer(metaDataService);
 
-    @Test(expected = EndpointNotAllowed.class)
+    @Test
     public void actionAllowedMissingUser() {
-        accessEnforcer.actionAllowed(new PdpPolicyDefinition(), PolicyAccess.WRITE, new APIUser(), true);
+        assertThrows(EndpointNotAllowed.class, () ->
+                accessEnforcer.actionAllowed(new PdpPolicyDefinition(), PolicyAccess.WRITE, new APIUser(), true));
     }
 
     @Test

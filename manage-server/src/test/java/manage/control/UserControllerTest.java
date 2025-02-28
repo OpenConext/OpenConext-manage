@@ -2,13 +2,13 @@ package manage.control;
 
 import io.restassured.common.mapper.TypeRef;
 import manage.AbstractIntegrationTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class UserControllerTest extends AbstractIntegrationTest {
 
