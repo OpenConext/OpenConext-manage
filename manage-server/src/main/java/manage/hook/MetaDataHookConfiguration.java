@@ -19,7 +19,6 @@ import java.util.Arrays;
 public class MetaDataHookConfiguration {
 
     @Bean
-    @Autowired
     @SneakyThrows
     CompositeMetaDataHook hooks(MetaDataRepository metaDataRepository,
                                 MetaDataAutoConfiguration metaDataAutoConfiguration,

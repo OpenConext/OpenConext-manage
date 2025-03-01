@@ -3,9 +3,8 @@ package manage.conf;
 import manage.TestUtils;
 import manage.exception.CustomValidationException;
 import manage.model.EntityType;
-import org.everit.json.schema.ValidationException;
 import org.everit.json.schema.internal.URIFormatValidator;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
@@ -13,11 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("unchecked")
 public class MetaDataAutoConfigurationTest implements TestUtils {
@@ -111,8 +106,8 @@ public class MetaDataAutoConfigurationTest implements TestUtils {
         assertNotNull(subject.schema(EntityType.RP.getType()));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void schemaNotExists() {
-        subject.schema("bogus");
+        assertThrows(IllegalArgumentException.class, () -> subject.schema("bogus"));
     }
 }

@@ -5,8 +5,7 @@ import manage.conf.MetaDataAutoConfiguration;
 import manage.exception.CustomValidationException;
 import manage.format.GZIPClassPathResource;
 import manage.model.EntityType;
-import org.everit.json.schema.ValidationException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -19,7 +18,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("unchecked")
 public class ImporterServiceTest implements TestUtils {
@@ -164,7 +163,7 @@ public class ImporterServiceTest implements TestUtils {
     @Test
     public void multipleCerts() throws IOException, XMLStreamException {
         Map<String, Object> metaData = subject.importXML(new ClassPathResource("/import_xml/metadata_with_attribute_authority_cert.xml"), EntityType.IDP, Optional.empty());
-        assertEquals(1l, Map.class.cast(metaData.get("metaDataFields")).keySet().stream().filter(key -> String.class.cast(key).startsWith("certData")).count());
+        assertEquals(1L, Map.class.cast(metaData.get("metaDataFields")).keySet().stream().filter(key -> String.class.cast(key).startsWith("certData")).count());
     }
 
     @Test
@@ -174,7 +173,7 @@ public class ImporterServiceTest implements TestUtils {
         List<String> singleSignOnServices = ((Map<String, String>) metaData.get("metaDataFields"))
                 .entrySet().stream()
                 .filter(entry -> binding.matcher(entry.getKey()).matches())
-                .map(entry -> entry.getValue())
+                .map(Map.Entry::getValue)
                 .collect(Collectors.toList());
         assertEquals(Arrays.asList("urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
                 "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST-SimpleSign",
@@ -189,7 +188,7 @@ public class ImporterServiceTest implements TestUtils {
         List<String> assertionConsumerServices = ((Map<String, String>) metaData.get("metaDataFields"))
                 .entrySet().stream()
                 .filter(entry -> binding.matcher(entry.getKey()).matches())
-                .map(entry -> entry.getValue())
+                .map(Map.Entry::getValue)
                 .collect(Collectors.toList());
         assertEquals(Arrays.asList("urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
                 "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST-SimpleSign",
@@ -199,15 +198,15 @@ public class ImporterServiceTest implements TestUtils {
         List<String> singleLogoutService = ((Map<String, String>) metaData.get("metaDataFields"))
                 .entrySet().stream()
                 .filter(entry -> entry.getKey().startsWith("SingleLogoutService_Binding"))
-                .map(entry -> entry.getValue())
+                .map(Map.Entry::getValue)
                 .collect(Collectors.toList());
-        assertEquals(Arrays.asList("urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Artifact"), singleLogoutService);
+        assertEquals(List.of("urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Artifact"), singleLogoutService);
     }
 
     @Test
     public void importFeedWithRegistrationInfo() throws IOException, XMLStreamException {
         List<Map<String, Object>> results = subject.importFeed(new ClassPathResource("/import_xml/edugain_mdrpi_missing.xml"))
-                .stream().filter(m -> !m.isEmpty()).collect(Collectors.toList());
+                .stream().filter(m -> !m.isEmpty()).toList();
         assertEquals(1, results.size());
 
         Map<String, Object> metaData = results.get(0);

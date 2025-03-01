@@ -1,32 +1,35 @@
 package manage.format;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class SaveURLResourceTest {
 
     @Mock
     URLConnection connection;
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testNotAllowedProtocol() throws MalformedURLException {
-        new SaveURLResource(new URL("file://local"), false, null);
+    @Test
+    public void testNotAllowedProtocol() {
+        assertThrows(IllegalArgumentException.class, () ->
+                new SaveURLResource(URI.create("file://local").toURL(), false, null));
     }
 
     @Test
     public void testNotAllowedProtocolInDev() throws MalformedURLException {
-        new SaveURLResource(new URL("file://local"), true, null);
+        new SaveURLResource(URI.create("file://local").toURL(), true, null);
     }
 
     @Test

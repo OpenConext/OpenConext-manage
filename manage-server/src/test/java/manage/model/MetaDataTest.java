@@ -2,22 +2,22 @@ package manage.model;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import manage.TestUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("unchecked")
 public class MetaDataTest implements TestUtils {
 
     private MetaData subject;
 
-    @Before
+    @BeforeEach
     public void before() throws IOException {
         subject = objectMapper.readValue(readFile("json/meta_data_detail.json"), MetaData.class);
     }
@@ -141,7 +141,6 @@ public class MetaDataTest implements TestUtils {
 
         subject.merge(changeRequest);
         assertFalse(subject.getData().containsKey("allowedEntities"));
-
     }
 
     @Test
@@ -222,12 +221,10 @@ public class MetaDataTest implements TestUtils {
         assertEquals(4, newAttributes.size());
     }
 
-
     @Test
     public void equals() {
         assertTrue(subject.equals(subject));
     }
-
 
     @Test
     public void trimSpaces() throws JsonProcessingException {

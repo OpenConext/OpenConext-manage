@@ -9,13 +9,14 @@ import manage.policies.PdpPolicyDefinition;
 import manage.repository.MetaDataRepository;
 import manage.web.HttpHostProvider;
 import manage.web.PreemptiveAuthenticationHttpComponentsClientHttpRequestFactory;
-import org.apache.http.HttpHost;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.conn.DefaultProxyRoutePlanner;
+import org.apache.hc.client5.http.auth.AuthScope;
+import org.apache.hc.client5.http.auth.UsernamePasswordCredentials;
+import org.apache.hc.client5.http.impl.auth.BasicCredentialsProvider;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.client5.http.impl.routing.DefaultProxyRoutePlanner;
+import org.apache.hc.core5.http.HttpHost;
+import org.apache.hc.core5.util.TimeValue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -31,7 +32,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
@@ -78,7 +80,7 @@ public class DatabaseController {
                        @Value("${push.pdp.password}") String pdpPassword,
                        @Value("${push.pdp.enabled}") boolean pdpEnabled,
                        @Value("${push.oidc.enabled}") boolean oidcEnabled,
-                       Environment environment) throws MalformedURLException {
+                       Environment environment) throws MalformedURLException, URISyntaxException {
         this.metaDataRepository = metaDataRepository;
         this.pushUri = pushUri;
         this.restTemplate = new RestTemplate(getRequestFactory(user, password, pushUri));
@@ -105,8 +107,8 @@ public class DatabaseController {
         if (pushOptions.isIncludePdP() && pdpEnabled) {
             List<PdpPolicyDefinition> policies = this.metaDataRepository
                     .findAllByType(EntityType.PDP.getType()).stream()
-                    .map(metaData -> new PdpPolicyDefinition(metaData))
-                    .filter(policyDefinition -> policyDefinition.isActive())
+                    .map(PdpPolicyDefinition::new)
+                    .filter(PdpPolicyDefinition::isActive)
                     .collect(toList());
             this.pdpRestTemplate.put(pdpPushUri, policies);
             result.put("status", "OK");
@@ -146,7 +148,7 @@ public class DatabaseController {
                         .findAll(MetaData.class, EntityType.SRAM.getType())
                         .stream()
                         .filter(sramRP -> "oidc_rp".equals(sramRP.metaDataFields().get("connection_type")))
-                        .collect(toList());
+                        .toList();
                 relyingParties.addAll(sramRelyingParties);
             }
             relyingParties.forEach(rp -> {
@@ -239,14 +241,15 @@ public class DatabaseController {
         });
     }
 
-    private ClientHttpRequestFactory getRequestFactory(String user, String password, String uri) throws MalformedURLException {
+    private ClientHttpRequestFactory getRequestFactory(String user, String password, String uri) throws MalformedURLException, URISyntaxException {
         HttpClientBuilder httpClientBuilder = HttpClientBuilder.create().evictExpiredConnections()
-                .evictIdleConnections(10l, TimeUnit.SECONDS);
+                .evictIdleConnections(TimeValue.of(10L, TimeUnit.SECONDS));
         BasicCredentialsProvider basicCredentialsProvider = new BasicCredentialsProvider();
-        basicCredentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(user, password));
+        // @TODO: suitable replacement for AuthScope.ANY?
+        basicCredentialsProvider.setCredentials(new AuthScope(null, -1), new UsernamePasswordCredentials(user, password.toCharArray()));
         httpClientBuilder.setDefaultCredentialsProvider(basicCredentialsProvider);
 
-        Optional<HttpHost> optionalHttpHost = HttpHostProvider.resolveHttpHost(new URL(uri));
+        Optional<HttpHost> optionalHttpHost = HttpHostProvider.resolveHttpHost(URI.create(uri).toURL());
         optionalHttpHost.ifPresent(httpHost -> httpClientBuilder.setRoutePlanner(new DefaultProxyRoutePlanner(httpHost)));
 
         CloseableHttpClient httpClient = httpClientBuilder.build();

@@ -5,8 +5,8 @@ import manage.TestUtils;
 import manage.model.EntityType;
 import manage.model.MetaData;
 import org.everit.json.schema.ValidationException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,14 +14,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static java.util.Collections.emptyMap;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SecretHookTest extends AbstractIntegrationTest implements TestUtils {
 
     private SecretHook subject;
     private final Pattern bcryptPattern = Pattern.compile("\\A\\$2(a|y|b)?\\$(\\d\\d)\\$[./0-9A-Za-z]{53}");
 
-    @Before
+    @BeforeEach
     public void before() throws Exception {
         super.before();
         subject = new SecretHook(metaDataAutoConfiguration);
@@ -86,9 +86,9 @@ public class SecretHookTest extends AbstractIntegrationTest implements TestUtils
         assertEquals(5, this.getStrength(encodedPassword));
     }
 
-    @Test(expected = ValidationException.class)
+    @Test
     public void minimalLength() {
-        subject.prePost(metaData("secret", EntityType.RS), apiUser());
+        assertThrows(ValidationException.class, () -> subject.prePost(metaData("secret", EntityType.RS), apiUser()));
     }
 
     private int getStrength(String encodedPassword) {

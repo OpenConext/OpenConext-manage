@@ -10,8 +10,8 @@ import manage.model.EntityType;
 import manage.model.MetaData;
 import manage.repository.MetaDataRepository;
 import manage.repository.ScopeRepository;
-import org.junit.Before;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
 import java.util.Map;
@@ -35,7 +35,7 @@ import static org.awaitility.Awaitility.await;
  * Override the @WebIntegrationTest annotation if you don't want to have mock shibboleth headers (e.g. you want to
  * impersonate EB or other identity).
  */
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(locations = "classpath:test.properties")
 public abstract class AbstractIntegrationTest implements TestUtils {
@@ -59,7 +59,7 @@ public abstract class AbstractIntegrationTest implements TestUtils {
 
     private static List<MetaData> metaDataList;
 
-    @Before
+    @BeforeEach
     public void before() throws Exception {
         RestAssured.port = port;
         if (insertSeedData()) {
