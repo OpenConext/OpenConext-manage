@@ -72,10 +72,7 @@ public class MongoChangelog {
             mongoTemplate.remove(new Query(), Scope.class);
             DistinctIterable<String> scopes = mongoTemplate.getCollection(EntityType.RP.getType())
                     .distinct("data.metaDataFields.scopes", String.class);
-            List<Scope> allScopes = StreamSupport.stream(scopes.spliterator(), false)
-                    .map(scope -> new Scope(scope, new HashMap<>(), new HashMap<>()))
-                    .collect(Collectors.toList());
-            mongoTemplate.insert(allScopes, Scope.class);
+            scopes.forEach(scope -> mongoTemplate.insert(new Scope(scope, new HashMap<>(), new HashMap<>())));
         }
     }
 
