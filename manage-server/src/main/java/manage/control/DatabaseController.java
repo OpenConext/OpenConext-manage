@@ -24,6 +24,7 @@ import org.springframework.core.env.Profiles;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpRequestFactory;
+import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -84,16 +85,19 @@ public class DatabaseController {
                        Environment environment) throws MalformedURLException, URISyntaxException {
         this.metaDataRepository = metaDataRepository;
         this.pushUri = pushUri;
-        this.restTemplate = new RestTemplate(getRequestFactory(user, password, pushUri));
+        this.restTemplate = new RestTemplate();
+        this.restTemplate.getInterceptors().add(new BasicAuthenticationInterceptor(user, password));
         this.excludeEduGainImported = excludeEduGainImported;
         this.excludeOidcRP = excludeOidcRP;
         this.excludeSRAM = excludeSRAM;
 
-        this.oidcRestTemplate = oidcEnabled ? new RestTemplate(getRequestFactory(oidcUser, oidcPassword, oidcPushUri)) : null;
+        this.oidcRestTemplate = new RestTemplate();
+        this.oidcRestTemplate.getInterceptors().add(new BasicAuthenticationInterceptor(oidcUser, oidcPassword));
         this.oidcPushUri = oidcPushUri;
         this.oidcEnabled = oidcEnabled;
 
-        this.pdpRestTemplate = pdpEnabled ? new RestTemplate(getRequestFactory(pdpUser, pdpPassword, pdpPushUri)) : null;
+        this.pdpRestTemplate = new RestTemplate();
+        this.pdpRestTemplate.getInterceptors().add(new BasicAuthenticationInterceptor(pdpUser, pdpPassword));
         this.pdpPushUri = pdpPushUri;
         this.pdpEnabled = pdpEnabled;
 
@@ -245,18 +249,4 @@ public class DatabaseController {
         });
     }
 
-    private ClientHttpRequestFactory getRequestFactory(String user, String password, String uri) throws MalformedURLException, URISyntaxException {
-        HttpClientBuilder httpClientBuilder = HttpClientBuilder.create().evictExpiredConnections()
-                .evictIdleConnections(TimeValue.of(10L, TimeUnit.SECONDS));
-        BasicCredentialsProvider basicCredentialsProvider = new BasicCredentialsProvider();
-        // @TODO: suitable replacement for AuthScope.ANY?
-        basicCredentialsProvider.setCredentials(new AuthScope(null, -1), new UsernamePasswordCredentials(user, password.toCharArray()));
-        httpClientBuilder.setDefaultCredentialsProvider(basicCredentialsProvider);
-
-        Optional<HttpHost> optionalHttpHost = HttpHostProvider.resolveHttpHost(URI.create(uri).toURL());
-        optionalHttpHost.ifPresent(httpHost -> httpClientBuilder.setRoutePlanner(new DefaultProxyRoutePlanner(httpHost)));
-
-        CloseableHttpClient httpClient = httpClientBuilder.build();
-        return new PreemptiveAuthenticationHttpComponentsClientHttpRequestFactory(httpClient, uri);
-    }
 }
