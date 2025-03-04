@@ -7,7 +7,6 @@ import {
     deleteOrphanedReferences,
     orphans,
     ping,
-    push,
     pushPreview,
     restoreDeletedRevision,
     search,
@@ -17,7 +16,7 @@ import {
 import {capitalize, isEmpty, stop} from "../utils/Utils";
 import ConfirmationDialog from "../components/ConfirmationDialog";
 import "./System.scss";
-import {pushFlash, setFlash} from "../utils/Flash";
+import {setFlash} from "../utils/Flash";
 import SelectMetaDataType from "../components/metadata/SelectMetaDataType";
 import NotesTooltip from "../components/NotesTooltip";
 import CheckBox from "../components/CheckBox";
@@ -98,19 +97,6 @@ export default class System extends React.PureComponent {
         <span key={tab} className={tab === selectedTab ? "active" : ""} onClick={this.switchTab(tab)}>
             {I18n.t(`playground.${tab}`)}
         </span>;
-
-    runPush = e => {
-        stop(e);
-        if (this.state.loading) {
-            return;
-        }
-        this.setState({loading: true});
-        push().then(json => {
-            this.setState({loading: false});
-            const ok = json.status === "OK" || json.status === 200;
-            setFlash(pushFlash(ok, this.props.currentUser), ok ? "info" : "error");
-        });
-    };
 
     runPushPreview = e => {
         stop(e);
@@ -274,27 +260,27 @@ export default class System extends React.PureComponent {
                    onClick={this.runPushPreview}>{I18n.t("playground.runPushPreview")}
                     <i className="fa fa-refresh"></i></a>
                 {showCopy &&
-                <CopyToClipboard text={json} onCopy={this.copiedToClipboard}>
+                    <CopyToClipboard text={json} onCopy={this.copiedToClipboard}>
                     <span className={`button green ${copiedToClipboardClassName}`}>
                        Copy JSON to clipboard <i className="fa fa-clone"></i>
                     </span>
-                </CopyToClipboard>
+                    </CopyToClipboard>
                 }
                 {showSelectText &&
-                <span className="button green" onClick={() => {
-                    const range = document.createRange();
-                    const sel = window.getSelection();
-                    range.selectNodeContents(this.pushPreviewResults);
-                    sel.removeAllRanges();
-                    sel.addRange(range);
-                }}>
+                    <span className="button green" onClick={() => {
+                        const range = document.createRange();
+                        const sel = window.getSelection();
+                        range.selectNodeContents(this.pushPreviewResults);
+                        sel.removeAllRanges();
+                        sel.addRange(range);
+                    }}>
                        Select all JSON <i className="fa fa-clone"></i>
                     </span>
                 }
                 {pushPreviewResults &&
-                <section className="results pushPreviewResults" ref={ref => this.pushPreviewResults = ref}>
-                    {json}
-                </section>}
+                    <section className="results pushPreviewResults" ref={ref => this.pushPreviewResults = ref}>
+                        {json}
+                    </section>}
             </section>
         );
     };
@@ -310,9 +296,9 @@ export default class System extends React.PureComponent {
                    onClick={this.runValidations}>{I18n.t("playground.runValidation")}
                     <i className="fa fa-check" aria-hidden="true"></i></a>
                 {validationResults &&
-                <section className="results">
-                    <JSONPretty id="json-pretty" json={validationResults}></JSONPretty>
-                </section>}
+                    <section className="results">
+                        <JSONPretty id="json-pretty" json={validationResults}></JSONPretty>
+                    </section>}
             </section>
         );
     };
@@ -339,18 +325,18 @@ export default class System extends React.PureComponent {
                    onClick={this.runOrphans}>{I18n.t("playground.runOrphans")}
                     <i className="fa fa-check" aria-hidden="true"></i></a>
                 {orphansResults &&
-                <section className="results">
-                    <JSONPretty json={orphansResults}></JSONPretty>
-                </section>}
+                    <section className="results">
+                        <JSONPretty json={orphansResults}></JSONPretty>
+                    </section>}
                 {(orphansResults && orphansResults.length > 0) &&
-                <a className={`button ${loading ? "grey disabled" : "blue"}`}
-                   onClick={() => this.setState({
-                       confirmationDialogOpen: true,
-                       confirmationQuestion: I18n.t("playground.orphanConfirmation"),
-                       confirmationDialogAction: action
-                   })}>{I18n.t("playground.deleteOrphans")}
-                    <i className="fa fa-trash"></i>
-                </a>}
+                    <a className={`button ${loading ? "grey disabled" : "blue"}`}
+                       onClick={() => this.setState({
+                           confirmationDialogOpen: true,
+                           confirmationQuestion: I18n.t("playground.orphanConfirmation"),
+                           confirmationDialogAction: action
+                       })}>{I18n.t("playground.deleteOrphans")}
+                        <i className="fa fa-trash"></i>
+                    </a>}
             </section>
         );
     };

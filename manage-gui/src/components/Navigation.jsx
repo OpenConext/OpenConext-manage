@@ -62,11 +62,12 @@ export default class Navigation extends React.PureComponent {
         }
         this.setState({loading: true});
 
-        push(true, true, true).then(json => {
-            this.setState({loading: false});
-            const ok = json.status === "OK" || json.status === 200;
-            setFlash(pushFlash(ok, this.props.currentUser), ok ? "info" : "error");
-        });
+        push(true, true, true)
+            .then(json => {
+                this.setState({loading: false});
+                const success = json.eb?.status === "OK" && json.pdp?.status === "OK" && json.oidc?.status === "OK";
+                setFlash(pushFlash(success), success ? "info" : "error");
+            });
     };
 
     renderPushButton = () => {
@@ -82,8 +83,8 @@ export default class Navigation extends React.PureComponent {
         return (
             <a className={`push button ${loading ? "grey disabled" : "white"}`}
                onClick={action}>{I18n.t("playground.runPush")}
-            <i className="fa fa-refresh"></i>
-        </a>
+                <i className="fa fa-refresh"></i>
+            </a>
         );
     };
 

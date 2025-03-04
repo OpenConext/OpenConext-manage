@@ -27,6 +27,7 @@ import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
@@ -88,7 +89,7 @@ public class DatabaseController {
         this.excludeOidcRP = excludeOidcRP;
         this.excludeSRAM = excludeSRAM;
 
-        this.oidcRestTemplate = oidcEnabled ? new RestTemplate(getRequestFactory(oidcUser, oidcPassword,oidcPushUri )) : null;
+        this.oidcRestTemplate = oidcEnabled ? new RestTemplate(getRequestFactory(oidcUser, oidcPassword, oidcPushUri)) : null;
         this.oidcPushUri = oidcPushUri;
         this.oidcEnabled = oidcEnabled;
 
@@ -101,7 +102,11 @@ public class DatabaseController {
 
     public ResponseEntity<Map> doPush(PushOptions pushOptions) {
         if (environment.acceptsProfiles(Profiles.of("dev"))) {
-            return new ResponseEntity<>(Collections.singletonMap("status", "OK"), HttpStatus.OK);
+            return new ResponseEntity<>(Map.of(
+                    "eb", Map.of("status", "OK"),
+                    "pdp", Map.of("status", "OK"),
+                    "oidc", Map.of("status", "OK")
+            ), HttpStatus.OK);
         }
         Map<String, Object> result = new HashMap<>();
         if (pushOptions.isIncludePdP() && pdpEnabled) {
@@ -111,16 +116,17 @@ public class DatabaseController {
                     .filter(PdpPolicyDefinition::isActive)
                     .collect(toList());
             this.pdpRestTemplate.put(pdpPushUri, policies);
-            result.put("status", "OK");
-            result.put("pdp", true);
+            result.put("pdp", Map.of("status", "OK"));
         }
         if (pushOptions.isIncludeEB()) {
             Map<String, Map<String, Map<String, Object>>> json = this.pushPreview();
 
             ResponseEntity<String> response = this.restTemplate.postForEntity(pushUri, json, String.class);
 
-            result.put("status", "OK");
-            result.put("response", response);
+            String body = response.getBody();
+            result.put("eb", Map.of(
+                    "status", response.getStatusCode().is2xxSuccessful() ? "OK" : "ERROR",
+                    "response", StringUtils.hasText(body) ? body : ""));
         }
 
         // Now push all oidc_rp metadata to OIDC proxy
@@ -145,10 +151,8 @@ public class DatabaseController {
             });
             if (!excludeSRAM) {
                 List<MetaData> sramRelyingParties = metaDataRepository.getMongoTemplate()
-                        .findAll(MetaData.class, EntityType.SRAM.getType())
-                        .stream()
-                        .filter(sramRP -> "oidc_rp".equals(sramRP.metaDataFields().get("connection_type")))
-                        .toList();
+                        .findAll(MetaData.class, EntityType.SRAM.getType());
+                sramRelyingParties.forEach(sramEntity -> sramEntity.metaDataFields().put("coin:collab_enabled", true));
                 relyingParties.addAll(sramRelyingParties);
             }
             relyingParties.forEach(rp -> {
@@ -161,9 +165,9 @@ public class DatabaseController {
             List<MetaData> filteredEntities = relyingParties.stream()
                     .filter(metaData -> !excludeFromPush(metaData.metaDataFields()))
                     .collect(toList());
-            this.oidcRestTemplate.postForEntity(oidcPushUri, filteredEntities, Void.class);
-            result.put("oidc", true);
-            result.put("status", "OK");
+            ResponseEntity<Void> response = this.oidcRestTemplate.postForEntity(oidcPushUri, filteredEntities, Void.class);
+            result.put("oidc", Map.of(
+                    "status", response.getStatusCode().is2xxSuccessful() ? "OK" : "ERROR"));
         }
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
