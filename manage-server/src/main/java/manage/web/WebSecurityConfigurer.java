@@ -18,6 +18,8 @@ import org.springframework.core.env.Profiles;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -55,12 +57,11 @@ import static java.util.stream.Collectors.toList;
 @EnableMethodSecurity
 public class WebSecurityConfigurer {
 
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        //because Autowired this will end up in the global ProviderManager
+    @Bean
+    public AuthenticationManager configureGlobal() {
         PreAuthenticatedAuthenticationProvider authenticationProvider = new PreAuthenticatedAuthenticationProvider();
         authenticationProvider.setPreAuthenticatedUserDetailsService(new ShibbolethUserDetailService());
-        auth.authenticationProvider(authenticationProvider);
+        return new ProviderManager(authenticationProvider);
     }
 
     @Order(1)
@@ -120,11 +121,6 @@ public class WebSecurityConfigurer {
 
         @Value("${environment}")
         private String environmentType;
-
-        @Bean
-        public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-            return authenticationConfiguration.getAuthenticationManager();
-        }
 
         @Bean
         protected SecurityFilterChain internalSecurityWebFilterChain(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
