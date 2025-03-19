@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import static io.restassured.RestAssured.given;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DatabaseControllerTest extends AbstractIntegrationTest {
 
@@ -22,7 +23,7 @@ public class DatabaseControllerTest extends AbstractIntegrationTest {
                 .then()
                 .statusCode(SC_OK)
                 .extract().as(Map.class);
-//        System.out.println(objectMapper.writeValueAsString(connections));
+        //System.out.println(objectMapper.writeValueAsString(connections));
         Map expected = objectMapper.readValue(readFile("push/push.expected_connections.json"), Map.class);
 
         assertEquals(expected, connections);
@@ -45,10 +46,13 @@ public class DatabaseControllerTest extends AbstractIntegrationTest {
         assertEquals("aliasGivenName", arpGivenName.get("release_as"));
         assertEquals(true, arpGivenName.get("use_as_nameid"));
 
-        String nameSramRP = (String) ((Map) ((Map) connections.get("connections"))
-                .get("15"))
+        Map sramService = (Map) ((Map) connections.get("connections"))
+                .get("15");
+        String nameSramRP = (String) sramService
                 .get("name");
         assertEquals("https://sram.service.api.oidc_rp", nameSramRP);
+        Map<String, Object> coinAttributes = (Map<String, Object>) ((Map) sramService.get("metadata")).get("coin");
+        assertEquals("1", coinAttributes.get("collab_enabled"));
 
         String nameSramSP = (String) ((Map) ((Map) connections.get("connections"))
                 .get("16"))

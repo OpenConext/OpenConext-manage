@@ -350,6 +350,7 @@
           "en": "SURF"
         },
         "coin": {
+          "collab_enabled": "1",
           "signature_method": "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"
         },
         "name": {
@@ -442,6 +443,7 @@
           "en": "SURF"
         },
         "coin": {
+          "collab_enabled": "1",
           "signature_method": "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"
         },
         "name": {
