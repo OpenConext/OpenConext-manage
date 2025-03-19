@@ -203,6 +203,7 @@ public class DatabaseController {
         }
         if (!excludeSRAM) {
             List<MetaData> sramServices = metaDataRepository.getMongoTemplate().findAll(MetaData.class, EntityType.SRAM.getType());
+            sramServices.forEach(sramEntity -> sramEntity.metaDataFields().put("coin:collab_enabled", true));
             Map<String, Map<String, Object>> sramServicesToProvidersToPush = sramServices.stream()
                     .collect(toMap(MetaData::getId, formatter::parseServiceProvider));
             serviceProvidersToPush.putAll(sramServicesToProvidersToPush);
