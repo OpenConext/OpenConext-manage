@@ -228,6 +228,7 @@ I18n.translations.en = {
         searchPlaceHolder_saml20_idp: "Search for whitelisted Service Providers...",
         searchPlaceHolder_saml20_sp: "Search for whitelisted Identity Providers...",
         searchPlaceHolder_oidc10_rp: "Search for whitelisted Identity Providers...",
+        searchPlaceHolder_sram: "Search for whitelisted Identity Providers...",
         removedWhiteListedEntities: "Removed entities from the whitelist",
         allowedEntries: {
             blocked: "Blocked",
