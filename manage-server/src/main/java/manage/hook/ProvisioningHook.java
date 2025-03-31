@@ -64,7 +64,7 @@ public class ProvisioningHook extends MetaDataHookAdapter {
         Schema schema = metaDataAutoConfiguration.schema(EntityType.PROV.getType());
         String provisioningType = (String) metaDataFields.get("provisioning_type");
         Map.of(
-                "scim", List.of("scim_url", "scim_user", "scim_password"),
+                "scim", List.of("scim_url"),
                 "graph", List.of("graph_client_id", "graph_secret", "graph_tenant"),
                 "eva", List.of("eva_url", "eva_token")
         ).forEach((type, required) -> {
@@ -77,6 +77,18 @@ public class ProvisioningHook extends MetaDataHookAdapter {
                 });
             }
         });
+        if (provisioningType.equals("scim")) {
+            if (!StringUtils.hasText((String) metaDataFields.get("scim_bearer_token"))) {
+                List.of("scim_user", "scim_password").forEach(attribute -> {
+                    if (!StringUtils.hasText((String) metaDataFields.get(attribute))) {
+                        failures.add(new ValidationException(schema,
+                                String.format("%s is required with provisioningType scim when no scim_bearer_token is configured",
+                                        attribute), attribute));
+                    }
+                });
+
+            }
+        }
         ValidationException.throwFor(schema, failures);
     }
 
