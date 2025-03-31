@@ -59,6 +59,13 @@ public class ProvisioningHookTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void prePostValid() {
+        MetaData metaData = new MetaData(EntityType.PROV.getType(), new HashMap<>(Map.of("metaDataFields",
+                Map.of("provisioning_type", "scim", "scim_url", "http://scim", "scim_bearer_token", "token"))));
+        provisioningHook.prePost(metaData, apiUser);
+    }
+
+    @Test
     @SuppressWarnings("unchecked")
     public void prePostEduIDScimProvisioningMissingInstitutionGUID() {
         MetaData metaData = new MetaData(EntityType.PROV.getType(), new HashMap<>(Map.of("metaDataFields",
