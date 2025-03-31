@@ -13,7 +13,7 @@ public class EncryptionHook extends MetaDataHookAdapter {
 
     private final KeyStore keyStore;
     private final boolean cryptoEnabled;
-    private final List<String> decryptionAttributes = List.of("scim_password", "eva_token", "graph_secret");
+    private final List<String> decryptionAttributes = List.of("scim_password", "scim_bearer_token", "eva_token", "graph_secret");
 
     public EncryptionHook(KeyStore keyStore, boolean cryptoEnabled) {
         this.keyStore = keyStore;
