@@ -133,8 +133,8 @@ const tabsSram = [
     "connection",
     "connected_idps",
     "metadata",
+    "arp",
     "whitelist",
-    "manipulation",
     "revisions",
     "export"
 ];
