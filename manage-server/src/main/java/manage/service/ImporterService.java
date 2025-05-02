@@ -19,6 +19,8 @@ import org.springframework.stereotype.Service;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.*;
@@ -102,12 +104,12 @@ public class ImporterService {
 
     public Map<String, Object> importJsonUrl(String type, Import importRequest) {
         try {
-            Resource resource = new SaveURLResource(new URL(importRequest.getUrl()),
+            Resource resource = new SaveURLResource(new URI(importRequest.getUrl()).toURL(),
                     environment.acceptsProfiles(Profiles.of("dev")), autoRefreshUserAgent);
             String json = IOUtils.toString(resource.getInputStream(), Charset.defaultCharset());
             Map<String, Object> map = objectMapper.readValue(json, Map.class);
             return importJson(type, map);
-        } catch (IOException e) {
+        } catch (IOException | URISyntaxException e) {
             return singletonMap("errors", singletonList(e.getClass().getName()));
         }
     }

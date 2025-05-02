@@ -72,12 +72,38 @@ public class OidcValidationHookTest implements TestUtils {
                 subject.prePut(null, metaData(singletonList("client_credentials"), singletonList("https://redirect")), apiUser()));
     }
 
+    @Test
+    public void isPublicWithSecret() {
+        assertThrows(ValidationException.class, () ->
+                subject.prePut(null, metaData(Map.of("secret", "verySecret", "isPublicClient", true)), apiUser()));
+    }
+
+    @Test
+    public void privateWithoutSecret() {
+        assertThrows(ValidationException.class, () ->
+                subject.prePut(null, metaData(Map.of("secret", "", "isPublicClient", false)), apiUser()));
+    }
+
+    @Test
+    public void deviceCodeWithoutSecret() {
+        assertThrows(ValidationException.class, () ->
+                subject.prePut(null, metaData(Map.of("grants", List.of("urn:ietf:params:oauth:grant-type:device_code"),
+                        "secret", "verySecret")), apiUser()));
+    }
+
     @SuppressWarnings("unchecked")
     private MetaData metaData(List<String> grants, List<String> redirectUrls) {
         Map<String, Object> data = new HashMap<>();
         Map<String, Object> metaDataFields = (Map<String, Object>) data.computeIfAbsent("metaDataFields", key -> new HashMap<String, Object>());
         metaDataFields.put("redirectUrls", redirectUrls);
         metaDataFields.put("grants", grants);
+        metaDataFields.put("secret", "verySecret");
+        return new MetaData(EntityType.RP.getType(), data);
+    }
+
+    private MetaData metaData(Map<String, Object> metaDataFields) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("metaDataFields", metaDataFields);
         return new MetaData(EntityType.RP.getType(), data);
     }
 }
