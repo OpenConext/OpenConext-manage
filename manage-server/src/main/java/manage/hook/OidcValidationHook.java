@@ -6,6 +6,7 @@ import manage.model.EntityType;
 import manage.model.MetaData;
 import org.everit.json.schema.Schema;
 import org.everit.json.schema.ValidationException;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,6 +45,8 @@ public class OidcValidationHook extends MetaDataHookAdapter {
         Map<String, Object> metaDataFields = newMetaData.metaDataFields();
         List<String> redirectUrls = (List<String>) metaDataFields.getOrDefault("redirectUrls", new ArrayList<String>());
         List<String> grants = (List<String>) metaDataFields.getOrDefault("grants", new ArrayList<String>());
+        boolean isPublicClient = (boolean) metaDataFields.getOrDefault("isPublicClient", false);
+        String secret = (String) metaDataFields.get("secret");
         Schema schema = metaDataAutoConfiguration.schema(EntityType.RP.getType());
         if (grants.stream().anyMatch(grant -> Arrays.asList("authorization_code", "implicit").contains(grant)) &&
                 redirectUrls.isEmpty()) {
@@ -58,6 +61,16 @@ public class OidcValidationHook extends MetaDataHookAdapter {
         if (metaDataFields.get("refreshTokenValidity") != null && grants.stream().noneMatch(grant -> grant.equals("refresh_token"))) {
             throw new ValidationException(schema, "refreshTokenValidity specified, but no refresh_token grant. Either remove refreshTokenValidity or add refresh_token grant type", "refreshTokenValidity");
         }
+        if (isPublicClient && StringUtils.hasText(secret)) {
+            throw new ValidationException(schema, "Public clients are not allowed a secret", "isPublicClient");
+        }
+        if (!isPublicClient && !StringUtils.hasText(secret)) {
+            throw new ValidationException(schema, "Non-public clients are required a secret", "secret");
+        }
+        if (grants.size() == 1 && grants.get(0).equals("urn:ietf:params:oauth:grant-type:device_code") && StringUtils.hasText(secret)) {
+            throw new ValidationException(schema, "Device Code RP is not allowed a secret", "redirectUris");
+        }
+
     }
 
 }

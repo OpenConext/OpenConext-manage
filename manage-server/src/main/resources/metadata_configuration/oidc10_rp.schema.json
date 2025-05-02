@@ -516,7 +516,8 @@
               "authorization_code",
               "implicit",
               "refresh_token",
-              "client_credentials"
+              "client_credentials",
+              "urn:ietf:params:oauth:grant-type:device_code"
             ]
           },
           "info": "The authorisation grant type's of this Relying Party."
@@ -651,7 +652,7 @@
       },
       "required": [
         "name:en",
-        "secret",
+        "OrganizationName:en",
         "grants"
       ],
       "additionalProperties": false

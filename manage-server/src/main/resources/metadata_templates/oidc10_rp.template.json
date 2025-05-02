@@ -9,6 +9,7 @@
   "metaDataFields": {
     "name:en": "",
     "secret": "",
+    "OrganizationName:en": "",
     "redirectUrls": [],
     "grants": [
       "authorization_code"

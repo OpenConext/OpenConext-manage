@@ -35,6 +35,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.time.Instant;
@@ -109,7 +111,7 @@ public class MetaDataService {
                             .map(ServiceProvider::new)
                             .collect(Collectors.toMap(ServiceProvider::getEntityId, sp -> sp));
             String feedUrl = importRequest.getUrl();
-            Resource resource = new SaveURLResource(new URL(feedUrl), environment.acceptsProfiles(Profiles.of("dev")), null);
+            Resource resource = new SaveURLResource(new URI(feedUrl).toURL(), environment.acceptsProfiles(Profiles.of("dev")), null);
 
             List<Map<String, Object>> allImports = importerService.importFeed(resource);
             List<Map<String, Object>> imports =
@@ -179,7 +181,7 @@ public class MetaDataService {
             results.put("total", Collections.singletonList(imports.size()));
 
             return results;
-        } catch (IOException | XMLStreamException e) {
+        } catch (IOException | XMLStreamException | URISyntaxException e) {
             LOG.error("Error in client/import/feed", e);
             return singletonMap("errors", singletonList(e.getClass().getName()));
         }
