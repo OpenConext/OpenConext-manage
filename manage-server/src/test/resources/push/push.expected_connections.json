@@ -20,6 +20,9 @@
             "Location": "https://oidc.test2.surfconext.nl/saml/SSO"
           }
         ],
+        "OrganizationName": {
+          "en": "Organization name en"
+        },
         "coin": {
           "imported_from_edugain": "1",
           "service_team_id": "urn:collab:group:test.surfteams.nl:nl:surfnet:diensten:testbart2334343",
@@ -209,6 +212,9 @@
           "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent",
           "urn:oasis:names:tc:SAML:2.0:nameid-format:transient"
         ],
+        "OrganizationName": {
+          "en": "Organization name en"
+        },
         "coin": {
           "dashboard_connect_option": "connect_without_interaction_without_email",
           "do_not_add_attribute_aliases": "1",
@@ -284,6 +290,9 @@
           "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent",
           "urn:oasis:names:tc:SAML:2.0:nameid-format:transient"
         ],
+        "OrganizationName": {
+          "en": "Organization name en"
+        },
         "coin": {
           "dashboard_connect_option": "connect_without_interaction_without_email",
           "policy_enforcement_decision_required": "1"
@@ -378,6 +387,9 @@
           "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent",
           "urn:oasis:names:tc:SAML:2.0:nameid-format:transient"
         ],
+        "OrganizationName": {
+          "en": "Organization name en"
+        },
         "coin": {
           "policy_enforcement_decision_required": "1"
         },
@@ -626,6 +638,9 @@
       "allowed_connections": [],
       "disable_consent_connections": [],
       "metadata": {
+        "OrganizationName": {
+          "en": "Organization name en"
+        },
         "SingleSignOnService": [
           {
             "Binding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect",
@@ -658,6 +673,9 @@
             "Location": "https://acs0"
           }
         ],
+        "OrganizationName": {
+          "en": "Organization name en"
+        },
         "name": {
           "en": "OIDC SP"
         }
@@ -679,6 +697,9 @@
             "Location": "https://trusted.proxy.acs.location.rules"
           }
         ],
+        "OrganizationName": {
+          "en": "Organization name en"
+        },
         "coin": {
           "institution_guid": "219092BE-B234-4C17-B910-B090C19CE3DB",
           "stepup": {
