@@ -20,8 +20,14 @@
             "Location": "https://oidc.test2.surfconext.nl/saml/SSO"
           }
         ],
+        "OrganizationDisplayName": {
+          "en": "SURF"
+        },
         "OrganizationName": {
           "en": "Organization name en"
+        },
+        "OrganizationURL": {
+          "en": "https://surf.nl"
         },
         "coin": {
           "imported_from_edugain": "1",
@@ -212,8 +218,14 @@
           "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent",
           "urn:oasis:names:tc:SAML:2.0:nameid-format:transient"
         ],
+        "OrganizationDisplayName": {
+          "en": "SURF"
+        },
         "OrganizationName": {
           "en": "Organization name en"
+        },
+        "OrganizationURL": {
+          "en": "https://surf.nl"
         },
         "coin": {
           "dashboard_connect_option": "connect_without_interaction_without_email",
@@ -290,8 +302,14 @@
           "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent",
           "urn:oasis:names:tc:SAML:2.0:nameid-format:transient"
         ],
+        "OrganizationDisplayName": {
+          "en": "SURF"
+        },
         "OrganizationName": {
           "en": "Organization name en"
+        },
+        "OrganizationURL": {
+          "en": "https://surf.nl"
         },
         "coin": {
           "dashboard_connect_option": "connect_without_interaction_without_email",
