@@ -14,6 +14,7 @@ import manage.repository.MetaDataRepository;
 import manage.service.MetaDataService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
@@ -47,15 +48,17 @@ public class PolicyController {
                             PolicyIdpAccessEnforcer policyIdpAccessEnforcer,
                             MetaDataRepository metaDataRepository,
                             DatabaseController databaseController,
+                            @Value("${policies.allowed_attributes}") Resource allowedAttributesResource,
+                            @Value("${policies.extra_saml_attributes}") Resource extraSamlAttributesResource,
                             @Value("${loa_levels}") String loaLevelsCommaSeparated) {
         this.metaDataService = metaDataService;
         this.objectMapper = objectMapper;
         this.policyIdpAccessEnforcer = policyIdpAccessEnforcer;
         this.metaDataRepository = metaDataRepository;
         this.databaseController = databaseController;
-        this.allowedAttributes = this.attributes("policies/allowed_attributes.json");
+        this.allowedAttributes = this.attributes(allowedAttributesResource);
         this.allowedAttributes.sort(Comparator.comparing(o -> o.get("label")));
-        this.samlAllowedAttributes = this.attributes("policies/extra_saml_attributes.json");
+        this.samlAllowedAttributes = this.attributes(extraSamlAttributesResource);
         this.samlAllowedAttributes.addAll(this.allowedAttributes);
         this.samlAllowedAttributes.sort(Comparator.comparing(o -> o.get("label")));
         this.loaLevels = Stream.of(loaLevelsCommaSeparated.split(",")).map(String::trim).collect(toList());
@@ -89,7 +92,8 @@ public class PolicyController {
     public PdpPolicyDefinition create(APIUser apiUser, @RequestBody PdpPolicyDefinition policyDefinition) throws JsonProcessingException {
         this.initialPolicyValues(apiUser, policyDefinition, true);
         policyIdpAccessEnforcer.actionAllowed(policyDefinition, PolicyAccess.WRITE, apiUser, true);
-        Map<String, Object> data = objectMapper.convertValue(policyDefinition, new TypeReference<>() {});
+        Map<String, Object> data = objectMapper.convertValue(policyDefinition, new TypeReference<>() {
+        });
         PdpPolicyDefinition.updateProviderStructure(data);
         MetaData metaData = new MetaData(EntityType.PDP.getType(), data);
         MetaData metaDataSaved = this.metaDataService.doPost(metaData, apiUser, false);
@@ -108,7 +112,8 @@ public class PolicyController {
         policyDefinition.setAuthenticatingAuthorityName(authenticatingAuthorityName);
         policyIdpAccessEnforcer.actionAllowed(policyDefinition, PolicyAccess.WRITE, apiUser, true);
 
-        Map<String, Object> data = objectMapper.convertValue(policyDefinition, new TypeReference<>() {});
+        Map<String, Object> data = objectMapper.convertValue(policyDefinition, new TypeReference<>() {
+        });
         PdpPolicyDefinition.updateProviderStructure(data);
         existingMetaData.setData(data);
         MetaData metaData = this.metaDataService.doPut(existingMetaData, apiUser, false);
@@ -151,7 +156,7 @@ public class PolicyController {
     }
 
     @PreAuthorize("hasRole('POLICIES')")
-    @RequestMapping(method = GET, value = { "/internal/protected/attributes"})
+    @RequestMapping(method = GET, value = {"/internal/protected/attributes"})
     public List<Map<String, String>> getAllowedAttributesForDashboard() {
         //Backward compatibility for dashboard
         return this.allowedAttributes.stream().map(attr -> Map.of("AttributeId", attr.get("value"), "Value", attr.get("label"))).collect(toList());
@@ -215,23 +220,23 @@ public class PolicyController {
         policyDefinition.setUserDisplayName(impersonatedUser.getUnspecifiedNameId());
     }
 
-    private List<Map<String, String>> attributes(String path) throws IOException {
-        return this.objectMapper.readValue(new ClassPathResource(path).getInputStream(), typeReference);
+    private List<Map<String, String>> attributes(Resource resource) throws IOException {
+        return this.objectMapper.readValue(resource.getInputStream(), typeReference);
     }
 
     private String entityID(Map<String, Object> entity) {
-        return (String) ((Map)entity.get("data")).get("entity");
+        return (String) ((Map) entity.get("data")).get("entity");
     }
 
     private boolean policyEnforcementDecisionRequired(Map<String, Object> entity) {
-        return (boolean) ((Map)((Map)entity.get("data")).get("metaDataFields")).getOrDefault("coin:policy_enforcement_decision_required", false);
+        return (boolean) ((Map) ((Map) entity.get("data")).get("metaDataFields")).getOrDefault("coin:policy_enforcement_decision_required", false);
     }
 
     private String name(Map<String, Object> entity) {
-        return (String) ((Map)((Map)entity.get("data")).get("metaDataFields")).get("name:en");
+        return (String) ((Map) ((Map) entity.get("data")).get("metaDataFields")).get("name:en");
     }
 
     private String nameNL(Map<String, Object> entity) {
-        return (String) ((Map)((Map)entity.get("data")).get("metaDataFields")).get("name:nl");
+        return (String) ((Map) ((Map) entity.get("data")).get("metaDataFields")).get("name:nl");
     }
 }
