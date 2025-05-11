@@ -33,14 +33,16 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
     private final List<Features> featureToggles;
     private final Product product;
     private final Push push;
-    private final List<String> superUserTeamNames;
+    private final List<String> superUserAttributeValues;
     private final String environment;
+    private final String superUserAttributeName;
 
     public ShibbolethPreAuthenticatedProcessingFilter(AuthenticationManager authenticationManager,
                                                       List<Features> featureToggles,
                                                       Product product,
                                                       Push push,
-                                                      String superUserTeamNamesJoined,
+                                                      String superUserAttributeName,
+                                                      String superUserAttributeValuesJoined,
                                                       String environment) {
 
         super();
@@ -48,11 +50,12 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
         this.featureToggles = featureToggles;
         this.product = product;
         this.push = push;
-        this.superUserTeamNames = parseJoinedTeamNames(superUserTeamNamesJoined, ",");
+        this.superUserAttributeName = superUserAttributeName;
+        this.superUserAttributeValues = parseJoinedAttributeNames(superUserAttributeValuesJoined, ",");
         this.environment = environment;
     }
 
-    private List<String> parseJoinedTeamNames(String names, String delimiter) {
+    private List<String> parseJoinedAttributeNames(String names, String delimiter) {
         return Stream.of(names.split(delimiter))
                 .map(String::trim)
                 .map(String::toLowerCase)
@@ -64,7 +67,7 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
         String uid = getHeader(NAME_ID_HEADER_NAME, request);
         String displayName = getHeader(DISPLAY_NAME_HEADER_NAME, request);
         String schacHomeOrganization = getHeader(SCHAC_HOME_HEADER, request);
-        String memberOf = getHeader(IS_MEMBER_OF_HEADER, request);
+        String superUserAttributeActualValues = getHeader(superUserAttributeName, request);
 
         if (!StringUtils.hasText(uid) || !StringUtils.hasText(displayName)) {
             //this is the contract. See AbstractPreAuthenticatedProcessingFilter#doAuthenticate
@@ -72,9 +75,9 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
             return null;
         }
         List<GrantedAuthority> authorityList = createAuthorityList("ROLE_".concat(Scope.ADMIN.name()));
-        if (StringUtils.hasText(memberOf)) {
-            List<String> groups = parseJoinedTeamNames(memberOf, ";");
-            if (this.superUserTeamNames.stream().anyMatch(groups::contains)) {
+        if (StringUtils.hasText(superUserAttributeActualValues)) {
+            List<String> values = parseJoinedAttributeNames(superUserAttributeActualValues, ";");
+            if (this.superUserAttributeValues.stream().anyMatch(values::contains)) {
                 authorityList.add(new SimpleGrantedAuthority("ROLE_".concat(Scope.SYSTEM.name())));
             }
         }

@@ -61,7 +61,8 @@ security:
   backdoor_user_name: backdoor
   backdoor_password: secret
   api_users_config_path: classpath:/manage-api-users.yml
-  super_user_team_names: urn:collab:group:test.surfteams.nl:nl:surfnet:diensten:manage_super_users, urn:collab:group:test.surfteams.nl:nl:surfnet:diensten:manage_super_users_2
+  super_user_attribute_name: is-member-of
+  super_user_values: urn:collab:group:test.surfteams.nl:nl:surfnet:diensten:manage_super_users, urn:collab:group:test.surfteams.nl:nl:surfnet:diensten:manage_super_users_2
 
 # Used in the EncryptionHook, if enabled then the scim_password, eva_token and graph_secret in the provisionings are stored encrypted
 crypto:
