@@ -116,8 +116,11 @@ public class WebSecurityConfigurer {
         @Value("${push.pdp.name}")
         private String pdpName;
 
-        @Value("${security.super_user_team_names}")
-        private String superUserTeamNamesJoined;
+        @Value("${security.super_user_attribute_name}")
+        private String superUserAttributeName;
+
+        @Value("${security.super_user_values}")
+        private String superUserAttributeValuesJoined;
 
         @Value("${environment}")
         private String environmentType;
@@ -160,7 +163,8 @@ public class WebSecurityConfigurer {
                                     featuresList,
                                     product,
                                     push,
-                                    superUserTeamNamesJoined,
+                                    superUserAttributeName,
+                                    superUserAttributeValuesJoined,
                                     environmentType),
                             AbstractPreAuthenticatedProcessingFilter.class
                     )
