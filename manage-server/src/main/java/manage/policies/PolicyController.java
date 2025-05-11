@@ -13,14 +13,24 @@ import manage.model.PushOptions;
 import manage.repository.MetaDataRepository;
 import manage.service.MetaDataService;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
@@ -68,14 +78,14 @@ public class PolicyController {
     @GetMapping("/internal/protected/policies")
     public List<PdpPolicyDefinition> policies(APIUser apiUser) {
         List<PdpPolicyDefinition> policies = this.metaDataService
-                .findAllByType(EntityType.PDP.getType()).stream()
-                .map(metaData -> new PdpPolicyDefinition(metaData))
-                .collect(toList());
+            .findAllByType(EntityType.PDP.getType()).stream()
+            .map(metaData -> new PdpPolicyDefinition(metaData))
+            .collect(toList());
         return policyIdpAccessEnforcer
-                .filterPdpPolicies(apiUser, policies)
-                .stream()
-                .map(policy -> enrichPolicyDefinition(policy))
-                .collect(toList());
+            .filterPdpPolicies(apiUser, policies)
+            .stream()
+            .map(policy -> enrichPolicyDefinition(policy))
+            .collect(toList());
     }
 
     @PreAuthorize("hasRole('POLICIES')")
@@ -201,7 +211,7 @@ public class PolicyController {
         }
         if (policyDefinition.getType().equals("step")) {
             policyDefinition.getLoas().forEach(loa -> loa.getCidrNotations()
-                    .forEach(notation -> notation.setIpInfo(IPAddressProvider.getIpInfo(notation.getIpAddress(), notation.getPrefix()))));
+                .forEach(notation -> notation.setIpInfo(IPAddressProvider.getIpInfo(notation.getIpAddress(), notation.getPrefix()))));
             policyDefinition.setActionsAllowed(false);
         }
         return policyDefinition;

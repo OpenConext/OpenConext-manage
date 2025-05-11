@@ -1,0 +1,21 @@
+{
+  "institution-g.nl": {
+    "use_ra_locations": true,
+    "show_raa_contact_information": true,
+    "verify_email": false,
+    "allowed_second_factors": [],
+    "number_of_tokens_per_identity": 2,
+    "use_ra": [
+      "institution-g.nl"
+    ],
+    "use_raa": [
+      "institution-g.nl"
+    ],
+    "select_raa": [
+      "institution-g.nl",
+      "institution-h.nl"
+    ],
+    "self_vet": false,
+    "allow_self_asserted_tokens": false
+  }
+}

@@ -1,0 +1,279 @@
+{
+  "institution-g.nl": {
+    "self_vet": false,
+    "use_ra_locations": true,
+    "allow_self_asserted_tokens": false,
+    "number_of_tokens_per_identity": 2,
+    "use_raa": [
+      "institution-g.nl"
+    ],
+    "allowed_second_factors": [],
+    "show_raa_contact_information": true,
+    "use_ra": [
+      "institution-g.nl"
+    ],
+    "verify_email": false,
+    "stepup-client": "full",
+    "select_raa": [
+      "institution-g.nl",
+      "institution-h.nl"
+    ],
+    "sso_on_2fa": true
+  },
+  "institution-f.nl": {
+    "self_vet": false,
+    "use_ra_locations": true,
+    "allow_self_asserted_tokens": false,
+    "number_of_tokens_per_identity": 2,
+    "use_raa": [
+      "institution-f.nl",
+      "institution-a.nl"
+    ],
+    "allowed_second_factors": [],
+    "show_raa_contact_information": false,
+    "use_ra": [
+      "institution-f.nl",
+      "institution-a.nl",
+      "institution-b.nl"
+    ],
+    "verify_email": false,
+    "stepup-client": "full",
+    "select_raa": [
+      "institution-f.nl"
+    ],
+    "sso_on_2fa": false
+  },
+  "institution-h.nl": {
+    "self_vet": true,
+    "use_ra_locations": true,
+    "allow_self_asserted_tokens": true,
+    "number_of_tokens_per_identity": 2,
+    "use_raa": [
+      "institution-h.nl"
+    ],
+    "allowed_second_factors": [],
+    "show_raa_contact_information": true,
+    "use_ra": [
+      "institution-h.nl"
+    ],
+    "verify_email": false,
+    "stepup-client": "full",
+    "select_raa": [
+      "institution-h.nl",
+      "institution-g.nl"
+    ],
+    "sso_on_2fa": false
+  },
+  "institution-i.nl": {
+    "self_vet": false,
+    "use_ra_locations": true,
+    "allow_self_asserted_tokens": false,
+    "number_of_tokens_per_identity": 2,
+    "use_raa": [
+      "institution-v.nl"
+    ],
+    "allowed_second_factors": [],
+    "show_raa_contact_information": true,
+    "use_ra": [
+      "institution-v.nl"
+    ],
+    "verify_email": false,
+    "stepup-client": "full",
+    "select_raa": [],
+    "sso_on_2fa": false
+  },
+  "institution-d.nl": {
+    "self_vet": false,
+    "use_ra_locations": true,
+    "allow_self_asserted_tokens": false,
+    "number_of_tokens_per_identity": 1,
+    "use_raa": [],
+    "allowed_second_factors": [
+      "yubikey",
+      "tiqr"
+    ],
+    "show_raa_contact_information": false,
+    "use_ra": [],
+    "verify_email": true,
+    "stepup-client": "full",
+    "select_raa": [],
+    "sso_on_2fa": false
+  },
+  "hartingcollege.nl": {
+    "self_vet": true,
+    "use_ra_locations": true,
+    "allow_self_asserted_tokens": false,
+    "number_of_tokens_per_identity": 9,
+    "use_raa": [
+      "hartingcollege.nl"
+    ],
+    "allowed_second_factors": [],
+    "show_raa_contact_information": true,
+    "use_ra": [
+      "hartingcollege.nl"
+    ],
+    "verify_email": false,
+    "stepup-client": "full",
+    "select_raa": [
+      "hartingcollege.nl"
+    ],
+    "sso_on_2fa": false
+  },
+  "institution-b.nl": {
+    "self_vet": false,
+    "use_ra_locations": false,
+    "allow_self_asserted_tokens": true,
+    "number_of_tokens_per_identity": 3,
+    "use_raa": [],
+    "allowed_second_factors": [],
+    "show_raa_contact_information": true,
+    "use_ra": [],
+    "verify_email": false,
+    "stepup-client": "full",
+    "select_raa": [],
+    "sso_on_2fa": true
+  },
+  "0pr0h.onmicrosoft.com": {
+    "self_vet": true,
+    "use_ra_locations": true,
+    "allow_self_asserted_tokens": true,
+    "number_of_tokens_per_identity": 9,
+    "use_raa": [
+      "0pr0h.onmicrosoft.com"
+    ],
+    "allowed_second_factors": [],
+    "show_raa_contact_information": true,
+    "use_ra": [
+      "0pr0h.onmicrosoft.com"
+    ],
+    "verify_email": false,
+    "stepup-client": "full",
+    "select_raa": [
+      "0pr0h.onmicrosoft.com"
+    ],
+    "sso_on_2fa": false
+  },
+  "pieter.aai.surfnet.nl": {
+    "self_vet": true,
+    "use_ra_locations": true,
+    "allow_self_asserted_tokens": false,
+    "number_of_tokens_per_identity": 1,
+    "use_raa": [],
+    "allowed_second_factors": [
+      "yubikey",
+      "tiqr"
+    ],
+    "show_raa_contact_information": true,
+    "use_ra": [],
+    "verify_email": true,
+    "stepup-client": "full",
+    "select_raa": [],
+    "sso_on_2fa": false
+  },
+  "institution-v.nl": {
+    "self_vet": false,
+    "use_ra_locations": true,
+    "allow_self_asserted_tokens": false,
+    "number_of_tokens_per_identity": 2,
+    "use_raa": [],
+    "allowed_second_factors": [],
+    "show_raa_contact_information": true,
+    "use_ra": [],
+    "verify_email": false,
+    "stepup-client": "full",
+    "select_raa": [
+      "institution-a.nl",
+      "institution-b.nl"
+    ],
+    "sso_on_2fa": false
+  },
+  "peulmeul.onmicrosoft.com": {
+    "self_vet": true,
+    "use_ra_locations": true,
+    "allow_self_asserted_tokens": true,
+    "number_of_tokens_per_identity": 9,
+    "use_raa": [
+      "peulmeul.onmicrosoft.com"
+    ],
+    "allowed_second_factors": [],
+    "show_raa_contact_information": true,
+    "use_ra": [
+      "peulmeul.onmicrosoft.com"
+    ],
+    "verify_email": false,
+    "stepup-client": "full",
+    "select_raa": [
+      "peulmeul.onmicrosoft.com"
+    ],
+    "sso_on_2fa": false
+  },
+  "institution-a.nl": {
+    "self_vet": true,
+    "use_ra_locations": true,
+    "allow_self_asserted_tokens": true,
+    "number_of_tokens_per_identity": 2,
+    "use_raa": [],
+    "allowed_second_factors": [],
+    "show_raa_contact_information": true,
+    "use_ra": [],
+    "verify_email": true,
+    "stepup-client": "full",
+    "select_raa": [],
+    "sso_on_2fa": true
+  },
+  "eduid.nl": {
+    "self_vet": true,
+    "use_ra_locations": true,
+    "allow_self_asserted_tokens": false,
+    "number_of_tokens_per_identity": 9,
+    "use_raa": [
+      "eduid.nl",
+      "surfnet.nl"
+    ],
+    "allowed_second_factors": [],
+    "show_raa_contact_information": true,
+    "use_ra": [
+      "eduid.nl",
+      "surfnet.nl"
+    ],
+    "verify_email": false,
+    "stepup-client": "full",
+    "select_raa": [
+      "eduid.nl"
+    ],
+    "sso_on_2fa": false
+  },
+  "surfnet.nl": {
+    "self_vet": true,
+    "use_ra_locations": true,
+    "allow_self_asserted_tokens": true,
+    "number_of_tokens_per_identity": 9,
+    "use_raa": [],
+    "allowed_second_factors": [],
+    "show_raa_contact_information": true,
+    "use_ra": [],
+    "verify_email": true,
+    "stepup-client": "full",
+    "select_raa": [],
+    "sso_on_2fa": false
+  },
+  "example.com": {
+    "self_vet": true,
+    "use_ra_locations": false,
+    "allow_self_asserted_tokens": false,
+    "number_of_tokens_per_identity": 3,
+    "use_raa": [],
+    "allowed_second_factors": [
+      "sms",
+      "yubikey",
+      "tiqr",
+      "webauthn"
+    ],
+    "show_raa_contact_information": true,
+    "use_ra": [],
+    "verify_email": false,
+    "stepup-client": "full",
+    "select_raa": [],
+    "sso_on_2fa": true
+  }
+}
