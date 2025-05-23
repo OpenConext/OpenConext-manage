@@ -1,7 +1,7 @@
 package manage.hook;
 
+import crypto.HybridRSAKeyStore;
 import crypto.KeyStore;
-import crypto.RSAKeyStore;
 import manage.TestUtils;
 import manage.model.EntityType;
 import manage.model.MetaData;
@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class EncryptionHookTest implements TestUtils {
 
-    private final KeyStore keyStore = new RSAKeyStore();
+    private final KeyStore keyStore = new HybridRSAKeyStore();
     private final EncryptionHook encryptionHook = new EncryptionHook(keyStore, true);
 
     @Test

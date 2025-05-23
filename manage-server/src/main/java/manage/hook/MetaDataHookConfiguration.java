@@ -1,12 +1,11 @@
 package manage.hook;
 
+import crypto.HybridRSAKeyStore;
 import crypto.KeyStore;
-import crypto.RSAKeyStore;
 import lombok.SneakyThrows;
 import manage.conf.MetaDataAutoConfiguration;
 import manage.repository.MetaDataRepository;
 import org.apache.commons.io.IOUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,8 +25,8 @@ public class MetaDataHookConfiguration {
                                 @Value("${crypto.development-mode}") Boolean developmentMode,
                                 @Value("${crypto.enabled}") boolean cryptoEnabled) {
 
-        KeyStore keyStore = developmentMode ? new RSAKeyStore() :
-                new RSAKeyStore(IOUtils.toString(publicKeyResource.getInputStream(), Charset.defaultCharset()), true);
+        KeyStore keyStore = developmentMode ? new HybridRSAKeyStore() :
+                new HybridRSAKeyStore(IOUtils.toString(publicKeyResource.getInputStream(), Charset.defaultCharset()), true);
 
         return new CompositeMetaDataHook(
                 Arrays.asList(

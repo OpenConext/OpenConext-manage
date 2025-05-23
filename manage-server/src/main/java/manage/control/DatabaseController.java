@@ -111,6 +111,8 @@ public class DatabaseController {
                     .collect(toList());
             this.pdpRestTemplate.put(pdpPushUri, policies);
             result.put("pdp", Map.of("status", "OK"));
+        } else {
+            result.put("pdp", Map.of("status", "OK"));
         }
         if (pushOptions.isIncludeEB()) {
             Map<String, Map<String, Map<String, Object>>> json = this.pushPreview();
@@ -121,6 +123,8 @@ public class DatabaseController {
             result.put("eb", Map.of(
                     "status", response.getStatusCode().is2xxSuccessful() ? "OK" : "ERROR",
                     "response", StringUtils.hasText(body) ? body : ""));
+        } else {
+            result.put("eb", Map.of("status", "OK"));
         }
 
         // Now push all oidc_rp metadata to OIDC proxy
@@ -162,6 +166,8 @@ public class DatabaseController {
             ResponseEntity<Void> response = this.oidcRestTemplate.postForEntity(oidcPushUri, filteredEntities, Void.class);
             result.put("oidc", Map.of(
                     "status", response.getStatusCode().is2xxSuccessful() ? "OK" : "ERROR"));
+        } else {
+            result.put("oidc", Map.of("status", "OK"));
         }
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
