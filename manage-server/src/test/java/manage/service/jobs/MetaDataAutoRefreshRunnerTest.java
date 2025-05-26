@@ -6,6 +6,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import manage.TestUtils;
 import manage.conf.Features;
 import manage.conf.MetaDataAutoConfiguration;
+import manage.control.DatabaseController;
 import manage.model.EntityType;
 import manage.model.MetaData;
 import manage.model.Revision;
@@ -42,6 +43,9 @@ class MetaDataAutoRefreshRunnerTest implements TestUtils {
 
     @Mock
     FeatureService featureService;
+
+    @Mock
+    DatabaseController databaseController;
 
     @Mock
     MetaDataAutoConfiguration metaDataAutoConfiguration;
@@ -90,7 +94,13 @@ class MetaDataAutoRefreshRunnerTest implements TestUtils {
         memoryAppender = LogUtils.configureLogger(logger);
         memoryAppender.start();
 
-        autoRefreshRunner = new MetadataAutoRefreshRunner(metaDataService, importerService, metaDataAutoConfiguration, featureService, true);
+        autoRefreshRunner = new MetadataAutoRefreshRunner(
+                metaDataService,
+                importerService,
+                databaseController,
+                metaDataAutoConfiguration,
+                featureService,
+                true);
     }
 
     @Test

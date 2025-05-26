@@ -5,10 +5,8 @@ import manage.api.APIUser;
 import manage.api.Scope;
 import manage.conf.Features;
 import manage.conf.MetaDataAutoConfiguration;
-import manage.model.EntityType;
-import manage.model.Import;
-import manage.model.MetaData;
-import manage.model.Revision;
+import manage.control.DatabaseController;
+import manage.model.*;
 import manage.service.FeatureService;
 import manage.service.ImporterService;
 import manage.service.MetaDataService;
@@ -73,8 +71,11 @@ public class MetadataAutoRefreshRunner implements Runnable {
 
     private final boolean cronJobResponsible;
 
+    private final DatabaseController databaseController;
+
     public MetadataAutoRefreshRunner(MetaDataService metaDataService,
                                      ImporterService importerService,
+                                     DatabaseController databaseController,
                                      MetaDataAutoConfiguration metaDataAutoConfiguration,
                                      FeatureService featureService,
                                      @Value("${cron.node-cron-job-responsible}") boolean cronJobResponsible) {
@@ -84,6 +85,7 @@ public class MetadataAutoRefreshRunner implements Runnable {
         this.metaDataAutoConfiguration = metaDataAutoConfiguration;
         this.featureService = featureService;
         this.cronJobResponsible = cronJobResponsible;
+        this.databaseController = databaseController;
         this.apiUser = new APIUser(REFRESH_UPDATE_USER, List.of(Scope.SYSTEM));
     }
 
@@ -117,26 +119,32 @@ public class MetadataAutoRefreshRunner implements Runnable {
 
         // Service Provider updates
         LOG.info("Updating Service Providers");
-        metaDataService.findAllByType(EntityType.SP.getType()).forEach(this::doUpdate);
+        boolean anyServiceProviderChanged = metaDataService.findAllByType(EntityType.SP.getType()).stream()
+                .anyMatch(this::doUpdate);
 
         // Identity Provider updates
         LOG.info("Updating Identity Providers");
-        metaDataService.findAllByType(EntityType.IDP.getType()).forEach(this::doUpdate);
+        boolean anyIdentityProviderChanged = metaDataService.findAllByType(EntityType.IDP.getType()).stream()
+                .anyMatch(this::doUpdate);
 
+        if (anyServiceProviderChanged || anyIdentityProviderChanged) {
+            LOG.info("Pushing changes to IdP after auto-refresh");
+            databaseController.doPush(new PushOptions(true, true, false));
+        }
         LOG.info(LOG_UPDATE_FINISHED);
     }
 
-    private void doUpdate(MetaData metaData) {
+    private boolean doUpdate(MetaData metaData) {
         String entityId = metaData.getData().get(METADATA_ENTITYID_KEY).toString();
 
         if (!metaData.isMetadataRefreshEnabled()) {
             LOG.debug("Auto refresh is not enabled for entity - skipping for {}: {}", metaData.getType(), entityId);
-            return;
+            return false;
         }
 
         if (!metaData.getData().containsKey(METADATA_URL_KEY) || null == metaData.getData().get(METADATA_URL_KEY)) {
             LOG.info("No metadata URL found - skipping for {}: {}", metaData.getType(), entityId);
-            return;
+            return false;
         }
 
         LOG.info("Running auto refresh for {}: {}", metaData.getType(), entityId);
@@ -144,7 +152,7 @@ public class MetadataAutoRefreshRunner implements Runnable {
         List<String> allowedFields = getAllowedFields(metaData, entityId);
         if (null == allowedFields) {
             // Exit here as the previous method will log in case of unexpected behavior
-            return;
+            return false;
         }
 
         // Get the new metadata using the metadata URL
@@ -154,14 +162,14 @@ public class MetadataAutoRefreshRunner implements Runnable {
         if (importXMLUrlMetaData.containsKey(IMPORT_ERROR_KEY)) {
             LOG.info("Failed to parse metadata from url for {} {} and url {} with error: {}",
                     metaData.getType(), entityId, metadataUrl, importXMLUrlMetaData.get(IMPORT_ERROR_KEY));
-            return;
+            return false;
         }
 
         Map<String, Object> fieldsToUpdate = getUpdatedFields(importXMLUrlMetaData, allowedFields);
         List<String> fieldsToRemove = getRemovedFields(importXMLUrlMetaData, allowedFields);
         if ((null == fieldsToUpdate || fieldsToUpdate.isEmpty()) && (null == fieldsToRemove || fieldsToRemove.isEmpty())) {
             LOG.info("No fields in the retrieved metadata that contain enabled auto refresh fields - skipping");
-            return;
+            return false;
         }
 
         metaData.getData().put(Revision.REVISION_KEY, AUTO_REFRESH_REVISION_NOTE);
@@ -174,19 +182,22 @@ public class MetadataAutoRefreshRunner implements Runnable {
 
         try {
             metaDataService.doPut(metaData, this.apiUser, metaData.isExcludedFromPush());
+            return true;
         } catch (JsonProcessingException exception) {
             LOG.info("Failed to save changes for {} {}: {}", metaData.getType(), entityId, exception.getMessage());
+            return false;
         } catch (ValidationException exception) {
             if (exception.getMessage().contains("No data is changed")) {
                 LOG.info("No changes for {}: {}", metaData.getType(), entityId);
             } else {
                 LOG.info("Failed to save changes for {} {}: {}", metaData.getType(), entityId, exception.getMessage());
             }
+            return false;
         }
     }
 
     private List<String> getAllowedFields(MetaData metaData, String entityId) {
-         // Determine allowed fields to update
+        // Determine allowed fields to update
         List<String> allowedFields;
         if (metaData.isMetadataRefreshAllowAllEnabled()) {
             Map<String, Object> map = metaDataAutoConfiguration.schemaRepresentation(EntityType.fromType(metaData.getType()));
