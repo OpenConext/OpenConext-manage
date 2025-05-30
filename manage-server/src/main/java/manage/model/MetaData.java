@@ -1,10 +1,7 @@
 package manage.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.annotation.Version;
@@ -29,14 +26,17 @@ public class MetaData implements Serializable {
     @Id
     private String id;
 
+    @Setter
     @Version
     private Long version;
 
+    @Setter
     @NotNull
     private String type;
 
     private Revision revision;
 
+    @Setter
     @NotNull
     private Map<String, Object> data;
 
@@ -82,18 +82,6 @@ public class MetaData implements Serializable {
         this.version = version;
         this.getData().put("revisionnote", "Restore of revision: " + getNonNullRevision().getNumber());
         this.revision = new Revision(latestRevisionNumber + 1, Instant.now(), null, updatedBy);
-    }
-
-    public void setData(Map<String, Object> data) {
-        this.data = data;
-    }
-
-    public void setVersion(Long version) {
-        this.version = version;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     @SuppressWarnings("unchecked")

@@ -22,8 +22,10 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -44,9 +46,6 @@ public abstract class AbstractIntegrationTest implements TestUtils {
 
     @Autowired
     protected MetaDataRepository metaDataRepository;
-
-    @Autowired
-    protected ScopeRepository scopeRepository;
 
     @Autowired
     protected ObjectMapper objectMapper;
@@ -70,19 +69,21 @@ public abstract class AbstractIntegrationTest implements TestUtils {
             }
             MongoTemplate mongoTemplate = metaDataRepository.getMongoTemplate();
             Query query = new Query();
-            metaDataAutoConfiguration.schemaNames().forEach(schema -> {
-                long removed = mongoTemplate.remove(query, schema).getDeletedCount();
-                String revisionsSchema = schema.concat(REVISION_POSTFIX);
-                long removedRevisions = mongoTemplate.remove(query, revisionsSchema).getDeletedCount();
-                LOG.debug("Removed {} records from {} and removed {} records from {}", removed, schema,
-                        removedRevisions, revisionsSchema);
+            Arrays.stream(EntityType.values()).forEach(entityType -> {
+                String type = entityType.getType();
+                mongoTemplate.remove(query, type);
+                String revisionsCollection = type.concat(REVISION_POSTFIX);
+                mongoTemplate.remove(query, revisionsCollection);
+                String changeRequestCollection = type.concat(CHANGE_REQUEST_POSTFIX);
+                mongoTemplate.remove(query, changeRequestCollection);
             });
-            metaDataList.forEach(metaDataRepository::save);
-
-            metaDataList.stream().collect(Collectors.groupingBy(MetaData::getType))
-                    .forEach((type, metaData) -> await().until(() -> mongoTemplate.count(query, type) == metaData
-                            .size()));
-            Stream.of(EntityType.values()).forEach(entityType -> mongoTemplate.remove(query, entityType.getType().concat(CHANGE_REQUEST_POSTFIX)));
+            Map<String, List<MetaData>> groupedMetaData = metaDataList.stream().collect(Collectors.groupingBy(MetaData::getType));
+            groupedMetaData.forEach((type, metaData) -> {
+                metaDataRepository.getMongoTemplate().insert(metaData, type);
+            });
+            groupedMetaData
+                .forEach((type, metaData) -> await().until(
+                        () -> mongoTemplate.count(query, type) == metaData.size()));
         }
     }
 

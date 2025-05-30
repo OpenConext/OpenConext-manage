@@ -9,7 +9,6 @@ import manage.api.Scope;
 import manage.conf.MetaDataAutoConfiguration;
 import manage.control.DatabaseController;
 import manage.exception.CustomValidationException;
-import manage.exception.DuplicateEntityIdException;
 import manage.exception.EndpointNotAllowed;
 import manage.exception.ResourceNotFoundException;
 import manage.format.SaveURLResource;
@@ -37,7 +36,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.net.URLDecoder;
 import java.time.Instant;
 import java.util.*;
@@ -65,7 +63,7 @@ public class MetaDataService {
     private static final String DASHBOARD_CONNECT_OPTION = "coin:dashboard_connect_option";
 
     private static final List<String> entityTypesSuggestions = Arrays.asList(
-            EntityType.RP.getType(), EntityType.SP.getType(), EntityType.RS.getType()
+        EntityType.RP.getType(), EntityType.SP.getType(), EntityType.RS.getType()
     );
     private final MetaDataRepository metaDataRepository;
 
@@ -107,15 +105,15 @@ public class MetaDataService {
     public Map<String, List> importFeed(Import importRequest) {
         try {
             Map<String, ServiceProvider> serviceProviderMap =
-                    metaDataRepository.allServiceProviderEntityIds().stream()
-                            .map(ServiceProvider::new)
-                            .collect(Collectors.toMap(ServiceProvider::getEntityId, sp -> sp));
+                metaDataRepository.allServiceProviderEntityIds().stream()
+                    .map(ServiceProvider::new)
+                    .collect(Collectors.toMap(ServiceProvider::getEntityId, sp -> sp));
             String feedUrl = importRequest.getUrl();
             Resource resource = new SaveURLResource(new URI(feedUrl).toURL(), environment.acceptsProfiles(Profiles.of("dev")), null);
 
             List<Map<String, Object>> allImports = importerService.importFeed(resource);
             List<Map<String, Object>> imports =
-                    allImports.stream().filter(m -> !m.isEmpty()).collect(toList());
+                allImports.stream().filter(m -> !m.isEmpty()).collect(toList());
 
             Map<String, List> results = new HashMap<>();
             EntityType entityType = EntityType.SP;
@@ -135,11 +133,11 @@ public class MetaDataService {
                     } else if (existingServiceProvider.isImportedFromEduGain()) {
                         try {
                             MetaDataUpdate metaDataUpdate =
-                                    importToMetaDataUpdate(existingServiceProvider.getId(), entityType, sp, feedUrl);
+                                importToMetaDataUpdate(existingServiceProvider.getId(), entityType, sp, feedUrl);
                             Optional<MetaData> metaData = doMergeUpdate(metaDataUpdate,
-                                    EDUGAIN_IMPORT_USER,
-                                    "edugain-import",
-                                    false);
+                                EDUGAIN_IMPORT_USER,
+                                "edugain-import",
+                                false);
                             if (metaData.isPresent()) {
                                 List merged = results.computeIfAbsent("merged", s -> new ArrayList());
                                 merged.add(existingServiceProvider);
@@ -167,13 +165,13 @@ public class MetaDataService {
                 }
             });
             List<ServiceProvider> notInFeedAnymore = serviceProviderMap.values().stream()
-                    .filter(sp -> sp.isImportedFromEduGain() &&
-                            imports.stream().noneMatch(map -> sp.getEntityId().equals(map.get("entityid"))))
-                    .collect(toList());
+                .filter(sp -> sp.isImportedFromEduGain() &&
+                    imports.stream().noneMatch(map -> sp.getEntityId().equals(map.get("entityid"))))
+                .collect(toList());
             notInFeedAnymore.forEach(sp -> doRemove(entityType.getType(),
-                    sp.getId(),
-                    EDUGAIN_IMPORT_USER,
-                    "Removed from eduGain feed"));
+                sp.getId(),
+                EDUGAIN_IMPORT_USER,
+                "Removed from eduGain feed"));
 
             List deleted = results.computeIfAbsent("deleted", s -> new ArrayList<>());
             deleted.addAll(notInFeedAnymore.stream().map(ServiceProvider::getEntityId).collect(toList()));
@@ -190,8 +188,6 @@ public class MetaDataService {
     @SneakyThrows
     public MetaData doPost(@Validated MetaData metaData, AbstractUser user, boolean excludeFromPushRequired) {
         metaData = metaDataHook.prePost(metaData, user);
-        checkForDuplicateEntityId(metaData, true);
-
         sanitizeExcludeFromPush(metaData, excludeFromPushRequired);
 
         metaData = validate(metaData);
@@ -218,11 +214,11 @@ public class MetaDataService {
         Criteria criteria = Criteria.where("metaDataId").is(id);
         MongoTemplate mongoTemplate = metaDataRepository.getMongoTemplate();
         List<MetaDataChangeRequest> changeRequests = mongoTemplate
-                .findAllAndRemove(Query.query(criteria), MetaDataChangeRequest.class, changeRequestCollection);
+            .findAllAndRemove(Query.query(criteria), MetaDataChangeRequest.class, changeRequestCollection);
 
         LOG.info("Deleted changeRequests {} by {}",
-                changeRequests.stream().map(MetaDataChangeRequest::getId).collect(Collectors.joining()),
-                user.getName());
+            changeRequests.stream().map(MetaDataChangeRequest::getId).collect(Collectors.joining()),
+            user.getName());
 
         current.revision(UUID.randomUUID().toString());
         metaDataRepository.save(current);
@@ -233,9 +229,7 @@ public class MetaDataService {
     }
 
     public MetaData doPut(@Validated MetaData metaData, AbstractUser user, boolean excludeFromPushRequired)
-            throws JsonProcessingException {
-        checkForDuplicateEntityId(metaData, false);
-
+        throws JsonProcessingException {
         sanitizeExcludeFromPush(metaData, excludeFromPushRequired);
         String id = metaData.getId();
         MetaData previous = metaDataRepository.findById(id, metaData.getType());
@@ -256,11 +250,11 @@ public class MetaDataService {
     }
 
     public List<String> deleteMetaDataKey(MetaDataKeyDelete metaDataKeyDelete, APIUser apiUser)
-            throws JsonProcessingException {
+        throws JsonProcessingException {
         String keyToDelete = metaDataKeyDelete.getMetaDataKey();
         Query query = Query.query(Criteria.where("data.metaDataFields." + keyToDelete).exists(true));
         List<MetaData> metaDataList = metaDataRepository.getMongoTemplate()
-                .find(query, MetaData.class, metaDataKeyDelete.getType());
+            .find(query, MetaData.class, metaDataKeyDelete.getType());
 
         //of we stream then we need to catch all exceptions including validation exception
         for (MetaData metaData : metaDataList) {
@@ -272,7 +266,7 @@ public class MetaDataService {
             metaDataRepository.save(previous);
 
             metaData.promoteToLatest(apiUser.getName(),
-                    String.format("API call for deleting %s by %s", keyToDelete, apiUser.getName()));
+                String.format("API call for deleting %s by %s", keyToDelete, apiUser.getName()));
             metaDataRepository.update(metaData);
         }
 
@@ -354,11 +348,11 @@ public class MetaDataService {
     }
 
     public MetaData restoreDeleted(RevisionRestore revisionRestore, FederatedUser federatedUser)
-            throws JsonProcessingException {
+        throws JsonProcessingException {
         MetaData revision = metaDataRepository.findById(revisionRestore.getId(), revisionRestore.getType());
 
         MetaData parent = metaDataRepository.findById(revision.getRevision().getParentId(),
-                revisionRestore.getParentType());
+            revisionRestore.getParentType());
 
         if (parent != null) {
             throw new IllegalArgumentException("Parent is not null");
@@ -368,40 +362,28 @@ public class MetaDataService {
         metaDataRepository.update(revision);
 
         revision.restoreToLatest(newId, 0L, federatedUser.getUid(),
-                revision.getRevision().getNumber(), revisionRestore.getParentType());
+            revision.getRevision().getNumber(), revisionRestore.getParentType());
         //It might be that the revision is no longer valid as metaData configuration has changed
         revision = validate(revision);
         metaDataHook.prePost(revision, federatedUser);
 
-        checkForDuplicateEntityId(revision, true);
-
         metaDataRepository.save(revision);
 
         LOG.info("Restored deleted revision {} with Id {} by {}", revisionRestore, revision.getId(), federatedUser
-                .getUid());
+            .getUid());
 
         return revision;
     }
 
-    private void checkForDuplicateEntityId(MetaData metaData, boolean isNew) {
-        String entityid = (String) metaData.getData().get("entityid");
-        List<Map> matchingEntities = uniqueEntityId(metaData.getType(), entityid);
-        if ((isNew && !CollectionUtils.isEmpty(matchingEntities)) ||
-                (matchingEntities.size() == 1 && !matchingEntities.get(0).get("_id").equals(metaData.getId())) ||
-                matchingEntities.size() > 1) {
-            throw new DuplicateEntityIdException(entityid);
-        }
-    }
-
     public MetaData restoreRevision(RevisionRestore revisionRestore, FederatedUser federatedUser)
-            throws JsonProcessingException {
+        throws JsonProcessingException {
         MetaData revision = metaDataRepository.findById(revisionRestore.getId(), revisionRestore.getType());
 
         MetaData parent = metaDataRepository.findById(revision.getRevision().getParentId(),
-                revisionRestore.getParentType());
+            revisionRestore.getParentType());
 
         revision.restoreToLatest(parent.getId(), parent.getVersion(), federatedUser.getUid(),
-                parent.getRevision().getNumber(), revisionRestore.getParentType());
+            parent.getRevision().getNumber(), revisionRestore.getParentType());
         //It might be that the revision is no longer valid as metaData configuration has changed
         revision = validate(revision);
         metaDataRepository.update(revision);
@@ -421,7 +403,7 @@ public class MetaDataService {
         if (suggestions.isEmpty() && entityTypesSuggestions.contains(type)) {
             List<Map> alternatives = new ArrayList<>();
             entityTypesSuggestions.stream().filter(s -> !s.equals(type))
-                    .forEach(s -> alternatives.addAll(metaDataRepository.autoComplete(s, query)));
+                .forEach(s -> alternatives.addAll(metaDataRepository.autoComplete(s, query)));
             results.put("alternatives", alternatives);
         }
         return results;
@@ -429,36 +411,30 @@ public class MetaDataService {
 
     public List<Map> uniqueEntityId(String type, String entityId) {
         EntityType entityType = EntityType.fromType(type);
-        List<Map> results;
+        final List<Map> results = new ArrayList<>();
         if (entityType.equals(EntityType.IDP) || entityType.equals(EntityType.STT) || entityType.equals(EntityType.PDP)) {
-            results = metaDataRepository.findByEntityId(entityType.getType(), entityId);
+            results.addAll(metaDataRepository.findByEntityId(entityType.getType(), entityId));
         } else if (entityType.equals(EntityType.RS)) {
-            results = metaDataRepository.findByEntityId(entityType.getType(), entityId);
+            results.addAll(metaDataRepository.findByEntityId(entityType.getType(), entityId));
             results.addAll(metaDataRepository.findByEntityId(EntityType.RP.getType(), entityId));
         } else {
-            results = metaDataRepository.findByEntityId(entityType.getType(), entityId);
-            String otherType = entityType.equals(EntityType.RP) ? EntityType.SP.getType() : EntityType.RP.getType();
-            results.addAll(metaDataRepository.findByEntityId(otherType, entityId));
-            if (!entityType.equals(EntityType.SRAM)) {
-                results.addAll(metaDataRepository.findByEntityId(EntityType.SRAM.getType(), entityId));
-            }
-            if (entityType.equals(EntityType.RP)) {
-                results.addAll(metaDataRepository.findByEntityId(EntityType.RS.getType(), entityId));
-            }
+            //SP, RP and SRAM are services, and EB cannot handle duplicates
+            List.of(EntityType.SP, EntityType.SRAM, EntityType.RP, EntityType.RS)
+                .forEach(theType -> results.addAll(metaDataRepository.findByEntityId(theType.getType(), entityId)));
         }
         return results;
     }
 
     public List<Map> searchEntityByType(String type, Map<String, Object> properties, boolean nested) {
         List requestedAttributes = (List) properties.getOrDefault(REQUESTED_ATTRIBUTES, new
-                ArrayList<String>());
+            ArrayList<String>());
         Boolean allAttributes = (Boolean) properties.getOrDefault(ALL_ATTRIBUTES, false);
         Boolean logicalOperatorIsAnd = (Boolean) properties.getOrDefault(LOGICAL_OPERATOR_IS_AND, true);
         properties.remove(REQUESTED_ATTRIBUTES);
         properties.remove(ALL_ATTRIBUTES);
         properties.remove(LOGICAL_OPERATOR_IS_AND);
         List<Map> search = metaDataRepository.search(type, properties, requestedAttributes, allAttributes,
-                logicalOperatorIsAnd);
+            logicalOperatorIsAnd);
         return nested ? search.stream().map(m -> exporterService.nestMetaData(m, type)).collect(toList()) : search;
     }
 
@@ -479,16 +455,16 @@ public class MetaDataService {
             max = (int) limit;
         }
         List<EntityType> types = ((List<String>) properties.getOrDefault("types",
-                Arrays.asList(EntityType.IDP.getType(),
-                        EntityType.SP.getType(),
-                        EntityType.RP.getType(),
-                        EntityType.RS.getType())))
-                .stream().map(EntityType::fromType).collect(toList());
+            Arrays.asList(EntityType.IDP.getType(),
+                EntityType.SP.getType(),
+                EntityType.RP.getType(),
+                EntityType.RS.getType())))
+            .stream().map(EntityType::fromType).collect(toList());
         return metaDataRepository.recentActivity(types, max);
     }
 
     public void createConnectWithoutInteraction(Map<String, String> connectionData, APIUser apiUser)
-            throws JsonProcessingException {
+        throws JsonProcessingException {
         String idpEntityId = connectionData.get("idpId");
         MetaData idp = findByEntityId(idpEntityId, EntityType.IDP.getType());
 
@@ -499,17 +475,17 @@ public class MetaDataService {
         //We can connect automatically if the SP allows it or the IdP and SP share the institution ID
         String dashboardConnectType = (String) sp.metaDataFields().get(DASHBOARD_CONNECT_OPTION);
         boolean connectWithoutInteraction = StringUtils.hasText(dashboardConnectType) &&
-                DashboardConnectOption.fromType(dashboardConnectType).connectWithoutInteraction();
+            DashboardConnectOption.fromType(dashboardConnectType).connectWithoutInteraction();
 
         Object idpInstitutionId = idp.metaDataFields().get("coin:institution_guid");
         Object spInstitutionId = sp.metaDataFields().get("coin:institution_guid");
         boolean shareInstitutionId = idpInstitutionId != null && idpInstitutionId.equals(spInstitutionId) &&
-                !"connect_with_interaction".equals(dashboardConnectType);
+            !"connect_with_interaction".equals(dashboardConnectType);
         if (!connectWithoutInteraction && !shareInstitutionId) {
             throw new EndpointNotAllowed(
-                    String.format("%s %s does not allow an automatic connection with IdP %s. " +
-                                    "SP dashboardConnectType: %s, idpInstitutionId: %s, spInstitutionId %s",
-                            spType, spEntityId, idpEntityId, dashboardConnectType, idpInstitutionId, spInstitutionId));
+                String.format("%s %s does not allow an automatic connection with IdP %s. " +
+                        "SP dashboardConnectType: %s, idpInstitutionId: %s, spInstitutionId %s",
+                    spType, spEntityId, idpEntityId, dashboardConnectType, idpInstitutionId, spInstitutionId));
         }
 
         addAllowedEntity(sp, idpEntityId, connectionData, apiUser, false);
@@ -526,16 +502,16 @@ public class MetaDataService {
 
         Map<String, Object> data = metaData.getData();
         List<Map<String, String>> allowedEntities = (List<Map<String, String>>)
-                data.getOrDefault("allowedEntities", new ArrayList<Map<String, String>>());
+            data.getOrDefault("allowedEntities", new ArrayList<Map<String, String>>());
         boolean allowedAll = (boolean) data.getOrDefault("allowedall", true);
         boolean needsUpdate = false;
 
         String revisionNote = String.format("Connected %s on request of %s - %s via Dashboard.",
-                entityId, connectionData.get("user"), connectionData.get("userUrn"));
+            entityId, connectionData.get("user"), connectionData.get("userUrn"));
 
         if (connectionData.containsKey("loaLevel") && isIdp) {
             List<Map<String, String>> stepupEntities = (List<Map<String, String>>)
-                    data.getOrDefault("stepupEntities", new ArrayList<Map<String, String>>());
+                data.getOrDefault("stepupEntities", new ArrayList<Map<String, String>>());
             Map<String, String> stepupEntity = new HashMap<>();
             stepupEntity.put("name", entityId);
             stepupEntity.put("level", connectionData.get("loaLevel"));
@@ -545,7 +521,7 @@ public class MetaDataService {
         }
 
         if (!allowedAll && allowedEntities.stream().noneMatch(allowedEntity ->
-                allowedEntity.get("name").equals(entityId))) {
+            allowedEntity.get("name").equals(entityId))) {
             allowedEntities.add(Collections.singletonMap("name", entityId));
             data.put("allowedEntities", allowedEntities);
             data.put("revisionnote", revisionNote);
@@ -561,7 +537,7 @@ public class MetaDataService {
         List<Map> searchResults = uniqueEntityId(type, entityId);
         if (CollectionUtils.isEmpty(searchResults)) {
             throw new ResourceNotFoundException(String.format("Type %s with entityId %s does not exists",
-                    type, entityId));
+                type, entityId));
         }
         return metaDataRepository.findById((String) searchResults.get(0).get("_id"), type);
     }
@@ -594,9 +570,9 @@ public class MetaDataService {
 
     private void addNoValid(Map<String, List> results, String entityId, Exception e) {
         String msg = e instanceof ValidationException ?
-                String.join(", ", ValidationException.class.cast(e).getAllMessages()) :
-                e instanceof CustomValidationException ? String.join(", ", CustomValidationException.class.cast(e).getValidationException().getAllMessages()) :
-                        e.getClass().getName();
+            String.join(", ", ValidationException.class.cast(e).getAllMessages()) :
+            e instanceof CustomValidationException ? String.join(", ", CustomValidationException.class.cast(e).getValidationException().getAllMessages()) :
+                e.getClass().getName();
         List notValid = results.computeIfAbsent("not_valid", s -> new ArrayList());
         Map<String, String> result = new HashMap<>();
         result.put("validationException", msg);
@@ -619,9 +595,9 @@ public class MetaDataService {
         metaDataFields.forEach((k, v) -> pathUpdates.put("metaDataFields.".concat(k), v));
         pathUpdates.put("metadataurl", feedUrl);
         MetaDataUpdate metaDataUpdate = new MetaDataUpdate(id,
-                entityType.getType(),
-                pathUpdates,
-                Collections.emptyMap());
+            entityType.getType(),
+            pathUpdates,
+            Collections.emptyMap());
         return metaDataUpdate;
     }
 
