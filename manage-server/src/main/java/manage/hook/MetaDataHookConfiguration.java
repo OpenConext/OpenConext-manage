@@ -26,24 +26,25 @@ public class MetaDataHookConfiguration {
                                 @Value("${crypto.enabled}") boolean cryptoEnabled) {
 
         KeyStore keyStore = developmentMode ? new HybridRSAKeyStore() :
-                new HybridRSAKeyStore(IOUtils.toString(publicKeyResource.getInputStream(), Charset.defaultCharset()), true);
+            new HybridRSAKeyStore(IOUtils.toString(publicKeyResource.getInputStream(), Charset.defaultCharset()), true);
 
         return new CompositeMetaDataHook(
-                Arrays.asList(
-                        new SecurityHook(),
-                        new EmptyRevisionHook(metaDataAutoConfiguration),
-                        new PolicyValidationHook(metaDataAutoConfiguration),
-                        new ExtraneousKeysPoliciesHook(metaDataAutoConfiguration),
-                        new OidcValidationHook(metaDataAutoConfiguration),
-                        new TypeSafetyHook(metaDataAutoConfiguration),
-                        new EntityIdConstraintsHook(metaDataRepository),
-                        new EntityIdReconcilerHook(metaDataRepository),
-                        new SSIDValidationHook(metaDataRepository, metaDataAutoConfiguration),
-                        new SecretHook(metaDataAutoConfiguration),
-                        new RequiredAttributesHook(metaDataAutoConfiguration),
-                        new ProvisioningHook(metaDataRepository, metaDataAutoConfiguration),
-                        new EncryptionHook(keyStore, cryptoEnabled),
-                        new ProvisioningApplicationDeletionHook(metaDataRepository)));
+            Arrays.asList(
+                new SecurityHook(),
+                new EmptyRevisionHook(metaDataAutoConfiguration),
+                new EntityIdDuplicationHook(metaDataAutoConfiguration, metaDataRepository),
+                new PolicyValidationHook(metaDataAutoConfiguration),
+                new ExtraneousKeysPoliciesHook(metaDataAutoConfiguration),
+                new OidcValidationHook(metaDataAutoConfiguration),
+                new TypeSafetyHook(metaDataAutoConfiguration),
+                new EntityIdConstraintsHook(metaDataRepository),
+                new EntityIdReconcilerHook(metaDataRepository),
+                new SSIDValidationHook(metaDataRepository, metaDataAutoConfiguration),
+                new SecretHook(metaDataAutoConfiguration),
+                new RequiredAttributesHook(metaDataAutoConfiguration),
+                new ProvisioningHook(metaDataRepository, metaDataAutoConfiguration),
+                new EncryptionHook(keyStore, cryptoEnabled),
+                new ProvisioningApplicationDeletionHook(metaDataRepository)));
     }
 
 

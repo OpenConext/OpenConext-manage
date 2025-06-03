@@ -1,5 +1,6 @@
 package manage.repository;
 
+import lombok.Getter;
 import manage.model.EntityType;
 import manage.model.MetaData;
 import manage.model.MetaDataChangeRequest;
@@ -36,6 +37,7 @@ public class MetaDataRepository {
 
     private static final int AUTOCOMPLETE_LIMIT = 16;
 
+    @Getter
     private final MongoTemplate mongoTemplate;
     private final List<String> supportedLanguages;
 
@@ -100,10 +102,6 @@ public class MetaDataRepository {
     public void update(MetaData metaData) {
         metaData.trimSpaces();
         mongoTemplate.save(metaData, metaData.getType());
-    }
-
-    public MongoTemplate getMongoTemplate() {
-        return mongoTemplate;
     }
 
     public List<Map> autoComplete(String type, String search) {

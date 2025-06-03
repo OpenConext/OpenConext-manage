@@ -806,5 +806,29 @@
         "connection_type": "saml_sp"
       }
     }
+  },
+  {
+    "id": "17",
+    "version": 0,
+    "type": "single_tenant_template",
+    "revision": {
+      "number": 0,
+      "created": "2018-06-15T08:20:34.575Z",
+      "updatedBy": "sram-api"
+    },
+    "data": {
+      "entityid": "https://stt.org",
+      "state": "prodaccepted",
+      "allowedall": true,
+      "allowedEntities": [],
+      "arp": {
+        "enabled": false,
+        "attributes": {}
+      },
+      "metaDataFields": {
+        "name:en": "SRAM Service (Test)",
+        "OrganizationName:en": "SURF"
+      }
+    }
   }
 ]
