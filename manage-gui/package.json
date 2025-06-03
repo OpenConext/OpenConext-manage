@@ -6,7 +6,7 @@
     "@codemirror/lang-json": "^6.0.1",
     "@uiw/react-codemirror": "^4.23.10",
     "@uiw/react-codemirror": "^4.23.12",
-    "@uiw/react-md-editor": "^4.0.6",
+    "@uiw/react-md-editor": "^4.0.7",
     "dompurify": "^3.2.6",
     "http-proxy-middleware": "^3.0.5",
     "js-cookie": "^3.0.5",
