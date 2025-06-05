@@ -5,6 +5,7 @@ logging:
     org.springframework.session: INFO
 
 server:
+  port: 8081
   error:
     path: "/error"
   server-header:
