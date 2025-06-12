@@ -9,6 +9,10 @@
         display: flex;
         margin-bottom: 25px;
 
+        &.no-bottom {
+            margin-bottom: 0;
+        }
+
         span.button {
             margin-left: auto;
 
@@ -33,6 +37,22 @@
                     box-shadow: 0 0 0 0 white;
                 }
             }
+        }
+    }
+
+    section.motivation {
+        margin-bottom: 15px;
+        p {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        textarea {
+            width: 100%;
+            font-size: 14px;
+            padding: 0 10px;
+            border-radius: 3px;
+            border: 1px solid #d9d9d8;
+            line-height: 33px;
         }
     }
 

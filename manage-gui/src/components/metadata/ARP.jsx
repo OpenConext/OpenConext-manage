@@ -8,6 +8,7 @@ import SelectSource from "./SelectSource";
 import {copyToClip, isEmpty} from "../../utils/Utils";
 
 import "./ARP.scss";
+import {iterateBidiSections} from "codemirror/src/util/bidi";
 
 //PureComponent only does a shallow comparison, and we use derived values from deeply nested objects
 export default class ARP extends React.Component {
@@ -360,7 +361,7 @@ export default class ARP extends React.Component {
         const sanitizedArp = isEmpty(arp) ? {attributes: {}} : arp;
         return (
             <div className="metadata-arp">
-                <section className="options">
+                <section className={`options ${!isEmpty(arp.motivation) ? "no-bottom":""} `}>
                     <CheckBox name="arp-enabled"
                               value={!sanitizedArp.enabled}
                               onChange={this.arpEnabled}
@@ -370,6 +371,12 @@ export default class ARP extends React.Component {
                         {I18n.t("clipboard.copy")}<i className="fa fa-clone"></i>
                     </span>
                 </section>
+                {!isEmpty(arp.motivation) &&
+                    <section className="motivation">
+                    <p>Motivation from SURF Access</p>
+                    <textarea value={arp.motivation}
+                              disabled={true}/>
+                </section>}
                 <section className="attributes">
                     <h2>{I18n.t("arp.attributes")}</h2>
                     {this.renderArpAttributesTable(sanitizedArp, onChange, arpConfiguration, guest)}
