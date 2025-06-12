@@ -376,6 +376,7 @@ export default class ARP extends React.Component {
                     <p>Motivation from SURF Access</p>
                     <textarea value={arp.motivation}
                               disabled={true}/>
+                    {!isEmpty(arp.profile) && <em>Profile: {arp.profile}</em>}
                 </section>}
                 <section className="attributes">
                     <h2>{I18n.t("arp.attributes")}</h2>
