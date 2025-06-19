@@ -2,6 +2,9 @@
 
 Starting from version 9.0.0, we note changes and new features per release in this file.
 
+## 9.1.1
+
+ - fix /internal/info endpoint
 
 ## 9.1
 
