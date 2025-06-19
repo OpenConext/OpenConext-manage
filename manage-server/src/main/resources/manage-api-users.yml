@@ -26,6 +26,11 @@ apiUsers:
     scopes: [ READ, WRITE_SP, DELETE_SP, PUSH, CHANGE_REQUEST_SP, TEST ]
   }
   - {
+      name: "access",
+      password: "secret",
+      scopes: [ READ, WRITE_SP, DELETE_SP, PUSH, CHANGE_REQUEST_SP, TEST ]
+  }
+  - {
     name: "sysadmin",
     password: "secret",
     scopes: [ READ, WRITE_IDP, WRITE_SP, PUSH, SYSTEM ]
