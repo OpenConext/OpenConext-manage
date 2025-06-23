@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@codemirror/lang-json": "^6.0.1",
+    "@codemirror/lang-json": "^6.0.2",
     "@uiw/react-codemirror": "^4.23.10",
     "@uiw/react-codemirror": "^4.23.13",
     "@uiw/react-md-editor": "^4.0.7",
