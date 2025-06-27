@@ -477,7 +477,7 @@
         },
         "coin:stepup:requireloa": {
           "type": "string",
-          "format": "url",
+          "format": "uri",
           "enum": [
             "http://test.surfconext.nl/assurance/loa1.5",
             "http://test.surfconext.nl/assurance/loa2",
