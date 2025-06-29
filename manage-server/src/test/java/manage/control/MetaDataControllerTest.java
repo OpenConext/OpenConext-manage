@@ -2033,4 +2033,20 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         assertEquals(1, entityIdentifiers.size());
         assertEquals(metaData.getData().get("entityid"), entityIdentifiers.getFirst());
     }
+
+    @Test
+    public void deleteIdentityProviderInPolicyUse() {
+        String reasonForDeletion = "Reason for deletion";
+        // IdP http://mock-idp can not be deleted as it used in policy "Regular Policy"
+        Map res = given()
+            .when()
+            .header("Content-type", "application/json")
+            .body(Collections.singletonMap("revisionNote", reasonForDeletion))
+            .put("manage/api/client/metadata/saml20_idp/7")
+            .as(new TypeRef<>() {
+            });
+        String validations = (String) res.get("validations");
+        assertTrue(validations.contains("The policy Regular policy uses this IdP. First remove this IdP from the policy."));
+    }
+
 }

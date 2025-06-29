@@ -48,10 +48,6 @@ public class ProvisioningApplicationDeletionHook extends MetaDataHookAdapter {
         return metaDataToBeDeleted;
     }
 
-    private String entityId(MetaData metaData) {
-        return (String) metaData.getData().get("entityid");
-    }
-
     private void revision(MetaData metaData, String revisionNote) {
         String id = metaData.getId();
         MetaData previous = metaDataRepository.findById(id, metaData.getType());

@@ -17,4 +17,9 @@ public interface MetaDataHook {
 
     MetaData preValidate(MetaData metaData);
 
+    default String entityId(MetaData metaData) {
+        return (String) metaData.getData().get("entityid");
+    }
+
+
 }

@@ -87,8 +87,4 @@ public class EntityIdDuplicationHook extends MetaDataHookAdapter {
         }
     }
 
-    private String entityId(MetaData metaData) {
-        return (String) metaData.getData().get("entityid");
-    }
-
 }

@@ -298,7 +298,7 @@ class Detail extends React.PureComponent {
                     }
                     if (isSp && !isNew) {
                         provisioningById(id).then(res => {
-                           this.setState({provisioningGroups: res});
+                            this.setState({provisioningGroups: res});
                         });
                     }
                     Promise.all([revisions(type, id), changeRequests(type, id)])
@@ -1131,7 +1131,8 @@ class Detail extends React.PureComponent {
                                 <span className="info">
                                     <i className="fa fa-info-circle" data-for="push-excluded-tooltip" data-tip/>
                                     <ReactTooltip id="push-excluded-tooltip" type="info" class="tool-tip" effect="solid">
-                                        <span dangerouslySetInnerHTML={{__html: I18n.t("topBannerDetails.pushExcludedTooltip")}}/>
+                                        <span
+                                            dangerouslySetInnerHTML={{__html: I18n.t("topBannerDetails.pushExcludedTooltip")}}/>
                                     </ReactTooltip>
                                 </span>}
                         </th>}
@@ -1146,12 +1147,13 @@ class Detail extends React.PureComponent {
                             </span>}
                         </th>}
                         {isPolicy && <th>
-                                {I18n.t("topBannerDetails.evaluatedHeader")}
-                                {missingEvaluations &&
-                                    <span className="info">
+                            {I18n.t("topBannerDetails.evaluatedHeader")}
+                            {missingEvaluations &&
+                                <span className="info">
                                         <i className="fa fa-info-circle" data-for="not-configured-tooltip" data-tip/>
                                         <ReactTooltip id="not-configured-tooltip" type="info" class="tool-tip" effect="solid">
-                                            <span dangerouslySetInnerHTML={{__html: I18n.t("topBannerDetails.notEvaluatedTooltip")}}/>
+                                            <span
+                                                dangerouslySetInnerHTML={{__html: I18n.t("topBannerDetails.notEvaluatedTooltip")}}/>
                                         </ReactTooltip>
                             </span>}
                         </th>}
@@ -1189,25 +1191,25 @@ class Detail extends React.PureComponent {
                 </table>
                 {(!isEmpty(nonExistentAllowedEntities) && !isSingleTenantTemplate && !isRs
                         && !isPolicy
-                    && !isNew && whiteListingLoaded) &&
-                <section className="warning">
-                    <i className="fa fa-exclamation-circle"></i>
-                    <span>{I18n.t("topBannerDetails.unknownEntitiesConnected", {
-                        type: typeMetaData,
-                        entities: nonExistentAllowedEntities.join(", ")
-                    })}</span>
-                </section>}
+                        && !isNew && whiteListingLoaded) &&
+                    <section className="warning">
+                        <i className="fa fa-exclamation-circle"></i>
+                        <span>{I18n.t("topBannerDetails.unknownEntitiesConnected", {
+                            type: typeMetaData,
+                            entities: nonExistentAllowedEntities.join(", ")
+                        })}</span>
+                    </section>}
                 {(isEmpty(connectedEntities) && !isSingleTenantTemplate && !isNew && !isRs
                         && whiteListingLoaded && !isProvisioning) && !isPolicy &&
-                <section className="warning">
-                    <i className="fa fa-exclamation-circle"></i>
-                    <span>{I18n.t("topBannerDetails.noEntitiesConnected", {type: typeMetaData})}</span>
-                </section>}
+                    <section className="warning">
+                        <i className="fa fa-exclamation-circle"></i>
+                        <span>{I18n.t("topBannerDetails.noEntitiesConnected", {type: typeMetaData})}</span>
+                    </section>}
                 {(isEmpty(connectedApplications) && !isNew && whiteListingLoaded && isProvisioning) &&
-                <section className="warning">
-                    <i className="fa fa-exclamation-circle"></i>
-                    <span>{I18n.t("topBannerDetails.noApplicationsConnected", {type: typeMetaData})}</span>
-                </section>}
+                    <section className="warning">
+                        <i className="fa fa-exclamation-circle"></i>
+                        <span>{I18n.t("topBannerDetails.noApplicationsConnected", {type: typeMetaData})}</span>
+                    </section>}
             </section>
         );
     }
@@ -1304,13 +1306,20 @@ class Detail extends React.PureComponent {
                                         stop(e);
                                         this.setState({
                                             confirmationDialogAction: () => {
-                                                remove(this.state.metaData, this.state.revisionNote).then(res => {
-                                                    const name = this.nameOfMetaData(this.state.metaData);
-                                                    setFlash(
-                                                        I18n.t("metadata.flash.deleted", {name: name})
-                                                    );
-                                                    this.props.navigate(`/search`);
-                                                });
+                                                remove(this.state.metaData, this.state.revisionNote)
+                                                    .then(json => {
+                                                        if (json.exception || json.error) {
+                                                            setFlash(json.validations || json.message, "error");
+                                                            this.setState({confirmationDialogOpen: false});
+                                                            window.scrollTo(0, 0);
+                                                        } else {
+                                                            const name = this.nameOfMetaData(this.state.metaData);
+                                                            setFlash(
+                                                                I18n.t("metadata.flash.deleted", {name: name})
+                                                            );
+                                                            this.props.navigate(`/search`);
+                                                        }
+                                                    });
                                             },
                                             cancelDialogAction: () =>
                                                 this.setState({confirmationDialogOpen: false}),
@@ -1352,23 +1361,23 @@ class Detail extends React.PureComponent {
                     </section>
                 )}
                 {renderContent &&
-                this.renderCurrentTab(
-                    selectedTab,
-                    metaData,
-                    resourceServers,
-                    whiteListing,
-                    revisions,
-                    requests,
-                    revisionNoteClone,
-                    changeRequestsLoaded,
-                    relyingParties,
-                    policies,
-                    identityProviders,
-                    serviceProviders,
-                    policyAttributes,
-                    allowedLoas,
-                    initial
-                )}
+                    this.renderCurrentTab(
+                        selectedTab,
+                        metaData,
+                        resourceServers,
+                        whiteListing,
+                        revisions,
+                        requests,
+                        revisionNoteClone,
+                        changeRequestsLoaded,
+                        relyingParties,
+                        policies,
+                        identityProviders,
+                        serviceProviders,
+                        policyAttributes,
+                        allowedLoas,
+                        initial
+                    )}
                 {renderContent && this.renderActions(revisionNote)}
             </div>
         );
