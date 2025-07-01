@@ -11,6 +11,7 @@ import manage.service.ImporterService;
 import manage.service.MetaDataService;
 import manage.shibboleth.FederatedUser;
 import manage.web.ScopeEnforcer;
+import org.everit.json.schema.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ByteArrayResource;
@@ -84,7 +85,7 @@ public class MetaDataController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/client/metadata")
     public MetaData post(@Validated @RequestBody MetaData metaData, FederatedUser federatedUser)
-            throws JsonProcessingException {
+        throws JsonProcessingException {
 
         return metaDataService.doPost(metaData, federatedUser, false);
     }
@@ -119,9 +120,9 @@ public class MetaDataController {
     @PreAuthorize("hasRole('WRITE_SP')")
     @PostMapping("/internal/new-sp")
     public MetaData newSP(@Validated @RequestBody XML container, APIUser apiUser)
-            throws IOException, XMLStreamException {
+        throws IOException, XMLStreamException {
         Map<String, Object> innerJson = importerService.importXML(new ByteArrayResource(container.getXml()
-                .getBytes()), EntityType.SP, Optional.empty());
+            .getBytes()), EntityType.SP, Optional.empty());
 
         metaDataService.addDefaultSpData(innerJson);
         MetaData metaData = new MetaData(EntityType.SP.getType(), innerJson);
@@ -160,7 +161,7 @@ public class MetaDataController {
 
         MetaData metaData = metaDataService.getMetaDataAndValidate(EntityType.SP.getType(), id);
         Map<String, Object> innerJson = importerService.importXML(new ByteArrayResource(container.getXml()
-                .getBytes()), EntityType.SP, Optional.empty());
+            .getBytes()), EntityType.SP, Optional.empty());
 
         metaDataService.addDefaultSpData(innerJson);
 
@@ -189,7 +190,7 @@ public class MetaDataController {
     @PreAuthorize("hasRole('READ')")
     @PostMapping("/internal/validate/metadata")
     public ResponseEntity<Object> validateMetaData(@Validated @RequestBody MetaData metaData)
-            throws JsonProcessingException {
+        throws JsonProcessingException {
 
         metaDataService.validate(metaData);
         return ResponseEntity.ok().build();
@@ -221,7 +222,7 @@ public class MetaDataController {
     @PutMapping("/client/metadata")
     @Transactional
     public MetaData put(@Validated @RequestBody MetaData metaData, FederatedUser user)
-            throws JsonProcessingException {
+        throws JsonProcessingException {
         return metaDataService.doPut(metaData, user, false);
     }
 
@@ -229,7 +230,7 @@ public class MetaDataController {
     @PutMapping("/internal/metadata")
     @Transactional
     public MetaData putInternal(@Validated @RequestBody MetaData metaData, APIUser apiUser)
-            throws JsonProcessingException {
+        throws JsonProcessingException {
         ScopeEnforcer.enforceWriteScope(apiUser, EntityType.fromType(metaData.getType()));
         return metaDataService.doPut(metaData, apiUser, !apiUser.getScopes().contains(TEST));
     }
@@ -270,11 +271,11 @@ public class MetaDataController {
     @PutMapping("internal/merge")
     @Transactional
     public MetaData update(@Validated @RequestBody MetaDataUpdate metaDataUpdate, APIUser apiUser)
-            throws JsonProcessingException {
+        throws JsonProcessingException {
         ScopeEnforcer.enforceWriteScope(apiUser, EntityType.fromType(metaDataUpdate.getType()));
         return metaDataService
-                .doMergeUpdate(metaDataUpdate, apiUser, "Internal API merge", true)
-                .get();
+            .doMergeUpdate(metaDataUpdate, apiUser, "Internal API merge", true)
+            .get();
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -327,11 +328,11 @@ public class MetaDataController {
     public MetaData acceptChangeRequest(@RequestBody @Validated ChangeRequest changeRequest, FederatedUser user) throws JsonProcessingException {
         String collectionName = changeRequest.getType().concat(CHANGE_REQUEST_POSTFIX);
         MetaDataChangeRequest metaDataChangeRequest = metaDataRepository.getMongoTemplate()
-                .findById(changeRequest.getId(), MetaDataChangeRequest.class, collectionName);
+            .findById(changeRequest.getId(), MetaDataChangeRequest.class, collectionName);
 
         MetaData metaData = metaDataService
-                .doMergeUpdate(metaDataChangeRequest, user, changeRequest.getRevisionNotes(), true)
-                .get();
+            .doMergeUpdate(metaDataChangeRequest, user, changeRequest.getRevisionNotes(), true)
+            .get();
         metaDataRepository.getMongoTemplate().remove(metaDataChangeRequest, collectionName);
         return metaData;
     }
@@ -448,14 +449,14 @@ public class MetaDataController {
     @PreAuthorize("hasAnyRole('ADMIN', 'READ')")
     @GetMapping({"/client/rawSearch/{type}", "/internal/rawSearch/{type}"})
     public List<MetaData> rawSearch(@PathVariable("type") String type, @RequestParam("query") String query)
-            throws UnsupportedEncodingException {
+        throws UnsupportedEncodingException {
         return metaDataService.retrieveRawSearch(type, query);
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'READ')")
     @PostMapping({"/client/rawSearch/{type}", "/internal/rawSearch/{type}"})
     public List<MetaData> rawSearchPost(@PathVariable("type") String type, @RequestBody String query)
-            throws UnsupportedEncodingException {
+        throws UnsupportedEncodingException {
         return metaDataService.retrieveRawSearch(type, query);
     }
 

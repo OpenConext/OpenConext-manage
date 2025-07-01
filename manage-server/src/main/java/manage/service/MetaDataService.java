@@ -234,7 +234,8 @@ public class MetaDataService {
         String id = metaData.getId();
         MetaData previous = metaDataRepository.findById(id, metaData.getType());
         checkNull(metaData.getType(), id, previous);
-
+        // we want to avoid it that manage clients need to keep track of more than the id, version and collection
+        metaData.getData().computeIfAbsent("eid", k -> previous.getData().get("eid"));
         metaData = metaDataHook.prePut(previous, metaData, user);
         metaData = validate(metaData);
 
