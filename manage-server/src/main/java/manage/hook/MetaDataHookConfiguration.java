@@ -34,6 +34,7 @@ public class MetaDataHookConfiguration {
                 new EmptyRevisionHook(metaDataAutoConfiguration),
                 new EntityIdDuplicationHook(metaDataAutoConfiguration, metaDataRepository),
                 new IdentityProviderDeleteHook(metaDataAutoConfiguration, metaDataRepository),
+                new ServiceProviderDeleteHook(metaDataAutoConfiguration, metaDataRepository),
                 new PolicyValidationHook(metaDataAutoConfiguration),
                 new ExtraneousKeysPoliciesHook(metaDataAutoConfiguration),
                 new OidcValidationHook(metaDataAutoConfiguration),

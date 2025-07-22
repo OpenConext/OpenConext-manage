@@ -2049,4 +2049,21 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         assertTrue(validations.contains("The policy Regular policy uses this IdP. First remove this IdP from the policy."));
     }
 
+    @Test
+    public void deleteServiceProviderInPolicyUse() {
+        String reasonForDeletion = "Reason for deletion";
+        // SP https://1234aaab.nl cannot be deleted as it used in policy "Regular Policy"
+        Map res = given()
+            .when()
+            .auth().preemptive().basic("access", "secret")
+            .header("Content-type", "application/json")
+            .body(Collections.singletonMap("revisionNote", reasonForDeletion))
+            .delete("manage/api/internal/metadata/saml20_sp/11")
+            .as(new TypeRef<>() {
+            });
+        String validations = (String) res.get("validations");
+        assertTrue(validations.contains("The policy Regular policy uses this saml20_sp. First remove this saml20_sp from the policy"));
+    }
+
+
 }
