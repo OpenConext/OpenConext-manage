@@ -30,7 +30,7 @@
           "en": "https://surf.nl"
         },
         "coin": {
-          "imported_from_edugain": "1",
+          "imported_from_edugain": "0",
           "service_team_id": "urn:collab:group:test.surfteams.nl:nl:surfnet:diensten:testbart2334343",
           "signature_method": "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"
         },

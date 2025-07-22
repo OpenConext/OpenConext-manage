@@ -33,7 +33,7 @@ public class DatabaseControllerTest extends AbstractIntegrationTest {
                 .get("metadata"))
                 .get("coin"))
                 .get("imported_from_edugain");
-        assertEquals("1", importFromEdugain);
+        assertEquals("0", importFromEdugain);
 
         //ensure the correct ARP is exported
         List<Map<String, Object>> arpGivenNames = (List<Map<String, Object>>) ((Map) ((Map) ((Map) connections.get("connections"))

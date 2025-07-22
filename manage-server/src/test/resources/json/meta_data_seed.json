@@ -602,7 +602,7 @@
         "contacts:2:emailAddress": "Bart@bart.nl",
         "coin:service_team_id": "urn:collab:group:test.surfteams.nl:nl:surfnet:diensten:testbart2334343",
         "coin:signature_method": "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256",
-        "coin:imported_from_edugain": true,
+        "coin:imported_from_edugain": false,
         "logo:0:url": "https://static.surfconext.nl/logos/sp/surf_network-automation.png",
         "logo:0:width": 200,
         "logo:0:height": 160,
