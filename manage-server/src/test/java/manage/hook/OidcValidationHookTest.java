@@ -79,6 +79,14 @@ public class OidcValidationHookTest implements TestUtils {
     }
 
     @Test
+    public void isPublicWithSecretNull() {
+        Map<String, Object> metaData = new HashMap<>();
+        metaData.put("secret", null);
+        metaData.put("isPublicClient", true);
+        subject.prePut(null, metaData(metaData), apiUser());
+    }
+
+    @Test
     public void privateWithoutSecret() {
         assertThrows(ValidationException.class, () ->
                 subject.prePut(null, metaData(Map.of("secret", "", "isPublicClient", false)), apiUser()));

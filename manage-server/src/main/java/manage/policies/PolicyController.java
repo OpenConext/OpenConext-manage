@@ -156,7 +156,7 @@ public class PolicyController {
     }
 
     @PreAuthorize("hasRole('POLICIES')")
-    @RequestMapping(method = GET, value = {"/internal/protected/attributes"})
+    @RequestMapping(method = GET, value = {"/internal/protected/attributes", "/internal/protected/attributes/"})
     public List<Map<String, String>> getAllowedAttributesForDashboard() {
         //Backward compatibility for dashboard
         return this.allowedAttributes.stream().map(attr -> Map.of("AttributeId", attr.get("value"), "Value", attr.get("label"))).collect(toList());
