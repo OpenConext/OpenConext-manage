@@ -115,7 +115,7 @@ export default class MetaData extends React.Component {
 
                 const options = keyConfiguration.items.enum;
                 if (options) {
-                    return <SelectMulti {...defaultProps} enumValues={options}/>;
+                    return <SelectMulti {...defaultProps} enumValues={options} max={keyConfiguration.max}/>;
                 }
 
                 const itemFormat = keyConfiguration.items.format;

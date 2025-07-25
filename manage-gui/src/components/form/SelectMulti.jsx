@@ -36,7 +36,12 @@ export default class SelectMulti extends React.PureComponent {
             <Select
                 {...rest}
                 isMulti={true}
-                onChange={options => onChange(this.optionsToValues(options))}
+                onChange={options => {
+                    const {max} = this.props;
+                    if (!max || (options || []).length <= max) {
+                        onChange(this.optionsToValues(options));
+                    }
+                }}
                 optionRenderer={option => option.label}
                 options={options}
                 value={selectedOptions}
