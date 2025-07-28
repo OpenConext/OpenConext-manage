@@ -15,6 +15,8 @@ import org.everit.json.schema.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +30,8 @@ import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static manage.api.Scope.TEST;
 import static manage.mongo.MongoChangelog.CHANGE_REQUEST_POSTFIX;
@@ -473,6 +477,15 @@ public class MetaDataController {
         LOG.debug("connectWithoutInteraction, connectionData: " + connectionData);
         metaDataService.createConnectWithoutInteraction(connectionData, apiUser);
         return new HttpEntity<>(HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('READ')")
+    @GetMapping("/internal/stats")
+    public Map<String, Long> stats() throws IOException {
+        MongoTemplate mongoTemplate = metaDataRepository.getMongoTemplate();
+        return Stream.of(EntityType.SP, EntityType.IDP, EntityType.RP)
+            .collect(Collectors.toMap(entityType -> entityType.getType(), entityType ->
+                mongoTemplate.count(new Query(), entityType.getType())));
     }
 
 }

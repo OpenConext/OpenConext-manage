@@ -2065,5 +2065,22 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         assertTrue(validations.contains("The policy Regular policy uses this saml20_sp. First remove this saml20_sp from the policy"));
     }
 
+    @Test
+    public void internalStats() throws IOException {
+        Map<String, Long> stats = given()
+            .auth()
+            .preemptive()
+            .basic("access", "secret")
+            .when()
+            .header("Content-type", "application/json")
+            .get("manage/api/internal/stats")
+            .as(new TypeRef<>() {
+            });
+        assertEquals(7L, stats.get(EntityType.SP.getType()));
+        assertEquals(1L, stats.get(EntityType.RP.getType()));
+        assertEquals(2L, stats.get(EntityType.IDP.getType()));
+    }
+
+
 
 }
