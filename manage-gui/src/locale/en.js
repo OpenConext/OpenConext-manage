@@ -37,6 +37,7 @@ I18n.translations.en = {
         saml20_sp: "Service Providers",
         saml20_idp: "Identity Providers",
         oidc10_rp: "Relying Parties",
+        organisation: "Organisations",
         oauth20_rs: "Resource Servers",
         provisioning: "Provisionings",
         policy: "Policies",
@@ -44,6 +45,7 @@ I18n.translations.en = {
         saml20_sp_single: "Service Provider",
         saml20_idp_single: "Identity Provider",
         oidc10_rp_single: "Relying Party",
+        organisation_single: "Organisation",
         oauth20_rs_single: "Resource Server",
         provisioning_single: "Provisioning",
         policy_single: "Policy",
@@ -75,12 +77,16 @@ I18n.translations.en = {
             connected_applications: "Applications ({{nbr}})",
             auto_refresh: "Auto refresh",
             policy_form: "Configuration",
-            policies: "Policies ({{nbr}})"
+            policies: "Policies ({{nbr}})",
+            organisation: "Organisation",
+            organisation_entity: "Connected entities",
+            sp_organisation: "Organisation",
         },
         notFound: "No Metadata found. You might want to search for this deleted entity in the 'FIND MY METADATA' section in the 'System' tab.",
         existingChangeRequests: "There are orphaned change requests for this deleted entity. You probably want to remove them.",
         deleteChangeRequests: "Delete change requests",
         deleteChangeRequestsFlash: "Orphaned change requests are deleted",
+        selectOrganisation: "Select an organisation to link this entity to",
         entityId: "Entity ID",
         entityIdAlreadyExists: "Entity ID {{entityid}} is already taken.",
         metaDataUrl: "Metadata URL",
@@ -114,6 +120,7 @@ I18n.translations.en = {
         changeRequestsPre: "There are outstanding change request(s). Go to ",
         changeRequestsLink: "requests",
         changeRequestsPost: " to review them.",
+        name: "Name",
         noProvisioning: "No provisionings",
         provisioningTypes: {
             scim: "SCIM",
@@ -217,6 +224,26 @@ I18n.translations.en = {
         restore: "Restore",
         restoreConfirmation: "Are you sure you want to restore deleted {{name}} revision {{number}}?"
 
+    },
+    organisation: {
+        name: {
+            notUnique: "An organisation with this name already exists."
+        }
+    },
+    organisation_entity: {
+        title: "Connected entities",
+        description: "The table below shows all connected Service Providers or OIDC Relying Parties for the organisation '{{organisation}}'.",
+        no_entities: "No connected entities available",
+        searchPlaceholder: "Search, select and add entities to this Organisation",
+        confirmRemoval: "Are you sure you want to unlink {{entity}}?",
+        headers: {
+            status: "Status",
+            type: "Type",
+            entityid: "Entity ID",
+            name: "Name",
+            notes: "Notes"
+        },
+        removedEntitiesDescription: "Removed entities"
     },
     whitelisting: {
         confirmationAllowAll: "Are you sure you want to allow all {{type}} access to '{{name}}'? You will have to add {{type}} one-by-one to selectively deny them again.",

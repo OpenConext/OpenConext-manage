@@ -51,6 +51,7 @@ public class EntityIdDuplicationHook extends MetaDataHookAdapter {
             case EntityType.PDP:
             case EntityType.PROV:
             case EntityType.STT:
+            case EntityType.ORG:
                 entityTypes.add(entityType);
                 break;
             case EntityType.RS:

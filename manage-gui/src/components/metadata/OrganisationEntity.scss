@@ -1,0 +1,76 @@
+@import "../../stylesheets/vars.scss";
+
+.organisation-entity {
+  background-color: white;
+  padding: 20px;
+  white-space: pre-line;
+
+  .description {
+    margin: 15px 0;
+
+    h2 {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+  }
+
+  section.connected-entities {
+    margin-top: 15px;
+
+    table {
+      width: 100%;
+
+      th {
+        text-align: left;
+
+        i {
+          margin-left: 15px;
+          color: $lighter-grey;
+
+          &.current, &.reverse {
+            color: $blue;
+          }
+        }
+
+        &.serviceName {
+          width: 15%;
+        }
+
+        &.status {
+          width: 10%;
+        }
+
+        &.name {
+          width: 15%;
+        }
+
+        &.entityid {
+          width: 40%;
+        }
+
+        &.info {
+          width: 20%;
+          text-align: center;
+        }
+      }
+
+      td {
+          .remove {
+              padding: 5px;
+              text-align: center;
+          }
+
+          i.fa-trash-o {
+              color: $red;
+              font-size: 20px;
+          }
+      }
+
+      tbody tr {
+        &:nth-child(odd) {
+          background-color: $lightest-grey;
+        }
+      }
+    }
+  }
+}

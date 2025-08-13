@@ -19,6 +19,7 @@ import ConfirmationDialog from "../components/ConfirmationDialog";
 
 import {
     allResourceServers,
+    autocomplete,
     changeRequests,
     detail,
     getAllowedLoas,
@@ -44,6 +45,8 @@ import ResourceServers from "../components/metadata/ResourceServers";
 import Stepup from "../components/metadata/Stepup";
 import ReactTooltip from "react-tooltip";
 import {getConnectedEntities} from "../utils/TabNumbers";
+import Organisation from "../components/metadata/Organisation";
+import OrganisationEntity from "../components/metadata/OrganisationEntity";
 import withRouterHooks from "../utils/RouterBackwardCompatability";
 import MetaDataChangeRequests from "../components/metadata/MetaDataChangeRequests";
 import RelyingParties from "../components/metadata/RelyingParties";
@@ -68,6 +71,12 @@ let tabsSp = [
     "import",
     "export"
 ];
+
+const tabsOrganisation = [
+    "organisation",
+    "organisation_entity",
+    "revisions"
+]
 
 let tabsIdP = [
     "connection",
@@ -154,10 +163,13 @@ class Detail extends React.PureComponent {
         let {tab = "connection"} = this.props.params;
         if (tab === "connection" && type === "policy") {
             tab = "policy_form";
+        } else if (tab === "connection" && type === "organisation") {
+            tab = "organisation";
         }
         const id = isEmpty(props.newMetaData) ? this.props.params.id : "new";
         this.state = {
             metaData: {},
+            organisation: {},
             whiteListing: [],
             resourceServers: [],
             relyingParties: [],
@@ -257,6 +269,11 @@ class Detail extends React.PureComponent {
                 }
                 const state = (!isEmpty(newMetaData) && !isEmpty(newMetaData.connection) && !isEmpty(newMetaData.connection.state)
                     && newMetaData.connection.state.selected) ? newMetaData.connection.state.value : metaData.data.state;
+                if (isSp || isResourceServer) {
+                    Promise.all([autocomplete("organisation", "*")]).then(result => {
+                        this.setState({organisations: result[0].suggestions});
+                    });
+                }
                 const promise = isPolicy ? Promise.resolve([]) : whiteListing(whiteListingType, state);
                 promise.then(whiteListing => {
                     this.setState({whiteListing: whiteListing, whiteListingLoaded: true});
@@ -381,24 +398,30 @@ class Detail extends React.PureComponent {
             }
         });
         const connectionErrors = currentErrors.connection || {};
+        const organisationErrors = currentErrors.organisation || {};
         const policyFormErrors = currentErrors.policy_form || {};
         const required = configuration.required;
-        if ("policy" !== type) {
+        if ("policy" === type) {
+            required.forEach(req => {
+                policyFormErrors[req] = isEmpty(metaData.data[req]);
+            });
+        } else if ("organisation" === type) {
+            required.forEach(req => {
+                organisationErrors[req.startsWith("data.") ? req : `data.${req}`] = isEmpty(metaData.data[req]);
+            });
+        } else {
             Object.keys(metaData.data).forEach(key => {
                 connectionErrors[key] = isEmpty(metaData.data[key]) && required.indexOf(key) > -1;
             });
             required.forEach(req => {
                 connectionErrors[req] = isEmpty(metaData.data[req]);
             });
-        } else {
-            required.forEach(req => {
-                policyFormErrors[req] = isEmpty(metaData.data[req]);
-            });
         }
         const newErrors = {
             ...currentErrors,
             connection: connectionErrors,
             metadata: metaDataErrors,
+            organisation: organisationErrors,
             policy_form: policyFormErrors
         };
         //Filter out false entries
@@ -822,6 +845,8 @@ class Detail extends React.PureComponent {
     renderCurrentTab = (
         tab,
         metaData,
+        organisation,
+        organisations,
         resourceServers,
         whiteListing,
         revisions,
@@ -856,6 +881,7 @@ class Detail extends React.PureComponent {
                 return (
                     <Connection
                         metaData={metaData}
+                        organisations={organisations}
                         revisionNote={revisionNoteClone}
                         onChange={this.onChange("connection")}
                         onError={this.onError("connection")}
@@ -995,6 +1021,25 @@ class Detail extends React.PureComponent {
                         entityType={type}
                     />
                 )
+            case "organisation":
+                return (
+                    <Organisation
+                        organisation={metaData}
+                        originalName={isNew ? "" : metaData.data.name}
+                        onChange={this.onChange("organisation")}
+                        onError={this.onError("organisation")}
+                        errors={errors["organisation"]}
+                        guest={guest}
+                    />
+                );
+            case "organisation_entity":
+                return (
+                    <OrganisationEntity
+                        organisation={metaData}
+                        guest={guest}
+                        navigate={this.props.navigate}
+                    />
+                );
             case "connected_rps":
                 return (
                     <RelyingParties
@@ -1096,6 +1141,7 @@ class Detail extends React.PureComponent {
         const isRs = type === "oauth20_rs";
         const isProvisioning = type === "provisioning";
         const isSingleTenantTemplate = type === "single_tenant_template";
+        const isOrganisation = type === "organisation";
         const isPolicy = type === "policy";
         const nonExistentAllowedEntities = this.renderWarningNonExistentAllowedEntities();
         const importedFromEdugain = metaData.data.metaDataFields["coin:imported_from_edugain"];
@@ -1121,9 +1167,9 @@ class Detail extends React.PureComponent {
                     <thead>
                     <tr>
                         <th>{I18n.t("topBannerDetails.name")}</th>
-                        {!isPolicy && <th>{I18n.t("topBannerDetails.organization")}</th>}
+                        {!isPolicy && !isOrganisation && <th>{I18n.t("topBannerDetails.organization")}</th>}
                         <th>{I18n.t("topBannerDetails.type")}</th>
-                        {!isPolicy && <th>{I18n.t("topBannerDetails.workflow")}</th>}
+                        {!isPolicy && !isOrganisation && <th>{I18n.t("topBannerDetails.workflow")}</th>}
                         {isPolicy && <th>{I18n.t("topBannerDetails.policyType")}</th>}
                         {(isSp || isRp) && <th>
                             {I18n.t("topBannerDetails.reviewState")}
@@ -1171,10 +1217,10 @@ class Detail extends React.PureComponent {
                     <tbody>
                     <tr>
                         <td>{name}</td>
-                        {!isPolicy && <td>{organization}</td>}
+                        {!isPolicy && !isOrganisation && <td>{organization}</td>}
                         <td>{typeMetaData}</td>
-                        {!isPolicy && <td className={state === "prodaccepted" ? "green" : "orange"}>{state}</td>}
-                        {isPolicy && <td>{I18n.t(`topBannerDetails.${metaData.data.type}`)}</td>}
+                        {!isPolicy && !isOrganisation && <td className={state === "prodaccepted" ? "green" : "orange"}>{state}</td>}
+                        {isPolicy && !isOrganisation && <td>{I18n.t(`topBannerDetails.${metaData.data.type}`)}</td>}
                         {(isSp || isRp) && <td className={excludedFromPush ? "orange" : "green"}>
                             {excludedFromPush ? I18n.t("topBannerDetails.staging") : I18n.t("topBannerDetails.production")}
                         </td>}
@@ -1190,7 +1236,7 @@ class Detail extends React.PureComponent {
                     </tbody>
                 </table>
                 {(!isEmpty(nonExistentAllowedEntities) && !isSingleTenantTemplate && !isRs
-                        && !isPolicy
+                        && !isPolicy && (isOrganisation && isEmpty(this.state.connectedEntities))
                         && !isNew && whiteListingLoaded) &&
                     <section className="warning">
                         <i className="fa fa-exclamation-circle"></i>
@@ -1200,7 +1246,7 @@ class Detail extends React.PureComponent {
                         })}</span>
                     </section>}
                 {(isEmpty(connectedEntities) && !isSingleTenantTemplate && !isNew && !isRs
-                        && whiteListingLoaded && !isProvisioning) && !isPolicy &&
+                        && whiteListingLoaded && !isProvisioning) && !isPolicy && !isOrganisation &&
                     <section className="warning">
                         <i className="fa fa-exclamation-circle"></i>
                         <span>{I18n.t("topBannerDetails.noEntitiesConnected", {type: typeMetaData})}</span>
@@ -1219,6 +1265,8 @@ class Detail extends React.PureComponent {
             loaded,
             notFound,
             metaData,
+            organisation,
+            organisations,
             resourceServers,
             relyingParties,
             policies,
@@ -1258,6 +1306,8 @@ class Detail extends React.PureComponent {
                     return tabsRs;
                 case "single_tenant_template":
                     return tabsSingleTenant;
+                case "organisation":
+                    return tabsOrganisation;
                 case "provisioning":
                     return tabsPr;
                 case "policy":
@@ -1268,7 +1318,6 @@ class Detail extends React.PureComponent {
                     return [];
             }
         })();
-
         const renderNotFound = loaded && notFound;
         const renderContent = loaded && !notFound;
 
@@ -1364,6 +1413,8 @@ class Detail extends React.PureComponent {
                     this.renderCurrentTab(
                         selectedTab,
                         metaData,
+                        organisation,
+                        organisations,
                         resourceServers,
                         whiteListing,
                         revisions,

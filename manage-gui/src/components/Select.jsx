@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import {default as ReactSelect} from "react-select";
+import { default as ReactSelect, components } from "react-select";
 
 import reactSelectStyles from "./reactSelectStyles.js";
 
@@ -18,14 +18,36 @@ export default class Select extends React.PureComponent {
 
         const valueAsOption = typeof value === "string" ? this.valueToOption(value) : value;
 
+        const CustomInput = (props) => {
+            const { menuIsOpen } = props.selectProps;
+
+            return (
+                <components.Input
+                    {...props}
+                    style={{
+                        opacity: menuIsOpen ? 1 : 0,
+                        height: menuIsOpen ? 'auto' : 0,
+                        padding: 0,
+                        margin: 0,
+                        border: 'none',
+                        boxShadow: 'none',
+                        outline: 'none',
+                        backgroundColor: 'transparent'
+                    }}
+                />
+            );
+        };
+
         return (
             <ReactSelect
                 {...rest}
                 className={className}
                 isDisabled={rest.disabled}
-                styles={reactSelectStyles}
+                styles={this.props.styles || reactSelectStyles}
                 inputId={`react-select-${name}`}
                 value={valueAsOption}
+                onMenuClose={() => { document.activeElement?.blur(); }}
+                components={{ Input: CustomInput }}
             />
         );
     }
@@ -38,5 +60,6 @@ Select.propTypes = {
     options: PropTypes.array.isRequired,
     name: PropTypes.string,
     onChange: PropTypes.func.isRequired,
+    styles: PropTypes.object,
     value: PropTypes.oneOfType([PropTypes.object, PropTypes.string, PropTypes.array])
 };

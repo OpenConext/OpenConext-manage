@@ -1,0 +1,71 @@
+@import "../../stylesheets/vars.scss";
+
+.organisation {
+    background-color: white;
+    padding: 20px;
+
+    table.data {
+        width: 100%;
+        border: 1px solid $lighter-grey;
+        border-radius: $br;
+        border-collapse: separate;
+        padding-bottom: 15px;
+        padding-top: 10px;
+
+        tr {
+            &.first {
+                padding: 0;
+                background-color: $lightest-grey;
+            }
+        }
+
+        td {
+            vertical-align: middle;
+
+            &.logo {
+                text-align: center;
+
+                img {
+                    width: 64px;
+                }
+            }
+
+            &.logo-name {
+                vertical-align: middle;
+            }
+
+            &.key {
+                vertical-align: top;
+                padding: 15px;
+                width: 15%;
+            }
+
+            &.value {
+                width: 85%;
+                padding-right: 15px;
+            }
+
+            p.error {
+                color: $red;
+                margin: 10px 0 15px 0;
+            }
+        }
+
+        div.inline-editable {
+            margin-top: 5px;
+        }
+
+        input[type=text], input[type=email], textarea {
+            display: block;
+            width: 100%;
+            border: 1px solid $lighter-grey;
+            padding: 6px;
+            border-radius: $br;
+            font-size: 14px;
+
+            &[disabled] {
+                background-color: $light-grey;
+            }
+        }
+    }
+}

@@ -70,62 +70,96 @@ export default class Autocomplete extends React.PureComponent {
     }
 
     getTable(suggestions, selected, itemSelected, query, type) {
+        const isOrganisation = type === "organisation";
         const isPolicy = type === "policy";
         return <table className="result">
             <thead>
             <tr>
-                <th className="count"></th>
+                {!isOrganisation && <th className="count"></th>}
                 <th className="name">{I18n.t("metadata_autocomplete.name")}</th>
-                {!isPolicy && <th className="organization">{I18n.t("metadata_autocomplete.organization")}</th>}
+                {!isPolicy && !isOrganisation && <th className="organization">{I18n.t("metadata_autocomplete.organization")}</th>}
                 {isPolicy && <th className="organization">{I18n.t("metadata_autocomplete.policy")}</th>}
-                <th className="type">{I18n.t("metadata_autocomplete.type")}</th>
-                <th className="state">{I18n.t("metadata_autocomplete.state")}</th>
-                <th className="entity_id">{I18n.t("metadata_autocomplete.entity_id")}</th>
+                {!isOrganisation && <th className="type">{I18n.t("metadata_autocomplete.type")}</th>}
+                {!isOrganisation && <th className="state">{I18n.t("metadata_autocomplete.state")}</th>}
+                {!isOrganisation && <th className="entity_id">{I18n.t("metadata_autocomplete.entity_id")}</th>}
                 <th className="info">{I18n.t("metadata_autocomplete.notes")}</th>
                 <th className="link">{I18n.t("metadata_autocomplete.link")}</th>
             </tr>
             </thead>
             <tbody>
             {suggestions
-                .map((item, index) =>
-                    (
-                        <tr key={index}
-                            className={selected === index ? "active" : ""}
-                            onClick={() => itemSelected(item)}
-                            ref={ref => {
-                                if (selected === index) {
-                                    this.selectedRow = ref;
-                                }
-                            }}>
-                            <td className="count">{index + 1}</td>
-                            <td>
-                                {!isPolicy && this.item(getNameForLanguage(item.data.metaDataFields), query)}
-                                {isPolicy && this.item(item.data.name, query)}
-                            </td>
-                            <td>
-                                {!isPolicy && this.item(getOrganisationForLanguage(item.data.metaDataFields), query)}
-                                {isPolicy && I18n.t(`topBannerDetails.${item.data.type}`)}
-                            </td>
-                            <td>{item.type}</td>
-                            <td className="state">
-                                <CheckBox name="state" value={item.data.state === "prodaccepted" || isPolicy}
-                                          onChange={() => this} readOnly={true}/>
-                            </td>
-                            <td>{this.item(item.data.entityid, query)}</td>
-                            <td className="info">
-                                {isEmpty(item.data.notes) ? <span></span> :
-                                    <NotesTooltip identifier={item.data.entityid} notes={item.data.notes}/>}
-                            </td>
-                            <td className="link"><a href={`/metadata/${item.type}/${item["_id"]}`} target="_blank"
-                                                    onClick={e => e.stopPropagation()}>
-                                <i className="fa fa-external-link"></i>
-                            </a></td>
-                        </tr>
-                    )
+                .map((item, index) => {
+                        switch (item.type) {
+                            case "organisation":
+                                return this.renderOrganisation(item, index, selected, itemSelected);
+                            default:
+                                return this.renderMetadata(item, index, selected, itemSelected, isPolicy, query);
+                        }
+                    }
                 )}
             </tbody>
         </table>;
     }
+
+    renderOrganisation(item, index, selected, itemSelected) {
+        return (
+            <tr key={index}
+                className={selected === index ? "active" : ""}
+                onClick={() => itemSelected(item)}
+                ref={ref => {
+                    if (selected === index) {
+                        this.selectedRow = ref;
+                    }
+                }}>
+                <td className="name">{item.data.name || ""}{item.data.kvkNumber ? ` (${item.data.kvkNumber})` : ""}</td>
+                <td className="info">
+                    {isEmpty(item.data.notes) ? <span></span> :
+                        <NotesTooltip identifier={item["_id"]} notes={item.data.notes}/>}
+                </td>
+                <td className="link"><a href={`/metadata/${item.type}/${item["_id"]}`} target="_blank"
+                                        onClick={e => e.stopPropagation()}>
+                    <i className="fa fa-external-link"></i>
+                </a></td>
+            </tr>
+        );
+    };
+
+    renderMetadata(item, index, selected, itemSelected, isPolicy, query) {
+        return (
+            <tr key={index}
+                className={selected === index ? "active" : ""}
+                onClick={() => itemSelected(item)}
+                ref={ref => {
+                    if (selected === index) {
+                        this.selectedRow = ref;
+                    }
+                }}>
+                <td className="count">{index + 1}</td>
+                <td>
+                    {!isPolicy && this.item(getNameForLanguage(item.data.metaDataFields), query)}
+                    {isPolicy && this.item(item.data.name, query)}
+                </td>
+                <td>
+                    {!isPolicy && this.item(getOrganisationForLanguage(item.data.metaDataFields), query)}
+                    {isPolicy && I18n.t(`topBannerDetails.${item.data.type}`)}
+                </td>
+                <td>{item.type}</td>
+                <td className="state">
+                    <CheckBox name="state" value={item.data.state === "prodaccepted" || isPolicy}
+                              onChange={() => this} readOnly={true}/>
+                </td>
+                <td>{this.item(item.data.entityid, query)}</td>
+                <td className="info">
+                    {isEmpty(item.data.notes) ? <span></span> :
+                        <NotesTooltip identifier={item.data.entityid} notes={item.data.notes}/>}
+                </td>
+                <td className="link"><a href={`/metadata/${item.type}/${item["_id"]}`} target="_blank"
+                                        onClick={e => e.stopPropagation()}>
+                    <i className="fa fa-external-link"></i>
+                </a></td>
+            </tr>
+        );
+    };
 }
 
 Autocomplete.propTypes = {

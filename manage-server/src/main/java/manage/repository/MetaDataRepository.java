@@ -1,6 +1,7 @@
 package manage.repository;
 
 import lombok.Getter;
+import manage.exception.ValueNotUniqueException;
 import manage.model.EntityType;
 import manage.model.MetaData;
 import manage.model.MetaDataChangeRequest;
@@ -14,7 +15,6 @@ import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.*;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.time.Instant;
@@ -22,8 +22,6 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Stream;
 
-import static java.util.Collections.emptyList;
-import static java.util.Collections.emptyMap;
 import static java.util.stream.Collectors.toList;
 import static manage.mongo.MongoChangelog.CHANGE_REQUEST_POSTFIX;
 import static manage.mongo.MongoChangelog.REVISION_POSTFIX;
@@ -36,6 +34,8 @@ import static manage.mongo.MongoChangelog.REVISION_POSTFIX;
 public class MetaDataRepository {
 
     private static final int AUTOCOMPLETE_LIMIT = 16;
+
+    private static final String FIELD_NOT_UNIQUE_MESSAGE = "A %s with the value %s for field %s already exists.";
 
     @Getter
     private final MongoTemplate mongoTemplate;
@@ -56,6 +56,12 @@ public class MetaDataRepository {
 
     public List<MetaData> findAllByType(String type) {
         return mongoTemplate.findAll(MetaData.class, type);
+    }
+
+    public List<MetaData> retrieveAllEntities() {
+        return Stream.concat(
+            mongoTemplate.findAll(MetaData.class, EntityType.SP.getType()).stream(),
+            mongoTemplate.findAll(MetaData.class, EntityType.RP.getType()).stream()).toList();
     }
 
     public MetaData save(MetaData metaData) {
@@ -120,6 +126,10 @@ public class MetaDataRepository {
             if (EntityType.PDP.getType().equals(type)) {
                 orCriterias.add(regex("data.name", part));
                 orCriterias.add(regex("data.description", part));
+            } else if (EntityType.ORG.getType().equals(type)) {
+                orCriterias.add(regex("data.name", part));
+                orCriterias.add(regex("data.kvkNumber", part));
+                orCriterias.add(regex("data.notes", part));
             } else {
                 this.supportedLanguages.forEach(lang -> {
                     orCriterias.add(regex("data.metaDataFields.name:" + lang, part));
@@ -311,6 +321,12 @@ public class MetaDataRepository {
         return metaData;
     }
 
+    public void validateFieldUnique(String type, String fieldName, Object value) {
+        if (findAllByType(type).stream().anyMatch(m -> m.getData().get(fieldName).equals(value))) {
+            throw new ValueNotUniqueException(String.format(FIELD_NOT_UNIQUE_MESSAGE, type, value, fieldName));
+        }
+    }
+
     public List<Map> relyingParties(String resourceServerEntityID) {
         Query query = queryWithSamlFields(EntityType.RP)
                 .addCriteria(Criteria.where("data.allowedResourceServers.name").is(resourceServerEntityID));
@@ -410,6 +426,11 @@ public class MetaDataRepository {
                     "data.type",
                     "data.serviceProviderIds",
                     "data.identityProviderIds");
+        } else if (entityType.equals(EntityType.ORG)) {
+            fields.include(
+                "data.name",
+                "data.kvkNumber",
+                "data.notes");
         } else {
             this.supportedLanguages.forEach(lang -> {
                 fields.include("data.metaDataFields.name:" + lang);
