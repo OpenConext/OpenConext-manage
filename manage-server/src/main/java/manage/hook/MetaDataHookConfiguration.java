@@ -23,7 +23,8 @@ public class MetaDataHookConfiguration {
                                 MetaDataAutoConfiguration metaDataAutoConfiguration,
                                 @Value("${crypto.public-key-location}") Resource publicKeyResource,
                                 @Value("${crypto.development-mode}") Boolean developmentMode,
-                                @Value("${crypto.enabled}") boolean cryptoEnabled) {
+                                @Value("${crypto.enabled}") boolean cryptoEnabled,
+                                @Value("${feature_toggles.allow_secret_public_rp}") boolean allowSecretPublicRP) {
 
         KeyStore keyStore = developmentMode ? new HybridRSAKeyStore() :
             new HybridRSAKeyStore(IOUtils.toString(publicKeyResource.getInputStream(), Charset.defaultCharset()), true);
@@ -37,7 +38,7 @@ public class MetaDataHookConfiguration {
                 new ServiceProviderDeleteHook(metaDataAutoConfiguration, metaDataRepository),
                 new PolicyValidationHook(metaDataAutoConfiguration),
                 new ExtraneousKeysPoliciesHook(metaDataAutoConfiguration),
-                new OidcValidationHook(metaDataAutoConfiguration),
+                new OidcValidationHook(metaDataAutoConfiguration, allowSecretPublicRP),
                 new TypeSafetyHook(metaDataAutoConfiguration),
                 new EntityIdConstraintsHook(metaDataRepository),
                 new EntityIdReconcilerHook(metaDataRepository),
