@@ -16,9 +16,11 @@ import java.util.Map;
 public class OidcValidationHook extends MetaDataHookAdapter {
 
     private final MetaDataAutoConfiguration metaDataAutoConfiguration;
+    private final boolean allowSecretPublicRP;
 
-    public OidcValidationHook(MetaDataAutoConfiguration metaDataAutoConfiguration) {
+    public OidcValidationHook(MetaDataAutoConfiguration metaDataAutoConfiguration, boolean allowSecretPublicRP) {
         this.metaDataAutoConfiguration = metaDataAutoConfiguration;
+        this.allowSecretPublicRP = allowSecretPublicRP;
     }
 
     @Override
@@ -62,14 +64,16 @@ public class OidcValidationHook extends MetaDataHookAdapter {
         if (metaDataFields.get("refreshTokenValidity") != null && grants.stream().noneMatch(grant -> grant.equals("refresh_token"))) {
             failures.add(new ValidationException(schema, "refreshTokenValidity specified, but no refresh_token grant. Either remove refreshTokenValidity or add refresh_token grant type", "refreshTokenValidity"));
         }
-        if (isPublicClient && StringUtils.hasText(secret)) {
-            failures.add(new ValidationException(schema, "Public clients are not allowed a secret", "isPublicClient"));
-        }
-        if (!isPublicClient && !StringUtils.hasText(secret)) {
-            failures.add(new ValidationException(schema, "Non-public clients are required a secret", "secret"));
-        }
-        if (grants.size() == 1 && grants.get(0).equals("urn:ietf:params:oauth:grant-type:device_code") && StringUtils.hasText(secret)) {
-            failures.add(new ValidationException(schema, "Device Code RP is not allowed a secret", "redirectUris"));
+        if (!allowSecretPublicRP) {
+            if (isPublicClient && StringUtils.hasText(secret)) {
+                failures.add(new ValidationException(schema, "Public clients are not allowed a secret", "isPublicClient"));
+            }
+            if (!isPublicClient && !StringUtils.hasText(secret)) {
+                failures.add(new ValidationException(schema, "Non-public clients are required a secret", "secret"));
+            }
+            if (grants.size() == 1 && grants.get(0).equals("urn:ietf:params:oauth:grant-type:device_code") && StringUtils.hasText(secret)) {
+                failures.add(new ValidationException(schema, "Device Code RP is not allowed a secret", "redirectUris"));
+            }
         }
         ValidationException.throwFor(schema, failures);
     }
