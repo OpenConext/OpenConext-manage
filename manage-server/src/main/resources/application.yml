@@ -20,6 +20,9 @@ features: push, validation, push_preview, orphans, find_my_data, edugain, auto_r
 base_domain: test2.surfconext.nl
 environment: prod
 
+feature_toggles:
+    allow_secret_public_rp: True
+
 push:
   eb:
     url: http://localhost:9898/api/connections
