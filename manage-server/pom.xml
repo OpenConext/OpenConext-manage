@@ -87,7 +87,7 @@
         <dependency>
             <groupId>org.openconext</groupId>
             <artifactId>java-crypto</artifactId>
-            <version>4.0.2</version>
+            <version>${java-crypto.version}</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
