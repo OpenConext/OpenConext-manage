@@ -40,7 +40,7 @@ export default class OrganisationEntity extends React.PureComponent {
 
     updateEntities = () => {
         this.setState({
-            availableEntities: this.state.allEntities.filter(e => null === e.organisationid || "" === e.organisationid),
+            availableEntities: this.state.allEntities.filter(e => isEmpty(e.organisationid)),
             currentEntities: this.state.allEntities.filter(e => e.organisationid === this.props.organisation.id)
         })
     }
