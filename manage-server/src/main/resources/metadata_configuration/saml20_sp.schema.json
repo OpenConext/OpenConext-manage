@@ -79,6 +79,9 @@
     "entityid": {
       "type": "string"
     },
+    "organisationid": {
+      "type": "string"
+    },
     "type": {
       "type": "string",
       "enum": [

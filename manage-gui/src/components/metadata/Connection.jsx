@@ -10,9 +10,16 @@ import "./Connection.scss";
 import {isEmpty} from "../../utils/Utils";
 import {Link} from "react-router-dom";
 import {getNameForLanguage} from "../../utils/Language";
-
+import {Select} from "../index";
 
 export default class Connection extends React.PureComponent {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            organisationid: props.metaData?.data?.organisationid
+        }
+    }
 
     componentDidMount() {
         window.scrollTo(0, 0);
@@ -28,13 +35,19 @@ export default class Connection extends React.PureComponent {
         }
     };
 
+    setOrganisation = (organisation) => {
+        this.props.metaData.data.organisationid = organisation?.value;
+        this.setState({organisationid: organisation?.value });
+    }
+
     render() {
         const {
             guest,
             originalEntityId,
             metaData: {type, revision, data, id},
             revisionNote,
-            provisioningGroups
+            provisioningGroups,
+            organisations
         } = this.props;
         const isRelyingParty = type === "oidc10_rp";
         const isSP = type === "saml20_sp";
@@ -47,6 +60,21 @@ export default class Connection extends React.PureComponent {
         const name = getNameForLanguage(data.metaDataFields);
         const fullName = I18n.t(`metadata.${type}_single`) + " - " + name;
         const {errors} = this.props;
+
+        const orgOptions = [
+            { label: '- Not linked -', value: '' },
+            ...(organisations || []).map(o => {
+                let label = o.data?.name || `Unnamed (${o._id})`;
+                if (o.data?.kvkNumber) {
+                    label += ` (${o.data.kvkNumber})`;
+                }
+                return {
+                    label,
+                    value: o._id
+                };
+            })
+        ];
+
         return (
             <div className="metadata-connection">
                 <table className="data">
@@ -57,6 +85,28 @@ export default class Connection extends React.PureComponent {
                                 <img src={logo} alt=""/>
                             </td>
                             <td className="logo-name">{fullName}</td>
+                        </tr>
+                    )}
+                    { (isSP || isRelyingParty) && (
+                        <tr>
+                            <td className="key">
+                                <span>{ I18n.t("metadata.organisation_single") }</span>
+                                {this.state.organisationid
+                                    && (
+                                        <Link to={`/metadata/organisation/${this.state.organisationid}`} target="_blank">
+                                            <span><i className="fa fa-external-link" aria-hidden="true" /></span>
+                                        </Link>
+                                    )
+                                }
+                            </td>
+                            <td className="value">
+                                <Select
+                                    onChange={option => this.setOrganisation(option)}
+                                    options={orgOptions}
+                                    placeholder={I18n.t("metadata.selectOrganisation")}
+                                    value={orgOptions.find(o => o.value === this.state.organisationid) || null}
+                                />
+                            </td>
                         </tr>
                     )}
                     <tr>
@@ -172,6 +222,7 @@ export default class Connection extends React.PureComponent {
 
 Connection.propTypes = {
     metaData: PropTypes.object.isRequired,
+    organisations: PropTypes.array,
     onChange: PropTypes.func.isRequired,
     onError: PropTypes.func.isRequired,
     errors: PropTypes.object.isRequired,

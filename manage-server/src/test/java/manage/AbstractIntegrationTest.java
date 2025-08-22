@@ -56,7 +56,7 @@ public abstract class AbstractIntegrationTest implements TestUtils {
     @LocalServerPort
     protected int port;
 
-    private static List<MetaData> metaDataList;
+    protected static List<MetaData> metaDataList;
 
     @BeforeEach
     public void before() throws Exception {

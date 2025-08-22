@@ -95,12 +95,20 @@ export function save(metaData) {
     return postPutJson("metadata", metaData, "post");
 }
 
+export function getAllEntities() {
+    return fetchJson(`metadata/allentities`);
+}
+
 export function remove(metaData, revisionNote) {
     return postPutJson(`metadata/${metaData.type}/${metaData.id}`, {revisionNote}, "put");
 }
 
 export function update(metaData) {
     return postPutJson("metadata", metaData, "put");
+}
+
+export function validateUniqueField(type, fieldName, value) {
+    return fetchJson(`metadata/validate-unique-field/${type}/${fieldName}/${value}`, {}, {}, false);
 }
 
 export function restoreRevision(id, type, parentType) {

@@ -281,5 +281,18 @@
 
     }
 
+    .metadata-connection {
+        table {
+            tbody {
+                tr {
+                    i.fa {
+                        margin-left: 15px;
+                        color: $blue;
+                    }
+                }
+            }
+        }
+    }
+
 }
 

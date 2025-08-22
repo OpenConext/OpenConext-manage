@@ -24,7 +24,9 @@ public class EntityIdReconcilerHook extends MetaDataHookAdapter {
 
     @Override
     public boolean appliesForMetaData(MetaData metaData) {
-        return !metaData.getType().equals(EntityType.STT.getType()) && !metaData.getType().equals(EntityType.PROV.getType());
+        return !metaData.getType().equals(EntityType.STT.getType()) &&
+            !metaData.getType().equals(EntityType.PROV.getType()) &&
+            !metaData.getType().equals(EntityType.ORG.getType());
     }
 
     @Override

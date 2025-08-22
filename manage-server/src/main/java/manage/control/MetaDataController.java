@@ -11,7 +11,6 @@ import manage.service.ImporterService;
 import manage.service.MetaDataService;
 import manage.shibboleth.FederatedUser;
 import manage.web.ScopeEnforcer;
-import org.everit.json.schema.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ByteArrayResource;
@@ -427,6 +426,12 @@ public class MetaDataController {
         return metaDataRepository.provisioning(identifiers);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping({"/client/metadata/allentities"})
+    public List<MetaData> getAllEntities() {
+        return metaDataRepository.retrieveAllEntities();
+    }
+
     @PreAuthorize("hasAnyRole('ADMIN', 'READ')")
     @GetMapping({"/client/allowedEntities/{type}/{id}", "/internal/allowedEntities/{type}/{id}"})
     public List<Map> allowedEntities(@PathVariable("type") String type, @PathVariable("id") String id) {
@@ -462,6 +467,16 @@ public class MetaDataController {
     public List<MetaData> rawSearchPost(@PathVariable("type") String type, @RequestBody String query)
         throws UnsupportedEncodingException {
         return metaDataService.retrieveRawSearch(type, query);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/client/metadata/validate-unique-field/{type}/{name}/{value}")
+    public ResponseEntity<Boolean> validateUniqueField(@PathVariable String type,
+                                                       @PathVariable String name,
+                                                       @PathVariable String value) {
+
+        this.metaDataRepository.validateFieldUnique(type, name, value);
+        return ResponseEntity.status(HttpStatus.OK).body(true);
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'READ')")

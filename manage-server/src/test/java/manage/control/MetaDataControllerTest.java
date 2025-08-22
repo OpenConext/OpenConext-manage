@@ -89,6 +89,21 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void templateOrganisation() {
+        given()
+            .when()
+            .get("manage/api/client/template/organisation")
+            .then()
+            .statusCode(SC_OK)
+            .body("type", equalTo("organisation"))
+            .body("data.metaDataFields", notNullValue())
+            .body("data.revisionnote", emptyOrNullString())
+            .body("data.name", emptyOrNullString())
+            .body("data.kvkNumber", emptyOrNullString())
+            .body("data.notes", emptyOrNullString());
+    }
+
+    @Test
     public void remove() {
         MetaData metaData = metaDataRepository.findById("1", EntityType.SP.getType());
         assertNotNull(metaData);
@@ -138,9 +153,9 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
             .get("manage/api/client/metadata/configuration")
             .then()
             .statusCode(SC_OK)
-            .body("size()", is(8))
+            .body("size()", is(9))
             .body("title", hasItems("saml20_sp", "saml20_idp", "single_tenant_template", "oidc10_rp",
-                "oauth20_rs", "policy", "provisioning", "sram"));
+                "oauth20_rs", "organisation", "policy", "provisioning", "sram"));
     }
 
     @Test
@@ -530,6 +545,18 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
                 "https://mujina-sp.test2.surfconext.nl/saml/SSO"));
     }
 
+    @Test
+    public void getAllEntities() {
+        given()
+            .when()
+            .get("manage/api/client/metadata/allentities")
+            .then()
+            .statusCode(SC_OK)
+            .body("suggestions.size()", is((int)metaDataList.stream()
+                .filter(m -> List.of("oidc10_rp", "saml20_sp").contains(m.getType()))
+                .count()));
+    }
+
     /**
      * This is an outstanding bug where Manage cast numeric strings to int. Won't be fixed to
      * maintain backward compatibility for scrips that assume all metadata values are strings.
@@ -737,6 +764,25 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         Map<String, Object> sp2 = results.get(4);
         assertEquals("Delete revision SP 2", ((Map) sp2.get("data")).get("revisionnote"));
         assertNotNull(((Map) sp2.get("revision")).get("terminated"));
+    }
+
+    @Test
+    public void validateUniqueFieldUnique() {
+        given()
+            .when()
+            .get("manage/api/client/metadata/validate-unique-field/organisation/name/uniquename")
+            .then()
+            .statusCode(SC_OK);
+    }
+
+    @Test
+    public void validateUniqueFieldNotUnique() {
+        given()
+            .when()
+            .get("manage/api/client/metadata/validate-unique-field/organisation/name/Stichting Kennisnet")
+            .then()
+            .statusCode(SC_BAD_REQUEST)
+            .body("exception", equalTo("manage.exception.ValueNotUniqueException"));
     }
 
     private void doDelete(EntityType entityType, String id, String revisionNote) {
@@ -2031,7 +2077,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
             .as(new TypeRef<>() {
             });
         assertEquals(1, entityIdentifiers.size());
-        assertEquals(metaData.getData().get("entityid"), entityIdentifiers.getFirst());
+        assertEquals(metaData.getData().get("entityid"), entityIdentifiers.stream().findFirst().get());
     }
 
     @Test

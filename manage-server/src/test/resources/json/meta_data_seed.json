@@ -830,5 +830,24 @@
         "OrganizationName:en": "SURF"
       }
     }
+  },
+  { "id": 18,
+    "_id": "750357b2-8cf1-462d-94fe-48342305fc3e",
+    "_class": "manage.model.MetaData",
+    "data": {
+      "metaDataFields": {},
+      "revisionnote": "Restore of revision: 4",
+      "name": "Stichting Kennisnet",
+      "kvkNumber": "27244834",
+      "notes": "Remarks regarding the Organisation",
+      "eid": 8
+    },
+    "revision": {
+      "number": 6,
+      "created": "2018-06-15T08:20:34.575Z",
+      "updatedBy": "Thomas Beekman"
+    },
+    "type": "organisation",
+    "version": 6
   }
 ]
