@@ -4,7 +4,6 @@
   "private": true,
   "dependencies": {
     "@codemirror/lang-json": "^6.0.2",
-    "@uiw/react-codemirror": "^4.23.10",
     "@uiw/react-codemirror": "^4.24.2",
     "@uiw/react-md-editor": "^4.0.8",
     "dompurify": "^3.2.6",

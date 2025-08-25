@@ -261,6 +261,14 @@ export function pushPreview() {
     return fetchJson("playground/pushPreview");
 }
 
+export function pushPreviewOIDC() {
+    return fetchJson("playground/pushPreviewOIDC");
+}
+
+export function pushPreviewPdP() {
+    return fetchJson("playground/pushPreviewPdP");
+}
+
 export function validate() {
     return fetchJson("playground/validate");
 }

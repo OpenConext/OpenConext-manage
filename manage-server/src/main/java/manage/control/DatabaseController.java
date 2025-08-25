@@ -79,7 +79,7 @@ public class DatabaseController {
                        @Value("${push.pdp.password}") String pdpPassword,
                        @Value("${push.pdp.enabled}") boolean pdpEnabled,
                        @Value("${push.oidc.enabled}") boolean oidcEnabled,
-                       Environment environment) throws MalformedURLException, URISyntaxException {
+                       Environment environment) {
         this.metaDataRepository = metaDataRepository;
         this.pushUri = pushUri;
 
@@ -109,11 +109,7 @@ public class DatabaseController {
         }
         Map<String, Object> result = new HashMap<>();
         if (pushOptions.isIncludePdP() && pdpEnabled) {
-            List<PdpPolicyDefinition> policies = this.metaDataRepository
-                .findAllByType(EntityType.PDP.getType()).stream()
-                .map(PdpPolicyDefinition::new)
-                .filter(PdpPolicyDefinition::isActive)
-                .collect(toList());
+            List<PdpPolicyDefinition> policies = pushPreviewPdP();
             this.pdpRestTemplate.put(pdpPushUri, policies);
             result.put("pdp", Map.of("status", "OK"));
         } else {
@@ -134,40 +130,7 @@ public class DatabaseController {
 
         // Now push all oidc_rp metadata to OIDC proxy
         if (!environment.acceptsProfiles(Profiles.of("dev")) && oidcEnabled && pushOptions.isIncludeOIDC()) {
-            List<MetaData> relyingParties = metaDataRepository.getMongoTemplate().findAll(MetaData.class, EntityType.RP.getType());
-            List<MetaData> resourceServers = metaDataRepository.getMongoTemplate().findAll(MetaData.class, EntityType.RS.getType());
-            List<Scope> scopes = metaDataRepository.getMongoTemplate().findAll(Scope.class);
-            Map<String, Scope> scopesMapped = scopes.stream().collect(toMap(Scope::getName, scope -> scope));
-            resourceServers.forEach(rs -> {
-                //Once we want to get rid of this hack, but for now backward compatibility
-                rs.setType(EntityType.RP.getType());
-                Map<String, Object> metaDataFields = rs.metaDataFields();
-                metaDataFields.put("isResourceServer", true);
-                List<String> scopeList = (List<String>) metaDataFields.get("scopes");
-                if (!CollectionUtils.isEmpty(scopeList)) {
-                    List<Scope> transformedScope = scopeList.stream()
-                        .map(scope -> scopesMapped.getOrDefault(scope, null))
-                        .filter(Objects::nonNull)
-                        .collect(toList());
-                    metaDataFields.put("scopes", transformedScope);
-                }
-            });
-            if (!excludeSRAM) {
-                List<MetaData> sramRelyingParties = metaDataRepository.getMongoTemplate()
-                    .findAll(MetaData.class, EntityType.SRAM.getType());
-                sramRelyingParties.forEach(sramEntity -> sramEntity.metaDataFields().put("coin:collab_enabled", true));
-                relyingParties.addAll(sramRelyingParties);
-            }
-            relyingParties.forEach(rp -> {
-                //Once we want to get rid of this cleanup, but for now backward compatibility
-                Map<String, Object> metaDataFields = rp.metaDataFields();
-                metaDataFields.put("isResourceServer", false);
-                metaDataFields.remove("scopes");
-            });
-            relyingParties.addAll(resourceServers);
-            List<MetaData> filteredEntities = relyingParties.stream()
-                .filter(metaData -> !excludeFromPush(metaData.metaDataFields()))
-                .collect(toList());
+            List<MetaData> filteredEntities = pushPreviewOIDC();
             ResponseEntity<Void> response = this.oidcRestTemplate.postForEntity(oidcPushUri, filteredEntities, Void.class);
             result.put("oidc", Map.of(
                 "status", response.getStatusCode().is2xxSuccessful() ? "OK" : "ERROR"));
@@ -175,6 +138,53 @@ public class DatabaseController {
             result.put("oidc", Map.of("status", "OK"));
         }
         return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    private List<PdpPolicyDefinition> pushPreviewPdP() {
+        List<PdpPolicyDefinition> policies = this.metaDataRepository
+            .findAllByType(EntityType.PDP.getType()).stream()
+            .map(PdpPolicyDefinition::new)
+            .filter(PdpPolicyDefinition::isActive)
+            .collect(toList());
+        return policies;
+    }
+
+    private List<MetaData> pushPreviewOIDC() {
+        List<MetaData> relyingParties = metaDataRepository.getMongoTemplate().findAll(MetaData.class, EntityType.RP.getType());
+        List<MetaData> resourceServers = metaDataRepository.getMongoTemplate().findAll(MetaData.class, EntityType.RS.getType());
+        List<Scope> scopes = metaDataRepository.getMongoTemplate().findAll(Scope.class);
+        Map<String, Scope> scopesMapped = scopes.stream().collect(toMap(Scope::getName, scope -> scope));
+        resourceServers.forEach(rs -> {
+            //Once we want to get rid of this hack, but for now backward compatibility
+            rs.setType(EntityType.RP.getType());
+            Map<String, Object> metaDataFields = rs.metaDataFields();
+            metaDataFields.put("isResourceServer", true);
+            List<String> scopeList = (List<String>) metaDataFields.get("scopes");
+            if (!CollectionUtils.isEmpty(scopeList)) {
+                List<Scope> transformedScope = scopeList.stream()
+                    .map(scope -> scopesMapped.getOrDefault(scope, null))
+                    .filter(Objects::nonNull)
+                    .collect(toList());
+                metaDataFields.put("scopes", transformedScope);
+            }
+        });
+        if (!excludeSRAM) {
+            List<MetaData> sramRelyingParties = metaDataRepository.getMongoTemplate()
+                .findAll(MetaData.class, EntityType.SRAM.getType());
+            sramRelyingParties.forEach(sramEntity -> sramEntity.metaDataFields().put("coin:collab_enabled", true));
+            relyingParties.addAll(sramRelyingParties);
+        }
+        relyingParties.forEach(rp -> {
+            //Once we want to get rid of this cleanup, but for now backward compatibility
+            Map<String, Object> metaDataFields = rp.metaDataFields();
+            metaDataFields.put("isResourceServer", false);
+            metaDataFields.remove("scopes");
+        });
+        relyingParties.addAll(resourceServers);
+        List<MetaData> filteredEntities = relyingParties.stream()
+            .filter(metaData -> !excludeFromPush(metaData.metaDataFields()))
+            .collect(toList());
+        return filteredEntities;
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -225,6 +235,18 @@ public class DatabaseController {
         results.put("connections", serviceProvidersToPush);
 
         return results;
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/client/playground/pushPreviewOIDC")
+    public List<MetaData> pushPreviewOIDCEndpoint() {
+        return this.pushPreviewOIDC();
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/client/playground/pushPreviewPdP")
+    public List<PdpPolicyDefinition> pushPreviewPdPEndpoint() {
+        return this.pushPreviewPdP();
     }
 
     private boolean excludeFromPush(Map metaDataFields) {

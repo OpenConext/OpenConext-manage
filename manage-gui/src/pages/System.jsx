@@ -8,6 +8,7 @@ import {
     orphans,
     ping,
     pushPreview,
+    pushPreviewOIDC, pushPreviewPdP,
     restoreDeletedRevision,
     search,
     stats,
@@ -28,11 +29,7 @@ export default class System extends React.PureComponent {
 
     constructor(props) {
         super(props);
-        const systemFeatures = ["validation", "push_preview", "orphans", "find_my_data"];
-        const tabs = props.currentUser.featureToggles
-            .map(feature => feature.toLowerCase())
-            .filter(feature => systemFeatures.includes(feature));
-        tabs.push("stats");
+        const tabs = ["push_preview_eb", "push_preview_oidc", "push_preview_pdp", "validation", "orphans", "find_my_data", "stats"];
         this.state = {
             tabs: tabs,
             selectedTab: tabs[0],
@@ -42,7 +39,8 @@ export default class System extends React.PureComponent {
             findMyDataEntityType: "saml20_sp",
             findMyDataResults: [],
             pushPreviewResults: undefined,
-            pushResults: undefined,
+            pushPreviewResultsOIDC: undefined,
+            pushPreviewResultsPDP: undefined,
             showNonRestorable: false,
             statistics: [],
             statsSorted: "count",
@@ -82,11 +80,14 @@ export default class System extends React.PureComponent {
     switchTab = tab => e => {
         stop(e);
         this.setState({selectedTab: tab});
-        if (tab !== "push_preview") {
+        if (tab === "push_preview_eb") {
             this.setState({pushPreviewResults: undefined});
         }
-        if (tab !== "push") {
-            this.setState({pushResults: undefined, pushPreviewResults: undefined});
+        if (tab === "push_preview_oidc") {
+            this.setState({pushPreviewResultsOIDC: undefined});
+        }
+        if (tab === "push_preview_pdp") {
+            this.setState({pushPreviewResultsPDP: undefined});
         }
         if (tab === "stats") {
             stats().then(json => this.setState({statistics: json}));
@@ -107,6 +108,23 @@ export default class System extends React.PureComponent {
         pushPreview().then(json => this.setState({pushPreviewResults: json, loading: false}));
     };
 
+    runPushPreviewOIDC = e => {
+        stop(e);
+        if (this.state.loading) {
+            return;
+        }
+        this.setState({loading: true});
+        pushPreviewOIDC().then(json => this.setState({pushPreviewResultsOIDC: json, loading: false}));
+    };
+
+    runPushPreviewPdP = e => {
+        stop(e);
+        if (this.state.loading) {
+            return;
+        }
+        this.setState({loading: true});
+        pushPreviewPdP().then(json => this.setState({pushPreviewResultsPDP: json, loading: false}));
+    };
     findMyData = e => {
         stop(e);
 
@@ -247,7 +265,7 @@ export default class System extends React.PureComponent {
         setTimeout(() => this.setState({copiedToClipboardClassName: ""}), 5000);
     };
 
-    renderPushPreview = () => {
+    renderPushPreviewEB = () => {
         const {pushPreviewResults, loading, copiedToClipboardClassName} = this.state;
         const {currentUser} = this.props;
         const json = pushPreviewResults ? JSON.stringify(pushPreviewResults) : "";
@@ -279,6 +297,82 @@ export default class System extends React.PureComponent {
                 }
                 {pushPreviewResults &&
                     <section className="results pushPreviewResults" ref={ref => this.pushPreviewResults = ref}>
+                        {json}
+                    </section>}
+            </section>
+        );
+    };
+
+    renderPushPreviewOIDC = () => {
+        const {pushPreviewResultsOIDC, loading, copiedToClipboardClassName} = this.state;
+        const {currentUser} = this.props;
+        const json = pushPreviewResultsOIDC ? JSON.stringify(pushPreviewResultsOIDC) : "";
+        const showCopy = (pushPreviewResultsOIDC && json.length > 0 && json.length < 150 * 1000);
+        const showSelectText = !showCopy && json.length > 0;
+        return (
+            <section className="push">
+                <p>{I18n.t("playground.pushPreviewInfo", {name: currentUser.push.oidcName})}</p>
+                <a className={`button ${loading ? "grey disabled" : "green"}`}
+                   onClick={this.runPushPreviewOIDC}>{I18n.t("playground.runPushPreview")}
+                    <i className="fa fa-refresh"></i></a>
+                {showCopy &&
+                    <CopyToClipboard text={json} onCopy={this.copiedToClipboard}>
+                    <span className={`button green ${copiedToClipboardClassName}`}>
+                       Copy JSON to clipboard <i className="fa fa-clone"></i>
+                    </span>
+                    </CopyToClipboard>
+                }
+                {showSelectText &&
+                    <span className="button green" onClick={() => {
+                        const range = document.createRange();
+                        const sel = window.getSelection();
+                        range.selectNodeContents(this.pushPreviewResultsOIDC);
+                        sel.removeAllRanges();
+                        sel.addRange(range);
+                    }}>
+                       Select all JSON <i className="fa fa-clone"></i>
+                    </span>
+                }
+                {pushPreviewResultsOIDC &&
+                    <section className="results pushPreviewResults" ref={ref => this.pushPreviewResultsOIDC = ref}>
+                        {json}
+                    </section>}
+            </section>
+        );
+    };
+
+    renderPushPreviewPdP = () => {
+        const {pushPreviewResultsPDP, loading, copiedToClipboardClassName} = this.state;
+        const {currentUser} = this.props;
+        const json = pushPreviewResultsPDP ? JSON.stringify(pushPreviewResultsPDP) : "";
+        const showCopy = (pushPreviewResultsPDP && json.length > 0 && json.length < 150 * 1000);
+        const showSelectText = !showCopy && json.length > 0;
+        return (
+            <section className="push">
+                <p>{I18n.t("playground.pushPreviewInfo", {name: currentUser.push.pdpName})}</p>
+                <a className={`button ${loading ? "grey disabled" : "green"}`}
+                   onClick={this.runPushPreviewPdP}>{I18n.t("playground.runPushPreview")}
+                    <i className="fa fa-refresh"></i></a>
+                {showCopy &&
+                    <CopyToClipboard text={json} onCopy={this.copiedToClipboard}>
+                    <span className={`button green ${copiedToClipboardClassName}`}>
+                       Copy JSON to clipboard <i className="fa fa-clone"></i>
+                    </span>
+                    </CopyToClipboard>
+                }
+                {showSelectText &&
+                    <span className="button green" onClick={() => {
+                        const range = document.createRange();
+                        const sel = window.getSelection();
+                        range.selectNodeContents(this.pushPreviewResultsPDP);
+                        sel.removeAllRanges();
+                        sel.addRange(range);
+                    }}>
+                       Select all JSON <i className="fa fa-clone"></i>
+                    </span>
+                }
+                {pushPreviewResultsPDP &&
+                    <section className="results pushPreviewResults" ref={ref => this.pushPreviewResultsPDP = ref}>
                         {json}
                     </section>}
             </section>
@@ -382,8 +476,12 @@ export default class System extends React.PureComponent {
                 return this.renderValidate();
             case "orphans" :
                 return this.renderOrphans();
-            case "push_preview":
-                return this.renderPushPreview();
+            case "push_preview_eb":
+                return this.renderPushPreviewEB();
+            case "push_preview_oidc":
+                return this.renderPushPreviewOIDC();
+            case "push_preview_pdp":
+                return this.renderPushPreviewPdP();
             case "find_my_data":
                 return this.renderFindMyData();
             case "stats":
