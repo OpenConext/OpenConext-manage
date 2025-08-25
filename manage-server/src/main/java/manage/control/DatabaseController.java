@@ -1,5 +1,6 @@
 package manage.control;
 
+import lombok.SneakyThrows;
 import manage.format.EngineBlockFormatter;
 import manage.model.EntityType;
 import manage.model.MetaData;
@@ -7,12 +8,20 @@ import manage.model.PushOptions;
 import manage.model.Scope;
 import manage.policies.PdpPolicyDefinition;
 import manage.repository.MetaDataRepository;
+import manage.web.HttpHostProvider;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
+import org.apache.hc.client5.http.impl.routing.DefaultProxyRoutePlanner;
+import org.apache.hc.core5.http.HttpHost;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
@@ -23,11 +32,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
@@ -75,19 +82,17 @@ public class DatabaseController {
                        Environment environment) throws MalformedURLException, URISyntaxException {
         this.metaDataRepository = metaDataRepository;
         this.pushUri = pushUri;
-        this.restTemplate = new RestTemplate();
-        this.restTemplate.getInterceptors().add(new BasicAuthenticationInterceptor(user, password));
+
+        this.restTemplate = restTemplate(pushUri, user, password);
         this.excludeEduGainImported = excludeEduGainImported;
         this.excludeOidcRP = excludeOidcRP;
         this.excludeSRAM = excludeSRAM;
 
-        this.oidcRestTemplate = new RestTemplate();
-        this.oidcRestTemplate.getInterceptors().add(new BasicAuthenticationInterceptor(oidcUser, oidcPassword));
+        this.oidcRestTemplate = restTemplate(oidcPushUri, oidcUser, oidcPassword);
         this.oidcPushUri = oidcPushUri;
         this.oidcEnabled = oidcEnabled;
 
-        this.pdpRestTemplate = new RestTemplate();
-        this.pdpRestTemplate.getInterceptors().add(new BasicAuthenticationInterceptor(pdpUser, pdpPassword));
+        this.pdpRestTemplate = restTemplate(pdpPushUri, pdpUser, pdpPassword);
         this.pdpPushUri = pdpPushUri;
         this.pdpEnabled = pdpEnabled;
 
@@ -97,18 +102,18 @@ public class DatabaseController {
     public ResponseEntity<Map> doPush(PushOptions pushOptions) {
         if (environment.acceptsProfiles(Profiles.of("dev"))) {
             return new ResponseEntity<>(Map.of(
-                    "eb", Map.of("status", "OK"),
-                    "pdp", Map.of("status", "OK"),
-                    "oidc", Map.of("status", "OK")
+                "eb", Map.of("status", "OK"),
+                "pdp", Map.of("status", "OK"),
+                "oidc", Map.of("status", "OK")
             ), HttpStatus.OK);
         }
         Map<String, Object> result = new HashMap<>();
         if (pushOptions.isIncludePdP() && pdpEnabled) {
             List<PdpPolicyDefinition> policies = this.metaDataRepository
-                    .findAllByType(EntityType.PDP.getType()).stream()
-                    .map(PdpPolicyDefinition::new)
-                    .filter(PdpPolicyDefinition::isActive)
-                    .collect(toList());
+                .findAllByType(EntityType.PDP.getType()).stream()
+                .map(PdpPolicyDefinition::new)
+                .filter(PdpPolicyDefinition::isActive)
+                .collect(toList());
             this.pdpRestTemplate.put(pdpPushUri, policies);
             result.put("pdp", Map.of("status", "OK"));
         } else {
@@ -121,8 +126,8 @@ public class DatabaseController {
 
             String body = response.getBody();
             result.put("eb", Map.of(
-                    "status", response.getStatusCode().is2xxSuccessful() ? "OK" : "ERROR",
-                    "response", StringUtils.hasText(body) ? body : ""));
+                "status", response.getStatusCode().is2xxSuccessful() ? "OK" : "ERROR",
+                "response", StringUtils.hasText(body) ? body : ""));
         } else {
             result.put("eb", Map.of("status", "OK"));
         }
@@ -141,15 +146,15 @@ public class DatabaseController {
                 List<String> scopeList = (List<String>) metaDataFields.get("scopes");
                 if (!CollectionUtils.isEmpty(scopeList)) {
                     List<Scope> transformedScope = scopeList.stream()
-                            .map(scope -> scopesMapped.getOrDefault(scope, null))
-                            .filter(Objects::nonNull)
-                            .collect(toList());
+                        .map(scope -> scopesMapped.getOrDefault(scope, null))
+                        .filter(Objects::nonNull)
+                        .collect(toList());
                     metaDataFields.put("scopes", transformedScope);
                 }
             });
             if (!excludeSRAM) {
                 List<MetaData> sramRelyingParties = metaDataRepository.getMongoTemplate()
-                        .findAll(MetaData.class, EntityType.SRAM.getType());
+                    .findAll(MetaData.class, EntityType.SRAM.getType());
                 sramRelyingParties.forEach(sramEntity -> sramEntity.metaDataFields().put("coin:collab_enabled", true));
                 relyingParties.addAll(sramRelyingParties);
             }
@@ -161,11 +166,11 @@ public class DatabaseController {
             });
             relyingParties.addAll(resourceServers);
             List<MetaData> filteredEntities = relyingParties.stream()
-                    .filter(metaData -> !excludeFromPush(metaData.metaDataFields()))
-                    .collect(toList());
+                .filter(metaData -> !excludeFromPush(metaData.metaDataFields()))
+                .collect(toList());
             ResponseEntity<Void> response = this.oidcRestTemplate.postForEntity(oidcPushUri, filteredEntities, Void.class);
             result.put("oidc", Map.of(
-                    "status", response.getStatusCode().is2xxSuccessful() ? "OK" : "ERROR"));
+                "status", response.getStatusCode().is2xxSuccessful() ? "OK" : "ERROR"));
         } else {
             result.put("oidc", Map.of("status", "OK"));
         }
@@ -179,17 +184,17 @@ public class DatabaseController {
 
         List<MetaData> serviceProviders = metaDataRepository.getMongoTemplate().findAll(MetaData.class, EntityType.SP.getType());
         Stream<MetaData> metaDataStream = excludeEduGainImported ?
-                serviceProviders.stream()
-                        .filter(metaData -> {
-                            Map metaDataFields = metaData.metaDataFields();
-                            boolean importedFromEdugain = Boolean.TRUE.equals(metaDataFields.get("coin:imported_from_edugain"));
-                            boolean pushEnabled = Boolean.TRUE.equals(metaDataFields.get("coin:push_enabled"));
-                            return !importedFromEdugain || pushEnabled;
-                        }) : serviceProviders.stream();
+            serviceProviders.stream()
+                .filter(metaData -> {
+                    Map metaDataFields = metaData.metaDataFields();
+                    boolean importedFromEdugain = Boolean.TRUE.equals(metaDataFields.get("coin:imported_from_edugain"));
+                    boolean pushEnabled = Boolean.TRUE.equals(metaDataFields.get("coin:push_enabled"));
+                    return !importedFromEdugain || pushEnabled;
+                }) : serviceProviders.stream();
 
         Map<String, Map<String, Object>> serviceProvidersToPush = metaDataStream
-                .filter(metaData -> !excludeFromPush(metaData.metaDataFields()))
-                .collect(toMap(MetaData::getId, formatter::parseServiceProvider));
+            .filter(metaData -> !excludeFromPush(metaData.metaDataFields()))
+            .collect(toMap(MetaData::getId, formatter::parseServiceProvider));
 
         List<MetaData> identityProviders = metaDataRepository.getMongoTemplate().findAll(MetaData.class, EntityType.IDP.getType());
 
@@ -197,21 +202,21 @@ public class DatabaseController {
         filterOutNullDisableConsentExplanations(identityProviders);
 
         Map<String, Map<String, Object>> identityProvidersToPush = identityProviders.stream()
-                .filter(metaData -> !excludeFromPush(metaData.metaDataFields()))
-                .collect(toMap(MetaData::getId, formatter::parseIdentityProvider));
+            .filter(metaData -> !excludeFromPush(metaData.metaDataFields()))
+            .collect(toMap(MetaData::getId, formatter::parseIdentityProvider));
 
         if (!excludeOidcRP) {
             List<MetaData> relyingParties = metaDataRepository.getMongoTemplate().findAll(MetaData.class, EntityType.RP.getType());
             Map<String, Map<String, Object>> oidcClientsToPush = relyingParties.stream()
-                    .filter(metaData -> !excludeFromPush(metaData.metaDataFields()))
-                    .collect(toMap(MetaData::getId, formatter::parseOidcClient));
+                .filter(metaData -> !excludeFromPush(metaData.metaDataFields()))
+                .collect(toMap(MetaData::getId, formatter::parseOidcClient));
             serviceProvidersToPush.putAll(oidcClientsToPush);
         }
         if (!excludeSRAM) {
             List<MetaData> sramServices = metaDataRepository.getMongoTemplate().findAll(MetaData.class, EntityType.SRAM.getType());
             sramServices.forEach(sramEntity -> sramEntity.metaDataFields().put("coin:collab_enabled", true));
             Map<String, Map<String, Object>> sramServicesToProvidersToPush = sramServices.stream()
-                    .collect(toMap(MetaData::getId, formatter::parseServiceProvider));
+                .collect(toMap(MetaData::getId, formatter::parseServiceProvider));
             serviceProvidersToPush.putAll(sramServicesToProvidersToPush);
         }
         serviceProvidersToPush.putAll(identityProvidersToPush);
@@ -246,4 +251,24 @@ public class DatabaseController {
         });
     }
 
+    @SneakyThrows
+    public RestTemplate restTemplate(String uri, String userName, String password) {
+
+        HttpClientBuilder httpClientBuilder = HttpClientBuilder.create()
+            .setConnectionManager(new PoolingHttpClientConnectionManager());
+
+        Optional<HttpHost> optionalHttpHost = HttpHostProvider.resolveHttpHost(URI.create(uri).toURL());
+        optionalHttpHost.ifPresent(httpHost -> httpClientBuilder.setRoutePlanner(new DefaultProxyRoutePlanner(httpHost)));
+
+        CloseableHttpClient httpClient = httpClientBuilder.build();
+
+        HttpComponentsClientHttpRequestFactory requestFactory =
+            new HttpComponentsClientHttpRequestFactory(httpClient);
+
+        RestTemplateBuilder builder = new RestTemplateBuilder();
+        return builder
+            .requestFactory(() -> requestFactory)
+            .additionalInterceptors(new BasicAuthenticationInterceptor(userName, password))
+            .build();
+    }
 }
