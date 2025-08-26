@@ -48,6 +48,7 @@ public class MetaDataHookConfiguration {
                 new ProvisioningHook(metaDataRepository, metaDataAutoConfiguration),
                 new EncryptionHook(keyStore, cryptoEnabled),
                 new ProvisioningApplicationDeletionHook(metaDataRepository),
+                new IdentityProviderBrinCodeHook(metaDataAutoConfiguration),
                 new OrganisationDeletionHook(metaDataRepository, metaDataAutoConfiguration)));
     }
 
