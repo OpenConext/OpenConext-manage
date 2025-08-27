@@ -1,6 +1,7 @@
 package manage.control;
 
 import manage.model.MetaData;
+import manage.policies.PdpPolicyDefinition;
 import manage.repository.MetaDataRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @SuppressWarnings("unchecked")
@@ -25,12 +28,15 @@ public class PdPController {
     private final RestTemplate pdpRestTemplate;
     private final MetaDataRepository metaDataRepository;
     private final HttpHeaders headers;
+    private final String parseUrl;
 
     public PdPController(@Value("${push.pdp.decide_url}") String decideUrl,
+                         @Value("${push.pdp.parse_url}") String parseUrl,
                          @Value("${push.pdp.user}") String pdpUser,
                          @Value("${push.pdp.password}") String pdpPassword,
                          MetaDataRepository metaDataRepository) {
         this.decideUrl = decideUrl;
+        this.parseUrl = parseUrl;
         this.metaDataRepository = metaDataRepository;
         this.pdpRestTemplate = new RestTemplate();
         this.pdpRestTemplate.getInterceptors().add(new BasicAuthenticationInterceptor(pdpUser, pdpPassword));
@@ -51,4 +57,15 @@ public class PdPController {
         return metaDataRepository.policiesWithMissingPolicyEnforcementDecisionRequired();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping(value = "/client/pdp/parse")
+    public Map<String, String> xml(@RequestBody Map<String, Object> data) {
+        MetaData metaData = new MetaData("policy", data);
+        //Too prevent NullPointers
+        metaData.initial(UUID.randomUUID().toString(), "system", 1L);
+        PdpPolicyDefinition policyDefinition = new PdpPolicyDefinition(metaData);
+        HttpEntity<?> requestEntity = new HttpEntity<>(policyDefinition, headers);
+        String res = pdpRestTemplate.exchange(this.parseUrl, HttpMethod.POST, requestEntity, String.class).getBody();
+        return Map.of("xml", res);
+    }
 }

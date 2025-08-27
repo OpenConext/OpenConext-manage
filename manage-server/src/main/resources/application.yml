@@ -40,8 +40,8 @@ push:
     enabled: true
   pdp:
     url: http://localhost:8081/pdp/api/manage/push
-    policy_url: http://localhost:8081/pdp/api/manage/policies
     decide_url: http://localhost:8081/pdp/api/manage/decide
+    parse_url: https://pdp.test2.surfconext.nl/pdp/api/manage/parse
     user: pdp_admin
     name: OpenConext PDP
     password: secret

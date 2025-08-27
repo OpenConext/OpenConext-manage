@@ -353,6 +353,12 @@ export function missingEnforcementPolicies() {
     return fetchJson("pdp/missing-enforcements");
 }
 
+//Policies
+export function parsePolicyXML(data) {
+    return postPutJson("pdp/parse", data, "POST")
+}
+
+
 export function playGroundPolicyDecision(pdpRequest) {
     return postPutJson("pdp/decide", pdpRequest, "POST", false);
 }
