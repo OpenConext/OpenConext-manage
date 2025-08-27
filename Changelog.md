@@ -2,6 +2,16 @@
 
 Starting from version 9.0.0, we note changes and new features per release in this file.
 
+## 9.4.0-snapshot
+
+- Improved dependency management in `pom.xml` files ([#538](https://github.com/OpenConext/OpenConext-manage/issues/538))
+- Add 'Organisation' entry ([#535](https://github.com/OpenConext/OpenConext-manage/issues/535))
+- Fix support for http proxies ([#530](https://github.com/OpenConext/OpenConext-manage/issues/530))
+- Add all push data to push preview page ([#528](https://github.com/OpenConext/OpenConext-manage/issues/528))
+- Add custom configuration hook to disallow IdPs with `coin:institution_brin` but no `coin:institution_brin_schac_home` (
+  for [OpenConext-myconext#565](https://github.com/OpenConext/OpenConext-myconext/issues/565))
+- Update dependencies
+
 ## 9.3.0
 
 - Add a feature toggle to disable the strict "public RP must not have a secret" check that was introduced in 9.1.0
