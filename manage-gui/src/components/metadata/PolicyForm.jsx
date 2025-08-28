@@ -25,6 +25,7 @@ export default function PolicyForm({
                                        allowedLoas = [],
                                        data,
                                        isNew,
+                                       errors,
                                        onChange,
                                        onError
                                    }) {
@@ -33,11 +34,11 @@ export default function PolicyForm({
 
     useEffect(() => {
         if (isNew) {
-            //Mark the required regular fields required
-            onError("denyAdvice", true);
-            onError("denyAdviceNl", true);
-            onError("attributes", true);
-            onError("description", true);
+            //Mark the required regular fields required if not present
+            onError("denyAdvice", isEmpty(data.denyAdvice));
+            onError("denyAdviceNl", isEmpty(data.denyAdviceNl));
+            onError("attributes", isEmpty(data.attributes));
+            onError("description", isEmpty(data.description));
             const urlSearchParams = new URLSearchParams(window.location.search);
             if (urlSearchParams.has("sp")) {
                 const sp = urlSearchParams.get("sp");
@@ -620,7 +621,7 @@ export default function PolicyForm({
 
     return (
         <section className="metadata-policy-form">
-            {/*{JSON.stringify(errors)}*/}
+            {JSON.stringify(errors)}
             <section className="policy-form">
                 {renderPolicyType()}
                 {renderPolicyName()}

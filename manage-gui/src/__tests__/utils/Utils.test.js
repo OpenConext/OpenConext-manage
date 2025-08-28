@@ -1,4 +1,4 @@
-import {collapseDotKeys, createDiffObject, groupBy, sortDict} from "../../utils/Utils";
+import {collapseDotKeys, createDiffObject, groupBy, groupPolicyAttributes, sortDict} from "../../utils/Utils";
 
 test("collapseDotKeys", () => {
     const res = collapseDotKeys({
@@ -116,3 +116,21 @@ test("groupBy", () => {
     expect(Object.keys(res)[0]).toEqual("urn:mace:terena.org:attribute-def:schacHomeOrganization");
 })
 
+test("groupPolicyAttributes", () => {
+    let arr = [
+        {name: "urn:collab:group:surfteams.nl", negated: false, value: "rockets"},
+        {name: "urn:collab:group:surfteams.nl", negated: false, value: "clouds"},
+        {name: "urn:collab:mace:eduEntitlement", negated: false, value: "test"}
+    ];
+    let res = groupPolicyAttributes(arr);
+    expect(res['urn:collab:group:surfteams.nl#0'].length).toEqual(2);
+
+    arr = [
+        {name: "urn:collab:group:surfteams.nl", negated: false, value: "rockets", groupID: 0},
+        {name: "urn:collab:group:surfteams.nl", negated: false, value: "clouds", groupID: 1},
+        {name: "urn:collab:mace:eduEntitlement", negated: false, value: "test"}
+    ];
+    res = groupPolicyAttributes(arr);
+    expect(res['urn:collab:group:surfteams.nl#0'].length).toEqual(1);
+    expect(res['urn:collab:group:surfteams.nl#1'].length).toEqual(1);
+})

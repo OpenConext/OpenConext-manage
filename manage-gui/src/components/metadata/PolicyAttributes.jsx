@@ -3,7 +3,7 @@ import React from "react";
 import "./PolicyAttributes.scss";
 import I18n from "i18n-js";
 import {Select} from "../index";
-import {groupBy, isEmpty, stop} from "../../utils/Utils";
+import {groupPolicyAttributes, isEmpty, stop} from "../../utils/Utils";
 import CheckBox from "../CheckBox";
 
 export default function PolicyAttributes({
@@ -27,8 +27,9 @@ export default function PolicyAttributes({
         return !attributesEmpty;
     }
 
-    const deleteAttribute = name => {
-        const newAttributes = attributes.filter(attr => attr.name !== name);
+    const deleteAttribute = (name, nameWithGroupPostfix) => {
+        const groupID = parseInt( nameWithGroupPostfix.substring(nameWithGroupPostfix.indexOf("#") + 1), 10);
+        const newAttributes = attributes.filter(attr => attr.name !== name && attr.groupID !== groupID);
         setAttributes(newAttributes, () => hasAttributes())
     }
 
@@ -39,7 +40,9 @@ export default function PolicyAttributes({
 
     const addAttribute = option => {
         const newAttributes = [...attributes];
-        newAttributes.push({name: option.value, value: "", negated: false});
+        const numberOfDuplicatedAttr = newAttributes.filter(attr => attr.name === option.value).length;
+        const groupID = numberOfDuplicatedAttr === 0 ? 0 : (numberOfDuplicatedAttr + 1);
+        newAttributes.push({name: option.value, value: "", groupID: groupID, negated: false});
         setAttributes(newAttributes);
     }
 
@@ -55,10 +58,13 @@ export default function PolicyAttributes({
         setAttributes(newAttributes, () => hasAttributes())
     }
 
-    const addValue = (e, name) => {
+    const addValue = (e, nameWithGroupPostfix) => {
         stop(e);
         const newAttributes = [...attributes];
-        newAttributes.push({name: name, value: "", negated: false});
+        const hashIndex = nameWithGroupPostfix.indexOf("#");
+        const name = nameWithGroupPostfix.substring(0, hashIndex);
+        const groupID = parseInt(nameWithGroupPostfix.substring(hashIndex + 1), 10) ;
+        newAttributes.push({name: name, value: "", negated: false, groupID: groupID});
         setAttributes(newAttributes);
     }
 
@@ -66,48 +72,60 @@ export default function PolicyAttributes({
         return allowedAttributes.find(attr => attr.value === name)?.label;
     }
 
-    const groupedAttributes = groupBy(attributes.map((attr, index) => {
+    const groupedAttributes = groupPolicyAttributes(attributes.map((attr, index) => {
         attr.index = index;
+        attr.groupID = attr.groupID || 0;
         return attr;
-    }), "name");
-
+    }));
 
     return (
         <div className={`policy-attributes ${embedded ? "max" : ""}`}>
-            {Object.keys(groupedAttributes).map((name, i) =>
-                <div key={i} className="attribute-container">
-                    <div className="attribute">
-                        <input className="max"
-                               type="text"
-                               disabled={true}
-                               value={`${resolveAttributeLabel(name)} - ${name}`}/>
-                        <span onClick={() => deleteAttribute(name)}>
+            {Object.keys(groupedAttributes).map((nameWithGroupPostfix, i) => {
+                const name = nameWithGroupPostfix.substring(0, nameWithGroupPostfix.indexOf("#"))
+                return (
+                    <div key={i} className="attribute-container">
+                        <div className="attribute">
+                            <input className="max"
+                                   type="text"
+                                   disabled={true}
+                                   value={`${resolveAttributeLabel(name)} - ${name}`}/>
+                            <span onClick={() => deleteAttribute(name, nameWithGroupPostfix)}>
                                     <i className="fa fa-trash-o"/>
                                 </span>
-                    </div>
-                    <p>{I18n.t("policies.values")}</p>
-                    {groupedAttributes[name].map((attr, i) =>
-                        <div key={i} className="value">
-                            {includeNegate &&
-                                <CheckBox name={window.crypto.randomUUID()}
-                                          value={attr.negated}
-                                          onChange={e => changeValue(name, attr.index, e, true)}
-                                          info={I18n.t("policies.negated")}
-                                          />}
-                            <input className="max" type="text" value={attr.value}
-                                   onChange={e => changeValue(name, attr.index, e, false)}/>
-                            <span onClick={() => deleteValue(name, attr.index)}>
+                        </div>
+                        <p>{I18n.t("policies.values")}</p>
+                        {groupedAttributes[nameWithGroupPostfix].map((attr, i) =>
+                            <>
+                            <div key={i} className="value">
+                                {includeNegate &&
+                                    <CheckBox name={window.crypto.randomUUID()}
+                                              value={attr.negated}
+                                              onChange={e => changeValue(name, attr.index, e, true)}
+                                              info={I18n.t("policies.negated")}
+                                    />}
+                                <input className="max" type="text" value={attr.value}
+                                       onChange={e => changeValue(name, attr.index, e, false)}/>
+                                <span onClick={() => deleteValue(name, attr.index)}>
                                         <i className="fa fa-trash-o"/>
                                     </span>
-                        </div>)}
-                    <a href="#" onClick={e => addValue(e, name)}>{I18n.t("policies.addValue")}</a>
-                </div>
+                            </div>
+                                {i < groupedAttributes[nameWithGroupPostfix].length - 1 &&
+                                    <span className="logical-separator">
+                                    {I18n.t("policies.orShort")}
+                                </span>}
+
+                            </>)}
+                        <a href="#" onClick={e => addValue(e, nameWithGroupPostfix)}>{I18n.t("policies.addValue")}</a>
+                    </div>
+
+                );
+            }
             )}
             <Select
                 className="policy-select max"
                 onChange={addAttribute}
                 value={null}
-                options={allowedAttributes.filter(attr => !attributes.some(dataAttr => attr.value === dataAttr.name))}
+                options={allowedAttributes}
                 placeholder={I18n.t("policies.addAttribute")}
                 isSearchable={false}
             />

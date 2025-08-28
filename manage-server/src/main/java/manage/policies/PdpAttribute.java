@@ -27,4 +27,6 @@ public class PdpAttribute {
 
     private boolean negated;
 
+    private int groupID;
+
 }

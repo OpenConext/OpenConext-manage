@@ -119,6 +119,16 @@ export function groupBy(arr, property) {
     }, {});
 }
 
+export function groupPolicyAttributes(attributes) {
+    return attributes.reduce((acc, item) => {
+        const attributeName = item.name;
+        const key = `${attributeName}#${item.groupID || 0}`;
+        acc[key] = acc[key] || [];
+        acc[key].push(item);
+        return acc;
+    }, {});
+}
+
 export function determineStatus(decision) {
     switch (decision) {
         case "Permit":

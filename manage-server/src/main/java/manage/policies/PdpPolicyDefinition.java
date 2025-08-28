@@ -76,28 +76,30 @@ public class PdpPolicyDefinition {
         this.serviceProviderIds = convertProviders(data, "serviceProviderIds");
         this.identityProviderIds = convertProviders(data, "identityProviderIds");
         this.attributes = ((List<Map<String, Object>>) data.getOrDefault("attributes", new ArrayList<>())).stream()
-                .map(m -> new PdpAttribute(
-                        (String) m.get("name"),
-                        (String) m.get("value"),
-                        (boolean) m.getOrDefault("negated", false)))
-                .collect(Collectors.toList());
+            .map(m -> new PdpAttribute(
+                (String) m.get("name"),
+                (String) m.get("value"),
+                (boolean) m.getOrDefault("negated", false),
+                (int) m.getOrDefault("groupID", 0)))
+            .collect(Collectors.toList());
         this.loas = ((List<Map<String, Object>>) data.getOrDefault("loas", new ArrayList<>()))
-                .stream().map(m -> {
-                    List<Map<String, Object>> loaAttributes = (List<Map<String, Object>>) m.getOrDefault("attributes", new ArrayList<>());
-                    return new LoA(
-                            (String) m.get("level"),
-                            (boolean) m.getOrDefault("allAttributesMustMatch", false),
-                            (boolean) m.getOrDefault("negateCidrNotation", false),
-                            loaAttributes.stream()
-                                    .map(attr -> new PdpAttribute(
-                                            (String) attr.get("name"),
-                                            (String) attr.get("value"),
-                                            (boolean) attr.getOrDefault("negated", false)))
-                                    .collect(Collectors.toList()),
-                            ((List<Map<String, Object>>) m.getOrDefault("cidrNotations", new ArrayList<>())).stream()
-                                    .map(cidr -> new CidrNotation((String) cidr.get("ipAddress"), (Integer) cidr.get("prefix"))).collect(Collectors.toList())
-                    );
-                }).collect(toList());
+            .stream().map(m -> {
+                List<Map<String, Object>> loaAttributes = (List<Map<String, Object>>) m.getOrDefault("attributes", new ArrayList<>());
+                return new LoA(
+                    (String) m.get("level"),
+                    (boolean) m.getOrDefault("allAttributesMustMatch", false),
+                    (boolean) m.getOrDefault("negateCidrNotation", false),
+                    loaAttributes.stream()
+                        .map(attr -> new PdpAttribute(
+                            (String) attr.get("name"),
+                            (String) attr.get("value"),
+                            (boolean) attr.getOrDefault("negated", false),
+                            (int) m.getOrDefault("groupID", 0)))
+                        .collect(Collectors.toList()),
+                    ((List<Map<String, Object>>) m.getOrDefault("cidrNotations", new ArrayList<>())).stream()
+                        .map(cidr -> new CidrNotation((String) cidr.get("ipAddress"), (Integer) cidr.get("prefix"))).collect(Collectors.toList())
+                );
+            }).collect(toList());
         this.denyRule = (boolean) data.getOrDefault("denyRule", false);
         this.allAttributesMustMatch = (boolean) data.getOrDefault("allAttributesMustMatch", false);
         this.userDisplayName = (String) data.get("userDisplayName");
@@ -105,8 +107,8 @@ public class PdpPolicyDefinition {
         this.denyAdvice = (String) data.get("denyAdvice");
         this.denyAdviceNl = (String) data.get("denyAdviceNl");
         this.policyId = (String) data.get("policyId");
-        this.active=(boolean) data.getOrDefault("active", false);
-        this.type=(String) data.get("type");
+        this.active = (boolean) data.getOrDefault("active", false);
+        this.type = (String) data.get("type");
         Revision revision = metaData.getRevision();
         this.created = revision.getCreated();
         this.revisionNbr = revision.getNumber();
@@ -118,12 +120,12 @@ public class PdpPolicyDefinition {
 
     public static void updateProviderStructure(Map<String, Object> data) {
         List.of("identityProviderIds", "serviceProviderIds")
-                .forEach(reference -> {
-                            List<String> names = (List<String>) data.getOrDefault(reference, new ArrayList<>());
-                            //The map needs to be mutable hence the extra HashMap constructor
-                            data.put(reference, names.stream().map(name -> new HashMap<>(Map.of("name", name))).collect(toList()));
-                        }
-                );
+            .forEach(reference -> {
+                    List<String> names = (List<String>) data.getOrDefault(reference, new ArrayList<>());
+                    //The map needs to be mutable hence the extra HashMap constructor
+                    data.put(reference, names.stream().map(name -> new HashMap<>(Map.of("name", name))).collect(toList()));
+                }
+            );
         data.put("metaDataFields", new HashMap<>());
         List.of("id", "created").forEach(name -> data.remove(name));
     }
