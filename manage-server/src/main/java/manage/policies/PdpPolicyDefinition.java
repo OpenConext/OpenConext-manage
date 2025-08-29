@@ -33,6 +33,8 @@ public class PdpPolicyDefinition {
     private List<String> serviceProviderNames = new ArrayList<>();
     private List<String> serviceProviderNamesNl = new ArrayList<>();
 
+    private boolean serviceProvidersNegated;
+
     private List<String> identityProviderIds = new ArrayList<>();
     private List<String> identityProviderNames = new ArrayList<>();
     private List<String> identityProviderNamesNl = new ArrayList<>();
@@ -74,6 +76,7 @@ public class PdpPolicyDefinition {
         this.name = (String) data.get("name");
         this.description = (String) data.get("description");
         this.serviceProviderIds = convertProviders(data, "serviceProviderIds");
+        this.serviceProvidersNegated = (boolean) data.getOrDefault("serviceProvidersNegated", false);
         this.identityProviderIds = convertProviders(data, "identityProviderIds");
         this.attributes = ((List<Map<String, Object>>) data.getOrDefault("attributes", new ArrayList<>())).stream()
             .map(m -> new PdpAttribute(

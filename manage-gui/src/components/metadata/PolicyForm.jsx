@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect} from "react";
 
 import "./PolicyForm.scss";
 import I18n from "i18n-js";
@@ -75,7 +75,8 @@ export default function PolicyForm({
 
     const onChangeServiceProviders = (options) => {
         onChange("data.serviceProviderIds", options.map(option => ({name: option.value})));
-        onError("serviceProviderIds", isEmpty(options));
+        const isStepUpPolicy = data.type === "step";
+        onError("serviceProviderIds", isEmpty(options) && !isStepUpPolicy);
     }
 
     const providerOptions = (providers, providerKey) =>
@@ -131,17 +132,20 @@ export default function PolicyForm({
     }
 
     const onChangePolicyType = option => {
-        onChange("data.type", option.value, false, () => {
-            const isRegPolicy = option.value === "reg";
-            ["denyAdvice", "denyAdviceNl"].forEach(attr => {
-                onError(attr, isRegPolicy);
-                onChange(`data.${attr}`, "");
-            })
-            onError("attributes", isRegPolicy);
-            onChange("data.attributes", []);
-            onError("loas", !isRegPolicy);
-            onChange("data.loas", []);
-        });
+        const isRegPolicyNow = option.value === "reg";
+        onChange(
+            ["data.type", "data.denyAdvice", "data.denyAdviceNl", "data.attributes", "data.loas", "data.denyRule", "data.description"],
+            [option.value, "", "", [], [], false, ""],
+            false,
+            () => {
+                ["denyAdvice", "denyAdviceNl"].forEach(attr => {
+                    onError(attr, isRegPolicyNow);
+                })
+                onError("attributes", isRegPolicyNow);
+                onError("loas", !isRegPolicyNow);
+                onError("description", true);
+
+            });
     }
 
     const renderError = attribute => {
@@ -156,11 +160,12 @@ export default function PolicyForm({
             return null;
         }
         return (
-          <div className="excluded-providers">
-              {excludedServiceProviders.map((provider, index) =>
-                  <span key={index} dangerouslySetInnerHTML={{__html: I18n.t("policies.providerExcludedFromPush", {name: provider.label})}}/>
-                  )}
-          </div>
+            <div className="excluded-providers">
+                {excludedServiceProviders.map((provider, index) =>
+                    <span key={index}
+                          dangerouslySetInnerHTML={{__html: I18n.t("policies.providerExcludedFromPush", {name: provider.label})}}/>
+                )}
+            </div>
         );
     }
 
@@ -220,6 +225,7 @@ export default function PolicyForm({
     }
 
     const renderIdentityProviders = () => {
+        const isStepUpPolicy = data.type === "step";
         return (
             <div className="input-field">
                 <label htmlFor="institutionProviders">
@@ -232,23 +238,26 @@ export default function PolicyForm({
                                   place="right"
                                   class="tool-tip"
                                   effect="solid">
-                        <span>{I18n.t("policies.institutionProvidersTooltip")}</span>
+                        <span>{I18n.t(`policies.institutionProvidersTooltip${isStepUpPolicy ? "StepUp" : ""}`)}</span>
                     </ReactTooltip>
                 </label>
                 <Select
                     isMulti={true}
                     className="policy-select"
                     onChange={onChangeIdentityProviders}
-                    placeholder={I18n.t("policies.institutionProvidersPlaceholder")}
+                    placeholder={I18n.t(`policies.institutionProvidersPlaceholder${isStepUpPolicy ? "StepUp" : ""}`)}
                     options={providerOptions(identityProviders, "identityProviderIds")}
                     value={providerValues(identityProviders, "identityProviderIds")}
                 />
+                {(isEmpty(data.serviceProviderIds) && isEmpty(data.identityProviderIds) && isStepUpPolicy) &&
+                    <div className="error"><span>{I18n.t("policies.stepUpSpOrIdPIsRequired")}</span></div>}
             </div>
         );
     }
 
     const renderServiceProviders = () => {
         const serviceProviderValues = providerValues(serviceProviders, "serviceProviderIds");
+        const isStepUpPolicy = data.type === "step"
         return (
             <div className="input-field">
                 <label htmlFor="serviceProviders">
@@ -261,19 +270,28 @@ export default function PolicyForm({
                                   place="right"
                                   class="tool-tip"
                                   effect="solid">
-                        <span>{I18n.t("policies.serviceProvidersTooltip")}</span>
+                        <span>{I18n.t(`policies.serviceProvidersTooltip${isStepUpPolicy ? "StepUp" : ""}`)}</span>
                     </ReactTooltip>
                 </label>
-                <Select
-                    isMulti={true}
-                    className="policy-select"
-                    onChange={onChangeServiceProviders}
-                    placeholder={I18n.t("policies.serviceProvidersPlaceholder")}
-                    options={providerOptions(serviceProviders, "serviceProviderIds")}
-                    value={serviceProviderValues}
-                />
-                {isEmpty(data.serviceProviderIds) && renderError("Service provider")}
-                {renderExcludeFromWarning(serviceProviderValues)}
+                <div className="select-container">
+                    {isStepUpPolicy &&
+                        <CheckBox name="serviceProvidersNegated"
+                                  onChange={e => onChange("data.serviceProvidersNegated", e.target.checked)}
+                                  value={data.serviceProvidersNegated}
+                                  info={I18n.t("policies.negated")}
+                        />
+                    }
+                    <Select
+                        isMulti={true}
+                        className="policy-select"
+                        onChange={onChangeServiceProviders}
+                        placeholder={I18n.t(`policies.serviceProvidersPlaceholder${isStepUpPolicy ? "StepUp" : ""}`)}
+                        options={providerOptions(serviceProviders, "serviceProviderIds")}
+                        value={serviceProviderValues}
+                    />
+                </div>
+                {(isEmpty(data.serviceProviderIds) && !isStepUpPolicy) && renderError("Service provider")}
+                {!data.serviceProvidersNegated && renderExcludeFromWarning(serviceProviderValues)}
             </div>
         );
     }
@@ -443,7 +461,7 @@ export default function PolicyForm({
                                                       info={I18n.t("policies.negateCidrNotation")}
                                                       onChange={e => loaChanged("negateCidrNotation", e.target.checked, i, null)}/>
                                         </div>}
-                                    {(loa.cidrNotations || []).map((cidrNotation,  index)=>
+                                    {(loa.cidrNotations || []).map((cidrNotation, index) =>
                                         <div key={index} className="cidr-notations">
                                             <div className="cidr-notation">
                                                 <input type="text"
@@ -468,23 +486,24 @@ export default function PolicyForm({
                                                 <span className="error">{I18n.t("policies.invalidCidr")}</span>}
                                             {cidrNotation.ipInfo && renderIpInfo(cidrNotation.ipInfo)}
                                         </div>)}
-                                    <a href="#" className="add-cidr-notation" onClick={e => addCidrNotation(e, i)}>{I18n.t("policies.addIp")}</a>
+                                    <a href="#" className="add-cidr-notation"
+                                       onClick={e => addCidrNotation(e, i)}>{I18n.t("policies.addIp")}</a>
                                 </div>
                             </div>
                         </div>
                     )}
-                <Select
-                    className="policy-select max"
-                    onChange={addLoa}
-                    value={null}
-                    options={allowedLoas
-                        .filter(loa => !data.loas.some(dataLoa => loa === dataLoa.level))
-                        .map(loa => ({value: loa, label: loa}))}
-                    placeholder={I18n.t("policies.addLoa")}
-                    isSearchable={false}
-                />
-                {isEmpty(data.loas) && renderError("Level of assurance")}
-            </div>
+                    <Select
+                        className="policy-select max"
+                        onChange={addLoa}
+                        value={null}
+                        options={allowedLoas
+                            .filter(loa => !data.loas.some(dataLoa => loa === dataLoa.level))
+                            .map(loa => ({value: loa, label: loa}))}
+                        placeholder={I18n.t("policies.addLoa")}
+                        isSearchable={false}
+                    />
+                    {isEmpty(data.loas) && renderError("Level of assurance")}
+                </div>
             </>
         );
     }

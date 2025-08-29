@@ -82,11 +82,11 @@ export default function PolicyAttributes({
 
     return (
         <div className={`policy-attributes ${embedded ? "max" : ""}`}>
-            {Object.keys(groupedAttributes).map((nameWithGroupPostfix, i) => {
+            {Object.keys(groupedAttributes).map((nameWithGroupPostfix, outerIndex) => {
                     const name = nameWithGroupPostfix.substring(0, nameWithGroupPostfix.indexOf("#"))
                     return (
-                        <div key={i} className="attribute-container">
-                            {(!isPlayground && i !== 0) && <span className="logical-separator top">
+                        <div key={outerIndex} className="attribute-container">
+                            {(!isPlayground && outerIndex !== 0) && <span className="logical-separator top">
                                     {I18n.t(allAttributesMustMatch ? "policies.andShort" : "policies.orShort")}
                                 </span>}
                             <div className="attribute">
@@ -99,9 +99,9 @@ export default function PolicyAttributes({
                                 </span>
                             </div>
                             <p>{I18n.t("policies.values")}</p>
-                            {groupedAttributes[nameWithGroupPostfix].map((attr, i) =>
+                            {groupedAttributes[nameWithGroupPostfix].map((attr, innerIndex) =>
                                 <>
-                                    <div key={i} className="value">
+                                    <div key={innerIndex} className="value">
                                         {includeNegate &&
                                             <CheckBox name={window.crypto.randomUUID()}
                                                       value={attr.negated}
@@ -114,7 +114,7 @@ export default function PolicyAttributes({
                                         <i className="fa fa-trash-o"/>
                                     </span>
                                     </div>
-                                    {(!isPlayground && i < groupedAttributes[nameWithGroupPostfix].length - 1) &&
+                                    {(!isPlayground && innerIndex < groupedAttributes[nameWithGroupPostfix].length - 1) &&
                                         <span className={`logical-separator ${includeNegate ? "loa" : ""}`}>
                                     {I18n.t("policies.orShort")}
                                 </span>}

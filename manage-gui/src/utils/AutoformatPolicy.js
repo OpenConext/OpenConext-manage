@@ -45,7 +45,7 @@ export const AutoFormat = {
 
     description: function (policy, identityProviderNames, serviceProviderNames) {
         const idps = isEmpty(identityProviderNames) ? "" : " from " + identityProviderNames.map(this.addQuotes).join(" or ");
-        const sp = this.addQuotes(serviceProviderNames.join(", ")) || "?";
+        const sp = isEmpty(serviceProviderNames) ? "" : this.addQuotes(serviceProviderNames.join(", ")) || "?";
         const attrs = policy.attributes || [];
 
         const attributes = this.attributes(attrs, policy.allAttributesMustMatch);
@@ -68,7 +68,9 @@ export const AutoFormat = {
         //we can't use JS templates as the backtick breaks the uglification. Will be resolved when we upgrade the build tooling
         let description;
         if (policy.type === "step") {
-            description = "A user" + idps + loasTxt + " when accessing " + sp;
+            const serviceProvidersNegated = policy.serviceProvidersNegated ? "NOT " : "";
+            const spText = isEmpty(serviceProviderNames) ? "connected Service Providers" : serviceProvidersNegated + sp;
+            description = "A user" + idps + loasTxt + " when accessing " + spText;
         } else {
             description = "A user" + idps + " is " + only + " allowed to access " + sp + " when" + " " + attributes;
         }
