@@ -1,4 +1,4 @@
-import {groupBy, isEmpty} from "./Utils";
+import {groupPolicyAttributes, isEmpty} from "./Utils";
 
 export const AutoFormat = {
 
@@ -7,24 +7,25 @@ export const AutoFormat = {
     },
 
     attributes: function (passedAttributes, allAttributesMustMatch) {
-        let attributes = passedAttributes;
-        const otherAttr = attributes.filter(attr => {
-            return attr.name !== "urn:collab:group:surfteams.nl";
-        });
-        if (otherAttr.length === 0) {
-            return ".";
-        }
-        attributes = groupBy(attributes, "name");
+        const attributes = groupPolicyAttributes(passedAttributes);
         const attributeNames = Object.keys(attributes);
         const length = attributeNames.length;
-        const lines = attributeNames.map((attributeName, index) => {
-            const values = attributes[attributeName].map(attribute => {
+        const lines = attributeNames.map((attributeNameWithPostfix, index) => {
+            const attributeValues = attributes[attributeNameWithPostfix];
+            const values = attributeValues.map(attribute => {
                 const negated = attribute.negated ? "NOT " : "";
                 return negated + this.addQuotes(attribute.value);
             }).join(" or ");
             const logical = index === (length - 1) ? "" : allAttributesMustMatch ? " and " : " or ";
+            const attributeName = attributeNameWithPostfix.substring(0, attributeNameWithPostfix.indexOf("#"));
+            let result;
+            let postFix = attributeValues.length > 1 ? "s " : " "
+            if (attributeName === "urn:collab:group:surfteams.nl") {
+                result = "he/she is a member of the team" + postFix + values + logical;
+            } else {
+                result = "he/she has the value" + postFix + values + " for attribute '" + attributeName + "'" + logical;
 
-            const result = "he/she has the value " + values + " for attribute '" + attributeName + "'" + logical;
+            }
             return result;
         });
         return lines.join("");
@@ -46,16 +47,10 @@ export const AutoFormat = {
         const idps = isEmpty(identityProviderNames) ? "" : " from " + identityProviderNames.map(this.addQuotes).join(" or ");
         const sp = this.addQuotes(serviceProviderNames.join(", ")) || "?";
         const attrs = policy.attributes || [];
-        const teamMembershipAttr = attrs.filter(attr => {
-            return attr.name === "urn:collab:group:surfteams.nl";
-        });
-        const teamMembership = teamMembershipAttr.length > 0 ? " he/she is a member of the team " + teamMembershipAttr
-            .map(attr => this.addQuotes(attr.value)).join(" or ") : "";
-
-        const and = teamMembershipAttr.length === 0 || teamMembershipAttr.length === attrs.length ? "" : policy.allAttributesMustMatch ? " and" : " or";
-        const only = policy.denyRule ? "not" : "only";
 
         const attributes = this.attributes(attrs, policy.allAttributesMustMatch);
+
+        const only = policy.denyRule ? "not" : "only";
 
         const loas = policy.loas || [];
         const loasTxt = loas.map(loa => {
@@ -64,18 +59,9 @@ export const AutoFormat = {
             if (attrLoa !== ".") {
                 txt = txt + " when " + attrLoa;
             }
-            const loaTeamMembershipAttr = loa.attributes.filter(attr => attr.name === "urn:collab:group:surfteams.nl");
-            const loaTeamMembership = loaTeamMembershipAttr.length > 0 ? " he/she is a member of the team " + loaTeamMembershipAttr
-                .map(attr => {
-                    const negated = attr.negated ? "NOT " : "";
-                    return negated + this.addQuotes(attr.value);
-                }).join(" or ") : "";
 
             const cidrNotationTxt = this.cidrNotations(loa, loa.cidrNotations, loa.allAttributesMustMatch, loa.attributes.length > 0);
             txt = txt + cidrNotationTxt;
-            if (loaTeamMembership !== "") {
-                txt = txt + ((cidrNotationTxt !== "" || attrLoa !== ".") ? " and" : "") + " when" + loaTeamMembership;
-            }
             return txt;
         }).join(" and he /she ");
 
@@ -84,7 +70,7 @@ export const AutoFormat = {
         if (policy.type === "step") {
             description = "A user" + idps + loasTxt + " when accessing " + sp;
         } else {
-            description = "A user" + idps + " is " + only + " allowed to access " + sp + " when" + teamMembership + and + " " + attributes;
+            description = "A user" + idps + " is " + only + " allowed to access " + sp + " when" + " " + attributes;
         }
 
 

@@ -115,7 +115,7 @@ export default function PolicyAttributes({
                                     </span>
                                     </div>
                                     {(!isPlayground && i < groupedAttributes[nameWithGroupPostfix].length - 1) &&
-                                        <span className="logical-separator">
+                                        <span className={`logical-separator ${includeNegate ? "loa" : ""}`}>
                                     {I18n.t("policies.orShort")}
                                 </span>}
 
