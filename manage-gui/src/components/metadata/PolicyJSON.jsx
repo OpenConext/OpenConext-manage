@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 
-import "./PolicyXML.scss";
+import "./PolicyJSON.scss";
 import {parsePolicyJSON} from "../../api";
 import "highlight.js/styles/default.css";
 import JSONPretty from "react-json-pretty";
