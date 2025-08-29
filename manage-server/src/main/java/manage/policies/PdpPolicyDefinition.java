@@ -94,7 +94,7 @@ public class PdpPolicyDefinition {
                             (String) attr.get("name"),
                             (String) attr.get("value"),
                             (boolean) attr.getOrDefault("negated", false),
-                            (int) m.getOrDefault("groupID", 0)))
+                            (int) attr.getOrDefault("groupID", 0)))
                         .collect(Collectors.toList()),
                     ((List<Map<String, Object>>) m.getOrDefault("cidrNotations", new ArrayList<>())).stream()
                         .map(cidr -> new CidrNotation((String) cidr.get("ipAddress"), (Integer) cidr.get("prefix"))).collect(Collectors.toList())

@@ -160,6 +160,7 @@ export default function PolicyPlayground({}) {
                     setAttributes={doSetAttributes}
                     includeNegate={false}
                     isRequired={false}
+                    isPlayground={true}
                 />
                 {!initial && isEmpty(attributes) && renderError("Attribute")}
             </>
