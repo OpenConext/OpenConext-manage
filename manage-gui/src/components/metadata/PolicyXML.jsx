@@ -4,6 +4,7 @@ import "./PolicyXML.scss";
 import {parsePolicyXML} from "../../api";
 import Highlight from "react-highlight";
 import "highlight.js/styles/default.css";
+import format from "xml-formatter";
 
 export default function PolicyXML({data}) {
 
@@ -12,7 +13,7 @@ export default function PolicyXML({data}) {
 
     useEffect(() => {
         parsePolicyXML(data).then(res => {
-            setXML(res.xml);
+            setXML(format(res.xml, { indentation: "    " }));
             setLoading(false);
         })
     }, []);
