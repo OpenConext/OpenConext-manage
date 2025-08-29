@@ -1,5 +1,7 @@
 package manage.control;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import manage.model.MetaData;
 import manage.policies.PdpPolicyDefinition;
 import manage.repository.MetaDataRepository;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -29,12 +32,13 @@ public class PdPController {
     private final MetaDataRepository metaDataRepository;
     private final HttpHeaders headers;
     private final String parseUrl;
+    private final ObjectMapper objectMapper;
 
     public PdPController(@Value("${push.pdp.decide_url}") String decideUrl,
                          @Value("${push.pdp.parse_url}") String parseUrl,
                          @Value("${push.pdp.user}") String pdpUser,
                          @Value("${push.pdp.password}") String pdpPassword,
-                         MetaDataRepository metaDataRepository) {
+                         MetaDataRepository metaDataRepository, ObjectMapper objectMapper) {
         this.decideUrl = decideUrl;
         this.parseUrl = parseUrl;
         this.metaDataRepository = metaDataRepository;
@@ -42,6 +46,7 @@ public class PdPController {
         this.pdpRestTemplate.getInterceptors().add(new BasicAuthenticationInterceptor(pdpUser, pdpPassword));
         this.headers = new HttpHeaders();
         this.headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+        this.objectMapper = objectMapper;
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -67,5 +72,26 @@ public class PdPController {
         HttpEntity<?> requestEntity = new HttpEntity<>(policyDefinition, headers);
         String res = pdpRestTemplate.exchange(this.parseUrl, HttpMethod.POST, requestEntity, String.class).getBody();
         return Map.of("xml", res);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping(value = "/client/pdp/parse-json")
+    public Map<String, Object> json(@RequestBody Map<String, Object> data) {
+        MetaData metaData = new MetaData("policy", data);
+        //Too prevent NullPointers
+        metaData.initial(UUID.randomUUID().toString(), "system", 1L);
+        PdpPolicyDefinition policyDefinition = new PdpPolicyDefinition(metaData);
+        Map<String, Object> map = this.objectMapper.convertValue(policyDefinition, new TypeReference<>() {
+        });
+        map.entrySet().removeIf(entry -> {
+            Object value = entry.getValue();
+            if (value == null ||
+                value instanceof String && ((String) value).isEmpty() ||
+                value instanceof Collection && ((Collection<?>) value).isEmpty()) {
+                return true;
+            }
+            return false;
+        });
+        return map;
     }
 }

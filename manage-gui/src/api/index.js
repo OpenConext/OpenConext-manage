@@ -358,6 +358,10 @@ export function parsePolicyXML(data) {
     return postPutJson("pdp/parse", data, "POST")
 }
 
+//Policies
+export function parsePolicyJSON(data) {
+    return postPutJson("pdp/parse-json", data, "POST")
+}
 
 export function playGroundPolicyDecision(pdpRequest) {
     return postPutJson("pdp/decide", pdpRequest, "POST", false);

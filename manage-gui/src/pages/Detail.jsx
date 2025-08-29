@@ -58,6 +58,7 @@ import Policies from "../components/metadata/Policies";
 import {deleteFalseErrorKeys} from "../utils/MetaDataConfiguration";
 import {isReadOnly} from "../utils/EntityTypes";
 import PolicyXML from "../components/metadata/PolicyXML";
+import PolicyJSON from "../components/metadata/PolicyJSON";
 
 let tabsSp = [
     "connection",
@@ -128,6 +129,7 @@ const tabsPr = [
 const tabsPolicy = [
     "policy_form",
     "policy_xml",
+    "policy_json",
     "revisions"
 ];
 
@@ -1091,6 +1093,10 @@ class Detail extends React.PureComponent {
             case "policy_xml":
                 return (
                     <PolicyXML data={metaData.data}/>
+                );
+            case "policy_json":
+                return (
+                    <PolicyJSON data={metaData.data}/>
                 );
             default:
                 throw new Error(`Unknown tab ${tab}`);

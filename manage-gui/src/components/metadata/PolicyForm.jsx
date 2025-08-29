@@ -615,7 +615,7 @@ export default function PolicyForm({
 
     return (
         <section className="metadata-policy-form">
-            {JSON.stringify(errors)}
+            {/*{JSON.stringify(errors)}*/}
             <section className="policy-form">
                 {renderPolicyType()}
                 {renderPolicyName()}

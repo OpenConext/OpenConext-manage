@@ -77,6 +77,7 @@ I18n.translations.en = {
             connected_applications: "Applications ({{nbr}})",
             auto_refresh: "Auto refresh",
             policy_form: "Configuration",
+            policy_json: "JSON",
             policy_xml: "XACML",
             policies: "Policies ({{nbr}})",
             organisation: "Organisation",
