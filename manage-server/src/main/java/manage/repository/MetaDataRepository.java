@@ -265,6 +265,7 @@ public class MetaDataRepository {
         Field fields = query.fields();
         fields
                 .include("type")
+                .include("version")
                 .include("data.state")
                 .include("data.entityid")
                 .include("data.name")
@@ -272,6 +273,7 @@ public class MetaDataRepository {
                 .include("data.metaDataFields.OrganizationName:en")
                 .include("data.metaDataFields.OrganizationName:en")
                 .include("data.revisionnote")
+                .include("revision.number")
                 .include("revision.created")
                 .include("revision.terminated")
                 .include("revision.updatedBy");

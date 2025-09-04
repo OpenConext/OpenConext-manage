@@ -756,6 +756,8 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         assertEquals("9", rp9.get("id"));
         assertEquals("First revision RP", ((Map) rp9.get("data")).get("revisionnote"));
         assertNull(((Map) rp9.get("revision")).get("terminated"));
+        assertEquals(2, rp9.get("version"));
+        assertEquals(2, ((Map) rp9.get("revision")).get("number"));
 
         Map<String, Object> rs10 = results.get(3);
         assertEquals("Delete revision RS 10", ((Map) rs10.get("data")).get("revisionnote"));
