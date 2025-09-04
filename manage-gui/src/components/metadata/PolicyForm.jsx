@@ -75,8 +75,6 @@ export default function PolicyForm({
 
     const onChangeServiceProviders = (options) => {
         onChange("data.serviceProviderIds", options.map(option => ({name: option.value})));
-        const isStepUpPolicy = data.type === "step";
-        onError("serviceProviderIds", isEmpty(options) && !isStepUpPolicy);
     }
 
     const providerOptions = (providers, providerKey) =>
@@ -225,7 +223,6 @@ export default function PolicyForm({
     }
 
     const renderIdentityProviders = () => {
-        const isStepUpPolicy = data.type === "step";
         return (
             <div className="input-field">
                 <label htmlFor="institutionProviders">
@@ -238,18 +235,18 @@ export default function PolicyForm({
                                   place="right"
                                   class="tool-tip"
                                   effect="solid">
-                        <span>{I18n.t(`policies.institutionProvidersTooltip${isStepUpPolicy ? "StepUp" : ""}`)}</span>
+                        <span>{I18n.t("policies.institutionProvidersTooltipStepUp")}</span>
                     </ReactTooltip>
                 </label>
                 <Select
                     isMulti={true}
                     className="policy-select"
                     onChange={onChangeIdentityProviders}
-                    placeholder={I18n.t(`policies.institutionProvidersPlaceholder${isStepUpPolicy ? "StepUp" : ""}`)}
+                    placeholder={I18n.t("policies.institutionProvidersPlaceholderStepUp")}
                     options={providerOptions(identityProviders, "identityProviderIds")}
                     value={providerValues(identityProviders, "identityProviderIds")}
                 />
-                {(isEmpty(data.serviceProviderIds) && isEmpty(data.identityProviderIds) && isStepUpPolicy) &&
+                {(isEmpty(data.serviceProviderIds) && isEmpty(data.identityProviderIds) ) &&
                     <div className="error"><span>{I18n.t("policies.stepUpSpOrIdPIsRequired")}</span></div>}
             </div>
         );
@@ -257,7 +254,6 @@ export default function PolicyForm({
 
     const renderServiceProviders = () => {
         const serviceProviderValues = providerValues(serviceProviders, "serviceProviderIds");
-        const isStepUpPolicy = data.type === "step"
         return (
             <div className="input-field">
                 <label htmlFor="serviceProviders">
@@ -270,27 +266,24 @@ export default function PolicyForm({
                                   place="right"
                                   class="tool-tip"
                                   effect="solid">
-                        <span>{I18n.t(`policies.serviceProvidersTooltip${isStepUpPolicy ? "StepUp" : ""}`)}</span>
+                        <span>{I18n.t("policies.serviceProvidersTooltipStepUp")}</span>
                     </ReactTooltip>
                 </label>
                 <div className="select-container">
-                    {isStepUpPolicy &&
                         <CheckBox name="serviceProvidersNegated"
                                   onChange={e => onChange("data.serviceProvidersNegated", e.target.checked)}
                                   value={data.serviceProvidersNegated}
                                   info={I18n.t("policies.negated")}
                         />
-                    }
                     <Select
                         isMulti={true}
                         className="policy-select"
                         onChange={onChangeServiceProviders}
-                        placeholder={I18n.t(`policies.serviceProvidersPlaceholder${isStepUpPolicy ? "StepUp" : ""}`)}
+                        placeholder={I18n.t("policies.serviceProvidersPlaceholderStepUp")}
                         options={providerOptions(serviceProviders, "serviceProviderIds")}
                         value={serviceProviderValues}
                     />
                 </div>
-                {(isEmpty(data.serviceProviderIds) && !isStepUpPolicy) && renderError("Service provider")}
                 {!data.serviceProvidersNegated && renderExcludeFromWarning(serviceProviderValues)}
             </div>
         );
