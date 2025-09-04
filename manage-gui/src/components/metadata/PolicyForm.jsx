@@ -248,6 +248,8 @@ export default function PolicyForm({
                 />
                 {(isEmpty(data.serviceProviderIds) && isEmpty(data.identityProviderIds) ) &&
                     <div className="error"><span>{I18n.t("policies.stepUpSpOrIdPIsRequired")}</span></div>}
+                {(data.serviceProvidersNegated && !isEmpty(data.serviceProviderIds) &&  isEmpty(data.identityProviderIds) ) &&
+                    <div className="error"><span>{I18n.t("policies.stepUpNegatedSPIdPIsRequired")}</span></div>}
             </div>
         );
     }

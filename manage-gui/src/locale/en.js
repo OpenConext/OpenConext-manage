@@ -660,6 +660,7 @@ I18n.translations.en = {
         serviceProvidersTooltipStepUp: "The SP's for which this policy is applied. Zero or more are allowed.",
         serviceProvidersPlaceholderStepUp: 'Select the Service Providers - zero or more and possible negated',
         stepUpSpOrIdPIsRequired: "Either minimal one IdP or minimal one SP is required",
+        stepUpNegatedSPIdPIsRequired: "When negated SP's are configured, then one IdP is required",
         access: "Access",
         denyAdvice: 'English "Access Denied" message',
         denyAdviceNl: 'Dutch "Access Denied" message',

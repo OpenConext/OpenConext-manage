@@ -67,15 +67,13 @@ export const AutoFormat = {
 
         //we can't use JS templates as the backtick breaks the uglification. Will be resolved when we upgrade the build tooling
         let description;
+        const serviceProvidersNegated = policy.serviceProvidersNegated ? "NOT " : "";
+        const spText = isEmpty(serviceProviderNames) ? "all connected Service Providers" : serviceProvidersNegated + sp;
         if (policy.type === "step") {
-            const serviceProvidersNegated = policy.serviceProvidersNegated ? "NOT " : "";
-            const spText = isEmpty(serviceProviderNames) ? "connected Service Providers" : serviceProvidersNegated + sp;
             description = "A user" + idps + loasTxt + " when accessing " + spText;
         } else {
-            description = "A user" + idps + " is " + only + " allowed to access " + sp + " when" + " " + attributes;
+            description = "A user" + idps + " is " + only + " allowed to access " + spText + " when" + " " + attributes;
         }
-
-
         return description;
     }
 };
