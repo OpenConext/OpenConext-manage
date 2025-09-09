@@ -289,10 +289,9 @@ export default function PolicyPlayground({}) {
                                     foldGutter: false,
                                     highlightActiveLineGutter: false,
                                     highlightActiveLine: false,
-
                                 }}
                                 extensions={[json({})]}
-                                readOnly={true}/>;
+                                readOnly={true}/>
                 </div>
             </>
         )
