@@ -14,7 +14,7 @@ import static java.util.Arrays.stream;
 public class Provider {
 
     private final String entityId;
-    private final String institutionId;
+    private final String institutionGUID;
     private final boolean allowedAll;
     private final List<String> allowedEntityIds;
 
@@ -24,7 +24,7 @@ public class Provider {
         this.allowedEntityIds = ((List<Map<String, String>>) data.getOrDefault("allowedEntities", new ArrayList<>()))
                 .stream().map(m -> m.get("name")).collect(Collectors.toList());
         Map<String, Object> metaDataFields = (Map<String, Object>) data.get("metaDataFields");
-        this.institutionId = (String) metaDataFields.get("coin:institution_id");
+        this.institutionGUID = (String) metaDataFields.get("coin:institution_guid");
         this.allowedAll = (boolean) metaData.getOrDefault("allowedall", false);
     }
 
