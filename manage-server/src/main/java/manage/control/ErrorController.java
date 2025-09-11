@@ -2,6 +2,7 @@ package manage.control;
 
 import jakarta.servlet.http.HttpServletRequest;
 import manage.exception.CustomValidationException;
+import manage.exception.EndpointNotAllowed;
 import manage.exception.ScopeInUseException;
 import org.everit.json.schema.ValidationException;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
@@ -63,6 +64,8 @@ public class ErrorController implements org.springframework.boot.web.servlet.err
             result.put("message", httpClientErrorException.getResponseBodyAsString());
             return new ResponseEntity<>(result, status);
         } else if (error instanceof ScopeInUseException) {
+            result.put("message", error.getMessage());
+        } else if (error instanceof EndpointNotAllowed) {
             result.put("message", error.getMessage());
         }
 
