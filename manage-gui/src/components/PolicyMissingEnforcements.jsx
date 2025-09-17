@@ -21,14 +21,14 @@ export default function PolicyMissingEnforcements({}) {
         return isEmpty(org) ? "" : ` (${org})`;
     }
 
-    const headers = ["name", "type", "description", "providers"]
+    const headers = ["name", "type", "description", "providers", "identityProviders"]
     return (
         <section className="missing-enforcement-policies">
-            {(!loading && isEmpty(policies)) && <h2>All of the SP's and RP's used in policies have
+            {(!loading && isEmpty(policies)) && <h2>All of the SP's, RP's and IdP's used in policies have
                 set <em>coin:policy_enforcement_decision_required</em> to true</h2>}
             {(!loading && !isEmpty(policies)) &&
                 <>
-                    <h2>The policies below are for SP's or RP's that have not
+                    <h2>The policies below are for SP's, RP's or IdP's that have not
                         set <em>coin:policy_enforcement_decision_required</em> to true</h2>
                     <section className="policy-response">
                         <table>
@@ -40,22 +40,37 @@ export default function PolicyMissingEnforcements({}) {
                             </tr>
                             </thead>
                             <tbody>
-                            {policies.map((policy, index) => <tr key={index}>
-                                <td><a href={`/metadata/policy/${policy.id}`} target="_blank">
-                                    {policy.data.name}
-                                </a></td>
-                                <td>{I18n.t(`policies.${policy.data.type}`)}</td>
-                                <td>{policy.data.description}</td>
-                                <td>
-                                    <div className="providers">
-                                    {policy.data.policyEnforcementDecisionAbsent.map((provider, index) =>
-                                        <a key={index} href={`/metadata/${provider.type}/${provider.id}`} target="_blank">
-                                            {`${getNameForLanguage(provider.data.metaDataFields)}${organisationName(provider)}`}
-                                        </a>
-                                    )}
-                                    </div>
-                                </td>
-                            </tr>)}
+                            {policies.map((policy, index) => {
+                                const policyEnforcementDecisionAbsent = policy.data.policyEnforcementDecisionAbsent || [];
+                                const policyIdPEnforcementDecisionAbsent = policy.data.policyIdPEnforcementDecisionAbsent || [];
+                                return <tr key={index}>
+                                    <td><a href={`/metadata/policy/${policy.id}`} target="_blank">
+                                        {policy.data.name}
+                                    </a></td>
+                                    <td>{I18n.t(`policies.${policy.data.type}`)}</td>
+                                    <td>{policy.data.description}</td>
+                                    <td>
+                                        <div className="providers">
+                                            {policyEnforcementDecisionAbsent.map((provider, index) =>
+                                                <a key={index} href={`/metadata/${provider.type}/${provider.id}`}
+                                                   target="_blank">
+                                                    {`${getNameForLanguage(provider.data.metaDataFields)}${organisationName(provider)}`}
+                                                </a>
+                                            )}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div className="providers">
+                                            {policyIdPEnforcementDecisionAbsent.map((provider, index) =>
+                                                <a key={index} href={`/metadata/${provider.type}/${provider.id}`}
+                                                   target="_blank">
+                                                    {`${getNameForLanguage(provider.data.metaDataFields)}${organisationName(provider)}`}
+                                                </a>
+                                            )}
+                                        </div>
+                                    </td>
+                                </tr>;
+                            })}
                             </tbody>
                         </table>
                     </section>

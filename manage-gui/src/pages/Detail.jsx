@@ -296,7 +296,7 @@ class Detail extends React.PureComponent {
                     if (isPolicy) {
                         const options = {"REQUESTED_ATTRIBUTES": ["metaDataFields.coin:policy_enforcement_decision_required"]};
                         Promise.all([
-                            search({}, "saml20_idp"),
+                            search(options, "saml20_idp"),
                             search(options, "saml20_sp"),
                             search(options, "oidc10_rp"),
                             policyAttributes(),
@@ -1144,7 +1144,7 @@ class Detail extends React.PureComponent {
     };
 
     renderTopBanner = (name, organization, metaData, resourceServers, whiteListing, isNew, whiteListingLoaded,
-                       serviceProviders, policyProvidersLoaded) => {
+                       serviceProviders, identityProviders, policyProvidersLoaded) => {
         const type = metaData.type;
         const {allowedall, state, allowedEntities, entityid} = metaData.data;
         const typeMetaData = I18n.t(`metadata.${type}_single`);
@@ -1167,8 +1167,12 @@ class Detail extends React.PureComponent {
         let missingEvaluations = false;
         if (isPolicy && policyProvidersLoaded) {
             const providerEntityIds = metaData.data.serviceProviderIds.map(sp => sp.name);
-            missingEvaluations = serviceProviders.some(entity => providerEntityIds.includes(entity.data.entityid) &&
+            const identityPproviderEntityIds = metaData.data.identityProviderIds.map(sp => sp.name);
+            const missingSPEvaluations = serviceProviders.some(entity => providerEntityIds.includes(entity.data.entityid) &&
                 !entity.data.metaDataFields["coin:policy_enforcement_decision_required"]);
+            const missingIdPEvaluations = identityProviders.some(entity => identityPproviderEntityIds.includes(entity.data.entityid) &&
+                !entity.data.metaDataFields["coin:policy_enforcement_decision_required"]);
+            missingEvaluations = missingSPEvaluations || missingIdPEvaluations;
         }
         const connectedApplications = metaData.data.applications;
         const isTrue = I18n.t("topBannerDetails.isTrue");
@@ -1357,7 +1361,7 @@ class Detail extends React.PureComponent {
                     <section className="top-detail">
                         <section className="inner-detail">
                             {this.renderTopBanner(name, organization, metaData, resourceServers, whiteListing,
-                                isNew, whiteListingLoaded, serviceProviders, policyProvidersLoaded)}
+                                isNew, whiteListingLoaded, serviceProviders, identityProviders, policyProvidersLoaded)}
                             {/*{JSON.stringify(errors)}*/}
                             {hasErrors && this.renderErrors(errors)}
                             {allowedDelete && (

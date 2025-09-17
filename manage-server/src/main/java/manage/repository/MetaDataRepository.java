@@ -366,7 +366,7 @@ public class MetaDataRepository {
     public List<MetaData> policiesWithMissingPolicyEnforcementDecisionRequired() {
         List<MetaData> policies = this.mongoTemplate.findAll(MetaData.class, EntityType.PDP.getType());
         return policies.stream().filter(policy -> {
-            List<Map<String, String>> serviceProviderIds = (List<Map<String, String>>) policy.getData().get("serviceProviderIds");
+            List<Map<String, String>> serviceProviderIds = (List<Map<String, String>>) policy.getData().getOrDefault("serviceProviderIds", List.of());
             List<MetaData> providers = serviceProviderIds.stream()
                     .map(serviceProviderId -> {
                         Query query = new Query()
@@ -379,12 +379,26 @@ public class MetaDataRepository {
                     })
                     .filter(Objects::nonNull)
                     .filter(provider -> isPolicyEnforcementDecisionRequiredAbsent(provider))
-                    .collect(toList());
+                    .toList();
             boolean hasMissingEnforcementProviders = !providers.isEmpty();
             if (hasMissingEnforcementProviders) {
                 policy.getData().put("policyEnforcementDecisionAbsent", providers);
             }
-            return hasMissingEnforcementProviders;
+            List<Map<String, String>> identityProviderIds = (List<Map<String, String>>) policy.getData().getOrDefault("identityProviderIds", List.of());
+            List<MetaData> identityProviders = identityProviderIds.stream()
+                .map(identityProviderId -> {
+                    Query query = new Query()
+                        .addCriteria(Criteria.where("data.entityid").is(identityProviderId.get("name")));
+                    return mongoTemplate.findOne(query, MetaData.class, EntityType.IDP.getType());
+                })
+                .filter(Objects::nonNull)
+                .filter(provider -> isPolicyEnforcementDecisionRequiredAbsent(provider))
+                .toList();
+            boolean hasMissingEnforcementIdentityProviders = !identityProviders.isEmpty();
+            if (hasMissingEnforcementIdentityProviders) {
+                policy.getData().put("policyIdPEnforcementDecisionAbsent", identityProviders);
+            }
+            return hasMissingEnforcementProviders || hasMissingEnforcementIdentityProviders;
         }).collect(toList());
     }
 

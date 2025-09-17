@@ -378,19 +378,9 @@
           "default": false,
           "info": "if set for this Identity Provider, then this Identity Provider is listed as test IdP in Access."
         },
-        "coin:allow_maintainers_to_manage_authz_rules": {
+        "coin:policy_enforcement_decision_required": {
           "type": "boolean",
-          "info": "Set this to allow maintainers of this Identity Provider to maintain authorization rules. Used in Dashboard."
-        },
-        "coin:display_admin_emails_in_dashboard": {
-          "type": "boolean",
-          "default": false,
-          "info": "Set this to allow regular users of this Identity Provider to see the SCB and SCV emails. Used in Dashboard."
-        },
-        "coin:display_stats_in_dashboard": {
-          "type": "boolean",
-          "default": false,
-          "info": "Set this to allow regular users of this Identity Provider to see the statistics. Used in Dashboard."
+          "info": "Set to activate the user policy engine (PDP) for this IdP."
         }
       },
       "patternProperties": {

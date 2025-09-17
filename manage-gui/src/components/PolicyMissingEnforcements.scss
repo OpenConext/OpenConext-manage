@@ -11,6 +11,7 @@
         th {
             text-align: left;
             padding: 5px;
+
             &.name {
                 width: 15%;
             }
@@ -20,11 +21,15 @@
             }
 
             &.description {
-                width: 35%;
+                width: 25%;
             }
 
             &.providers {
-                width: 40%;
+                width: 25%;
+            }
+
+            &.identityProviders {
+                width: 25%;
             }
         }
 

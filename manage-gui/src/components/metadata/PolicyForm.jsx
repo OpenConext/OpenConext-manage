@@ -82,6 +82,7 @@ export default function PolicyForm({
             .filter(provider => !(data[providerKey] || []).some(prov => prov.name === provider.data.entityid))
             .map(provider => ({
                 label: provider.data.metaDataFields["name:en"] || "Missing",
+                excludedFromPush: excludedFromPush(providers, provider),
                 value: provider.data.entityid
             }))
 
@@ -223,6 +224,7 @@ export default function PolicyForm({
     }
 
     const renderIdentityProviders = () => {
+        const identityProviderValues = providerValues(identityProviders, "identityProviderIds");
         return (
             <div className="input-field">
                 <label htmlFor="institutionProviders">
@@ -244,12 +246,13 @@ export default function PolicyForm({
                     onChange={onChangeIdentityProviders}
                     placeholder={I18n.t("policies.institutionProvidersPlaceholderStepUp")}
                     options={providerOptions(identityProviders, "identityProviderIds")}
-                    value={providerValues(identityProviders, "identityProviderIds")}
+                    value={identityProviderValues}
                 />
                 {(isEmpty(data.serviceProviderIds) && isEmpty(data.identityProviderIds) ) &&
                     <div className="error"><span>{I18n.t("policies.stepUpSpOrIdPIsRequired")}</span></div>}
                 {(data.serviceProvidersNegated && !isEmpty(data.serviceProviderIds) &&  isEmpty(data.identityProviderIds) ) &&
                     <div className="error"><span>{I18n.t("policies.stepUpNegatedSPIdPIsRequired")}</span></div>}
+                {renderExcludeFromWarning(identityProviderValues)}
             </div>
         );
     }
