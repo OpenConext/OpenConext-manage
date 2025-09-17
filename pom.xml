@@ -14,7 +14,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.8</version>
+        <version>3.5.5</version>
     </parent>
 
     <modules>
@@ -44,7 +44,7 @@
         <frontend-maven-plugin.version>1.11.3</frontend-maven-plugin.version>
         <javax.mail.version>1.6.2</javax.mail.version>
         <javax-validation-api.version>2.0.1.Final</javax-validation-api.version>
-        <junit-jupiter-engine.version>5.11.4</junit-jupiter-engine.version>
+        <junit-jupiter-engine.version>5.12.2</junit-jupiter-engine.version>
         <json.version>20231013</json.version>
         <mongock-bom.version>4.3.8</mongock-bom.version>
         <passay.version>1.6.1</passay.version>
