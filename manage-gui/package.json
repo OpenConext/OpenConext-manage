@@ -16,7 +16,7 @@
     "react-dom": "^18.3.1",
     "react-json-view": "^1.21.3",
     "source-map-explorer": "^2.5.3",
-    "xml-formatter": "^3.6.6"
+    "xml-formatter": "^3.6.7"
   },
   "devDependencies": {
     "codemirror": "^5.65.1",
