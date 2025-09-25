@@ -8,7 +8,6 @@ import SelectSource from "./SelectSource";
 import {copyToClip, isEmpty} from "../../utils/Utils";
 
 import "./ARP.scss";
-import {iterateBidiSections} from "codemirror/src/util/bidi";
 
 //PureComponent only does a shallow comparison, and we use derived values from deeply nested objects
 export default class ARP extends React.Component {
@@ -127,7 +126,7 @@ export default class ARP extends React.Component {
 
     arpAttributeChange = (key, attribute, boolean = false) => e => {
         const value = boolean ? e.target.checked : e.target.value;
-        const {attributes :arpAttributes} = this.props.arp;
+        const {attributes: arpAttributes} = this.props.arp;
         if (attribute === "use_as_nameid") {
             const newArpAttributes = {...arpAttributes};
             Object.keys(newArpAttributes).forEach(arpKey => {
@@ -164,10 +163,10 @@ export default class ARP extends React.Component {
                                   info={attributeValue.value}/>
                     </li>)}
                 {(attributeValues.length === 0 && !doAddInput) &&
-                <li>
-                    <CheckBox name={attributeKey} value={false}
-                              onChange={this.enableArpKey(attributeKey)} readOnly={guest}/>
-                </li>}
+                    <li>
+                        <CheckBox name={attributeKey} value={false}
+                                  onChange={this.enableArpKey(attributeKey)} readOnly={guest}/>
+                    </li>}
             </ul>);
     };
 
@@ -185,15 +184,15 @@ export default class ARP extends React.Component {
         const {value} = this.state;
         return (
             <tr className={index % 2 === 0 ? "even" : "odd"}>
-            <td className="new-attribute-value"
-                colSpan={2}>{I18n.t("arp.new_attribute_value", {key: this.nameOfKey(key, display)})}</td>
-            <td><input ref={ref => this.newAttributeValue = ref}
-                       type="text"
-                       onKeyUp={this.onKeyUp(key)}
-                       onChange={e => this.setState({value: e.target.value})}
-                       value={value}
-                       onBlur={this.attributeInputValueBlur(key)}/></td>
-            <td colSpan={2}></td>
+                <td className="new-attribute-value"
+                    colSpan={2}>{I18n.t("arp.new_attribute_value", {key: this.nameOfKey(key, display)})}</td>
+                <td><input ref={ref => this.newAttributeValue = ref}
+                           type="text"
+                           onKeyUp={this.onKeyUp(key)}
+                           onChange={e => this.setState({value: e.target.value})}
+                           value={value}
+                           onBlur={this.attributeInputValueBlur(key)}/></td>
+                <td colSpan={2}></td>
             </tr>
         );
     };
@@ -250,57 +249,57 @@ export default class ARP extends React.Component {
 
         return (
             <tbody key={attributeKey}>
-        <tr>
-            <td className={`name ${deprecated ? "deprecated" : ""}`}>
-                <span className="display-name">{displayKey}</span>
-                <i className="fa fa-info-circle" data-for={reactTooltipId} data-tip></i>
-                <ReactTooltip id={reactTooltipId} type="info" class="tool-tip" effect="solid" place="right">
-                    <span>{attributeKey}</span>
-                </ReactTooltip>
-            </td>
-            <td className="source">{this.renderSourceCell(sources, attributeKey, attributeValues, guest)}</td>
-            <td className="enabled">{this.renderEnabledCell(sources, attributeKey, attributeValues, guest)}</td>
-            <td className="matching_rule">{this.renderMatchingRulesCell(sources, attributeKey, attributeValues, guest)}</td>
-            <td
-                className="action">{renderAction && arpAttribute.multiplicity && this.renderActionsCell(attributeKey, guest)}</td>
-        </tr>
-        {(!doAddInput && attributeValues.length > 0) &&
-        <tr>
-            <td className="new-attribute-value"
-                colSpan={2}>{I18n.t("arp.new_attribute_motivation", {key: this.nameOfKey(display, attributeKey)})}</td>
-            <td colSpan={3}>
-                <input ref={ref => {
-                    if (this.state.newArpAttributeAddedKey === attributeKey) {
-                        setTimeout(() => ref.focus(), 75);
-                    }
-                }}
-                       type="text"
-                       value={this.getArpAttribute(attributeValues, "motivation")}
-                       className="motivation"
-                       onChange={this.arpAttributeChange(attributeKey, "motivation")}
-                placeholder={I18n.t("arp.new_attribute_motivation_placeholder")}/></td>
-        </tr>}
-        {(!doAddInput && attributeValues.length > 0) &&
             <tr>
-                <td className="new-attribute-value"
-                    colSpan={2}>{I18n.t("arp.new_attribute_release_as", {key: this.nameOfKey(display, attributeKey)})}</td>
-                <td colSpan={3}>
-                    <input type="text"
-                           value={this.getArpAttribute(attributeValues, "release_as")}
-                           className="release-as"
-                           onChange={this.arpAttributeChange(attributeKey, "release_as")}
-                           placeholder={I18n.t("arp.new_attribute_release_as_placeholder")}/></td>
-            </tr>}
-        {(!doAddInput && attributeValues.length > 0) &&
-            <tr>
-                <td className="new-attribute-value"
-                    colSpan={2}>{I18n.t("arp.new_attribute_use_as_nameid", {key: this.nameOfKey(display, attributeKey)})}</td>
-                <td colSpan={3}>
-                    <CheckBox name={attributeKey}
-                              onChange={this.arpAttributeChange(attributeKey, "use_as_nameid", true)}
-                              value={this.getArpAttribute(attributeValues, "use_as_nameid", true)}/>
+                <td className={`name ${deprecated ? "deprecated" : ""}`}>
+                    <span className="display-name">{displayKey}</span>
+                    <i className="fa fa-info-circle" data-for={reactTooltipId} data-tip></i>
+                    <ReactTooltip id={reactTooltipId} type="info" class="tool-tip" effect="solid" place="right">
+                        <span>{attributeKey}</span>
+                    </ReactTooltip>
                 </td>
-            </tr>}
+                <td className="source">{this.renderSourceCell(sources, attributeKey, attributeValues, guest)}</td>
+                <td className="enabled">{this.renderEnabledCell(sources, attributeKey, attributeValues, guest)}</td>
+                <td className="matching_rule">{this.renderMatchingRulesCell(sources, attributeKey, attributeValues, guest)}</td>
+                <td
+                    className="action">{renderAction && arpAttribute.multiplicity && this.renderActionsCell(attributeKey, guest)}</td>
+            </tr>
+            {(!doAddInput && attributeValues.length > 0) &&
+                <tr>
+                    <td className="new-attribute-value"
+                        colSpan={2}>{I18n.t("arp.new_attribute_motivation", {key: this.nameOfKey(display, attributeKey)})}</td>
+                    <td colSpan={3}>
+                        <input ref={ref => {
+                            if (this.state.newArpAttributeAddedKey === attributeKey) {
+                                setTimeout(() => ref.focus(), 75);
+                            }
+                        }}
+                               type="text"
+                               value={this.getArpAttribute(attributeValues, "motivation")}
+                               className="motivation"
+                               onChange={this.arpAttributeChange(attributeKey, "motivation")}
+                               placeholder={I18n.t("arp.new_attribute_motivation_placeholder")}/></td>
+                </tr>}
+            {(!doAddInput && attributeValues.length > 0) &&
+                <tr>
+                    <td className="new-attribute-value"
+                        colSpan={2}>{I18n.t("arp.new_attribute_release_as", {key: this.nameOfKey(display, attributeKey)})}</td>
+                    <td colSpan={3}>
+                        <input type="text"
+                               value={this.getArpAttribute(attributeValues, "release_as")}
+                               className="release-as"
+                               onChange={this.arpAttributeChange(attributeKey, "release_as")}
+                               placeholder={I18n.t("arp.new_attribute_release_as_placeholder")}/></td>
+                </tr>}
+            {(!doAddInput && attributeValues.length > 0) &&
+                <tr>
+                    <td className="new-attribute-value"
+                        colSpan={2}>{I18n.t("arp.new_attribute_use_as_nameid", {key: this.nameOfKey(display, attributeKey)})}</td>
+                    <td colSpan={3}>
+                        <CheckBox name={attributeKey}
+                                  onChange={this.arpAttributeChange(attributeKey, "use_as_nameid", true)}
+                                  value={this.getArpAttribute(attributeValues, "use_as_nameid", true)}/>
+                    </td>
+                </tr>}
             </tbody>)
     };
 
@@ -361,7 +360,7 @@ export default class ARP extends React.Component {
         const sanitizedArp = isEmpty(arp) ? {attributes: {}} : arp;
         return (
             <div className="metadata-arp">
-                <section className={`options ${!isEmpty(arp.motivation) ? "no-bottom":""} `}>
+                <section className={`options ${!isEmpty(arp.motivation) ? "no-bottom" : ""} `}>
                     <CheckBox name="arp-enabled"
                               value={!sanitizedArp.enabled}
                               onChange={this.arpEnabled}
@@ -371,13 +370,15 @@ export default class ARP extends React.Component {
                         {I18n.t("clipboard.copy")}<i className="fa fa-clone"></i>
                     </span>
                 </section>
-                {!isEmpty(arp.motivation) &&
+                {(!isEmpty(arp.motivation) || !isEmpty(arp.profile)) &&
                     <section className="motivation">
-                    <p>Motivation from SURF Access</p>
-                    <textarea value={arp.motivation}
-                              disabled={true}/>
-                    {!isEmpty(arp.profile) && <em>Profile: {arp.profile}</em>}
-                </section>}
+                        {!isEmpty(arp.profile) && <em>Profile: {arp.profile}</em>}
+                        {!isEmpty(arp.motivation) && <>
+                            <p>Motivation from SURF Access</p>
+                            <textarea value={arp.motivation}
+                                      disabled={true}/>
+                        </>}
+                    </section>}
                 <section className="attributes">
                     <h2>{I18n.t("arp.attributes")}</h2>
                     {this.renderArpAttributesTable(sanitizedArp, onChange, arpConfiguration, guest)}
