@@ -1,0 +1,36 @@
+@import "../stylesheets/vars.scss";
+
+.policy-conflicts {
+    background-color: white;
+    padding: 10px 20px 20px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    table {
+        width: 75%;
+        th {
+            text-align: left;
+            padding: 5px;
+
+            &.entityID {
+                width: 35%;
+            }
+
+            &.policies {
+                width: 65%;
+            }
+
+        }
+
+        td {
+            padding: 5px;
+            border-top: 1px solid #cdcdcd;
+            div.policies {
+                display: flex;
+                gap: 5px;
+                flex-direction: column;
+            }
+        }
+    }
+}

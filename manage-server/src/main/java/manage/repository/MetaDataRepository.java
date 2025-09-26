@@ -20,6 +20,7 @@ import org.springframework.util.StringUtils;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
@@ -147,11 +148,11 @@ public class MetaDataRepository {
     public List<Map> allServiceProviderEntityIds() {
         Query query = new Query();
         query
-                .fields()
-                .include("data.entityid")
-                .include("data.metaDataFields.name:en")
-                .include("data.metaDataFields.coin:imported_from_edugain")
-                .include("data.metaDataFields.coin:publish_in_edugain");
+            .fields()
+            .include("data.entityid")
+            .include("data.metaDataFields.name:en")
+            .include("data.metaDataFields.coin:imported_from_edugain")
+            .include("data.metaDataFields.coin:publish_in_edugain");
         return mongoTemplate.find(query, Map.class, EntityType.SP.getType());
     }
 
@@ -182,18 +183,18 @@ public class MetaDataRepository {
     private String escapeMetaDataField(String key) {
         if (key.startsWith("metaDataFields")) {
             return "metaDataFields." + key.substring("metaDataFields.".length())
-                    .replaceAll("\\.", "@");
+                .replaceAll("\\.", "@");
         }
         if (key.startsWith("arp.attributes")) {
             return "arp.attributes." + key.substring("arp.attributes.".length())
-                    .replaceAll("\\.", "@");
+                .replaceAll("\\.", "@");
         }
         return key;
 
     }
 
     public List<Map> search(String type, Map<String, Object> properties, List<String> requestedAttributes, Boolean
-            allAttributes, Boolean logicalOperatorIsAnd) {
+        allAttributes, Boolean logicalOperatorIsAnd) {
         Query query = allAttributes ? new Query() : queryWithSamlFields(EntityType.fromType(type.replaceAll("_revision", "")));
         if (!allAttributes) {
             requestedAttributes.forEach(requestedAttribute -> {
@@ -214,7 +215,7 @@ public class MetaDataRepository {
             } else if (value instanceof String && !StringUtils.hasText((String) value)) {
                 criteriaDefinitions.add(Criteria.where("data.".concat(key)).exists(false));
             } else if (value instanceof String && StringUtils.hasText((String) value) &&
-                    ("true".equalsIgnoreCase((String) value) || "false".equalsIgnoreCase((String) value))) {
+                ("true".equalsIgnoreCase((String) value) || "false".equalsIgnoreCase((String) value))) {
                 criteriaDefinitions.add(Criteria.where("data.".concat(key)).is(Boolean.parseBoolean((String) value)));
             } else if (value instanceof String && StringUtils.hasText((String) value) && isNumeric((String) value)) {
                 criteriaDefinitions.add(Criteria.where("data.".concat(key)).is(Integer.parseInt((String) value)));
@@ -260,45 +261,45 @@ public class MetaDataRepository {
     public List<MetaData> recentActivity(List<EntityType> types, int max) {
         max = Math.min(max, 100);
         Query query = new Query()
-                .with(Sort.by(Sort.Order.desc("revision.created")))
-                .limit(max);
+            .with(Sort.by(Sort.Order.desc("revision.created")))
+            .limit(max);
         Field fields = query.fields();
         fields
-                .include("type")
-                .include("version")
-                .include("data.state")
-                .include("data.entityid")
-                .include("data.name")
-                .include("data.metaDataFields.name:en")
-                .include("data.metaDataFields.OrganizationName:en")
-                .include("data.metaDataFields.OrganizationName:en")
-                .include("data.revisionnote")
-                .include("revision.number")
-                .include("revision.created")
-                .include("revision.terminated")
-                .include("revision.updatedBy");
+            .include("type")
+            .include("version")
+            .include("data.state")
+            .include("data.entityid")
+            .include("data.name")
+            .include("data.metaDataFields.name:en")
+            .include("data.metaDataFields.OrganizationName:en")
+            .include("data.metaDataFields.OrganizationName:en")
+            .include("data.revisionnote")
+            .include("revision.number")
+            .include("revision.created")
+            .include("revision.terminated")
+            .include("revision.updatedBy");
 
         List<MetaData> metaData = types.stream()
-                .map(entityType -> mongoTemplate.find(query, MetaData.class, entityType.getType()))
-                .flatMap(List::stream)
-                .collect(toList());
+            .map(entityType -> mongoTemplate.find(query, MetaData.class, entityType.getType()))
+            .flatMap(List::stream)
+            .collect(toList());
         List<MetaData> results = metaData.stream()
-                .sorted(Comparator.comparing(md -> md.getRevision().getCreated(), Comparator.reverseOrder()))
-                .collect(toList()).subList(0, Math.min(max, metaData.size()));
+            .sorted(Comparator.comparing(md -> md.getRevision().getCreated(), Comparator.reverseOrder()))
+            .collect(toList()).subList(0, Math.min(max, metaData.size()));
 
         Instant firstActivity = results.get(results.size() - 1).getRevision().getCreated();
         query.addCriteria(Criteria.where("revision.terminated").gte(firstActivity));
         List<MetaData> revisionMetaData = types.stream()
-                .map(entityType -> mongoTemplate.find(query, MetaData.class, entityType.getType().concat(REVISION_POSTFIX)))
-                .flatMap(List::stream)
-                .map(this::updateCreatedRevision)
-                .collect(toList());
+            .map(entityType -> mongoTemplate.find(query, MetaData.class, entityType.getType().concat(REVISION_POSTFIX)))
+            .flatMap(List::stream)
+            .map(this::updateCreatedRevision)
+            .collect(toList());
         results.addAll(revisionMetaData);
         if (!revisionMetaData.isEmpty()) {
             //need to re-sort and cut off again
             results = results.stream()
-                    .sorted(Comparator.comparing(md -> md.getRevision().getCreated(), Comparator.reverseOrder()))
-                    .collect(toList()).subList(0, Math.min(max, metaData.size()));
+                .sorted(Comparator.comparing(md -> md.getRevision().getCreated(), Comparator.reverseOrder()))
+                .collect(toList()).subList(0, Math.min(max, metaData.size()));
         }
 
         return results;
@@ -312,9 +313,9 @@ public class MetaDataRepository {
     public List<Map> whiteListing(String type, String state) {
         Query query = queryWithSamlFields(EntityType.fromType(type)).addCriteria(Criteria.where("data.state").is(state));
         query.fields()
-                .include("data.allowedall")
-                .include("data.allowedEntities")
-                .include("data.metaDataFields.coin:stepup:requireloa");
+            .include("data.allowedall")
+            .include("data.allowedEntities")
+            .include("data.metaDataFields.coin:stepup:requireloa");
         List<Map> metaData = mongoTemplate.find(query, Map.class, type);
         if (type.equals(EntityType.SP.getType())) {
             List<Map> oidcMetaData = mongoTemplate.find(query, Map.class, EntityType.RP.getType());
@@ -331,36 +332,55 @@ public class MetaDataRepository {
 
     public List<Map> relyingParties(String resourceServerEntityID) {
         Query query = queryWithSamlFields(EntityType.RP)
-                .addCriteria(Criteria.where("data.allowedResourceServers.name").is(resourceServerEntityID));
+            .addCriteria(Criteria.where("data.allowedResourceServers.name").is(resourceServerEntityID));
         return mongoTemplate.find(query, Map.class, EntityType.RP.getType());
     }
 
     public List<Map> spPolicies(String entityID) {
         Query query = queryWithSamlFields(EntityType.PDP)
-                .addCriteria(Criteria.where("data.serviceProviderIds.name").is(entityID));
+            .addCriteria(Criteria.where("data.serviceProviderIds.name").is(entityID));
         return mongoTemplate.find(query, Map.class, EntityType.PDP.getType());
     }
 
     public List<Map> idpPolicies(String entityID) {
         Query query = queryWithSamlFields(EntityType.PDP)
-                .addCriteria(Criteria.where("data.identityProviderIds.name").is(entityID));
+            .addCriteria(Criteria.where("data.identityProviderIds.name").is(entityID));
         return mongoTemplate.find(query, Map.class, EntityType.PDP.getType());
     }
 
     public List<Map> allowedEntities(String id, EntityType entityType) {
         Map byId = mongoTemplate.findById(id, Map.class, entityType.getType());
         Query query = queryWithSamlFields(entityType)
-                .addCriteria(new Criteria().orOperator(
-                        Criteria.where("data.allowedEntities.name").is(((Map) byId.get("data")).get("entityid")),
-                        Criteria.where("data.allowedall").is(true)
-                ));
+            .addCriteria(new Criteria().orOperator(
+                Criteria.where("data.allowedEntities.name").is(((Map) byId.get("data")).get("entityid")),
+                Criteria.where("data.allowedall").is(true)
+            ));
         return mongoTemplate.find(query, Map.class, EntityType.IDP.getType());
     }
 
     public List<Map> provisioning(List<String> identifiers) {
         Query query = new Query()
-                .addCriteria(Criteria.where("data.applications.id").in(identifiers));
+            .addCriteria(Criteria.where("data.applications.id").in(identifiers));
         return mongoTemplate.find(query, Map.class, EntityType.PROV.getType());
+    }
+
+    public Map<String, List<MetaData>> conflictingPolicies() {
+        Map<String, List<MetaData>> conflicts = new HashMap<>();
+        List<MetaData> policies = this.mongoTemplate.findAll(MetaData.class, EntityType.PDP.getType());
+        policies.forEach(policy -> {
+            List.of("serviceProviderIds", "identityProviderIds").forEach(key -> {
+                List<Map<String, String>> providers = (List<Map<String, String>>) policy.getData().getOrDefault(key, List.of());
+                providers.forEach(provider -> {
+                    String entityID = provider.get("name");
+                    List<MetaData> metaDataList = conflicts.getOrDefault(entityID, new ArrayList<>());
+                    metaDataList.add(policy);
+                    conflicts.put(entityID, metaDataList);
+                });
+            });
+        });
+        return conflicts.entrySet().stream()
+            .filter(entry -> entry.getValue().size() > 1)
+            .collect(Collectors.toMap(entry -> entry.getKey(), entry -> entry.getValue()));
     }
 
     public List<MetaData> policiesWithMissingPolicyEnforcementDecisionRequired() {
@@ -368,18 +388,18 @@ public class MetaDataRepository {
         return policies.stream().filter(policy -> {
             List<Map<String, String>> serviceProviderIds = (List<Map<String, String>>) policy.getData().getOrDefault("serviceProviderIds", List.of());
             List<MetaData> providers = serviceProviderIds.stream()
-                    .map(serviceProviderId -> {
-                        Query query = new Query()
-                                .addCriteria(Criteria.where("data.entityid").is(serviceProviderId.get("name")));
-                        MetaData provider = mongoTemplate.findOne(query, MetaData.class, EntityType.SP.getType());
-                        if (provider == null) {
-                            provider = mongoTemplate.findOne(query, MetaData.class, EntityType.RP.getType());
-                        }
-                        return provider;
-                    })
-                    .filter(Objects::nonNull)
-                    .filter(provider -> isPolicyEnforcementDecisionRequiredAbsent(provider))
-                    .toList();
+                .map(serviceProviderId -> {
+                    Query query = new Query()
+                        .addCriteria(Criteria.where("data.entityid").is(serviceProviderId.get("name")));
+                    MetaData provider = mongoTemplate.findOne(query, MetaData.class, EntityType.SP.getType());
+                    if (provider == null) {
+                        provider = mongoTemplate.findOne(query, MetaData.class, EntityType.RP.getType());
+                    }
+                    return provider;
+                })
+                .filter(Objects::nonNull)
+                .filter(provider -> isPolicyEnforcementDecisionRequiredAbsent(provider))
+                .toList();
             boolean hasMissingEnforcementProviders = !providers.isEmpty();
             if (hasMissingEnforcementProviders) {
                 policy.getData().put("policyEnforcementDecisionAbsent", providers);
@@ -425,9 +445,9 @@ public class MetaDataRepository {
 
     public List<StatsEntry> stats() {
         return mongoTemplate.getCollectionNames().stream()
-                .filter(name -> !name.toLowerCase().contains("system"))
-                .map(name -> new StatsEntry(name, mongoTemplate.count(new Query(), name)))
-                .collect(toList());
+            .filter(name -> !name.toLowerCase().contains("system"))
+            .map(name -> new StatsEntry(name, mongoTemplate.count(new Query(), name)))
+            .collect(toList());
     }
 
     private Query queryWithSamlFields(EntityType entityType) {
@@ -435,13 +455,13 @@ public class MetaDataRepository {
         //When we have multiple types then we need to delegate depending on the type.
         Field fields = query.fields();
         fields
-                .include("version", "type","data.state","data.entityid", "data.notes");
+            .include("version", "type", "data.state", "data.entityid", "data.notes");
         if (entityType.equals(EntityType.PDP)) {
             fields.include("data.name",
-                    "data.description",
-                    "data.type",
-                    "data.serviceProviderIds",
-                    "data.identityProviderIds");
+                "data.description",
+                "data.type",
+                "data.serviceProviderIds",
+                "data.identityProviderIds");
         } else if (entityType.equals(EntityType.ORG)) {
             fields.include(
                 "data.name",

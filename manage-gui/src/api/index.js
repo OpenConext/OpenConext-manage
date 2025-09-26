@@ -340,7 +340,7 @@ export function getPlaygroundRelyingParties() {
 export function getPlaygroundIdentityProviders() {
     return search({}, "saml20_idp")
 }
-
+//Policies
 export function idpPolicies(idpEntityID) {
     return fetchJson(`idpPolicies?entityId=${encodeURIComponent(idpEntityID)}`);
 }
@@ -353,12 +353,14 @@ export function missingEnforcementPolicies() {
     return fetchJson("pdp/missing-enforcements");
 }
 
-//Policies
+export function policyConflicts() {
+    return fetchJson("pdp/conflicts");
+}
+
 export function parsePolicyXML(data) {
     return postPutJson("pdp/parse", data, "POST")
 }
 
-//Policies
 export function parsePolicyJSON(data) {
     return postPutJson("pdp/parse-json", data, "POST")
 }

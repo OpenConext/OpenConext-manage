@@ -5,12 +5,13 @@ import "./Policies.scss";
 import PolicyPlayground from "../components/PolicyPlaygound";
 import withRouterHooks from "../utils/RouterBackwardCompatability";
 import PolicyMissingEnforcements from "../components/PolicyMissingEnforcements";
+import PolicyConflicts from "../components/PolicyConflicts";
 
 class Policies extends React.PureComponent {
 
     constructor(props) {
         super(props);
-        const tabs = ["playground", "missing_enforcements"];
+        const tabs = ["playground", "missing_enforcements", "conflicts"];
         const {tab = "playground"} = props.params || {};
         this.state = {
             tabs: tabs,
@@ -23,31 +24,9 @@ class Policies extends React.PureComponent {
         };
     }
 
-    componentDidMount() {
-        const {selectedTab} = this.state;
-        if (selectedTab === "push") {
-            this.initialState();
-        }
-    }
-
-
-    initialState = e => {
-        stop(e);
-        this.setState({loading: false});
-    }
-
     switchTab = tab => e => {
         stop(e);
         this.setState({selectedTab: tab});
-        if (tab !== "import") {
-            this.setState({importResults: []});
-        }
-        if (tab !== "push") {
-            this.setState({
-                pdpPolicies: [],
-                pdpMigratedPolicies: []
-            });
-        }
         this.props.navigate(`/policies/${tab}`);
     };
 
@@ -70,12 +49,20 @@ class Policies extends React.PureComponent {
         );
     };
 
+    renderConflicts = () => {
+        return (
+            <PolicyConflicts/>
+        );
+    };
+
     renderCurrentTab = selectedTab => {
         switch (selectedTab) {
             case "playground" :
                 return this.renderPlayground();
             case "missing_enforcements" :
                 return this.renderMissingEnforcements();
+            case "conflicts" :
+                return this.renderConflicts();
             default :
                 throw new Error(`Unknown tab: ${selectedTab}`);
         }

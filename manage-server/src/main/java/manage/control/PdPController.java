@@ -62,6 +62,12 @@ public class PdPController {
         return metaDataRepository.policiesWithMissingPolicyEnforcementDecisionRequired();
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'READ')")
+    @GetMapping(value = {"/client/pdp/conflicts", "/internal/pdp/conflicts"})
+    public Map<String, List<MetaData>> conflictingPolicies() {
+        return metaDataRepository.conflictingPolicies();
+    }
+
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(value = "/client/pdp/parse")
     public Map<String, String> xml(@RequestBody Map<String, Object> data) {

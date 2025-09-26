@@ -700,6 +700,7 @@ I18n.translations.en = {
         orTooltip: 'Policies defined with a logical OR only require one of the attributes to match the attributes of the person requesting access. Note that a Deny access authorization policy always and implicitly uses the logical AND for different attribute names.',
         import: "Import",
         playground: "Playground",
+        conflicts: "Conflicts",
         push: "Push analysis",
         missing_enforcements: "Missing enforcements",
         runImport: "Import policies from PdP",
