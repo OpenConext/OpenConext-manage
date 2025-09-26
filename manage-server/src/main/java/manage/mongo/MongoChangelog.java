@@ -10,8 +10,10 @@ import manage.conf.MetaDataAutoConfiguration;
 import manage.model.EntityType;
 import manage.model.MetaData;
 import manage.model.Scope;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.BulkOperations;
 import org.springframework.data.mongodb.core.index.Index;
@@ -24,12 +26,12 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import java.nio.charset.Charset;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 @ChangeLog(order = "001")
 @SuppressWarnings("unchecked")
@@ -60,8 +62,8 @@ public class MongoChangelog {
     private void doAddTestIndexes(MongockTemplate mongoTemplate) {
         Stream.of(EntityType.values()).forEach(entityType -> {
             TextIndexDefinition textIndexDefinition = new TextIndexDefinition.TextIndexDefinitionBuilder()
-                    .onField("$**")
-                    .build();
+                .onField("$**")
+                .build();
             mongoTemplate.indexOps(entityType.getType()).ensureIndex(textIndexDefinition);
         });
     }
@@ -71,7 +73,7 @@ public class MongoChangelog {
         if (!mongoTemplate.collectionExists("scopes")) {
             mongoTemplate.remove(new Query(), Scope.class);
             DistinctIterable<String> scopes = mongoTemplate.getCollection(EntityType.RP.getType())
-                    .distinct("data.metaDataFields.scopes", String.class);
+                .distinct("data.metaDataFields.scopes", String.class);
             scopes.forEach(scope -> mongoTemplate.insert(new Scope(scope, new HashMap<>(), new HashMap<>())));
         }
     }
@@ -85,7 +87,7 @@ public class MongoChangelog {
     public void revisionCreatedIndex(MongockTemplate mongoTemplate) {
         Stream.of(EntityType.values()).forEach(entityType -> {
             mongoTemplate.indexOps(entityType.getType())
-                    .ensureIndex(new Index("revision.created", Sort.Direction.DESC));
+                .ensureIndex(new Index("revision.created", Sort.Direction.DESC));
         });
     }
 
@@ -93,23 +95,23 @@ public class MongoChangelog {
     public void revisionTerminatedIndex(MongockTemplate mongoTemplate) {
         Stream.of(EntityType.values()).forEach(entityType -> {
             mongoTemplate.indexOps(entityType.getType().concat(REVISION_POSTFIX))
-                    .ensureIndex(new Index("revision.terminated", Sort.Direction.DESC));
+                .ensureIndex(new Index("revision.terminated", Sort.Direction.DESC));
         });
     }
 
     @ChangeSet(order = "006", id = "caseInsensitiveIndexEntityID", author = "okke.harsta@surf.nl")
     public void caseInsensitiveIndexEntityID(MongockTemplate mongoTemplate) {
         Stream.of(EntityType.values())
-                .filter(entityType -> !entityType.equals(EntityType.STT))
-                .map(EntityType::getType).forEach(val -> {
-                    IndexOperations indexOperations = mongoTemplate.indexOps(val);
-                    List<IndexInfo> indexInfo = indexOperations.getIndexInfo();
-                    if (indexInfo.stream().anyMatch(info -> info.getName().equals("data.entityid_1"))) {
-                        indexOperations.dropIndex("data.entityid_1");
-                    }
-                    indexOperations.ensureIndex(new Index("data.entityid", Sort.Direction.ASC).unique()
-                            .collation(Collation.of("en").strength(2)));
-                });
+            .filter(entityType -> !entityType.equals(EntityType.STT))
+            .map(EntityType::getType).forEach(val -> {
+                IndexOperations indexOperations = mongoTemplate.indexOps(val);
+                List<IndexInfo> indexInfo = indexOperations.getIndexInfo();
+                if (indexInfo.stream().anyMatch(info -> info.getName().equals("data.entityid_1"))) {
+                    indexOperations.dropIndex("data.entityid_1");
+                }
+                indexOperations.ensureIndex(new Index("data.entityid", Sort.Direction.ASC).unique()
+                    .collation(Collation.of("en").strength(2)));
+            });
     }
 
     @SneakyThrows
@@ -202,8 +204,8 @@ public class MongoChangelog {
         }
         mongoTemplate.indexOps(revision).ensureIndex(new Index("revision.parentId", Sort.Direction.ASC));
         TextIndexDefinition textIndexDefinition = new TextIndexDefinition.TextIndexDefinitionBuilder()
-                .onField("$**")
-                .build();
+            .onField("$**")
+            .build();
         mongoTemplate.indexOps(schema).ensureIndex(textIndexDefinition);
     }
 
@@ -211,8 +213,8 @@ public class MongoChangelog {
     public void addTextIndexRS(MongockTemplate mongoTemplate) {
         String schema = EntityType.RS.getType();
         TextIndexDefinition textIndexDefinition = new TextIndexDefinition.TextIndexDefinitionBuilder()
-                .onField("$**")
-                .build();
+            .onField("$**")
+            .build();
         mongoTemplate.indexOps(schema).ensureIndex(textIndexDefinition);
     }
 
@@ -228,8 +230,8 @@ public class MongoChangelog {
         }
         mongoTemplate.indexOps(revision).ensureIndex(new Index("revision.parentId", Sort.Direction.ASC));
         TextIndexDefinition textIndexDefinition = new TextIndexDefinition.TextIndexDefinitionBuilder()
-                .onField("$**")
-                .build();
+            .onField("$**")
+            .build();
         mongoTemplate.indexOps(schema).ensureIndex(textIndexDefinition);
     }
 
@@ -246,7 +248,7 @@ public class MongoChangelog {
                         if (attributesObject instanceof List) {
                             arp.put("attributes", new HashMap<>());
                             LOG.info(String.format("Saving %s metadata type %s where ARP attributes is a List",
-                                    metaData.getData().get("entityid"), entityType));
+                                metaData.getData().get("entityid"), entityType));
                             mongoTemplate.save(metaData, entityType.getType());
                         } else if (attributesObject instanceof Map) {
                             Map<String, List<Map<String, Object>>> attributes = (Map<String, List<Map<String, Object>>>) arp.get("attributes");
@@ -254,8 +256,8 @@ public class MongoChangelog {
                                 AtomicBoolean needsSaving = new AtomicBoolean(false);
                                 attributes.forEach((arpName, value) -> value.forEach(attribute -> {
                                     boolean useAsNameId = (boolean) attribute.getOrDefault("use_as_nameid",
-                                            attribute.getOrDefault("use_as_name_id",
-                                                    attribute.getOrDefault("useAsNameId", false)));
+                                        attribute.getOrDefault("use_as_name_id",
+                                            attribute.getOrDefault("useAsNameId", false)));
                                     attribute.put("use_as_nameid", useAsNameId);
                                     String releaseAt = (String) attribute.getOrDefault("releaseAs", attribute.get("release_as"));
                                     if (StringUtils.hasText(releaseAt)) {
@@ -268,14 +270,14 @@ public class MongoChangelog {
                                 if (needsSaving.get()) {
                                     //We don't make a new revision as this is a cleanup action
                                     LOG.info(String.format("Saving %s metadata type %s where ARP values are fixed",
-                                            metaData.getData().get("entityid"), entityType.getType()));
+                                        metaData.getData().get("entityid"), entityType.getType()));
                                     mongoTemplate.save(metaData, entityType.getType());
 
                                 }
                             }
                         } else {
                             LOG.info(String.format("Unknown attributes type in metadata %s type %s",
-                                    metaData.getData().get("entityid"), entityType));
+                                metaData.getData().get("entityid"), entityType));
                         }
                     }
                 }
@@ -295,8 +297,8 @@ public class MongoChangelog {
         }
         mongoTemplate.indexOps(revision).ensureIndex(new Index("revision.parentId", Sort.Direction.ASC));
         TextIndexDefinition textIndexDefinition = new TextIndexDefinition.TextIndexDefinitionBuilder()
-                .onField("$**")
-                .build();
+            .onField("$**")
+            .build();
         mongoTemplate.indexOps(schema).ensureIndex(textIndexDefinition);
     }
 
@@ -318,10 +320,49 @@ public class MongoChangelog {
             });
             //We don't make a new revision as this is a cleanup action
             LOG.info(String.format("Saving %s metadata type %s where DiscoveryName and keywords are migrated",
-                    metaData.getData().get("entityid"), EntityType.IDP.getType()));
+                metaData.getData().get("entityid"), EntityType.IDP.getType()));
             mongoTemplate.save(metaData, EntityType.IDP.getType());
         });
     }
+
+    @SneakyThrows
+    @ChangeSet(order = "017", id = "migrateApplicationTags", author = "okke.harsta@surf.nl")
+    public void migrateApplicationTags(MongockTemplate mongoTemplate) {
+        //All of the occurrences of coin:ss:type_of_service:en must be duplicated to application_tags
+        String tags = IOUtils.toString(new ClassPathResource("migration.tags.csv").getInputStream(), Charset.defaultCharset());
+        String[] lines = tags.split("\\R");
+        Map<String, String> mappings = new HashMap<>();
+        Stream.of(lines).forEach(s -> {
+            String[] splitted = s.split(",");
+            mappings.put(splitted[0].trim().toLowerCase(), splitted[1].trim().toLowerCase());
+        });
+        List<MetaData> serviceProviders = mongoTemplate.findAll(MetaData.class, EntityType.SP.getType());
+        List<MetaData> relyingParties = mongoTemplate.findAll(MetaData.class, EntityType.RP.getType());
+        serviceProviders.addAll(relyingParties);
+        serviceProviders.forEach(metaData -> {
+            Map<String, Object> metaDataFields = metaData.metaDataFields();
+            //We only need to check the English ones, as we store application_tags language agnostic
+            String value = (String) metaDataFields.get("coin:ss:type_of_service:en");
+            if (StringUtils.hasText(value)) {
+                //can be comma separated
+                List<String> applicationTags = new ArrayList<>();
+                Stream.of(value.split(",")).forEach(s -> {
+                    String key = s.trim().toLowerCase();
+                    if (mappings.containsKey(key)) {
+                        applicationTags.add(mappings.get(key));
+                    }
+                });
+                if (!applicationTags.isEmpty()) {
+                    metaDataFields.put("application_tags", applicationTags);
+                    //We don't make a new revision as this is a cleanup action
+                    LOG.info(String.format("Saving %s metadata type %s where coin:ss:type_of_service is duplicated in application tags",
+                        metaData.getData().get("entityid"), metaData.getType()));
+                    mongoTemplate.save(metaData, metaData.getType());
+                }
+            }
+        });
+    }
+
 
     private void migrateRelayingPartyToResourceServer(Map<String, Map<String, Object>> properties, List<Pattern> patterns, Map<String, Object> simpleProperties, MetaData rs) {
         rs.setType(EntityType.RS.getType());
@@ -341,13 +382,13 @@ public class MongoChangelog {
         connectionTypes.forEach(collection -> {
             IndexOperations indexOps = mongoTemplate.indexOps(collection);
             indexOps.getIndexInfo().stream()
-                    .filter(indexInfo -> indexInfo.getName().contains("data.eid"))
-                    .forEach(indexInfo -> indexOps.dropIndex(indexInfo.getName()));
+                .filter(indexInfo -> indexInfo.getName().contains("data.eid"))
+                .forEach(indexInfo -> indexOps.dropIndex(indexInfo.getName()));
             indexOps.ensureIndex(new Index("data.eid", Sort.Direction.ASC).unique());
 
             indexOps.getIndexInfo().stream().filter(indexInfo -> indexInfo.getName().contains("entityid")).forEach(indexInfo -> indexOps.dropIndex(indexInfo.getName()));
             indexOps.ensureIndex(new Index("data.entityid", Sort.Direction.ASC).unique()
-                    .collation(Collation.of("en").strength(2)));
+                .collation(Collation.of("en").strength(2)));
             indexOps.ensureIndex(new Index("data.state", Sort.Direction.ASC));
             if (!collection.equals(EntityType.RS.getType())) {
                 indexOps.ensureIndex(new Index("data.allowedall", Sort.Direction.ASC));
