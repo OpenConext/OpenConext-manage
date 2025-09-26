@@ -26,7 +26,7 @@ apiUsers:
     scopes: [ READ, WRITE_SP, DELETE_SP, PUSH, CHANGE_REQUEST_SP, TEST ]
   }
   - {
-      name: "access",
+      name: "openconextaccess",
       password: "secret",
       scopes: [ READ, WRITE_SP, DELETE_SP, PUSH, CHANGE_REQUEST_SP, TEST ]
   }

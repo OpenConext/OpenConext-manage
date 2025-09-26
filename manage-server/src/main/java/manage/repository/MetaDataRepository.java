@@ -200,6 +200,7 @@ public class MetaDataRepository {
             requestedAttributes.forEach(requestedAttribute -> {
                 String key = escapeMetaDataField(requestedAttribute);
                 query.fields().include("data.".concat(key));
+                query.fields().include("revision.created");
             });
             if (type.contains("revision")) {
                 query.fields().include("revision").include("data.revisionnote");
