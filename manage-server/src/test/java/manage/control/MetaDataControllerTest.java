@@ -2103,7 +2103,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         // SP https://1234aaab.nl cannot be deleted as it used in policy "Regular Policy"
         Map res = given()
             .when()
-            .auth().preemptive().basic("access", "secret")
+            .auth().preemptive().basic("openconextaccess", "secret")
             .header("Content-type", "application/json")
             .body(Collections.singletonMap("revisionNote", reasonForDeletion))
             .delete("manage/api/internal/metadata/saml20_sp/11")
@@ -2118,7 +2118,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         Map<String, Long> stats = given()
             .auth()
             .preemptive()
-            .basic("access", "secret")
+            .basic("openconextaccess", "secret")
             .when()
             .header("Content-type", "application/json")
             .get("manage/api/internal/stats")
