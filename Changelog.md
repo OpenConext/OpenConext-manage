@@ -2,14 +2,29 @@
 
 Starting from version 9.0.0, we note changes and new features per release in this file.
 
-## 9.4.0-snapshot
+## 9.4.0
 
 - Improved dependency management in `pom.xml` files ([#538](https://github.com/OpenConext/OpenConext-manage/issues/538))
 - Add 'Organisation' entry ([#535](https://github.com/OpenConext/OpenConext-manage/issues/535))
 - Fix support for http proxies ([#530](https://github.com/OpenConext/OpenConext-manage/issues/530))
 - Add all push data to push preview page ([#528](https://github.com/OpenConext/OpenConext-manage/issues/528))
-- Add custom configuration hook to disallow IdPs with `coin:institution_brin` but no `coin:institution_brin_schac_home` (
-  for [OpenConext-myconext#565](https://github.com/OpenConext/OpenConext-myconext/issues/565))
+- Add custom configuration hook to disallow IdPs with `coin:institution_brin` but no `coin:institution_brin_schac_home` (for
+  [OpenConext-myconext#565](https://github.com/OpenConext/OpenConext-myconext/issues/565))
+- Allow a PDP stepup policy with an AND condition between multiple values of the same attribute
+  ([#544](https://github.com/OpenConext/OpenConext-Manage/issues/544))
+- Add "IdP policies" that apply to all SPs except a named few
+  ([#545](https://github.com/OpenConext/OpenConext-Manage/issues/545))
+- Fill version and revision fiels in the recent activity API output
+  ([#548](https://github.com/OpenConext/OpenConext-Manage/issues/548))
+- Use `coin:institution_guid` instead of `coin:institution_id` for policy access
+  ([#551](https://github.com/OpenConext/OpenConext-Manage/issues/551))
+- Change label for SURFconext Invite roles in policies
+  ([#552](https://github.com/OpenConext/OpenConext-Manage/issues/552))
+- Add coin:policy_enforcement_decision_required flag for IdPs
+  ([#553](https://github.com/OpenConext/OpenConext-Manage/issues/553))
+- Add tab in policies tab to show all policies that are potentially conflicting
+  ([#557](https://github.com/OpenConext/OpenConext-Manage/issues/557))
+
 - Update dependencies
 
 ## 9.3.0
