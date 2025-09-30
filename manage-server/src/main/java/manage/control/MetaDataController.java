@@ -447,6 +447,14 @@ public class MetaDataController {
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'READ')")
+    @PostMapping({"/client/uniquePolicyName/policy", "/internal/uniquePolicyName/policy"})
+    public List<MetaData> uniquePolicyName(@RequestBody Map<String, Object> properties) {
+        String name = (String) properties.get("name");
+        String query = "{ \"data.name\": { \"$regex\": \"^" + name + "$\", \"$options\": \"i\" } }";
+        return metaDataRepository.findRaw(EntityType.PDP.getType(), query);
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'READ')")
     @PostMapping({"/client/search/{type}", "/internal/search/{type}"})
     public List<Map> searchEntities(@PathVariable("type") String type,
                                     @RequestBody Map<String, Object> properties,

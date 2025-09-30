@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 
 import "./PolicyForm.scss";
 import I18n from "i18n-js";
@@ -9,7 +9,7 @@ import CheckBox from "../CheckBox";
 import {AutoFormat} from "../../utils/AutoformatPolicy";
 import PolicyAttributes from "./PolicyAttributes";
 import PolicyRules from "./PolicyRules";
-import {ipInfo} from "../../api";
+import {ipInfo, uniquePolicyName} from "../../api";
 import {getNameForLanguage} from "../../utils/Language";
 
 const ipv4Prefixes = [...Array(33).keys()].filter(i => i > 7).map(prefix => ({value: prefix, label: prefix}));
@@ -29,6 +29,7 @@ export default function PolicyForm({
                                        onChange,
                                        onError
                                    }) {
+    const [originalName, setOriginalName] = useState(null);
 
     useEffect(() => {
         if (isNew) {
@@ -50,6 +51,8 @@ export default function PolicyForm({
                 const idp = urlSearchParams.get("idp");
                 onChange("data.identityProviderIds", [{name: idp}]);
             }
+        } else {
+            setOriginalName(data.name);
         }
     }, []);
 
@@ -95,6 +98,17 @@ export default function PolicyForm({
             }));
     }
 
+    const validatePolicyName = e => {
+        const name = e.target.value.trim();
+        if (isEmpty(name) || name === originalName) {
+            //empty is handled by required
+            onError("policyName", false);
+        } else {
+            uniquePolicyName(name).then(res => {
+                onError("policyName", res.length > 0);
+            })
+        }
+    }
 
     const internalOnChange = (e, attribute, required = false) => {
         const value = e.target.value;
@@ -217,8 +231,14 @@ export default function PolicyForm({
                 <input id="name"
                        type="text"
                        value={data.name || ""}
-                       onChange={e => internalOnChange(e, "name", true)}/>
+                       onBlur={e => validatePolicyName(e)}
+                       onChange={e => {
+                           onError("policyName", false);
+                           internalOnChange(e, "name", true);
+                       }}/>
                 {isEmpty(data.name) && renderError("Name")}
+                {errors["policyName"] &&
+                    <div className="error"><span>{I18n.t("policies.nameAlreadyExists", {name: data.name})}</span></div>}
             </div>
         );
     }
@@ -248,9 +268,9 @@ export default function PolicyForm({
                     options={providerOptions(identityProviders, "identityProviderIds")}
                     value={identityProviderValues}
                 />
-                {(isEmpty(data.serviceProviderIds) && isEmpty(data.identityProviderIds) ) &&
+                {(isEmpty(data.serviceProviderIds) && isEmpty(data.identityProviderIds)) &&
                     <div className="error"><span>{I18n.t("policies.stepUpSpOrIdPIsRequired")}</span></div>}
-                {(data.serviceProvidersNegated && !isEmpty(data.serviceProviderIds) &&  isEmpty(data.identityProviderIds) ) &&
+                {(data.serviceProvidersNegated && !isEmpty(data.serviceProviderIds) && isEmpty(data.identityProviderIds)) &&
                     <div className="error"><span>{I18n.t("policies.stepUpNegatedSPIdPIsRequired")}</span></div>}
                 {renderExcludeFromWarning(identityProviderValues)}
             </div>
@@ -275,11 +295,11 @@ export default function PolicyForm({
                     </ReactTooltip>
                 </label>
                 <div className="select-container">
-                        <CheckBox name="serviceProvidersNegated"
-                                  onChange={e => onChange("data.serviceProvidersNegated", e.target.checked)}
-                                  value={data.serviceProvidersNegated}
-                                  info={I18n.t("policies.negated")}
-                        />
+                    <CheckBox name="serviceProvidersNegated"
+                              onChange={e => onChange("data.serviceProvidersNegated", e.target.checked)}
+                              value={data.serviceProvidersNegated}
+                              info={I18n.t("policies.negated")}
+                    />
                     <Select
                         isMulti={true}
                         className="policy-select"
@@ -632,7 +652,7 @@ export default function PolicyForm({
 
     return (
         <section className="metadata-policy-form">
-            {/*{JSON.stringify(errors)}*/}
+            {JSON.stringify(errors)}
             <section className="policy-form">
                 {renderPolicyType()}
                 {renderPolicyName()}

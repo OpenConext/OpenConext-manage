@@ -237,6 +237,10 @@ export function uniqueEntityId(entityid, type) {
     return postPutJson(`uniqueEntityId/${type}`, {entityid}, "post");
 }
 
+export function uniquePolicyName(name) {
+    return postPutJson(`uniquePolicyName/policy`, {name}, "post");
+}
+
 export function rawSearch(query, type) {
     return fetchJson(`rawSearch/${type}?query=${encodeURIComponent(query)}`)
 }

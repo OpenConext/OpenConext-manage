@@ -647,6 +647,7 @@ I18n.translations.en = {
         typeTooltip: "You can not change the type of policy for existing policies",
         name: "Name",
         nameTooltip: "The unique name of the policy",
+        nameAlreadyExists: "Name {{name}} is already taken.",
         description: "Description",
         descriptionTooltip: "The description is shown in the IdP dashboard. Consider auto-generating this description",
         institutionProviders: "Identity providers",
