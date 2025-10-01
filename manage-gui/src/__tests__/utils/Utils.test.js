@@ -74,10 +74,11 @@ test("createDiff nested array", () => {
     expect(res).toStrictEqual({allowedEntities: data.allowedEntities});
 });
 
-test("createDiff", () => {
+test("sortDict", () => {
     const data = {a: "a", l1: [{name: "x"}, {name: "a"}], l2: [null, "", undefined]};
     sortDict(data);
-    expect(data).toStrictEqual({a: "a", l1: [{name: "a"}, {name: "x"}], l2: [null, "", undefined]});
+    const res = {a: "a", l1: [{name: "a"}, {name: "x"}], l2: [null, "", undefined]};
+    expect(data).toStrictEqual(res);
 });
 
 test("createDiffObjectArpNull", () => {
@@ -102,6 +103,44 @@ test("createDiffObjectArpNull", () => {
     expect(res).toStrictEqual(expected);
 })
 
+test("createDiffObjectArp", () => {
+    const data = {
+        "metaDataFields": {
+            "name:en": "OIDC SP",
+            "accessTokenValidity": 9999,
+        },
+        "arp": {
+            "enabled": true,
+            "attributes": {
+                "urn:mace:dir:attribute-def:cn": [{"value": "*", "source": "idp", "motivation": ""}]
+            }
+        }
+    }
+    const nestedChangeRequest = {
+        "arp": {
+            "enabled": true,
+            "attributes": {
+                "urn:mace:dir:attribute-def:cn": [{"value": "*", "source": "idp", "motivation": ""}],
+                "urn:mace:dir:attribute-def:extra": [{"value": "*", "source": "idp", "motivation": ""}],
+            }
+        }
+
+    }
+    const res = createDiffObject(
+        data,
+        nestedChangeRequest
+    );
+    const expected = {
+        "arp": {
+            "enabled": true,
+            attributes: {
+                "urn:mace:dir:attribute-def:cn": [{"value": "*", "source": "idp", "motivation": ""}]
+            }
+        }
+    }
+    expect(res).toStrictEqual(expected);
+})
+
 test("groupBy", () => {
     let arr = [
         {specie: "sheep", name: "joe"},
@@ -111,7 +150,7 @@ test("groupBy", () => {
     let res = groupBy(arr, "specie");
     expect(res.sheep.map(s => s.name)).toEqual(["joe", "margret"]);
 
-    arr = [{"name":"urn:mace:terena.org:attribute-def:schacHomeOrganization","value":"","negated":false,"index":0}]
+    arr = [{"name": "urn:mace:terena.org:attribute-def:schacHomeOrganization", "value": "", "negated": false, "index": 0}]
     res = groupBy(arr, "name");
     expect(Object.keys(res)[0]).toEqual("urn:mace:terena.org:attribute-def:schacHomeOrganization");
 })

@@ -144,7 +144,8 @@ class Revisions extends React.Component {
                 </tr>
                 {!isFirstRevision &&
                     <tr>
-                        <td colSpan={headers.length}><CheckBox name={revision.id} value={showDetail || false}
+                        <td colSpan={headers.length}><CheckBox name={revision.id}
+                                                               value={showDetail || false}
                                                                info={I18n.t("revisions.toggleDetails")}
                                                                onChange={() => this.toggleShowDetail(revision)}/>
                         </td>

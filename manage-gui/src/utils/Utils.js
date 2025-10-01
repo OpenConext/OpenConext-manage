@@ -71,7 +71,10 @@ const originalValue = (data, acc, key, value) => {
     if (!isEmpty(sourceValue) && typeof sourceValue === "object" && !Array.isArray(sourceValue)) {
         acc[key] = {};
         Object.keys(sourceValue)
-            .filter(sk => value && value[sk])
+            .filter(sk => value && (value[sk] ||
+                key === "attributes" ||
+                key.indexOf("urn:mace") > -1 ||
+                key.indexOf("attribute-def") > -1 ))
             .forEach(sk => originalValue(sourceValue, acc[key], sk, value))
     } else if (sourceValue !== undefined) {
         acc[key] = sourceValue
