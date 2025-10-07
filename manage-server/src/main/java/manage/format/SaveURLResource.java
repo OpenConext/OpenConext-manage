@@ -28,6 +28,9 @@ public class SaveURLResource extends UrlResource {
     @Override
     protected void customizeConnection(URLConnection con) throws IOException {
         super.customizeConnection(con);
+        // set timeouts in milliseconds
+        con.setConnectTimeout(15_000); // 15 seconds to connect
+        con.setReadTimeout(15 * 60 * 1000);   // 15 minutes to read - we need a long timeout on read, because of edugain imports
         if (null != userAgent && !userAgent.isEmpty()) {
             con.setRequestProperty(USER_AGENT_KEY, userAgent);
         }
