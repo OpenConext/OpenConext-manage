@@ -41,15 +41,15 @@ Starting from version 9.0.0, we note changes and new features per release in thi
 
 ```yml
 feature_toggles:
-    allow_secret_public_rp: true
+    allow_secret_public_rp: false
 ```
 
-If set to `true` than the following checks are done:
+If set to `false` than the following checks are done:
 
 - RPs that have `public_client: true` MUST not have a secret set;
 - RPs that have `public_client: false` MUST have a secret set;
 - RPs are configured to use the device code flow MUST not have a secret set.
-  If set to `false`, these checks ar edisabled and Manage reverts to the old behaviour (as it was before 9.1.0).
+  If set to `true`, these checks are disabled and Manage reverts to the old behaviour (as it was before 9.1.0).
 
 ## 9.2.0
 
