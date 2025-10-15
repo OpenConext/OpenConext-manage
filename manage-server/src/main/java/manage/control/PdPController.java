@@ -30,7 +30,6 @@ public class PdPController {
     private final String decideUrl;
     private final RestTemplate pdpRestTemplate;
     private final MetaDataRepository metaDataRepository;
-    private final HttpHeaders headers;
     private final String parseUrl;
     private final ObjectMapper objectMapper;
 
@@ -42,16 +41,15 @@ public class PdPController {
         this.decideUrl = decideUrl;
         this.parseUrl = parseUrl;
         this.metaDataRepository = metaDataRepository;
-        this.pdpRestTemplate = new RestTemplate();
-        this.pdpRestTemplate.getInterceptors().add(new BasicAuthenticationInterceptor(pdpUser, pdpPassword));
-        this.headers = new HttpHeaders();
-        this.headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+        this.pdpRestTemplate = RestTemplateIdiom.buildRestTemplate(null, pdpUser, pdpPassword);
         this.objectMapper = objectMapper;
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(value = "/client/pdp/decide")
     public String decideManage(@RequestBody String payload) {
+        HttpHeaders headers =  new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
         HttpEntity<?> requestEntity = new HttpEntity<>(payload, headers);
         return pdpRestTemplate.exchange(this.decideUrl, HttpMethod.POST, requestEntity, String.class).getBody();
     }
@@ -75,6 +73,8 @@ public class PdPController {
         //Too prevent NullPointers
         metaData.initial(UUID.randomUUID().toString(), "system", 1L);
         PdpPolicyDefinition policyDefinition = new PdpPolicyDefinition(metaData);
+        HttpHeaders headers =  new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
         HttpEntity<?> requestEntity = new HttpEntity<>(policyDefinition, headers);
         String res = pdpRestTemplate.exchange(this.parseUrl, HttpMethod.POST, requestEntity, String.class).getBody();
         return Map.of("xml", res);

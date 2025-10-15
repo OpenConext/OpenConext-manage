@@ -83,16 +83,16 @@ public class DatabaseController {
         this.metaDataRepository = metaDataRepository;
         this.pushUri = pushUri;
 
-        this.restTemplate = restTemplate(pushUri, user, password);
+        this.restTemplate = RestTemplateIdiom.buildRestTemplate(pushUri, user, password);
         this.excludeEduGainImported = excludeEduGainImported;
         this.excludeOidcRP = excludeOidcRP;
         this.excludeSRAM = excludeSRAM;
 
-        this.oidcRestTemplate = restTemplate(oidcPushUri, oidcUser, oidcPassword);
+        this.oidcRestTemplate = RestTemplateIdiom.buildRestTemplate(oidcPushUri, oidcUser, oidcPassword);
         this.oidcPushUri = oidcPushUri;
         this.oidcEnabled = oidcEnabled;
 
-        this.pdpRestTemplate = restTemplate(pdpPushUri, pdpUser, pdpPassword);
+        this.pdpRestTemplate = RestTemplateIdiom.buildRestTemplate(pdpPushUri, pdpUser, pdpPassword);
         this.pdpPushUri = pdpPushUri;
         this.pdpEnabled = pdpEnabled;
 
@@ -273,24 +273,5 @@ public class DatabaseController {
         });
     }
 
-    @SneakyThrows
-    public RestTemplate restTemplate(String uri, String userName, String password) {
 
-        HttpClientBuilder httpClientBuilder = HttpClientBuilder.create()
-            .setConnectionManager(new PoolingHttpClientConnectionManager());
-
-        Optional<HttpHost> optionalHttpHost = HttpHostProvider.resolveHttpHost(URI.create(uri).toURL());
-        optionalHttpHost.ifPresent(httpHost -> httpClientBuilder.setRoutePlanner(new DefaultProxyRoutePlanner(httpHost)));
-
-        CloseableHttpClient httpClient = httpClientBuilder.build();
-
-        HttpComponentsClientHttpRequestFactory requestFactory =
-            new HttpComponentsClientHttpRequestFactory(httpClient);
-
-        RestTemplateBuilder builder = new RestTemplateBuilder();
-        return builder
-            .requestFactory(() -> requestFactory)
-            .additionalInterceptors(new BasicAuthenticationInterceptor(userName, password))
-            .build();
-    }
 }
