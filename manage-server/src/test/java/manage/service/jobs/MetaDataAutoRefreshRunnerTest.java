@@ -95,6 +95,7 @@ class MetaDataAutoRefreshRunnerTest implements TestUtils {
         memoryAppender.start();
 
         autoRefreshRunner = new MetadataAutoRefreshRunner(
+            null,
                 metaDataService,
                 importerService,
                 databaseController,
