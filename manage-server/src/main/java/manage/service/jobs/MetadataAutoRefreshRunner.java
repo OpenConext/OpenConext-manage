@@ -59,6 +59,11 @@ public class MetadataAutoRefreshRunner implements Runnable {
 
     private static boolean running = false;
 
+    private static final String LOCK_NAME = "cluster_cleanup_lock";
+    private static final int LOCK_TTL_SECONDS = 120; // expire after 2 minutes
+
+    private final ClusterLockService lockService;
+
     private final MetaDataService metaDataService;
 
     private final ImporterService importerService;
@@ -73,13 +78,14 @@ public class MetadataAutoRefreshRunner implements Runnable {
 
     private final DatabaseController databaseController;
 
-    public MetadataAutoRefreshRunner(MetaDataService metaDataService,
+    public MetadataAutoRefreshRunner(ClusterLockService lockService,
+                                     MetaDataService metaDataService,
                                      ImporterService importerService,
                                      DatabaseController databaseController,
                                      MetaDataAutoConfiguration metaDataAutoConfiguration,
                                      FeatureService featureService,
                                      @Value("${cron.node-cron-job-responsible}") boolean cronJobResponsible) {
-
+        this.lockService = lockService;
         this.metaDataService = metaDataService;
         this.importerService = importerService;
         this.metaDataAutoConfiguration = metaDataAutoConfiguration;
