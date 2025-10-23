@@ -1,4 +1,4 @@
-import React from "react";
+import React, {Fragment} from "react";
 
 import "./PolicyAttributes.scss";
 import I18n from "i18n-js";
@@ -85,7 +85,7 @@ export default function PolicyAttributes({
             {Object.keys(groupedAttributes).map((nameWithGroupPostfix, outerIndex) => {
                     const name = nameWithGroupPostfix.substring(0, nameWithGroupPostfix.indexOf("#"))
                     return (
-                        <div key={outerIndex} className="attribute-container">
+                        <div key={`outer_${outerIndex}`} className="attribute-container">
                             {(!isPlayground && outerIndex !== 0) && <span className="logical-separator top">
                                     {I18n.t(allAttributesMustMatch ? "policies.andShort" : "policies.orShort")}
                                 </span>}
@@ -100,8 +100,8 @@ export default function PolicyAttributes({
                             </div>
                             <p>{I18n.t("policies.values")}</p>
                             {groupedAttributes[nameWithGroupPostfix].map((attr, innerIndex) =>
-                                <>
-                                    <div key={innerIndex} className="value">
+                                <Fragment key={`inner_${innerIndex}`}>
+                                    <div className="value">
                                         {includeNegate &&
                                             <CheckBox name={window.crypto.randomUUID()}
                                                       value={attr.negated}
@@ -119,7 +119,7 @@ export default function PolicyAttributes({
                                     {I18n.t("policies.orShort")}
                                 </span>}
 
-                                </>)}
+                                </Fragment>)}
                             <a href="#" onClick={e => addValue(e, nameWithGroupPostfix)}>{I18n.t("policies.addValue")}</a>
                         </div>
 

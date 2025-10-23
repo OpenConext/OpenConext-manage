@@ -1165,15 +1165,16 @@ class Detail extends React.PureComponent {
             .filter(idp => idp.data.state === state)
             .filter(idp => allowedall || (allowedEntities || []).some(entity => entity.name === idp.data.entityid));
         let missingEvaluations = false;
-        if (isPolicy && policyProvidersLoaded) {
-            const providerEntityIds = metaData.data.serviceProviderIds.map(sp => sp.name);
-            const identityPproviderEntityIds = metaData.data.identityProviderIds.map(sp => sp.name);
-            const missingSPEvaluations = serviceProviders.some(entity => providerEntityIds.includes(entity.data.entityid) &&
-                !entity.data.metaDataFields["coin:policy_enforcement_decision_required"]);
-            const missingIdPEvaluations = identityProviders.some(entity => identityPproviderEntityIds.includes(entity.data.entityid) &&
-                !entity.data.metaDataFields["coin:policy_enforcement_decision_required"]);
-            missingEvaluations = missingSPEvaluations || missingIdPEvaluations;
-        }
+        // if (isPolicy && policyProvidersLoaded) {
+        //     debugger;
+        //     const providerEntityIds = metaData.data.serviceProviderIds.map(sp => sp.name);
+        //     const identityPproviderEntityIds = metaData.data.identityProviderIds.map(sp => sp.name);
+        //     const missingSPEvaluations = serviceProviders.some(entity => providerEntityIds.includes(entity.data.entityid) &&
+        //         !entity.data.metaDataFields["coin:policy_enforcement_decision_required"]);
+        //     const missingIdPEvaluations = identityProviders.some(entity => identityPproviderEntityIds.includes(entity.data.entityid) &&
+        //         !entity.data.metaDataFields["coin:policy_enforcement_decision_required"]);
+        //     missingEvaluations = missingSPEvaluations || missingIdPEvaluations;
+        // }
         const connectedApplications = metaData.data.applications;
         const isTrue = I18n.t("topBannerDetails.isTrue");
         const isFalse = I18n.t("topBannerDetails.isFalse");

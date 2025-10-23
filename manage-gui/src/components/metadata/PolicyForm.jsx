@@ -67,10 +67,10 @@ export default function PolicyForm({
         return isEmpty(provider) ? selectedProvider.name : getNameForLanguage(provider.data.metaDataFields);
     }
 
-    const excludedFromPush = (providers, selectedProvider) => {
-        const provider = providers.find(prov => prov.data.entityid === selectedProvider.name);
-        return isEmpty(provider) ? true : !provider.data.metaDataFields['coin:policy_enforcement_decision_required']
-    }
+    // const excludedFromPush = (providers, selectedProvider) => {
+    //     const provider = providers.find(prov => prov.data.entityid === selectedProvider.name);
+    //     return isEmpty(provider) ? true : !provider.data.metaDataFields['coin:policy_enforcement_decision_required']
+    // }
 
     const onChangeIdentityProviders = (options) => {
         onChange("data.identityProviderIds", options.map(option => ({name: option.value})))
@@ -85,7 +85,7 @@ export default function PolicyForm({
             .filter(provider => !(data[providerKey] || []).some(prov => prov.name === provider.data.entityid))
             .map(provider => ({
                 label: provider.data.metaDataFields["name:en"] || "Missing",
-                excludedFromPush: excludedFromPush(providers, provider),
+                // excludedFromPush: excludedFromPush(providers, provider),
                 value: provider.data.entityid
             }))
 
@@ -93,7 +93,7 @@ export default function PolicyForm({
         return (data[providerKey] || [])
             .map(provider => ({
                 value: provider.name,
-                excludedFromPush: excludedFromPush(providers, provider),
+                // excludedFromPush: excludedFromPush(providers, provider),
                 label: providerLabel(providers, provider)
             }));
     }
@@ -272,7 +272,7 @@ export default function PolicyForm({
                     <div className="error"><span>{I18n.t("policies.stepUpSpOrIdPIsRequired")}</span></div>}
                 {(data.serviceProvidersNegated && !isEmpty(data.serviceProviderIds) && isEmpty(data.identityProviderIds)) &&
                     <div className="error"><span>{I18n.t("policies.stepUpNegatedSPIdPIsRequired")}</span></div>}
-                {renderExcludeFromWarning(identityProviderValues)}
+                {/*{renderExcludeFromWarning(identityProviderValues)}*/}
             </div>
         );
     }
@@ -297,7 +297,7 @@ export default function PolicyForm({
                 <div className="select-container">
                     <CheckBox name="serviceProvidersNegated"
                               onChange={e => onChange("data.serviceProvidersNegated", e.target.checked)}
-                              value={data.serviceProvidersNegated}
+                              value={data.serviceProvidersNegated || false}
                               info={I18n.t("policies.negated")}
                     />
                     <Select
@@ -309,7 +309,7 @@ export default function PolicyForm({
                         value={serviceProviderValues}
                     />
                 </div>
-                {!data.serviceProvidersNegated && renderExcludeFromWarning(serviceProviderValues)}
+                {/*{!data.serviceProvidersNegated && renderExcludeFromWarning(serviceProviderValues)}*/}
             </div>
         );
     }
@@ -475,7 +475,7 @@ export default function PolicyForm({
                                     {(loa.cidrNotations || []).length > 0 &&
                                         <div className="negate">
                                             <CheckBox name={`cidr-notations-${i}`}
-                                                      value={loa.negateCidrNotation}
+                                                      value={loa.negateCidrNotation || false}
                                                       info={I18n.t("policies.negateCidrNotation")}
                                                       onChange={e => loaChanged("negateCidrNotation", e.target.checked, i, null)}/>
                                         </div>}
