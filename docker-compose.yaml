@@ -1,0 +1,41 @@
+services:
+  openconenxtmongo:
+    image: mongo:7
+    restart: always
+    ports:
+      - "27017:27017"
+    command: |
+      mongod --bind_ip_all --replSet openconext
+    healthcheck:
+      test: |
+        # After starting, but before being used, we need to initialize the Mongo replication set
+        # we abuse the healthcheck for that, because we need to check the health status anyway
+        mongosh --eval '
+          try {
+            rs.status().ok;
+          }
+          catch ({ name, message }) {
+            print("error:" + name);
+            print("message:" + message);
+            if (name=="MongoServerError" && message.includes("no replset config has been received")) {
+              rs.initiate({
+                _id : "openconext",
+                members: [ { _id: 0, host: "openconenxtmongo:27017" } ]
+              });
+              rs.status().ok;
+            }
+          };
+        '
+      interval: 2s
+      timeout: 3s
+      retries: 5
+  mailpit:
+    image: axllent/mailpit:v1.27
+    container_name: mailpit
+    ports:
+      - "8025:8025"
+      - "1025:1025"
+    environment:
+      MP_UI_AUTH: "user:password"
+      MP_MAX_MESSAGES: 5000
+    restart: unless-stopped
