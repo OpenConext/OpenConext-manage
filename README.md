@@ -36,13 +36,22 @@ mongosh
 
 ## [Building and running](#building-and-running)
 
+### Database and Maipit
+
+The `docker-compose.yaml` file in this project is meant for local development and contains a Mongo database and Mailpit instance
+
+```shell
+docker compose up -d
+```
+
 ### [The manage-server](#manage-server)
 
 This project uses Spring Boot and Maven. To run locally, type:
 
-`cd manage-server`
-
-`mvn spring-boot:run -Drun.jvmArguments="-Dspring.profiles.active=dev"`
+```shell
+cd manage-server
+mvn spring-boot:run -Dspring-boot.run.profiles=dev
+```
 
 When developing, it's convenient to just execute the applications main-method, which is in [Application](manage-server/src/main/java/manage/Application.java). Don't forget
 to set the active profile to dev.
@@ -51,7 +60,7 @@ to set the active profile to dev.
 
 The client is build with react and to get initially started:
 
-```
+```shell
 cd manage-gui
 yarn install
 yarn start
@@ -124,4 +133,3 @@ Or the other supported flavour: an incremental change
 curl -u sp-portal:secret -X POST -H 'Content-Type: application/json' -d '@incremental_change_request.json' 'https://manage.test2.surfconext.nl/manage/api/internal/change-requests'
 curl -u sp-portal:secret -X POST -H 'Content-Type: application/json' -d '@incremental_change_request.json' 'http://localhost:8080/manage/api/internal/change-requests'
 ```
- 
