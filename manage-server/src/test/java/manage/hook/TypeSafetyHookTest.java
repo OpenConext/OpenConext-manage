@@ -17,7 +17,8 @@ public class TypeSafetyHookTest implements TestUtils {
     private MetaDataAutoConfiguration metaDataAutoConfiguration = new MetaDataAutoConfiguration(
             objectMapper,
             new ClassPathResource("metadata_configuration"),
-            new ClassPathResource("metadata_templates"));
+            new ClassPathResource("metadata_templates"),
+            "");
     private TypeSafetyHook subject = new TypeSafetyHook(metaDataAutoConfiguration);
 
     public TypeSafetyHookTest() throws IOException {

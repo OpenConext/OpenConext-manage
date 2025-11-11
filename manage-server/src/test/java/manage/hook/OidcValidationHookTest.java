@@ -21,7 +21,8 @@ public class OidcValidationHookTest implements TestUtils {
     private final OidcValidationHook subject = new OidcValidationHook(new MetaDataAutoConfiguration(
         objectMapper,
         new ClassPathResource("metadata_configuration"),
-        new ClassPathResource("metadata_templates")), false);
+        new ClassPathResource("metadata_templates"),
+        ""), false);
 
     public OidcValidationHookTest() throws IOException {
     }
@@ -104,7 +105,8 @@ public class OidcValidationHookTest implements TestUtils {
         OidcValidationHook hook = new OidcValidationHook(new MetaDataAutoConfiguration(
             objectMapper,
             new ClassPathResource("metadata_configuration"),
-            new ClassPathResource("metadata_templates")),
+            new ClassPathResource("metadata_templates"),
+            ""),
             true);
 
 

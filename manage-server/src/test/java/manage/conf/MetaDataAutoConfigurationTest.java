@@ -20,7 +20,8 @@ public class MetaDataAutoConfigurationTest implements TestUtils {
     private final MetaDataAutoConfiguration subject = new MetaDataAutoConfiguration(
             objectMapper,
             new ClassPathResource("metadata_configuration"),
-            new ClassPathResource("metadata_templates"));
+            new ClassPathResource("metadata_templates"),
+            "provisioning.schema.json,sram.schema.json");
 
     public MetaDataAutoConfigurationTest() throws IOException {
     }
@@ -109,5 +110,11 @@ public class MetaDataAutoConfigurationTest implements TestUtils {
     @Test
     public void schemaNotExists() {
         assertThrows(IllegalArgumentException.class, () -> subject.schema("bogus"));
+    }
+
+    @Test
+    public void schemaNotAllowedFiltered() {
+        assertThrows(IllegalArgumentException.class, () -> subject.schema("provisioning"));
+        assertThrows(IllegalArgumentException.class, () -> subject.schema("sram"));
     }
 }

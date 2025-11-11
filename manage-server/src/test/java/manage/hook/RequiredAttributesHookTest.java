@@ -25,7 +25,8 @@ class RequiredAttributesHookTest implements TestUtils {
     private final RequiredAttributesHook subject = new RequiredAttributesHook(new MetaDataAutoConfiguration(
             objectMapper,
             new ClassPathResource("metadata_configuration"),
-            new ClassPathResource("metadata_templates")));
+            new ClassPathResource("metadata_templates"),
+            ""));
 
     public RequiredAttributesHookTest() throws IOException {
     }
