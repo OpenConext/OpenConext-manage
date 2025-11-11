@@ -30,7 +30,8 @@ public class ImporterServiceTest implements TestUtils {
             subject = new ImporterService(new MetaDataAutoConfiguration(
                     objectMapper,
                     new ClassPathResource("metadata_configuration"),
-                    new ClassPathResource("metadata_templates")),
+                    new ClassPathResource("metadata_templates"),
+                    ""),
                     new MockEnvironment(),
                     "nl,pt,en",
                     null);
@@ -148,7 +149,7 @@ public class ImporterServiceTest implements TestUtils {
 
     @Test
     public void multiplicity() throws IOException, XMLStreamException {
-        MetaDataAutoConfiguration metaDataAutoConfiguration = new MetaDataAutoConfiguration(objectMapper, new ClassPathResource("metadata_configuration"), new ClassPathResource("metadata_templates"));
+        MetaDataAutoConfiguration metaDataAutoConfiguration = new MetaDataAutoConfiguration(objectMapper, new ClassPathResource("metadata_configuration"), new ClassPathResource("metadata_templates"), "");
         Map<String, Object> spSchema = metaDataAutoConfiguration.schemaRepresentation(EntityType.SP);
         Map.class.cast(Map.class.cast(Map.class.cast(Map.class.cast(spSchema.get("properties")).get("metaDataFields")).get("patternProperties")).get("^AssertionConsumerService:([0-3]{0,1}[0-9]{1}):index$")).put("multiplicity", 15);
         ImporterService alteredSubject = new ImporterService(metaDataAutoConfiguration, new MockEnvironment(), "nl,en,pt", null);

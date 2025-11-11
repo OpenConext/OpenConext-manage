@@ -1,6 +1,7 @@
 ---
 metadata_configuration_path: file:///config/metadata_configuration/
 metadata_templates_path: file:///config/metadata_templates/
+disabled_metadata_schemas:
 
 base_domain: dev.openconext.local
 environment: prod
