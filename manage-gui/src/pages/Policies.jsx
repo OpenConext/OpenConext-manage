@@ -4,14 +4,13 @@ import {stop} from "../utils/Utils";
 import "./Policies.scss";
 import PolicyPlayground from "../components/PolicyPlaygound";
 import withRouterHooks from "../utils/RouterBackwardCompatability";
-import PolicyMissingEnforcements from "../components/PolicyMissingEnforcements";
 import PolicyConflicts from "../components/PolicyConflicts";
 
 class Policies extends React.PureComponent {
 
     constructor(props) {
         super(props);
-        const tabs = ["playground", "missing_enforcements", "conflicts"];
+        const tabs = ["playground", "conflicts"];
         const {tab = "playground"} = props.params || {};
         this.state = {
             tabs: tabs,
@@ -43,12 +42,6 @@ class Policies extends React.PureComponent {
         );
     };
 
-    renderMissingEnforcements = () => {
-        return (
-            <PolicyMissingEnforcements/>
-        );
-    };
-
     renderConflicts = () => {
         return (
             <PolicyConflicts/>
@@ -59,8 +52,6 @@ class Policies extends React.PureComponent {
         switch (selectedTab) {
             case "playground" :
                 return this.renderPlayground();
-            case "missing_enforcements" :
-                return this.renderMissingEnforcements();
             case "conflicts" :
                 return this.renderConflicts();
             default :

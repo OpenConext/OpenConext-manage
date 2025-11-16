@@ -86,7 +86,8 @@ public class ValidationControllerTest extends AbstractIntegrationTest {
                 .header("Content-type", "application/json")
                 .get("manage/api/client/secret")
                 .as(Map.class);
-        assertEquals(36, res.get("secret").length());
+        String secret = res.get("secret");
+        assertEquals(36, secret.length());
     }
 
     @Test

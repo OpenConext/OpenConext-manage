@@ -363,6 +363,22 @@ public class MongoChangelog {
         });
     }
 
+    @SneakyThrows
+    @ChangeSet(order = "018", id = "removePdpPolicyRequired", author = "okke.harsta@surf.nl")
+    public void removePdpPolicyRequired(MongockTemplate mongoTemplate) {
+        String pdpPolicyRequired = "coin:policy_enforcement_decision_required";
+        Arrays.asList(EntityType.SP, EntityType.RP, EntityType.IDP, EntityType.SRAM, EntityType.STT)
+            .forEach(entityType -> {
+                List<MetaData> metaDataList = mongoTemplate.findAll(MetaData.class, entityType.getType());
+                metaDataList.forEach(metaData -> {
+                    Map<String, Object> metaDataFields = metaData.metaDataFields();
+                    if (metaDataFields.containsKey(pdpPolicyRequired)) {
+                        metaDataFields.remove(pdpPolicyRequired);
+                        mongoTemplate.save(metaData, entityType.getType());
+                    }
+                });
+            });
+    }
 
     private void migrateRelayingPartyToResourceServer(Map<String, Map<String, Object>> properties, List<Pattern> patterns, Map<String, Object> simpleProperties, MetaData rs) {
         rs.setType(EntityType.RS.getType());

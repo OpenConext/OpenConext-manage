@@ -1,6 +1,5 @@
 package manage.control;
 
-import lombok.SneakyThrows;
 import manage.format.EngineBlockFormatter;
 import manage.model.EntityType;
 import manage.model.MetaData;
@@ -8,21 +7,12 @@ import manage.model.PushOptions;
 import manage.model.Scope;
 import manage.policies.PdpPolicyDefinition;
 import manage.repository.MetaDataRepository;
-import manage.web.HttpHostProvider;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
-import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
-import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
-import org.apache.hc.client5.http.impl.routing.DefaultProxyRoutePlanner;
-import org.apache.hc.core5.http.HttpHost;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -31,10 +21,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
@@ -108,15 +96,15 @@ public class DatabaseController {
             ), HttpStatus.OK);
         }
         Map<String, Object> result = new HashMap<>();
+        List<PdpPolicyDefinition> policies = pushPreviewPdP();
         if (pushOptions.isIncludePdP() && pdpEnabled) {
-            List<PdpPolicyDefinition> policies = pushPreviewPdP();
             this.pdpRestTemplate.put(pdpPushUri, policies);
             result.put("pdp", Map.of("status", "OK"));
         } else {
             result.put("pdp", Map.of("status", "OK"));
         }
         if (pushOptions.isIncludeEB()) {
-            Map<String, Map<String, Map<String, Object>>> json = this.pushPreview();
+            Map<String, Map<String, Map<String, Object>>> json = this.doPushPreview(policies);
 
             ResponseEntity<String> response = this.restTemplate.postForEntity(pushUri, json, String.class);
 
@@ -190,6 +178,11 @@ public class DatabaseController {
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/client/playground/pushPreview")
     public Map<String, Map<String, Map<String, Object>>> pushPreview() {
+        List<PdpPolicyDefinition> policies = pushPreviewPdP();
+        return doPushPreview(policies);
+    }
+
+    private Map<String, Map<String, Map<String, Object>>> doPushPreview(List<PdpPolicyDefinition> policies) {
         EngineBlockFormatter formatter = new EngineBlockFormatter();
 
         List<MetaData> serviceProviders = metaDataRepository.getMongoTemplate().findAll(MetaData.class, EntityType.SP.getType());
@@ -230,6 +223,33 @@ public class DatabaseController {
             serviceProvidersToPush.putAll(sramServicesToProvidersToPush);
         }
         serviceProvidersToPush.putAll(identityProvidersToPush);
+
+        // Set of all SP-ids of SP policies
+        Set<String> allServiceProviderIds = policies.stream()
+            .filter(pdpPolicyDefinition ->  pdpPolicyDefinition.isActive() && !pdpPolicyDefinition.isIdpPolicy())
+            .flatMap(p -> p.getServiceProviderIds().stream())
+            .collect(Collectors.toSet());
+
+        // Set of all IdP-ids of IdP policies
+        Set<String> allIdentityProviderIds = policies.stream()
+            .filter(pdpPolicyDefinition ->  pdpPolicyDefinition.isActive() && pdpPolicyDefinition.isIdpPolicy())
+            .flatMap(p -> p.getIdentityProviderIds().stream())
+            .collect(Collectors.toSet());
+
+        serviceProvidersToPush.values().forEach(provider -> {
+            String type = (String) provider.get("type");
+            Map<String, Object> metadata = (Map<String, Object>) provider.computeIfAbsent("metadata", key -> new HashMap<>());
+            Map<String, Object> coin = (Map<String, Object>) metadata.computeIfAbsent("coin", key -> new HashMap<>());
+            String entityID = (String) provider.getOrDefault("name", "");
+            boolean addPdPDecision = type.equals(EntityType.SP.getJanusDbValue()) ?
+                allServiceProviderIds.contains(entityID) :
+                allIdentityProviderIds.contains(entityID);
+            if (addPdPDecision) {
+                coin.put("policy_enforcement_decision_required", "1");
+            } else {
+                coin.remove("policy_enforcement_decision_required");
+            }
+        });
 
         Map<String, Map<String, Map<String, Object>>> results = new HashMap<>();
         results.put("connections", serviceProvidersToPush);

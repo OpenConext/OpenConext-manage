@@ -353,10 +353,6 @@ export function spPolicies(spEntityID) {
     return fetchJson(`spPolicies?entityId=${encodeURIComponent(spEntityID)}`);
 }
 
-export function missingEnforcementPolicies() {
-    return fetchJson("pdp/missing-enforcements");
-}
-
 export function policyConflicts() {
     return fetchJson("pdp/conflicts");
 }

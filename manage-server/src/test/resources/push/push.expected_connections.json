@@ -31,6 +31,7 @@
         },
         "coin": {
           "imported_from_edugain": "0",
+          "policy_enforcement_decision_required": "1",
           "service_team_id": "urn:collab:group:test.surfteams.nl:nl:surfnet:diensten:testbart2334343",
           "signature_method": "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"
         },
@@ -157,7 +158,6 @@
           },
           "eula": "https://eula",
           "no_consent_required": "1",
-          "policy_enforcement_decision_required": "1",
           "publish_in_edugain": "1",
           "publish_in_edugain_date": "2018-06-15T08:20:34.575Z",
           "stepup": {
@@ -233,7 +233,6 @@
           "entity_categories": {
             "3": "https://refeds.org/category/code-of-conduct/v2"
           },
-          "policy_enforcement_decision_required": "1",
           "stepup": {
             "allow_no_token": "0"
           }
@@ -312,8 +311,7 @@
           "en": "https://surf.nl"
         },
         "coin": {
-          "dashboard_connect_option": "connect_without_interaction_without_email",
-          "policy_enforcement_decision_required": "1"
+          "dashboard_connect_option": "connect_without_interaction_without_email"
         },
         "contacts": [
           {
@@ -408,9 +406,7 @@
         "OrganizationName": {
           "en": "Organization name en"
         },
-        "coin": {
-          "policy_enforcement_decision_required": "1"
-        },
+        "coin": {},
         "contacts": [
           {
             "emailAddress": "support@openconext.org",
@@ -665,6 +661,7 @@
             "Location": "https://sso0"
           }
         ],
+        "coin": {},
         "discoveries": [
           {
             "name_en": "Discovery name 0 en"
@@ -694,6 +691,7 @@
         "OrganizationName": {
           "en": "Organization name en"
         },
+        "coin": {},
         "name": {
           "en": "OIDC SP"
         }
@@ -720,6 +718,7 @@
         },
         "coin": {
           "institution_guid": "219092BE-B234-4C17-B910-B090C19CE3DB",
+          "policy_enforcement_decision_required": "1",
           "stepup": {
             "allow_no_token": "1",
             "requireloa": "http://test.surfconext.nl/assurance/loa3"
