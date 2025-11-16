@@ -374,6 +374,9 @@ public class MongoChangelog {
                     Map<String, Object> metaDataFields = metaData.metaDataFields();
                     if (metaDataFields.containsKey(pdpPolicyRequired)) {
                         metaDataFields.remove(pdpPolicyRequired);
+                        LOG.info("Removed {} from entity {} in collection {}",
+                            pdpPolicyRequired, metaData.getData().get("entityid"), entityType.getType());
+                        //We don't make a new revision as this is a cleanup action
                         mongoTemplate.save(metaData, entityType.getType());
                     }
                 });
