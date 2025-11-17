@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -32,6 +33,8 @@ import static java.util.stream.Collectors.toMap;
 @RestController
 @SuppressWarnings("unchecked")
 public class DatabaseController {
+
+    private static final int BATCH_SIZE = 500;
 
     private final RestTemplate restTemplate;
     private final String pushUri;
@@ -183,68 +186,109 @@ public class DatabaseController {
     }
 
     private Map<String, Map<String, Map<String, Object>>> doPushPreview(List<PdpPolicyDefinition> policies) {
+
         EngineBlockFormatter formatter = new EngineBlockFormatter();
 
-        List<MetaData> serviceProviders = metaDataRepository.getMongoTemplate().findAll(MetaData.class, EntityType.SP.getType());
-        Stream<MetaData> metaDataStream = excludeEduGainImported ?
-            serviceProviders.stream()
-                .filter(metaData -> {
-                    Map metaDataFields = metaData.metaDataFields();
-                    boolean importedFromEdugain = Boolean.TRUE.equals(metaDataFields.get("coin:imported_from_edugain"));
-                    boolean pushEnabled = Boolean.TRUE.equals(metaDataFields.get("coin:push_enabled"));
-                    return !importedFromEdugain || pushEnabled;
-                }) : serviceProviders.stream();
+        List<MetaData> serviceProviders = metaDataRepository.getMongoTemplate().stream(
+            new Query().cursorBatchSize(BATCH_SIZE),
+            MetaData.class,
+            EntityType.SP.getType()
+        ).toList();
 
-        Map<String, Map<String, Object>> serviceProvidersToPush = metaDataStream
-            .filter(metaData -> !excludeFromPush(metaData.metaDataFields()))
-            .collect(toMap(MetaData::getId, formatter::parseServiceProvider));
+        Stream<MetaData> spStream = serviceProviders.parallelStream();
+        if (excludeEduGainImported) {
+            spStream = spStream.filter(metaData -> {
+                Map<String, Object> fields = metaData.metaDataFields();
+                boolean imported = Boolean.TRUE.equals(fields.get("coin:imported_from_edugain"));
+                boolean push = Boolean.TRUE.equals(fields.get("coin:push_enabled"));
+                return !imported || push;
+            });
+        }
 
-        List<MetaData> identityProviders = metaDataRepository.getMongoTemplate().findAll(MetaData.class, EntityType.IDP.getType());
+        Map<String, Map<String, Object>> serviceProvidersToPush =
+            spStream.filter(metaData -> !excludeFromPush(metaData.metaDataFields()))
+                .collect(Collectors.toConcurrentMap(
+                    MetaData::getId,
+                    formatter::parseServiceProvider
+                ));
 
-        //Explicit only filter out 'null' objects in the disableConsent as generically filtering out 'nulls' can break things
+        List<MetaData> identityProviders = metaDataRepository.getMongoTemplate().stream(
+            new Query().cursorBatchSize(BATCH_SIZE),
+            MetaData.class,
+            EntityType.IDP.getType()
+        ).toList();
+
         filterOutNullDisableConsentExplanations(identityProviders);
 
-        Map<String, Map<String, Object>> identityProvidersToPush = identityProviders.stream()
-            .filter(metaData -> !excludeFromPush(metaData.metaDataFields()))
-            .collect(toMap(MetaData::getId, formatter::parseIdentityProvider));
+        Map<String, Map<String, Object>> identityProvidersToPush =
+            identityProviders.parallelStream()
+                .filter(metaData -> !excludeFromPush(metaData.metaDataFields()))
+                .collect(Collectors.toConcurrentMap(
+                    MetaData::getId,
+                    formatter::parseIdentityProvider
+                ));
 
         if (!excludeOidcRP) {
-            List<MetaData> relyingParties = metaDataRepository.getMongoTemplate().findAll(MetaData.class, EntityType.RP.getType());
-            Map<String, Map<String, Object>> oidcClientsToPush = relyingParties.stream()
-                .filter(metaData -> !excludeFromPush(metaData.metaDataFields()))
-                .collect(toMap(MetaData::getId, formatter::parseOidcClient));
+            List<MetaData> relyingParties = metaDataRepository.getMongoTemplate().stream(
+                new Query().cursorBatchSize(BATCH_SIZE),
+                MetaData.class,
+                EntityType.RP.getType()
+            ).toList();
+
+            Map<String, Map<String, Object>> oidcClientsToPush =
+                relyingParties.parallelStream()
+                    .filter(metaData -> !excludeFromPush(metaData.metaDataFields()))
+                    .collect(Collectors.toConcurrentMap(
+                        MetaData::getId,
+                        formatter::parseOidcClient
+                    ));
+
             serviceProvidersToPush.putAll(oidcClientsToPush);
         }
+
         if (!excludeSRAM) {
-            List<MetaData> sramServices = metaDataRepository.getMongoTemplate().findAll(MetaData.class, EntityType.SRAM.getType());
-            sramServices.forEach(sramEntity -> sramEntity.metaDataFields().put("coin:collab_enabled", true));
-            Map<String, Map<String, Object>> sramServicesToProvidersToPush = sramServices.stream()
-                .collect(toMap(MetaData::getId, formatter::parseServiceProvider));
-            serviceProvidersToPush.putAll(sramServicesToProvidersToPush);
+            List<MetaData> sramServices = metaDataRepository.getMongoTemplate().stream(
+                new Query().cursorBatchSize(BATCH_SIZE),
+                MetaData.class,
+                EntityType.SRAM.getType()
+            ).toList();
+
+            sramServices.forEach(sram -> sram.metaDataFields().put("coin:collab_enabled", true));
+
+            Map<String, Map<String, Object>> sramToPush =
+                sramServices.parallelStream()
+                    .collect(Collectors.toConcurrentMap(
+                        MetaData::getId,
+                        formatter::parseServiceProvider
+                    ));
+
+            serviceProvidersToPush.putAll(sramToPush);
         }
+
+        // Add IdPs to the same map, as EB looks at the type: saml20-sp or saml20-idp
         serviceProvidersToPush.putAll(identityProvidersToPush);
 
-        // Set of all SP-ids of SP policies
-        Set<String> allServiceProviderIds = policies.stream()
-            .filter(pdpPolicyDefinition ->  pdpPolicyDefinition.isActive() && !pdpPolicyDefinition.isIdpPolicy())
+        Set<String> allServiceProviderIds = policies.parallelStream()
+            .filter(p -> p.isActive() && !p.isIdpPolicy())
             .flatMap(p -> p.getServiceProviderIds().stream())
             .collect(Collectors.toSet());
 
-        // Set of all IdP-ids of IdP policies
-        Set<String> allIdentityProviderIds = policies.stream()
-            .filter(pdpPolicyDefinition ->  pdpPolicyDefinition.isActive() && pdpPolicyDefinition.isIdpPolicy())
+        Set<String> allIdentityProviderIds = policies.parallelStream()
+            .filter(p -> p.isActive() && p.isIdpPolicy())
             .flatMap(p -> p.getIdentityProviderIds().stream())
             .collect(Collectors.toSet());
 
-        serviceProvidersToPush.values().forEach(provider -> {
+        serviceProvidersToPush.values().parallelStream().forEach(provider -> {
             String type = (String) provider.get("type");
-            Map<String, Object> metadata = (Map<String, Object>) provider.computeIfAbsent("metadata", key -> new HashMap<>());
-            Map<String, Object> coin = (Map<String, Object>) metadata.computeIfAbsent("coin", key -> new HashMap<>());
+            Map<String, Object> metadata = (Map<String, Object>) provider.computeIfAbsent("metadata", k -> new HashMap<>());
+            Map<String, Object> coin = (Map<String, Object>) metadata.computeIfAbsent("coin", k -> new HashMap<>());
             String entityID = (String) provider.getOrDefault("name", "");
-            boolean addPdPDecision = type.equals(EntityType.SP.getJanusDbValue()) ?
-                allServiceProviderIds.contains(entityID) :
-                allIdentityProviderIds.contains(entityID);
-            if (addPdPDecision) {
+
+            boolean addDecision = type.equals(EntityType.SP.getJanusDbValue())
+                ? allServiceProviderIds.contains(entityID)
+                : allIdentityProviderIds.contains(entityID);
+
+            if (addDecision) {
                 coin.put("policy_enforcement_decision_required", "1");
             } else {
                 coin.remove("policy_enforcement_decision_required");
@@ -253,7 +297,6 @@ public class DatabaseController {
 
         Map<String, Map<String, Map<String, Object>>> results = new HashMap<>();
         results.put("connections", serviceProvidersToPush);
-
         return results;
     }
 

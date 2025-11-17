@@ -368,6 +368,7 @@ public class MongoChangelog {
     public void removePdpPolicyRequired(MongockTemplate mongoTemplate) {
         String pdpPolicyRequired = "coin:policy_enforcement_decision_required";
         Arrays.asList(EntityType.SP, EntityType.RP, EntityType.IDP, EntityType.SRAM, EntityType.STT)
+            .parallelStream()
             .forEach(entityType -> {
                 List<MetaData> metaDataList = mongoTemplate.findAll(MetaData.class, entityType.getType());
                 metaDataList.forEach(metaData -> {
