@@ -498,10 +498,6 @@
           "type": "boolean",
           "info": "Display unconnected IdPs in the WAYF."
         },
-        "coin:policy_enforcement_decision_required": {
-          "type": "boolean",
-          "info": "Set to activate the user policy engine (PDP)."
-        },
         "coin:original_metadata_url": {
           "type": "string",
           "format": "url",

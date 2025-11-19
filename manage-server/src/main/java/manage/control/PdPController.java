@@ -55,12 +55,6 @@ public class PdPController {
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'READ')")
-    @GetMapping(value = {"/client/pdp/missing-enforcements", "/internal/pdp/missing-enforcements"})
-    public List<MetaData> policiesWithMissingPolicyEnforcementDecisionRequired() {
-        return metaDataRepository.policiesWithMissingPolicyEnforcementDecisionRequired();
-    }
-
-    @PreAuthorize("hasAnyRole('ADMIN', 'READ')")
     @GetMapping(value = {"/client/pdp/conflicts", "/internal/pdp/conflicts"})
     public Map<String, List<MetaData>> conflictingPolicies() {
         return metaDataRepository.conflictingPolicies();

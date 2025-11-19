@@ -67,11 +67,6 @@ export default function PolicyForm({
         return isEmpty(provider) ? selectedProvider.name : getNameForLanguage(provider.data.metaDataFields);
     }
 
-    // const excludedFromPush = (providers, selectedProvider) => {
-    //     const provider = providers.find(prov => prov.data.entityid === selectedProvider.name);
-    //     return isEmpty(provider) ? true : !provider.data.metaDataFields['coin:policy_enforcement_decision_required']
-    // }
-
     const onChangeIdentityProviders = (options) => {
         onChange("data.identityProviderIds", options.map(option => ({name: option.value})))
     }
@@ -167,21 +162,6 @@ export default function PolicyForm({
         );
     }
 
-    const renderExcludeFromWarning = serviceProviderValues => {
-        const excludedServiceProviders = serviceProviderValues.filter(sp => sp.excludedFromPush);
-        if (isEmpty(excludedServiceProviders)) {
-            return null;
-        }
-        return (
-            <div className="excluded-providers">
-                {excludedServiceProviders.map((provider, index) =>
-                    <span key={index}
-                          dangerouslySetInnerHTML={{__html: I18n.t("policies.providerExcludedFromPush", {name: provider.label})}}/>
-                )}
-            </div>
-        );
-    }
-
     const renderPolicyType = () => {
         return (
             <div className="input-field">
@@ -272,7 +252,6 @@ export default function PolicyForm({
                     <div className="error"><span>{I18n.t("policies.stepUpSpOrIdPIsRequired")}</span></div>}
                 {(data.serviceProvidersNegated && !isEmpty(data.serviceProviderIds) && isEmpty(data.identityProviderIds)) &&
                     <div className="error"><span>{I18n.t("policies.stepUpNegatedSPIdPIsRequired")}</span></div>}
-                {/*{renderExcludeFromWarning(identityProviderValues)}*/}
             </div>
         );
     }
@@ -309,7 +288,6 @@ export default function PolicyForm({
                         value={serviceProviderValues}
                     />
                 </div>
-                {/*{!data.serviceProvidersNegated && renderExcludeFromWarning(serviceProviderValues)}*/}
             </div>
         );
     }

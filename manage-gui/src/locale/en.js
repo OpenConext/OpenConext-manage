@@ -153,7 +153,6 @@ I18n.translations.en = {
         evaluatedHeader: "Policy evaluation",
         evaluated: "Configured",
         notEvaluated: "Not configured",
-        notEvaluatedTooltip: "This policy contains SP / RP / IdP entities that are <strong>NOT</strong> evaluated for policies (e.g.<code>coin:policy_enforcement_decision_required</code> is not set or is <code>False</code>)",
         pushExcludedTooltip: "This entity is <strong>NOT</strong> pushed to EB as <code>coin:exclude_from_push</code> is set to <code>True</code>",
         notActiveTooltip: "This policy is <strong>NOT</strong> pushed to PDP as <code>active</code> is set to <code>False</code>",
         noEntitiesConnected: "There are no entities connected to this {{type}}",
@@ -712,7 +711,6 @@ I18n.translations.en = {
         type: "Type",
         reload: "Reload",
         providers: "Services",
-        providerExcludedFromPush: "<strong>{{name}}</strong> is not configured for policy evaluation (e.g. coin:policy_enforcement_decision_required is False or not set)"
     },
     policyPlayGround :{
         institutionProvider: "Identity provider",

@@ -1,11 +1,13 @@
 package manage.policies;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import manage.model.MetaData;
 import manage.model.Revision;
+import org.springframework.util.CollectionUtils;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -131,6 +133,12 @@ public class PdpPolicyDefinition {
             );
         data.put("metaDataFields", new HashMap<>());
         List.of("id", "created").forEach(name -> data.remove(name));
+    }
+
+    @JsonIgnore
+    public boolean isIdpPolicy() {
+        return (CollectionUtils.isEmpty(this.serviceProviderIds) || this.serviceProvidersNegated) &&
+            !CollectionUtils.isEmpty(this.identityProviderIds);
     }
 
 }
