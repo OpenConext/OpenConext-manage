@@ -40,6 +40,7 @@ export default function PolicyPlayground({}) {
     const [pdpRequest, setPdpRequest] = useState(null);
     const [showResponse, setShowResponse] = useState(true);
     const [took, setTook] = useState(0);
+    const [copiedToClipboardClassName, setCopiedToClipboardClassName] = useState(true);
 
     useEffect(() => {
         Promise.all([
@@ -62,6 +63,14 @@ export default function PolicyPlayground({}) {
             <div className="error"><span>{I18n.t("metadata.required", {name: attribute})}</span></div>
         );
     }
+
+    const copyToClipboard = codeValue => {
+        const val = JSON.stringify(codeValue, null, 3);
+        navigator.clipboard.writeText(val).then(() => {
+            setCopiedToClipboardClassName("copied")
+            setTimeout(() => setCopiedToClipboardClassName(""), 5000);
+        });
+    };
 
     const policyChanged = policyOption => {
         setPolicy(policyOption);
@@ -146,7 +155,7 @@ export default function PolicyPlayground({}) {
     }
 
     const doSetAttributes = attrs => {
-            setAttributes(attrs);
+        setAttributes(attrs);
     }
 
     const renderAttributes = () => {
@@ -281,6 +290,12 @@ export default function PolicyPlayground({}) {
                     <a href="/"
                        onClick={toggleResponseRequestView}
                        className={showResponse ? "active" : ""}>{`PdP Response (took ${took} ms)`}</a>
+                    <div className="copy-container">
+                        <span className={`button green ${copiedToClipboardClassName}`}
+                              onClick={() => copyToClipboard(codeValue)}>
+                                    {I18n.t("clipboard.copy")}<i className="fa fa-clone"/>
+                        </span>
+                    </div>
                 </div>
                 <div className="pdp-response">
                     <CodeMirror value={JSON.stringify(codeValue, null, 3)}
