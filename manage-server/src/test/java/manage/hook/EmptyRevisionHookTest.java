@@ -21,7 +21,8 @@ public class EmptyRevisionHookTest implements TestUtils {
     private EmptyRevisionHook subject = new EmptyRevisionHook(new MetaDataAutoConfiguration(
             objectMapper,
             new ClassPathResource("metadata_configuration"),
-            new ClassPathResource("metadata_templates")));
+            new ClassPathResource("metadata_templates"),
+        ""));
 
     public EmptyRevisionHookTest() throws IOException {
     }

@@ -20,7 +20,8 @@ public class IdentityProviderBrinCodeHookTest implements TestUtils {
     private final IdentityProviderBrinCodeHook identityProviderBrinCodeHook = new IdentityProviderBrinCodeHook(new MetaDataAutoConfiguration(
         objectMapper,
         new ClassPathResource("metadata_configuration"),
-        new ClassPathResource("metadata_templates")));
+        new ClassPathResource("metadata_templates"),
+        ""));
 
     public IdentityProviderBrinCodeHookTest() throws IOException {
     }

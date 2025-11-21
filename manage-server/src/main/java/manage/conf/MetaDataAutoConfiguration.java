@@ -61,7 +61,8 @@ public class MetaDataAutoConfiguration {
     @Autowired
     public MetaDataAutoConfiguration(ObjectMapper objectMapper,
                                      @Value("${metadata_configuration_path}") Resource metadataConfigurationPath,
-                                     @Value("${metadata_templates_path}") Resource metadataTemplatesPath) throws
+                                     @Value("${metadata_templates_path}") Resource metadataTemplatesPath,
+                                     @Value("${disabled_metadata_schemas}") String disabledMetadataSchemas) throws
             IOException {
         this.schemas = parseConfiguration(metadataConfigurationPath, Arrays.asList(
                 new CertificateFormatValidator(),
@@ -74,7 +75,7 @@ public class MetaDataAutoConfiguration {
                 new PatternFormatValidator(),
                 new XMLFormatValidator(),
                 new UUIDFormatValidator()
-        ));
+        ), disabledMetadataSchemas.trim().isEmpty() ? new ArrayList<>() : Arrays.asList(disabledMetadataSchemas.split(",")));
         this.objectMapper = objectMapper;
         this.templates = parseTemplates(metadataTemplatesPath);
         LOG.info("Finished loading {} metadata configurations", schemas.size());
@@ -140,11 +141,11 @@ public class MetaDataAutoConfiguration {
     }
 
     private Map<String, Schema> parseConfiguration(Resource metadataConfigurationPath, List<FormatValidator>
-            validators) throws IOException {
+            validators, List<String> disabledMetadataSchemas) throws IOException {
         File[] files = metadataConfigurationPath.getFile().listFiles();
 
         List<File> schemaFiles =
-                Stream.of(files).filter(file -> file.getName().endsWith("schema.json")).collect(Collectors.toList());
+                Stream.of(files).filter(file -> !disabledMetadataSchemas.contains(file.getName()) && file.getName().endsWith("schema.json")).collect(Collectors.toList());
         Assert.notEmpty(schemaFiles, String.format("No schema.json files defined in %s", metadataConfigurationPath
                 .getFilename()));
         return schemaFiles.stream().map(file -> this.parse(file, validators,

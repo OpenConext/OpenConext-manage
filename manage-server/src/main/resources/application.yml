@@ -60,6 +60,7 @@ loa_levels: "http://localhost/assurance/loa1.5,http://localhost/assurance/loa2,h
 metadata_configuration_path: classpath:/metadata_configuration
 metadata_templates_path: classpath:/metadata_templates
 metadata_export_path: classpath:/metadata_export
+disabled_metadata_schemas:
 
 security:
   backdoor_user_name: backdoor
