@@ -190,6 +190,25 @@ export default class Import extends React.Component {
                         };
                     }
                 });
+                // Also remove fields that are no longer valid. SP and IDP can have multiple fields
+                // if a url is removed from the metadata it should not be ignored.
+                const currentMedataFields = Object.keys(currentMetaData[key]);
+                currentMedataFields.forEach(field => {
+                    if (
+                        !metaDataFields.includes(field) && (
+                            field.includes("AssertionConsumerService") ||
+                            field.includes("SingleLogoutService") ||
+                            field.includes("SingleSignOnService")
+                        )
+                    ) {
+                        value[field] = {
+                            value: null,
+                            selected: true,
+                            current: currentMetaData[key][field]
+                        };
+                    }
+                })
+
                 if (Object.keys(value).length === 0) {
                     delete results[key];
                 }
