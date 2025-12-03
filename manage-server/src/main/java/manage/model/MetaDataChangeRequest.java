@@ -1,9 +1,6 @@
 package manage.model;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 
 import jakarta.validation.constraints.NotNull;
@@ -29,8 +26,10 @@ public class MetaDataChangeRequest implements PathUpdates {
 
     private String note;
 
+    @Setter
     private boolean incrementalChange;
 
+    @Setter
     private PathUpdateType pathUpdateType;
 
     @NotNull
@@ -39,8 +38,10 @@ public class MetaDataChangeRequest implements PathUpdates {
     @NotNull
     private Map<String, Object> auditData;
 
+    @Setter
     private Instant created;
 
+    @Setter
     private Map<String, Object> metaDataSummary;
 
     private String requestType;
@@ -52,22 +53,6 @@ public class MetaDataChangeRequest implements PathUpdates {
         this.pathUpdates = pathUpdates;
         this.auditData = auditData;
         this.created = Instant.now();
-    }
-
-    public void setMetaDataSummary(Map<String, Object> metaDataSummary) {
-        this.metaDataSummary = metaDataSummary;
-    }
-
-    public void setCreated(Instant created) {
-        this.created = created;
-    }
-
-    public void setIncrementalChange(boolean incrementalChange) {
-        this.incrementalChange = incrementalChange;
-    }
-
-    public void setPathUpdateType(PathUpdateType pathUpdateType) {
-        this.pathUpdateType = pathUpdateType;
     }
 
     @Override

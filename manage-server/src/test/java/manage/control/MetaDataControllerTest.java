@@ -1504,6 +1504,8 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
             .statusCode(SC_OK);
         MetaDataChangeRequest metaDataChangeRequest = mongoTemplate()
             .find(new Query(), MetaDataChangeRequest.class, EntityType.SP.getType().concat(CHANGE_REQUEST_POSTFIX)).get(0);
+        assertEquals("Change", metaDataChangeRequest.getRequestType());
+
         given()
             .when()
             .contentType(ContentType.JSON)
