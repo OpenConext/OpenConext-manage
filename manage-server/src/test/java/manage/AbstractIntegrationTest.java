@@ -42,8 +42,6 @@ import static org.awaitility.Awaitility.await;
 @TestPropertySource(locations = "classpath:test.properties")
 public abstract class AbstractIntegrationTest implements TestUtils {
 
-    private static final Logger LOG = LoggerFactory.getLogger(AbstractIntegrationTest.class);
-
     @Autowired
     protected MetaDataRepository metaDataRepository;
 

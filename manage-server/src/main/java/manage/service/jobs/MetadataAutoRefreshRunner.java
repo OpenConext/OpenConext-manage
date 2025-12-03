@@ -21,8 +21,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 @Component
@@ -55,12 +53,8 @@ public class MetadataAutoRefreshRunner implements Runnable {
 
     public static final String AUTO_REFRESH_REVISION_NOTE = "Metadata updated by auto refresh";
 
-    private static final Lock execLock = new ReentrantLock();
-
-    private static boolean running = false;
-
-    private static final String LOCK_NAME = "cluster_cleanup_lock";
-    private static final int LOCK_TTL_SECONDS = 120; // expire after 2 minutes
+    public static final String LOCK_NAME = "cluster_cleanup_lock";
+    public static final int LOCK_TTL_SECONDS = 15 * 60; // expire after 15 minutes
 
     private final ClusterLockService lockService;
 
@@ -99,24 +93,22 @@ public class MetadataAutoRefreshRunner implements Runnable {
     @Scheduled(cron = "${metadata_import.auto_refresh.cronSchedule}")
     public void run() {
         if (this.cronJobResponsible && featureService.isFeatureEnabled(Features.AUTO_REFRESH)) {
-            // Check whether a Thread is already running
-            if (running || !execLock.tryLock()) {
+            // Check whether a different node is already running
+            if (!lockService.tryAcquire(LOCK_NAME, LOCK_TTL_SECONDS)) {
                 LOG.warn(LOG_ALREADY_RUNNING);
                 return;
             }
 
-            // Set the lock and execute the reaper
-            running = true;
             // General exception to ensure that we do not create a deadlock for the scheduled runner
             try {
                 execute();
             } catch (Error | Exception e) {
                 LOG.error("Error during thread: {}, stacktrace: {}", e.getMessage(), e.getStackTrace());
+            } finally {
+                // Release the lock
+                lockService.release(LOCK_NAME);
             }
 
-            // Release the lock
-            running = false;
-            execLock.unlock();
         }
     }
 
@@ -126,12 +118,12 @@ public class MetadataAutoRefreshRunner implements Runnable {
         // Service Provider updates
         LOG.info("Updating Service Providers");
         boolean anyServiceProviderChanged = metaDataService.findAllByType(EntityType.SP.getType()).stream()
-                .anyMatch(this::doUpdate);
+            .anyMatch(this::doUpdate);
 
         // Identity Provider updates
         LOG.info("Updating Identity Providers");
         boolean anyIdentityProviderChanged = metaDataService.findAllByType(EntityType.IDP.getType()).stream()
-                .anyMatch(this::doUpdate);
+            .anyMatch(this::doUpdate);
 
         if (anyServiceProviderChanged || anyIdentityProviderChanged) {
             LOG.info("Pushing changes to IdP after auto-refresh");
@@ -144,7 +136,6 @@ public class MetadataAutoRefreshRunner implements Runnable {
         String entityId = metaData.getData().get(METADATA_ENTITYID_KEY).toString();
 
         if (!metaData.isMetadataRefreshEnabled()) {
-            LOG.debug("Auto refresh is not enabled for entity - skipping for {}: {}", metaData.getType(), entityId);
             return false;
         }
 
@@ -164,10 +155,10 @@ public class MetadataAutoRefreshRunner implements Runnable {
         // Get the new metadata using the metadata URL
         String metadataUrl = metaData.getData().get(METADATA_URL_KEY).toString();
         Map<String, Object> importXMLUrlMetaData = importerService.importXMLUrl(EntityType.fromType(metaData.getType()),
-                new Import(metadataUrl, null));
+            new Import(metadataUrl, null));
         if (importXMLUrlMetaData.containsKey(IMPORT_ERROR_KEY)) {
             LOG.info("Failed to parse metadata from url for {} {} and url {} with error: {}",
-                    metaData.getType(), entityId, metadataUrl, importXMLUrlMetaData.get(IMPORT_ERROR_KEY));
+                metaData.getType(), entityId, metadataUrl, importXMLUrlMetaData.get(IMPORT_ERROR_KEY));
             return false;
         }
 
@@ -190,13 +181,13 @@ public class MetadataAutoRefreshRunner implements Runnable {
             metaDataService.doPut(metaData, this.apiUser, metaData.isExcludedFromPush());
             return true;
         } catch (JsonProcessingException exception) {
-            LOG.info("Failed to save changes for {} {}: {}", metaData.getType(), entityId, exception.getMessage());
+            LOG.warn("Failed to save changes for {} {}: {}", metaData.getType(), entityId, exception.getMessage());
             return false;
         } catch (ValidationException exception) {
             if (exception.getMessage().contains("No data is changed")) {
                 LOG.info("No changes for {}: {}", metaData.getType(), entityId);
             } else {
-                LOG.info("Failed to save changes for {} {}: {}", metaData.getType(), entityId, exception.getMessage());
+                LOG.warn("Failed to save changes for {} {}: {}", metaData.getType(), entityId, exception.getMessage());
             }
             return false;
         }
@@ -208,23 +199,23 @@ public class MetadataAutoRefreshRunner implements Runnable {
         if (metaData.isMetadataRefreshAllowAllEnabled()) {
             Map<String, Object> map = metaDataAutoConfiguration.schemaRepresentation(EntityType.fromType(metaData.getType()));
             Map<String, Object> allFields = (Map<String, Object>) ((Map) ((Map) ((Map) ((Map) map.getOrDefault(PROPERTIES_KEY, new HashMap<>()))
-                    .getOrDefault(AUTO_REFRESH_KEY, new HashMap<>()))
-                    .getOrDefault(PROPERTIES_KEY, new HashMap<>()))
-                    .getOrDefault(FIELDS_KEY, new HashMap<>()))
-                    .getOrDefault(PROPERTIES_KEY, new HashMap<>());
+                .getOrDefault(AUTO_REFRESH_KEY, new HashMap<>()))
+                .getOrDefault(PROPERTIES_KEY, new HashMap<>()))
+                .getOrDefault(FIELDS_KEY, new HashMap<>()))
+                .getOrDefault(PROPERTIES_KEY, new HashMap<>());
             allowedFields = new ArrayList<>(allFields.keySet());
         } else {
             Map<String, Boolean> configuredFields = null != metaData.getAutoRefresh() ?
-                    (Map<String, Boolean>) metaData.getAutoRefresh().get(FIELDS_KEY) : null;
+                (Map<String, Boolean>) metaData.getAutoRefresh().get(FIELDS_KEY) : null;
             if (null == configuredFields || configuredFields.isEmpty()) {
                 LOG.info("No fields configured for auto refresh and allow all is disabled - skipping for {}: {}",
-                        metaData.getType(), entityId);
+                    metaData.getType(), entityId);
                 return null;
             }
 
             allowedFields = configuredFields.entrySet().stream()
-                    .filter(Map.Entry::getValue)
-                    .map(Map.Entry::getKey).collect(Collectors.toList());
+                .filter(Map.Entry::getValue)
+                .map(Map.Entry::getKey).collect(Collectors.toList());
         }
 
         return allowedFields;
@@ -233,15 +224,15 @@ public class MetadataAutoRefreshRunner implements Runnable {
     private Map<String, Object> getUpdatedFields(Map<String, Object> newMetaData, List<String> allowedFields) {
         Map<String, Object> metadataFields = (Map<String, Object>) newMetaData.get(METADATA_FIELDS_KEY);
         return metadataFields.entrySet().stream()
-                .filter(entry -> allowedFields.contains(entry.getKey()))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            .filter(entry -> allowedFields.contains(entry.getKey()))
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
     private List<String> getRemovedFields(Map<String, Object> newMetaData, List<String> allowedFields) {
         Map<String, Object> metaDataFields = (Map<String, Object>) newMetaData.get(METADATA_FIELDS_KEY);
         return allowedFields.stream()
-                .filter(fieldKey -> !metaDataFields.containsKey(fieldKey))
-                .collect(Collectors.toList());
+            .filter(fieldKey -> !metaDataFields.containsKey(fieldKey))
+            .collect(Collectors.toList());
     }
 
 }

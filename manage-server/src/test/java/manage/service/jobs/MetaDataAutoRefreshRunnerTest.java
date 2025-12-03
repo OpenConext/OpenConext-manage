@@ -29,6 +29,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import static manage.service.jobs.MetadataAutoRefreshRunner.LOCK_NAME;
+import static manage.service.jobs.MetadataAutoRefreshRunner.LOCK_TTL_SECONDS;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -37,6 +39,9 @@ class MetaDataAutoRefreshRunnerTest implements TestUtils {
 
     @Mock
     MetaDataService metaDataService;
+
+    @Mock
+    ClusterLockService clusterLockService;
 
     @Mock
     ImporterService importerService;
@@ -94,14 +99,16 @@ class MetaDataAutoRefreshRunnerTest implements TestUtils {
         memoryAppender = LogUtils.configureLogger(logger);
         memoryAppender.start();
 
+        when(clusterLockService.tryAcquire(LOCK_NAME, LOCK_TTL_SECONDS)).thenReturn(true);
+
         autoRefreshRunner = new MetadataAutoRefreshRunner(
-            null,
-                metaDataService,
-                importerService,
-                databaseController,
-                metaDataAutoConfiguration,
-                featureService,
-                true);
+            clusterLockService,
+            metaDataService,
+            importerService,
+            databaseController,
+            metaDataAutoConfiguration,
+            featureService,
+            true);
     }
 
     @Test
@@ -142,7 +149,7 @@ class MetaDataAutoRefreshRunnerTest implements TestUtils {
     @Test
     void updateServiceProviderAllowSubset() throws JsonProcessingException {
         MetaData current = buildMetadata(EntityType.SP, "entityId", "metadataUrl", true,
-                false, Collections.singletonMap("field1", true));
+            false, Collections.singletonMap("field1", true));
         current.metaDataFields().put("field1", "old");
         current.metaDataFields().put("field2", "old");
 
@@ -169,7 +176,7 @@ class MetaDataAutoRefreshRunnerTest implements TestUtils {
     @Test
     void updateServiceProviderNoMatchingSubset() throws JsonProcessingException {
         MetaData current = buildMetadata(EntityType.SP, "entityId", "metadataUrl", true,
-                false, Collections.singletonMap("field5", false));
+            false, Collections.singletonMap("field5", false));
         current.metaDataFields().put("field5", "old");
         current.metaDataFields().put("field6", "old");
 
@@ -186,7 +193,7 @@ class MetaDataAutoRefreshRunnerTest implements TestUtils {
     @Test
     void updateServiceProviderRemoveFieldIfRemovedFromMetadata() throws JsonProcessingException {
         MetaData current = buildMetadata(EntityType.SP, "entityId", "metadataUrl", true,
-                false, Collections.singletonMap("field5", true));
+            false, Collections.singletonMap("field5", true));
         current.metaDataFields().put("field5", "old");
         current.metaDataFields().put("field6", "old");
 
@@ -207,7 +214,7 @@ class MetaDataAutoRefreshRunnerTest implements TestUtils {
     @Test
     void updateServiceProviderDoNotAllowSubsetWithoutFields() throws JsonProcessingException {
         when(metaDataService.findAllByType(EntityType.SP.getType())).thenReturn(Collections.singletonList(
-                buildMetadata(EntityType.SP, "entityId", "metadataUrl", true, false, new HashMap<>())
+            buildMetadata(EntityType.SP, "entityId", "metadataUrl", true, false, new HashMap<>())
         ));
         when(metaDataService.findAllByType(EntityType.IDP.getType())).thenReturn(Collections.emptyList());
 
@@ -221,11 +228,11 @@ class MetaDataAutoRefreshRunnerTest implements TestUtils {
     @Test
     void updateServiceProviderNoChanges() throws JsonProcessingException {
         when(metaDataService.findAllByType(EntityType.SP.getType())).thenReturn(Collections.singletonList(
-                buildMetadata(EntityType.SP, "entityId", "metadataUrl", true, true, new HashMap<>())
+            buildMetadata(EntityType.SP, "entityId", "metadataUrl", true, true, new HashMap<>())
         ));
         when(metaDataService.findAllByType(EntityType.IDP.getType())).thenReturn(Collections.emptyList());
         when(metaDataService.doPut(any(), any(), anyBoolean()))
-                .thenThrow(new ValidationException(null, "No data is changed", ""));
+            .thenThrow(new ValidationException(null, "No data is changed", ""));
 
         autoRefreshRunner.run();
 
@@ -237,7 +244,7 @@ class MetaDataAutoRefreshRunnerTest implements TestUtils {
     @Test
     void updateServiceProviderInvalidMetadata() throws JsonProcessingException {
         when(metaDataService.findAllByType(EntityType.SP.getType())).thenReturn(Collections.singletonList(
-                buildMetadata(EntityType.SP, "entityId", "metadataUrl", true, true, new HashMap<>())
+            buildMetadata(EntityType.SP, "entityId", "metadataUrl", true, true, new HashMap<>())
         ));
         when(metaDataService.findAllByType(EntityType.IDP.getType())).thenReturn(Collections.emptyList());
         when(importerService.importXMLUrl(eq(EntityType.SP), any())).thenReturn(Collections.singletonMap("errors", "invalid metadata"));
@@ -252,35 +259,35 @@ class MetaDataAutoRefreshRunnerTest implements TestUtils {
     @Test
     void updateServiceProviderValidationError() throws JsonProcessingException {
         when(metaDataService.findAllByType(EntityType.SP.getType())).thenReturn(Collections.singletonList(
-                buildMetadata(EntityType.SP, "entityId", "metadataUrl", true, true, new HashMap<>())
+            buildMetadata(EntityType.SP, "entityId", "metadataUrl", true, true, new HashMap<>())
         ));
         when(metaDataService.findAllByType(EntityType.IDP.getType())).thenReturn(Collections.emptyList());
         when(metaDataService.doPut(any(), any(), anyBoolean()))
-                .thenThrow(new ValidationException(null, "some error occurred", ""));
+            .thenThrow(new ValidationException(null, "some error occurred", ""));
 
         autoRefreshRunner.run();
 
         verify(metaDataService, times(1)).doPut(any(), any(), anyBoolean());
         verify(metaDataAutoConfiguration, times(1)).schemaRepresentation(EntityType.SP);
         verify(importerService, times(1)).importXMLUrl(eq(EntityType.SP), any());
-        assertTrue(memoryAppender.contains("Failed to save changes for saml20_sp entityId: #: some error occurred", Level.INFO));
+        assertTrue(memoryAppender.contains("Failed to save changes for saml20_sp entityId: #: some error occurred", Level.WARN));
     }
 
     @Test
     void updateServiceProviderJsonProcessingError() throws JsonProcessingException {
         when(metaDataService.findAllByType(EntityType.SP.getType())).thenReturn(Collections.singletonList(
-                buildMetadata(EntityType.SP, "entityId", "metadataUrl", true, true, new HashMap<>())
+            buildMetadata(EntityType.SP, "entityId", "metadataUrl", true, true, new HashMap<>())
         ));
         when(metaDataService.findAllByType(EntityType.IDP.getType())).thenReturn(Collections.emptyList());
         when(metaDataService.doPut(any(), any(), anyBoolean()))
-                .thenThrow(new MockJsonProcessingException("some error occurred"));
+            .thenThrow(new MockJsonProcessingException("some error occurred"));
 
         autoRefreshRunner.run();
 
         verify(metaDataService, times(1)).doPut(any(), any(), anyBoolean());
         verify(metaDataAutoConfiguration, times(1)).schemaRepresentation(EntityType.SP);
         verify(importerService, times(1)).importXMLUrl(eq(EntityType.SP), any());
-        assertTrue(memoryAppender.contains("Failed to save changes for saml20_sp entityId: some error occurred", Level.INFO));
+        assertTrue(memoryAppender.contains("Failed to save changes for saml20_sp entityId: some error occurred", Level.WARN));
     }
 
     @Test
@@ -300,7 +307,7 @@ class MetaDataAutoRefreshRunnerTest implements TestUtils {
     @Test
     void updateServiceProviderAutoRefreshDisabled() throws JsonProcessingException {
         when(metaDataService.findAllByType(EntityType.SP.getType())).thenReturn(Collections.singletonList(
-                buildMetadata(EntityType.SP, "entityId", "metadataUrl", false, false, new HashMap<>())
+            buildMetadata(EntityType.SP, "entityId", "metadataUrl", false, false, new HashMap<>())
         ));
         when(metaDataService.findAllByType(EntityType.IDP.getType())).thenReturn(Collections.emptyList());
 
@@ -314,7 +321,7 @@ class MetaDataAutoRefreshRunnerTest implements TestUtils {
     @Test
     void updateServiceProviderNoMetadataUrl() throws JsonProcessingException {
         when(metaDataService.findAllByType(EntityType.SP.getType())).thenReturn(Collections.singletonList(
-                buildMetadata(EntityType.SP, "entityId", null, true, false, new HashMap<>())
+            buildMetadata(EntityType.SP, "entityId", null, true, false, new HashMap<>())
         ));
         when(metaDataService.findAllByType(EntityType.IDP.getType())).thenReturn(Collections.emptyList());
 
@@ -352,7 +359,7 @@ class MetaDataAutoRefreshRunnerTest implements TestUtils {
     @Test
     void updateIdentityProviderAllowSubset() throws JsonProcessingException {
         MetaData current = buildMetadata(EntityType.IDP, "entityId", "metadataUrl", true,
-                false, Collections.singletonMap("field1", true));
+            false, Collections.singletonMap("field1", true));
         current.metaDataFields().put("field1", "old");
         current.metaDataFields().put("field2", "old");
 
@@ -379,7 +386,7 @@ class MetaDataAutoRefreshRunnerTest implements TestUtils {
     @Test
     void updateIdentityProviderNoMatchingSubset() throws JsonProcessingException {
         MetaData current = buildMetadata(EntityType.IDP, "entityId", "metadataUrl", true,
-                false, Collections.singletonMap("field5", false));
+            false, Collections.singletonMap("field5", false));
         current.metaDataFields().put("field5", "old");
         current.metaDataFields().put("field6", "old");
 
@@ -396,7 +403,7 @@ class MetaDataAutoRefreshRunnerTest implements TestUtils {
     @Test
     void updateIdentityProviderRemoveFieldIfRemovedFromMetadata() throws JsonProcessingException {
         MetaData current = buildMetadata(EntityType.IDP, "entityId", "metadataUrl", true,
-                false, Collections.singletonMap("field5", true));
+            false, Collections.singletonMap("field5", true));
         current.metaDataFields().put("field5", "old");
         current.metaDataFields().put("field6", "old");
 
@@ -433,7 +440,7 @@ class MetaDataAutoRefreshRunnerTest implements TestUtils {
         when(metaDataService.findAllByType(EntityType.IDP.getType())).thenReturn(Collections.singletonList(current));
         when(metaDataService.findAllByType(EntityType.SP.getType())).thenReturn(Collections.emptyList());
         when(metaDataService.doPut(any(), any(), anyBoolean()))
-                .thenThrow(new ValidationException(null, "No data is changed", ""));
+            .thenThrow(new ValidationException(null, "No data is changed", ""));
 
         autoRefreshRunner.run();
 
@@ -462,14 +469,14 @@ class MetaDataAutoRefreshRunnerTest implements TestUtils {
         when(metaDataService.findAllByType(EntityType.IDP.getType())).thenReturn(Collections.singletonList(current));
         when(metaDataService.findAllByType(EntityType.SP.getType())).thenReturn(Collections.emptyList());
         when(metaDataService.doPut(any(), any(), anyBoolean()))
-                .thenThrow(new ValidationException(null, "some error occurred", ""));
+            .thenThrow(new ValidationException(null, "some error occurred", ""));
 
         autoRefreshRunner.run();
 
         verify(metaDataService, times(1)).doPut(any(), any(), anyBoolean());
         verify(metaDataAutoConfiguration, times(1)).schemaRepresentation(EntityType.IDP);
         verify(importerService, times(1)).importXMLUrl(eq(EntityType.IDP), any());
-        assertTrue(memoryAppender.contains("Failed to save changes for saml20_idp entityId: #: some error occurred", Level.INFO));
+        assertTrue(memoryAppender.contains("Failed to save changes for saml20_idp entityId: #: some error occurred", Level.WARN));
     }
 
     @Test
@@ -478,14 +485,14 @@ class MetaDataAutoRefreshRunnerTest implements TestUtils {
         when(metaDataService.findAllByType(EntityType.IDP.getType())).thenReturn(Collections.singletonList(current));
         when(metaDataService.findAllByType(EntityType.SP.getType())).thenReturn(Collections.emptyList());
         when(metaDataService.doPut(any(), any(), anyBoolean()))
-                .thenThrow(new MockJsonProcessingException("some error occurred"));
+            .thenThrow(new MockJsonProcessingException("some error occurred"));
 
         autoRefreshRunner.run();
 
         verify(metaDataService, times(1)).doPut(any(), any(), anyBoolean());
         verify(metaDataAutoConfiguration, times(1)).schemaRepresentation(EntityType.IDP);
         verify(importerService, times(1)).importXMLUrl(eq(EntityType.IDP), any());
-        assertTrue(memoryAppender.contains("Failed to save changes for saml20_idp entityId: some error occurred", Level.INFO));
+        assertTrue(memoryAppender.contains("Failed to save changes for saml20_idp entityId: some error occurred", Level.WARN));
     }
 
     @Test
@@ -505,7 +512,7 @@ class MetaDataAutoRefreshRunnerTest implements TestUtils {
     @Test
     void updateIdentityProviderAutoRefreshDisabled() throws JsonProcessingException {
         when(metaDataService.findAllByType(EntityType.IDP.getType())).thenReturn(Collections.singletonList(
-                buildMetadata(EntityType.IDP, "entityId", "metadataUrl", false, false, new HashMap<>())
+            buildMetadata(EntityType.IDP, "entityId", "metadataUrl", false, false, new HashMap<>())
         ));
         when(metaDataService.findAllByType(EntityType.SP.getType())).thenReturn(Collections.emptyList());
 
@@ -519,7 +526,7 @@ class MetaDataAutoRefreshRunnerTest implements TestUtils {
     @Test
     void updateIdentityProviderNoMetadataUrl() throws JsonProcessingException {
         when(metaDataService.findAllByType(EntityType.IDP.getType())).thenReturn(Collections.singletonList(
-                buildMetadata(EntityType.IDP, "entityId", null, true, false, new HashMap<>())
+            buildMetadata(EntityType.IDP, "entityId", null, true, false, new HashMap<>())
         ));
         when(metaDataService.findAllByType(EntityType.SP.getType())).thenReturn(Collections.emptyList());
 
