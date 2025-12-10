@@ -2,6 +2,10 @@
 
 Starting from version 9.0.0, we note changes and new features per release in this file.
 
+## 9.6.1
+- Disable cookies for outgoing http requests 
+  (continuation of [#565](https://github.com/OpenConext/OpenConext-manage/issues/565))
+
 ## 9.6.0
 - [#562](https://github.com/OpenConext/OpenConext-manage/issues/562)
 - Added `typeRequest` field to change requests
