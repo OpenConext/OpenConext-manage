@@ -25,8 +25,10 @@ The following configuration options have been changed:
     but this is not required.
     Keep it set to `true` on a single host to keep the current behaviour.
 
-The metadata field `coin:policy_enforcement_decision_required` is obsolete. Please remove it for any cutsom schemas.  
-It will be set automatically based on the defined policies.
+The metadata field `coin:policy_enforcement_decision_required` is obsolete.  
+It will now be set automatically based on the defined policies but will not be visible in the UI; 
+manually set values (which _are_ still visible) will be ignored.
+A migration to remove this field from existing entities will follow in a future release.
 
 ## 9.5.1
 - Fixed bug that caused policy input fields to be extremely slow 
