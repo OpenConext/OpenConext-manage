@@ -31,7 +31,8 @@ public class RestTemplateIdiom {
     public static RestTemplate buildRestTemplate(String uri, String userName, String password) {
 
         HttpClientBuilder httpClientBuilder = HttpClientBuilder.create()
-            .setConnectionManager(new PoolingHttpClientConnectionManager());
+            .setConnectionManager(new PoolingHttpClientConnectionManager())
+            .disableCookieManagement();
 
         if (StringUtils.hasText(uri)) {
             Optional<HttpHost> optionalHttpHost = HttpHostProvider.resolveHttpHost(URI.create(uri).toURL());
