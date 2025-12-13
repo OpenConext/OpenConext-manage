@@ -2131,6 +2131,29 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         assertEquals(2L, stats.get(EntityType.IDP.getType()));
     }
 
+    @Test
+    public void deleteConsequences() {
+        List<MetaData> identityProviders = given()
+            .auth()
+            .preemptive()
+            .basic("sp-portal", "secret")
+            .when()
+            .header("Content-type", "application/json")
+            .pathParam("type", EntityType.SP.getType())
+            .pathParam("id", "3")
+            .get("manage/api/internal/delete-consequences/{type}/{id}")
+            .as(new TypeRef<>() {
+            });
+        assertEquals(1, identityProviders.size());
+        MetaData identityProvider = identityProviders.getFirst();
+        assertEquals(EntityType.IDP.getType(), identityProvider.getType());
+        List<String> allowedEntityNames = ((List<Map<String, String>>) identityProvider.getData().get("allowedEntities"))
+            .stream()
+            .map(m -> m.get("name"))
+            .toList();
+        //See meta_data_seed.json SP, id 3
+        assertTrue(allowedEntityNames.contains("http://mock-sp"));
+    }
 
 
 }

@@ -392,7 +392,6 @@ public class MetaDataController {
     @GetMapping("/client/autocomplete/{type}")
     public Map<String, List<Map>> autoCompleteEntities(@PathVariable("type") String type,
                                                        @RequestParam("query") String query) {
-
         return metaDataService.autoCompleteEntities(type, query);
     }
 
@@ -504,11 +503,21 @@ public class MetaDataController {
 
     @PreAuthorize("hasRole('READ')")
     @GetMapping("/internal/stats")
-    public Map<String, Long> stats() throws IOException {
+    public Map<String, Long> stats() {
         MongoTemplate mongoTemplate = metaDataRepository.getMongoTemplate();
         return Stream.of(EntityType.SP, EntityType.IDP, EntityType.RP)
             .collect(Collectors.toMap(entityType -> entityType.getType(), entityType ->
                 mongoTemplate.count(new Query(), entityType.getType())));
     }
+
+    @PreAuthorize("hasRole('READ')")
+    @GetMapping( "/internal/delete-consequences/{type}/{id}")
+    public List<MetaData> deleteConsequences(@PathVariable("type") String type, @PathVariable("id") String id) {
+        MetaData service = this.metaDataRepository.findById(id, EntityType.fromType(type).getType());
+        String entityID = (String) service.getData().get("entityid");
+        String query = "{\"data.allowedEntities.name\" : \"" + entityID + "\"}";
+        return this.metaDataRepository.findRaw(EntityType.IDP.getType(), query);
+    }
+
 
 }

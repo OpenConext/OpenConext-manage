@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class RestTemplateIdiom {
+
     private RestTemplateIdiom() {
     }
 
