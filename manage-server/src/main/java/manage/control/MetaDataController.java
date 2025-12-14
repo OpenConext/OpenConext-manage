@@ -511,11 +511,13 @@ public class MetaDataController {
     }
 
     @PreAuthorize("hasRole('READ')")
-    @GetMapping( "/internal/delete-consequences/{type}/{id}")
-    public List<MetaData> deleteConsequences(@PathVariable("type") String type, @PathVariable("id") String id) {
-        MetaData service = this.metaDataRepository.findById(id, EntityType.fromType(type).getType());
-        String entityID = (String) service.getData().get("entityid");
-        String query = "{\"data.allowedEntities.name\" : \"" + entityID + "\"}";
+    @PostMapping("/internal/delete-consequences")
+    public List<MetaData> deleteConsequences(@RequestBody List<Map<String, String>> identifiers) {
+        String joinedIdentifiers = identifiers.stream()
+            .map(m -> this.metaDataRepository.findById(m.get("id"), m.get("type")))
+            .map(service -> String.format("\"%s\"",service.getData().get("entityid")))
+            .collect(Collectors.joining(","));
+        String query = "{\"data.allowedEntities.name\" : {$in: [" + joinedIdentifiers + "]}}";
         return this.metaDataRepository.findRaw(EntityType.IDP.getType(), query);
     }
 

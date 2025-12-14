@@ -2139,9 +2139,10 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
             .basic("sp-portal", "secret")
             .when()
             .header("Content-type", "application/json")
-            .pathParam("type", EntityType.SP.getType())
-            .pathParam("id", "3")
-            .get("manage/api/internal/delete-consequences/{type}/{id}")
+            .accept("application/json")
+            .body(List.of(Map.of("type","saml20_sp","id","3"),
+                Map.of("type","oidc10_rp","id","9")))
+            .post("manage/api/internal/delete-consequences")
             .as(new TypeRef<>() {
             });
         assertEquals(1, identityProviders.size());
