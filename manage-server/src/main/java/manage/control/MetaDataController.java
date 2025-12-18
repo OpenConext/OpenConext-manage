@@ -392,7 +392,6 @@ public class MetaDataController {
     @GetMapping("/client/autocomplete/{type}")
     public Map<String, List<Map>> autoCompleteEntities(@PathVariable("type") String type,
                                                        @RequestParam("query") String query) {
-
         return metaDataService.autoCompleteEntities(type, query);
     }
 
@@ -504,11 +503,23 @@ public class MetaDataController {
 
     @PreAuthorize("hasRole('READ')")
     @GetMapping("/internal/stats")
-    public Map<String, Long> stats() throws IOException {
+    public Map<String, Long> stats() {
         MongoTemplate mongoTemplate = metaDataRepository.getMongoTemplate();
         return Stream.of(EntityType.SP, EntityType.IDP, EntityType.RP)
             .collect(Collectors.toMap(entityType -> entityType.getType(), entityType ->
                 mongoTemplate.count(new Query(), entityType.getType())));
     }
+
+    @PreAuthorize("hasRole('READ')")
+    @PostMapping("/internal/delete-consequences")
+    public List<MetaData> deleteConsequences(@RequestBody List<Map<String, String>> identifiers) {
+        String joinedIdentifiers = identifiers.stream()
+            .map(m -> this.metaDataRepository.findById(m.get("id"), m.get("type")))
+            .map(service -> String.format("\"%s\"",service.getData().get("entityid")))
+            .collect(Collectors.joining(","));
+        String query = "{\"data.allowedEntities.name\" : {$in: [" + joinedIdentifiers + "]}}";
+        return this.metaDataRepository.findRaw(EntityType.IDP.getType(), query);
+    }
+
 
 }

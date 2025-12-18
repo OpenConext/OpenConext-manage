@@ -2,6 +2,51 @@
 
 Starting from version 9.0.0, we note changes and new features per release in this file.
 
+## 9.6.0
+- [#562](https://github.com/OpenConext/OpenConext-manage/issues/562)
+- Added `typeRequest` field to change requests
+- Added configuration for disabling unused schemas
+  ([#573](https://github.com/OpenConext/OpenConext-manage/issues/573))
+- Removed non-current endpoints when importing new SAML metadata
+  ([#577](https://github.com/OpenConext/OpenConext-manage/issues/577))
+- Added a copy-to-clipboard button for PDP requests and responses
+- Removed the manual `coin:policy_enforcement_decision` toggle. It is now set automatically in the pushed metadata 
+  (no longer visible in the UI) 
+  ([#477](https://github.com/OpenConext/OpenConext-manage/issues/477))
+- Added `docker-compose.yml` and other plumbing for easier local development
+  ([#570](https://github.com/OpenConext/OpenConext-manage/issues/570))
+- Updated dependencies
+
+### Upgrade note
+The following configuration options have been changed:
+  - `disabled_metadata_schemas`: (**new**) a list of schemas that should be disabled.  
+    Set to `[]` to keep the default behaviour to show all schemas. 
+  - `cron.node-cron-job-responsible`: it is now possible to set this to `true` for more than one node, 
+    but this is not required.
+    Keep it set to `true` on a single host to keep the current behaviour.
+
+The metadata field `coin:policy_enforcement_decision_required` is obsolete.  
+It will now be set automatically based on the defined policies but will not be visible in the UI; 
+manually set values (which _are_ still visible) will be ignored.
+A migration to remove this field from existing entities will follow in a future release.
+
+## 9.5.1
+- Fixed bug that caused policy input fields to be extremely slow 
+  ([#568](https://github.com/OpenConext/OpenConext-manage/issues/568))
+
+## 9.5.0
+- Introduce a database lock to prevent multiple cron jobs running at the same time
+- Fix bug that caused backend calls to be too persistent and stick to disabled load balancer backends 
+  ([#565](https://github.com/OpenConext/OpenConext-manage/issues/565))
+- Add a connection timeout of 15 seconds for the XML import (used in the metadata refresh)
+- Improve display of ARP in change requests
+  ([#559](https://github.com/OpenConext/OpenConext-manage/issues/559))
+- New metadata field `coin:application_name`
+- Do not show error in policy form 
+- Make sure policy names are unique, because otherwise the push to the PDP will break
+  ([#558](https://github.com/OpenConext/OpenConext-manage/issues/558))
+- Updated dependencies
+
 ## 9.4.0
 
 - Improved dependency management in `pom.xml` files ([#538](https://github.com/OpenConext/OpenConext-manage/issues/538))
