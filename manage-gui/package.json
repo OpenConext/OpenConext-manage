@@ -43,7 +43,8 @@
   },
   "resolutions": {
     "semver": "^7.5.4",
-    "yaml": "^2.3.1"
+    "yaml": "^2.3.1",
+    "dom-serializer": "^2.0.0"
   },
   "scripts": {
     "start": "react-scripts start",
