@@ -188,7 +188,7 @@ class MetaDataChangeRequests extends React.Component {
 
     renderChangeRequestTable = (request, entityType, metaData, i) => {
         const showDetail = this.state.showChangeRequests[request.id];
-        const headers = ["created", "apiClient", "incremental", "changes", "nope"];
+        const headers = ["created", "apiClient", "incremental", "requestType", "changes", "nope"];
         return (
             <table className="change-requests-table" key={request.id}>
                 <thead>
@@ -206,9 +206,13 @@ class MetaDataChangeRequests extends React.Component {
                     <td>{new Date(request.created).toGMTString()}</td>
                     <td>{request.auditData.userName}</td>
                     <td className={"incremental"}>
-                        <div className={"wrapper"}><CheckBox name={"incremental"} readOnly={true}
+                        <div className={"wrapper"}>
+                            <CheckBox name={"incremental"} readOnly={true}
                                                             value={request.incrementalChange || false}/>
                         </div>
+                    </td>
+                    <td>
+                        {request.requestType || "-"}
                     </td>
                     <td><ReactJson src={this.requestToJson(request)} name="changeRequest" collapsed={true}/></td>
                     <td className="nope">

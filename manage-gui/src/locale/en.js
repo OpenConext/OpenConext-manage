@@ -463,6 +463,7 @@ I18n.translations.en = {
         content: "Content",
         apiClient: "API client",
         incremental: "Incremental",
+        requestType: "Request type",
         pathUpdateType: "Update type",
         type: "Collection",
         revisionNotes: "Revision notes",

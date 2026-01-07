@@ -8,6 +8,7 @@
       "name": "http://mock-idp"
     }
   },
+  "requestType": "ServiceConnectionRequest",
   "auditData": {
     "user": "jdoe",
     "notes": "example notes for popup"
