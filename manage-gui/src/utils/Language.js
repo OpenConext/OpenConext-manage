@@ -30,9 +30,15 @@ export function getInitialLanguage() {
 }
 
 export function getNameForLanguage(metaDataFields) {
+    if (isEmpty(metaDataFields)) {
+        return null;
+    }
     return language === "en" ? (metaDataFields["name:en"] || metaDataFields["name:nl"]) : (metaDataFields["name:nl"] || metaDataFields["name:en"]);
 }
 
 export function getOrganisationForLanguage(metaDataFields) {
+    if (isEmpty(metaDataFields)) {
+        return null;
+    }
     return language === "en" ? (metaDataFields["OrganizationName:en"] || metaDataFields["OrganizationName:nl"]) : (metaDataFields["OrganizationName:nl"] || metaDataFields["OrganizationName:en"]);
 }
