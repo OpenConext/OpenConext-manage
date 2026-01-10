@@ -6,8 +6,6 @@ import manage.policies.IPInfo;
 import manage.validations.*;
 import org.everit.json.schema.FormatValidator;
 import org.everit.json.schema.internal.DateTimeFormatValidator;
-
-
 import org.passay.CharacterRule;
 import org.passay.EnglishCharacterData;
 import org.passay.PasswordGenerator;
@@ -21,6 +19,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toMap;
 
@@ -33,7 +32,7 @@ public class ValidationController {
     private final List<CharacterRule> rules;
 
     public ValidationController() {
-        this.validators = Arrays.asList(
+        this.validators = Stream.of(
                 new BooleanFormatValidator(),
                 new CertificateFormatValidator(),
                 new DateTimeFormatValidator(),
@@ -49,10 +48,9 @@ public class ValidationController {
                 new PasswordFormatValidator(),
                 new BasicAuthenticationUsernameFormatValidator(),
                 new IPAddressValidator(),
-                        new BRINValidator(),
+                new BRINValidator(),
                 new URIFormatValidator())
-                .stream()
-                .collect(toMap(FormatValidator::formatName, Function.identity()));
+            .collect(toMap(FormatValidator::formatName, Function.identity()));
         this.rules = initPasswordGeneratorRules();
     }
 
