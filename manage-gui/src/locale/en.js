@@ -107,6 +107,7 @@ I18n.translations.en = {
         cancel: "Cancel",
         remove: "Delete",
         clone: "Clone",
+        adminAction: "Admin action",
         revisionnote: "Revision notes",
         revisionnoteRequired: "Revision notes are required.",
         flash: {

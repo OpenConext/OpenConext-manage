@@ -175,7 +175,7 @@ export default class Connection extends React.PureComponent {
                         </td>
                     </tr>
                     {isAllowedAdminActions && <tr>
-                        <td className="key">TodoKey</td>
+                        <td className="key">{I18n.t("metadata.adminAction")}</td>
                         <td className="value">
                             <button className="button red delete-metadata" onClick={() => onRemove()}>
                                 {I18n.t("metadata.remove")}
