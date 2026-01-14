@@ -52,6 +52,12 @@
                 color: $red;
                 margin: 10px 0 15px 0;
             }
+
+            button.clone-metadata,
+            button.delete-metadata {
+                padding: 5px 15px;
+                border-radius: 3px;
+            }
         }
 
         div.inline-editable {
