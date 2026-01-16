@@ -1,26 +1,35 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Modal from "react-modal";
-import "./ConfirmationDialog.scss";
 import I18n from "i18n-js";
 import {stop} from "../utils/Utils";
 
-export default function ErrorDialog({isOpen = false, close}) {
+import "./ConfirmationDialog.scss";
+
+export default function ErrorDialog({
+                                        isOpen = false,
+                                        close,
+                                        title,
+                                        body
+                                    }) {
+    const dialogTitle = title || I18n.t("error_dialog.title");
+    const dialogBody = body || I18n.t("error_dialog.body");
+
     return (
         <Modal
             isOpen={isOpen}
             onRequestClose={close}
             ariaHideApp={false}
-            contentLabel={I18n.t("error_dialog.title")}
+            contentLabel={dialogTitle}
             className="confirmation-dialog-content"
             overlayClassName="confirmation-dialog-overlay"
             closeTimeoutMS={250}
         >
             <section className="dialog-header error">
-                {I18n.t("error_dialog.title")}
+                {dialogTitle}
             </section>
             <section className="dialog-content">
-                <h2>{I18n.t("error_dialog.body")}</h2>
+                <h2>{dialogBody}</h2>
             </section>
             <section className="dialog-buttons">
                 <a className="button blue error" onClick={e => {
@@ -35,7 +44,7 @@ export default function ErrorDialog({isOpen = false, close}) {
 
 ErrorDialog.propTypes = {
     isOpen: PropTypes.bool,
-    close: PropTypes.func.isRequired
+    close: PropTypes.func.isRequired,
+    title: PropTypes.string,
+    body: PropTypes.string
 };
-
-
