@@ -36,8 +36,8 @@ export default function ConfirmationDialog({
                 </section> :
                 <section className="dialog-content">
                     <h2 dangerouslySetInnerHTML={{__html: question}}/>
+                    {children && children}
                 </section>}
-            {children && children}
             <section className="dialog-buttons">
                 <a className="button" onClick={e => {
                     stop(e);

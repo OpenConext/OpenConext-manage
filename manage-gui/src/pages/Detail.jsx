@@ -202,7 +202,8 @@ class Detail extends React.PureComponent {
                 title: undefined,
                 body: undefined,
                 type: undefined,
-                leavePage: false
+                leavePage: false,
+                inputValue: ""
             },
             errors: {},
             changes: {},
@@ -411,8 +412,6 @@ class Detail extends React.PureComponent {
                     action: () => {
                         this.setState({dialogConfig: {...this.state.dialogConfig, isOpen: false}})
                     },
-                    cancelAction: () =>
-                        this.setState({dialogConfig: {...this.state.dialogConfig, isOpen: false}}),
                     title: I18n.t("metadata.error"),
                     body: I18n.t("metadata.revisionNoteRequiredForDeletion"),
                     type: DIALOG_TYPES.ERROR,
@@ -425,19 +424,25 @@ class Detail extends React.PureComponent {
                 dialogConfig: {
                     isOpen: true,
                     action: () => {
-                        remove(this.state.metaData, this.state.revisionNote)
-                            .then(json => {
-                                if (json.exception || json.error) {
-                                    setFlash(json.validations || json.message, "error");
-                                    this.setState({dialogConfig: {...this.state.dialogConfig, isOpen: false}});
-                                    window.scrollTo(0, 0);
-                                } else {
-                                    setFlash(
-                                        I18n.t("metadata.flash.deleted", {name: name})
-                                    );
-                                    this.props.navigate(`/search`);
-                                }
-                            });
+                        if(this.state.originalEntityId === this.state.dialogConfig.inputValue) {
+                            remove(this.state.metaData, this.state.revisionNote)
+                                .then(json => {
+                                    if (json.exception || json.error) {
+                                        setFlash(json.validations || json.message, "error");
+                                        this.setState({dialogConfig: {...this.state.dialogConfig, isOpen: false}});
+                                        window.scrollTo(0, 0);
+                                    } else {
+                                        setFlash(
+                                            I18n.t("metadata.flash.deleted", {name: name})
+                                        );
+                                        this.props.navigate(`/search`);
+                                    }
+                                });
+                        } else {
+                            // Todo: implement
+                            console.log('NO MATCh!')
+                        }
+
                     },
                     cancelAction: () =>
                         this.setState({dialogConfig: {...this.state.dialogConfig, isOpen: false}}),
@@ -1395,7 +1400,15 @@ class Detail extends React.PureComponent {
                         confirm={dialogConfig.action}
                         question={dialogConfig.leavePage ? undefined : dialogConfig.question}
                         leavePage={dialogConfig.leavePage}
-                    />
+                    >
+                        <span>{I18n.t("metadata.confirmEntityId")}</span>
+                        <input
+                            value={dialogConfig.inputValue ?? ''}
+                            onChange={(event)=> this.setState(
+                                {dialogConfig: {...this.state.dialogConfig, inputValue: event.target.value}}
+                            )}
+                        />
+                    </ConfirmationDialog>
                 )}
                 { dialogConfig.type === DIALOG_TYPES.ERROR && (
                     <ErrorDialog
