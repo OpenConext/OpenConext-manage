@@ -110,6 +110,8 @@ I18n.translations.en = {
         adminAction: "Admin action",
         revisionnote: "Revision notes",
         revisionnoteRequired: "Revision notes are required.",
+        error: "Error",
+        revisionNoteRequiredForDeletion: "Please specify the reason for deletion in the revision note and try again.",
         flash: {
             updated: "{{name}} was successfully updated to revision {{revision}}",
             cloned: "{{name}} was successfully cloned. Submit to save the changes.",

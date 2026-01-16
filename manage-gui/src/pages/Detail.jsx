@@ -199,6 +199,8 @@ class Detail extends React.PureComponent {
                 action: () => this,
                 cancelAction: () => this,
                 question: undefined,
+                title: undefined,
+                body: undefined,
                 type: undefined,
                 leavePage: false
             },
@@ -411,7 +413,8 @@ class Detail extends React.PureComponent {
                     },
                     cancelAction: () =>
                         this.setState({dialogConfig: {...this.state.dialogConfig, isOpen: false}}),
-                    question: "Cannot delete metadata without revision note",
+                    title: I18n.t("metadata.error"),
+                    body: I18n.t("metadata.revisionNoteRequiredForDeletion"),
                     type: DIALOG_TYPES.ERROR,
                     leavePage: false
                 }
@@ -799,9 +802,6 @@ class Detail extends React.PureComponent {
                     {revisionNoteRequired && (
                         <em className="error">{I18n.t("metadata.revisionnoteRequired")}</em>
                     )}
-                    {/*{nonExistentAllowedEntities.length > 0 && (*/}
-                    {/*  <em className="error">The `allowed entities` contains non-existent entities: {nonExistentAllowedEntities.join(", ")}</em>*/}
-                    {/*)}*/}
                 </section>
                 <section className="buttons">
                     <a
@@ -1401,8 +1401,8 @@ class Detail extends React.PureComponent {
                     <ErrorDialog
                         isOpen={dialogConfig.isOpen}
                         close={dialogConfig.action}
-                        title={'Todo Error'}
-                        body={'Todo: fill in your stuff!'}
+                        title={dialogConfig.title}
+                        body={dialogConfig.body}
                     />
                 )}
                 {renderContent && (
