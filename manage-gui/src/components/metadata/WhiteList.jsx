@@ -2,7 +2,7 @@ import React from "react";
 import I18n from "i18n-js";
 import PropTypes from "prop-types";
 import {Link} from "react-router-dom";
-import ConfirmationDialog from "../../components/ConfirmationDialog";
+import ConfirmationDialog from "../ConfirmationDialog";
 import CheckBox from "./../CheckBox";
 import SelectEntities from "./../SelectEntities";
 import {copyToClip, isEmpty, stop} from "../../utils/Utils";

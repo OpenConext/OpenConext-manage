@@ -14,7 +14,8 @@ export default function ErrorDialog({isOpen = false, close}) {
             contentLabel={I18n.t("error_dialog.title")}
             className="confirmation-dialog-content"
             overlayClassName="confirmation-dialog-overlay"
-            closeTimeoutMS={250}>
+            closeTimeoutMS={250}
+        >
             <section className="dialog-header error">
                 {I18n.t("error_dialog.title")}
             </section>
@@ -24,7 +25,7 @@ export default function ErrorDialog({isOpen = false, close}) {
             <section className="dialog-buttons">
                 <a className="button blue error" onClick={e => {
                     stop(e);
-                    close(e);
+                    close?.(e);
                 }}>{I18n.t("error_dialog.ok")}</a>
             </section>
         </Modal>

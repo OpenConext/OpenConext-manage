@@ -59,6 +59,7 @@ import {deleteFalseErrorKeys} from "../utils/MetaDataConfiguration";
 import {isReadOnly} from "../utils/EntityTypes";
 import PolicyXML from "../components/metadata/PolicyXML";
 import PolicyJSON from "../components/metadata/PolicyJSON";
+import Dialog, {DIALOG_TYPES} from "../components/Dialog/Dialog";
 
 let tabsSp = [
     "connection",
@@ -190,6 +191,8 @@ class Detail extends React.PureComponent {
             confirmationDialogOpen: false,
             confirmationDialogAction: () => this,
             cancelDialogAction: () => this,
+            confirmationDialogQuestion: undefined,
+            dialogType: undefined,
             leavePage: false,
             errors: {},
             changes: {},
@@ -378,6 +381,64 @@ class Detail extends React.PureComponent {
                 );
             }
         });
+    };
+
+    handleClone = () => {
+        const {type, metaData} = this.state;
+        setTimeout(() => {
+            const name = metaData.data.name || getNameForLanguage(metaData.data.metaDataFields) || "this service";
+            setFlash(I18n.t("metadata.flash.cloned", {name: name}));
+        }, 50);
+        const path = encodeURIComponent(`/clone/${type}/${metaData.id}`);
+        this.props.navigate(`/refresh-route/${path}`);
+    };
+
+    handleRemove = () => {
+        // Check for Revision note to not empty
+        if (this.state.revisionNote === "") {
+            this.setState({
+                // Todo the modal seems to have the content hard coded -- fix this
+                confirmationDialogAction: () => {
+                    this.setState({confirmationDialogOpen: false})
+                },
+                // Todo cannot remove this prop, it would break the click-outside-of-modal case
+                cancelDialogAction: () =>
+                    this.setState({confirmationDialogOpen: false}),
+                confirmationDialogQuestion: "Cannot delete metadata without revision note",
+                confirmationDialogOpen: true,
+                dialogType: DIALOG_TYPES.ERROR, // could be error too
+                leavePage: false
+            });
+        } else {
+            const name = this.nameOfMetaData(this.state.metaData);
+            this.setState({
+                confirmationDialogAction: () => {
+                    remove(this.state.metaData, this.state.revisionNote)
+                        .then(json => {
+                            if (json.exception || json.error) {
+                                setFlash(json.validations || json.message, "error");
+                                this.setState({confirmationDialogOpen: false});
+                                window.scrollTo(0, 0);
+                            } else {
+                                setFlash(
+                                    I18n.t("metadata.flash.deleted", {name: name})
+                                );
+                                this.props.navigate(`/search`);
+                            }
+                        });
+                },
+                cancelDialogAction: () =>
+                    this.setState({confirmationDialogOpen: false}),
+                confirmationDialogOpen: true,
+                confirmationDialogQuestion: I18n.t("metadata.deleteConfirmation", {name: name}),
+                dialogType: DIALOG_TYPES.CONFIRM,
+                leavePage: false
+            });
+        }
+
+        // Optionally modal to instruct to fill in revision note
+
+
     };
 
     validate = (metaData, configurations, type) => {
@@ -895,38 +956,8 @@ class Detail extends React.PureComponent {
                         originalEntityId={originalEntityId}
                         configuration={configuration}
                         provisioningGroups={provisioningGroups}
-                        onClone={() => {
-                            setTimeout(() => {
-                                const name = metaData.data.name || getNameForLanguage(metaData.data.metaDataFields) || "this service";
-                                setFlash(I18n.t("metadata.flash.cloned", {name: name}));
-                            }, 50);
-                            const path = encodeURIComponent(`/clone/${type}/${metaData.id}`);
-                            this.props.navigate(`/refresh-route/${path}`);
-                        }}
-                        onRemove={() => {
-                            this.setState({
-                                confirmationDialogAction: () => {
-                                    remove(this.state.metaData, this.state.revisionNote)
-                                        .then(json => {
-                                            if (json.exception || json.error) {
-                                                setFlash(json.validations || json.message, "error");
-                                                this.setState({confirmationDialogOpen: false});
-                                                window.scrollTo(0, 0);
-                                            } else {
-                                                const name = this.nameOfMetaData(this.state.metaData);
-                                                setFlash(
-                                                    I18n.t("metadata.flash.deleted", {name: name})
-                                                );
-                                                this.props.navigate(`/search`);
-                                            }
-                                        });
-                                },
-                                cancelDialogAction: () =>
-                                    this.setState({confirmationDialogOpen: false}),
-                                confirmationDialogOpen: true,
-                                leavePage: false
-                            });
-                        }}
+                        onClone={this.handleClone}
+                        onRemove={this.handleRemove}
                     />
                 );
             case "whitelist":
@@ -1307,6 +1338,8 @@ class Detail extends React.PureComponent {
             confirmationDialogOpen,
             confirmationDialogAction,
             cancelDialogAction,
+            confirmationDialogQuestion,
+            dialogType,
             leavePage,
             isNew,
             errors,
@@ -1350,18 +1383,33 @@ class Detail extends React.PureComponent {
 
         const hasErrors = this.hasGlobalErrors(errors) && !isEmpty(metaData.id);
 
+        // Todo: group in state too
+        const dialogConfig = {
+            dialogType,
+            confirmationDialogOpen,
+            cancelDialogAction,
+            confirmationDialogAction,
+            confirmationDialogQuestion,
+            leavePage
+        }
+
         return (
             <div className="detail-metadata">
-                <ConfirmationDialog
-                    isOpen={confirmationDialogOpen}
-                    cancel={cancelDialogAction}
-                    confirm={confirmationDialogAction}
-                    question={
-                        leavePage
-                            ? undefined
-                            : I18n.t("metadata.deleteConfirmation", {name: name})
-                    }
-                    leavePage={leavePage}
+                {/*<ConfirmationDialog*/}
+                {/*    isOpen={confirmationDialogOpen}*/}
+                {/*    cancel={cancelDialogAction}*/}
+                {/*    confirm={confirmationDialogAction}*/}
+                {/*    question={leavePage ? undefined : confirmationDialogQuestion}*/}
+                {/*    leavePage={leavePage}*/}
+                {/*/>*/}
+                <Dialog
+                    dialogType={dialogConfig.dialogType}
+                    isOpen={dialogConfig.confirmationDialogOpen}
+                    cancel={dialogConfig.cancelDialogAction}
+                    close={dialogConfig.confirmationDialogAction}
+                    confirm={dialogConfig.confirmationDialogAction}
+                    question={dialogConfig.leavePage ? undefined : dialogConfig.confirmationDialogQuestion}
+                    leavePage={dialogConfig.leavePage}
                 />
                 {renderContent && (
                     <section className="top-detail">
