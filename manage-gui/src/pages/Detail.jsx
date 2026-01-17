@@ -438,15 +438,11 @@ class Detail extends React.PureComponent {
                                         this.props.navigate(`/search`);
                                     }
                                 });
-                        } else {
-                            // Todo: implement
-                            console.log('NO MATCh!')
                         }
-
                     },
                     cancelAction: () =>
                         this.setState({dialogConfig: {...this.state.dialogConfig, isOpen: false}}),
-                    question: I18n.t("metadata.deleteConfirmation", {name: name}),
+                    question: I18n.t("metadata.deleteConfirmation", {name: name, originalEntityId: this.state.originalEntityId}),
                     type: DIALOG_TYPES.CONFIRM,
                     leavePage: false
                 }
@@ -1400,6 +1396,7 @@ class Detail extends React.PureComponent {
                         confirm={dialogConfig.action}
                         question={dialogConfig.leavePage ? undefined : dialogConfig.question}
                         leavePage={dialogConfig.leavePage}
+                        disableConfirm={dialogConfig.inputValue !== this.state.originalEntityId}
                     >
                         <span>{I18n.t("metadata.confirmEntityId")}</span>
                         <input

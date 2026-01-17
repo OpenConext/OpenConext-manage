@@ -121,7 +121,7 @@ I18n.translations.en = {
         },
         required: "{{name}} is required",
         extraneous: "{{name}} is an unknown / extraneous key. Remove it as this can not be saved.",
-        deleteConfirmation: "Are you sure you want to delete {{name}}?\n\nYou can optionally specify the reason for deletion in the revision notes before pressing the 'delete' button.",
+        deleteConfirmation: "You are going to DELETE the {{name}}.\n\nPlease enter the entityid {{originalEntityId}} of this entity if you are sure:",
         errors: "There are validation errors:",
         changeRequestsPre: "There are outstanding change request(s). Go to ",
         changeRequestsLink: "requests",
