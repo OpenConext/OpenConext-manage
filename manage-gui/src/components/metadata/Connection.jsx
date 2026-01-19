@@ -10,6 +10,7 @@ import "./Connection.scss";
 import {isEmpty} from "../../utils/Utils";
 import {Link} from "react-router-dom";
 import {getNameForLanguage} from "../../utils/Language";
+import {isReadOnly} from "../../utils/EntityTypes";
 import {Select} from "../index";
 
 export default class Connection extends React.PureComponent {
@@ -47,7 +48,10 @@ export default class Connection extends React.PureComponent {
             metaData: {type, revision, data, id},
             revisionNote,
             provisioningGroups,
-            organisations
+            organisations,
+            isNew,
+            onRemove,
+            onClone
         } = this.props;
         const isRelyingParty = type === "oidc10_rp";
         const isSP = type === "saml20_sp";
@@ -74,6 +78,8 @@ export default class Connection extends React.PureComponent {
                 };
             })
         ];
+
+        const isAllowedAdminActions = !isNew && !isReadOnly(type);
 
         return (
             <div className="metadata-connection">
@@ -168,6 +174,18 @@ export default class Connection extends React.PureComponent {
                             />
                         </td>
                     </tr>
+                    {isAllowedAdminActions && <tr>
+                        <td className="key">{I18n.t("metadata.adminAction")}</td>
+                        <td className="value">
+                            <button className="button red delete-metadata" onClick={() => onRemove()}>
+                                {I18n.t("metadata.remove")}
+                            </button>
+                            <button className="button green clone-metadata" onClick={() => onClone()}>
+                                {I18n.t("metadata.clone")}
+                            </button>
+                        </td>
+                    </tr>}
+
                     {((isSP || isRelyingParty) && id) &&
                     <tr>
                         <td className="key">{I18n.t("metadata.provisioning")}</td>

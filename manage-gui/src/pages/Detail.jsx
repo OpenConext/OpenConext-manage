@@ -59,6 +59,12 @@ import {deleteFalseErrorKeys} from "../utils/MetaDataConfiguration";
 import {isReadOnly} from "../utils/EntityTypes";
 import PolicyXML from "../components/metadata/PolicyXML";
 import PolicyJSON from "../components/metadata/PolicyJSON";
+import ErrorDialog from "../components/ErrorDialog";
+
+export const DIALOG_TYPES = {
+    CONFIRM: "confirm",
+    ERROR: "error"
+};
 
 let tabsSp = [
     "connection",
@@ -187,10 +193,17 @@ class Detail extends React.PureComponent {
             selectedTab: tab,
             revisionNote: "",
             revisionNoteClone: "",
-            confirmationDialogOpen: false,
-            confirmationDialogAction: () => this,
-            cancelDialogAction: () => this,
-            leavePage: false,
+            dialogConfig: {
+                isOpen: false,
+                action: () => this,
+                cancelAction: () => this,
+                question: undefined,
+                title: undefined,
+                body: undefined,
+                type: undefined,
+                leavePage: false,
+                inputValue: ""
+            },
             errors: {},
             changes: {},
             originalEntityId: undefined,
@@ -378,6 +391,62 @@ class Detail extends React.PureComponent {
                 );
             }
         });
+    };
+
+    handleClone = () => {
+        const {type, metaData} = this.state;
+        setTimeout(() => {
+            const name = metaData.data.name || getNameForLanguage(metaData.data.metaDataFields) || "this service";
+            setFlash(I18n.t("metadata.flash.cloned", {name: name}));
+        }, 50);
+        const path = encodeURIComponent(`/clone/${type}/${metaData.id}`);
+        this.props.navigate(`/refresh-route/${path}`);
+    };
+
+    handleRemove = () => {
+        if (this.state.revisionNote === "") {
+            this.setState({
+                dialogConfig: {
+                    isOpen: true,
+                    action: () => {
+                        this.setState({dialogConfig: {...this.state.dialogConfig, isOpen: false}})
+                    },
+                    title: I18n.t("metadata.error"),
+                    body: I18n.t("metadata.revisionNoteRequiredForDeletion"),
+                    type: DIALOG_TYPES.ERROR,
+                    leavePage: false
+                }
+            });
+        } else {
+            const name = this.nameOfMetaData(this.state.metaData);
+            this.setState({
+                dialogConfig: {
+                    isOpen: true,
+                    action: () => {
+                        if(this.state.originalEntityId === this.state.dialogConfig.inputValue) {
+                            remove(this.state.metaData, this.state.revisionNote)
+                                .then(json => {
+                                    if (json.exception || json.error) {
+                                        setFlash(json.validations || json.message, "error");
+                                        this.setState({dialogConfig: {...this.state.dialogConfig, isOpen: false}});
+                                        window.scrollTo(0, 0);
+                                    } else {
+                                        setFlash(
+                                            I18n.t("metadata.flash.deleted", {name: name})
+                                        );
+                                        this.props.navigate(`/search`);
+                                    }
+                                });
+                        }
+                    },
+                    cancelAction: () =>
+                        this.setState({dialogConfig: {...this.state.dialogConfig, isOpen: false}}),
+                    question: I18n.t("metadata.deleteConfirmation", {name: name, originalEntityId: this.state.originalEntityId}),
+                    type: DIALOG_TYPES.CONFIRM,
+                    leavePage: false
+                }
+            });
+        }
     };
 
     validate = (metaData, configurations, type) => {
@@ -660,7 +729,7 @@ class Detail extends React.PureComponent {
                 metaData.data.attributes = metaData.data.attributes.filter(attribute => !isEmpty(attribute.value));
             }
         }
-    }
+    };
 
     submit = e => {
         stop(e);
@@ -705,9 +774,9 @@ class Detail extends React.PureComponent {
         const names = allowedEntities.map(e => e.name);
         const existingNames = whiteListing.map(w => w.data.entityid);
         return names.filter(name => existingNames.indexOf(name) < 0);
-    }
+    };
 
-    renderActions = revisionNote => {
+    renderActions = (revisionNote) => {
         const {errors, revisionNoteError, metaData} = this.state;
         if (isReadOnly(metaData.type)) {
             return null;
@@ -733,9 +802,6 @@ class Detail extends React.PureComponent {
                     {revisionNoteRequired && (
                         <em className="error">{I18n.t("metadata.revisionnoteRequired")}</em>
                     )}
-                    {/*{nonExistentAllowedEntities.length > 0 && (*/}
-                    {/*  <em className="error">The `allowed entities` contains non-existent entities: {nonExistentAllowedEntities.join(", ")}</em>*/}
-                    {/*)}*/}
                 </section>
                 <section className="buttons">
                     <a
@@ -743,11 +809,14 @@ class Detail extends React.PureComponent {
                         onClick={e => {
                             stop(e);
                             this.setState({
-                                cancelDialogAction: () => this.props.navigate(`/search`),
-                                confirmationDialogAction: () =>
-                                    this.setState({confirmationDialogOpen: false}),
-                                confirmationDialogOpen: true,
-                                leavePage: true
+                                dialogConfig: {
+                                    ...this.state.dialogConfig,
+                                    isOpen: true,
+                                    cancelAction: () => this.props.navigate(`/search`),
+                                    action: () =>
+                                        this.setState({dialogConfig: {...this.state.dialogConfig, isOpen: false}}),
+                                    leavePage: true
+                                }
                             });
                         }}
                     >
@@ -769,7 +838,7 @@ class Detail extends React.PureComponent {
             Object.keys(errors[key]).find(subKey => errors[key][subKey])
         )
         return errorKeys !== undefined;
-    }
+    };
 
     renderTabTitle = (tab, metaData, resourceServers, whiteListing, revisions, requests, relyingParties, policies) => {
         const allowedAll = metaData.data.allowedall;
@@ -823,7 +892,7 @@ class Detail extends React.PureComponent {
                 args = {};
         }
         return I18n.t(`metadata.tabs.${tab}`, args);
-    }
+    };
 
     renderTab = (tab, metaData, resourceServers, whiteListing, revisions, requests, relyingParties, policies) => {
         const tabErrors = this.state.errors[tab] || {};
@@ -895,6 +964,8 @@ class Detail extends React.PureComponent {
                         originalEntityId={originalEntityId}
                         configuration={configuration}
                         provisioningGroups={provisioningGroups}
+                        onClone={this.handleClone}
+                        onRemove={this.handleRemove}
                     />
                 );
             case "whitelist":
@@ -1117,7 +1188,7 @@ class Detail extends React.PureComponent {
                     {I18n.t("metadata.changeRequestsPost")}
                 </span>
             </div>)
-    }
+    };
 
     renderErrors = errors => {
         const allErrors = {...errors};
@@ -1250,7 +1321,7 @@ class Detail extends React.PureComponent {
                     </section>}
             </section>
         );
-    }
+    };
 
     render() {
         const {
@@ -1272,10 +1343,7 @@ class Detail extends React.PureComponent {
             requests,
             selectedTab,
             revisionNote,
-            confirmationDialogOpen,
-            confirmationDialogAction,
-            cancelDialogAction,
-            leavePage,
+            dialogConfig,
             isNew,
             errors,
             revisionNoteClone,
@@ -1318,76 +1386,40 @@ class Detail extends React.PureComponent {
 
         const hasErrors = this.hasGlobalErrors(errors) && !isEmpty(metaData.id);
 
-        const allowedDelete = !isNew && !isReadOnly(metaData.type);
-
         return (
             <div className="detail-metadata">
-                <ConfirmationDialog
-                    isOpen={confirmationDialogOpen}
-                    cancel={cancelDialogAction}
-                    confirm={confirmationDialogAction}
-                    question={
-                        leavePage
-                            ? undefined
-                            : I18n.t("metadata.deleteConfirmation", {name: name})
-                    }
-                    leavePage={leavePage}
-                />
+                { dialogConfig.type === DIALOG_TYPES.CONFIRM && (
+                    <ConfirmationDialog
+                        isOpen={dialogConfig.isOpen}
+                        cancel={dialogConfig.cancelAction}
+                        confirm={dialogConfig.action}
+                        question={dialogConfig.leavePage ? undefined : dialogConfig.question}
+                        leavePage={dialogConfig.leavePage}
+                        disableConfirm={dialogConfig.inputValue !== this.state.originalEntityId}
+                    >
+                        <span>{I18n.t("metadata.confirmEntityId")}</span>
+                        <input
+                            value={dialogConfig.inputValue ?? ''}
+                            onChange={(event)=> this.setState(
+                                {dialogConfig: {...this.state.dialogConfig, inputValue: event.target.value}}
+                            )}
+                        />
+                    </ConfirmationDialog>
+                )}
+                { dialogConfig.type === DIALOG_TYPES.ERROR && (
+                    <ErrorDialog
+                        isOpen={dialogConfig.isOpen}
+                        close={dialogConfig.action}
+                        title={dialogConfig.title}
+                        body={dialogConfig.body}
+                    />
+                )}
                 {renderContent && (
                     <section className="top-detail">
                         <section className="inner-detail">
                             {this.renderTopBanner(name, organization, metaData, resourceServers, whiteListing,
                                 isNew, whiteListingLoaded, serviceProviders, identityProviders, policyProvidersLoaded)}
-                            {/*{JSON.stringify(errors)}*/}
                             {hasErrors && this.renderErrors(errors)}
-                            {allowedDelete && (
-                                <a
-                                    className="button red delete-metadata"
-                                    onClick={e => {
-                                        stop(e);
-                                        this.setState({
-                                            confirmationDialogAction: () => {
-                                                remove(this.state.metaData, this.state.revisionNote)
-                                                    .then(json => {
-                                                        if (json.exception || json.error) {
-                                                            setFlash(json.validations || json.message, "error");
-                                                            this.setState({confirmationDialogOpen: false});
-                                                            window.scrollTo(0, 0);
-                                                        } else {
-                                                            const name = this.nameOfMetaData(this.state.metaData);
-                                                            setFlash(
-                                                                I18n.t("metadata.flash.deleted", {name: name})
-                                                            );
-                                                            this.props.navigate(`/search`);
-                                                        }
-                                                    });
-                                            },
-                                            cancelDialogAction: () =>
-                                                this.setState({confirmationDialogOpen: false}),
-                                            confirmationDialogOpen: true,
-                                            leavePage: false
-                                        });
-                                    }}
-                                >
-                                    {I18n.t("metadata.remove")}
-                                </a>
-                            )}
-                            {allowedDelete && (
-                                <a
-                                    className="button green clone-metadata"
-                                    onClick={e => {
-                                        stop(e);
-                                        setTimeout(() => {
-                                            const name = metaData.data.name || getNameForLanguage(metaData.data.metaDataFields) || "this service";
-                                            setFlash(I18n.t("metadata.flash.cloned", {name: name}));
-                                        }, 50);
-                                        const path = encodeURIComponent(`/clone/${type}/${metaData.id}`);
-                                        this.props.navigate(`/refresh-route/${path}`);
-                                    }}
-                                >
-                                    {I18n.t("metadata.clone")}
-                                </a>
-                            )}
                             {isReadOnly(metaData.type) &&
                                 <p className="read-only-warning">{I18n.t("metadata.readOnlyEntityType", {name: metaData.type.toUpperCase()})}</p>}
                         </section>
@@ -1469,7 +1501,7 @@ class Detail extends React.PureComponent {
                             {I18n.t("metadata.deleteChangeRequests")}</a>
                     </div>}
             </section>);
-    }
+    };
 }
 
 export default withRouterHooks(Detail);

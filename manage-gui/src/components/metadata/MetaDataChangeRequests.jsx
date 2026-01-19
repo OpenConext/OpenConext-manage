@@ -6,7 +6,7 @@ import merge from "lodash.merge";
 import PropTypes from "prop-types";
 import cloneDeep from "lodash.clonedeep";
 import CheckBox from "../../components/CheckBox";
-import ConfirmationDialog from "../../components/ConfirmationDialog";
+import ConfirmationDialog from "../ConfirmationDialog";
 import {collapseDotKeys, createDiffObject, isEmpty, sortDict, stop} from "../../utils/Utils";
 
 import "jsondiffpatch/dist/formatters-styles/html.css";
