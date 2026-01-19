@@ -2,6 +2,7 @@ import React from "react";
 import I18n from "i18n-js";
 import PropTypes from "prop-types";
 import {Link} from "react-router-dom";
+import Papaparse from "papaparse";
 import {ping, rawSearch, search, validation} from "../api";
 import {copyToClip, isEmpty, stop} from "../utils/Utils";
 import "./API.scss";
@@ -9,6 +10,11 @@ import debounce from "lodash.debounce";
 import {CheckBox, NotesTooltip, Select} from '../components'
 import {SelectMetaDataType, SelectNewEntityAttribute, SelectNewMetaDataField} from "../components/metadata"
 import {getNameForLanguage} from "../utils/Language";
+
+const papaparseConfig = {
+    quotes: true,
+    escapeChar: '\\'
+}
 
 export default class API extends React.PureComponent {
 
@@ -332,12 +338,19 @@ export default class API extends React.PureComponent {
 
 
     renderSearchResultsTablePrintable = (searchResults) => {
+        const csv = Papaparse.unparse({
+            fields: ["state", "name", "entity_id"],
+            data: searchResults.map((entity) =>
+                [
+                    entity.data.state,
+                    getNameForLanguage(entity.data.metaDataFields),
+                    entity.data.entityid
+                ])
+        }, papaparseConfig);
         return (
             <section id={"search-results-printable"}>
-                {`${["state", "name", "entity_id"].join(",")}\n`}
-                {searchResults
-                    .map(entity => `${entity.data.state},${getNameForLanguage(entity.data.metaDataFields)},${entity.data.entityid}`)
-                    .join("\n")}</section>
+                {csv}
+            </section>
         );
     }
 
