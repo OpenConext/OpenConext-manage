@@ -63,7 +63,6 @@ import ErrorDialog from "../components/ErrorDialog";
 
 export const DIALOG_TYPES = {
     CONFIRM: "confirm",
-    INFO: "info",
     ERROR: "error"
 };
 
