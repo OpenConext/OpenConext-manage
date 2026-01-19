@@ -1,0 +1,11 @@
+
+### Sometimes error
+GET http://localhost:3006/manage/api/client/rawSearch/saml20_sp?query=%7B%20%24text%3A%20%7B%20%24search%3A%20%22%5C%22sabrest%22%5C%22%22%20%7D%20%7D
+
+### Oke
+GET http://localhost:3006/manage/api/client/rawSearch/saml20_sp?query=%7B%20%24text%3A%20%7B%20%24search%3A%20%22%5C%22sabrest%5C%22%22%20%7D%20%7D
+
+
+###
+GET http://localhost:3006/manage/api/client/rawSearch/saml20_sp?query={ "$text": { "$search": "\"sabrest\"" } }
+

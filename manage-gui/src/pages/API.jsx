@@ -141,7 +141,7 @@ export default class API extends React.PureComponent {
             fullTextSearch
         } = this.state;
         if (!isEmpty(fullTextSearch.trim())) {
-            const terms = logicalOperatorIsAnd ? fullTextSearch.split(" ").map(part => `\\"${part.trim()}\\"`).join(" ") : fullTextSearch;
+            const terms = logicalOperatorIsAnd ? fullTextSearch.split(" ").map(part => `\\"${part.replace(/"/g, '\\"').trim()}\\"`).join(" ") : fullTextSearch;
             const query = `{ $text: { $search: "${terms}" } }`;
             rawSearch(query, selectedType).then(json => this.setState({searchResults: json}));
         } else if (this.isValidInput(errorAttributes)) {
