@@ -1,4 +1,4 @@
-export const objectToKeyValues = (inputEntries, keyPrefix) =>
+export const flattenObjectEntries = (inputEntries, keyPrefix) =>
     inputEntries.reduce((acc, curr) => {
         const [currKey, currValue] = curr;
         const currKeyWithPrefix = keyPrefix ? `${keyPrefix}.${currKey}` : currKey
@@ -11,10 +11,16 @@ export const objectToKeyValues = (inputEntries, keyPrefix) =>
 
         if (typeof currValue === "object") {
             const nestedInputEntries = Object.entries(currValue);
-            acc.push(...objectToKeyValues(nestedInputEntries, currKeyWithPrefix));
+            acc.push(...flattenObjectEntries(nestedInputEntries, currKeyWithPrefix));
             return acc;
         }
 
         acc.push([currKeyWithPrefix, currValue]);
         return acc;
     }, []);
+
+export const flattenObject = (inputObject) =>
+    Object.fromEntries(flattenObjectEntries(Object.entries(inputObject)))
+
+export const flattenArrayOfObjects = (arrayOfObjects) =>
+    arrayOfObjects.map((arrayItem) => flattenObject(arrayItem))

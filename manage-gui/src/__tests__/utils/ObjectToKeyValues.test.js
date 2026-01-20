@@ -1,4 +1,4 @@
-import {objectToKeyValues} from "../../utils/ObjectToKeyValues";
+import {flattenObjectEntries} from "../../utils/FlattenObjectEntries";
 
 test("objectToKeyValue() - contains all keys", () => {
     const testObject = {
@@ -14,7 +14,7 @@ test("objectToKeyValue() - contains all keys", () => {
     }
     const input = Object.entries(testObject)
 
-    const result = objectToKeyValues(input);
+    const result = flattenObjectEntries(input);
 
     expect(result.map(([key]) => key)).toEqual([ 'a', 'b', 'c.c1', 'c.c2', 'c.c3.c3a'])
 })
