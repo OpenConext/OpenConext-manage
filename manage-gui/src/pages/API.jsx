@@ -10,6 +10,7 @@ import debounce from "lodash.debounce";
 import {CheckBox, NotesTooltip, Select} from '../components'
 import {SelectMetaDataType, SelectNewEntityAttribute, SelectNewMetaDataField} from "../components/metadata"
 import {getNameForLanguage} from "../utils/Language";
+import {flattenArrayOfObjects} from "../utils/FlattenObjectEntries";
 
 const papaparseConfig = {
     quotes: true,
@@ -338,18 +339,15 @@ export default class API extends React.PureComponent {
 
 
     renderSearchResultsTablePrintable = (searchResults) => {
-        const csv = Papaparse.unparse({
-            fields: ["state", "name", "entity_id"],
-            data: searchResults.map((entity) =>
-                [
-                    entity.data.state,
-                    getNameForLanguage(entity.data.metaDataFields),
-                    entity.data.entityid
-                ])
+        const flattenedSearchResults = flattenArrayOfObjects(searchResults);
+        const csvResult = Papaparse.unparse({
+            fields: Object.keys(flattenedSearchResults[0]),
+            data: flattenedSearchResults.map((row) => Object.values(row))
         }, papaparseConfig);
+
         return (
             <section id={"search-results-printable"}>
-                {csv}
+                {csvResult}
             </section>
         );
     }
