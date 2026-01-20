@@ -338,18 +338,36 @@ export default class API extends React.PureComponent {
 
 
     renderSearchResultsTablePrintable = (searchResults) => {
-        const csv = Papaparse.unparse({
-            fields: ["state", "name", "entity_id"],
-            data: searchResults.map((entity) =>
-                [
-                    entity.data.state,
-                    getNameForLanguage(entity.data.metaDataFields),
-                    entity.data.entityid
-                ])
+        // Todo move to utils and add unit tests
+        const objectToKeyValue = (inputEntries, keyPrefix) =>
+            inputEntries.reduce((acc, curr) => {
+                const [currKey, currValue] = curr;
+
+                if (Array.isArray(currValue)) {
+                    console.error(`Arrays are currently not supported, skips processing the value of "${currKey}"`);
+                    acc.push([currKey, currValue]);
+                    return acc;
+                }
+
+                if (typeof currValue === "object") {
+                    const nestedInputEntries = Object.entries(currValue);
+                    acc.push(...objectToKeyValue(nestedInputEntries, currKey));
+                    return acc;
+                }
+                const theKey = keyPrefix ? `${keyPrefix}.${currKey}` : currKey
+                acc.push([theKey, currValue]);
+                return acc;
+            }, [])
+
+        const flattenedSearchResults = searchResults.map((row) => Object.fromEntries(objectToKeyValue(Object.entries(row))));
+        const csvResult = Papaparse.unparse({
+            fields: Object.keys(flattenedSearchResults[0]),
+            data: flattenedSearchResults.map((row) => Object.values(row))
         }, papaparseConfig);
+
         return (
             <section id={"search-results-printable"}>
-                {csv}
+                {csvResult}
             </section>
         );
     }
