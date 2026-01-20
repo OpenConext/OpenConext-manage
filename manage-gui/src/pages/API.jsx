@@ -10,6 +10,7 @@ import debounce from "lodash.debounce";
 import {CheckBox, NotesTooltip, Select} from '../components'
 import {SelectMetaDataType, SelectNewEntityAttribute, SelectNewMetaDataField} from "../components/metadata"
 import {getNameForLanguage} from "../utils/Language";
+import {objectToKeyValues} from "../utils/ObjectToKeyValues";
 
 const papaparseConfig = {
     quotes: true,
@@ -338,28 +339,8 @@ export default class API extends React.PureComponent {
 
 
     renderSearchResultsTablePrintable = (searchResults) => {
-        // Todo move to utils and add unit tests
-        const objectToKeyValue = (inputEntries, keyPrefix) =>
-            inputEntries.reduce((acc, curr) => {
-                const [currKey, currValue] = curr;
-
-                if (Array.isArray(currValue)) {
-                    console.error(`Arrays are currently not supported, skips processing the value of "${currKey}"`);
-                    acc.push([currKey, currValue]);
-                    return acc;
-                }
-
-                if (typeof currValue === "object") {
-                    const nestedInputEntries = Object.entries(currValue);
-                    acc.push(...objectToKeyValue(nestedInputEntries, currKey));
-                    return acc;
-                }
-                const theKey = keyPrefix ? `${keyPrefix}.${currKey}` : currKey
-                acc.push([theKey, currValue]);
-                return acc;
-            }, [])
-
-        const flattenedSearchResults = searchResults.map((row) => Object.fromEntries(objectToKeyValue(Object.entries(row))));
+        const flattenedSearchResults = searchResults.map((row) =>
+            Object.fromEntries(objectToKeyValues(Object.entries(row))));
         const csvResult = Papaparse.unparse({
             fields: Object.keys(flattenedSearchResults[0]),
             data: flattenedSearchResults.map((row) => Object.values(row))
