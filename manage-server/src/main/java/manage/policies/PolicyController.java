@@ -148,8 +148,8 @@ public class PolicyController {
         return pdpPolicyDefinitionRevisions;
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @RequestMapping(method = GET, value = {"/client/attributes"})
+    @PreAuthorize("hasAnyRole('ADMIN', 'POLICIES')")
+    @RequestMapping(method = GET, value = {"/client/attributes", "/internal/protected/allowed-attributes"})
     public List<Map<String, String>> getAllowedAttributes() {
         return this.allowedAttributes;
     }

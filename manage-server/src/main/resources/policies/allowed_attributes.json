@@ -1,47 +1,47 @@
 [
   {
     "value": "urn:mace:terena.org:attribute-def:schacHomeOrganization",
-    "validation_regex": "^[a-z]+(\\.[a-z]+)+$",
+    "validationRegex": "^[a-z]+(\\.[a-z]+)+$",
     "label": "Schac home organization"
   },
   {
     "value": "urn:mace:terena.org:attribute-def:schacHomeOrganizationType",
-    "validation_regex": "^[a-z]+$",
+    "validationRegex": "^[a-z]+$",
     "label": "Schac home organization type"
   },
   {
     "value": "urn:mace:dir:attribute-def:eduPersonAffiliation",
-    "validation_regex": "^(student|staff|faculty|employee|member)$",
+    "validationRegex": "^(student|staff|faculty|employee|member)$",
     "label": "Edu person affiliation"
   },
   {
     "value": "urn:mace:dir:attribute-def:eduPersonScopedAffiliation",
-    "validation_regex": "^(student|staff|faculty|employee|member)@[a-z]+(\\.[a-z]+)+$",
+    "validationRegex": "^(student|staff|faculty|employee|member)@[a-z]+(\\.[a-z]+)+$",
     "label": "Edu person scoped affiliation"
   },
   {
     "value": "urn:mace:dir:attribute-def:eduPersonEntitlement",
-    "validation_regex": "^[a-z]+$",
+    "validationRegex": "^[a-z]+$",
     "label": "Edu person entitlement"
   },
   {
     "value": "urn:mace:dir:attribute-def:isMemberOf",
-    "validation_regex": "^.*$",
+    "validationRegex": "^.*$",
     "label": "Is-member-of"
   },
   {
     "value": "urn:collab:group:surfteams.nl",
-    "validation_regex": "^(urn:mace:surf\\.nl:invite:|urn:collab:group:)[a-z0-9_]+$",
+    "validationRegex": "^(urn:mace:surf\\.nl:invite:|urn:collab:group:)[a-z0-9_]+$",
     "label": "SURFconext Invite (voot) role urn"
   },
   {
     "value": "urn:collab:sab:surfnet.nl",
-    "validation_regex": "^(Superuser|Instellingsbevoegde|OperationeelBeheerder|SURFconextbeheerder|DNS-Beheerder)$",
+    "validationRegex": "^(Superuser|Instellingsbevoegde|OperationeelBeheerder|SURFconextbeheerder|DNS-Beheerder)$",
     "label": "SAB role"
   },
   {
     "value": "urn:mace:dir:attribute-def:mail",
-    "validation_regex": "^[^@]+@[^@]+\\.[^@]+$",
+    "validationRegex": "^[^@]+@[^@]+\\.[^@]+$",
     "label": "Mail address"
   }
 ]

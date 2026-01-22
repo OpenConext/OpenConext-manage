@@ -204,7 +204,7 @@ public class PolicyControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void getAllowedAttributes() {
+    public void getAllowedAttributesDashBoard() {
         List<Map<String, String>> allowedAttributes = given()
                 .auth()
                 .preemptive()
@@ -215,6 +215,21 @@ public class PolicyControllerTest extends AbstractIntegrationTest {
                 .as(new TypeRef<>() {
                 });
         assertEquals(9, allowedAttributes.size());
+    }
+
+    @Test
+    public void getAllowedAttributesAccess() {
+        List<Map<String, String>> allowedAttributes = given()
+            .auth()
+            .preemptive()
+            .basic("dashboard", "secret")
+            .when()
+            .header("Content-type", "application/json")
+            .get("manage/api/internal/protected/allowed-attributes")
+            .as(new TypeRef<>() {
+            });
+        assertEquals(9, allowedAttributes.size());
+        assertTrue(allowedAttributes.stream().allMatch(m -> m.containsKey("validationRegex")));
     }
 
     @Test
