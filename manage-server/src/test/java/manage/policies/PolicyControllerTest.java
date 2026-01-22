@@ -229,7 +229,8 @@ public class PolicyControllerTest extends AbstractIntegrationTest {
             .as(new TypeRef<>() {
             });
         assertEquals(9, allowedAttributes.size());
-        assertTrue(allowedAttributes.stream().allMatch(m -> m.containsKey("validationRegex")));
+        assertTrue(allowedAttributes.stream().allMatch(m -> m.containsKey("validationRegex")
+            && m.containsKey("allowedInDenyRule")));
     }
 
     @Test
