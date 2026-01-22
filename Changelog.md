@@ -2,6 +2,11 @@
 
 Starting from version 9.0.0, we note changes and new features per release in this file.
 
+## 9.7.0
+- Allow for CRUD Policies in regular internal MetaData API
+  ([#613](https://github.com/OpenConext/OpenConext-manage/issues/613))
+- Updated dependencies
+
 ## 9.6.0
 - [#562](https://github.com/OpenConext/OpenConext-manage/issues/562)
 - Added `typeRequest` field to change requests
