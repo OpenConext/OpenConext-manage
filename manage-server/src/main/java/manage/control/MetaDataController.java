@@ -52,18 +52,21 @@ public class MetaDataController {
 
     private final ImporterService importerService;
 
+    private final DatabaseController databaseController;
+
     public MetaDataController(MetaDataRepository metaDataRepository,
                               MetaDataAutoConfiguration metaDataAutoConfiguration,
                               ExporterService exporterService,
                               ImporterService importerService,
-                              MetaDataService metaDataService) {
+                              MetaDataService metaDataService,
+                              DatabaseController databaseController) {
 
         this.metaDataRepository = metaDataRepository;
         this.metaDataAutoConfiguration = metaDataAutoConfiguration;
         this.exporterService = exporterService;
         this.importerService = importerService;
         this.metaDataService = metaDataService;
-
+        this.databaseController = databaseController;
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -113,11 +116,16 @@ public class MetaDataController {
         return metaDataRepository.stats();
     }
 
-    @PreAuthorize("hasAnyRole('WRITE_SP', 'WRITE_IDP', 'SYSTEM')")
+    @PreAuthorize("hasAnyRole('WRITE_SP', 'WRITE_IDP', 'SYSTEM', 'POLICIES')")
     @PostMapping("/internal/metadata")
     public MetaData postInternal(@Validated @RequestBody MetaData metaData, APIUser apiUser) {
-        ScopeEnforcer.enforceWriteScope(apiUser, EntityType.fromType(metaData.getType()));
-        return metaDataService.doPost(metaData, apiUser, !apiUser.getScopes().contains(TEST));
+        EntityType entityType = EntityType.fromType(metaData.getType());
+        ScopeEnforcer.enforceWriteScope(apiUser, entityType);
+        MetaData savedMetaData = metaDataService.doPost(metaData, apiUser, !apiUser.getScopes().contains(TEST));
+        if (entityType.equals(EntityType.PDP)) {
+            databaseController.doPush(new PushOptions(false, false, true));
+        }
+        return savedMetaData;
     }
 
     @PreAuthorize("hasRole('WRITE_SP')")
@@ -211,13 +219,18 @@ public class MetaDataController {
         return metaDataService.doRemove(type, id, user, revisionNote);
     }
 
-    @PreAuthorize("hasRole('DELETE_SP')")
+    @PreAuthorize("hasAnyRole('DELETE_SP', 'POLICIES')")
     @DeleteMapping("/internal/metadata/{type}/{id}")
     public boolean removeInternal(@PathVariable("type") String type,
                                   @PathVariable("id") String id,
                                   APIUser apiUser) {
-        ScopeEnforcer.enforceDeleteScope(apiUser, EntityType.fromType(type));
-        return metaDataService.doRemove(type, id, apiUser, "Deleted by APIUser " + apiUser.getName());
+        EntityType entityType = EntityType.fromType(type);
+        ScopeEnforcer.enforceDeleteScope(apiUser, entityType);
+        boolean removed = metaDataService.doRemove(type, id, apiUser, "Deleted by APIUser " + apiUser.getName());
+        if (removed && entityType.equals(EntityType.PDP)) {
+            databaseController.doPush(new PushOptions(false, false, true));
+        }
+        return removed;
     }
 
 
@@ -229,13 +242,18 @@ public class MetaDataController {
         return metaDataService.doPut(metaData, user, false);
     }
 
-    @PreAuthorize("hasAnyRole('WRITE_SP', 'WRITE_IDP', 'SYSTEM')")
+    @PreAuthorize("hasAnyRole('WRITE_SP', 'WRITE_IDP', 'SYSTEM', 'POLICIES')")
     @PutMapping("/internal/metadata")
     @Transactional
     public MetaData putInternal(@Validated @RequestBody MetaData metaData, APIUser apiUser)
         throws JsonProcessingException {
-        ScopeEnforcer.enforceWriteScope(apiUser, EntityType.fromType(metaData.getType()));
-        return metaDataService.doPut(metaData, apiUser, !apiUser.getScopes().contains(TEST));
+        EntityType entityType = EntityType.fromType(metaData.getType());
+        ScopeEnforcer.enforceWriteScope(apiUser, entityType);
+        MetaData updatedMetaData = metaDataService.doPut(metaData, apiUser, !apiUser.getScopes().contains(TEST));
+        if (entityType.equals(EntityType.PDP)) {
+            databaseController.doPush(new PushOptions(false, false, true));
+        }
+        return updatedMetaData;
     }
 
     @PreAuthorize("hasAnyRole('SYSTEM')")

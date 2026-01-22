@@ -89,7 +89,7 @@ public class PolicyController {
 
     @PreAuthorize("hasRole('POLICIES')")
     @PostMapping("/internal/protected/policies")
-    public PdpPolicyDefinition create(APIUser apiUser, @RequestBody PdpPolicyDefinition policyDefinition) throws JsonProcessingException {
+    public PdpPolicyDefinition create(APIUser apiUser, @RequestBody PdpPolicyDefinition policyDefinition) {
         this.initialPolicyValues(apiUser, policyDefinition, true);
         policyIdpAccessEnforcer.actionAllowed(policyDefinition, PolicyAccess.WRITE, apiUser, true);
         Map<String, Object> data = objectMapper.convertValue(policyDefinition, new TypeReference<>() {
@@ -146,7 +146,6 @@ public class PolicyController {
         //Backward compatibility for Dashboard
         pdpPolicyDefinitionRevisions.add(policy);
         return pdpPolicyDefinitionRevisions;
-
     }
 
     @PreAuthorize("hasRole('ADMIN')")

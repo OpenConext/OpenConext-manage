@@ -15,7 +15,7 @@ public class ScopeEnforcer {
             EntityType.SP, EntityType.RP, EntityType.RS, EntityType.SRAM);
     //Read-only EntityTypes
     private final static List<EntityType> allEntityTypes = List.of(
-            EntityType.SP, EntityType.RP, EntityType.RS, EntityType.SRAM, EntityType.IDP);
+            EntityType.SP, EntityType.RP, EntityType.RS, EntityType.SRAM, EntityType.IDP, EntityType.PDP);
 
     private ScopeEnforcer() {
     }
@@ -38,6 +38,8 @@ public class ScopeEnforcer {
         if (entityType.equals(EntityType.IDP) && !apiUser.isAllowed(writeIdp)) {
             throw new EndpointNotAllowed(String.format("APIUser %s is not allowed to %s for entity %s", apiUser.getName(), action, entityType.getType()));
         } else if (spEntityTypes.contains(entityType) && !apiUser.isAllowed(writeSp)) {
+            throw new EndpointNotAllowed(String.format("APIUser %s is not allowed to %s for entity %s", apiUser.getName(), action, entityType.getType()));
+        } else if (entityType.equals(EntityType.PDP) && !apiUser.isAllowed(POLICIES)) {
             throw new EndpointNotAllowed(String.format("APIUser %s is not allowed to %s for entity %s", apiUser.getName(), action, entityType.getType()));
         } else if (!allEntityTypes.contains(entityType)) {
             throw new EndpointNotAllowed(String.format("APIUser %s is not allowed to %s for entity %s", apiUser.getName(), action, entityType.getType()));
