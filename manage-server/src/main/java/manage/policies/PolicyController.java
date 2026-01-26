@@ -13,7 +13,6 @@ import manage.model.PushOptions;
 import manage.repository.MetaDataRepository;
 import manage.service.MetaDataService;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.CollectionUtils;
@@ -35,11 +34,11 @@ public class PolicyController {
     private final ObjectMapper objectMapper;
     private final PolicyIdpAccessEnforcer policyIdpAccessEnforcer;
     private final MetaDataRepository metaDataRepository;
-    private final List<Map<String, String>> allowedAttributes;
-    private final List<Map<String, String>> samlAllowedAttributes;
+    private final List<Map<String, Object>> allowedAttributes;
+    private final List<Map<String, Object>> samlAllowedAttributes;
     private final List<String> loaLevels;
     private final DatabaseController databaseController;
-    private final TypeReference<List<Map<String, String>>> typeReference = new TypeReference<>() {
+    private final TypeReference<List<Map<String, Object>>> typeReference = new TypeReference<>() {
     };
 
     @SneakyThrows
@@ -57,10 +56,10 @@ public class PolicyController {
         this.metaDataRepository = metaDataRepository;
         this.databaseController = databaseController;
         this.allowedAttributes = this.attributes(allowedAttributesResource);
-        this.allowedAttributes.sort(Comparator.comparing(o -> o.get("label")));
+        this.allowedAttributes.sort(Comparator.comparing(o -> (String) o.get("label")));
         this.samlAllowedAttributes = this.attributes(extraSamlAttributesResource);
         this.samlAllowedAttributes.addAll(this.allowedAttributes);
-        this.samlAllowedAttributes.sort(Comparator.comparing(o -> o.get("label")));
+        this.samlAllowedAttributes.sort(Comparator.comparing(o -> (String) o.get("label")));
         this.loaLevels = Stream.of(loaLevelsCommaSeparated.split(",")).map(String::trim).collect(toList());
     }
 
@@ -68,14 +67,14 @@ public class PolicyController {
     @GetMapping("/internal/protected/policies")
     public List<PdpPolicyDefinition> policies(APIUser apiUser) {
         List<PdpPolicyDefinition> policies = this.metaDataService
-                .findAllByType(EntityType.PDP.getType()).stream()
-                .map(metaData -> new PdpPolicyDefinition(metaData))
-                .collect(toList());
+            .findAllByType(EntityType.PDP.getType()).stream()
+            .map(metaData -> new PdpPolicyDefinition(metaData))
+            .collect(toList());
         return policyIdpAccessEnforcer
-                .filterPdpPolicies(apiUser, policies)
-                .stream()
-                .map(policy -> enrichPolicyDefinition(policy))
-                .collect(toList());
+            .filterPdpPolicies(apiUser, policies)
+            .stream()
+            .map(policy -> enrichPolicyDefinition(policy))
+            .collect(toList());
     }
 
     @PreAuthorize("hasRole('POLICIES')")
@@ -150,20 +149,20 @@ public class PolicyController {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'POLICIES')")
     @RequestMapping(method = GET, value = {"/client/attributes", "/internal/protected/allowed-attributes"})
-    public List<Map<String, String>> getAllowedAttributes() {
+    public List<Map<String, Object>> getAllowedAttributes() {
         return this.allowedAttributes;
     }
 
     @PreAuthorize("hasRole('POLICIES')")
     @RequestMapping(method = GET, value = {"/internal/protected/attributes", "/internal/protected/attributes/"})
-    public List<Map<String, String>> getAllowedAttributesForDashboard() {
+    public List<Map<String, Object>> getAllowedAttributesForDashboard() {
         //Backward compatibility for dashboard
         return this.allowedAttributes.stream().map(attr -> Map.of("AttributeId", attr.get("value"), "Value", attr.get("label"))).collect(toList());
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'POLICIES')")
     @RequestMapping(method = GET, value = {"/client/saml-attributes", "/internal/protected/saml-attributes"})
-    public List<Map<String, String>> getAllowedSamlAttributes() {
+    public List<Map<String, Object>> getAllowedSamlAttributes() {
         return this.samlAllowedAttributes;
     }
 
@@ -200,7 +199,7 @@ public class PolicyController {
         }
         if (policyDefinition.getType().equals("step")) {
             policyDefinition.getLoas().forEach(loa -> loa.getCidrNotations()
-                    .forEach(notation -> notation.setIpInfo(IPAddressProvider.getIpInfo(notation.getIpAddress(), notation.getPrefix()))));
+                .forEach(notation -> notation.setIpInfo(IPAddressProvider.getIpInfo(notation.getIpAddress(), notation.getPrefix()))));
             policyDefinition.setActionsAllowed(false);
         }
         return policyDefinition;
@@ -218,7 +217,7 @@ public class PolicyController {
         policyDefinition.setUserDisplayName(impersonatedUser.getUnspecifiedNameId());
     }
 
-    private List<Map<String, String>> attributes(Resource resource) throws IOException {
+    private List<Map<String, Object>> attributes(Resource resource) throws IOException {
         return this.objectMapper.readValue(resource.getInputStream(), typeReference);
     }
 

@@ -205,7 +205,7 @@ public class PolicyControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void getAllowedAttributesDashBoard() {
-        List<Map<String, String>> allowedAttributes = given()
+        List<Map<String, Object>> allowedAttributes = given()
                 .auth()
                 .preemptive()
                 .basic("dashboard", "secret")
