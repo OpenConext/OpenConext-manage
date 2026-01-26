@@ -10,11 +10,12 @@ test("objectToKeyValue() - contains all keys", () => {
             c3: {
                 c3a: 'c3aValue'
             }
-        }
+        },
+        d: null
     }
     const input = Object.entries(testObject)
 
     const result = flattenObjectEntries(input);
 
-    expect(result.map(([key]) => key)).toEqual([ 'a', 'b', 'c.c1', 'c.c2', 'c.c3.c3a'])
+    expect(result.map(([key]) => key)).toEqual([ 'a', 'b', 'c.c1', 'c.c2', 'c.c3.c3a', 'd'])
 })

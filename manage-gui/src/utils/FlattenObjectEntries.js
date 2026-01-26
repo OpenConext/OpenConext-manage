@@ -1,3 +1,5 @@
+import {isEmpty} from "./Utils";
+
 export const flattenObjectEntries = (inputEntries, keyPrefix) =>
     inputEntries.reduce((acc, curr) => {
         const [currKey, currValue] = curr;
@@ -9,7 +11,7 @@ export const flattenObjectEntries = (inputEntries, keyPrefix) =>
             return acc;
         }
 
-        if (typeof currValue === "object") {
+        if (typeof currValue === "object" && !isEmpty(currValue)) {
             const nestedInputEntries = Object.entries(currValue);
             acc.push(...flattenObjectEntries(nestedInputEntries, currKeyWithPrefix));
             return acc;
