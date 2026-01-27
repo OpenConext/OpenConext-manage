@@ -54,6 +54,60 @@ class CertificateDataDuplicationHookTest extends AbstractIntegrationTest {
         );
     }
 
+    @Test
+    void prePutTest() {
+        MetaData metaData = new MetaData(EntityType.IDP.getType(),
+            Map.of("metaDataFields", Map.of(
+                "certData", "CERT_VALUE_1",
+                "certData2", "CERT_VALUE_2",
+                "certData3", "CERT_VALUE_3"
+            )));
+        MetaData result = certificateDataDuplicationHook.prePut(metaData, metaData, apiUser());
+        assertEquals(metaData, result);
+    }
+
+    @Test
+    void prePutTest_AllSameValues() {
+        MetaData metaData = new MetaData(EntityType.IDP.getType(),
+            Map.of("metaDataFields", Map.of(
+                "certData", "CERT_VALUE_1",
+                "certData2", "CERT_VALUE_1",
+                "certData3", "CERT_VALUE_1"
+            )));
+        assertThrows(ValidationException.class, () -> certificateDataDuplicationHook.prePut(metaData, metaData, apiUser()));
+    }
+
+    @Test
+    void prePutTest_OneMissing() {
+        MetaData metaData = new MetaData(EntityType.IDP.getType(),
+            Map.of("metaDataFields", Map.of(
+                "certData", "CERT_VALUE_1",
+                "certData3", "CERT_VALUE_3"
+            )));
+        MetaData result = certificateDataDuplicationHook.prePut(metaData, metaData, apiUser());
+        assertEquals(metaData, result);
+    }
+
+    @Test
+    void prePutTest_ValueEmptyString() {
+        MetaData metaData = new MetaData(EntityType.IDP.getType(),
+            Map.of("metaDataFields", Map.of(
+                "certData", "CERT_VALUE_1",
+                "certData2", "",
+                "certData3", ""
+            )));
+        MetaData result = certificateDataDuplicationHook.prePut(metaData, metaData, apiUser());
+        assertEquals(metaData, result);
+    }
+
+    // prePut
+    //  - All different
+    //  - All the same
+    //  - One missing
+    //  - Empty string
+    // prePost
+    //  - Same as prePut
+
 //    private final CertificateDataDuplicationHook certificateDataDuplicationHook = new CertificateDataDuplicationHook(new MetaDataAutoConfiguration(
 //        objectMapper,
 //        new ClassPathResource("metadata_configuration"),
