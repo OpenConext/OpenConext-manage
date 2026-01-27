@@ -80,4 +80,14 @@ public class ScopeEnforcerTest {
         ScopeEnforcer.enforceDeleteScope(new APIUser("test", List.of(Scope.DELETE_SP)), EntityType.SRAM);
     }
 
+    @Test
+    public void enforceDeletePolicyAllowed() {
+        ScopeEnforcer.enforceChangeRequestScope(new APIUser("test", List.of(Scope.POLICIES)), EntityType.PDP);
+    }
+
+    @Test
+    public void enforceDeletePolicyNotAllowed() {
+        assertThrows(EndpointNotAllowed.class, () ->
+            ScopeEnforcer.enforceDeleteScope(new APIUser("test", List.of(Scope.DELETE_SP)), EntityType.PDP));
+    }
 }
