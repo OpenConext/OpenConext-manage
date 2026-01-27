@@ -31,7 +31,7 @@ public class ScopeEnforcer {
     public static void enforceDeleteScope(APIUser apiUser, EntityType entityType) {
         if (entityType.equals(EntityType.PDP) && !apiUser.isAllowed(POLICIES)) {
             throw new EndpointNotAllowed(String.format("APIUser %s is not allowed to delete an entity %s", apiUser.getName(), entityType.getType()));
-        } else if (!spEntityTypes.contains(entityType) || !apiUser.isAllowed(DELETE_SP)) {
+        } else if (!entityType.equals(EntityType.PDP) && (!spEntityTypes.contains(entityType) || !apiUser.isAllowed(DELETE_SP))) {
             throw new EndpointNotAllowed(String.format("APIUser %s is not allowed to delete an entity %s", apiUser.getName(), entityType.getType()));
         }
     }
