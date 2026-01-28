@@ -8,7 +8,11 @@ import org.everit.json.schema.Schema;
 import org.everit.json.schema.ValidationException;
 import org.springframework.util.StringUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Stream;
 
 public class CertificateDataDuplicationHook extends MetaDataHookAdapter {
