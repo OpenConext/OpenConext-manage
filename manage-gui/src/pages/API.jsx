@@ -332,7 +332,6 @@ export default class API extends React.PureComponent {
                     </tr>
                     </thead>
                     <tbody>
-                    {/* Todo: use helper methods to avoid duplicate code */}
                     {searchResults.map((entity, index) =>
                         <tr key={`${entity.data.entityid}_${index}`}>
                             <td className="count">{index + 1}</td>
@@ -347,30 +346,13 @@ export default class API extends React.PureComponent {
                                 {isEmpty(entity.data.notes) ? <span></span> :
                                     <NotesTooltip identifier={entity.data.entityid} notes={entity.data.notes}/>}
                             </td>
-                            {Object.keys(searchAttributes).map(attr => {
-                                return <td key={attr}>{"" + entity.data.metaDataFields[attr]}</td>
-                            })}
-                            {Object.keys(globalSearchAttributes).map(attr => {
-                                    //split by dot results in too many parts for
-                                    // "arp.attributes.urn:mace:terena.org:attribute-def:schacHomeOrganization"
-
-                                    const arpAttribute = attr.startsWith("arp.attributes");
-                                    if (arpAttribute) {
-                                        attr = "arp.attributes." + attr.substring("arp.attributes.".length).replace(/\./g, "@")
-                                    }
-                                    let parts = attr.split(".");
-                                    if (arpAttribute) {
-                                        parts = parts.map(p => p.replace(/@/g, "."));
-                                    }
-                                    let last = parts.pop();
-                                    let ref = entity.data;
-                                    parts.forEach(part => ref = ref ? ref[part] : {});
-                                    if (ref) {
-                                        const val = Array.isArray(ref) ? ref.map(x => x[last]) : ref[last];
-                                        return <td key={attr}>{JSON.stringify(val)}</td>
-                                    }
-                                    return <td key={attr}></td>
-                                }
+                            {Object.keys(searchAttributes).map(attr =>
+                                <td key={attr}>{"" + this.getSearchAttributeValue({headerName: attr, searchResult: entity})}</td>
+                            )}
+                            {Object.keys(globalSearchAttributes).map(attr =>
+                                <td key={attr}>
+                                    {this.getGlobalSearchAttributeValue({headerName: attr, searchResult: entity})}
+                                </td>
                             )}
                         </tr>)}
                     </tbody>
