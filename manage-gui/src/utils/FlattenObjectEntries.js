@@ -1,13 +1,14 @@
 import {isEmpty} from "./Utils";
 
+// Todo remove before PR
+
 export const flattenObjectEntries = (inputEntries, keyPrefix) =>
     inputEntries.reduce((acc, curr) => {
         const [currKey, currValue] = curr;
         const currKeyWithPrefix = keyPrefix ? `${keyPrefix}.${currKey}` : currKey
 
         if (Array.isArray(currValue)) {
-            console.error(`Arrays are currently not supported, skips processing the value of "${currKey}"`);
-            acc.push([currKey, currValue]);
+            acc.push([currKeyWithPrefix, JSON.stringify(currValue)]);
             return acc;
         }
 
