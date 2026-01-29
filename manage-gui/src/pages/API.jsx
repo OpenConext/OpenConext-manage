@@ -216,7 +216,7 @@ export default class API extends React.PureComponent {
         }
     };
 
-    getSearchValue = ({headerName, searchResult, index}) => {
+    getSearchValue = (headerName, searchResult, index) => {
         switch (headerName) {
             case "count":
                 return index + 1;
@@ -233,9 +233,9 @@ export default class API extends React.PureComponent {
                 return ""
         }
     }
-    getSearchAttributeValue = ({headerName, searchResult}) =>
+    getSearchAttributeValue = (headerName, searchResult) =>
         (searchResult.data.metaDataFields[headerName] ?? "").toString();
-    getGlobalSearchAttributeValue = ({headerName, searchResult}) => {
+    getGlobalSearchAttributeValue = (headerName, searchResult) => {
         //split by dot results in too many parts for
         // "arp.attributes.urn:mace:terena.org:attribute-def:schacHomeOrganization"
 
@@ -347,12 +347,10 @@ export default class API extends React.PureComponent {
                                     <NotesTooltip identifier={entity.data.entityid} notes={entity.data.notes}/>}
                             </td>
                             {Object.keys(searchAttributes).map(attr =>
-                                <td key={attr}>{"" + this.getSearchAttributeValue({headerName: attr, searchResult: entity})}</td>
+                                <td key={attr}>{"" + this.getSearchAttributeValue(attr, entity)}</td>
                             )}
                             {Object.keys(globalSearchAttributes).map(attr =>
-                                <td key={attr}>
-                                    {this.getGlobalSearchAttributeValue({headerName: attr, searchResult: entity})}
-                                </td>
+                                <td key={attr}>{this.getGlobalSearchAttributeValue(attr, entity)}</td>
                             )}
                         </tr>)}
                     </tbody>
@@ -361,7 +359,7 @@ export default class API extends React.PureComponent {
             </section>);
     };
 
-    renderSearchResultsTablePrintable = ({searchResults, searchAttributes, globalSearchAttributes, status}) => {
+    renderSearchResultsTablePrintable = (searchResults, searchAttributes, globalSearchAttributes, status) => {
         const searchHeaders = ["count", "status", "name", "entityid", "notes"]
         const searchAttributesHeaders = Object.keys(searchAttributes)
         const globalSearchAttributesHeaders = Object.keys(globalSearchAttributes)
@@ -369,15 +367,15 @@ export default class API extends React.PureComponent {
 
         const csvInputEntries = searchResults.map((searchResult, index) => {
             const searchEntries = searchHeaders.map((headerName) => {
-                const value = this.getSearchValue({headerName, searchResult, index});
+                const value = this.getSearchValue(headerName, searchResult, index);
                 return [headerName, value]
             })
             const searchAttributeEntries = searchAttributesHeaders.map((headerName) => {
-                const value = this.getSearchAttributeValue({headerName, searchResult})
+                const value = this.getSearchAttributeValue(headerName, searchResult)
                 return [headerName, value]
             })
             const globalSearchAttributeEntries = globalSearchAttributesHeaders.map((headerName) => {
-                const value = this.getGlobalSearchAttributeValue({headerName, searchResult})
+                const value = this.getGlobalSearchAttributeValue(headerName, searchResult)
                 return [headerName, value]
             })
 
@@ -470,7 +468,7 @@ export default class API extends React.PureComponent {
                                         isSearchable={false}
                                         className="status-select"/>}
                 {showResults && this.renderSearchResultsTable(searchResults, selectedType, searchAttributes, globalSearchAttributes, status, fullTextSearch)}
-                {showResults && this.renderSearchResultsTablePrintable({searchResults, searchAttributes, globalSearchAttributes, status})}
+                {showResults && this.renderSearchResultsTablePrintable(searchResults, searchAttributes, globalSearchAttributes, status)}
                 {showResults && this.renderSearchResultsJSONPrintable(searchResults)}
 
             </section>
