@@ -564,7 +564,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     @Test
     public void searchBug() {
         Map<String, Object> searchOptions = new HashMap<>();
-        searchOptions.put("metaDataFields.coin:institution_id", "123");
+        searchOptions.put("metaDataFields.coin:institution_id", 123);
 
         searchOptions.put(REQUESTED_ATTRIBUTES, Arrays.asList(
             "allowedall", "metaDataFields.AssertionConsumerService:0:Location"
@@ -579,6 +579,39 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
             .statusCode(SC_OK)
             .body("size()", is(0));
     }
+
+    @Test
+    public void fieldIsStingAndSearchWithStingShouldReturnSomething() {
+        Map<String, Object> searchOptions = new HashMap<>();
+        searchOptions.put("metaDataFields.coin:institution_id", "123");
+        searchOptions.put(ALL_ATTRIBUTES, true);
+
+        given()
+            .when()
+            .body(searchOptions)
+            .header("Content-type", "application/json")
+            .post("manage/api/client/search/saml20_sp")
+            .then()
+            .statusCode(SC_OK)
+            .body("size()", is(1));
+    }
+
+    @Test
+    public void fieldIsStingAndSearchWithIntShouldReturnNothing() {
+        Map<String, Object> searchOptions = new HashMap<>();
+        searchOptions.put("metaDataFields.coin:institution_id", 123);
+        searchOptions.put(ALL_ATTRIBUTES, true);
+
+        given()
+            .when()
+            .body(searchOptions)
+            .header("Content-type", "application/json")
+            .post("manage/api/client/search/saml20_sp")
+            .then()
+            .statusCode(SC_OK)
+            .body("size()", is(0));
+    }
+
 
     @Test
     public void searchWithLogicalAnd() {

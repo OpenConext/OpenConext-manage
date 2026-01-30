@@ -6,11 +6,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class MetaDataRepositoryTest {
 
-    private MetaDataRepository subject = new MetaDataRepository(null, "en,nl,pt");
+    private MetaDataRepository subject = new MetaDataRepository(null, "en,nl,pt", null);
 
     @Test
     public void escapeSpecialChars() {
         String result = subject.escapeSpecialChars("query (((test))) | part [test] ? {} + *");
         assertEquals("query \\(\\(\\(test\\)\\)\\) \\| part \\[test\\] \\? \\{\\} \\+ \\*", result);
     }
+
+
 }
