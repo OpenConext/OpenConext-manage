@@ -50,6 +50,7 @@ public class MetaDataHookConfiguration {
                 new EncryptionHook(keyStore, cryptoEnabled),
                 new ProvisioningApplicationDeletionHook(metaDataRepository),
                 new IdentityProviderBrinCodeHook(metaDataAutoConfiguration),
+                new CertificateDataDuplicationHook(metaDataAutoConfiguration),
                 new OrganisationDeletionHook(metaDataRepository, metaDataAutoConfiguration)));
     }
 
