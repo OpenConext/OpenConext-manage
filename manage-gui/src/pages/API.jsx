@@ -9,7 +9,7 @@ import "./API.scss";
 import debounce from "lodash.debounce";
 import {CheckBox, NotesTooltip, Select} from '../components'
 import {SelectMetaDataType, SelectNewEntityAttribute, SelectNewMetaDataField} from "../components/metadata"
-import {getNameForLanguage} from "../utils/Language";
+import {getInitialLanguage, getNameForLanguage} from "../utils/Language";
 import {flattenArrayOfObjects} from "../utils/FlattenObjectEntries";
 
 const papaparseConfig = {
@@ -281,7 +281,7 @@ export default class API extends React.PureComponent {
         if (obj === null || typeof obj !== "object") return "";
 
         // If we find the key here, return the value
-        if (Object.prototype.hasOwnProperty.call(obj, targetKey)) {
+        if (Object.hasOwn(obj, targetKey)) {
             return path.reduce((acc, p) => acc?.[p], obj) ?? obj[targetKey];
         }
 
@@ -321,6 +321,9 @@ export default class API extends React.PureComponent {
         });
     };
 
+    checkHeaders = (header) =>
+        header === `name:${getInitialLanguage()}` ? "name" : header;
+
     renderSearchResultsTable = (searchResults, selectedType, searchAttributes, globalSearchAttributes, status, fullTextSearch) => {
         const {sorted, reverse} = this.state;
         const icon = name => {
@@ -343,7 +346,7 @@ export default class API extends React.PureComponent {
                     className={index < 4 ? header : "extra"}
                     onClick={this.sortTable(searchResults, header)}
                 >
-                    {index < 4 ? I18n.t(`playground.headers.${header}`) : header}
+                    {index < 4 ? I18n.t(`playground.headers.${this.checkHeaders(header)}`) : header}
                     {icon(header)}
                 </th>
                 :
@@ -351,10 +354,10 @@ export default class API extends React.PureComponent {
                     key={`${header}_${index}`}
                     className={index < 4 ? header : "extra"}
                 >
-                    {index < 4 ? I18n.t(`playground.headers.${header}`) : header}
+                    {index < 4 ? I18n.t(`playground.headers.${this.checkHeaders(header)}`) : header}
                 </th>
         );
-        const searchHeaders = ["count", "state", "name", "entityid", "notes"]
+        const searchHeaders = ["count", "state", `name:${getInitialLanguage()}`, "entityid", "notes"]
             .concat(Object.keys(searchAttributes))
             .concat(Object.keys(globalSearchAttributes));
         searchResults = status === "all" ? searchResults : searchResults.filter(entity => entity.data.state === status);
