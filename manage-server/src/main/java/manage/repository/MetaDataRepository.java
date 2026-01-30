@@ -1,6 +1,7 @@
 package manage.repository;
 
 import lombok.Getter;
+import manage.conf.MetaDataAutoConfiguration;
 import manage.exception.ValueNotUniqueException;
 import manage.model.EntityType;
 import manage.model.MetaData;
@@ -44,11 +45,15 @@ public class MetaDataRepository {
 
     private final FindAndModifyOptions options = FindAndModifyOptions.options().returnNew(true);
 
+    private final MetaDataAutoConfiguration metaDataAutoConfiguration;
+
     @Autowired
     public MetaDataRepository(MongoTemplate mongoTemplate,
-                              @Value("${product.supported_languages}") String supportedLanguages) {
+                              @Value("${product.supported_languages}") String supportedLanguages,
+                              MetaDataAutoConfiguration metaDataAutoConfiguration) {
         this.mongoTemplate = mongoTemplate;
         this.supportedLanguages = Stream.of(supportedLanguages.split(",")).map(String::trim).collect(toList());
+        this.metaDataAutoConfiguration = metaDataAutoConfiguration;
     }
 
     public MetaData findById(String id, String type) {
@@ -193,9 +198,31 @@ public class MetaDataRepository {
 
     }
 
+    @SuppressWarnings("unchecked")
+    private boolean isNumberFieldInSchema(String fieldKey, EntityType entityType) {
+        try {
+            Map<String, Object> schemaRep = metaDataAutoConfiguration.schemaRepresentation(entityType);
+            Map<String, Object> properties = Map.class.cast(schemaRep.get("properties"));
+
+            String propertySet = fieldKey.startsWith("metaDataFields.") ? "metaDataFields" : "data";
+
+            Map<String, Object> schemaFields = Map.class.cast(properties.get(propertySet));
+            Map<String, Object> schemaProperties = Map.class.cast(schemaFields.get("properties"));
+
+            String cleanKey = fieldKey.replace("metaDataFields.", "").replace("data.", "");
+
+            Map<String, Object> fieldDef = Map.class.cast(schemaProperties.get(cleanKey));
+
+            return "number".equals(fieldDef.get("type"));
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     public List<Map> search(String type, Map<String, Object> properties, List<String> requestedAttributes, Boolean
         allAttributes, Boolean logicalOperatorIsAnd) {
-        Query query = allAttributes ? new Query() : queryWithSamlFields(EntityType.fromType(type.replaceAll("_revision", "")));
+        EntityType entityType = EntityType.fromType(type.replaceAll("_revision", ""));
+        Query query = allAttributes ? new Query() : queryWithSamlFields(entityType);
         if (!allAttributes) {
             requestedAttributes.forEach(requestedAttribute -> {
                 String key = escapeMetaDataField(requestedAttribute);
@@ -219,7 +246,11 @@ public class MetaDataRepository {
                 ("true".equalsIgnoreCase((String) value) || "false".equalsIgnoreCase((String) value))) {
                 criteriaDefinitions.add(Criteria.where("data.".concat(key)).is(Boolean.parseBoolean((String) value)));
             } else if (value instanceof String && StringUtils.hasText((String) value) && isNumeric((String) value)) {
-                criteriaDefinitions.add(Criteria.where("data.".concat(key)).is(Integer.parseInt((String) value)));
+                if (isNumberFieldInSchema(key, entityType)) {
+                    criteriaDefinitions.add(Criteria.where("data.".concat(key)).is(Integer.parseInt((String) value)));
+                } else {
+                    criteriaDefinitions.add(Criteria.where("data.".concat(key)).is(value));
+                }
             } else if ("*".equals(value)) {
                 criteriaDefinitions.add(Criteria.where("data.".concat(key)).regex(".*", "i"));
             } else if (value instanceof String && ((String) value).contains("*")) {
