@@ -95,6 +95,17 @@
 
         th {
             text-align: left;
+            cursor: pointer;
+            white-space: nowrap;
+
+            i {
+                margin-left: 15px;
+                color: $lighter-grey;
+
+                &.current, &.reverse {
+                    color: $blue;
+                }
+            }
 
             &.extra {
                 padding-right: 10px;

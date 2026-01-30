@@ -202,6 +202,7 @@ I18n.translations.en = {
         headers: {
             count: "",
             status: "Status",
+            state: "Status",
             entityid: "Entity ID",
             name: "Name",
             organization: "Organization",
