@@ -280,12 +280,12 @@ export default class API extends React.PureComponent {
     getValueByKey = (obj, targetKey, path = []) => {
         if (obj === null || typeof obj !== "object") return "";
 
-        // Als we de key hier vinden, return value
+        // If we find the key here, return the value
         if (Object.prototype.hasOwnProperty.call(obj, targetKey)) {
             return path.reduce((acc, p) => acc?.[p], obj) ?? obj[targetKey];
         }
 
-        // Recursief door alle keys
+        // Recursively iterate through all keys
         for (const key of Object.keys(obj)) {
             const val = this.getValueByKey(obj[key], targetKey, [...path, key]);
             if (val !== "") return val;
@@ -298,7 +298,7 @@ export default class API extends React.PureComponent {
         const aSafe = this.getValueByKey(a, header);
         const bSafe = this.getValueByKey(b, header);
 
-        // nummer check optioneel
+        // Optional number check
         if (typeof aSafe === "number" && typeof bSafe === "number") {
             return (aSafe - bSafe) * (reverse ? -1 : 1);
         }
