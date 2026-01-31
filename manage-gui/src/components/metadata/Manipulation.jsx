@@ -18,7 +18,7 @@ export default class Manipulation extends React.PureComponent {
         this.state = {
             tabs: ["manipulation", "notes"],
             selectedTab: "manipulation",
-            collapseInfo: true,
+            collapseInfo: false,
         };
     }
 
@@ -100,7 +100,7 @@ export default class Manipulation extends React.PureComponent {
                 <h2>
                     <i
                         className={`collapse-button fa fa-solid ${
-                            collapseInfo ? "fa-caret-down" : "fa-caret-right"
+                            collapseInfo ? "fa-caret-right" : "fa-caret-down"
                         }`}
                         onClick={this.showInfo}
                         aria-hidden="true"
@@ -111,7 +111,7 @@ export default class Manipulation extends React.PureComponent {
                     </a>
                 </h2>
 
-                {collapseInfo && (
+                {!collapseInfo && (
                     <CodeMirror className="comments"
                                 value={info}
                                 options={optionsForInfo}/>
