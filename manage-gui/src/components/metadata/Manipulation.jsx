@@ -18,6 +18,7 @@ export default class Manipulation extends React.PureComponent {
         this.state = {
             tabs: ["manipulation", "notes"],
             selectedTab: "manipulation",
+            collapseInfo: false,
         };
     }
 
@@ -71,7 +72,14 @@ export default class Manipulation extends React.PureComponent {
         );
     }
 
+    showInfo = () => {
+        this.setState(prevState => ({
+            collapseInfo: !prevState.collapseInfo
+        }));
+    };
+
     renderManipulation() {
+        const {collapseInfo} = this.state;
         const {content, currentUser} = this.props;
         const allowed = isSystemUser(currentUser);
         const optionsForInfo = {lineNumbers: false, mode: "javascript", readOnly: true};
@@ -90,16 +98,27 @@ export default class Manipulation extends React.PureComponent {
         return (
             <div className="manipulation-info">
                 <h2>
+                    <i
+                        className={`collapse-button fa fa-solid ${
+                            collapseInfo ? "fa-caret-right" : "fa-caret-down"
+                        }`}
+                        onClick={this.showInfo}
+                        aria-hidden="true"
+                    />
                     <a href="https://github.com/OpenConext/OpenConext-engineblock/wiki/Attribute-Manipulations"
                        target="_blank" rel="noopener noreferrer">
                         {I18n.t("manipulation.manipulationInfo")}
                     </a>
                 </h2>
-                <CodeMirror className="comments"
-                            value={info}
-                            options={optionsForInfo}/>
+
+                {!collapseInfo && (
+                    <CodeMirror className="comments"
+                                value={info}
+                                options={optionsForInfo}/>
+                )}
+
                 {!allowed && <div className="remarks">{I18n.t("manipulation.allowedDisclaimer")}</div>}
-                <CodeMirror className={allowed ? "" : "read-only"}
+                <CodeMirror className={`manipulation ${allowed ? "" : "read-only"}`}
                             value={content}
                             onChange={this.onChange("data.manipulation")}
                             options={optionsForContent}/>
