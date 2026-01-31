@@ -77,6 +77,11 @@
             background-color: $lightest-grey;
         }
     }
+    .manipulation {
+        .CodeMirror {
+            height: 100%;
+        }
+    }
     .read-only {
         .CodeMirror {
             background-color: $hover;
@@ -87,5 +92,11 @@
         font-weight: 600;
         margin: 15px;
         font-size: 18px;
+    }
+
+    .collapse-button {
+        margin: 3px 5px 3px 0;
+        cursor: pointer;
+        color: $blue;
     }
 }

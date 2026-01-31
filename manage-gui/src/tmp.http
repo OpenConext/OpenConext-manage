@@ -1,0 +1,55 @@
+# curl -H 'Content-Type: application/json' -u test:test  -X POST -d '{"metaDataFields.coin:institution_id":"1", "ALL_ATTRIBUTES":true}' 'http://localhost:9393/internal/search/saml20_idp'
+POST http://localhost:3006/manage/api/internal/search/saml20_idp
+Content-Type: application/json
+
+{
+    "metaDataFields.coin:institution_id": "1",
+    "ALL_ATTRIBUTES": true
+}
+
+###
+###
+GET http://localhost:3006/manage/api/client/rawSearch/saml20_sp?query={ "$text": { "$search": "\"sabrest\"" } }
+
+
+
+### Old case not oke
+POST http://localhost:3006/manage/api/client/search/saml20_sp
+Content-Type: application/json
+Accept: application/json
+
+{
+    "metaDataFields.coin:institution_id": "123",
+    "ALL_ATTRIBUTES": true
+}
+
+### Old case not oke
+POST http://localhost:3006/manage/api/client/search/saml20_sp
+Content-Type: application/json
+Accept: application/json
+
+{
+    "metaDataFields.coin:institution_id": 123,
+    "ALL_ATTRIBUTES": true
+}
+
+
+### Old case oke
+POST http://localhost:3006/manage/api/client/search/saml20_sp
+Content-Type: application/json
+Accept: application/json
+
+{
+    "metaDataFields.logo:0:width": "96",
+    "ALL_ATTRIBUTES": true
+}
+
+### Old case oke
+POST http://localhost:3006/manage/api/client/search/saml20_sp
+Content-Type: application/json
+Accept: application/json
+
+{
+    "metaDataFields.logo:0:width": 96,
+    "ALL_ATTRIBUTES": true
+}
