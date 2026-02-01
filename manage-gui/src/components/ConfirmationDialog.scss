@@ -1,5 +1,5 @@
-@import "../stylesheets/vars.scss";
-@import "../stylesheets/buttons.scss";
+@use "../stylesheets/vars.scss";
+@use "../stylesheets/buttons.scss";
 
 .confirmation-dialog-overlay {
     position: fixed;
@@ -24,7 +24,7 @@
         box-shadow: 1px 1px 6px 0 rgb(95, 95, 95);
 
         .dialog-header {
-            background-color: $blue;
+            background-color: vars.$blue;
             padding: 15px;
             color: white;
             text-transform: uppercase;
@@ -32,7 +32,7 @@
             font-weight: bold;
 
             &.error {
-                background-color: $red;
+                background-color: vars.$red;
             }
         }
 

@@ -1,12 +1,12 @@
-@import "../stylesheets/vars.scss";
+@use "../stylesheets/vars.scss";
 
 .mod-not-found, .mod-server-error {
     padding: 50px;
     text-align: center;
     margin: 50px 100px;
     background-color: white;
-    box-shadow: 1px 4px 12px 1px $medium-grey;
-    border-radius: $br;
+    box-shadow: 1px 4px 12px 1px vars.$medium-grey;
+    border-radius: vars.$br;
 
     h1 {
         font-size: 200%;

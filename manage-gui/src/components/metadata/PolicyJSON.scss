@@ -1,4 +1,4 @@
-@import "../../stylesheets/vars.scss";
+@use "../../stylesheets/vars.scss";
 
 .metadata-policy-json {
     background-color: white;
@@ -28,7 +28,7 @@
                 box-shadow: 0 0 0 0 white;
             }
             70% {
-                box-shadow: 0 0 10px 8px lighten($green, 15%);
+                box-shadow: 0 0 10px 8px lighten(vars.$green, 15%);
             }
             100% {
                 box-shadow: 0 0 0 0 white;

@@ -1,5 +1,5 @@
-@import "../../stylesheets/vars.scss";
-@import "../../stylesheets/mixins.scss";
+@use "../../stylesheets/vars.scss";
+@use "../../stylesheets/mixins.scss";
 
 .accept-notes {
     display: flex;
@@ -48,14 +48,14 @@
     table.change-requests-table {
         width: 100%;
         table-layout: fixed;
-        border: 1px solid $light-grey;
-        border-radius: $br;
+        border: 1px solid vars.$light-grey;
+        border-radius: vars.$br;
         margin: 15px;
 
         thead th {
             text-align: left;
             padding: 10px;
-            background-color: $lightest-grey;
+            background-color: vars.$lightest-grey;
 
             &.created {
                 width: 15%;
@@ -85,7 +85,7 @@
 
         tbody {
             tr:nth-child(even) {
-                background-color: $lightest-grey;
+                background-color: vars.$lightest-grey;
             }
 
             td {

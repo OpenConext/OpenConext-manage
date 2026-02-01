@@ -1,4 +1,4 @@
-@import "../../stylesheets/vars.scss";
+@use "../../stylesheets/vars.scss";
 
 .organisation-entity {
   background-color: white;
@@ -25,10 +25,10 @@
 
         i {
           margin-left: 15px;
-          color: $lighter-grey;
+          color: vars.$lighter-grey;
 
           &.current, &.reverse {
-            color: $blue;
+            color: vars.$blue;
           }
         }
 
@@ -61,14 +61,14 @@
           }
 
           i.fa-trash-o {
-              color: $red;
+              color: vars.$red;
               font-size: 20px;
           }
       }
 
       tbody tr {
         &:nth-child(odd) {
-          background-color: $lightest-grey;
+          background-color: vars.$lightest-grey;
         }
       }
     }

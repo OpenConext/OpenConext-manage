@@ -1,4 +1,4 @@
-@import "../stylesheets/vars.scss";
+@use "../stylesheets/vars.scss";
 
 div.checkbox {
 
@@ -18,7 +18,7 @@ div.checkbox {
     input[type="checkbox"] + label span {
         font-size: 11px;
         background-color: white;
-        border: 1px solid $blue;
+        border: 1px solid vars.$blue;
         border-radius: 3px;
         padding: 1px 2px;
         margin: 2px 0;
@@ -31,30 +31,30 @@ div.checkbox {
     }
 
     input[type="checkbox"]:disabled + label span {
-        border: 1px solid darken($medium-grey, 5%);
-        background-color: $light-grey;
+        border: 1px solid darken(vars.$medium-grey, 5%);
+        background-color: vars.$light-grey;
         cursor: not-allowed;
     }
 
     input[type="checkbox"]:checked + label span {
-        border: 2px solid $blue;
+        border: 2px solid vars.$blue;
         border-radius: 2px;
         box-shadow: none;
         padding: 0;
 
         i {
-            background-color: $blue;
+            background-color: vars.$blue;
             color: white;
             padding: 3px 2px;
         }
     }
 
     input[type="checkbox"]:checked:disabled + label span {
-        border: 3px solid $medium-grey;
+        border: 3px solid vars.$medium-grey;
         cursor: default;
 
         i {
-            background-color: $medium-grey;
+            background-color: vars.$medium-grey;
         }
     }
 }

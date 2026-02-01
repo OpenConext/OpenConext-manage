@@ -1,9 +1,9 @@
-@import "../stylesheets/vars.scss";
-@import "../stylesheets/mixins.scss";
+@use "../stylesheets/vars.scss";
+@use "../stylesheets/mixins.scss";
 
 div.format-input {
     span {
-        color: $red;
+        color: vars.$red;
         display: block;
 
         i.fa {

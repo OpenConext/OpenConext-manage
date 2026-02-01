@@ -1,12 +1,12 @@
-@import "../../stylesheets/vars.scss";
+@use "../../stylesheets/vars.scss";
 
 span.Select-clear-zone {
     display: none;
 }
 
 div.Select-control {
-    border-radius: $br;
-    border: 1px solid $lighter-grey;
+    border-radius: vars.$br;
+    border: 1px solid vars.$lighter-grey;
     margin-top: 5px;
     display: table;
     border-spacing: 0;
@@ -18,7 +18,7 @@ div.Select-control {
 
 span.Select-arrow-zone {
     padding: 0 12px;
-    background-color: $light-grey;
+    background-color: vars.$light-grey;
 }
 
 .is-disabled {

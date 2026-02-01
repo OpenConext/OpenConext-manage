@@ -1,8 +1,8 @@
-@import "../stylesheets/vars.scss";
-@import "../stylesheets/mixins.scss";
+@use "../stylesheets/vars.scss";
+@use "../stylesheets/mixins.scss";
 
 .playground {
-    @include page;
+    @include mixins.page;
 
     section.tabs {
         display: flex;
@@ -13,15 +13,15 @@
             text-align: center;
             cursor: pointer;
             padding: 15px 25px;
-            background-color: $light-grey;
-            color: $dark-grey;
+            background-color: vars.$light-grey;
+            color: vars.$dark-grey;
             text-transform: uppercase;
             border-right: 1px solid white;
 
             &.active {
                 background-color: white;
-                color: $darker-blue;
-                border-top: 2px solid $blue;
+                color: vars.$darker-blue;
+                border-top: 2px solid vars.$blue;
                 border-right: none;
                 font-weight: bold;
             }
@@ -73,7 +73,7 @@
             right: 15px;
             top: 10px;
             font-size: 20px;
-            color: $blue;
+            color: vars.$blue;
         }
 
         div.select-metadata-type {
@@ -115,7 +115,7 @@
 
         tbody {
             tr:nth-child(odd) {
-                background-color: $lightest-grey;
+                background-color: vars.$lightest-grey;
             }
 
             td {
@@ -164,7 +164,7 @@
                     text-align: center;
 
                     i.fa-info-circle {
-                        color: $blue;
+                        color: vars.$blue;
                         font-size: 20px;
                     }
                 }
@@ -183,10 +183,10 @@
 
             i {
                 margin-left: 15px;
-                color: $lighter-grey;
+                color: vars.$lighter-grey;
 
                 &.current, &.reverse {
-                    color: $blue;
+                    color: vars.$blue;
                 }
             }
         }
@@ -195,7 +195,7 @@
     section.results {
         padding: 30px;
         background-color: white;
-        border: 1px solid $light-grey;
+        border: 1px solid vars.$light-grey;
 
         &.pushPreviewResults {
             font-family: "Courier New";
@@ -221,7 +221,7 @@
                 box-shadow: 0 0 0 0 white;
             }
             70% {
-                box-shadow: 0 0 10px 8px lighten($green, 15%);
+                box-shadow: 0 0 10px 8px lighten(vars.$green, 15%);
             }
             100% {
                 box-shadow: 0 0 0 0 white;
@@ -233,11 +233,11 @@
     section.deltas {
         p.push-result-info {
             font-size: 18px;
-            color: $green;
+            color: vars.$green;
             margin: 15px 0;
 
             &.differences {
-                color: $orange;
+                color: vars.$orange;
             }
         }
 
@@ -269,7 +269,7 @@
 
             tbody {
                 tr:nth-child(odd) {
-                    background-color: $lightest-grey;
+                    background-color: vars.$lightest-grey;
                 }
 
                 td {

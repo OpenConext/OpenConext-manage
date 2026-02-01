@@ -1,38 +1,38 @@
-@import "vars.scss";
+@use "vars.scss";
 
 @mixin card {
     background-color: white;
-    border-bottom-left-radius: $br;
-    border-bottom-right-radius: $br;
+    border-bottom-left-radius: vars.$br;
+    border-bottom-right-radius: vars.$br;
     padding: 0 15px;
-    border-top: 2px solid $blue;
+    border-top: 2px solid vars.$blue;
     box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.05);
 }
 
 @mixin page {
-    max-width: $medium;
+    max-width: vars.$medium;
     margin: 0 auto 15px auto;
     padding: 0 15px;
 }
 
 @mixin tool-tip {
-    box-shadow: 1px 2px 6px 1px $lighter-grey;
+    box-shadow: 1px 2px 6px 1px vars.$lighter-grey;
     padding: 10px !important;
     font-size: 14px !important;
     pointer-events: auto !important;
-    color: $dark-grey !important;
+    color: vars.$dark-grey !important;
     background-color: white !important;
     &.show {
         opacity: 1 !important;
     }
     max-width: 390px;
-    @include phone {
+    @include mixins.phone {
         max-width: 200px;
     }
 }
 
 @mixin info-icon {
-    color: $blue;
+    color: vars.$blue;
     margin-left: 5px;
     font-size: 16px;
     font-weight: bold;
@@ -45,8 +45,8 @@
     }
 
     div.Select-control {
-        border-radius: $br;
-        border: 1px solid $lighter-grey;
+        border-radius: vars.$br;
+        border: 1px solid vars.$lighter-grey;
         margin-top: 5px;
         display: table;
         border-spacing: 0;
@@ -58,7 +58,7 @@
 
     span.Select-arrow-zone {
         padding: 0 12px;
-        background-color: $light-grey;
+        background-color: vars.$light-grey;
     }
 
     span.select-option {
@@ -88,7 +88,7 @@
             box-shadow: 0 0 0 0 white;
         }
         70% {
-            box-shadow: 0 0 10px 8px lighten($blue, 15%);
+            box-shadow: 0 0 10px 8px lighten(vars.$blue, 15%);
         }
         100% {
             box-shadow: 0 0 0 0 white;
@@ -114,7 +114,7 @@
     line-height: 33px;
 
     &.error {
-        border: solid 1px $red;
+        border: solid 1px vars.$red;
     }
 }
 

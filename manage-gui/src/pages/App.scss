@@ -1,11 +1,12 @@
-@import "../stylesheets/application.scss";
+@use "../stylesheets/application.scss";
+@use "../stylesheets/vars.scss";
 
 .App {
     text-align: center;
 }
 
 .App-header {
-    background-color: $blue;
+    background-color: vars.$blue;
     height: 150px;
     padding: 20px;
     color: white;

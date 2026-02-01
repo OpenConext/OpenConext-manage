@@ -1,9 +1,9 @@
-@import "../stylesheets/mixins.scss";
-@import "../stylesheets/buttons.scss";
-@import "../stylesheets/vars.scss";
+@use "../stylesheets/mixins.scss";
+@use "../stylesheets/buttons.scss";
+@use "../stylesheets/vars.scss";
 
 .detail-metadata {
-    @include page;
+    @include mixins.page;
 
     section.top-detail {
         margin: 10px 0;
@@ -16,24 +16,24 @@
         }
 
         div.change-requests {
-            border: 1px solid $light-grey;
+            border: 1px solid vars.$light-grey;
             margin-top: 10px;
             padding: 10px;
             width: 100%;
             font-size: 16px;
             background-color: white;
-            border-radius: $br;
+            border-radius: vars.$br;
         }
 
         section.info {
             display: flex;
             flex-direction: column;
-            border: 1px solid $light-grey;
+            border: 1px solid vars.$light-grey;
             padding: 10px;
             width: 100%;
             font-size: 16px;
             background-color: white;
-            border-radius: $br;
+            border-radius: vars.$br;
 
             table {
                 width: 100%;
@@ -45,24 +45,24 @@
 
                     i.fa {
                         margin-left: 15px;
-                        color: $blue;
+                        color: vars.$blue;
                     }
 
                 }
 
                 td {
                     &.green {
-                        color: $dark-green;
+                        color: vars.$dark-green;
                         font-weight: bold;
                     }
 
                     &.orange {
-                        color: $orange;
+                        color: vars.$orange;
                         font-weight: bold;
                     }
 
                     &.blue {
-                        color: $blue;
+                        color: vars.$blue;
                         font-weight: bold;
                     }
 
@@ -83,7 +83,7 @@
 
             section.warning {
                 margin-top: 15px;
-                color: $orange;
+                color: vars.$orange;
 
                 i.fa {
                     margin-right: 15px;
@@ -97,7 +97,7 @@
             color: white;
             font-size: 16px;
             border-radius: 2px;
-            background: $orange;
+            background: vars.$orange;
         }
     }
 
@@ -111,26 +111,26 @@
             text-align: center;
             cursor: pointer;
             padding: 15px 25px;
-            background-color: $light-grey;
-            color: $dark-grey;
+            background-color: vars.$light-grey;
+            color: vars.$dark-grey;
             text-transform: uppercase;
             border-right: 1px solid white;
             position: relative;
 
             &.active {
                 background-color: white;
-                color: $darker-blue;
-                border-top: 2px solid $blue;
+                color: vars.$darker-blue;
+                border-top: 2px solid vars.$blue;
                 border-right: none;
                 font-weight: bold;
 
                 &.errors {
-                    border-top: 2px solid $red;
+                    border-top: 2px solid vars.$red;
                 }
             }
 
             &.errors {
-                color: $red;
+                color: vars.$red;
             }
 
             &:last-child {
@@ -147,7 +147,7 @@
 
     section.errors {
         margin-left: 10%;
-        background-color: $red;
+        background-color: vars.$red;
         color: white;
         border-radius: 5px;
         padding: 15px;
@@ -194,13 +194,13 @@
 
         input[type=text] {
             width: 75%;
-            border: 1px solid $lighter-grey;
+            border: 1px solid vars.$lighter-grey;
             padding: 6px;
-            border-radius: $br;
+            border-radius: vars.$br;
             font-size: 14px;
 
             &[disabled] {
-                background-color: $light-grey;
+                background-color: vars.$light-grey;
             }
         }
 
@@ -211,7 +211,7 @@
         em.error {
             display: inline-block;
             margin-top: 10px;
-            color: $red;
+            color: vars.$red;
         }
     }
 
@@ -234,14 +234,14 @@
             table.change-requests-table {
                 width: 100%;
                 table-layout: fixed;
-                border: 1px solid $light-grey;
-                border-radius: $br;
+                border: 1px solid vars.$light-grey;
+                border-radius: vars.$br;
                 margin: 15px;
 
                 thead th {
                     text-align: left;
                     padding: 10px 0;
-                    background-color: $lightest-grey;
+                    background-color: vars.$lightest-grey;
 
                     &.summary {
                         width: 20%;
@@ -278,7 +278,7 @@
                 tr {
                     i.fa {
                         margin-left: 15px;
-                        color: $blue;
+                        color: vars.$blue;
                     }
                 }
             }

@@ -1,8 +1,8 @@
-@import "../stylesheets/vars.scss";
-@import "../stylesheets/mixins.scss";
+@use "../stylesheets/vars.scss";
+@use "../stylesheets/mixins.scss";
 
 .api {
-    @include page;
+    @include mixins.page;
 
     div.checkbox {
         margin-top: 10px;
@@ -40,7 +40,7 @@
                         box-shadow: 0 0 0 0 white;
                     }
                     70% {
-                        box-shadow: 0 0 10px 8px lighten($green, 15%);
+                        box-shadow: 0 0 10px 8px lighten(vars.$green, 15%);
                     }
                     100% {
                         box-shadow: 0 0 0 0 white;
@@ -61,9 +61,9 @@
 
         input.fullTextSearch {
             width: 100%;
-            border: 1px solid $lighter-grey;
+            border: 1px solid vars.$lighter-grey;
             padding: 6px;
-            border-radius: $br;
+            border-radius: vars.$br;
             font-size: 14px;
         }
     }
@@ -83,7 +83,7 @@
     section.results {
         padding: 30px;
         background-color: white;
-        border: 1px solid $light-grey;
+        border: 1px solid vars.$light-grey;
     }
 
     section#search-results-printable, section#search-results-printable-json {
@@ -100,10 +100,10 @@
 
             i {
                 margin-left: 15px;
-                color: $lighter-grey;
+                color: vars.$lighter-grey;
 
                 &.current, &.reverse {
-                    color: $blue;
+                    color: vars.$blue;
                 }
             }
 
@@ -118,7 +118,7 @@
 
         tbody {
             tr:nth-child(odd) {
-                background-color: $lightest-grey;
+                background-color: vars.$lightest-grey;
             }
 
             td {
@@ -139,7 +139,7 @@
                     cursor: pointer;
 
                     i.fa {
-                        color: $red;
+                        color: vars.$red;
                         font-size: 20px;
                         text-align: center;
                         padding: 0 10px;
@@ -159,7 +159,7 @@
                     text-align: center;
 
                     i.fa-info-circle {
-                        color: $blue;
+                        color: vars.$blue;
                         font-size: 20px;
                     }
                 }
@@ -182,14 +182,14 @@
                     line-height: 33px;
 
                     &.error {
-                        border: solid 1px $red;
+                        border: solid 1px vars.$red;
                     }
                 }
 
                 span.error {
                     display: inline-block;
                     margin-top: 5px;
-                    color: $red;
+                    color: vars.$red;
                 }
             }
         }

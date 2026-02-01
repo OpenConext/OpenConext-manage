@@ -1,5 +1,5 @@
-@import "../stylesheets/vars.scss";
-@import "../stylesheets/media_queries.scss";
+@use "../stylesheets/vars.scss";
+@use "../stylesheets/media_queries.scss";
 
 .playground-policy-form {
     background-color: white;
@@ -12,7 +12,7 @@
         margin-top: 15px;
 
         .error {
-            color: $red;
+            color: vars.$red;
             margin-top: 5px;
         }
 
@@ -109,7 +109,7 @@
                     box-shadow: 0 0 0 0 white;
                 }
                 70% {
-                    box-shadow: 0 0 10px 8px lighten($green, 15%);
+                    box-shadow: 0 0 10px 8px lighten(vars.$green, 15%);
                 }
                 100% {
                     box-shadow: 0 0 0 0 white;

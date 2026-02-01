@@ -1,5 +1,5 @@
-@import "../../stylesheets/vars.scss";
-@import "../../stylesheets/media_queries.scss";
+@use "../../stylesheets/vars.scss";
+@use "../../stylesheets/media_queries.scss";
 
 .metadata-policy-form {
     background-color: white;
@@ -9,7 +9,7 @@
         margin-top: 15px;
 
         .error {
-            color: $red;
+            color: vars.$red;
             margin-top: 5px;
         }
 
@@ -46,7 +46,7 @@
                 width: 100%;
             }
 
-            @include desktop {
+            @include media_queries.desktop {
                 width: 100%;
             }
 
@@ -59,14 +59,14 @@
                 width: 100%;
             }
 
-            @include desktop {
+            @include media_queries.desktop {
                 width: 100%;
             }
 
         }
 
         .fa-info-circle {
-            color: $blue;
+            color: vars.$blue;
             margin-left: 5px;
         }
 
@@ -79,12 +79,12 @@
         border: 1px solid #d9d9d8;
         width: 50%;
 
-        @include desktop {
+        @include media_queries.desktop {
             width: 100%;
         }
 
         i.fa-trash-o {
-            color: $red;
+            color: vars.$red;
             font-size: 26px;
             margin: 4px 0 0 10px;
             cursor: pointer;
@@ -127,7 +127,7 @@
             width: 100%;
         }
 
-        @include desktop {
+        @include media_queries.desktop {
             width: 100%;
         }
 
@@ -187,7 +187,7 @@
     }
 
     .excluded-providers {
-        color: $orange;
+        color: vars.$orange;
         margin-top: 10px;
         display: flex;
         flex-direction: column;
