@@ -25,7 +25,7 @@ const QueryParameter = {
     hashToSearch: function (newSearchHash) {
         let search = "?";
         for (const key in newSearchHash) {
-            if (newSearchHash.hasOwnProperty(key)) {
+            if (newSearchHash.has(key)) {
                 for (let i = 0; i < newSearchHash[key].length; i++) {
                     search += search === "?" ? "" : "&";
                     search += encodeURIComponent(key) + "=" + encodeURIComponent(newSearchHash[key][i]);
@@ -45,6 +45,7 @@ export function replaceQueryParameter(windowLocationSearch, name, value) {
 }
 
 export function getParameterByName(name, windowLocationSearch) {
+    /* eslint-disable-next-line no-useless-escape */
     const replacedName = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
     const regex = new RegExp("[\\?&]" + replacedName + "=([^&#]*)"),
         results = regex.exec(windowLocationSearch);

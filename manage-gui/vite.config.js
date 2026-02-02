@@ -13,6 +13,7 @@ export default defineConfig({
     server: {
         port: 3006,
         open: true,
+        strictPort: true,
         proxy: {
             '/manage/api/client': {
                 target: 'http://localhost:8081',

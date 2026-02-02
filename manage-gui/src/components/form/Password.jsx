@@ -67,7 +67,7 @@ export default class Password extends React.PureComponent {
 
     render() {
         const {value, copied} = this.state;
-        const {hasFormatError, onChange, ...rest} = this.props;
+        const {...rest} = this.props;
 
         const disabled = this.state.disabled || this.props.disabled;
 

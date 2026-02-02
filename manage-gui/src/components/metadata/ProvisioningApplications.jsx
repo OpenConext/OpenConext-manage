@@ -109,7 +109,6 @@ export default class ProvisioningApplications extends React.Component {
     addApplication = applicationEntityId => {
         const {
             allowedApplications,
-            entityId,
             applications,
             onChange
         } = this.props;

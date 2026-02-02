@@ -107,7 +107,7 @@ class App extends React.PureComponent {
                                      close={errorDialogAction}/>
                     </div>
                     <Routes>
-                        <Route path="/" element={<Navigate replace to="/search"/>}/>/>
+                        <Route path="/" element={<Navigate replace to="/search"/>}/>
                         <Route path="search" element={<Search currentUser={currentUser}
                                                               configuration={configuration}/>}/>
                         <Route path="/metadata/:type/:id"

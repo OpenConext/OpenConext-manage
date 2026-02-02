@@ -14,7 +14,7 @@ import {
 } from "../api";
 import Select from "./Select";
 import {getNameForLanguage} from "../utils/Language";
-import {determineStatus, isEmpty, stop} from "../utils/Utils";
+import {isEmpty, stop} from "../utils/Utils";
 import PolicyAttributes from "./metadata/PolicyAttributes";
 import {setFlash} from "../utils/Flash";
 
@@ -23,7 +23,7 @@ const providerOptions = provider => ({
     label: getNameForLanguage(provider.data.metaDataFields)
 })
 
-export default function PolicyPlayground({}) {
+export default function PolicyPlayground() {
 
     const [loading, setLoading] = useState(false);
     const [initial, setInitial] = useState(true);
@@ -176,23 +176,6 @@ export default function PolicyPlayground({}) {
 
         );
     }
-
-    const renderStatus = () => {
-        const response = pdpResponse.Response[0];
-        const decision = response.Decision;
-        const statusCode = response.Status.StatusCode.Value;
-        const status = determineStatus(decision);
-        return (
-            <div className={"response-status " + status}>
-                <i className={"fa fa-" + status + " " + status}></i>
-                <section>
-                    <p className="status">{decision}</p>
-                    <p className="details">{"Status code: " + "'" + statusCode + "'"}</p>
-                </section>
-            </div>
-        );
-    }
-
 
     const invalid = !initial && (isEmpty(selectedServiceProvider) || isEmpty(selectedIdentityProvider) || isEmpty(attributes));
 

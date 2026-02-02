@@ -55,7 +55,7 @@ export default class ScopeSelection extends React.PureComponent {
     }
 
     render() {
-        const {onChange, value, ...rest} = this.props;
+        const {value, ...rest} = this.props;
         const {fetchValues, alreadyUsedScopes} = this.state;
 
         const selectedOptions = this.valuesToOptions(value);

@@ -16,7 +16,7 @@ export default class CheckBox extends React.PureComponent {
             name,
             value,
             readOnly = false,
-            onChange = e => this,
+            onChange = () => this,
             info,
             className = "checkbox"
         } = this.props;

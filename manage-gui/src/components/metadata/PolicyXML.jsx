@@ -5,7 +5,6 @@ import {parsePolicyXML} from "../../api";
 import Highlight from "react-highlight";
 import "highlight.js/styles/default.css";
 import format from "xml-formatter";
-import {copyToClip} from "../../utils/Utils";
 import I18n from "i18n-js";
 
 export default function PolicyXML({data}) {
@@ -19,7 +18,7 @@ export default function PolicyXML({data}) {
             setXML(format(res.xml, {indentation: "    "}));
             setLoading(false);
         })
-    }, []);
+    }, [data]);
 
     if (loading) {
         return;

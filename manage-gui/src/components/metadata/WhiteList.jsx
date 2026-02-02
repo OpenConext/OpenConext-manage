@@ -297,7 +297,7 @@ export default class WhiteList extends React.Component {
         );
     };
 
-    renderRemovedEntities = (removedWhiteListedEntities, whiteListing, type) => {
+    renderRemovedEntities = (removedWhiteListedEntities) => {
         return (
             <section className="removed-entities">
                 <p>{I18n.t("whitelisting.removedWhiteListedEntities")}</p>

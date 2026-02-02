@@ -851,10 +851,11 @@ class Detail extends React.PureComponent {
             case "import":
             case "export":
                 break;
-            case "connected_idps":
+            case "connected_idps": {
                 const connectedEntities = getConnectedEntities(whiteListing, allowedAll, allowedEntities, metaData.data.entityid, metaData.data.state);
                 args = {nbr: connectedEntities.length};
                 break;
+            }
             case "arp":
                 args = {info: (metaData.data.arp || {}).enabled ? "" : " (no)"};
                 break;
@@ -932,7 +933,6 @@ class Detail extends React.PureComponent {
         serviceProviders,
         policyAttributes,
         allowedLoas,
-        initial
     ) => {
         const configuration = this.props.configuration.find(
             conf => conf.title === this.state.type
@@ -1214,8 +1214,7 @@ class Detail extends React.PureComponent {
         );
     };
 
-    renderTopBanner = (name, organization, metaData, resourceServers, whiteListing, isNew, whiteListingLoaded,
-                       serviceProviders, identityProviders, policyProvidersLoaded) => {
+    renderTopBanner = (name, organization, metaData, resourceServers, whiteListing, isNew, whiteListingLoaded) => {
         const type = metaData.type;
         const {allowedall, state, allowedEntities, entityid} = metaData.data;
         const typeMetaData = I18n.t(`metadata.${type}_single`);
@@ -1477,7 +1476,7 @@ class Detail extends React.PureComponent {
                             </tr>
                             </thead>
                             <tbody>
-                            {requests.map(request => <tr>
+                            {requests.map(request => <tr key={request.id}>
                                 <td>{JSON.stringify(request.metaDataSummary)}</td>
                                 <td>{request.type}</td>
                                 <td>{request.pathUpdateType}</td>

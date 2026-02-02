@@ -41,7 +41,7 @@ class Revisions extends React.Component {
         this.initializeRevisionDetails(this.props.revisions);
     }
 
-    componentDidUpdate(prevProps, prevState, snapshot) {
+    componentDidUpdate(prevProps) {
         if (this.props.revisions.length !== prevProps.revisions.length) {
             this.initializeRevisionDetails(this.props.revisions);
         }

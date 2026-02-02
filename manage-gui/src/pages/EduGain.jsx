@@ -92,7 +92,7 @@ export default class EduGain extends React.PureComponent {
             default: {
                 const tab = resultType === "not_imported" ? "/import" : "";
                 return <div>
-                    <a href={`/metadata/saml20_sp/${sp.id}${tab}`} target="_blank"
+                    <a href={`/metadata/saml20_sp/${sp.id}${tab}`} target="_blank" rel="noopener noreferrer"
                        onClick={e => e.stopPropagation()}>
                         {sp.entityId}<i className="fa fa-external-link"/>
                     </a>

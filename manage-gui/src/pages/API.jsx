@@ -113,13 +113,13 @@ export default class API extends React.PureComponent {
         }), 250);
 
 
-    deleteSearchField = key => e => {
+    deleteSearchField = key => () => {
         const newSearchAttributes = {...this.state.searchAttributes};
         delete newSearchAttributes[key];
         this.setState({searchAttributes: newSearchAttributes, searchResults: undefined});
     };
 
-    deleteGlobalSearchField = key => e => {
+    deleteGlobalSearchField = key => () => {
         const newGlobalSearchAttributes = {...this.state.globalSearchAttributes};
         delete newGlobalSearchAttributes[key];
         this.setState({globalSearchAttributes: newGlobalSearchAttributes, searchResults: undefined});

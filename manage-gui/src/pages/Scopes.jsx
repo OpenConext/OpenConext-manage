@@ -140,7 +140,7 @@ export default class Scopes extends React.Component {
                 <p>{I18n.t("scopes.inUse", {action: inUseAction})}</p>
                 <ul>
                     {inUseEntities.map(entity => <li key={entity.id}>
-                        <a href={`/metadata/${entity.type}/${entity.id}`} target="_blank">{entity.entityid}</a>
+                        <a href={`/metadata/${entity.type}/${entity.id}`} target="_blank" rel="noopener noreferrer">{entity.entityid}</a>
                     </li>)}
                 </ul>
             </section>}

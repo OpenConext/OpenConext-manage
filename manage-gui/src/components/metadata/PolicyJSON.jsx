@@ -18,7 +18,7 @@ export default function PolicyJSON({data}) {
             setJSON(res);
             setLoading(false);
         })
-    }, []);
+    }, [data]);
 
     if (loading) {
         return;

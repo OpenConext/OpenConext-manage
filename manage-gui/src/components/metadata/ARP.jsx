@@ -207,7 +207,7 @@ export default class ARP extends React.Component {
         return I18n.t("arp.exact");
     };
 
-    renderMatchingRulesCell = (sources, key, attributeValues, guest) =>
+    renderMatchingRulesCell = (sources, key, attributeValues) =>
         <ul className="matching_rules">
             {attributeValues.map((attributeValue, index) =>
                 <li key={`${attributeValue.value}-${index}`}>
@@ -227,7 +227,7 @@ export default class ARP extends React.Component {
 
     addArpAttributeValue = key => () => this.setState({addInput: true, keyForNewInput: key});
 
-    renderActionsCell = (key, guest) =>
+    renderActionsCell = (key) =>
         <span onClick={this.addArpAttributeValue(key)}><i className="fa fa-plus"></i></span>;
 
 

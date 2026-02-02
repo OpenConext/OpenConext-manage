@@ -51,7 +51,7 @@ export default class Organisation extends React.PureComponent {
                 try {
                     await validateUniqueField("organisation", "name", value)
                     valid = true;
-                } catch (error) {
+                } catch {
                     valid = false;
                 }
             }
@@ -62,7 +62,7 @@ export default class Organisation extends React.PureComponent {
 
     render() {
         const {
-            organisation: {id, revision, data, notes},
+            organisation: {id, revision, data},
             guest,
             nameField,
             errors

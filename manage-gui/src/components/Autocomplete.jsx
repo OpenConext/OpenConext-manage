@@ -116,7 +116,7 @@ export default class Autocomplete extends React.PureComponent {
                     {isEmpty(item.data.notes) ? <span></span> :
                         <NotesTooltip identifier={item["_id"]} notes={item.data.notes}/>}
                 </td>
-                <td className="link"><a href={`/metadata/${item.type}/${item["_id"]}`} target="_blank"
+                <td className="link"><a href={`/metadata/${item.type}/${item["_id"]}`} target="_blank" rel="noopener noreferrer"
                                         onClick={e => e.stopPropagation()}>
                     <i className="fa fa-external-link"></i>
                 </a></td>
@@ -153,7 +153,7 @@ export default class Autocomplete extends React.PureComponent {
                     {isEmpty(item.data.notes) ? <span></span> :
                         <NotesTooltip identifier={item.data.entityid} notes={item.data.notes}/>}
                 </td>
-                <td className="link"><a href={`/metadata/${item.type}/${item["_id"]}`} target="_blank"
+                <td className="link"><a href={`/metadata/${item.type}/${item["_id"]}`} target="_blank" rel="noopener noreferrer"
                                         onClick={e => e.stopPropagation()}>
                     <i className="fa fa-external-link"></i>
                 </a></td>

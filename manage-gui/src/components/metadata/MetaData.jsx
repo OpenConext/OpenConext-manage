@@ -106,7 +106,7 @@ export default class MetaData extends React.Component {
                 return <Boolean {...defaultProps} />;
             case "number":
                 return <Number {...defaultProps} />;
-            case "array":
+            case "array": {
                 if (key === "scopes") {
                     const {isNewEntity, originalEntityId} = this.props;
                     return <ScopeSelection {...defaultProps} isNewEntity={isNewEntity}
@@ -129,6 +129,7 @@ export default class MetaData extends React.Component {
                         onBlur={value => this.validateFormat(key, value, itemFormat)}
                     />
                 );
+            }
             case "string":
                 if (keyConfiguration.enum) {
                     return (

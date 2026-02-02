@@ -8,7 +8,7 @@ import logoOpenConext from "../images/open-conext-logo.png";
 import {logOut} from "../api";
 import "./Header.scss";
 import {isEmpty} from "../utils/Utils";
-import {getInitialLanguage, getLanguage, setLanguage} from "../utils/Language";
+import {getInitialLanguage, setLanguage} from "../utils/Language";
 
 export default class Header extends React.PureComponent {
 
