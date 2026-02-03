@@ -35,7 +35,7 @@ export default class Strings extends React.PureComponent {
                 />
                 {hasFormatError && (
                     <span>
-            <i className="fa fa-warning"/>
+            <i className="fas fa-warning"/>
                         {this.renderErrorMessage()}
           </span>
                 )}

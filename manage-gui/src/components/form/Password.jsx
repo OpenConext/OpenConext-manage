@@ -58,7 +58,7 @@ export default class Password extends React.PureComponent {
                 <span className="separator"/>
 
                 <div className="password-icon" onClick={() => this.handleGenerate()}>
-                    {this.renderIcon("key-icon", "fa fa-key key", "key")}
+                    {this.renderIcon("key-icon", "fas fa-key key", "key")}
                 </div>
 
             </div>

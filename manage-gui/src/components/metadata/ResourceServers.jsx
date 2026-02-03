@@ -172,7 +172,7 @@ export default class ResourceServers extends React.Component {
                       this.removeResourceServer(entity);
                   }}
               >
-                <i className="fa fa-trash-o"/>
+                <i className="fas fa-trash-o"/>
               </a>
             </span>
                     )}
@@ -206,12 +206,12 @@ export default class ResourceServers extends React.Component {
         const icon = name => {
             return name === sorted ? (
                 reverse ? (
-                    <i className="fa fa-arrow-up reverse"/>
+                    <i className="fas fa-arrow-up reverse"/>
                 ) : (
-                    <i className="fa fa-arrow-down current"/>
+                    <i className="fas fa-arrow-down current"/>
                 )
             ) : (
-                <i className="fa fa-arrow-down"/>
+                <i className="fas fa-arrow-down"/>
             );
         };
         const th = name => (
@@ -280,7 +280,7 @@ export default class ResourceServers extends React.Component {
               className={`button green ${copiedToClipboardClassName}`}
               onClick={this.copyToClipboard}>
             {I18n.t("clipboard.copy")}
-              <i className="fa fa-clone"/>
+              <i className="fas fa-clone"/>
           </span>
                 </div>
                 <div className="resource-servers-info">
@@ -308,7 +308,7 @@ export default class ResourceServers extends React.Component {
                         onChange={this.search}
                         value={query}
                     />
-                    <i className="fa fa-search"/>
+                    <i className="fas fa-search"/>
                 </div>
                 {enrichedResourceServersFiltered.length > 0 &&
                 this.renderAllowedEntitiesTable(

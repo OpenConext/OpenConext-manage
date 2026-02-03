@@ -94,9 +94,9 @@ export default class Activity extends React.Component {
     renderTable = (filteredActivity) => {
         const {sorted, reverse} = this.state;
         const icon = name => {
-            return name === sorted ? (reverse ? <i className="fa fa-arrow-up reverse"></i> :
-                    <i className="fa fa-arrow-down current"></i>)
-                : <i className="fa fa-arrow-down"></i>;
+            return name === sorted ? (reverse ? <i className="fas fa-arrow-up reverse"></i> :
+                    <i className="fas fa-arrow-down current"></i>)
+                : <i className="fas fa-arrow-down"></i>;
         };
         const th = name =>
             <th key={name} className={name}
@@ -181,7 +181,7 @@ export default class Activity extends React.Component {
                         value={limit}
                         isSearchable={false}/>
                 <span className="button green" onClick={this.refreshActivities}>
-          {I18n.t("activity.refresh")}<i className="fa fa-refresh"/>
+          {I18n.t("activity.refresh")}<i className="fas fa-refresh"/>
         </span>
             </section>
             <section className="search">
@@ -191,10 +191,10 @@ export default class Activity extends React.Component {
                            type="text"
                            onChange={this.search}
                            value={query}/>
-                    <i className="fa fa-search"/>
+                    <i className="fas fa-search"/>
                 </div>
                 <span className={`button green ${copiedToClipboardClassName}`} onClick={this.copyToClipboard}>
-                            {I18n.t("clipboard.copy")}<i className="fa fa-clone"/>
+                            {I18n.t("clipboard.copy")}<i className="fas fa-clone"/>
                         </span>
             </section>
         </div>

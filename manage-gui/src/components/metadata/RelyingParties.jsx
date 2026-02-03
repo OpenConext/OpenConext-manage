@@ -104,9 +104,9 @@ export default class RelyingParties extends React.Component {
     renderConnectedRPTable = (entries) => {
         const {sorted, reverse} = this.state;
         const icon = name => {
-            return name === sorted ? (reverse ? <i className="fa fa-arrow-up reverse"></i> :
-                    <i className="fa fa-arrow-down current"></i>)
-                : <i className="fa fa-arrow-down"></i>;
+            return name === sorted ? (reverse ? <i className="fas fa-arrow-up reverse"></i> :
+                    <i className="fas fa-arrow-down current"></i>)
+                : <i className="fas fa-arrow-down"></i>;
         };
         const th = name =>
             <th key={name} className={name}
@@ -144,10 +144,10 @@ export default class RelyingParties extends React.Component {
                                type="text"
                                onChange={this.search}
                                value={query}/>
-                        <i className="fa fa-search"></i>
+                        <i className="fas fa-search"></i>
                     </div>
                     <span className={`button green ${copiedToClipboardClassName}`} onClick={this.copyToClipboard}>
-                            {I18n.t("clipboard.copy")}<i className="fa fa-clone"></i>
+                            {I18n.t("clipboard.copy")}<i className="fas fa-clone"></i>
                         </span>
                 </section>}
                 {connectedEntities.length > 0 && this.renderConnectedRPTable(filteredConnectedEntities)}

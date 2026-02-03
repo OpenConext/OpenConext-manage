@@ -164,7 +164,7 @@ export default class ConsentDisabling extends React.Component {
                       this.removeDisableConsent(entity);
                   }}
               >
-                <i className="fa fa-trash-o"/>
+                <i className="fas fa-trash-o"/>
               </a>
             </span>
                     )}
@@ -228,14 +228,14 @@ export default class ConsentDisabling extends React.Component {
         const {sorted, reverse} = this.state;
         const icon = name => {
             if (!(name === sorted)) {
-                return <i className="fa fa-arrow-down"/>;
+                return <i className="fas fa-arrow-down"/>;
             }
 
             if (reverse) {
-                return <i className="fa fa-arrow-up reverse"/>;
+                return <i className="fas fa-arrow-up reverse"/>;
             }
 
-            return <i className="fa fa-arrow-down current"/>;
+            return <i className="fas fa-arrow-down current"/>;
         };
         const th = name => (
             <th

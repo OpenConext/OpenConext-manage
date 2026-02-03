@@ -276,7 +276,7 @@ export default function PolicyPlayground() {
                     <div className="copy-container">
                         <span className={`button green ${copiedToClipboardClassName}`}
                               onClick={() => copyToClipboard(codeValue)}>
-                                    {I18n.t("clipboard.copy")}<i className="fa fa-clone"/>
+                                    {I18n.t("clipboard.copy")}<i className="fas fa-clone"/>
                         </span>
                     </div>
                 </div>

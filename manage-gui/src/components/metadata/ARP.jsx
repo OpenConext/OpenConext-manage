@@ -228,7 +228,7 @@ export default class ARP extends React.Component {
     addArpAttributeValue = key => () => this.setState({addInput: true, keyForNewInput: key});
 
     renderActionsCell = (key) =>
-        <span onClick={this.addArpAttributeValue(key)}><i className="fa fa-plus"></i></span>;
+        <span onClick={this.addArpAttributeValue(key)}><i className="fas fa-plus"></i></span>;
 
 
     renderAttributeRow = (sources, attributeKey, attributeValues, configurationAttributes, arpAttributes, guest) => {
@@ -252,7 +252,7 @@ export default class ARP extends React.Component {
             <tr>
                 <td className={`name ${deprecated ? "deprecated" : ""}`}>
                     <span className="display-name">{displayKey}</span>
-                    <i className="fa fa-info-circle" data-for={reactTooltipId} data-tip></i>
+                    <i className="fas fa-info-circle" data-for={reactTooltipId} data-tip></i>
                     <ReactTooltip id={reactTooltipId} type="info" class="tool-tip" effect="solid" place="right">
                         <span>{attributeKey}</span>
                     </ReactTooltip>
@@ -367,7 +367,7 @@ export default class ARP extends React.Component {
                               readOnly={guest}
                               info={I18n.t("arp.arp_enabled")}/>
                     <span className={`button green ${copiedToClipboardClassName}`} onClick={this.copyToClipboard}>
-                        {I18n.t("clipboard.copy")}<i className="fa fa-clone"></i>
+                        {I18n.t("clipboard.copy")}<i className="fas fa-clone"></i>
                     </span>
                 </section>
                 {(!isEmpty(arp.motivation) || !isEmpty(arp.profile)) &&

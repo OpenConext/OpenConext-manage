@@ -110,9 +110,9 @@ class Policies extends React.Component {
     renderPolicyTable = (entries) => {
         const {sorted, reverse} = this.state;
         const icon = name => {
-            return name === sorted ? (reverse ? <i className="fa fa-arrow-up reverse"></i> :
-                    <i className="fa fa-arrow-down current"></i>)
-                : <i className="fa fa-arrow-down"></i>;
+            return name === sorted ? (reverse ? <i className="fas fa-arrow-up reverse"></i> :
+                    <i className="fas fa-arrow-down current"></i>)
+                : <i className="fas fa-arrow-down"></i>;
         };
         const th = name =>
             <th key={name} className={name}
@@ -159,20 +159,20 @@ class Policies extends React.Component {
                                type="text"
                                onChange={this.search}
                                value={query}/>
-                        <i className="fa fa-search"></i>
+                        <i className="fas fa-search"></i>
                     </div>
                     <span className={`button green ${copiedToClipboardClassName}`} onClick={this.copyToClipboard}>
-                            {I18n.t("clipboard.copy")}<i className="fa fa-clone"></i>
+                            {I18n.t("clipboard.copy")}<i className="fas fa-clone"></i>
                         </span>
                     <a className="new button green" onClick={this.newMetaData}>
-                        {I18n.t("metadata.newPolicy")}<i className="fa fa-plus"></i>
+                        {I18n.t("metadata.newPolicy")}<i className="fas fa-plus"></i>
                     </a>
                 </section>}
                 {policies.length === 0 &&
                     <div className="no-policies">
                         <h3>{I18n.t("policies.noPolicies", {name: name})}</h3>
                         <a className="new button green" onClick={this.newMetaData}>
-                            {I18n.t("metadata.newPolicy")}<i className="fa fa-plus"></i>
+                            {I18n.t("metadata.newPolicy")}<i className="fas fa-plus"></i>
                         </a>
                     </div>}
                 {policies.length > 0 && this.renderPolicyTable(filteredPolicies)}

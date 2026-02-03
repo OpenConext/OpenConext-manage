@@ -94,7 +94,7 @@ export default class EduGain extends React.PureComponent {
                 return <div>
                     <a href={`/metadata/saml20_sp/${sp.id}${tab}`} target="_blank" rel="noopener noreferrer"
                        onClick={e => e.stopPropagation()}>
-                        {sp.entityId}<i className="fa fa-external-link"/>
+                        {sp.entityId}<i className="fas fa-external-link"/>
                     </a>
                 </div>;
             }
@@ -123,7 +123,7 @@ export default class EduGain extends React.PureComponent {
                         onClick={this.toggleResultsCollapsed(k)}>
                         <td>{I18n.t(`edugain.results.${k}`)}
                             <span>
-                            <i className="fa fa-info-circle" data-for={k} data-tip></i>
+                            <i className="fas fa-info-circle" data-for={k} data-tip></i>
                                 <ReactTooltip id={k} type="info" class="tool-tip" effect="solid" place="right">
                                     <span>{I18n.t(`edugain.results.${k}_info`)}</span>
                                 </ReactTooltip>
@@ -152,7 +152,7 @@ export default class EduGain extends React.PureComponent {
                 <input type="text" value={this.state.url}
                        onChange={e => this.setState({url: e.target.value})}/>
                 <a onClick={this.doImportFeed} className={`button large ${loading ? "disabled grey" : "green"}`}>
-                    {I18n.t("import.fetch")}<i className="fa fa-cloud-download"></i></a>
+                    {I18n.t("import.fetch")}<i className="fas fa-cloud-download"></i></a>
             </section>
             {!isEmpty(results) && this.renderResults(results)}
         </section>;
@@ -169,7 +169,7 @@ export default class EduGain extends React.PureComponent {
             set to <span className="code">true</span>. This flag is set during the import of the metadata feed.
         </p>
         <a onClick={this.deleteImport} className={`button large ${deleting ? "disabled grey" : "red"}`}>
-            {I18n.t("edugain.delete")}<i className="fa fa-trash"></i></a>
+            {I18n.t("edugain.delete")}<i className="fas fa-trash"></i></a>
     </section>;
 
     renderSelectedTab = (selectedTab, results, loading, deleting, count) => {

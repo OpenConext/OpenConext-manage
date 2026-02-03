@@ -85,7 +85,7 @@ export default class Organisation extends React.PureComponent {
                                 />
                                 {hasErrorName && (
                                     <span>
-                                        <i className="fa fa-warning"/>
+                                        <i className="fas fa-warning"/>
                                             {I18n.t("organisation.name.notUnique")}
                                     </span>
                                 )}

@@ -910,8 +910,8 @@ class Detail extends React.PureComponent {
                 className={`${className} ${hasErrors} ${hasChanges}`}
                 onClick={this.switchTab(tab)}>
         {this.renderTabTitle(tab, metaData, resourceServers, whiteListing, revisions, requests, relyingParties, policies)}
-                {hasErrors && <i className="fa fa-warning"/>}
-                {!hasErrors && tabChanges && <i className="fa fa-asterisk"/>}
+                {hasErrors && <i className="fas fa-warning"/>}
+                {!hasErrors && tabChanges && <i className="fas fa-asterisk"/>}
       </span>
         );
     };
@@ -1251,7 +1251,7 @@ class Detail extends React.PureComponent {
                             {I18n.t("topBannerDetails.reviewState")}
                             {excludedFromPush &&
                                 <span className="info">
-                                    <i className="fa fa-info-circle" data-for="push-excluded-tooltip" data-tip/>
+                                    <i className="fas fa-info-circle" data-for="push-excluded-tooltip" data-tip/>
                                     <ReactTooltip id="push-excluded-tooltip" type="info" class="tool-tip" effect="solid">
                                         <span
                                             dangerouslySetInnerHTML={{__html: I18n.t("topBannerDetails.pushExcludedTooltip")}}/>
@@ -1262,7 +1262,7 @@ class Detail extends React.PureComponent {
                             {I18n.t("topBannerDetails.reviewState")}
                             {!isActive &&
                                 <span className="info">
-                                    <i className="fa fa-info-circle" data-for="not-active-tooltip" data-tip/>
+                                    <i className="fas fa-info-circle" data-for="not-active-tooltip" data-tip/>
                                     <ReactTooltip id="not-active-tooltip" type="info" class="tool-tip" effect="solid">
                                         <span dangerouslySetInnerHTML={{__html: I18n.t("topBannerDetails.notActiveTooltip")}}/>
                                     </ReactTooltip>
@@ -1271,7 +1271,7 @@ class Detail extends React.PureComponent {
                         {importedFromEdugain && <th>{I18n.t("topBannerDetails.edugainImported")}</th>}
                         {importedFromEdugain && <th>
                             {I18n.t("topBannerDetails.pushEnabled")}
-                            <i className="fa fa-info-circle" data-for="push-enabled-tooltip" data-tip/>
+                            <i className="fas fa-info-circle" data-for="push-enabled-tooltip" data-tip/>
                             <ReactTooltip id="push-enabled-tooltip" type="info" class="tool-tip" effect="solid">
                                 <span
                                     dangerouslySetInnerHTML={{__html: I18n.t("topBannerDetails.pushEnabledTooltip")}}/>
@@ -1301,7 +1301,7 @@ class Detail extends React.PureComponent {
                         && !isPolicy && (isOrganisation && isEmpty(this.state.connectedEntities))
                         && !isNew && whiteListingLoaded) &&
                     <section className="warning">
-                        <i className="fa fa-exclamation-circle"></i>
+                        <i className="fas fa-exclamation-circle"></i>
                         <span>{I18n.t("topBannerDetails.unknownEntitiesConnected", {
                             type: typeMetaData,
                             entities: nonExistentAllowedEntities.join(", ")
@@ -1310,12 +1310,12 @@ class Detail extends React.PureComponent {
                 {(isEmpty(connectedEntities) && !isSingleTenantTemplate && !isNew && !isRs
                         && whiteListingLoaded && !isProvisioning) && !isPolicy && !isOrganisation &&
                     <section className="warning">
-                        <i className="fa fa-exclamation-circle"></i>
+                        <i className="fas fa-exclamation-circle"></i>
                         <span>{I18n.t("topBannerDetails.noEntitiesConnected", {type: typeMetaData})}</span>
                     </section>}
                 {(isEmpty(connectedApplications) && !isNew && whiteListingLoaded && isProvisioning) &&
                     <section className="warning">
-                        <i className="fa fa-exclamation-circle"></i>
+                        <i className="fas fa-exclamation-circle"></i>
                         <span>{I18n.t("topBannerDetails.noApplicationsConnected", {type: typeMetaData})}</span>
                     </section>}
             </section>

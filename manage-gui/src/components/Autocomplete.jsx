@@ -118,7 +118,7 @@ export default class Autocomplete extends React.PureComponent {
                 </td>
                 <td className="link"><a href={`/metadata/${item.type}/${item["_id"]}`} target="_blank" rel="noopener noreferrer"
                                         onClick={e => e.stopPropagation()}>
-                    <i className="fa fa-external-link"></i>
+                    <i className="fas fa-external-link"></i>
                 </a></td>
             </tr>
         );
@@ -155,7 +155,7 @@ export default class Autocomplete extends React.PureComponent {
                 </td>
                 <td className="link"><a href={`/metadata/${item.type}/${item["_id"]}`} target="_blank" rel="noopener noreferrer"
                                         onClick={e => e.stopPropagation()}>
-                    <i className="fa fa-external-link"></i>
+                    <i className="fas fa-external-link"></i>
                 </a></td>
             </tr>
         );

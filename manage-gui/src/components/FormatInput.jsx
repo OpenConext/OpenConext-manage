@@ -63,7 +63,7 @@ export default class FormatInput extends React.PureComponent {
                     disabled={readOnly}
                 />
                 {error &&
-                <span><i className="fa fa-warning"></i>{errorMessage}</span>
+                <span><i className="fas fa-warning"></i>{errorMessage}</span>
                 }
             </div>
         )

@@ -100,7 +100,7 @@ export default class Connection extends React.PureComponent {
                                 {this.state.organisationid
                                     && (
                                         <Link to={`/metadata/organisation/${this.state.organisationid}`} target="_blank">
-                                            <span><i className="fa fa-external-link" aria-hidden="true" /></span>
+                                            <span><i className="fas fa-external-link" aria-hidden="true" /></span>
                                         </Link>
                                     )
                                 }

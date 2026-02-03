@@ -130,7 +130,7 @@ class Search extends React.PureComponent {
                                onChange={this.search}
                                value={query}
                                onKeyDown={this.onSearchKeyDown}/>
-                        <i className="fa fa-search"></i>
+                        <i className="fas fa-search"></i>
                         {showAutoCompletes && <Autocomplete suggestions={suggestions}
                                                             query={query}
                                                             type={selectedTab}
@@ -143,7 +143,7 @@ class Search extends React.PureComponent {
                     </div>
                     <a className={`new button ${isReadOnly(selectedTab) ? "grey disabled" : "green"}`}
                        onClick={this.newMetaData}>
-                        {I18n.t("metadata.new")}<i className="fa fa-plus"></i>
+                        {I18n.t("metadata.new")}<i className="fas fa-plus"></i>
                     </a>
                 </section>
             </div>
