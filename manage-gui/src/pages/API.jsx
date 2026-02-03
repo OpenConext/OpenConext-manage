@@ -9,12 +9,13 @@ import "./API.scss";
 import debounce from "lodash.debounce";
 import {CheckBox, NotesTooltip, Select} from '../components'
 import {SelectMetaDataType, SelectNewEntityAttribute, SelectNewMetaDataField} from "../components/metadata"
+import {getNameForLanguage} from "../utils/Language";
 import {getInitialLanguage, getNameForLanguage} from "../utils/Language";
 import {flattenArrayOfObjects} from "../utils/FlattenObjectEntries";
 
 const papaparseConfig = {
     quotes: true,
-    escapeChar: '\\'
+    escapeChar: '"'
 }
 
 export default class API extends React.PureComponent {
@@ -219,6 +220,48 @@ export default class API extends React.PureComponent {
         }
     };
 
+    getSearchValue = (headerName, searchResult, index) => {
+        switch (headerName) {
+            case "count":
+                return index + 1;
+            case "status":
+                return I18n.t(`metadata.${searchResult.data.state}`)
+            case "name":
+                return getNameForLanguage(searchResult.data.metaDataFields)
+            case "entityid":
+                return searchResult.data.entityid
+            case "notes":
+                return searchResult.data.notes
+            default:
+                console.error(`Unknown headerName: ${headerName}`)
+                return ""
+        }
+    }
+    getSearchAttributeValue = (headerName, searchResult) =>
+        (searchResult.data.metaDataFields[headerName] ?? "").toString();
+    getGlobalSearchAttributeValue = (headerName, searchResult) => {
+        //split by dot results in too many parts for
+        // "arp.attributes.urn:mace:terena.org:attribute-def:schacHomeOrganization"
+
+        let attr = headerName;
+        const arpAttribute = attr.startsWith("arp.attributes");
+        if (arpAttribute) {
+            attr = "arp.attributes." + attr.substring("arp.attributes.".length).replace(/\./g, "@")
+        }
+        let parts = attr.split(".");
+        if (arpAttribute) {
+            parts = parts.map(p => p.replace(/@/g, "."));
+        }
+        let last = parts.pop();
+        let ref = searchResult.data;
+        parts.forEach(part => ref = ref ? ref[part] : {});
+        if (ref) {
+            const val = Array.isArray(ref) ? ref.map(x => x[last]) : ref[last];
+            return JSON.stringify(val)
+        }
+        return "";
+    }
+
     renderSearchTable = (searchAttributes, errorAttributes) => {
         return (
             <table className="metadata-search-table">
@@ -385,30 +428,11 @@ export default class API extends React.PureComponent {
                                 {isEmpty(entity.data.notes) ? <span></span> :
                                     <NotesTooltip identifier={entity.data.entityid} notes={entity.data.notes}/>}
                             </td>
-                            {Object.keys(searchAttributes).map(attr => {
-                                return <td key={attr}>{"" + entity.data.metaDataFields[attr]}</td>
-                            })}
-                            {Object.keys(globalSearchAttributes).map(attr => {
-                                    //split by dot results in too many parts for
-                                    // "arp.attributes.urn:mace:terena.org:attribute-def:schacHomeOrganization"
-
-                                    const arpAttribute = attr.startsWith("arp.attributes");
-                                    if (arpAttribute) {
-                                        attr = "arp.attributes." + attr.substring("arp.attributes.".length).replace(/\./g, "@")
-                                    }
-                                    let parts = attr.split(".");
-                                    if (arpAttribute) {
-                                        parts = parts.map(p => p.replace(/@/g, "."));
-                                    }
-                                    let last = parts.pop();
-                                    let ref = entity.data;
-                                    parts.forEach(part => ref = ref ? ref[part] : {});
-                                    if (ref) {
-                                        const val = Array.isArray(ref) ? ref.map(x => x[last]) : ref[last];
-                                        return <td key={attr}>{JSON.stringify(val)}</td>
-                                    }
-                                    return <td key={attr}></td>
-                                }
+                            {Object.keys(searchAttributes).map(attr =>
+                                <td key={attr}>{"" + this.getSearchAttributeValue(attr, entity)}</td>
+                            )}
+                            {Object.keys(globalSearchAttributes).map(attr =>
+                                <td key={attr}>{this.getGlobalSearchAttributeValue(attr, entity)}</td>
                             )}
                         </tr>)}
                     </tbody>
@@ -417,13 +441,31 @@ export default class API extends React.PureComponent {
             </section>);
     };
 
+    renderSearchResultsTablePrintable = (searchResults, searchAttributes, globalSearchAttributes, status) => {
+        const searchHeaders = ["count", "status", "name", "entityid", "notes"]
+        const searchAttributesHeaders = Object.keys(searchAttributes)
+        const globalSearchAttributesHeaders = Object.keys(globalSearchAttributes)
+        searchResults = status === "all" ? searchResults : searchResults.filter(entity => entity.data.state === status);
 
-    renderSearchResultsTablePrintable = (searchResults) => {
-        const flattenedSearchResults = flattenArrayOfObjects(searchResults);
-        const csvResult = Papaparse.unparse({
-            fields: Object.keys(flattenedSearchResults[0]),
-            data: flattenedSearchResults.map((row) => Object.values(row))
-        }, papaparseConfig);
+        const csvInputEntries = searchResults.map((searchResult, index) => {
+            const searchEntries = searchHeaders.map((headerName) => {
+                const value = this.getSearchValue(headerName, searchResult, index);
+                return [headerName, value]
+            })
+            const searchAttributeEntries = searchAttributesHeaders.map((headerName) => {
+                const value = this.getSearchAttributeValue(headerName, searchResult)
+                return [headerName, value]
+            })
+            const globalSearchAttributeEntries = globalSearchAttributesHeaders.map((headerName) => {
+                const value = this.getGlobalSearchAttributeValue(headerName, searchResult)
+                return [headerName, value]
+            })
+
+            return [...searchEntries, ...searchAttributeEntries, ...globalSearchAttributeEntries]
+
+        })
+        const csvInput = csvInputEntries.map(Object.fromEntries)
+        const csvResult = Papaparse.unparse(csvInput, papaparseConfig);
 
         return (
             <section id={"search-results-printable"}>
@@ -508,7 +550,7 @@ export default class API extends React.PureComponent {
                                         isSearchable={false}
                                         className="status-select"/>}
                 {showResults && this.renderSearchResultsTable(searchResults, selectedType, searchAttributes, globalSearchAttributes, status, fullTextSearch)}
-                {showResults && this.renderSearchResultsTablePrintable(searchResults)}
+                {showResults && this.renderSearchResultsTablePrintable(searchResults, searchAttributes, globalSearchAttributes, status)}
                 {showResults && this.renderSearchResultsJSONPrintable(searchResults)}
 
             </section>
