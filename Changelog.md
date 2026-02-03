@@ -18,6 +18,7 @@ Starting from version 9.0.0, we note changes and new features per release in thi
 - Searching in API for integer-in-string doesn't work ([#102](https://github.com/OpenConext/OpenConext-manage/issues/102))
 - Full text searching in API leads to unexpected error if " is present in search string ([#487](https://github.com/OpenConext/OpenConext-manage/issues/487))
 - Migrate from react-scripts to vite ([#604](https://github.com/OpenConext/OpenConext-manage/issues/604))
+- Corporate proxy configuration is not respected when retrieving pdp xacml ([#598](https://github.com/OpenConext/OpenConext-manage/issues/598))
 
 ## 9.6.0
 - [#562](https://github.com/OpenConext/OpenConext-manage/issues/562)
