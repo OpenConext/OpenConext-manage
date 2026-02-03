@@ -83,7 +83,7 @@ export default class Navigation extends React.PureComponent {
         return (
             <a className={`push button ${loading ? "grey disabled" : "white"}`}
                onClick={action}>{I18n.t("playground.runPush")}
-                <i className="fa fa-refresh"></i>
+                <i className="fas fa-refresh"></i>
             </a>
         );
     };

@@ -18,7 +18,7 @@ export default function PolicyRules({
                 <div className="checkbox-container">
                     <label htmlFor={andName}>
                         <span>{I18n.t("policies.and")}</span>
-                        <i className="fa fa-info-circle"
+                        <i className="fas fa-info-circle"
                            data-for={`${andName}-tooltip`}
                            data-tip/>
                         <ReactTooltip id={`${andName}-tooltip`}
@@ -38,7 +38,7 @@ export default function PolicyRules({
                 <div className="checkbox-container adjustment">
                     <label htmlFor={orName}>
                         <span>{I18n.t("policies.or")}</span>
-                        <i className="fa fa-info-circle"
+                        <i className="fas fa-info-circle"
                            data-for={`${orName}-tooltip`}
                            data-tip/>
                         <ReactTooltip id={`${orName}-tooltip`}

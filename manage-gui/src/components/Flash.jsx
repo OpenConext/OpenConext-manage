@@ -36,7 +36,7 @@ export default class Flash extends React.PureComponent {
                 <div className="message-container">
                     {messages.map((message, index) => <p key={index}>{message}</p>)}
                     <a className="close" onClick={clearFlash}>
-                        <i className="fa fa-remove"></i>
+                        <i className="fas fa-remove"></i>
                     </a>
                 </div>
             </div>

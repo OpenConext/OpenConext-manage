@@ -112,13 +112,13 @@ export default class API extends React.PureComponent {
         }), 250);
 
 
-    deleteSearchField = key => e => {
+    deleteSearchField = key => () => {
         const newSearchAttributes = {...this.state.searchAttributes};
         delete newSearchAttributes[key];
         this.setState({searchAttributes: newSearchAttributes, searchResults: undefined});
     };
 
-    deleteGlobalSearchField = key => e => {
+    deleteGlobalSearchField = key => () => {
         const newGlobalSearchAttributes = {...this.state.globalSearchAttributes};
         delete newGlobalSearchAttributes[key];
         this.setState({globalSearchAttributes: newGlobalSearchAttributes, searchResults: undefined});
@@ -278,7 +278,7 @@ export default class API extends React.PureComponent {
                                     {error && <span className="error">{I18n.t("playground.error")}</span>}
                                 </td>
                                 <td className="trash">
-                                    <span onClick={this.deleteSearchField(key)}><i className="fa fa-trash-o"></i></span>
+                                    <span onClick={this.deleteSearchField(key)}><i className="fas fa-trash-o"></i></span>
                                 </td>
                             </tr>
                         );
@@ -307,7 +307,7 @@ export default class API extends React.PureComponent {
                                 </td>
                                 <td className="trash">
                                     <span onClick={this.deleteGlobalSearchField(key)}><i
-                                        className="fa fa-trash-o"></i></span>
+                                        className="fas fa-trash-o"></i></span>
                                 </td>
                             </tr>
                         );
@@ -370,12 +370,12 @@ export default class API extends React.PureComponent {
         const icon = name => {
             return name === sorted ? (
                 reverse ? (
-                    <i className="fa fa-arrow-up reverse"/>
+                    <i className="fas fa-arrow-up reverse"/>
                 ) : (
-                    <i className="fa fa-arrow-down current"/>
+                    <i className="fas fa-arrow-down current"/>
                 )
             ) : (
-                <i className="fa fa-arrow-down"/>
+                <i className="fas fa-arrow-down"/>
             );
         };
         const th = (header, index) => (
@@ -526,18 +526,18 @@ export default class API extends React.PureComponent {
                           onChange={() => this.setState({logicalOperatorIsAnd: !this.state.logicalOperatorIsAnd})}/>
                 <section className="options">
                     <a className="reset button"
-                       onClick={this.reset}>Reset<i className="fa fa-times"></i>
+                       onClick={this.reset}>Reset<i className="fas fa-times"></i>
                     </a>
                     <a className={`button ${valid ? "green" : "disabled grey"}`}
-                       onClick={this.doSearch}>Search<i className="fa fa-search-plus"></i>
+                       onClick={this.doSearch}>Search<i className="fas fa-search-plus"></i>
                     </a>
                     <a className={`clipboard-copy button ${showResults ? "green" : "disabled grey"} ${copiedToClipboardJSONClassName}`}
                        onClick={this.copyToClipboardJSON}>
-                        {I18n.t("clipboard.copyAsJSON")}<i className="fa fa-clone"></i>
+                        {I18n.t("clipboard.copyAsJSON")}<i className="fas fa-clone"></i>
                     </a>
                     <a className={`clipboard-copy button ${showResults ? "green" : "disabled grey"} ${copiedToClipboardClassName}`}
                        onClick={this.copyToClipboard}>
-                        {I18n.t("clipboard.copyAsCSV")}<i className="fa fa-clone"></i>
+                        {I18n.t("clipboard.copyAsCSV")}<i className="fas fa-clone"></i>
                     </a>
                 </section>
                 {hasNoResults && <h2>{I18n.t("playground.no_results")}</h2>}

@@ -18,7 +18,7 @@ export default function PolicyJSON({data}) {
             setJSON(res);
             setLoading(false);
         })
-    }, []);
+    }, [data]);
 
     if (loading) {
         return;
@@ -35,7 +35,7 @@ export default function PolicyJSON({data}) {
             <section className="policy-json">
                 <div className="copy-container">
                     <span className={`button green ${copiedToClipboardClassName}`} onClick={copyToClipboard}>
-                                {I18n.t("clipboard.copy")}<i className="fa fa-clone"/>
+                                {I18n.t("clipboard.copy")}<i className="fas fa-clone"/>
                     </span>
                 </div>
                 <JSONPretty id="json-pretty" json={json}></JSONPretty>

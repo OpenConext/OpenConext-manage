@@ -1,4 +1,4 @@
-@import "../../stylesheets/vars.scss";
+@use "../../stylesheets/vars.scss";
 
 
 .metadata-import {
@@ -11,20 +11,20 @@
 
     h2 {
         font-size: 18px;
-        color: $blue;
+        color: vars.$blue;
         font-weight: normal;
     }
 
     h3 {
         font-size: 16px;
-        color: $blue;
+        color: vars.$blue;
         font-weight: normal;
         margin-top: $item-offset;
     }
 
     section.sub-tabs {
         margin-top: $item-offset;
-        background: $background;
+        background: vars.$background;
         display: flex;
         padding: 0;
 
@@ -33,15 +33,15 @@
             text-align: center;
             cursor: pointer;
             padding: 15px 25px;
-            background-color: $light-grey;
-            color: $dark-grey;
+            background-color: vars.$light-grey;
+            color: vars.$dark-grey;
             text-transform: uppercase;
             border-right: 1px solid white;
 
             &.active {
                 background-color: white;
-                color: $darker-blue;
-                border-top: 2px solid $blue;
+                color: vars.$darker-blue;
+                border-top: 2px solid vars.$blue;
                 border-right: none;
                 font-weight: bold;
             }
@@ -81,7 +81,7 @@
         }
 
         p.invalid {
-            color: $red;
+            color: vars.$red;
             font-size: larger;
         }
 
@@ -95,11 +95,11 @@
     }
 
     section.validation-errors {
-        background-color: $red;
+        background-color: vars.$red;
         color: white;
         padding: 25px;
-        border-radius: $br;
-        border: 1px solid $red;
+        border-radius: vars.$br;
+        border: 1px solid vars.$red;
         margin: 15px 0;
 
         ul {
@@ -122,7 +122,7 @@
         line-height: 33px;
 
         &.error {
-            border: solid 1px $red;
+            border: solid 1px vars.$red;
         }
     }
 
@@ -139,17 +139,17 @@
             margin: 35px 0;
             width: 100%;
             text-align: left;
-            border: 1px solid $light-grey;
-            border-radius: $br;
+            border: 1px solid vars.$light-grey;
+            border-radius: vars.$br;
 
             thead th {
                 text-align: left;
                 padding: 10px 5px;
 
                 &.title {
-                    color: $blue;
+                    color: vars.$blue;
                     padding: 15px;
-                    border-bottom: 1px solid $light-grey;
+                    border-bottom: 1px solid vars.$light-grey;
                     font-size: larger;
                 }
 
@@ -180,11 +180,11 @@
 
             tbody {
                 tr:nth-child(odd) {
-                    background-color: $lightest-grey;
+                    background-color: vars.$lightest-grey;
                 }
 
                 tr.spacer {
-                    background-color: $lightest-grey;
+                    background-color: vars.$lightest-grey;
                 }
 
                 td {
@@ -224,13 +224,13 @@
 
                 td.arpKey {
                     i.fa-trash-o {
-                        color: $red;
+                        color: vars.$red;
                         font-size: 16px;
                         padding: 5px;
 
                         &.old {
-                            color: $lightest-grey;
-                            background-color: $lightest-grey;
+                            color: vars.$lightest-grey;
+                            background-color: vars.$lightest-grey;
                         }
                     }
                 }
@@ -243,7 +243,7 @@
             align-items: center;
 
             span {
-                color: $orange;
+                color: vars.$orange;
                 font-size: 18px;
                 font-weight: bold;
             }

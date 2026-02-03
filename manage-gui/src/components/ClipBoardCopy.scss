@@ -1,9 +1,9 @@
-@import "../stylesheets/vars.scss";
+@use "../stylesheets/vars.scss";
 
 span.clipboard {
 
     i {
-        color: $blue;
+        color: vars.$blue;
         font-size: 22px;
         cursor: pointer;
     }
@@ -20,7 +20,7 @@ span.clipboard {
             box-shadow: 0 0 0 0 white;
         }
         70% {
-            box-shadow: 0 0 12px 10px lighten($blue, 15%);
+            box-shadow: 0 0 12px 10px lighten(vars.$blue, 15%);
         }
         100% {
             box-shadow: 0 0 0 0 white;

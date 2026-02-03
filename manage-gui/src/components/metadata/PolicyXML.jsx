@@ -5,7 +5,6 @@ import {parsePolicyXML} from "../../api";
 import Highlight from "react-highlight";
 import "highlight.js/styles/default.css";
 import format from "xml-formatter";
-import {copyToClip} from "../../utils/Utils";
 import I18n from "i18n-js";
 
 export default function PolicyXML({data}) {
@@ -19,7 +18,7 @@ export default function PolicyXML({data}) {
             setXML(format(res.xml, {indentation: "    "}));
             setLoading(false);
         })
-    }, []);
+    }, [data]);
 
     if (loading) {
         return;
@@ -37,7 +36,7 @@ export default function PolicyXML({data}) {
             <section className="policy-xml">
                 <div className="copy-container">
                     <span className={`button green ${copiedToClipboardClassName}`} onClick={copyToClipboard}>
-                                {I18n.t("clipboard.copy")}<i className="fa fa-clone"/>
+                                {I18n.t("clipboard.copy")}<i className="fas fa-clone"/>
                     </span>
                 </div>
                 <Highlight className="XML">{xml}</Highlight>

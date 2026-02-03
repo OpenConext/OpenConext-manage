@@ -1,13 +1,13 @@
-@import "../stylesheets/vars.scss";
+@use "../stylesheets/vars.scss";
 
 section.metadata-autocomplete {
     width: 100%;
     position: absolute;
     z-index: 3;
     top: 40px;
-    border-radius: $br;
+    border-radius: vars.$br;
     background-color: white;
-    box-shadow: 1px 4px 12px 1px $medium-grey;
+    box-shadow: 1px 4px 12px 1px vars.$medium-grey;
     margin-bottom: 25px;
 
     div.results-info {
@@ -22,7 +22,7 @@ section.metadata-autocomplete {
         word-break: break-all;
 
         thead th {
-            color: $medium-grey;
+            color: vars.$medium-grey;
             font-size: larger;
             font-weight: bold;
             text-transform: uppercase;
@@ -66,11 +66,11 @@ section.metadata-autocomplete {
         }
 
         tbody tr {
-            border-top: 1px solid $light-grey;
+            border-top: 1px solid vars.$light-grey;
             cursor: pointer;
 
             &.active, &:hover {
-                background-color: $light-grey;
+                background-color: vars.$light-grey;
             }
 
             td {
@@ -87,7 +87,7 @@ section.metadata-autocomplete {
                 }
 
                 i.fa-info-circle {
-                    color: $blue;
+                    color: vars.$blue;
                     font-size: 16px;
                 }
             }

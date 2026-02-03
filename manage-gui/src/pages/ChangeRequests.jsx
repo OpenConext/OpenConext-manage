@@ -108,11 +108,11 @@ class ChangeRequests extends React.PureComponent {
                        type="text"
                        onChange={this.search}
                        value={query}/>
-                <i className="fa fa-search"/>
+                <i className="fas fa-search"/>
             </div>
             <a className={`clipboard-copy button green ${copiedToClipboardClassName}`}
                onClick={this.copyToClipboard}>
-                {I18n.t("clipboard.copy")}<i className="fa fa-clone"></i>
+                {I18n.t("clipboard.copy")}<i className="fas fa-clone"></i>
             </a>
         </section>
         <Select onChange={this.changeStatus}

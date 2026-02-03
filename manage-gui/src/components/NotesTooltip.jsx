@@ -6,7 +6,7 @@ import "./NotesTooltip.scss";
 export default function NotesTooltip({identifier, notes}) {
     return (
         <span className={"notes-tooltip"} data-for={identifier} data-tip>
-            <i className="fa fa-info-circle"></i>
+            <i className="fas fa-info-circle"></i>
             <ReactTooltip id={identifier} type="info" class="tool-tip" effect="solid">
                 <span>{notes}</span>
             </ReactTooltip>

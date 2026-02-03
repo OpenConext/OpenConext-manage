@@ -63,7 +63,7 @@ The client is build with react and to get initially started:
 ```shell
 cd manage-gui
 yarn install
-yarn start
+yarn dev
 ```
 See https://github.com/facebook/create-react-app/issues/11762#issuecomment-1002285279 for troubleshooting the proxy settings.
 

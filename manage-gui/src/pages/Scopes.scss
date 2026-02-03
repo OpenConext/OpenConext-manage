@@ -1,8 +1,8 @@
-@import "../stylesheets/vars.scss";
-@import "../stylesheets/mixins.scss";
+@use "../stylesheets/vars.scss";
+@use "../stylesheets/mixins.scss";
 
 .scopes, .no-scopes {
-    @include page;
+    @include mixins.page;
     background-color: white;
 
     section.explanation {
@@ -33,7 +33,7 @@
             right: 15px;
             top: 10px;
             font-size: 20px;
-            color: $blue;
+            color: vars.$blue;
         }
 
         a {
@@ -67,10 +67,10 @@
 
             i {
                 margin-left: 15px;
-                color: $lighter-grey;
+                color: vars.$lighter-grey;
 
                 &.current, &.reverse {
-                    color: $blue;
+                    color: vars.$blue;
                 }
             }
 
@@ -86,11 +86,11 @@
         tbody {
             tr {
                 &:nth-child(odd) {
-                    background-color: $lightest-grey;
+                    background-color: vars.$lightest-grey;
                 }
 
                 &:hover {
-                    color: $blue;
+                    color: vars.$blue;
                 }
 
             }
@@ -102,7 +102,7 @@
                 cursor: pointer;
 
                 &.selected {
-                    color: $blue;
+                    color: vars.$blue;
                     font-weight: bold;
                 }
             }
@@ -132,7 +132,7 @@
 
             &.required::after {
                 content: " *";
-                color: $red;
+                color: vars.$red;
             }
         }
 
@@ -155,7 +155,7 @@
     }
 
     .errors, {
-        color: $red;
+        color: vars.$red;
 
         ul {
             margin-left: 40px;

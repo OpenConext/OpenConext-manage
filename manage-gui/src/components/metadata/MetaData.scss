@@ -1,5 +1,5 @@
-@import "../../stylesheets/vars.scss";
-@import "../../stylesheets/mixins.scss";
+@use "../../stylesheets/vars.scss";
+@use "../../stylesheets/mixins.scss";
 
 .metadata-metadata {
     background-color: white;
@@ -38,7 +38,7 @@
 
         tbody {
             tr:nth-child(odd) {
-                background-color: $lightest-grey;
+                background-color: vars.$lightest-grey;
             }
 
             td {
@@ -54,13 +54,13 @@
                     cursor: pointer;
 
                     i.fa {
-                        color: $red;
+                        color: vars.$red;
                         font-size: 18px;
                     }
                 }
 
                 &.extraneous {
-                    color: $red;
+                    color: vars.$red;
                 }
 
                 input, textarea {
@@ -72,22 +72,22 @@
                     line-height: 33px;
 
                     &.error {
-                        border: solid 1px $red;
+                        border: solid 1px vars.$red;
                     }
                 }
 
                 .fa-info-circle {
-                    color: $blue;
+                    color: vars.$blue;
                     margin-left: 15px;
                 }
 
                 .tool-tip {
-                    box-shadow: 1px 2px 6px 1px $lighter-grey;
+                    box-shadow: 1px 2px 6px 1px vars.$lighter-grey;
                     padding: 10px !important;
                     font-size: 14px !important;
                     pointer-events: auto !important;
                     color: white !important;
-                    background-color: $blue !important;
+                    background-color: vars.$blue !important;
 
                     &.show {
                         opacity: 1 !important;
@@ -96,14 +96,14 @@
                     max-width: 390px;
 
                     &:after {
-                        border-top-color: $blue !important;
+                        border-top-color: vars.$blue !important;
                         border-top-style: solid !important;
                         border-top-width: 6px !important;
                     }
                 }
 
                 div.error {
-                    color: $red;
+                    color: vars.$red;
                     margin-top: 5px;
                 }
 

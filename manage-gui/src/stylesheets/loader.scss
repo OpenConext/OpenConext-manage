@@ -1,4 +1,4 @@
-@import "vars.scss";
+@use "vars.scss";
 
 .loader:empty,
 .loader:empty:after {
@@ -12,7 +12,7 @@
     font-size: 10px;
     position: relative;
     text-indent: -9999em;
-    border: 1.1em solid $blue;
+    border: 1.1em solid vars.$blue;
     border-left-color: white;
     -webkit-transform: translateZ(0);
     -ms-transform: translateZ(0);

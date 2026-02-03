@@ -58,7 +58,7 @@ export default class Password extends React.PureComponent {
                 <span className="separator"/>
 
                 <div className="password-icon" onClick={() => this.handleGenerate()}>
-                    {this.renderIcon("key-icon", "fa fa-key key", "key")}
+                    {this.renderIcon("key-icon", "fas fa-key key", "key")}
                 </div>
 
             </div>
@@ -67,7 +67,7 @@ export default class Password extends React.PureComponent {
 
     render() {
         const {value, copied} = this.state;
-        const {hasFormatError, onChange, ...rest} = this.props;
+        const {...rest} = this.props;
 
         const disabled = this.state.disabled || this.props.disabled;
 

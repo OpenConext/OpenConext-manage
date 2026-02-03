@@ -1,8 +1,8 @@
-@import "../stylesheets/vars.scss";
-@import "../stylesheets/mixins.scss";
+@use "../stylesheets/vars.scss";
+@use "../stylesheets/mixins.scss";
 
 .support {
-    @include page;
+    @include mixins.page;
     background-color: white;
 
     section.explanation {
@@ -37,7 +37,7 @@
             right: 15px;
             top: 10px;
             font-size: 20px;
-            color: $blue;
+            color: vars.$blue;
         }
 
         a {
@@ -63,7 +63,7 @@
                         box-shadow: 0 0 0 0 white;
                     }
                     70% {
-                        box-shadow: 0 0 10px 8px lighten($green, 15%);
+                        box-shadow: 0 0 10px 8px lighten(vars.$green, 15%);
                     }
                     100% {
                         box-shadow: 0 0 0 0 white;
@@ -103,13 +103,13 @@
                     cursor: pointer;
 
                     &:hover {
-                        color: $blue;
+                        color: vars.$blue;
                     }
 
                 }
 
                 &:nth-child(odd) {
-                    background-color: $lightest-grey;
+                    background-color: vars.$lightest-grey;
                 }
             }
 
@@ -131,7 +131,7 @@
                     cursor: pointer;
 
                     i.fa {
-                        color: $red;
+                        color: vars.$red;
                         font-size: 20px;
                         text-align: center;
                         padding: 0 10px;
@@ -147,7 +147,7 @@
                     text-align: center;
 
                     i.fa-info-circle {
-                        color: $blue;
+                        color: vars.$blue;
                         font-size: 20px;
                     }
                 }

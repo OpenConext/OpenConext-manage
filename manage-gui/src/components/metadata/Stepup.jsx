@@ -210,7 +210,7 @@ export default class Stepup extends React.Component {
                       this.removeStepup(entity);
                   }}
               >
-                <i className="fa fa-trash-o"/>
+                <i className="fas fa-trash-o"/>
               </a>
             </span>
                     )}
@@ -253,7 +253,7 @@ export default class Stepup extends React.Component {
                       this.removeMfa(entity);
                   }}
               >
-                <i className="fa fa-trash-o"/>
+                <i className="fas fa-trash-o"/>
               </a>
             </span>
                     )}
@@ -288,14 +288,14 @@ export default class Stepup extends React.Component {
         const {sorted, reverse} = this.state;
         const icon = name => {
             if (!(name === sorted)) {
-                return <i className="fa fa-arrow-down"/>;
+                return <i className="fas fa-arrow-down"/>;
             }
 
             if (reverse) {
-                return <i className="fa fa-arrow-up reverse"/>;
+                return <i className="fas fa-arrow-up reverse"/>;
             }
 
-            return <i className="fa fa-arrow-down current"/>;
+            return <i className="fas fa-arrow-down current"/>;
         };
         const th = name => (
             <th
@@ -337,14 +337,14 @@ export default class Stepup extends React.Component {
         const {sortedMfa, reverseMfa} = this.state;
         const icon = name => {
             if (!(name === sortedMfa)) {
-                return <i className="fa fa-arrow-down"/>;
+                return <i className="fas fa-arrow-down"/>;
             }
 
             if (reverseMfa) {
-                return <i className="fa fa-arrow-up reverse"/>;
+                return <i className="fas fa-arrow-up reverse"/>;
             }
 
-            return <i className="fa fa-arrow-down current"/>;
+            return <i className="fas fa-arrow-down current"/>;
         };
         const th = name => (
             <th
@@ -404,7 +404,7 @@ export default class Stepup extends React.Component {
                 <h2>{I18n.t("stepup.title")}</h2>
                 {!guest && (
                     <p>{I18n.t("stepup.description", {name: name})}
-                        <i className="fa fa-info-circle"
+                        <i className="fas fa-info-circle"
                            data-for="step-up-tooltip" data-tip></i>
                         <ReactTooltip id="step-up-tooltip" type="info" class="tool-tip" effect="solid">
                             <span dangerouslySetInnerHTML={{__html: I18n.t("stepup.stepupTooltip")}}/>
@@ -434,7 +434,7 @@ export default class Stepup extends React.Component {
                 <h2>{I18n.t("stepup.mfaTitle")}</h2>
                 {!guest && (
                     <p>{I18n.t("stepup.mfaDescription", {name: name})}
-                        <i className="fa fa-info-circle"
+                        <i className="fas fa-info-circle"
                            data-for="mfa-tooltip" data-tip></i>
                         <ReactTooltip id="mfa-tooltip" type="info" class="tool-tip" effect="solid">
                             <span dangerouslySetInnerHTML={{__html: I18n.t("stepup.mfaTooltip")}}/>

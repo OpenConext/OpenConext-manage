@@ -8,7 +8,7 @@ import logoOpenConext from "../images/open-conext-logo.png";
 import {logOut} from "../api";
 import "./Header.scss";
 import {isEmpty} from "../utils/Utils";
-import {getInitialLanguage, getLanguage, setLanguage} from "../utils/Language";
+import {getInitialLanguage, setLanguage} from "../utils/Language";
 
 export default class Header extends React.PureComponent {
 
@@ -22,7 +22,7 @@ export default class Header extends React.PureComponent {
     renderProfileLink(currentUser) {
         return (
             <p className="welcome-link">
-                <i className="fa fa-user-circle-o"></i>
+                <i className="fas fa-user-circle-o"></i>
                 {currentUser.displayName}
             </p>
         );

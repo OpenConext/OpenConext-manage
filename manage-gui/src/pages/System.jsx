@@ -151,10 +151,10 @@ export default class System extends React.PureComponent {
                         <input className="search-input" type="text" value={findMyDataInput}
                                onChange={e => this.setState({findMyDataInput: e.target.value})}
                                onKeyPress={e => e.key === "Enter" ? this.findMyData(e) : false}/>
-                        <i className="fa fa-search"></i>
+                        <i className="fas fa-search"></i>
                     </section>
                     <a className={`${classNameSearch} search button`} onClick={this.findMyData}>
-                        {I18n.t("playground.search")}<i className="fa fa-search"></i></a>
+                        {I18n.t("playground.search")}<i className="fas fa-search"></i></a>
                     <SelectMetaDataType onChange={val => this.setState({findMyDataEntityType: val})}
                                         state={findMyDataEntityType}
                                         configuration={this.props.configuration}
@@ -276,11 +276,11 @@ export default class System extends React.PureComponent {
                 <p>{I18n.t("playground.pushPreviewInfo", {name: currentUser.push.name})}</p>
                 <a className={`button ${loading ? "grey disabled" : "green"}`}
                    onClick={this.runPushPreview}>{I18n.t("playground.runPushPreview")}
-                    <i className="fa fa-refresh"></i></a>
+                    <i className="fas fa-refresh"></i></a>
                 {showCopy &&
                     <CopyToClipboard text={json} onCopy={this.copiedToClipboard}>
                     <span className={`button green ${copiedToClipboardClassName}`}>
-                       Copy JSON to clipboard <i className="fa fa-clone"></i>
+                       Copy JSON to clipboard <i className="fas fa-clone"></i>
                     </span>
                     </CopyToClipboard>
                 }
@@ -292,7 +292,7 @@ export default class System extends React.PureComponent {
                         sel.removeAllRanges();
                         sel.addRange(range);
                     }}>
-                       Select all JSON <i className="fa fa-clone"></i>
+                       Select all JSON <i className="fas fa-clone"></i>
                     </span>
                 }
                 {pushPreviewResults &&
@@ -314,11 +314,11 @@ export default class System extends React.PureComponent {
                 <p>{I18n.t("playground.pushPreviewInfo", {name: currentUser.push.oidcName})}</p>
                 <a className={`button ${loading ? "grey disabled" : "green"}`}
                    onClick={this.runPushPreviewOIDC}>{I18n.t("playground.runPushPreview")}
-                    <i className="fa fa-refresh"></i></a>
+                    <i className="fas fa-refresh"></i></a>
                 {showCopy &&
                     <CopyToClipboard text={json} onCopy={this.copiedToClipboard}>
                     <span className={`button green ${copiedToClipboardClassName}`}>
-                       Copy JSON to clipboard <i className="fa fa-clone"></i>
+                       Copy JSON to clipboard <i className="fas fa-clone"></i>
                     </span>
                     </CopyToClipboard>
                 }
@@ -330,7 +330,7 @@ export default class System extends React.PureComponent {
                         sel.removeAllRanges();
                         sel.addRange(range);
                     }}>
-                       Select all JSON <i className="fa fa-clone"></i>
+                       Select all JSON <i className="fas fa-clone"></i>
                     </span>
                 }
                 {pushPreviewResultsOIDC &&
@@ -352,11 +352,11 @@ export default class System extends React.PureComponent {
                 <p>{I18n.t("playground.pushPreviewInfo", {name: currentUser.push.pdpName})}</p>
                 <a className={`button ${loading ? "grey disabled" : "green"}`}
                    onClick={this.runPushPreviewPdP}>{I18n.t("playground.runPushPreview")}
-                    <i className="fa fa-refresh"></i></a>
+                    <i className="fas fa-refresh"></i></a>
                 {showCopy &&
                     <CopyToClipboard text={json} onCopy={this.copiedToClipboard}>
                     <span className={`button green ${copiedToClipboardClassName}`}>
-                       Copy JSON to clipboard <i className="fa fa-clone"></i>
+                       Copy JSON to clipboard <i className="fas fa-clone"></i>
                     </span>
                     </CopyToClipboard>
                 }
@@ -368,7 +368,7 @@ export default class System extends React.PureComponent {
                         sel.removeAllRanges();
                         sel.addRange(range);
                     }}>
-                       Select all JSON <i className="fa fa-clone"></i>
+                       Select all JSON <i className="fas fa-clone"></i>
                     </span>
                 }
                 {pushPreviewResultsPDP &&
@@ -388,7 +388,7 @@ export default class System extends React.PureComponent {
                     all metadata is valid.</p>
                 <a className={`button ${loading ? "grey disabled" : "green"}`}
                    onClick={this.runValidations}>{I18n.t("playground.runValidation")}
-                    <i className="fa fa-check" aria-hidden="true"></i></a>
+                    <i className="fas fa-check" aria-hidden="true"></i></a>
                 {validationResults &&
                     <section className="results">
                         <JSONPretty id="json-pretty" json={validationResults}></JSONPretty>
@@ -417,7 +417,7 @@ export default class System extends React.PureComponent {
                     references to MetaData instances that do not exist.</p>
                 <a className={`button ${loading ? "grey disabled" : "green"}`}
                    onClick={this.runOrphans}>{I18n.t("playground.runOrphans")}
-                    <i className="fa fa-check" aria-hidden="true"></i></a>
+                    <i className="fas fa-check" aria-hidden="true"></i></a>
                 {orphansResults &&
                     <section className="results">
                         <JSONPretty json={orphansResults}></JSONPretty>
@@ -429,15 +429,15 @@ export default class System extends React.PureComponent {
                            confirmationQuestion: I18n.t("playground.orphanConfirmation"),
                            confirmationDialogAction: action
                        })}>{I18n.t("playground.deleteOrphans")}
-                        <i className="fa fa-trash"></i>
+                        <i className="fas fa-trash"></i>
                     </a>}
             </section>
         );
     };
 
-    icon = (name, sorted, reverse) => name === sorted ? (reverse ? <i className="fa fa-arrow-up reverse"></i> :
-            <i className="fa fa-arrow-down current"></i>)
-        : <i className="fa fa-arrow-down"></i>;
+    icon = (name, sorted, reverse) => name === sorted ? (reverse ? <i className="fas fa-arrow-up reverse"></i> :
+            <i className="fas fa-arrow-down current"></i>)
+        : <i className="fas fa-arrow-down"></i>;
 
     renderStats = () => {
         const {statistics, statsSorted, statsSortedReverse} = this.state;

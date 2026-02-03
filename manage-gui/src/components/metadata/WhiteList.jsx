@@ -270,13 +270,13 @@ export default class WhiteList extends React.Component {
                       this.removeAllowedEntry(entity);
                   }}
               >
-                <i className="fa fa-trash-o"/>
+                <i className="fas fa-trash-o"/>
               </a>
             </span>
                     )}
                 </td>
                 <td className="blocked">
-                    {entity.blocked ? <i className="fa fa-window-close"/> : <span/>}
+                    {entity.blocked ? <i className="fas fa-window-close"/> : <span/>}
                 </td>
                 <td>{entity.status}</td>
                 <td>
@@ -297,7 +297,7 @@ export default class WhiteList extends React.Component {
         );
     };
 
-    renderRemovedEntities = (removedWhiteListedEntities, whiteListing, type) => {
+    renderRemovedEntities = (removedWhiteListedEntities) => {
         return (
             <section className="removed-entities">
                 <p>{I18n.t("whitelisting.removedWhiteListedEntities")}</p>
@@ -343,12 +343,12 @@ export default class WhiteList extends React.Component {
         const icon = name => {
             return name === sorted ? (
                 reverse ? (
-                    <i className="fa fa-arrow-up reverse"/>
+                    <i className="fas fa-arrow-up reverse"/>
                 ) : (
-                    <i className="fa fa-arrow-down current"/>
+                    <i className="fas fa-arrow-down current"/>
                 )
             ) : (
-                <i className="fa fa-arrow-down"/>
+                <i className="fas fa-arrow-down"/>
             );
         };
         const th = name => (
@@ -446,7 +446,7 @@ export default class WhiteList extends React.Component {
                         onClick={this.copyToClipboard}
                     >
             {I18n.t("clipboard.copy")}
-                        <i className="fa fa-clone"/>
+                        <i className="fas fa-clone"/>
           </span>
                 </section>
                 <div className="whitelist-info">
@@ -479,7 +479,7 @@ export default class WhiteList extends React.Component {
                         onChange={this.search}
                         value={query}
                     />
-                    <i className="fa fa-search"/>
+                    <i className="fas fa-search"/>
                 </div>
                 {enrichedAllowedEntriesFiltered.length > 0 &&
                 this.renderAllowedEntitiesTable(

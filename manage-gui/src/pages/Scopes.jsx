@@ -97,7 +97,7 @@ export default class Scopes extends React.Component {
         }
     };
 
-    icon = reversed => reversed ? <i className="fa fa-arrow-down current"/> : <i className="fa fa-arrow-down current"/>;
+    icon = reversed => reversed ? <i className="fas fa-arrow-down current"/> : <i className="fas fa-arrow-down current"/>;
 
     sortTable = () => {
         const {reversed, scopes} = this.state;
@@ -140,7 +140,7 @@ export default class Scopes extends React.Component {
                 <p>{I18n.t("scopes.inUse", {action: inUseAction})}</p>
                 <ul>
                     {inUseEntities.map(entity => <li key={entity.id}>
-                        <a href={`/metadata/${entity.type}/${entity.id}`} target="_blank">{entity.entityid}</a>
+                        <a href={`/metadata/${entity.type}/${entity.id}`} target="_blank" rel="noopener noreferrer">{entity.entityid}</a>
                     </li>)}
                 </ul>
             </section>}
@@ -218,7 +218,7 @@ export default class Scopes extends React.Component {
                            type="text"
                            onChange={e => this.setState({query: e.target.value})}
                            value={query}/>
-                    <i className="fa fa-search"></i>
+                    <i className="fas fa-search"></i>
                 </div>
             </section>
             <section className="master-detail">

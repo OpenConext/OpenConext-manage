@@ -16,7 +16,7 @@ export default class CheckBox extends React.PureComponent {
             name,
             value,
             readOnly = false,
-            onChange = e => this,
+            onChange = () => this,
             info,
             className = "checkbox"
         } = this.props;
@@ -32,7 +32,7 @@ export default class CheckBox extends React.PureComponent {
                 />
                 <label htmlFor={name}>
           <span ref={ref => (this.input = ref)} tabIndex="0">
-            <i className="fa fa-check"/>
+            <i className="fas fa-check"/>
           </span>
                 </label>
                 {info && (

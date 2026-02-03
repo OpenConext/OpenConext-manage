@@ -52,6 +52,7 @@ export default function PolicyForm({
                 onChange("data.identityProviderIds", [{name: idp}]);
             }
         } else {
+            /* eslint-disable-next-line react-hooks/exhaustive-deps */
             setOriginalName(data.name);
         }
     }, []);
@@ -168,7 +169,7 @@ export default function PolicyForm({
                 <label htmlFor="policyType">
                     <span>{I18n.t("policies.policyType")}</span>
                     {!isNew && <>
-                        <i className="fa fa-info-circle"
+                        <i className="fas fa-info-circle"
                            data-for="type-tooltip"
                            data-tip/>
                         <ReactTooltip id="type-tooltip"
@@ -197,7 +198,7 @@ export default function PolicyForm({
             <div className="input-field">
                 <label htmlFor="name">
                     <span>{I18n.t("policies.name")}</span>
-                    <i className="fa fa-info-circle"
+                    <i className="fas fa-info-circle"
                        data-for="name-tooltip"
                        data-tip/>
                     <ReactTooltip id="name-tooltip"
@@ -229,7 +230,7 @@ export default function PolicyForm({
             <div className="input-field">
                 <label htmlFor="institutionProviders">
                     <span>{I18n.t("policies.institutionProviders")}</span>
-                    <i className="fa fa-info-circle"
+                    <i className="fas fa-info-circle"
                        data-for="institutionProviders-tooltip"
                        data-tip/>
                     <ReactTooltip id="institutionProviders-tooltip"
@@ -262,7 +263,7 @@ export default function PolicyForm({
             <div className="input-field">
                 <label htmlFor="serviceProviders">
                     <span>{I18n.t("policies.serviceProviders")}</span>
-                    <i className="fa fa-info-circle"
+                    <i className="fas fa-info-circle"
                        data-for="serviceProviders-tooltip"
                        data-tip/>
                     <ReactTooltip id="serviceProviders-tooltip"
@@ -300,7 +301,7 @@ export default function PolicyForm({
                     <div className="checkbox-container">
                         <label htmlFor="permit">
                             <span>{I18n.t("policies.permit")}</span>
-                            <i className="fa fa-info-circle"
+                            <i className="fas fa-info-circle"
                                data-for="permit-tooltip"
                                data-tip/>
                             <ReactTooltip id="permit-tooltip"
@@ -320,7 +321,7 @@ export default function PolicyForm({
                     <div className="checkbox-container">
                         <label htmlFor="deny">
                             <span>{I18n.t("policies.deny")}</span>
-                            <i className="fa fa-info-circle"
+                            <i className="fas fa-info-circle"
                                data-for="deny-tooltip"
                                data-tip/>
                             <ReactTooltip id="deny-tooltip"
@@ -431,7 +432,7 @@ export default function PolicyForm({
                                        disabled={true}
                                        value={loa.level}/>
                                 <span onClick={() => deleteLoa(loa.level)}>
-                                    <i className="fa fa-trash-o"/>
+                                    <i className="fas fa-trash-o"/>
                                 </span>
                             </div>
                             <div className="loa-container">
@@ -475,7 +476,7 @@ export default function PolicyForm({
                                                     isSearchable={false}
                                                 />
                                                 <span onClick={() => removeCidrNotation(i, index)}>
-                                                    <i className="fa fa-trash-o"/>
+                                                    <i className="fas fa-trash-o"/>
                                                 </span>
                                             </div>
                                             {cidrNotation.invalid &&
@@ -528,7 +529,7 @@ export default function PolicyForm({
             <div className="input-field">
                 <label htmlFor="description">
                     <span>{I18n.t("policies.description")}</span>
-                    <i className="fa fa-info-circle"
+                    <i className="fas fa-info-circle"
                        data-for="description-tooltip"
                        data-tip/>
                     <ReactTooltip id="description-tooltip"
@@ -554,7 +555,7 @@ export default function PolicyForm({
             <div className="input-field">
                 <label htmlFor="denyAdvice">
                     <span>{I18n.t("policies.denyAdvice")}</span>
-                    <i className="fa fa-info-circle"
+                    <i className="fas fa-info-circle"
                        data-for="denyAdvice-tooltip"
                        data-tip/>
                     <ReactTooltip id="denyAdvice-tooltip"
@@ -604,7 +605,7 @@ export default function PolicyForm({
                           value={data.active}
                           onChange={e => onChange("data.active", e.target.checked)}
                           info={I18n.t("policies.active")}/>
-                <i className="fa fa-info-circle"
+                <i className="fas fa-info-circle"
                    data-for="active-tooltip"
                    data-tip/>
                 <ReactTooltip id="active-tooltip"

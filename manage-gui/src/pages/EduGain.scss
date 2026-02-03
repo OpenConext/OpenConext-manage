@@ -1,8 +1,8 @@
-@import "../stylesheets/mixins.scss";
-@import "../stylesheets/vars.scss";
+@use "../stylesheets/mixins.scss";
+@use "../stylesheets/vars.scss";
 
 .edugain {
-    @include page;
+    @include mixins.page;
 
     background-color: white;
 
@@ -10,18 +10,18 @@
         padding: 15px 0 0 30px;
 
         span.warning {
-            color: $red;
+            color: vars.$red;
         }
 
         span.code {
             font-family: "Courier New";
-            color: $dark-grey;
+            color: vars.$dark-grey;
         }
     }
 
     section.sub-tabs {
         margin-top: 15px;
-        background: $background;
+        background: vars.$background;
         display: flex;
         padding: 0;
 
@@ -29,15 +29,15 @@
             text-align: center;
             cursor: pointer;
             padding: 15px 25px;
-            background-color: $light-grey;
-            color: $dark-grey;
+            background-color: vars.$light-grey;
+            color: vars.$dark-grey;
             text-transform: uppercase;
             border-right: 1px solid white;
 
             &.active {
                 background-color: white;
-                color: $darker-blue;
-                border-top: 2px solid $blue;
+                color: vars.$darker-blue;
+                border-top: 2px solid vars.$blue;
                 border-right: none;
                 font-weight: bold;
             }
@@ -74,15 +74,15 @@
     section.results {
         padding: 30px;
         background-color: white;
-        border: 1px solid $light-grey;
+        border: 1px solid vars.$light-grey;
 
         p.error {
-            color: $red;
+            color: vars.$red;
         }
 
         span.elapsed {
             font-style: italic;
-            color: $dark-grey;
+            color: vars.$dark-grey;
             display: inline-block;
             margin-bottom: 15px;
         }
@@ -95,7 +95,7 @@
 
                 i {
                     margin-left: 15px;
-                    color: $lighter-grey;
+                    color: vars.$lighter-grey;
                 }
 
                 &.category {
@@ -108,12 +108,12 @@
             }
 
             tbody:nth-child(odd) {
-                background-color: $lightest-grey;
+                background-color: vars.$lightest-grey;
             }
 
             tbody tr.collapsible {
                 cursor: pointer;
-                color: $blue;
+                color: vars.$blue;
                 font-weight: bold;
             }
 
@@ -122,7 +122,7 @@
                 padding: 5px;
 
                 i.fa-info-circle {
-                    color: $blue;
+                    color: vars.$blue;
                     margin-left: 25px;
                 }
             }

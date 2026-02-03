@@ -1,5 +1,5 @@
-@import "../../stylesheets/vars.scss";
-@import "../../stylesheets/mixins.scss";
+@use "../../stylesheets/vars.scss";
+@use "../../stylesheets/mixins.scss";
 
 .metadata-arp {
     background-color: white;
@@ -31,7 +31,7 @@
                     box-shadow: 0 0 0 0 white;
                 }
                 70% {
-                    box-shadow: 0 0 10px 8px lighten($green, 15%);
+                    box-shadow: 0 0 10px 8px lighten(vars.$green, 15%);
                 }
                 100% {
                     box-shadow: 0 0 0 0 white;
@@ -74,7 +74,7 @@
             text-align: left;
             padding: 7px 0 12px 0;
             font-size: larger;
-            border-bottom: 1px solid $lighter-grey;
+            border-bottom: 1px solid vars.$lighter-grey;
 
             &.name {
                 width: 30%;
@@ -105,12 +105,12 @@
 
             tr:last-child td {
                 padding-bottom: 12px;
-                border-bottom: 1px solid $lighter-grey;
+                border-bottom: 1px solid vars.$lighter-grey;
             }
         }
 
         tbody:nth-child(odd) {
-            background-color: $lightest-grey;
+            background-color: vars.$lightest-grey;
         }
 
 
@@ -122,11 +122,11 @@
             &.name {
                 i.fa {
                     margin-left: 15px;
-                    color: $blue;
+                    color: vars.$blue;
                 }
 
                 &.deprecated {
-                    color: $red;
+                    color: vars.$red;
                 }
 
                 span.display-name {
@@ -141,7 +141,7 @@
                 text-align: center;
 
                 i.fa {
-                    color: $green;
+                    color: vars.$green;
                     font-size: 22px;
                     font-weight: bold;
                     cursor: pointer;
@@ -167,7 +167,7 @@
                 line-height: 33px;
 
                 &.error {
-                    border: solid 1px $red;
+                    border: solid 1px vars.$red;
                 }
             }
 

@@ -1,4 +1,4 @@
-@import "../../stylesheets/vars.scss";
+@use "../../stylesheets/vars.scss";
 
 .organisation {
     background-color: white;
@@ -6,8 +6,8 @@
 
     table.data {
         width: 100%;
-        border: 1px solid $lighter-grey;
-        border-radius: $br;
+        border: 1px solid vars.$lighter-grey;
+        border-radius: vars.$br;
         border-collapse: separate;
         padding-bottom: 15px;
         padding-top: 10px;
@@ -15,7 +15,7 @@
         tr {
             &.first {
                 padding: 0;
-                background-color: $lightest-grey;
+                background-color: vars.$lightest-grey;
             }
         }
 
@@ -46,7 +46,7 @@
             }
 
             p.error {
-                color: $red;
+                color: vars.$red;
                 margin: 10px 0 15px 0;
             }
         }
@@ -58,13 +58,13 @@
         input[type=text], input[type=email], textarea {
             display: block;
             width: 100%;
-            border: 1px solid $lighter-grey;
+            border: 1px solid vars.$lighter-grey;
             padding: 6px;
-            border-radius: $br;
+            border-radius: vars.$br;
             font-size: 14px;
 
             &[disabled] {
-                background-color: $light-grey;
+                background-color: vars.$light-grey;
             }
         }
     }

@@ -18,7 +18,7 @@ export default class StringWithFormat extends React.PureComponent {
                 />
                 {hasFormatError && (
                     <span>
-            <i className="fa fa-warning"/>
+            <i className="fas fa-warning"/>
                         {I18n.t("metaDataFields.error", {format})}
           </span>
                 )}

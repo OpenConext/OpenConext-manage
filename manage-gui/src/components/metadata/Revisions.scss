@@ -1,5 +1,5 @@
-@import "../../stylesheets/vars.scss";
-@import "../../stylesheets/mixins.scss";
+@use "../../stylesheets/vars.scss";
+@use "../../stylesheets/mixins.scss";
 
 .metadata-revisions {
     background-color: white;
@@ -18,14 +18,14 @@
     table.revision-table {
         width: 100%;
         table-layout: fixed;
-        border: 1px solid $light-grey;
-        border-radius: $br;
+        border: 1px solid vars.$light-grey;
+        border-radius: vars.$br;
         margin: 15px;
 
         thead th {
             text-align: left;
             padding: 10px;
-            background-color: $lightest-grey;
+            background-color: vars.$lightest-grey;
 
             &.number {
                 width: 10%;
@@ -54,7 +54,7 @@
 
         tbody {
             tr:nth-child(even) {
-                background-color: $lightest-grey;
+                background-color: vars.$lightest-grey;
             }
 
             td {

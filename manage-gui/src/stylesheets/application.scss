@@ -1,8 +1,5 @@
-$fa-font-path: "../../fonts";
-@import "fonts/font-awesome.scss";
-@import "fonts/roboto.scss";
-@import "reset.scss";
-@import "vars.scss";
-@import "base.scss";
-@import "loader.scss";
+@use "reset.scss";
+@use "vars.scss";
+@use "base.scss";
+@use "loader.scss";
 

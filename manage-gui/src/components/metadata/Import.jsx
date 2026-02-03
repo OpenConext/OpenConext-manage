@@ -471,7 +471,7 @@ export default class Import extends React.Component {
                 {emptyRows.map((val, index) => (
                     <tr key={index} className="spacer">
                         <td className="arpKey" colSpan="2">
-                            <i className="fa fa-trash-o old"/>
+                            <i className="fas fa-trash-o old"/>
                         </td>
                     </tr>
                 ))}
@@ -489,7 +489,7 @@ export default class Import extends React.Component {
                             <tr key={i}>
                                 <td>
                                     <span className="arpSource">{arpValue.source}</span>
-                                    <i className="fa fa-arrow-right"/>
+                                    <i className="fas fa-arrow-right"/>
                                     <span className="arpValue">{arpValue.value}</span>
                                 </td>
                             </tr>
@@ -678,7 +678,7 @@ export default class Import extends React.Component {
                         }}
                     >
                         {I18n.t(`import.${prefix}applyImportChanges`)}
-                        <i className="fa fa-cloud-upload"/>
+                        <i className="fas fa-cloud-upload"/>
                     </a>
                 </div>
             </section>
@@ -737,7 +737,7 @@ export default class Import extends React.Component {
                 {!this.props.guest && (
                     <a onClick={action} className="button green large">
                         {I18n.t("import.fetch")}
-                        <i className="fa fa-cloud-download"/>
+                        <i className="fas fa-cloud-download"/>
                     </a>
                 )}
             </section>
@@ -751,7 +751,7 @@ export default class Import extends React.Component {
             {!this.props.guest && (
                 <a onClick={action} className="button green footer">
                     {I18n.t("import.fetch")}
-                    <i className="fa fa-cloud-download"/>
+                    <i className="fas fa-cloud-download"/>
                 </a>
             )}
         </section>

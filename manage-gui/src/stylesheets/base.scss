@@ -1,13 +1,13 @@
-@import "../stylesheets/vars.scss";
+@use "../stylesheets/vars.scss";
 
 body {
     font-family: "Roboto", Sans-serif;
     font-weight: 400;
     font-size: 14px;
     line-height: 20px;
-    color: $dark-grey;
+    color: vars.$dark-grey;
     -webkit-font-smoothing: antialiased;
-    background-color: $background;
+    background-color: vars.$background;
 
     &:after {
         position: fixed;
@@ -41,10 +41,10 @@ a {
 }
 
 ::-webkit-input-placeholder {
-    color: $blue;
+    color: vars.$blue;
 }
 
 ::-moz-placeholder {
-    color: $blue;
+    color: vars.$blue;
     opacity: 1;
 }

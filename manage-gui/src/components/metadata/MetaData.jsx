@@ -106,7 +106,7 @@ export default class MetaData extends React.Component {
                 return <Boolean {...defaultProps} />;
             case "number":
                 return <Number {...defaultProps} />;
-            case "array":
+            case "array": {
                 if (key === "scopes") {
                     const {isNewEntity, originalEntityId} = this.props;
                     return <ScopeSelection {...defaultProps} isNewEntity={isNewEntity}
@@ -129,6 +129,7 @@ export default class MetaData extends React.Component {
                         onBlur={value => this.validateFormat(key, value, itemFormat)}
                     />
                 );
+            }
             case "string":
                 if (keyConfiguration.enum) {
                     return (
@@ -200,7 +201,7 @@ export default class MetaData extends React.Component {
                     {key}
                     {toolTip && (
                         <span>
-              <i className="fa fa-info-circle"
+              <i className="fas fa-info-circle"
                  data-for={reactTooltipId}
                  data-tip/>
               <ReactTooltip id={reactTooltipId}
@@ -230,7 +231,7 @@ export default class MetaData extends React.Component {
                 configuration.properties.metaDataFields.required.indexOf(key) < 0 && (
                     <td className="trash">
               <span onClick={this.deleteMetaDataField(key)}>
-                <i className="fa fa-trash-o"/>
+                <i className="fas fa-trash-o"/>
               </span>
                     </td>
                 )}

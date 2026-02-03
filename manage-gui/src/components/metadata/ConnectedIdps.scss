@@ -1,4 +1,4 @@
-@import "../../stylesheets/vars.scss";
+@use "../../stylesheets/vars.scss";
 
 .metadata-connected-idps {
     background-color: white;
@@ -35,7 +35,7 @@
             right: 15px;
             top: 10px;
             font-size: 20px;
-            color: $blue;
+            color: vars.$blue;
         }
 
         span.button {
@@ -56,7 +56,7 @@
                     box-shadow: 0 0 0 0 white;
                 }
                 70% {
-                    box-shadow: 0 0 10px 8px lighten($green, 15%);
+                    box-shadow: 0 0 10px 8px lighten(vars.$green, 15%);
                 }
                 100% {
                     box-shadow: 0 0 0 0 white;
@@ -83,10 +83,10 @@
 
                 i {
                     margin-left: 15px;
-                    color: $lighter-grey;
+                    color: vars.$lighter-grey;
 
                     &.current, &.reverse {
-                        color: $blue;
+                        color: vars.$blue;
                     }
                 }
 
@@ -112,7 +112,7 @@
             }
 
             tbody tr:nth-child(odd) {
-                background-color: $lightest-grey;
+                background-color: vars.$lightest-grey;
             }
 
             td {
@@ -124,7 +124,7 @@
 
                     i.fa-info-circle {
                         font-size: 20px;
-                        color: $blue;
+                        color: vars.$blue;
                         margin-left: 20px;
                     }
                 }

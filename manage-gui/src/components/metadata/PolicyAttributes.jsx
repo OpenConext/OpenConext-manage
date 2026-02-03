@@ -95,7 +95,7 @@ export default function PolicyAttributes({
                                        disabled={true}
                                        value={`${resolveAttributeLabel(name)} - ${name}`}/>
                                 <span onClick={() => deleteAttribute(name, nameWithGroupPostfix)}>
-                                    <i className="fa fa-trash-o"/>
+                                    <i className="fas fa-trash-o"/>
                                 </span>
                             </div>
                             <p>{I18n.t("policies.values")}</p>
@@ -111,7 +111,7 @@ export default function PolicyAttributes({
                                         <input className="max" type="text" value={attr.value}
                                                onChange={e => changeValue(name, attr.index, e, false)}/>
                                         <span onClick={() => deleteValue(name, attr.index)}>
-                                        <i className="fa fa-trash-o"/>
+                                        <i className="fas fa-trash-o"/>
                                     </span>
                                     </div>
                                     {(!isPlayground && innerIndex < groupedAttributes[nameWithGroupPostfix].length - 1) &&

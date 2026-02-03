@@ -109,7 +109,6 @@ export default class ProvisioningApplications extends React.Component {
     addApplication = applicationEntityId => {
         const {
             allowedApplications,
-            entityId,
             applications,
             onChange
         } = this.props;
@@ -172,7 +171,7 @@ export default class ProvisioningApplications extends React.Component {
                       this.removeApplication(entity);
                   }}
               >
-                <i className="fa fa-trash-o"/>
+                <i className="fas fa-trash-o"/>
               </a>
             </span>
                 </td>
@@ -201,12 +200,12 @@ export default class ProvisioningApplications extends React.Component {
         const icon = name => {
             return name === sorted ? (
                 reverse ? (
-                    <i className="fa fa-arrow-up reverse"/>
+                    <i className="fas fa-arrow-up reverse"/>
                 ) : (
-                    <i className="fa fa-arrow-down current"/>
+                    <i className="fas fa-arrow-down current"/>
                 )
             ) : (
-                <i className="fa fa-arrow-down"/>
+                <i className="fas fa-arrow-down"/>
             );
         };
         const th = name => (
@@ -275,7 +274,7 @@ export default class ProvisioningApplications extends React.Component {
               className={`button green ${copiedToClipboardClassName}`}
               onClick={this.copyToClipboard}>
             {I18n.t("clipboard.copy")}
-              <i className="fa fa-clone"/>
+              <i className="fas fa-clone"/>
           </span>
                 </div>
                 <div className="applications-info">
@@ -301,7 +300,7 @@ export default class ProvisioningApplications extends React.Component {
                         onChange={this.search}
                         value={query}
                     />
-                    <i className="fa fa-search"/>
+                    <i className="fas fa-search"/>
                 </div>
                 {enrichedApplicationsFiltered.length > 0 &&
                 this.renderAllowedEntitiesTable(enrichedApplicationsFiltered)}

@@ -1,4 +1,4 @@
-@import "../../stylesheets/vars.scss";
+@use "../../stylesheets/vars.scss";
 
 .metadata-whitelist {
     background-color: white;
@@ -35,7 +35,7 @@
                     box-shadow: 0 0 0 0 white;
                 }
                 70% {
-                    box-shadow: 0 0 10px 8px lighten($green, 15%);
+                    box-shadow: 0 0 10px 8px lighten(vars.$green, 15%);
                 }
                 100% {
                     box-shadow: 0 0 0 0 white;
@@ -60,7 +60,7 @@
             right: 15px;
             top: 10px;
             font-size: 20px;
-            color: $blue;
+            color: vars.$blue;
         }
     }
 
@@ -81,10 +81,10 @@
 
                 i {
                     margin-left: 15px;
-                    color: $lighter-grey;
+                    color: vars.$lighter-grey;
 
                     &.current, &.reverse {
-                        color: $blue;
+                        color: vars.$blue;
                     }
                 }
 
@@ -121,17 +121,17 @@
 
             tbody tr {
                 &:nth-child(odd) {
-                    background-color: $lightest-grey;
+                    background-color: vars.$lightest-grey;
                 }
 
                 &.added {
                     background-color: #e2ffde;
-                    color: $dark-grey;
+                    color: vars.$dark-grey;
                 }
 
                 &.removed {
                     background-color: #ffced1;
-                    color: $dark-grey;
+                    color: vars.$dark-grey;
                     font-weight: bolder;
                 }
             }
@@ -144,11 +144,11 @@
                     text-align: center;
 
                     i.fa {
-                        color: $red;
+                        color: vars.$red;
                         font-size: 20px;
 
                         &.fa-info-circle {
-                            color: $blue;
+                            color: vars.$blue;
                         }
                     }
                 }
@@ -160,7 +160,7 @@
         margin-bottom: 25px;
 
         p {
-            color: $red;
+            color: vars.$red;
             margin-bottom: 10px;
         }
     }

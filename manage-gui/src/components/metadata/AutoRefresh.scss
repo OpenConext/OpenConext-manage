@@ -1,5 +1,5 @@
-@import "../../stylesheets/vars.scss";
-@import "../../stylesheets/mixins.scss";
+@use "../../stylesheets/vars.scss";
+@use "../../stylesheets/mixins.scss";
 
 .metadata-auto-refresh {
   background-color: white;
@@ -7,7 +7,7 @@
 
   section.metadata-url-warning {
     margin-bottom: 25px;
-    color: $orange;
+    color: vars.$orange;
   }
 
   section.options {
@@ -36,7 +36,7 @@
           box-shadow: 0 0 0 0 white;
         }
         70% {
-          box-shadow: 0 0 10px 8px lighten($green, 15%);
+          box-shadow: 0 0 10px 8px lighten(vars.$green, 15%);
         }
         100% {
           box-shadow: 0 0 0 0 white;
@@ -84,7 +84,7 @@
     }
 
     tbody:nth-child(odd) {
-      background-color: $lightest-grey;
+      background-color: vars.$lightest-grey;
     }
 
     td {
@@ -95,7 +95,7 @@
       &.name {
         i.fa {
           margin-left: 15px;
-          color: $blue;
+          color: vars.$blue;
         }
       }
 

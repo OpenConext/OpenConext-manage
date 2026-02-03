@@ -122,7 +122,7 @@ export default class AutoRefresh extends React.PureComponent {
                               onChange={this.autoRefreshAllowAll} readOnly={guest || !metaDataUrl}
                               info={I18n.t("auto_refresh.allow_all")}/>
                     <span className={`button green ${copiedToClipboardClassName}`} onClick={this.copyToClipboard}>
-                        {I18n.t("clipboard.copy")}<i className="fa fa-clone"></i>
+                        {I18n.t("clipboard.copy")}<i className="fas fa-clone"></i>
                     </span>
                 </section>
                 <section className="fields">

@@ -1,4 +1,4 @@
-@import "../../stylesheets/vars.scss";
+@use "../../stylesheets/vars.scss";
 
 .select-metadata-type {
     span.Select-clear-zone {
@@ -6,8 +6,8 @@
     }
 
     div.Select-control {
-        border-radius: $br;
-        border: 1px solid $lighter-grey;
+        border-radius: vars.$br;
+        border: 1px solid vars.$lighter-grey;
         margin-top: 5px;
         display: table;
         border-spacing: 0;
@@ -19,7 +19,7 @@
 
     span.Select-arrow-zone {
         padding: 0 12px;
-        background-color: $light-grey;
+        background-color: vars.$light-grey;
     }
 
 }
