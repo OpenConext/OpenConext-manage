@@ -52,6 +52,9 @@
         <spring-session-data-mongodb.version>3.4.4</spring-session-data-mongodb.version>
         <wagon-webdav-jackrabbit.version>3.5.1</wagon-webdav-jackrabbit.version>
         <wiremock-standalone.version>3.12.0</wiremock-standalone.version>
+        <logback.version>1.5.18</logback.version>
+        <logback-contrib.version>0.1.5</logback-contrib.version>
+        <logstash.version>8.1</logstash.version>
     </properties>
 
     <build>
