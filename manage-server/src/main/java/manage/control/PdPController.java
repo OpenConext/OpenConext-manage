@@ -41,7 +41,7 @@ public class PdPController {
         this.decideUrl = decideUrl;
         this.parseUrl = parseUrl;
         this.metaDataRepository = metaDataRepository;
-        this.pdpRestTemplate = RestTemplateIdiom.buildRestTemplate(null, pdpUser, pdpPassword);
+        this.pdpRestTemplate = RestTemplateIdiom.buildRestTemplate(this.decideUrl, pdpUser, pdpPassword);
         this.objectMapper = objectMapper;
     }
 
