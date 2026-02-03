@@ -9,9 +9,7 @@ import "./API.scss";
 import debounce from "lodash.debounce";
 import {CheckBox, NotesTooltip, Select} from '../components'
 import {SelectMetaDataType, SelectNewEntityAttribute, SelectNewMetaDataField} from "../components/metadata"
-import {getNameForLanguage} from "../utils/Language";
 import {getInitialLanguage, getNameForLanguage} from "../utils/Language";
-import {flattenArrayOfObjects} from "../utils/FlattenObjectEntries";
 
 const papaparseConfig = {
     quotes: true,
@@ -419,9 +417,9 @@ export default class API extends React.PureComponent {
                             <td className="count">{index + 1}</td>
                             <td className="state">{I18n.t(`metadata.${entity.data.state}`)}</td>
                             <td className="name">
-                            <Link
-                                to={`/metadata/${selectedType}/${isEmpty(fullTextSearch) ? entity["_id"] : entity.id}`}
-                                target="_blank">{getNameForLanguage(entity.data.metaDataFields)}</Link>
+                                <Link
+                                    to={`/metadata/${selectedType}/${isEmpty(fullTextSearch) ? entity["_id"] : entity.id}`}
+                                    target="_blank">{getNameForLanguage(entity.data.metaDataFields)}</Link>
                             </td>
                             <td className="entityId">{entity.data.entityid}</td>
                             <td className="notes">
