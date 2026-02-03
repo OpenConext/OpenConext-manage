@@ -10,6 +10,8 @@ import debounce from "lodash.debounce";
 import {CheckBox, NotesTooltip, Select} from '../components'
 import {SelectMetaDataType, SelectNewEntityAttribute, SelectNewMetaDataField} from "../components/metadata"
 import {getNameForLanguage} from "../utils/Language";
+import {getInitialLanguage, getNameForLanguage} from "../utils/Language";
+import {flattenArrayOfObjects} from "../utils/FlattenObjectEntries";
 
 const papaparseConfig = {
     quotes: true,
@@ -33,7 +35,9 @@ export default class API extends React.PureComponent {
             newGlobalAttributeKey: null,
             status: "all",
             copiedToClipboardClassName: "",
-            copiedToClipboardJSONClassName: ""
+            copiedToClipboardJSONClassName: "",
+            sorted: "count",
+            reverse: true,
         };
     }
 
@@ -316,8 +320,87 @@ export default class API extends React.PureComponent {
         );
     };
 
+    getValueByKey = (obj, targetKey, path = []) => {
+        if (obj === null || typeof obj !== "object") return "";
+
+        // If we find the key here, return the value
+        if (Object.hasOwn(obj, targetKey)) {
+            return path.reduce((acc, p) => acc?.[p], obj) ?? obj[targetKey];
+        }
+
+        // Recursively iterate through all keys
+        for (const key of Object.keys(obj)) {
+            const val = this.getValueByKey(obj[key], targetKey, [...path, key]);
+            if (val !== "") return val;
+        }
+
+        return "";
+    }
+
+    sortByAttribute = (header, reverse = false) => (a, b) => {
+        const aSafe = this.getValueByKey(a, header);
+        const bSafe = this.getValueByKey(b, header);
+
+        // Optional number check
+        if (typeof aSafe === "number" && typeof bSafe === "number") {
+            return (aSafe - bSafe) * (reverse ? -1 : 1);
+        }
+
+        return (
+            aSafe.toString().localeCompare(bSafe.toString()) *
+            (reverse ? -1 : 1)
+        );
+    };
+
+    sortTable = (searchResults, header) => () => {
+        const reverse = this.state.sorted === header ? !this.state.reverse : false;
+        const sorted = [...searchResults].sort(
+            this.sortByAttribute(header, reverse)
+        );
+        this.setState({
+            searchResults: sorted,
+            sorted: header,
+            reverse: reverse
+        });
+    };
+
+    checkHeaders = (header) =>
+        header === `name:${getInitialLanguage()}` ? "name" : header;
+
     renderSearchResultsTable = (searchResults, selectedType, searchAttributes, globalSearchAttributes, status, fullTextSearch) => {
-        const searchHeaders = ["count", "status", "name", "entityid", "notes"]
+        const {sorted, reverse} = this.state;
+        const icon = name => {
+            return name === sorted ? (
+                reverse ? (
+                    <i className="fa fa-arrow-up reverse"/>
+                ) : (
+                    <i className="fa fa-arrow-down current"/>
+                )
+            ) : (
+                <i className="fa fa-arrow-down"/>
+            );
+        };
+        const th = (header, index) => (
+            searchResults.some(
+                item => this.getValueByKey(item, header) !== ""
+            ) ?
+                <th
+                    key={`${header}_${index}`}
+                    className={index < 4 ? header : "extra"}
+                    onClick={this.sortTable(searchResults, header)}
+                >
+                    {index < 4 ? I18n.t(`playground.headers.${this.checkHeaders(header)}`) : header}
+                    {icon(header)}
+                </th>
+                :
+                <th
+                    key={`${header}_${index}`}
+                    className={index < 4 ? header : "extra"}
+                >
+                    {index < 4 ? I18n.t(`playground.headers.${this.checkHeaders(header)}`) : header}
+                </th>
+        );
+        const searchHeaders = ["count", "state", `name:${getInitialLanguage()}`, "entityid", "notes"]
             .concat(Object.keys(searchAttributes))
             .concat(Object.keys(globalSearchAttributes));
         searchResults = status === "all" ? searchResults : searchResults.filter(entity => entity.data.state === status);
@@ -327,8 +410,7 @@ export default class API extends React.PureComponent {
                     <thead>
                     <tr>
                         {searchHeaders.map((header, index) =>
-                            <th key={`${header}_${index}`}
-                                className={index < 4 ? header : "extra"}>{index < 4 ? I18n.t(`playground.headers.${header}`) : header}</th>)}
+                            th(header, index))}
                     </tr>
                     </thead>
                     <tbody>

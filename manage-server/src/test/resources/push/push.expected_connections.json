@@ -154,6 +154,7 @@
           "entity_categories": {
             "1": "http://refeds.org/category/research-and-scholarship"
           },
+          "institution_id": "123",
           "eula": "https://eula",
           "no_consent_required": "1",
           "publish_in_edugain": "1",
