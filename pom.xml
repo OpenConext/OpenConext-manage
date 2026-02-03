@@ -27,8 +27,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>21</java.version>
         <maven.version>3.8.4</maven.version>
-        <node.version>v20.8.0</node.version>
-        <yarn.version>v1.22.21</yarn.version>
+        <node.version>v24.11.0</node.version>
+        <yarn.version>v1.22.22</yarn.version>
 
         <!-- OpenConext dependencies -->
         <java-crypto.version>4.0.2</java-crypto.version>
