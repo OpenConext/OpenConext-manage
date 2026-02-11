@@ -52,8 +52,9 @@ public class ErrorController implements org.springframework.boot.web.servlet.err
             ValidationException validationException = ValidationException.class.cast(error);
             return validationExceptionResponse(result, validationException, status);
         } else if (error instanceof OptimisticLockingFailureException) {
-            result.put("validations", "Optimistic locking failure e.g. mid-air collision. Refresh your screen to get " +
-                "the latest version.");
+            String message = error.getMessage();
+            result.put("validations", String.format("Optimistic locking failure: %s. " +
+                    "Refresh your screen to get the latest version.", message));
             result.put("status", status.value());
             result.put("error", OptimisticLockingFailureException.class.getName());
             return new ResponseEntity<>(result, status);
