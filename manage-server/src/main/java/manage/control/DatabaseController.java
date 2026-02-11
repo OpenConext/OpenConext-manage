@@ -7,6 +7,8 @@ import manage.model.PushOptions;
 import manage.model.Scope;
 import manage.policies.PdpPolicyDefinition;
 import manage.repository.MetaDataRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -34,6 +36,8 @@ import static java.util.stream.Collectors.toMap;
 @RestController
 @SuppressWarnings("unchecked")
 public class DatabaseController {
+
+    private static final Logger LOG = LoggerFactory.getLogger(DatabaseController.class);
 
     private static final int BATCH_SIZE = 500;
 
@@ -106,11 +110,15 @@ public class DatabaseController {
                 this.pdpRestTemplate.put(pdpPushUri, policies);
                 result.put("pdp", Map.of("status", "OK"));
             } catch (HttpStatusCodeException e) {
-                return new ResponseEntity<>(Map.of("message", String.format("Error in push to PDP (%s) status %s and response %s",
-                        pdpPushUri, e.getStatusCode(), e.getResponseBodyAsString())), HttpStatus.INTERNAL_SERVER_ERROR);
+                String message = String.format("Error in push to PDP (%s) status %s and response %s",
+                        pdpPushUri, e.getStatusCode(), e.getResponseBodyAsString());
+                LOG.error(message);
+                return new ResponseEntity<>(Map.of("message", message), HttpStatus.INTERNAL_SERVER_ERROR);
             } catch (Exception e) {
-                return new ResponseEntity<>(Map.of("message", String.format("Error in push to PDP (%s) error %s",
-                        pdpPushUri, e.getMessage())), HttpStatus.INTERNAL_SERVER_ERROR);
+                String message = String.format("Error in push to PDP (%s) error %s",
+                        pdpPushUri, e.getMessage());
+                LOG.error(message);
+                return new ResponseEntity<>(Map.of("message", message), HttpStatus.INTERNAL_SERVER_ERROR);
             }
         } else {
             result.put("pdp", Map.of("status", "OK"));
@@ -126,11 +134,15 @@ public class DatabaseController {
                         "status", response.getStatusCode().is2xxSuccessful() ? "OK" : "ERROR",
                         "response", StringUtils.hasText(body) ? body : ""));
             } catch (HttpStatusCodeException e) {
-                return new ResponseEntity<>(Map.of("message", String.format("Error in push to EngineBlock (%s) status %s and response %s",
-                        pushUri, e.getStatusCode(), e.getResponseBodyAsString())), HttpStatus.INTERNAL_SERVER_ERROR);
+                String message = String.format("Error in push to EngineBlock (%s) status %s and response %s",
+                        pushUri, e.getStatusCode(), e.getResponseBodyAsString());
+                LOG.error(message);
+                return new ResponseEntity<>(Map.of("message", message), HttpStatus.INTERNAL_SERVER_ERROR);
             } catch (Exception e) {
-                return new ResponseEntity<>(Map.of("message", String.format("Error in push to EngineBlock (%s) error %s",
-                        pushUri, e.getMessage())), HttpStatus.INTERNAL_SERVER_ERROR);
+                String message = String.format("Error in push to EngineBlock (%s) error %s",
+                        pushUri, e.getMessage());
+                LOG.error(message);
+                return new ResponseEntity<>(Map.of("message", message), HttpStatus.INTERNAL_SERVER_ERROR);
             }
         } else {
             result.put("eb", Map.of("status", "OK"));
@@ -144,11 +156,15 @@ public class DatabaseController {
                 result.put("oidc", Map.of(
                         "status", response.getStatusCode().is2xxSuccessful() ? "OK" : "ERROR"));
             } catch (HttpStatusCodeException e) {
-                return new ResponseEntity<>(Map.of("message", String.format("Error in push to OIDC (%s) status %s and response %s",
-                        oidcPushUri, e.getStatusCode(), e.getResponseBodyAsString())), HttpStatus.INTERNAL_SERVER_ERROR);
+                String message = String.format("Error in push to OIDC (%s) status %s and response %s",
+                        oidcPushUri, e.getStatusCode(), e.getResponseBodyAsString());
+                LOG.error(message);
+                return new ResponseEntity<>(Map.of("message", message), HttpStatus.INTERNAL_SERVER_ERROR);
             } catch (Exception e) {
-                return new ResponseEntity<>(Map.of("message", String.format("Error in push to OIDC (%s) error %s",
-                        oidcPushUri, e.getMessage())), HttpStatus.INTERNAL_SERVER_ERROR);
+                String message = String.format("Error in push to OIDC (%s) error %s",
+                        oidcPushUri, e.getMessage());
+                LOG.error(message);
+                return new ResponseEntity<>(Map.of("message", message), HttpStatus.INTERNAL_SERVER_ERROR);
             }
         } else {
             result.put("oidc", Map.of("status", "OK"));
