@@ -22,7 +22,7 @@ export default class Header extends React.PureComponent {
     renderProfileLink(currentUser) {
         return (
             <p className="welcome-link">
-                <i className="fas fa-user-circle-o"></i>
+                <i className="fas fa-user-circle"></i>
                 {currentUser.displayName}
             </p>
         );
