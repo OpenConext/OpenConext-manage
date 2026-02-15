@@ -431,8 +431,8 @@ public class MetaDataController {
         return metaDataRepository.spPolicies(entityId);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/client/idpPolicies")
+    @PreAuthorize("hasAnyRole('ADMIN', 'POLICIES')")
+    @GetMapping({"/client/idpPolicies", "internal/idpPolicies"})
     public List<Map> idpPolicies(@RequestParam("entityId") String entityId) {
         return metaDataRepository.idpPolicies(entityId);
     }

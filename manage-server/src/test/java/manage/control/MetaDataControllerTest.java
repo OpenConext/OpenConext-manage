@@ -904,6 +904,17 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void idpPoliciesInternal() {
+        List<Map<String, Object>> policies = given()
+            .when()
+            .auth().preemptive().basic("openconextaccess", "secret")
+            .queryParam("entityId", "http://mock-idp")
+            .get("manage/api/internal/idpPolicies")
+            .as(mapListTypeRef);
+        assertEquals(1, policies.size());
+    }
+
+    @Test
     public void provisioning() {
         List<Map<String, Object>> applications = given()
             .auth()
