@@ -278,7 +278,7 @@ export default class API extends React.PureComponent {
                                     {error && <span className="error">{I18n.t("playground.error")}</span>}
                                 </td>
                                 <td className="trash">
-                                    <span onClick={this.deleteSearchField(key)}><i className="fas fa-trash-o"></i></span>
+                                    <span onClick={this.deleteSearchField(key)}><i className="fas fa-trash"></i></span>
                                 </td>
                             </tr>
                         );
@@ -307,7 +307,7 @@ export default class API extends React.PureComponent {
                                 </td>
                                 <td className="trash">
                                     <span onClick={this.deleteGlobalSearchField(key)}><i
-                                        className="fas fa-trash-o"></i></span>
+                                        className="fas fa-trash"></i></span>
                                 </td>
                             </tr>
                         );

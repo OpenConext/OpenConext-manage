@@ -231,7 +231,7 @@ export default class MetaData extends React.Component {
                 configuration.properties.metaDataFields.required.indexOf(key) < 0 && (
                     <td className="trash">
               <span onClick={this.deleteMetaDataField(key)}>
-                <i className="fas fa-trash-o"/>
+                <i className="fas fa-trash"/>
               </span>
                     </td>
                 )}

@@ -172,7 +172,7 @@ export default class ResourceServers extends React.Component {
                       this.removeResourceServer(entity);
                   }}
               >
-                <i className="fas fa-trash-o"/>
+                <i className="fas fa-trash"/>
               </a>
             </span>
                     )}

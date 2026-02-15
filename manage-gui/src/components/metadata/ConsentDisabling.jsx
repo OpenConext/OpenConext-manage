@@ -164,7 +164,7 @@ export default class ConsentDisabling extends React.Component {
                       this.removeDisableConsent(entity);
                   }}
               >
-                <i className="fas fa-trash-o"/>
+                <i className="fas fa-trash"/>
               </a>
             </span>
                     )}

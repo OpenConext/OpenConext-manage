@@ -465,13 +465,13 @@ export default class Import extends React.Component {
                 <tbody key={key}>
                 <tr>
                     <td className="arpKey" colSpan="2">
-                        <i className={`fa fa-trash-o ${currentValue ? "old" : ""}`}/>
+                        <i className={`fa fa-trash ${currentValue ? "old" : ""}`}/>
                     </td>
                 </tr>
                 {emptyRows.map((val, index) => (
                     <tr key={index} className="spacer">
                         <td className="arpKey" colSpan="2">
-                            <i className="fas fa-trash-o old"/>
+                            <i className="fas fa-trash old"/>
                         </td>
                     </tr>
                 ))}

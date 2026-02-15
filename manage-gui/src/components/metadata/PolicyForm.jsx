@@ -432,7 +432,7 @@ export default function PolicyForm({
                                        disabled={true}
                                        value={loa.level}/>
                                 <span onClick={() => deleteLoa(loa.level)}>
-                                    <i className="fas fa-trash-o"/>
+                                    <i className="fas fa-trash"/>
                                 </span>
                             </div>
                             <div className="loa-container">
@@ -476,7 +476,7 @@ export default function PolicyForm({
                                                     isSearchable={false}
                                                 />
                                                 <span onClick={() => removeCidrNotation(i, index)}>
-                                                    <i className="fas fa-trash-o"/>
+                                                    <i className="fas fa-trash"/>
                                                 </span>
                                             </div>
                                             {cidrNotation.invalid &&

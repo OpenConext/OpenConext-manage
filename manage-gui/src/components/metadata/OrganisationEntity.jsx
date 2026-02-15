@@ -136,7 +136,7 @@ export default class OrganisationEntity extends React.PureComponent {
                             this.removeEntity(entity);
                         }}
                     >
-                        <i className="fas fa-trash-o"/>
+                        <i className="fas fa-trash"/>
                     </a>
                 </td>
                 <td>

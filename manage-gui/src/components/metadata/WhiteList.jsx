@@ -270,7 +270,7 @@ export default class WhiteList extends React.Component {
                       this.removeAllowedEntry(entity);
                   }}
               >
-                <i className="fas fa-trash-o"/>
+                <i className="fas fa-trash"/>
               </a>
             </span>
                     )}

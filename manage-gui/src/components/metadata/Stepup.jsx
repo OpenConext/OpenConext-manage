@@ -210,7 +210,7 @@ export default class Stepup extends React.Component {
                       this.removeStepup(entity);
                   }}
               >
-                <i className="fas fa-trash-o"/>
+                <i className="fas fa-trash"/>
               </a>
             </span>
                     )}
@@ -253,7 +253,7 @@ export default class Stepup extends React.Component {
                       this.removeMfa(entity);
                   }}
               >
-                <i className="fas fa-trash-o"/>
+                <i className="fas fa-trash"/>
               </a>
             </span>
                     )}

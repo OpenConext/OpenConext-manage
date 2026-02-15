@@ -171,7 +171,7 @@ export default class ProvisioningApplications extends React.Component {
                       this.removeApplication(entity);
                   }}
               >
-                <i className="fas fa-trash-o"/>
+                <i className="fas fa-trash"/>
               </a>
             </span>
                 </td>
