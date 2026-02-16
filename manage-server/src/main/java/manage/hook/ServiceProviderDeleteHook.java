@@ -45,6 +45,7 @@ public class ServiceProviderDeleteHook extends MetaDataHookAdapter {
                     policy.getData().get("name"),
                     metaData.getType(),
                     metaData.getType())
+                    , null, null
                 )).toList();
             ValidationException.throwFor(schema, exceptions);
         }

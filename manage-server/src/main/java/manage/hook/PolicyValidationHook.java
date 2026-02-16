@@ -46,14 +46,14 @@ public class PolicyValidationHook extends MetaDataHookAdapter {
         boolean isRegularPolicy = "reg".equals(data.get("type"));
         if (isRegularPolicy) {
             if (!StringUtils.hasText((String) data.get("denyAdviceNl"))) {
-                failures.add(new ValidationException(schema, "Deny advice Nl is required for regular policies", "denyAdviceNl"));
+                failures.add(new ValidationException(schema, "Deny advice Nl is required for regular policies", "denyAdviceNl", null));
             }
             if (!StringUtils.hasText((String) data.get("denyAdvice"))) {
-                failures.add(new ValidationException(schema, "Deny advice is required for regular policies", "denyAdvice"));
+                failures.add(new ValidationException(schema, "Deny advice is required for regular policies", "denyAdvice", null));
             }
             List<Map<String, Object>> attributes = (List<Map<String, Object>>) data.get("attributes");
             if (CollectionUtils.isEmpty(attributes) || attributes.stream().anyMatch(this::invalidAttribute)) {
-                failures.add(new ValidationException(schema, "One or more attributes with non-empty value(s) are required for regular policies", "attributes"));
+                failures.add(new ValidationException(schema, "One or more attributes with non-empty value(s) are required for regular policies", "attributes", null));
             }
         } else {
             List<Map<String, Object>> loas = (List<Map<String, Object>>) data.get("loas");
@@ -62,7 +62,8 @@ public class PolicyValidationHook extends MetaDataHookAdapter {
                 failures.add(new ValidationException(
                         schema,
                         "One or more level of assurances are required for regular policies (without invalid attributes)",
-                        "loas"));
+                        "loas",
+                        null));
             }
         }
         ValidationException.throwFor(schema, failures);
