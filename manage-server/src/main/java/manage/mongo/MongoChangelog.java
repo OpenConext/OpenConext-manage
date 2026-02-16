@@ -64,7 +64,7 @@ public class MongoChangelog {
             TextIndexDefinition textIndexDefinition = new TextIndexDefinition.TextIndexDefinitionBuilder()
                 .onField("$**")
                 .build();
-            mongoTemplate.indexOps(entityType.getType()).createIndex(textIndexDefinition);
+            mongoTemplate.indexOps(entityType.getType()).ensureIndex(textIndexDefinition);
         });
     }
 
@@ -87,7 +87,7 @@ public class MongoChangelog {
     public void revisionCreatedIndex(MongockTemplate mongoTemplate) {
         Stream.of(EntityType.values()).forEach(entityType -> {
             mongoTemplate.indexOps(entityType.getType())
-                .createIndex(new Index("revision.created", Sort.Direction.DESC));
+                .ensureIndex(new Index("revision.created", Sort.Direction.DESC));
         });
     }
 
@@ -95,7 +95,7 @@ public class MongoChangelog {
     public void revisionTerminatedIndex(MongockTemplate mongoTemplate) {
         Stream.of(EntityType.values()).forEach(entityType -> {
             mongoTemplate.indexOps(entityType.getType().concat(REVISION_POSTFIX))
-                .createIndex(new Index("revision.terminated", Sort.Direction.DESC));
+                .ensureIndex(new Index("revision.terminated", Sort.Direction.DESC));
         });
     }
 
@@ -109,7 +109,7 @@ public class MongoChangelog {
                 if (indexInfo.stream().anyMatch(info -> info.getName().equals("data.entityid_1"))) {
                     indexOperations.dropIndex("data.entityid_1");
                 }
-                indexOperations.createIndex(new Index("data.entityid", Sort.Direction.ASC).unique()
+                indexOperations.ensureIndex(new Index("data.entityid", Sort.Direction.ASC).unique()
                     .collation(Collation.of("en").strength(2)));
             });
     }
@@ -202,11 +202,11 @@ public class MongoChangelog {
         if (!mongoTemplate.collectionExists(revision)) {
             mongoTemplate.createCollection(revision);
         }
-        mongoTemplate.indexOps(revision).createIndex(new Index("revision.parentId", Sort.Direction.ASC));
+        mongoTemplate.indexOps(revision).ensureIndex(new Index("revision.parentId", Sort.Direction.ASC));
         TextIndexDefinition textIndexDefinition = new TextIndexDefinition.TextIndexDefinitionBuilder()
             .onField("$**")
             .build();
-        mongoTemplate.indexOps(schema).createIndex(textIndexDefinition);
+        mongoTemplate.indexOps(schema).ensureIndex(textIndexDefinition);
     }
 
     @ChangeSet(order = "012", id = "addTextIndexRS", author = "okke.harsta@surf.nl")
@@ -215,7 +215,7 @@ public class MongoChangelog {
         TextIndexDefinition textIndexDefinition = new TextIndexDefinition.TextIndexDefinitionBuilder()
             .onField("$**")
             .build();
-        mongoTemplate.indexOps(schema).createIndex(textIndexDefinition);
+        mongoTemplate.indexOps(schema).ensureIndex(textIndexDefinition);
     }
 
     @ChangeSet(order = "013", id = "addPolicy", author = "okke.harsta@surf.nl")
@@ -228,11 +228,11 @@ public class MongoChangelog {
         if (!mongoTemplate.collectionExists(revision)) {
             mongoTemplate.createCollection(revision);
         }
-        mongoTemplate.indexOps(revision).createIndex(new Index("revision.parentId", Sort.Direction.ASC));
+        mongoTemplate.indexOps(revision).ensureIndex(new Index("revision.parentId", Sort.Direction.ASC));
         TextIndexDefinition textIndexDefinition = new TextIndexDefinition.TextIndexDefinitionBuilder()
             .onField("$**")
             .build();
-        mongoTemplate.indexOps(schema).createIndex(textIndexDefinition);
+        mongoTemplate.indexOps(schema).ensureIndex(textIndexDefinition);
     }
 
     @ChangeSet(order = "014", id = "clearInvalidARPKeys", author = "okke.harsta@surf.nl")
@@ -295,11 +295,11 @@ public class MongoChangelog {
         if (!mongoTemplate.collectionExists(revision)) {
             mongoTemplate.createCollection(revision);
         }
-        mongoTemplate.indexOps(revision).createIndex(new Index("revision.parentId", Sort.Direction.ASC));
+        mongoTemplate.indexOps(revision).ensureIndex(new Index("revision.parentId", Sort.Direction.ASC));
         TextIndexDefinition textIndexDefinition = new TextIndexDefinition.TextIndexDefinitionBuilder()
             .onField("$**")
             .build();
-        mongoTemplate.indexOps(schema).createIndex(textIndexDefinition);
+        mongoTemplate.indexOps(schema).ensureIndex(textIndexDefinition);
     }
 
     @ChangeSet(order = "016", id = "migrateMultiplicityKeys", author = "okke.harsta@surf.nl")
@@ -396,7 +396,7 @@ public class MongoChangelog {
                 mongoTemplate.createCollection(schema);
                 String revision = schema.concat(REVISION_POSTFIX);
                 mongoTemplate.createCollection(revision);
-                mongoTemplate.indexOps(revision).createIndex(new Index("revision.parentId", Sort.Direction.ASC));
+                mongoTemplate.indexOps(revision).ensureIndex(new Index("revision.parentId", Sort.Direction.ASC));
             }
         });
         connectionTypes.forEach(collection -> {
@@ -404,21 +404,21 @@ public class MongoChangelog {
             indexOps.getIndexInfo().stream()
                 .filter(indexInfo -> indexInfo.getName().contains("data.eid"))
                 .forEach(indexInfo -> indexOps.dropIndex(indexInfo.getName()));
-            indexOps.createIndex(new Index("data.eid", Sort.Direction.ASC).unique());
+            indexOps.ensureIndex(new Index("data.eid", Sort.Direction.ASC).unique());
 
             indexOps.getIndexInfo().stream().filter(indexInfo -> indexInfo.getName().contains("entityid")).forEach(indexInfo -> indexOps.dropIndex(indexInfo.getName()));
-            indexOps.createIndex(new Index("data.entityid", Sort.Direction.ASC).unique()
+            indexOps.ensureIndex(new Index("data.entityid", Sort.Direction.ASC).unique()
                 .collation(Collation.of("en").strength(2)));
-            indexOps.createIndex(new Index("data.state", Sort.Direction.ASC));
+            indexOps.ensureIndex(new Index("data.state", Sort.Direction.ASC));
             if (!collection.equals(EntityType.RS.getType())) {
-                indexOps.createIndex(new Index("data.allowedall", Sort.Direction.ASC));
-                indexOps.createIndex(new Index("data.allowedEntities.name", Sort.Direction.ASC));
-                indexOps.createIndex(new Index("data.metaDataFields.coin:institution_id", Sort.Direction.ASC));
+                indexOps.ensureIndex(new Index("data.allowedall", Sort.Direction.ASC));
+                indexOps.ensureIndex(new Index("data.allowedEntities.name", Sort.Direction.ASC));
+                indexOps.ensureIndex(new Index("data.metaDataFields.coin:institution_id", Sort.Direction.ASC));
             }
         });
         connectionTypes.stream().map(s -> s + "_revision").forEach(collection -> {
             IndexOperations indexOps = mongoTemplate.indexOps(collection);
-            indexOps.createIndex(new Index("revision.parentId", Sort.Direction.ASC));
+            indexOps.ensureIndex(new Index("revision.parentId", Sort.Direction.ASC));
         });
     }
 
