@@ -12,6 +12,7 @@ import {Link} from "react-router-dom";
 import {getNameForLanguage} from "../../utils/Language";
 import {isReadOnly} from "../../utils/EntityTypes";
 import {Select} from "../index";
+import {hyperlinkRevisionNote} from "../../utils/JiraHyperlink";
 
 export default class Connection extends React.PureComponent {
 
@@ -44,6 +45,7 @@ export default class Connection extends React.PureComponent {
     render() {
         const {
             guest,
+            currentUser,
             originalEntityId,
             metaData: {type, revision, data, id},
             revisionNote,
@@ -217,7 +219,7 @@ export default class Connection extends React.PureComponent {
                     <tr>
                         <td className="key">{I18n.t("metadata.revisionnote")}</td>
                         <td className="value">
-                            <span>{revisionNote}</span>
+                            <span>{hyperlinkRevisionNote(revisionNote, currentUser)}</span>
                         </td>
                     </tr>
                     <tr>
@@ -249,5 +251,6 @@ Connection.propTypes = {
     configuration: PropTypes.object.isRequired,
     originalEntityId: PropTypes.string.isRequired,
     revisionNote: PropTypes.string,
+    currentUser: PropTypes.object,
     provisioningGroups: PropTypes.array
 };

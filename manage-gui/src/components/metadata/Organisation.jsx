@@ -6,6 +6,7 @@ import I18n from "i18n-js";
 import String from "../form/String";
 import {isEmpty} from "../../utils/Utils";
 import {validateUniqueField} from "../../api";
+import {hyperlinkRevisionNote} from "../../utils/JiraHyperlink";
 
 export default class Organisation extends React.PureComponent {
 
@@ -65,7 +66,8 @@ export default class Organisation extends React.PureComponent {
             organisation: {id, revision, data},
             guest,
             nameField,
-            errors
+            errors,
+            currentUser
         } = this.props;
         const hasErrorName = !isEmpty(data.name) && errors ? errors[nameField] : false;
         return (
@@ -127,7 +129,7 @@ export default class Organisation extends React.PureComponent {
                     <tr>
                         <td className="key">{I18n.t("metadata.revisionnote")}</td>
                         <td className="value">
-                            <span>{data.revisionnote}</span>
+                            <span>{hyperlinkRevisionNote(data.revisionnote, currentUser)}</span>
                         </td>
                     </tr>
                     <tr>
@@ -158,5 +160,6 @@ Organisation.propTypes = {
     onChange: PropTypes.func.isRequired,
     onError: PropTypes.func.isRequired,
     errors: PropTypes.object.isRequired,
-    guest: PropTypes.bool
+    guest: PropTypes.bool,
+    currentUser: PropTypes.object
 };
