@@ -1744,6 +1744,8 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         );
         changeRequest.setIncrementalChange(true);
         changeRequest.setPathUpdateType(PathUpdateType.REMOVAL);
+        changeRequest.setTicketKey("CXT-123456");
+        changeRequest.setRequestType("Disconect");
 
         Map results = given().auth().preemptive().basic("sp-portal", "secret")
             .when()
@@ -1751,6 +1753,18 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
             .header("Content-type", "application/json")
             .post("manage/api/internal/change-requests")
             .as(Map.class);
+
+        List<Map> changeRequests = given().auth().preemptive().basic("sp-portal", "secret")
+            .when()
+            .header("Content-type", "application/json")
+            .pathParam("type", EntityType.SP.getType())
+            .pathParam("metaDataId","2")
+            .get("manage/api/internal/change-requests/{type}/{metaDataId}")
+            .as(List.class);
+        assertEquals(1, changeRequests.size());
+        Map changeRequestData = changeRequests.getFirst();
+        assertEquals(changeRequest.getTicketKey(), changeRequestData.get("ticketKey"));
+        assertEquals(changeRequest.getRequestType(), changeRequestData.get("requestType"));
 
         given()
             .when()
