@@ -46,7 +46,7 @@
         <javax-validation-api.version>2.0.1.Final</javax-validation-api.version>
         <junit-jupiter-engine.version>5.12.2</junit-jupiter-engine.version>
         <json.version>20231013</json.version>
-        <mongock-bom.version>4.3.8</mongock-bom.version>
+        <mongock-bom.version>5.5.1</mongock-bom.version>
         <passay.version>1.6.1</passay.version>
         <rest-assured.version>5.3.0</rest-assured.version>
         <spring-session-data-mongodb.version>3.4.4</spring-session-data-mongodb.version>

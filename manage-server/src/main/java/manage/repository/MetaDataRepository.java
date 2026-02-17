@@ -396,6 +396,7 @@ public class MetaDataRepository {
         return mongoTemplate.find(query, Map.class, EntityType.PROV.getType());
     }
 
+    @SuppressWarnings("unchecked")
     public Map<String, List<MetaData>> conflictingPolicies() {
         Map<String, List<MetaData>> conflicts = new HashMap<>();
         List<MetaData> policies = this.mongoTemplate.findAll(MetaData.class, EntityType.PDP.getType());

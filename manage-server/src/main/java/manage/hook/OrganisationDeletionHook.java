@@ -39,7 +39,7 @@ public class OrganisationDeletionHook extends MetaDataHookAdapter {
             Schema schema = metaDataAutoConfiguration.schema(EntityType.ORG.getType());
             throw new ValidationException(
                 schema,
-                "Organisation cannot be deleted; it still has linked entities.");
+                "Organisation cannot be deleted; it still has linked entities.", null, null);
         }
 
         return metaDataToBeDeleted;

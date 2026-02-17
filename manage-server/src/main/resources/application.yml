@@ -97,6 +97,7 @@ spring:
     port: 3025
   data:
     mongodb:
+      auto-index-creation: false
       uri: mongodb://localhost:27017/metadata_test
   main:
     banner-mode: "off"

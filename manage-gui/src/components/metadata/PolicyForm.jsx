@@ -52,9 +52,9 @@ export default function PolicyForm({
                 onChange("data.identityProviderIds", [{name: idp}]);
             }
         } else {
-            /* eslint-disable-next-line react-hooks/exhaustive-deps */
             setOriginalName(data.name);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const policyTypeOptions = ["reg", "step"]

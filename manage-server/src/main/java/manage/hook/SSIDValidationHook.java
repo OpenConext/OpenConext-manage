@@ -56,7 +56,7 @@ public class SSIDValidationHook extends MetaDataHookAdapter {
                 Schema schema = metaDataAutoConfiguration.schema(newMetaData.getType());
                 String msg = String.format("Not allowed to configure 'coin:stepup:requireloa'. This SP is already configured as a stepupEntity in IdP: %s",
                         references.stream().map(metaData -> (String) metaData.getData().get("entityid")).collect(Collectors.joining(", ")));
-                throw new ValidationException(schema, msg, "stepupEntities");
+                throw new ValidationException(schema, msg, "stepupEntities", null);
             }
         }
     }

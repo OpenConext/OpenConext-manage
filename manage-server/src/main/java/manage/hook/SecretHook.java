@@ -46,7 +46,7 @@ public class SecretHook extends MetaDataHookAdapter {
             if (!isBCryptEncoded(secret)) {
                 if (secret == null || secret.trim().length() < 12) {
                     Schema schema = metaDataAutoConfiguration.schema(newMetaData.getType());
-                    throw new ValidationException(schema, "Secret has minimal length of 12 characters", "metaDataFields.secret");
+                    throw new ValidationException(schema, "Secret has minimal length of 12 characters", "metaDataFields.secret", null);
                 } else {
                     String encoded = this.passwordEncoder.encode(secret);
                     data.put("secret", encoded);
