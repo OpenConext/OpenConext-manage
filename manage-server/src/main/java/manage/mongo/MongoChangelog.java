@@ -2,7 +2,7 @@ package manage.mongo;
 
 import com.github.cloudyrock.mongock.ChangeLog;
 import com.github.cloudyrock.mongock.ChangeSet;
-import com.github.cloudyrock.mongock.driver.mongodb.springdata.v3.decorator.impl.MongockTemplate;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import com.mongodb.bulk.BulkWriteResult;
 import com.mongodb.client.DistinctIterable;
 import lombok.SneakyThrows;
@@ -43,7 +43,7 @@ public class MongoChangelog {
     private static final Logger LOG = LoggerFactory.getLogger(MongoChangelog.class);
 
     @ChangeSet(order = "001", id = "createCollections", author = "okke.harsta@surf.nl")
-    public void createCollections(MongockTemplate mongoTemplate) {
+    public void createCollections(MongoTemplate mongoTemplate) {
         this.doCreateSchemas(mongoTemplate, Arrays.asList("saml20_sp", "saml20_idp", "oidc10_rp"));
         if (!mongoTemplate.collectionExists("sequences")) {
             LOG.info("Creating sequence collection with new start seq {}", 999L);
@@ -55,11 +55,11 @@ public class MongoChangelog {
     }
 
     @ChangeSet(order = "002", id = "addTextIndexes", author = "okke.harsta@surf.nl")
-    public void addTextIndexes(MongockTemplate mongoTemplate) {
+    public void addTextIndexes(MongoTemplate mongoTemplate) {
         doAddTestIndexes(mongoTemplate);
     }
 
-    private void doAddTestIndexes(MongockTemplate mongoTemplate) {
+    private void doAddTestIndexes(MongoTemplate mongoTemplate) {
         Stream.of(EntityType.values()).forEach(entityType -> {
             TextIndexDefinition textIndexDefinition = new TextIndexDefinition.TextIndexDefinitionBuilder()
                 .onField("$**")
@@ -69,7 +69,7 @@ public class MongoChangelog {
     }
 
     @ChangeSet(order = "003", id = "addDefaultScopes", author = "okke.harsta@surf.nl")
-    public void addDefaultScopes(MongockTemplate mongoTemplate) {
+    public void addDefaultScopes(MongoTemplate mongoTemplate) {
         if (!mongoTemplate.collectionExists("scopes")) {
             mongoTemplate.remove(new Query(), Scope.class);
             DistinctIterable<String> scopes = mongoTemplate.getCollection(EntityType.RP.getType())
@@ -79,12 +79,12 @@ public class MongoChangelog {
     }
 
     @ChangeSet(order = "004", id = "removeSessions", author = "okke.harsta@surf.nl", runAlways = true)
-    public void removeSessions(MongockTemplate mongoTemplate) {
+    public void removeSessions(MongoTemplate mongoTemplate) {
         mongoTemplate.remove(new Query(), "sessions");
     }
 
     @ChangeSet(order = "005", id = "revisionCreatedIndex", author = "okke.harsta@surf.nl")
-    public void revisionCreatedIndex(MongockTemplate mongoTemplate) {
+    public void revisionCreatedIndex(MongoTemplate mongoTemplate) {
         Stream.of(EntityType.values()).forEach(entityType -> {
             mongoTemplate.indexOps(entityType.getType())
                 .createIndex(new Index("revision.created", Sort.Direction.DESC));
@@ -92,7 +92,7 @@ public class MongoChangelog {
     }
 
     @ChangeSet(order = "005", id = "revisionTerminatedIndex", author = "okke.harsta@surf.nl")
-    public void revisionTerminatedIndex(MongockTemplate mongoTemplate) {
+    public void revisionTerminatedIndex(MongoTemplate mongoTemplate) {
         Stream.of(EntityType.values()).forEach(entityType -> {
             mongoTemplate.indexOps(entityType.getType().concat(REVISION_POSTFIX))
                 .createIndex(new Index("revision.terminated", Sort.Direction.DESC));
@@ -100,7 +100,7 @@ public class MongoChangelog {
     }
 
     @ChangeSet(order = "006", id = "caseInsensitiveIndexEntityID", author = "okke.harsta@surf.nl")
-    public void caseInsensitiveIndexEntityID(MongockTemplate mongoTemplate) {
+    public void caseInsensitiveIndexEntityID(MongoTemplate mongoTemplate) {
         Stream.of(EntityType.values())
             .filter(entityType -> !entityType.equals(EntityType.STT))
             .map(EntityType::getType).forEach(val -> {
@@ -116,7 +116,7 @@ public class MongoChangelog {
 
     @SneakyThrows
     @ChangeSet(order = "007", id = "moveResourceServers", author = "okke.harsta@surf.nl")
-    public void moveResourceServers(MongockTemplate mongoTemplate, MetaDataAutoConfiguration metaDataAutoConfiguration) {
+    public void moveResourceServers(MongoTemplate mongoTemplate, MetaDataAutoConfiguration metaDataAutoConfiguration) {
         this.doCreateSchemas(mongoTemplate, Collections.singletonList(EntityType.RS.getType()));
 
         Criteria criteria = Criteria.where("data.metaDataFields.isResourceServer").is(true);
@@ -148,7 +148,7 @@ public class MongoChangelog {
     }
 
     @ChangeSet(order = "008", id = "removeExtraneousKeys", author = "okke.harsta@surf.nl")
-    public void removeExtraneousKeys(MongockTemplate mongoTemplate) {
+    public void removeExtraneousKeys(MongoTemplate mongoTemplate) {
         List<MetaData> relyingParties = mongoTemplate.findAll(MetaData.class, EntityType.RP.getType());
         List<String> extraneousKeysRelyingParties = Arrays.asList("scopes", "isResourceServer");
         relyingParties.forEach(rp -> {
@@ -174,7 +174,7 @@ public class MongoChangelog {
     }
 
     @ChangeSet(order = "009", id = "addScopeTitles", author = "okke.harsta@surf.nl")
-    public void addScopeTitles(MongockTemplate mongoTemplate) {
+    public void addScopeTitles(MongoTemplate mongoTemplate) {
         List<Scope> scopes = mongoTemplate.findAll(Scope.class);
         scopes.forEach(scope -> {
             scope.update(scope);
@@ -183,7 +183,7 @@ public class MongoChangelog {
     }
 
     @ChangeSet(order = "010", id = "createChangeRequestsCollections", author = "okke.harsta@surf.nl")
-    public void createChangeRequestsCollections(MongockTemplate mongoTemplate) {
+    public void createChangeRequestsCollections(MongoTemplate mongoTemplate) {
         Stream.of(EntityType.values()).forEach(entityType -> {
             String revisionCollection = entityType.getType().concat(CHANGE_REQUEST_POSTFIX);
             if (!mongoTemplate.collectionExists(revisionCollection)) {
@@ -193,7 +193,7 @@ public class MongoChangelog {
     }
 
     @ChangeSet(order = "011", id = "addProvisioning", author = "okke.harsta@surf.nl")
-    public void addProvisioning(MongockTemplate mongoTemplate) {
+    public void addProvisioning(MongoTemplate mongoTemplate) {
         String schema = EntityType.PROV.getType();
         if (!mongoTemplate.collectionExists(schema)) {
             mongoTemplate.createCollection(schema);
@@ -210,7 +210,7 @@ public class MongoChangelog {
     }
 
     @ChangeSet(order = "012", id = "addTextIndexRS", author = "okke.harsta@surf.nl")
-    public void addTextIndexRS(MongockTemplate mongoTemplate) {
+    public void addTextIndexRS(MongoTemplate mongoTemplate) {
         String schema = EntityType.RS.getType();
         TextIndexDefinition textIndexDefinition = new TextIndexDefinition.TextIndexDefinitionBuilder()
             .onField("$**")
@@ -219,7 +219,7 @@ public class MongoChangelog {
     }
 
     @ChangeSet(order = "013", id = "addPolicy", author = "okke.harsta@surf.nl")
-    public void addPolicy(MongockTemplate mongoTemplate) {
+    public void addPolicy(MongoTemplate mongoTemplate) {
         String schema = EntityType.PDP.getType();
         if (!mongoTemplate.collectionExists(schema)) {
             mongoTemplate.createCollection(schema);
@@ -236,7 +236,7 @@ public class MongoChangelog {
     }
 
     @ChangeSet(order = "014", id = "clearInvalidARPKeys", author = "okke.harsta@surf.nl")
-    public void clearInvalidARPKeys(MongockTemplate mongoTemplate) {
+    public void clearInvalidARPKeys(MongoTemplate mongoTemplate) {
         final List<String> allowedKeys = List.of("source", "value", "motivation", "release_as", "use_as_nameid");
         List.of(EntityType.RP, EntityType.SP, EntityType.STT).forEach(entityType -> {
             List<MetaData> metaDataList = mongoTemplate.findAll(MetaData.class, entityType.getType());
@@ -286,7 +286,7 @@ public class MongoChangelog {
     }
 
     @ChangeSet(order = "015", id = "addSRAMServices", author = "okke.harsta@surf.nl")
-    public void addSRAMServices(MongockTemplate mongoTemplate) {
+    public void addSRAMServices(MongoTemplate mongoTemplate) {
         String schema = EntityType.SRAM.getType();
         if (!mongoTemplate.collectionExists(schema)) {
             mongoTemplate.createCollection(schema);
@@ -303,7 +303,7 @@ public class MongoChangelog {
     }
 
     @ChangeSet(order = "016", id = "migrateMultiplicityKeys", author = "okke.harsta@surf.nl")
-    public void migrateMultiplicityKeys(MongockTemplate mongoTemplate) {
+    public void migrateMultiplicityKeys(MongoTemplate mongoTemplate) {
         List<MetaData> identityProviders = mongoTemplate.findAll(MetaData.class, EntityType.IDP.getType());
         identityProviders.forEach(metaData -> {
             Map<String, Object> metaDataFields = metaData.metaDataFields();
@@ -327,7 +327,7 @@ public class MongoChangelog {
 
     @SneakyThrows
     @ChangeSet(order = "017", id = "migrateApplicationTags", author = "okke.harsta@surf.nl")
-    public void migrateApplicationTags(MongockTemplate mongoTemplate) {
+    public void migrateApplicationTags(MongoTemplate mongoTemplate) {
         //All of the occurrences of coin:ss:type_of_service:en must be duplicated to application_tags
         String tags = IOUtils.toString(new ClassPathResource("migration.tags.csv").getInputStream(), Charset.defaultCharset());
         String[] lines = tags.split("\\R");
@@ -365,7 +365,7 @@ public class MongoChangelog {
 
     @SneakyThrows
     @ChangeSet(order = "018", id = "removePdpPolicyRequired", author = "okke.harsta@surf.nl")
-    public void removePdpPolicyRequired(MongockTemplate mongoTemplate) {
+    public void removePdpPolicyRequired(MongoTemplate mongoTemplate) {
         String pdpPolicyRequired = "coin:policy_enforcement_decision_required";
         Arrays.asList(EntityType.SP, EntityType.RP, EntityType.IDP, EntityType.SRAM, EntityType.STT)
             .parallelStream()
@@ -390,7 +390,7 @@ public class MongoChangelog {
         rs.metaDataFields().entrySet().removeIf(entry -> !simpleProperties.containsKey(entry.getKey()) && patterns.stream().noneMatch(pattern -> pattern.matcher(entry.getKey()).matches()));
     }
 
-    private void doCreateSchemas(MongockTemplate mongoTemplate, List<String> connectionTypes) {
+    private void doCreateSchemas(MongoTemplate mongoTemplate, List<String> connectionTypes) {
         connectionTypes.forEach(schema -> {
             if (!mongoTemplate.collectionExists(schema)) {
                 mongoTemplate.createCollection(schema);
