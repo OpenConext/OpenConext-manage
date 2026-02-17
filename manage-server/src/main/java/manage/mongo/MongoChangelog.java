@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @ChangeLog(order = "001")
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"unchecked", "deprecation"})
 public class MongoChangelog {
 
     public static final String REVISION_POSTFIX = "_revision";
