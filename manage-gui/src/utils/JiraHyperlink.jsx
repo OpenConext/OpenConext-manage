@@ -1,5 +1,9 @@
 import React from "react";
 
+export const isCxtTicket = (text) => text.match(/^CXT-\d+$/);
+
+export const splitOnCxtTickets = (text) => text.split(/(CXT-\d+)/g);
+
 export const hyperlinkRevisionNote = (revisionNote, currentUser) => {
     if (!revisionNote) {
         return revisionNote;
@@ -8,15 +12,14 @@ export const hyperlinkRevisionNote = (revisionNote, currentUser) => {
     if (!jiraBaseUrl) {
         return revisionNote;
     }
-    const parts = revisionNote.split(/(CXT-\d+)/g);
+    const parts = splitOnCxtTickets(revisionNote);
     return (
         <span>
-            {parts.map((part, index) => {
-                if (part.match(/^CXT-\d+$/)) {
-                    return <a key={index} href={`${jiraBaseUrl}${part}`} target="_blank" rel="noopener noreferrer">{part}</a>
-                }
-                return part;
-            })}
+            {parts.map((part, index) => (
+                isCxtTicket(part)
+                    ? <a key={index} href={`${jiraBaseUrl}${part}`} target="_blank" rel="noopener noreferrer">{part}</a>
+                    : part
+            ))}
         </span>
     );
 }
