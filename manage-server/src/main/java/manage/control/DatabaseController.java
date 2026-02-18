@@ -7,6 +7,8 @@ import manage.model.PushOptions;
 import manage.model.Scope;
 import manage.policies.PdpPolicyDefinition;
 import manage.repository.MetaDataRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -20,6 +22,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
@@ -33,6 +36,8 @@ import static java.util.stream.Collectors.toMap;
 @RestController
 @SuppressWarnings("unchecked")
 public class DatabaseController {
+
+    private static final Logger LOG = LoggerFactory.getLogger(DatabaseController.class);
 
     private static final int BATCH_SIZE = 500;
 
@@ -101,20 +106,44 @@ public class DatabaseController {
         Map<String, Object> result = new HashMap<>();
         List<PdpPolicyDefinition> policies = pushPreviewPdP();
         if (pushOptions.isIncludePdP() && pdpEnabled) {
-            this.pdpRestTemplate.put(pdpPushUri, policies);
-            result.put("pdp", Map.of("status", "OK"));
+            try {
+                this.pdpRestTemplate.put(pdpPushUri, policies);
+                result.put("pdp", Map.of("status", "OK"));
+            } catch (HttpStatusCodeException e) {
+                String message = String.format("Error in push to PDP (%s) status %s and response %s",
+                        pdpPushUri, e.getStatusCode(), e.getResponseBodyAsString());
+                LOG.error(message);
+                return new ResponseEntity<>(Map.of("message", message), HttpStatus.INTERNAL_SERVER_ERROR);
+            } catch (Exception e) {
+                String message = String.format("Error in push to PDP (%s) error %s",
+                        pdpPushUri, e.getMessage());
+                LOG.error(message);
+                return new ResponseEntity<>(Map.of("message", message), HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         } else {
             result.put("pdp", Map.of("status", "OK"));
         }
         if (pushOptions.isIncludeEB()) {
             Map<String, Map<String, Map<String, Object>>> json = this.doPushPreview(policies);
 
-            ResponseEntity<String> response = this.restTemplate.postForEntity(pushUri, json, String.class);
+            try {
+                ResponseEntity<String> response = this.restTemplate.postForEntity(pushUri, json, String.class);
 
-            String body = response.getBody();
-            result.put("eb", Map.of(
-                "status", response.getStatusCode().is2xxSuccessful() ? "OK" : "ERROR",
-                "response", StringUtils.hasText(body) ? body : ""));
+                String body = response.getBody();
+                result.put("eb", Map.of(
+                        "status", response.getStatusCode().is2xxSuccessful() ? "OK" : "ERROR",
+                        "response", StringUtils.hasText(body) ? body : ""));
+            } catch (HttpStatusCodeException e) {
+                String message = String.format("Error in push to EngineBlock (%s) status %s and response %s",
+                        pushUri, e.getStatusCode(), e.getResponseBodyAsString());
+                LOG.error(message);
+                return new ResponseEntity<>(Map.of("message", message), HttpStatus.INTERNAL_SERVER_ERROR);
+            } catch (Exception e) {
+                String message = String.format("Error in push to EngineBlock (%s) error %s",
+                        pushUri, e.getMessage());
+                LOG.error(message);
+                return new ResponseEntity<>(Map.of("message", message), HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         } else {
             result.put("eb", Map.of("status", "OK"));
         }
@@ -122,9 +151,21 @@ public class DatabaseController {
         // Now push all oidc_rp metadata to OIDC proxy
         if (!environment.acceptsProfiles(Profiles.of("dev")) && oidcEnabled && pushOptions.isIncludeOIDC()) {
             List<MetaData> filteredEntities = pushPreviewOIDC();
-            ResponseEntity<Void> response = this.oidcRestTemplate.postForEntity(oidcPushUri, filteredEntities, Void.class);
-            result.put("oidc", Map.of(
-                "status", response.getStatusCode().is2xxSuccessful() ? "OK" : "ERROR"));
+            try {
+                ResponseEntity<Void> response = this.oidcRestTemplate.postForEntity(oidcPushUri, filteredEntities, Void.class);
+                result.put("oidc", Map.of(
+                        "status", response.getStatusCode().is2xxSuccessful() ? "OK" : "ERROR"));
+            } catch (HttpStatusCodeException e) {
+                String message = String.format("Error in push to OIDC (%s) status %s and response %s",
+                        oidcPushUri, e.getStatusCode(), e.getResponseBodyAsString());
+                LOG.error(message);
+                return new ResponseEntity<>(Map.of("message", message), HttpStatus.INTERNAL_SERVER_ERROR);
+            } catch (Exception e) {
+                String message = String.format("Error in push to OIDC (%s) error %s",
+                        oidcPushUri, e.getMessage());
+                LOG.error(message);
+                return new ResponseEntity<>(Map.of("message", message), HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         } else {
             result.put("oidc", Map.of("status", "OK"));
         }

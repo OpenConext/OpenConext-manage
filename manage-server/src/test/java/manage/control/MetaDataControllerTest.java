@@ -961,8 +961,9 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
             .post("manage/api/internal/validate/metadata")
             .then()
             .statusCode(SC_BAD_REQUEST)
-            .body("validations", equalTo("#/metaDataFields/AssertionConsumerService:0:Binding: bogus is not a valid " +
-                "enum value"));
+            .body("validations", containsString("Validation failed for entity Duis ad do 2 (unknown type)"))
+            .body("validations", containsString("#/metaDataFields/AssertionConsumerService:0:Binding: bogus is not a valid enum value"))
+            .body("validations", containsString("in schema #/definitions/AssertionConsumerService_Binding"));
     }
 
     @Test
@@ -1005,9 +1006,8 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
 
         doNewSp(body)
             .statusCode(SC_BAD_REQUEST)
-            .body("validations", equalTo(
-                "#/metaDataFields: required key [AssertionConsumerService:0:Binding] not found, " +
-                    "#/metaDataFields: required key [AssertionConsumerService:0:Location] not found"));
+            .body("validations", containsString("#/metaDataFields: required key [AssertionConsumerService:0:Binding] not found"))
+            .body("validations", containsString("#/metaDataFields: required key [AssertionConsumerService:0:Location] not found"));
     }
 
     private ValidatableResponse doNewSp(Map<String, String> body) {
@@ -1460,7 +1460,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
             .post("manage/api/internal/metadata")
             .then()
             .statusCode(SC_BAD_REQUEST)
-            .body("validations", equalTo("#/arp/attributes: expected type: JSONObject, found: JSONArray"));
+            .body("validations", containsString("#/arp/attributes: expected type: JSONObject, found: JSONArray"));
     }
 
     @Test
@@ -1481,9 +1481,10 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     @Test
     public void validationErrors() {
         Map<String, Object> data = readValueFromFile("/json/valid_service_provider.json");
+        String entityId = UUID.randomUUID().toString();
         MetaData metaData = new MetaData(EntityType.SP.getType(), data);
         metaData.metaDataFields().clear();
-        metaData.getData().put("entityid", UUID.randomUUID().toString());
+        metaData.getData().put("entityid", entityId);
 
         Map<String, Object> result = given().auth()
             .preemptive()
@@ -1494,8 +1495,12 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
             .post("manage/api/internal/metadata")
             .as(new TypeRef<>() {
             });
-        long nbrValidations = Stream.of(((String) result.get("validations")).split("#")).filter(s -> !s.trim().isEmpty()).count();
-        assertEquals(3L, nbrValidations);
+        String validations = (String) result.get("validations");
+        assertTrue(validations.contains("Validation failed for entity " + entityId + " (unknown type)"));
+        assertTrue(validations.contains("required key [name:en] not found"));
+        assertTrue(validations.contains("required key [AssertionConsumerService:0:Binding] not found"));
+        assertTrue(validations.contains("required key [AssertionConsumerService:0:Location] not found"));
+        assertTrue(validations.contains("in schema #/properties/metaDataFields"));
 
     }
 
@@ -2062,17 +2067,16 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
         arpAttribute.put("use_as_name_id", true);
         arpAttribute.put("releaseAs", true);
 
-        Map errors = given()
+        Map<String, Object> errors = given()
             .when()
             .body(existingMetaData)
             .header("Content-type", "application/json")
             .put("manage/api/client/metadata")
             .as(Map.class);
         String validations = (String) errors.get("validations");
-        assertEquals("#/arp/attributes/urn:mace:dir:attribute-def:givenName/0: extraneous key [use_as_name_id] is not permitted, " +
-                "#/arp/attributes/urn:mace:dir:attribute-def:givenName/0: extraneous key [releaseAs] is not permitted, " +
-                "#/arp/attributes/urn:mace:dir:attribute-def:givenName/0: extraneous key [useAsNameId] is not permitted",
-            validations);
+        assertTrue(validations.contains("#/arp/attributes/urn:mace:dir:attribute-def:givenName/0: extraneous key [use_as_name_id] is not permitted"));
+        assertTrue(validations.contains("#/arp/attributes/urn:mace:dir:attribute-def:givenName/0: extraneous key [releaseAs] is not permitted"));
+        assertTrue(validations.contains("#/arp/attributes/urn:mace:dir:attribute-def:givenName/0: extraneous key [useAsNameId] is not permitted"));
     }
 
     @Test
@@ -2116,8 +2120,10 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
             .post("manage/api/client/metadata")
             .as(new TypeRef<>() {
             });
-        assertEquals("#/metaDataFields/NameIDFormat: urn:oasis:names:tc:SAML:2.0:nameid-format:bogus is not a valid enum value",
-            results.get("validations"));
+        String validations = (String) results.get("validations");
+        assertTrue(validations.contains("Validation failed for entity https://unique_entity_id (unknown type)"));
+        assertTrue(validations.contains("#/metaDataFields/NameIDFormat: urn:oasis:names:tc:SAML:2.0:nameid-format:bogus is not a valid enum value"));
+        assertTrue(validations.contains("in schema #/definitions/NameIDFormat"));
     }
 
     @Test
