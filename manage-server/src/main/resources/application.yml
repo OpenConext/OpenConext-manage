@@ -52,6 +52,7 @@ product:
   organization: OpenConext
   #  service_provider_feed_url: http://mds.edugain.org/edugain-v2.xml
   service_provider_feed_url: http://localhost:8000/edugain.xml
+  jira_base_url: https://servicedesk.surf.nl/jira/browse/
   supported_languages: en,nl
   show_oidc_rp: true
 

@@ -960,6 +960,7 @@ class Detail extends React.PureComponent {
                         onError={this.onError("connection")}
                         errors={errors["connection"]}
                         guest={guest}
+                        currentUser={currentUser}
                         isNew={isNew}
                         originalEntityId={originalEntityId}
                         configuration={configuration}
@@ -1073,6 +1074,7 @@ class Detail extends React.PureComponent {
                         firstRevisionNote={revisionNoteClone}
                         isNew={isNew}
                         entityType={type}
+                        currentUser={currentUser}
                     />
                 );
             case "export":
@@ -1105,6 +1107,7 @@ class Detail extends React.PureComponent {
                         onError={this.onError("organisation")}
                         errors={errors["organisation"]}
                         guest={guest}
+                        currentUser={currentUser}
                     />
                 );
             case "organisation_entity":
