@@ -35,7 +35,7 @@ public class MongoConverter {
             Class<?> clazz = persistentEntity.getType();
             if (clazz.isAnnotationPresent(Document.class)) {
                 IndexOperations indexOps = mongoTemplate.indexOps(clazz);
-                resolver.resolveIndexFor(clazz).forEach(indexOps::ensureIndex);
+                resolver.resolveIndexFor(clazz).forEach(indexOps::createIndex);
             }
         });
     }

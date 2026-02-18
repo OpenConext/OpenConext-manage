@@ -5,6 +5,8 @@ import manage.exception.CustomValidationException;
 import manage.exception.EndpointNotAllowed;
 import manage.exception.ScopeInUseException;
 import org.everit.json.schema.ValidationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.DefaultErrorAttributes;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
@@ -27,10 +29,16 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 @RestController
 public class ErrorController implements org.springframework.boot.web.servlet.error.ErrorController {
 
+    private static final Logger LOG = LoggerFactory.getLogger(ErrorController.class);
+
     private final ErrorAttributes errorAttributes;
 
+    public ErrorController(ErrorAttributes errorAttributes) {
+        this.errorAttributes = errorAttributes;
+    }
+
     public ErrorController() {
-        this.errorAttributes = new DefaultErrorAttributes();
+        this(new DefaultErrorAttributes());
     }
 
     @RequestMapping("/error")
@@ -41,19 +49,31 @@ public class ErrorController implements org.springframework.boot.web.servlet.err
 
         Throwable error = errorAttributes.getError(webRequest);
 
+        if (error != null) {
+            LOG.warn("Error occurred: {}", error.getMessage());
+        }
+
         //Determine which status to return - GUI expects 200 and other API clients normal behaviour
         boolean isInternalCall = StringUtils.hasText(request.getHeader(HttpHeaders.AUTHORIZATION));
         HttpStatus status = isInternalCall ? HttpStatus.BAD_REQUEST : HttpStatus.OK;
         if (error instanceof CustomValidationException) {
-            ValidationException validationException = CustomValidationException.class.cast(error).getValidationException();
-            return validationExceptionResponse(result, validationException, status);
+            CustomValidationException cve = (CustomValidationException) error;
+            ValidationException validationException = cve.getValidationException();
+            Map<String, Object> response = validationExceptionResponse(result, validationException, status, webRequest);
+            if (cve.getData() != null) {
+                response.put("rawInput", cve.getData());
+            }
+            return new ResponseEntity<>(response, status);
         }
         if (error instanceof ValidationException) {
             ValidationException validationException = ValidationException.class.cast(error);
-            return validationExceptionResponse(result, validationException, status);
+            return new ResponseEntity<>(validationExceptionResponse(result, validationException, status, webRequest), status);
+        } else if (error != null && error.getClass().getName().endsWith("InternalValidationException")) {
+            return new ResponseEntity<>(internalValidationExceptionResponse(result, error, status, webRequest), status);
         } else if (error instanceof OptimisticLockingFailureException) {
-            result.put("validations", "Optimistic locking failure e.g. mid-air collision. Refresh your screen to get " +
-                "the latest version.");
+            String message = error.getMessage();
+            result.put("validations", String.format("Optimistic locking failure: %s. " +
+                    "Refresh your screen to get the latest version.", message));
             result.put("status", status.value());
             result.put("error", OptimisticLockingFailureException.class.getName());
             return new ResponseEntity<>(result, status);
@@ -80,11 +100,30 @@ public class ErrorController implements org.springframework.boot.web.servlet.err
         return new ResponseEntity<>(result, statusCode);
     }
 
-    private static ResponseEntity<Map<String, Object>> validationExceptionResponse(Map<String, Object> result, ValidationException validationException, HttpStatus status) {
-        result.put("validations", String.join(", ", validationException.getAllMessages()));
+    private Map<String, Object> internalValidationExceptionResponse(Map<String, Object> result, Throwable error, HttpStatus status, ServletWebRequest webRequest) {
+        result.put("validations", error.getMessage());
+        result.put("status", status.value());
+        result.put("error", error.getClass().getName());
+        return result;
+    }
+
+    private Map<String, Object> validationExceptionResponse(Map<String, Object> result, ValidationException validationException, HttpStatus status, ServletWebRequest webRequest) {
+        Throwable error = errorAttributes.getError(webRequest);
+        String message;
+        if (error instanceof CustomValidationException) {
+            message = error.getMessage();
+        } else {
+            message = String.join(", ", validationException.getAllMessages());
+            String schemaLocation = validationException.getSchemaLocation();
+            if (StringUtils.hasText(schemaLocation)) {
+                message += " in schema " + schemaLocation;
+            }
+        }
+
+        result.put("validations", message);
         result.put("status", status.value());
         result.put("error", ValidationException.class.getName());
-        return new ResponseEntity<>(result, status);
+        return result;
     }
 
 }

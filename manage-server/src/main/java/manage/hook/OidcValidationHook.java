@@ -53,26 +53,26 @@ public class OidcValidationHook extends MetaDataHookAdapter {
         List<ValidationException> failures = new ArrayList<>();
         if (grants.stream().anyMatch(grant -> Arrays.asList("authorization_code", "implicit").contains(grant)) &&
                 redirectUrls.isEmpty()) {
-            failures.add(new ValidationException(schema, "Redirect URI is required with selected grant types", "redirectUris"));
+            failures.add(new ValidationException(schema, "Redirect URI is required with selected grant types", "redirectUris", null));
         }
         if (grants.size() == 1 && grants.get(0).equals("client_credentials") && redirectUrls.size() > 0) {
-            failures.add(new ValidationException(schema, "Redirect URI is not allowed with selected grant type", "redirectUris"));
+            failures.add(new ValidationException(schema, "Redirect URI is not allowed with selected grant type", "redirectUris", null));
         }
         if (grants.size() == 1 && grants.get(0).equals("refresh_token")) {
-            failures.add(new ValidationException(schema, "Refresh token grant must be combined with another grant type", "grants"));
+            failures.add(new ValidationException(schema, "Refresh token grant must be combined with another grant type", "grants", null));
         }
         if (metaDataFields.get("refreshTokenValidity") != null && grants.stream().noneMatch(grant -> grant.equals("refresh_token"))) {
-            failures.add(new ValidationException(schema, "refreshTokenValidity specified, but no refresh_token grant. Either remove refreshTokenValidity or add refresh_token grant type", "refreshTokenValidity"));
+            failures.add(new ValidationException(schema, "refreshTokenValidity specified, but no refresh_token grant. Either remove refreshTokenValidity or add refresh_token grant type", "refreshTokenValidity", null));
         }
         if (!allowSecretPublicRP) {
             if (isPublicClient && StringUtils.hasText(secret)) {
-                failures.add(new ValidationException(schema, "Public clients are not allowed a secret", "isPublicClient"));
+                failures.add(new ValidationException(schema, "Public clients are not allowed a secret", "isPublicClient", null));
             }
             if (!isPublicClient && !StringUtils.hasText(secret)) {
-                failures.add(new ValidationException(schema, "Non-public clients are required a secret", "secret"));
+                failures.add(new ValidationException(schema, "Non-public clients are required a secret", "secret", null));
             }
             if (grants.size() == 1 && grants.get(0).equals("urn:ietf:params:oauth:grant-type:device_code") && StringUtils.hasText(secret)) {
-                failures.add(new ValidationException(schema, "Device Code RP is not allowed a secret", "redirectUris"));
+                failures.add(new ValidationException(schema, "Device Code RP is not allowed a secret", "redirectUris", null));
             }
         }
         ValidationException.throwFor(schema, failures);

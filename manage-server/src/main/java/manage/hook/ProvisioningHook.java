@@ -44,7 +44,8 @@ public class ProvisioningHook extends MetaDataHookAdapter {
                     String.format("Not allowed the change the provisioning_type for provisioning metadata (changed from %s to %s)." +
                                     " Delete this entity and create new provisioning",
                             previousProvisioningType, newProvisioningType),
-                    "metaDataFields.provisioning_type");
+                    "metaDataFields.provisioning_type",
+                    null);
         }
         prePost(newMetaData, user);
         return this.filterInvalidApplications(newMetaData);
@@ -72,7 +73,7 @@ public class ProvisioningHook extends MetaDataHookAdapter {
                 required.forEach(attribute -> {
                     if (!StringUtils.hasText((String) metaDataFields.get(attribute))) {
                         failures.add(new ValidationException(schema,
-                                String.format("%s is required with provisioningType %s", attribute, provisioningType), attribute));
+                                String.format("%s is required with provisioningType %s", attribute, provisioningType), attribute, null));
                     }
                 });
             }
@@ -83,7 +84,7 @@ public class ProvisioningHook extends MetaDataHookAdapter {
                     if (!StringUtils.hasText((String) metaDataFields.get(attribute))) {
                         failures.add(new ValidationException(schema,
                                 String.format("%s is required with provisioningType scim when no scim_bearer_token is configured",
-                                        attribute), attribute));
+                                        attribute), attribute, null));
                     }
                 });
 
@@ -112,7 +113,7 @@ public class ProvisioningHook extends MetaDataHookAdapter {
                 Schema schema = metaDataAutoConfiguration.schema(EntityType.PROV.getType());
                 throw new ValidationException(
                         schema,
-                        "coin:institution_guid is required, for scim provisioning with an eduID scim_user_identifier.");
+                        "coin:institution_guid is required, for scim provisioning with an eduID scim_user_identifier.", null, null);
             } else {
                 List<MetaData> references = metaDataRepository.findRaw(IDP.getType(),
                         String.format("{\"data.metaDataFields.coin:institution_guid\" : \"%s\"}", institutionGuid));
@@ -120,7 +121,7 @@ public class ProvisioningHook extends MetaDataHookAdapter {
                     Schema schema = metaDataAutoConfiguration.schema(EntityType.PROV.getType());
                     throw new ValidationException(
                             schema,
-                            "coin:institution_guid must be a valid / existing IdP institution_guid.");
+                            "coin:institution_guid must be a valid / existing IdP institution_guid.", null, null);
                 }
             }
         }

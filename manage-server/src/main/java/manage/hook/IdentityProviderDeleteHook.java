@@ -41,7 +41,7 @@ public class IdentityProviderDeleteHook extends MetaDataHookAdapter {
             List<ValidationException> exceptions = policies.stream().map(policy ->
                 new ValidationException(
                     schema, String.format("The policy %s uses this IdP. First remove this IdP from the policy.",
-                    policy.getData().get("name"))
+                    policy.getData().get("name")), null, null
                 )).toList();
             ValidationException.throwFor(schema, exceptions);
         }

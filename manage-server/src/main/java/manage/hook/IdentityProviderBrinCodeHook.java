@@ -47,11 +47,11 @@ public class IdentityProviderBrinCodeHook extends MetaDataHookAdapter {
         Schema schema = metaDataAutoConfiguration.schema(EntityType.IDP.getType());
         if (StringUtils.hasText(brinCode) && !StringUtils.hasText(brinCodeSchacHome)) {
             failures.add(new ValidationException(schema, "coin:institution_brin_schac_home is required for an IdP with coin:institution_brin",
-                "coin:institution_brin_schac_home"));
+                "coin:institution_brin_schac_home", null));
         }
         if (!StringUtils.hasText(brinCode) && StringUtils.hasText(brinCodeSchacHome)) {
             failures.add(new ValidationException(schema, "coin:institution_brin is required for an IdP with coin:institution_brin_schac_home",
-                "coin:institution_brin"));
+                "coin:institution_brin", null));
         }
         ValidationException.throwFor(schema, failures);
     }

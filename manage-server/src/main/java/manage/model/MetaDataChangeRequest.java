@@ -44,7 +44,11 @@ public class MetaDataChangeRequest implements PathUpdates {
     @Setter
     private Map<String, Object> metaDataSummary;
 
+    @Setter
     private String requestType;
+
+    @Setter
+    private String ticketKey;
 
     public MetaDataChangeRequest(String metaDataId, String type, String note, Map<String, Object> pathUpdates, Map<String, Object> auditData) {
         this.metaDataId = metaDataId;

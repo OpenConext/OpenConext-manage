@@ -55,7 +55,7 @@ public class CertificateDataDuplicationHook extends MetaDataHookAdapter {
             Schema schema = metaDataAutoConfiguration.schema(metaData.getType());
             failures.add(new ValidationException(schema,
                 "Certificate data fields must not contain duplicate values. Fields: \"certData\" \"certData2\" \"certData3\"",
-                "certData"));
+                "certData", null));
             ValidationException.throwFor(schema, failures);
         }
     }

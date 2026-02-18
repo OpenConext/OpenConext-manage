@@ -49,7 +49,7 @@ public class PolicyNameConstraintsHook extends MetaDataHookAdapter {
                 ((String) metaData.getData().get("name")).equalsIgnoreCase(name));
         if (newError || existingError) {
             Schema schema = metaDataAutoConfiguration.schema(EntityType.PDP.getType());
-            throw new ValidationException(schema, "Name '" + name + "' is already taken and must be unique", "name");
+            throw new ValidationException(schema, "Name '" + name + "' is already taken and must be unique", "name", null);
         }
         return newMetaData;
     }

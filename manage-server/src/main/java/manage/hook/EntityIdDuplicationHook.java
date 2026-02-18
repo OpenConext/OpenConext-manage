@@ -82,7 +82,7 @@ public class EntityIdDuplicationHook extends MetaDataHookAdapter {
                         String.format("Duplicate entityid %s in collection %s with id %s",
                             entityId(metaData),
                             metaData.getType(),
-                            metaData.getId()))))
+                            metaData.getId()), null, null)))
                 .toList();
             ValidationException.throwFor(schema, failures);
         }

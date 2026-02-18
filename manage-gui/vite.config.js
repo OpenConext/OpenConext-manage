@@ -38,7 +38,7 @@ export default defineConfig({
         preprocessorOptions: {
             scss: {
                 // ToDo fix?
-                silenceDeprecations: ["mixed-decls", "global-builtin", "color-functions"],
+                silenceDeprecations: ["global-builtin", "color-functions"],
             },
         },
     },

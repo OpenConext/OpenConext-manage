@@ -93,7 +93,7 @@ public class MetaDataAutoConfiguration {
             schema.validate(jsonObject);
         } catch (ValidationException e) {
             //We want to log the actual violations
-            throw new CustomValidationException(e);
+            throw new CustomValidationException(e, data);
         }
 
     }

@@ -70,7 +70,8 @@ public class RequiredAttributesHook extends MetaDataHookAdapter {
                 if (value == null || (value instanceof String && !StringUtils.hasText((String) value))) {
                     failures.add(new ValidationException(schema,
                             String.format("Missing required attribute %s defined as required by %s", name, parentKey),
-                            name));
+                            name,
+                            null));
                 }
             });
         }

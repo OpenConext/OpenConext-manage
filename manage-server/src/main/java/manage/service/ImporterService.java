@@ -66,7 +66,7 @@ public class ImporterService {
 
     public Map<String, Object> importXMLUrl(EntityType type, Import importRequest) {
         try {
-            Resource resource = new SaveURLResource(new URL(importRequest.getUrl()),
+            Resource resource = new SaveURLResource(new URI(importRequest.getUrl()).toURL(),
                     environment.acceptsProfiles(Profiles.of("dev")), autoRefreshUserAgent);
             Map<String, Object> result = importXML(resource, type, Optional
                     .ofNullable(importRequest.getEntityId()));
@@ -75,7 +75,7 @@ public class ImporterService {
             }
             result.put("metadataurl", importRequest.getUrl());
             return result;
-        } catch (IOException | XMLStreamException e) {
+        } catch (IOException | XMLStreamException | URISyntaxException e) {
             return singletonMap("errors", singletonList(e.getClass().getName()));
         }
     }
