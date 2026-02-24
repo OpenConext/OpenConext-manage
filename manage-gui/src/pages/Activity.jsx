@@ -26,7 +26,8 @@ export default class Activity extends React.Component {
             query: "",
             loaded: false,
             sorted: "created",
-            copiedToClipboardClassName: ""
+            copiedToClipboardClassName: "",
+            expandedId: null
         };
     }
 
@@ -112,43 +113,70 @@ export default class Activity extends React.Component {
                 </tr>
                 </thead>
                 <tbody>
-                {filteredActivity.map(a => this.renderActivity(a))}
+                {filteredActivity.map((a, index) => this.renderActivity(a, index))}
                 </tbody>
             </table>
 
         </section>
     }
 
-    renderActivity = (a) => {
+    // A row that expands to show the diff.
+    // Need to get the revision here, together with previous one
+    // Required data: http://localhost:3006/manage/api/client/revisions/saml20_idp/6
+    // - type (saml20_idp)
+    // - id OR parentId (6)
+    /// Solution direction: opening a row renders the new component, that triggers a fetch based on type and ID
+    /// Consider what to do when the row gets closed and reopened again
+    toggleExpanded = (id) => {
+        this.setState(({expandedId}) => ({expandedId: expandedId === id ? null : id}));
+    };
+
+    renderActivity = (a, index) => {
         //"name", "entityId", "type", "created", "state", "revisionNote", "updatedBy"
-        return <tr key={a.id}>
-            <td>
-                {isEmpty(a.terminated) && <Link to={`/metadata/${a.type}/${a.id}/revisions`} target="_blank">
-                    {a.name}
-                </Link>}
-                {!isEmpty(a.terminated) && <span>{a.name}</span>}
-            </td>
-            <td>
-                {a.organization}
-            </td>
-            <td>
-                {a.entityId}
-            </td>
-            <td>
-                {a.type}
-            </td>
-            <td>
-                {a.created.toGMTString()}
-            </td>
-            <td className="terminated"><CheckBox name="terminated" value={!isEmpty(a.terminated)} readOnly={true}/></td>
-            <td className="info">
-                {isEmpty(a.revisionNote) ? <span></span> :
-                    <NotesTooltip identifier={a.entityId} notes={a.revisionNote}/>}
-            </td>
-            <td>
-                {a.updatedBy}
-            </td>
-        </tr>
+        const {expandedId} = this.state;
+        const isExpanded = expandedId === a.id;
+        const stripeClass = index % 2 === 0 ? "" : "stripe";
+        const handleRowClick = (e) => {
+            if (e.target.closest("a")) {
+                return;
+            }
+            this.toggleExpanded(a.id);
+        };
+        return <React.Fragment key={a.id}>
+            <tr onClick={handleRowClick} className={[stripeClass, isExpanded ? "expanded" : ""].filter(Boolean).join(" ")}>
+                <td>
+                    {isEmpty(a.terminated) && <Link to={`/metadata/${a.type}/${a.id}/revisions`} target="_blank">
+                        {a.name}
+                    </Link>}
+                    {!isEmpty(a.terminated) && <span>{a.name}</span>}
+                </td>
+                <td>
+                    {a.organization}
+                </td>
+                <td>
+                    {a.entityId}
+                </td>
+                <td>
+                    {a.type}
+                </td>
+                <td>
+                    {a.created.toGMTString()}
+                </td>
+                <td className="terminated"><CheckBox name="terminated" value={!isEmpty(a.terminated)} readOnly={true}/></td>
+                <td className="info">
+                    {isEmpty(a.revisionNote) ? <span></span> :
+                        <NotesTooltip identifier={a.entityId} notes={a.revisionNote}/>}
+                </td>
+                <td>
+                    {a.updatedBy}
+                </td>
+            </tr>
+            {isExpanded && <tr className={`diff-row ${stripeClass}`}>
+                <td colSpan={8}>
+                    <div>TodoDiff - id: {a.id}, type: {a.type}</div>
+                </td>
+            </tr>}
+        </React.Fragment>
     };
 
     copyToClipboard = () => {

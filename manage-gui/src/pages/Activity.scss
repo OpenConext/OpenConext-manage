@@ -136,8 +136,12 @@
         }
 
         tbody {
-            tr:nth-child(odd) {
-                background-color: vars.$lightest-grey;
+            tr {
+                cursor: pointer;
+
+                &.stripe {
+                    background-color: vars.$lightest-grey;
+                }
             }
 
             td {
