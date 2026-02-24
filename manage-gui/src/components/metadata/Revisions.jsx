@@ -15,6 +15,7 @@ import {restoreRevision} from "../../api";
 import {setFlash} from "../../utils/Flash";
 import withRouterHooks from "../../utils/RouterBackwardCompatability";
 import {getNameForLanguage} from "../../utils/Language";
+import Diff from "./Diff";
 
 const ignoreInDiff = ["id", "eid", "revisionid", "user", "created", "ip", "revisionnote"];
 
@@ -101,7 +102,9 @@ class Revisions extends React.Component {
         }
     };
 
+    // Todo: introduce a helper method to output a diff object
     renderDiff = (revision, previous) => {
+        /// MOVE to util
         const rev = cloneDeep(revision.data);
         ignoreInDiff.forEach(ignore => delete rev[ignore]);
         sortDict(rev);
@@ -111,6 +114,8 @@ class Revisions extends React.Component {
         sortDict(prev);
 
         const diffs = this.differ.diff(prev, rev);
+        /// END
+
         const html = DOMPurify.sanitize(formatters.html.format(diffs));
         //we need dangerouslySetInnerHTML otherwise the diff has no html in it, but the data is cleansed
         return diffs ? <p dangerouslySetInnerHTML={{__html: html}}/> : <p>{I18n.t("revisions.identical")}</p>
@@ -152,8 +157,19 @@ class Revisions extends React.Component {
                     </tr>}
                 {(showDetail && !isFirstRevision) &&
                     <tr>
+                        {/* Todo: current and previous are determined here and passed in the diff-function */}
                         <td className="diff"
-                            colSpan={headers.length}>{this.renderDiff(revision, this.previousRevision(revision))}</td>
+                            colSpan={headers.length}>
+                            
+                            <>
+                                <h1>The OG diff</h1>
+                                {this.renderDiff(revision, this.previousRevision(revision))}
+                                
+                                <h1>The new DIFF</h1>
+                                <Diff revision={revision}
+                                      previousRevision={this.previousRevision(revision)}/>
+                            </>
+                        </td>
                     </tr>}
                 </tbody>
             </table>
