@@ -9,6 +9,7 @@ import Select from "../components/Select";
 import NotesTooltip from "../components/NotesTooltip";
 import CheckBox from "../components/CheckBox";
 import {getNameForLanguage, getOrganisationForLanguage} from "../utils/Language";
+import {RevisionDiff} from "../components/metadata/RevisionDiff";
 
 const limitOptions = ["25", "50", "75", "100"].map(s => ({value: s, label: s}));
 
@@ -120,13 +121,7 @@ export default class Activity extends React.Component {
         </section>
     }
 
-    // A row that expands to show the diff.
-    // Need to get the revision here, together with previous one
-    // Required data: http://localhost:3006/manage/api/client/revisions/saml20_idp/6
-    // - type (saml20_idp)
-    // - id OR parentId (6)
-    /// Solution direction: opening a row renders the new component, that triggers a fetch based on type and ID
-    /// Consider what to do when the row gets closed and reopened again
+    // Todo: allow multiple rows to be open
     toggleExpanded = (id) => {
         this.setState(({expandedId}) => ({expandedId: expandedId === id ? null : id}));
     };
@@ -171,9 +166,10 @@ export default class Activity extends React.Component {
                     {a.updatedBy}
                 </td>
             </tr>
-            {isExpanded && <tr className={`diff-row ${stripeClass}`}>
-                <td colSpan={8}>
-                    <div>TodoDiff - id: {a.id}, type: {a.type}</div>
+            {isExpanded && <tr onClick={handleRowClick} className={`diff-row ${stripeClass}`}>
+                <td></td>
+                <td colSpan={999}>
+                    <RevisionDiff id={a.id} type={a.type}/>
                 </td>
             </tr>}
         </React.Fragment>

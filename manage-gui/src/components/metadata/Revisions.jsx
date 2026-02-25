@@ -12,7 +12,7 @@ import {restoreRevision} from "../../api";
 import {setFlash} from "../../utils/Flash";
 import withRouterHooks from "../../utils/RouterBackwardCompatability";
 import {getNameForLanguage} from "../../utils/Language";
-import Diff from "./Diff";
+import {Diff} from "./Diff";
 
 class Revisions extends React.Component {
 

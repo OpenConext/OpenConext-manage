@@ -12,7 +12,8 @@ const differ = new DiffPatcher({
     objectHash: (obj, index) => obj.name || obj.level || obj.type || obj.source || obj.value || "$$index:" + index
 });
 
-const Diff = ({revision, previousRevision}) => {
+export const Diff = ({revision, previousRevision}) => {
+    // Todo: is this a valid case?
     if (!revision || !previousRevision) {
         return <p>{I18n.t("revisions.identical")}</p>;
     }
@@ -28,10 +29,8 @@ const Diff = ({revision, previousRevision}) => {
     const diffs = differ.diff(prev, rev);
     const html = DOMPurify.sanitize(formatters.html.format(diffs));
 
+    // Todo: apply style to the "identical" message
     return diffs
         ? <p dangerouslySetInnerHTML={{__html: html}}/>
         : <p>{I18n.t("revisions.identical")}</p>;
 };
-
-export default Diff;
-
