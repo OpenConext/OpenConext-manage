@@ -26,6 +26,6 @@ export const Diff = ({revision, previousRevision}) => {
     const html = DOMPurify.sanitize(formatters.html.format(diffs));
 
     return diffs
-        ? <p dangerouslySetInnerHTML={{__html: html}}/>
+        ? <div dangerouslySetInnerHTML={{__html: html}} />
         : <p className="diff-identical">{I18n.t("revisions.identical")}</p>;
 };

@@ -359,6 +359,7 @@ I18n.translations.en = {
         toggleAllDetails: "Show diffs for all revisions",
         toggleDetails: "Show diff with previous revision",
         identical: "This revision is identical to the previous revision",
+        error: "Failed to load revision diff.",
         nope: "",
         restore: "Restore",
         restoreConfirmation: "Are you sure you want to restore revision {{number}} to the latest revision?"

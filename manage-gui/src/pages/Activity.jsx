@@ -166,7 +166,7 @@ export default class Activity extends React.Component {
                 </td>
             </tr>
             {isExpanded && <tr onClick={handleRowClick} className={`diff-row ${stripeClass}`}>
-                <td></td>
+                <td aria-hidden="true"></td>
                 <td colSpan={999}>
                     <RevisionDiff id={a.id} type={a.type}/>
                 </td>
