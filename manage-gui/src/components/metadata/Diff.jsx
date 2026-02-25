@@ -4,6 +4,7 @@ import DOMPurify from "dompurify";
 import {DiffPatcher, formatters} from "jsondiffpatch";
 import cloneDeep from "lodash.clonedeep";
 import {sortDict} from "../../utils/Utils";
+import "./Diff.scss";
 
 const ignoreInDiff = ["id", "eid", "revisionid", "user", "created", "ip", "revisionnote"];
 
@@ -24,8 +25,7 @@ export const Diff = ({revision, previousRevision}) => {
     const diffs = differ.diff(prev, rev);
     const html = DOMPurify.sanitize(formatters.html.format(diffs));
 
-    // Todo: apply style to the "identical" message
     return diffs
         ? <p dangerouslySetInnerHTML={{__html: html}}/>
-        : <p>{I18n.t("revisions.identical")}</p>;
+        : <p className="diff-identical">{I18n.t("revisions.identical")}</p>;
 };

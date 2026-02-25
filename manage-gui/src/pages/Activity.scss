@@ -142,6 +142,10 @@
                 &.stripe {
                     background-color: vars.$lightest-grey;
                 }
+
+                &.diff-row td {
+                    padding-bottom: 20px;
+                }
             }
 
             td {
@@ -164,10 +168,6 @@
                     }
                 }
 
-            }
-
-            tr.diff-row td {
-                padding-bottom: 20px;
             }
         }
 
