@@ -121,7 +121,6 @@ export default class Activity extends React.Component {
         </section>
     }
 
-    // Todo: allow multiple rows to be open
     toggleExpanded = (id) => {
         this.setState(({expandedId}) => ({expandedId: expandedId === id ? null : id}));
     };

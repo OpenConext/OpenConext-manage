@@ -13,16 +13,11 @@ const differ = new DiffPatcher({
 });
 
 export const Diff = ({revision, previousRevision}) => {
-    // Todo: is this a valid case?
-    if (!revision || !previousRevision) {
-        return <p>{I18n.t("revisions.identical")}</p>;
-    }
-
     const rev = cloneDeep(revision.data);
     ignoreInDiff.forEach(ignore => delete rev[ignore]);
     sortDict(rev);
 
-    const prev = cloneDeep(previousRevision.data);
+    const prev = cloneDeep(previousRevision?.data ?? {});
     ignoreInDiff.forEach(ignore => delete prev[ignore]);
     sortDict(prev);
 
