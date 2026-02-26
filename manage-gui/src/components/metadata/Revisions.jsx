@@ -1,13 +1,10 @@
 import React from "react";
 import I18n from "i18n-js";
-import DOMPurify from "dompurify";
-import {DiffPatcher, formatters} from 'jsondiffpatch';
 
 import PropTypes from "prop-types";
-import cloneDeep from "lodash.clonedeep";
 import CheckBox from "../../components/CheckBox";
 import ConfirmationDialog from "../ConfirmationDialog";
-import {sortDict, stop} from "../../utils/Utils";
+import {stop} from "../../utils/Utils";
 
 import "jsondiffpatch/dist/formatters-styles/html.css";
 import "./Revisions.scss";
@@ -15,8 +12,7 @@ import {restoreRevision} from "../../api";
 import {setFlash} from "../../utils/Flash";
 import withRouterHooks from "../../utils/RouterBackwardCompatability";
 import {getNameForLanguage} from "../../utils/Language";
-
-const ignoreInDiff = ["id", "eid", "revisionid", "user", "created", "ip", "revisionnote"];
+import {Diff} from "./Diff";
 
 class Revisions extends React.Component {
 
@@ -30,10 +26,6 @@ class Revisions extends React.Component {
             cancelDialogAction: () => this.setState({confirmationDialogOpen: false}),
             confirmationQuestion: ""
         };
-        this.differ = new DiffPatcher({
-            // https://github.com/benjamine/jsondiffpatch/blob/HEAD/docs/arrays.md
-            objectHash: (obj, index) => obj.name || obj.level || obj.type || obj.source || obj.value || '$$index:' + index
-        });
     }
 
     componentDidMount() {
@@ -101,21 +93,6 @@ class Revisions extends React.Component {
         }
     };
 
-    renderDiff = (revision, previous) => {
-        const rev = cloneDeep(revision.data);
-        ignoreInDiff.forEach(ignore => delete rev[ignore]);
-        sortDict(rev);
-
-        const prev = cloneDeep(previous.data);
-        ignoreInDiff.forEach(ignore => delete prev[ignore]);
-        sortDict(prev);
-
-        const diffs = this.differ.diff(prev, rev);
-        const html = DOMPurify.sanitize(formatters.html.format(diffs));
-        //we need dangerouslySetInnerHTML otherwise the diff has no html in it, but the data is cleansed
-        return diffs ? <p dangerouslySetInnerHTML={{__html: html}}/> : <p>{I18n.t("revisions.identical")}</p>
-    };
-
     renderRevisionTable = (revision, isLatest, entityType, firstRevisionNote, index) => {
         const showDetail = this.state.showRevisionDetails[revision.id];
         const headers = ["number", "created", "updatedBy", "status", "notes", "nope"];
@@ -153,7 +130,12 @@ class Revisions extends React.Component {
                 {(showDetail && !isFirstRevision) &&
                     <tr>
                         <td className="diff"
-                            colSpan={headers.length}>{this.renderDiff(revision, this.previousRevision(revision))}</td>
+                            colSpan={headers.length}>
+                            <Diff
+                                revision={revision}
+                                previousRevision={this.previousRevision(revision)}
+                            />
+                        </td>
                     </tr>}
                 </tbody>
             </table>

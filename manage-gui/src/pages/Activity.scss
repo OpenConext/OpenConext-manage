@@ -136,8 +136,16 @@
         }
 
         tbody {
-            tr:nth-child(odd) {
-                background-color: vars.$lightest-grey;
+            tr {
+                cursor: pointer;
+
+                &.stripe {
+                    background-color: vars.$lightest-grey;
+                }
+
+                &.diff-row td {
+                    padding-bottom: 20px;
+                }
             }
 
             td {
@@ -170,6 +178,5 @@
         margin: 15px 0;
         font-size: 16px;
     }
-
 }
 
