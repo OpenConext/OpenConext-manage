@@ -132,7 +132,7 @@ export function revisions(type, parentId) {
 }
 
 export function latestRevision(type, parentId) {
-    return fetchJson(`revisions/${type}/${parentId}/latest`);
+    return fetchJson(`revisions/${type}/${parentId}/latest`, {}, {}, false);
 }
 
 export function validation(format, value) {
