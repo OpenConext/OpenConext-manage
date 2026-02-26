@@ -131,6 +131,10 @@ export function revisions(type, parentId) {
     return fetchJson(`revisions/${type}/${parentId}`);
 }
 
+export function latestRevision(type, parentId) {
+    return fetchJson(`revisions/${type}/${parentId}/latest`);
+}
+
 export function validation(format, value) {
     return postPutJson("validation", {type: format, value: value}, "post");
 }

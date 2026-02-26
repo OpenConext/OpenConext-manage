@@ -1,22 +1,20 @@
 import React, {useEffect, useState} from "react";
 import PropTypes from "prop-types";
 import I18n from "i18n-js";
-import {detail, revisions} from "../../api";
+import {detail, latestRevision} from "../../api";
 import {Diff} from "./Diff";
 
 export const RevisionDiff = ({id, type}) => {
-    const [latestRevision, setLatestRevision] = useState(null);
+    const [currentRevision, setCurrentRevision] = useState(null);
     const [previousRevision, setPreviousRevision] = useState(null);
     const [loaded, setLoaded] = useState(false);
     const [error, setError] = useState(false);
 
     useEffect(() => {
-        Promise.all([revisions(type, id), detail(type, id)])
-            .then(([revisionResults, currentMetaData]) => {
-                const all = [...revisionResults, currentMetaData];
-                all.sort((a, b) => new Date(b.revision.created) - new Date(a.revision.created));
-                setLatestRevision(all[0] || null);
-                setPreviousRevision(all[1] || null);
+        Promise.all([latestRevision(type, id), detail(type, id)])
+            .then(([prevRevision, currentMetaData]) => {
+                setCurrentRevision(currentMetaData);
+                setPreviousRevision(prevRevision);
                 setLoaded(true);
             })
             .catch(() => setError(true));
@@ -32,7 +30,7 @@ export const RevisionDiff = ({id, type}) => {
 
     return (
         <Diff
-            revision={latestRevision}
+            revision={currentRevision}
             previousRevision={previousRevision}
         />
     );

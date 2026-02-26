@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mongodb.client.result.DeleteResult;
 import manage.api.APIUser;
 import manage.conf.MetaDataAutoConfiguration;
+import manage.exception.ResourceNotFoundException;
 import manage.model.*;
 import manage.repository.MetaDataRepository;
 import manage.service.ExporterService;
@@ -404,6 +405,15 @@ public class MetaDataController {
     public List<MetaData> revisions(@PathVariable("type") String type,
                                     @PathVariable("parentId") String parentId) {
         return metaDataRepository.revisions(type.concat(REVISION_POSTFIX), parentId);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/client/revisions/{type}/{parentId}/latest")
+    public MetaData latestRevision(@PathVariable("type") String type,
+                                   @PathVariable("parentId") String parentId) {
+        return metaDataRepository.latestRevision(type.concat(REVISION_POSTFIX), parentId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        String.format("No revisions found for type %s with parentId %s", type, parentId)));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
