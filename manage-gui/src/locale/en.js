@@ -350,7 +350,7 @@ I18n.translations.en = {
 
     revisions: {
         info: "All revisions",
-        noRevisions: "No revisions",
+        noRevisions: "No prior revisions",
         number: "Number",
         created: "Created",
         updatedBy: "Updater",
