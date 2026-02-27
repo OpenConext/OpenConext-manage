@@ -60,6 +60,7 @@ import {isReadOnly} from "../utils/EntityTypes";
 import PolicyXML from "../components/metadata/PolicyXML";
 import PolicyJSON from "../components/metadata/PolicyJSON";
 import ErrorDialog from "../components/ErrorDialog";
+import PolicyMaintenance from "../components/metadata/PolicyMaintenance";
 
 export const DIALOG_TYPES = {
     CONFIRM: "confirm",
@@ -134,6 +135,7 @@ const tabsPr = [
 
 const tabsPolicy = [
     "policy_form",
+    "policy_maintenance",
     "policy_xml",
     "policy_json",
     "revisions"
@@ -423,7 +425,7 @@ class Detail extends React.PureComponent {
                 dialogConfig: {
                     isOpen: true,
                     action: () => {
-                        if(this.state.originalEntityId === this.state.dialogConfig.inputValue) {
+                        if (this.state.originalEntityId === this.state.dialogConfig.inputValue) {
                             remove(this.state.metaData, this.state.revisionNote)
                                 .then(json => {
                                     if (json.exception || json.error) {
@@ -441,7 +443,10 @@ class Detail extends React.PureComponent {
                     },
                     cancelAction: () =>
                         this.setState({dialogConfig: {...this.state.dialogConfig, isOpen: false}}),
-                    question: I18n.t("metadata.deleteConfirmation", {name: name, originalEntityId: this.state.originalEntityId}),
+                    question: I18n.t("metadata.deleteConfirmation", {
+                        name: name,
+                        originalEntityId: this.state.originalEntityId
+                    }),
                     type: DIALOG_TYPES.CONFIRM,
                     leavePage: false
                 }
@@ -968,6 +973,15 @@ class Detail extends React.PureComponent {
                         onRemove={this.handleRemove}
                     />
                 );
+            case "policy_maintenance":
+                return (
+                    <PolicyMaintenance configuration={configuration}
+                                       metaData={metaData}
+                                       revisionNote={revisionNoteClone}
+                                       onClone={this.handleClone}
+                                       onRemove={this.handleRemove}
+                    />
+                );
             case "whitelist":
                 return (
                     <WhiteList
@@ -1284,7 +1298,8 @@ class Detail extends React.PureComponent {
                         <td>{name}</td>
                         {!isPolicy && !isOrganisation && <td>{organization}</td>}
                         <td>{typeMetaData}</td>
-                        {!isPolicy && !isOrganisation && <td className={state === "prodaccepted" ? "green" : "orange"}>{state}</td>}
+                        {!isPolicy && !isOrganisation &&
+                            <td className={state === "prodaccepted" ? "green" : "orange"}>{state}</td>}
                         {isPolicy && !isOrganisation && <td>{I18n.t(`topBannerDetails.${metaData.data.type}`)}</td>}
                         {(isSp || isRp) && <td className={excludedFromPush ? "orange" : "green"}>
                             {excludedFromPush ? I18n.t("topBannerDetails.staging") : I18n.t("topBannerDetails.production")}
@@ -1387,7 +1402,7 @@ class Detail extends React.PureComponent {
 
         return (
             <div className="detail-metadata">
-                { dialogConfig.type === DIALOG_TYPES.CONFIRM && (
+                {dialogConfig.type === DIALOG_TYPES.CONFIRM && (
                     <ConfirmationDialog
                         isOpen={dialogConfig.isOpen}
                         cancel={dialogConfig.cancelAction}
@@ -1396,16 +1411,18 @@ class Detail extends React.PureComponent {
                         leavePage={dialogConfig.leavePage}
                         disableConfirm={dialogConfig.inputValue !== this.state.originalEntityId}
                     >
-                        <span>{I18n.t("metadata.confirmEntityId")}</span>
-                        <input
-                            value={dialogConfig.inputValue ?? ''}
-                            onChange={(event)=> this.setState(
-                                {dialogConfig: {...this.state.dialogConfig, inputValue: event.target.value}}
-                            )}
-                        />
+                        <div className="delete-confirmation">
+                            <span>{I18n.t("metadata.confirmEntityId")}</span>
+                            <input
+                                value={dialogConfig.inputValue ?? ''}
+                                onChange={(event) => this.setState(
+                                    {dialogConfig: {...this.state.dialogConfig, inputValue: event.target.value}}
+                                )}
+                            />
+                        </div>
                     </ConfirmationDialog>
                 )}
-                { dialogConfig.type === DIALOG_TYPES.ERROR && (
+                {dialogConfig.type === DIALOG_TYPES.ERROR && (
                     <ErrorDialog
                         isOpen={dialogConfig.isOpen}
                         close={dialogConfig.action}

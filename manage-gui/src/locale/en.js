@@ -80,6 +80,7 @@ I18n.translations.en = {
             policy_json: "JSON",
             policy_xml: "XACML",
             policies: "Policies ({{nbr}})",
+            policy_maintenance: "Maintenance",
             organisation: "Organisation",
             organisation_entity: "Connected entities",
             sp_organisation: "Organisation",
