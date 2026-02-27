@@ -184,6 +184,10 @@
               "http://schemas.microsoft.com/claims/multipleauthn",
               "https://refeds.org/profile/mfa",
               "urn:oasis:names:tc:SAML:2.0:ac:classes:MobileOneFactorContract",
+              "https://eduid.nl/trust/linked-institution",
+              "https://eduid.nl/trust/validate-names",
+              "https://eduid.nl/trust/validate-names-external",
+              "https://eduid.nl/trust/affiliation-student",
               "transparent_authn_context"
             ],
             "default": "http://schemas.microsoft.com/claims/multipleauthn"
