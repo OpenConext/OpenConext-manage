@@ -1,0 +1,57 @@
+@use "../../stylesheets/vars.scss";
+
+.metadata-policy-maintenance {
+    background-color: white;
+    padding: 20px;
+
+    table.data {
+        width: 100%;
+        border: 1px solid vars.$lighter-grey;
+        border-radius: vars.$br;
+        border-collapse: separate;
+        padding-bottom: 15px;
+
+        td {
+            vertical-align: middle;
+            padding: 15px;
+            &.value {
+                width: 85%;
+                padding-right: 15px;
+
+                &.provisioning a {
+                    display: block;
+                }
+            }
+
+            p.error {
+                color: vars.$red;
+                margin: 10px 0 15px 0;
+            }
+
+            button.clone-metadata,
+            button.delete-metadata {
+                padding: 5px 15px;
+                border-radius: 3px;
+            }
+        }
+
+        div.inline-editable {
+            margin-top: 5px;
+        }
+
+        input[type=text], input[type=email], textarea {
+            display: block;
+            width: 100%;
+            border: 1px solid vars.$lighter-grey;
+            padding: 6px;
+            border-radius: vars.$br;
+            font-size: 14px;
+
+            &[disabled] {
+                background-color: vars.$light-grey;
+            }
+        }
+
+
+    }
+}
