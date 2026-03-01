@@ -6,7 +6,7 @@ import I18n from "i18n-js";
 import String from "../form/String";
 import {isEmpty} from "../../utils/Utils";
 import {validateUniqueField} from "../../api";
-import {hyperlinkRevisionNote} from "../../utils/JiraHyperlink";
+import {jiraHyperlink} from "../../utils/JiraHyperlink";
 
 export default class Organisation extends React.PureComponent {
 
@@ -129,7 +129,7 @@ export default class Organisation extends React.PureComponent {
                     <tr>
                         <td className="key">{I18n.t("metadata.revisionnote")}</td>
                         <td className="value">
-                            <span>{hyperlinkRevisionNote(data.revisionnote, currentUser)}</span>
+                            <span>{jiraHyperlink(data.revisionnote, currentUser)}</span>
                         </td>
                     </tr>
                     <tr>

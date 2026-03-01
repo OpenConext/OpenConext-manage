@@ -15,7 +15,7 @@ import {acceptChangeRequest, rejectChangeRequest} from "../../api";
 import {emitter, setFlash} from "../../utils/Flash";
 import withRouterHooks from "../../utils/RouterBackwardCompatability";
 import {getNameForLanguage} from "../../utils/Language";
-import {hyperlinkRevisionNote} from "../../utils/JiraHyperlink";
+import {jiraHyperlink} from "../../utils/JiraHyperlink";
 
 
 class MetaDataChangeRequests extends React.Component {
@@ -201,7 +201,7 @@ class MetaDataChangeRequests extends React.Component {
                 <tbody>
                 <tr>
                     <td className={"notes"} colSpan={headers.length}>Summary: <span
-                        className={"notes"}>{request.note ? hyperlinkRevisionNote(request.note, this.props.currentUser, request.ticketKey) : "-"}</span></td>
+                        className={"notes"}>{request.note ? jiraHyperlink(request.note, this.props.currentUser, request.ticketKey) : "-"}</span></td>
                 </tr>
                 <tr>
                     <td>{new Date(request.created).toGMTString()}</td>

@@ -12,7 +12,7 @@ import {restoreRevision} from "../../api";
 import {setFlash} from "../../utils/Flash";
 import withRouterHooks from "../../utils/RouterBackwardCompatability";
 import {getNameForLanguage} from "../../utils/Language";
-import {hyperlinkRevisionNote} from "../../utils/JiraHyperlink";
+import {jiraHyperlink} from "../../utils/JiraHyperlink";
 import {Diff} from "./Diff";
 
 class Revisions extends React.Component {
@@ -113,7 +113,7 @@ class Revisions extends React.Component {
                     <td>{new Date(revision.revision.created).toGMTString()}</td>
                     <td>{revision.revision.updatedBy}</td>
                     <td>{I18n.t(`metadata.${revision.data.state}`)}</td>
-                    <td>{hyperlinkRevisionNote(isLatest ? firstRevisionNote : revision.data.revisionnote, this.props.currentUser)}</td>
+                    <td>{jiraHyperlink(isLatest ? firstRevisionNote : revision.data.revisionnote, this.props.currentUser)}</td>
                     <td><a className={restoreClassName} href={`/restore/${revision.id}`}
                            onClick={this.restore(revision.id, revision.revision.number, revision.type, entityType, isLatest)}
                            disabled={isLatest}>

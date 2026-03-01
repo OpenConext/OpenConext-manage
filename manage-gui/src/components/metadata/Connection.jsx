@@ -12,7 +12,7 @@ import {Link} from "react-router-dom";
 import {getNameForLanguage} from "../../utils/Language";
 import {isReadOnly} from "../../utils/EntityTypes";
 import {Select} from "../index";
-import {hyperlinkRevisionNote} from "../../utils/JiraHyperlink";
+import {jiraHyperlink} from "../../utils/JiraHyperlink";
 
 export default class Connection extends React.PureComponent {
 
@@ -219,7 +219,7 @@ export default class Connection extends React.PureComponent {
                     <tr>
                         <td className="key">{I18n.t("metadata.revisionnote")}</td>
                         <td className="value">
-                            <span>{hyperlinkRevisionNote(revisionNote, currentUser)}</span>
+                            <span>{jiraHyperlink(revisionNote, currentUser)}</span>
                         </td>
                     </tr>
                     <tr>

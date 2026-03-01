@@ -25,12 +25,15 @@ const prefixFromTicketKey = ticketKey => {
 
 const ticketRegex = (prefixes, global = false) => {
     // Match Jira keys for allowed prefixes only, e.g. CXT-12345 or SD-987.
-    const pattern = `(?:${prefixes.map(escapeRegex).join("|")})-\\d+`;
-    return new RegExp(global ? `(${pattern})` : `^${pattern}$`, global ? "g" : undefined);
+    const prefixesPattern = prefixes.map(escapeRegex).join("|");
+    const jiraKeyPattern = `(?:${prefixesPattern})-\\d+`;
+    const source = global ? `(${jiraKeyPattern})` : `^${jiraKeyPattern}$`;
+    const flags = global ? "g" : "";
+    return new RegExp(source, flags);
 };
 
-const resolvePrefixes = (currentUser, ticketKey) => {
-    const configuredPrefixes = parsePrefixList(currentUser?.product?.jiraTicketPrefixes);
+const resolvePrefixes = (jiraTicketPrefixes, ticketKey) => {
+    const configuredPrefixes = parsePrefixList(jiraTicketPrefixes);
     const ticketPrefix = prefixFromTicketKey(ticketKey);
     return ticketPrefix ? [...new Set([ticketPrefix, ...configuredPrefixes])] : configuredPrefixes;
 };
@@ -39,16 +42,17 @@ export const isJiraTicket = (text, prefixes = []) => prefixes.length > 0 && text
 
 export const splitOnJiraTickets = (text, prefixes = []) => prefixes.length > 0 ? text.split(ticketRegex(prefixes, true)) : [text];
 
-export const hyperlinkRevisionNote = (revisionNote, currentUser, ticketKey) => {
-    if (!revisionNote) {
-        return revisionNote;
+export const jiraHyperlink = (note, currentUser, ticketKey) => {
+    if (!note) {
+        return note;
     }
     const jiraBaseUrl = currentUser?.product?.jiraBaseUrl;
     if (!jiraBaseUrl) {
-        return revisionNote;
+        return note;
     }
-    const prefixes = resolvePrefixes(currentUser, ticketKey);
-    const parts = splitOnJiraTickets(revisionNote, prefixes);
+    const jiraTicketPrefixes = currentUser?.product?.jiraTicketPrefixes;
+    const prefixes = resolvePrefixes(jiraTicketPrefixes, ticketKey);
+    const parts = splitOnJiraTickets(note, prefixes);
 
     return (
         <span>
