@@ -23,28 +23,11 @@ const prefixFromTicketKey = ticketKey => {
     return normalized.includes("-") ? normalized.split("-")[0] : normalized;
 };
 
-const ticketRegex = (prefixes) => {
-    // Match Jira keys for allowed prefixes only, e.g. CXT-12345 or SD-987.
-    const prefixesPattern = prefixes.map(escapeRegex).join("|");
-    const jiraKeyPattern = `(?:${prefixesPattern})-\\d+`;
-    return new RegExp(`^${jiraKeyPattern}$`);
-};
-
 const resolvePrefixes = (jiraTicketPrefixes, ticketKey) => {
     const configuredPrefixes = parsePrefixList(jiraTicketPrefixes);
     const ticketPrefix = prefixFromTicketKey(ticketKey);
     return ticketPrefix ? [...new Set([ticketPrefix, ...configuredPrefixes])] : configuredPrefixes;
 };
-
-export const isJiraTicket = (text, prefixes = []) => prefixes.length > 0 && text.match(ticketRegex(prefixes));
-
-const splitTicketRegex = (prefixes) => {
-    const prefixesPattern = prefixes.map(escapeRegex).join("|");
-    const jiraKeyPattern = `(?:${prefixesPattern})-\\d+`;
-    return new RegExp(`(${jiraKeyPattern})`, "g");
-};
-
-export const splitOnJiraTickets = (text, prefixes = []) => prefixes.length > 0 ? text.split(splitTicketRegex(prefixes)) : [text];
 
 export const jiraHyperlink = (note, currentUser, ticketKey) => {
     if (!note) {
@@ -56,12 +39,16 @@ export const jiraHyperlink = (note, currentUser, ticketKey) => {
     }
     const jiraTicketPrefixes = currentUser?.product?.jiraTicketPrefixes;
     const prefixes = resolvePrefixes(jiraTicketPrefixes, ticketKey);
-    const parts = splitOnJiraTickets(note, prefixes);
+
+    const prefixesPattern = prefixes.map(escapeRegex).join("|");
+    const jiraKeyPattern = `(?:${prefixesPattern})-\\d+`;
+    const isJiraTicket = prefixes.length > 0 ? new RegExp(`^${jiraKeyPattern}$`) : null;
+    const noteParts = prefixes.length > 0 ? note.split(new RegExp(`(${jiraKeyPattern})`, "g")) : [note];
 
     return (
         <span>
-            {parts.map((part, index) => (
-                isJiraTicket(part, prefixes)
+            {noteParts.map((part, index) => (
+                isJiraTicket?.test(part)
                     ? <a key={index} href={`${jiraBaseUrl}${part}`} target="_blank" rel="noopener noreferrer">{part}</a>
                     : part
             ))}
