@@ -1110,6 +1110,7 @@ class Detail extends React.PureComponent {
                         metaData={metaData}
                         changeRequestsLoaded={changeRequestsLoaded}
                         entityType={type}
+                        currentUser={currentUser}
                     />
                 )
             case "organisation":

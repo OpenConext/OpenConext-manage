@@ -86,6 +86,9 @@ public class WebSecurityConfigurer {
         @Value("${product.jira_base_url}")
         private String jiraBaseUrl;
 
+        @Value("${product.jira_ticket_prefixes:CXT,SD}")
+        private String jiraTicketPrefixes;
+
         @Value("${product.show_oidc_rp}")
         private boolean showOidcRp;
 
@@ -139,7 +142,7 @@ public class WebSecurityConfigurer {
                     .map(feature -> Features.valueOf(feature.trim().toUpperCase()))
                     .collect(toList());
 
-            Product product = new Product(productOrganization, productName, serviceProviderFeedUrl, jiraBaseUrl, showOidcRp);
+            Product product = new Product(productOrganization, productName, serviceProviderFeedUrl, jiraBaseUrl, jiraTicketPrefixes, showOidcRp);
             Push push = new Push(pushUrl, pushName, pushOidcUrl, pushOidcName, pdpPushUri,pdpName, excludeOidcRP, pdpEnabled);
 
             BasicAuthenticationEntryPoint authenticationEntryPoint = new BasicAuthenticationEntryPoint();
