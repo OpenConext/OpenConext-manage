@@ -23,13 +23,11 @@ const prefixFromTicketKey = ticketKey => {
     return normalized.includes("-") ? normalized.split("-")[0] : normalized;
 };
 
-const ticketRegex = (prefixes, global = false) => {
+const ticketRegex = (prefixes) => {
     // Match Jira keys for allowed prefixes only, e.g. CXT-12345 or SD-987.
     const prefixesPattern = prefixes.map(escapeRegex).join("|");
     const jiraKeyPattern = `(?:${prefixesPattern})-\\d+`;
-    const source = global ? `(${jiraKeyPattern})` : `^${jiraKeyPattern}$`;
-    const flags = global ? "g" : "";
-    return new RegExp(source, flags);
+    return new RegExp(`^${jiraKeyPattern}$`);
 };
 
 const resolvePrefixes = (jiraTicketPrefixes, ticketKey) => {
@@ -40,7 +38,13 @@ const resolvePrefixes = (jiraTicketPrefixes, ticketKey) => {
 
 export const isJiraTicket = (text, prefixes = []) => prefixes.length > 0 && text.match(ticketRegex(prefixes));
 
-export const splitOnJiraTickets = (text, prefixes = []) => prefixes.length > 0 ? text.split(ticketRegex(prefixes, true)) : [text];
+const splitTicketRegex = (prefixes) => {
+    const prefixesPattern = prefixes.map(escapeRegex).join("|");
+    const jiraKeyPattern = `(?:${prefixesPattern})-\\d+`;
+    return new RegExp(`(${jiraKeyPattern})`, "g");
+};
+
+export const splitOnJiraTickets = (text, prefixes = []) => prefixes.length > 0 ? text.split(splitTicketRegex(prefixes)) : [text];
 
 export const jiraHyperlink = (note, currentUser, ticketKey) => {
     if (!note) {
