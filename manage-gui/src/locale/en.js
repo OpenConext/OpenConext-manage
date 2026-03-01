@@ -272,6 +272,7 @@ I18n.translations.en = {
             entityid: "Entity ID",
             name: "Name",
             organization: "Organization",
+            coinInterfedSource: "coin:interfed_source",
             notes: "Notes"
         }
     },

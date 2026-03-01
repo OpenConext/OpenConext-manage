@@ -75,6 +75,7 @@ export default class WhiteList extends React.Component {
             entityid: allowedEntry.name,
             name: getNameForLanguage(moreInfo.data.metaDataFields) || "",
             organization: getOrganisationForLanguage(moreInfo.data.metaDataFields) || "",
+            coinInterfedSource: moreInfo.data.metaDataFields["coin:interfed_source"] || "",
             id: moreInfo["_id"],
             blocked:
                 !moreInfo.data.allowedall &&
@@ -286,6 +287,7 @@ export default class WhiteList extends React.Component {
                 </td>
                 <td>{entity.organization}</td>
                 <td>{entity.entityid}</td>
+                {this.props.type === "saml20_idp" && <td>{entity.coinInterfedSource}</td>}
                 <td className="info">
                     {isEmpty(entity.notes) ? (
                         <span/>
@@ -361,7 +363,9 @@ export default class WhiteList extends React.Component {
                 {icon(name)}
             </th>
         );
-        const names = ["blocked", "status", "name", "organization", "entityid", "notes"];
+        const names = type === "saml20_idp"
+            ? ["blocked", "status", "name", "organization", "entityid", "coinInterfedSource", "notes"]
+            : ["blocked", "status", "name", "organization", "entityid", "notes"];
         return (
             <section className="allowed-entities">
                 <table>
