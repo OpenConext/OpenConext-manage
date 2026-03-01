@@ -80,6 +80,7 @@ I18n.translations.en = {
             policy_json: "JSON",
             policy_xml: "XACML",
             policies: "Policies ({{nbr}})",
+            policy_maintenance: "Maintenance",
             organisation: "Organisation",
             organisation_entity: "Connected entities",
             sp_organisation: "Organisation",
@@ -350,7 +351,7 @@ I18n.translations.en = {
 
     revisions: {
         info: "All revisions",
-        noRevisions: "No revisions",
+        noRevisions: "No prior revisions",
         number: "Number",
         created: "Created",
         updatedBy: "Updater",
@@ -359,6 +360,7 @@ I18n.translations.en = {
         toggleAllDetails: "Show diffs for all revisions",
         toggleDetails: "Show diff with previous revision",
         identical: "This revision is identical to the previous revision",
+        error: "Failed to load revision diff.",
         nope: "",
         restore: "Restore",
         restoreConfirmation: "Are you sure you want to restore revision {{number}} to the latest revision?"
