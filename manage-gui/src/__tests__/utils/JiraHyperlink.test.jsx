@@ -4,7 +4,8 @@ import { hyperlinkRevisionNote } from '../../utils/JiraHyperlink';
 describe('hyperlinkRevisionNote', () => {
     const currentUser = {
         product: {
-            jiraBaseUrl: 'https://jira.example.com/browse/'
+            jiraBaseUrl: 'https://jira.example.com/browse/',
+            jiraTicketPrefixes: 'CXT,SD'
         }
     };
 
@@ -120,7 +121,7 @@ describe('hyperlinkRevisionNote', () => {
         expect(children[3].props.children).toBe('SD-9');
     });
 
-    test('links ticketKey prefix and fallback prefixes in one summary', () => {
+    test('links ticketKey prefix and configured prefixes in one summary', () => {
         const text = 'ticketKey: XYZ-123456 no ticketkey: CXT-654321 SD-654321 BCA-654321';
         const result = hyperlinkRevisionNote(text, currentUser, 'XYZ-123456');
         const children = result.props.children;

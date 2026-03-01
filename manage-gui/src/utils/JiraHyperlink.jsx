@@ -1,58 +1,55 @@
 import React from "react";
 
-const FALLBACK_JIRA_TICKET_PREFIXES = ["CXT", "SD"];
+const escapeRegex = value => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
-const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-
-const parsePrefixes = (jiraTicketPrefixes) => {
-    if (Array.isArray(jiraTicketPrefixes)) {
-        return jiraTicketPrefixes.filter(Boolean);
+const parsePrefixList = value => {
+    if (Array.isArray(value)) {
+        return value.filter(Boolean);
     }
-    if (typeof jiraTicketPrefixes === "string") {
-        return jiraTicketPrefixes.split(",").map(prefix => prefix.trim()).filter(Boolean);
+    if (typeof value === "string") {
+        return value.split(",").map(prefix => prefix.trim()).filter(Boolean);
     }
     return [];
 };
 
-const configuredPrefixes = (currentUser) => {
-    const jiraTicketPrefixes = currentUser && currentUser.product && currentUser.product.jiraTicketPrefixes;
-    const prefixes = parsePrefixes(jiraTicketPrefixes);
-    return prefixes.length > 0 ? prefixes : FALLBACK_JIRA_TICKET_PREFIXES;
-};
-
-const prefixesFromTicketKey = (ticketKey) => {
+const prefixFromTicketKey = ticketKey => {
     if (typeof ticketKey !== "string") {
-        return [];
+        return null;
     }
     const normalized = ticketKey.trim();
     if (!normalized) {
-        return [];
+        return null;
     }
-    const prefix = normalized.includes("-") ? normalized.split("-")[0] : normalized;
-    return prefix ? [prefix] : [];
+    return normalized.includes("-") ? normalized.split("-")[0] : normalized;
 };
 
 const ticketRegex = (prefixes, global = false) => {
-    const sanitizedPrefixes = prefixes.map(escapeRegex);
-    const pattern = `(?:${sanitizedPrefixes.join("|")})-\\d+`;
+    // Match Jira keys for allowed prefixes only, e.g. CXT-12345 or SD-987.
+    const pattern = `(?:${prefixes.map(escapeRegex).join("|")})-\\d+`;
     return new RegExp(global ? `(${pattern})` : `^${pattern}$`, global ? "g" : undefined);
 };
 
-export const isJiraTicket = (text, prefixes = FALLBACK_JIRA_TICKET_PREFIXES) => text.match(ticketRegex(prefixes));
+const resolvePrefixes = (currentUser, ticketKey) => {
+    const configuredPrefixes = parsePrefixList(currentUser?.product?.jiraTicketPrefixes);
+    const ticketPrefix = prefixFromTicketKey(ticketKey);
+    return ticketPrefix ? [...new Set([ticketPrefix, ...configuredPrefixes])] : configuredPrefixes;
+};
 
-export const splitOnJiraTickets = (text, prefixes = FALLBACK_JIRA_TICKET_PREFIXES) => text.split(ticketRegex(prefixes, true));
+export const isJiraTicket = (text, prefixes = []) => prefixes.length > 0 && text.match(ticketRegex(prefixes));
+
+export const splitOnJiraTickets = (text, prefixes = []) => prefixes.length > 0 ? text.split(ticketRegex(prefixes, true)) : [text];
 
 export const hyperlinkRevisionNote = (revisionNote, currentUser, ticketKey) => {
     if (!revisionNote) {
         return revisionNote;
     }
-    const jiraBaseUrl = currentUser && currentUser.product && currentUser.product.jiraBaseUrl;
+    const jiraBaseUrl = currentUser?.product?.jiraBaseUrl;
     if (!jiraBaseUrl) {
         return revisionNote;
     }
-    const ticketKeyPrefixes = prefixesFromTicketKey(ticketKey);
-    const prefixes = [...new Set([...ticketKeyPrefixes, ...configuredPrefixes(currentUser)])];
+    const prefixes = resolvePrefixes(currentUser, ticketKey);
     const parts = splitOnJiraTickets(revisionNote, prefixes);
+
     return (
         <span>
             {parts.map((part, index) => (
@@ -62,4 +59,4 @@ export const hyperlinkRevisionNote = (revisionNote, currentUser, ticketKey) => {
             ))}
         </span>
     );
-}
+};
