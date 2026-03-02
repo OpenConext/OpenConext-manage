@@ -26,6 +26,7 @@ product:
   organization: OpenConext DEV
   #  service_provider_feed_url: http://mds.edugain.org/edugain-v2.xml
   service_provider_feed_url: https://mds.edugain.org/edugain-v2.xl
+  jira_ticket_prefixes: CXT,SD
   supported_languages: en,nl
   show_oidc_rp: true
 

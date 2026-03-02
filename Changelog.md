@@ -19,6 +19,11 @@ Starting from version 9.0.0, we note changes and new features per release in thi
 - Full text searching in API leads to unexpected error if " is present in search string ([#487](https://github.com/OpenConext/OpenConext-manage/issues/487))
 - Migrate from react-scripts to vite ([#604](https://github.com/OpenConext/OpenConext-manage/issues/604))
 - Corporate proxy configuration is not respected when retrieving pdp xacml ([#598](https://github.com/OpenConext/OpenConext-manage/issues/598))
+- Replace exceptions by regular logging ([#596](https://github.com/OpenConext/OpenConext-manage/issues/596))
+- Resolve deprecations ([#546](https://github.com/OpenConext/OpenConext-manage/issues/546))
+- Corporate proxy configuration is not respected when retrieving pdp xacml ([#598](https://github.com/OpenConext/OpenConext-manage/issues/598))
+- Migrate from react-scripts to vite ([#604](https://github.com/OpenConext/OpenConext-manage/issues/604))
+- Linkify JIRA CXT any mention ([#432](https://github.com/OpenConext/OpenConext-manage/issues/432))
 
 ## 9.6.0
 - [#562](https://github.com/OpenConext/OpenConext-manage/issues/562)
