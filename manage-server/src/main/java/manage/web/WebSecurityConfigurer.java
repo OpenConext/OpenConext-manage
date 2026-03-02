@@ -74,6 +74,9 @@ public class WebSecurityConfigurer {
         @Value("${features}")
         private String features;
 
+        @Value("${features}")
+        private String excludedCollections;
+
         @Value("${product.organization}")
         private String productOrganization;
 

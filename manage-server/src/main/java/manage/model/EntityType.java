@@ -13,7 +13,9 @@ public enum EntityType {
     SRAM("sram", SP.getJanusDbValue()),
     PROV("provisioning"),
     PDP("policy"),
-    ORG("organisation");
+    ORG("organisation"),
+    SFO("sfo"),
+    STEPUP("institution");
 
     private final String type;
     private final String janusDbValue;
