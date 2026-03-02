@@ -41,7 +41,7 @@ public class DatabaseControllerUnitTest {
                 "http://eb-push", "user", "pass", false, false, false,
                 "http://oidc-push", "user", "pass",
                 "http://pdp-push", "user", "pass",
-                true, true, environment);
+                true, true, true, environment);
 
         ReflectionTestUtils.setField(subject, "pdpRestTemplate", pdpRestTemplate);
         ReflectionTestUtils.setField(subject, "restTemplate", ebRestTemplate);

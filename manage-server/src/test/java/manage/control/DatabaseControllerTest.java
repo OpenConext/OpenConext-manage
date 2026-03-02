@@ -1,18 +1,48 @@
 package manage.control;
 
+import com.github.tomakehurst.wiremock.WireMockServer;
 import manage.AbstractIntegrationTest;
+import manage.model.PushOptions;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.context.TestPropertySource;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.put;
+import static com.github.tomakehurst.wiremock.client.WireMock.putRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static io.restassured.RestAssured.given;
+import static org.apache.http.HttpStatus.SC_INTERNAL_SERVER_ERROR;
 import static org.apache.http.HttpStatus.SC_OK;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@TestPropertySource(properties = {
+    "push.skip_in_dev=false",
+    "push.pdp.url=http://localhost:9898/pdp/api/manage/push"
+})
 public class DatabaseControllerTest extends AbstractIntegrationTest {
+
+    private static final WireMockServer wireMockServer = new WireMockServer(9898);
+
+    @BeforeAll
+    static void startWireMock() {
+        wireMockServer.start();
+    }
+
+    @AfterAll
+    static void stopWireMock() {
+        wireMockServer.stop();
+    }
 
     @Test
     @SuppressWarnings("unchecked")
@@ -60,4 +90,99 @@ public class DatabaseControllerTest extends AbstractIntegrationTest {
         assertEquals("https://sram.service.api.saml_sp", nameSramSP);
     }
 
+    @Test
+    public void pushSuccess() {
+        wireMockServer.resetAll();
+        wireMockServer.stubFor(post(urlEqualTo("/api/connections")).willReturn(okJson("{}")));
+        wireMockServer.stubFor(put(urlEqualTo("/pdp/api/manage/push")).willReturn(aResponse().withStatus(200)));
+
+        given()
+            .contentType("application/json")
+            .body(new PushOptions(true, false, true))
+            .when()
+            .put("manage/api/client/playground/push")
+            .then()
+            .statusCode(SC_OK)
+            .body("eb.status", is("OK"))
+            .body("pdp.status", is("OK"));
+
+        wireMockServer.verify(1, postRequestedFor(urlEqualTo("/api/connections")));
+        wireMockServer.verify(1, putRequestedFor(urlEqualTo("/pdp/api/manage/push")));
+    }
+
+    @Test
+    public void pushInternalSuccessIncludesOidc() {
+        wireMockServer.resetAll();
+        wireMockServer.stubFor(post(urlEqualTo("/api/connections")).willReturn(okJson("{}")));
+        wireMockServer.stubFor(post(urlEqualTo("/manage/connections")).willReturn(aResponse().withStatus(200)));
+
+        given()
+            .auth()
+            .preemptive()
+            .basic("sp-portal", "secret")
+            .when()
+            .get("manage/api/internal/push")
+            .then()
+            .statusCode(SC_OK)
+            .body("eb.status", is("OK"))
+            .body("oidc.status", is("OK"))
+            .body("pdp.status", is("OK"));
+
+        wireMockServer.verify(1, postRequestedFor(urlEqualTo("/api/connections")));
+        wireMockServer.verify(1, postRequestedFor(urlEqualTo("/manage/connections")));
+    }
+
+    @Test
+    public void pushEbError() {
+        wireMockServer.resetAll();
+        wireMockServer.stubFor(post(urlEqualTo("/api/connections"))
+            .willReturn(aResponse().withStatus(502).withBody("{\"error\":\"eb error\"}")));
+        wireMockServer.stubFor(post(urlEqualTo("/manage/connections")).willReturn(aResponse().withStatus(200)));
+        wireMockServer.stubFor(put(urlEqualTo("/pdp/api/manage/push")).willReturn(aResponse().withStatus(200)));
+
+        given()
+            .contentType("application/json")
+            .body(new PushOptions(true, true, true))
+            .when()
+            .put("manage/api/client/playground/push")
+            .then()
+            .statusCode(SC_INTERNAL_SERVER_ERROR)
+            .body("message", containsString("Error in push to EngineBlock"));
+    }
+
+    @Test
+    public void pushOidcError() {
+        wireMockServer.resetAll();
+        wireMockServer.stubFor(post(urlEqualTo("/api/connections")).willReturn(okJson("{}")));
+        wireMockServer.stubFor(post(urlEqualTo("/manage/connections"))
+            .willReturn(aResponse().withStatus(503).withBody("{\"error\":\"oidc error\"}")));
+
+        given()
+            .auth()
+            .preemptive()
+            .basic("sp-portal", "secret")
+            .when()
+            .get("manage/api/internal/push")
+            .then()
+            .statusCode(SC_INTERNAL_SERVER_ERROR)
+            .body("message", containsString("Error in push to OIDC"));
+    }
+
+    @Test
+    public void pushPdpError() {
+        wireMockServer.resetAll();
+        wireMockServer.stubFor(post(urlEqualTo("/api/connections")).willReturn(okJson("{}")));
+        wireMockServer.stubFor(post(urlEqualTo("/manage/connections")).willReturn(aResponse().withStatus(200)));
+        wireMockServer.stubFor(put(urlEqualTo("/pdp/api/manage/push"))
+            .willReturn(aResponse().withStatus(500).withBody("{\"error\":\"pdp error\"}")));
+
+        given()
+            .contentType("application/json")
+            .body(new PushOptions(true, true, true))
+            .when()
+            .put("manage/api/client/playground/push")
+            .then()
+            .statusCode(SC_INTERNAL_SERVER_ERROR)
+            .body("message", containsString("Error in push to PDP"));
+    }
 }

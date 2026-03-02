@@ -58,6 +58,7 @@ public class DatabaseController {
     private final String pdpPushUri;
     private final RestTemplate pdpRestTemplate;
     private final boolean pdpEnabled;
+    private final boolean skipDoPushInDev;
 
     @Autowired
     DatabaseController(MetaDataRepository metaDataRepository,
@@ -75,6 +76,7 @@ public class DatabaseController {
                        @Value("${push.pdp.password}") String pdpPassword,
                        @Value("${push.pdp.enabled}") boolean pdpEnabled,
                        @Value("${push.oidc.enabled}") boolean oidcEnabled,
+                       @Value("${push.skip_in_dev:true}") boolean skipDoPushInDev,
                        Environment environment) {
         this.metaDataRepository = metaDataRepository;
         this.pushUri = pushUri;
@@ -91,12 +93,13 @@ public class DatabaseController {
         this.pdpRestTemplate = RestTemplateIdiom.buildRestTemplate(pdpPushUri, pdpUser, pdpPassword);
         this.pdpPushUri = pdpPushUri;
         this.pdpEnabled = pdpEnabled;
+        this.skipDoPushInDev = skipDoPushInDev;
 
         this.environment = environment;
     }
 
     public ResponseEntity<Map> doPush(PushOptions pushOptions) {
-        if (environment.acceptsProfiles(Profiles.of("dev"))) {
+        if (skipDoPushInDev && environment.acceptsProfiles(Profiles.of("dev"))) {
             return new ResponseEntity<>(Map.of(
                 "eb", Map.of("status", "OK"),
                 "pdp", Map.of("status", "OK"),
@@ -149,7 +152,7 @@ public class DatabaseController {
         }
 
         // Now push all oidc_rp metadata to OIDC proxy
-        if (!environment.acceptsProfiles(Profiles.of("dev")) && oidcEnabled && pushOptions.isIncludeOIDC()) {
+        if (oidcEnabled && pushOptions.isIncludeOIDC()) {
             List<MetaData> filteredEntities = pushPreviewOIDC();
             try {
                 ResponseEntity<Void> response = this.oidcRestTemplate.postForEntity(oidcPushUri, filteredEntities, Void.class);
