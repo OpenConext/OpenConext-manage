@@ -87,6 +87,16 @@ const tabsOrganisation = [
     "revisions"
 ]
 
+const tabsSfo = [
+    "sfo",
+    "revisions"
+]
+
+const tabsInstitutions = [
+    "institutions",
+    "revisions"
+]
+
 let tabsIdP = [
     "connection",
     "whitelist",
@@ -1386,6 +1396,10 @@ class Detail extends React.PureComponent {
                     return tabsSingleTenant;
                 case "organisation":
                     return tabsOrganisation;
+                case "sfo":
+                    return tabsSfo;
+                case "institutions":
+                    return tabsInstitutions;
                 case "provisioning":
                     return tabsPr;
                 case "policy":

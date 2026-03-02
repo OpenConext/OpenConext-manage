@@ -30,7 +30,10 @@ I18n.translations.en = {
         staging: "Staging",
         scopes: "Scopes",
         activity: "Activity",
-        policies: "Policies"
+        policies: "Policies",
+        sfo: "SFO",
+        institutions: "institutions"
+
     },
 
     metadata: {
@@ -53,7 +56,7 @@ I18n.translations.en = {
         saml20_sp_revision_single: "Service Provider",
         saml20_idp_revision_single: "Identity Provider",
         oidc10_rp_revision_single: "Relying Party",
-        single_tenant_template: "Single Tenant Templates",
+        single_tenant_template: "STT",
         single_tenant_template_single: "Single Tenant Template",
         searchPlaceHolder: "Search for metadata",
         new: "New",
@@ -731,7 +734,6 @@ I18n.translations.en = {
         policy: "Policy",
         policyPlaceholder: "Select a policy to initiate the PDP request data"
     }
-
 };
 
 export default I18n.translations.en;
