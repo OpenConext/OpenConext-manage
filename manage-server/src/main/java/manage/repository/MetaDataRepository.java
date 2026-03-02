@@ -302,7 +302,52 @@ public class MetaDataRepository {
         Query query = new Query()
             .with(Sort.by(Sort.Order.desc("revision.created")))
             .limit(max);
-        Field fields = query.fields();
+        applyRecentActivityFields(query.fields());
+
+        List<MetaData> metaData = types.stream()
+            .map(entityType -> mongoTemplate.find(query, MetaData.class, entityType.getType()))
+            .flatMap(List::stream)
+            .collect(toList());
+        List<MetaData> metaDataResult = metaData.stream()
+            .sorted(Comparator.comparing(md -> md.getRevision().getCreated(), Comparator.reverseOrder()))
+            .collect(toList()).subList(0, Math.min(max, metaData.size()));
+
+        // Using only the parentId's of the trimmed collection makes the sorting more efficient.
+        // This is to catch multiple revisions in a row.
+        List<String> parentIdsWithPossibleRevisions = metaDataResult.stream().map(MetaData::getId).collect(toList());
+        Query revisionQuery = new Query(Criteria.where("revision.parentId").in(parentIdsWithPossibleRevisions))
+            .with(Sort.by(Sort.Order.desc("revision.created")));
+        applyRecentActivityFields(revisionQuery.fields());
+        final List<MetaData> metaDataRevisions = types.stream()
+            .flatMap(entityType -> mongoTemplate.find(revisionQuery, MetaData.class, entityType.getType().concat(REVISION_POSTFIX)).stream())
+            .toList();
+        metaDataResult.addAll(metaDataRevisions);
+
+        // Detect deleted items
+        Instant firstActivity = metaDataResult.get(metaDataResult.size() - 1).getRevision().getCreated(); // isnt this the last activity "oldestActivity"
+        query.addCriteria(Criteria.where("revision.terminated").gte(firstActivity));
+        List<MetaData> removedMetaDataItems = types.stream()
+            .map(entityType -> mongoTemplate.find(query, MetaData.class, entityType.getType().concat(REVISION_POSTFIX)))
+            .flatMap(List::stream)
+            .map(this::updateCreatedRevision)
+            .toList();
+        metaDataResult.addAll(removedMetaDataItems);
+        if (!removedMetaDataItems.isEmpty() || !metaDataRevisions.isEmpty()) {
+            // Need to re-sort and cut off again due to added items
+            metaDataResult = metaDataResult.stream()
+                .sorted(Comparator.comparing(md -> md.getRevision().getCreated(), Comparator.reverseOrder()))
+                .collect(toList()).subList(0, Math.min(max, metaDataResult.size()));
+        }
+
+        return metaDataResult;
+    }
+
+    private MetaData updateCreatedRevision(MetaData metaData) {
+        metaData.getRevision().markCreatedWithTerminatedInstant();
+        return metaData;
+    }
+
+    private void applyRecentActivityFields(Field fields) {
         fields
             .include("type")
             .include("version")
@@ -311,42 +356,12 @@ public class MetaDataRepository {
             .include("data.name")
             .include("data.metaDataFields.name:en")
             .include("data.metaDataFields.OrganizationName:en")
-            .include("data.metaDataFields.OrganizationName:en")
             .include("data.revisionnote")
             .include("revision.number")
             .include("revision.created")
             .include("revision.terminated")
+            .include("revision.parentId")
             .include("revision.updatedBy");
-
-        List<MetaData> metaData = types.stream()
-            .map(entityType -> mongoTemplate.find(query, MetaData.class, entityType.getType()))
-            .flatMap(List::stream)
-            .collect(toList());
-        List<MetaData> results = metaData.stream()
-            .sorted(Comparator.comparing(md -> md.getRevision().getCreated(), Comparator.reverseOrder()))
-            .collect(toList()).subList(0, Math.min(max, metaData.size()));
-
-        Instant firstActivity = results.get(results.size() - 1).getRevision().getCreated();
-        query.addCriteria(Criteria.where("revision.terminated").gte(firstActivity));
-        List<MetaData> revisionMetaData = types.stream()
-            .map(entityType -> mongoTemplate.find(query, MetaData.class, entityType.getType().concat(REVISION_POSTFIX)))
-            .flatMap(List::stream)
-            .map(this::updateCreatedRevision)
-            .collect(toList());
-        results.addAll(revisionMetaData);
-        if (!revisionMetaData.isEmpty()) {
-            //need to re-sort and cut off again
-            results = results.stream()
-                .sorted(Comparator.comparing(md -> md.getRevision().getCreated(), Comparator.reverseOrder()))
-                .collect(toList()).subList(0, Math.min(max, metaData.size()));
-        }
-
-        return results;
-    }
-
-    private MetaData updateCreatedRevision(MetaData metaData) {
-        metaData.getRevision().markCreatedWithTerminatedInstant();
-        return metaData;
     }
 
     public List<Map> whiteListing(String type, String state) {
