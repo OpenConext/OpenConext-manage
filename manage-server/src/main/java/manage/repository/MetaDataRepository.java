@@ -354,7 +354,8 @@ public class MetaDataRepository {
         query.fields()
             .include("data.allowedall")
             .include("data.allowedEntities")
-            .include("data.metaDataFields.coin:stepup:requireloa");
+            .include("data.metaDataFields.coin:stepup:requireloa")
+            .include("data.metaDataFields.coin:interfed_source");
         List<Map> metaData = mongoTemplate.find(query, Map.class, type);
         if (type.equals(EntityType.SP.getType())) {
             List<Map> oidcMetaData = mongoTemplate.find(query, Map.class, EntityType.RP.getType());
