@@ -177,7 +177,7 @@ public class MetadataAutoRefreshRunner implements Runnable {
             fieldsToUpdate.forEach((key, value) -> metaData.metaDataFields().put(key, value));
         }
         if (null != fieldsToRemove && !fieldsToRemove.isEmpty()) {
-            LOG.info("Removing fields: {}", String.join(", ", fieldsToRemove.keySet()));
+            LOG.info("Removing fields: {}", String.join(", ", fieldsToRemove));
             fieldsToRemove.forEach(key -> metaData.metaDataFields().remove(key));
         }
 
