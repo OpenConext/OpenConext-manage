@@ -131,8 +131,8 @@ export function revisions(type, parentId) {
     return fetchJson(`revisions/${type}/${parentId}`);
 }
 
-export function latestRevision(type, parentId) {
-    return fetchJson(`revisions/${type}/${parentId}/latest`, {}, {}, false);
+export function revisionByNumber(type, parentId, number) {
+    return fetchJson(`revisions/${type}/${parentId}/number/${number}`, {}, {}, false);
 }
 
 export function validation(format, value) {

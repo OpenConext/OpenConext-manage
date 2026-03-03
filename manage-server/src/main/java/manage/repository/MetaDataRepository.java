@@ -89,13 +89,6 @@ public class MetaDataRepository {
         return mongoTemplate.find(query, MetaData.class, type);
     }
 
-    public Optional<MetaData> latestRevision(String type, String parentId) {
-        Query query = new Query(Criteria.where("revision.parentId").is(parentId))
-                .with(Sort.by(Sort.Order.desc("revision.number")))
-                .limit(1);
-        return Optional.ofNullable(mongoTemplate.findOne(query, MetaData.class, type));
-    }
-
     public Optional<MetaData> revisionByNumber(String type, String parentId, int number) {
         Query query = new Query(
                 new Criteria().andOperator(

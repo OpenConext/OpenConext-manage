@@ -408,20 +408,11 @@ public class MetaDataController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/client/revisions/{type}/{parentId}/latest")
-    public MetaData latestRevision(@PathVariable("type") String type,
-                                   @PathVariable("parentId") String parentId) {
-        return metaDataRepository.latestRevision(type.concat(REVISION_POSTFIX), parentId)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        String.format("No revisions found for type %s with parentId %s", type, parentId)));
-    }
-
-    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/client/revisions/{type}/{parentId}/number/{number}")
     public MetaData revisionByNumber(@PathVariable("type") String type,
                                      @PathVariable("parentId") String parentId,
                                      @PathVariable("number") int number) {
-        return metaDataRepository.revisionByNumber(type.concat(REVISION_POSTFIX), parentId, number)
+        return metaDataRepository.revisionByNumber(type, parentId, number)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         String.format("No revision %d found for type %s with parentId %s", number, type, parentId)));
     }
