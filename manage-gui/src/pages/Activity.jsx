@@ -4,6 +4,7 @@ import {recentActivity} from "../api";
 import "./Activity.scss";
 import SelectMulti from "../components/form/SelectMulti";
 import {copyToClip, isEmpty} from "../utils/Utils";
+import {getClassNameValue, conditionalClassName} from "../utils/ClassNames";
 import {Link} from "react-router-dom";
 import Select from "../components/Select";
 import NotesTooltip from "../components/NotesTooltip";
@@ -52,6 +53,8 @@ export default class Activity extends React.Component {
                     revisionNote: a.data.revisionnote,
                     name: a.type === "policy" ? a.data.name : getNameForLanguage(a.data.metaDataFields),
                     organization: a.type === "policy" ? "-" : getOrganisationForLanguage(a.data.metaDataFields) || "",
+                    revisionNumber: a.revision.number,
+                    parentId: a.revision.parentId,
                     created: new Date(a.revision.created),
                     updatedBy: a.revision.updatedBy,
                 }));
@@ -131,18 +134,23 @@ export default class Activity extends React.Component {
         const isExpanded = expandedId === a.id;
         const stripeClass = index % 2 === 0 ? "" : "stripe";
         const handleRowClick = (e) => {
-            if (e.target.closest("a")) {
+            if (e.target.closest("a") || a.terminated) {
                 return;
             }
             this.toggleExpanded(a.id);
         };
         return <React.Fragment key={a.id}>
-            <tr onClick={handleRowClick} className={[stripeClass, isExpanded ? "expanded" : ""].filter(Boolean).join(" ")}>
+            <tr onClick={handleRowClick}
+                className={getClassNameValue(
+                    stripeClass,
+                    conditionalClassName("expanded", isExpanded),
+                    conditionalClassName("terminated-row", a.terminated))}
+            >
                 <td>
-                    {isEmpty(a.terminated) && <Link to={`/metadata/${a.type}/${a.id}/revisions`} target="_blank">
-                        {a.name}
-                    </Link>}
-                    {!isEmpty(a.terminated) && <span>{a.name}</span>}
+                    {isEmpty(a.terminated)
+                        ? <Link to={`/metadata/${a.type}/${a.id}/revisions`} target="_blank">{a.name}</Link>
+                        : <span>{a.name}</span>
+                    }
                 </td>
                 <td>
                     {a.organization}
@@ -168,7 +176,7 @@ export default class Activity extends React.Component {
             {isExpanded && <tr onClick={handleRowClick} className={`diff-row ${stripeClass}`}>
                 <td aria-hidden="true"></td>
                 <td colSpan={999}>
-                    <RevisionDiff id={a.id} type={a.type}/>
+                    { isEmpty(a.terminated) && <RevisionDiff id={a.id} type={a.type} revisionNumber={a.revisionNumber} parentId={a.parentId}/> }
                 </td>
             </tr>}
         </React.Fragment>

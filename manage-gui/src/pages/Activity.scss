@@ -139,6 +139,10 @@
             tr {
                 cursor: pointer;
 
+                &.terminated-row {
+                    cursor: default;
+                }
+
                 &.stripe {
                     background-color: vars.$lightest-grey;
                 }
