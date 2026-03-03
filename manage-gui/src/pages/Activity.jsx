@@ -4,6 +4,7 @@ import {recentActivity} from "../api";
 import "./Activity.scss";
 import SelectMulti from "../components/form/SelectMulti";
 import {copyToClip, isEmpty} from "../utils/Utils";
+import {getClassNameValue, conditionalClassName} from "../utils/ClassNames";
 import {Link} from "react-router-dom";
 import Select from "../components/Select";
 import NotesTooltip from "../components/NotesTooltip";
@@ -139,12 +140,17 @@ export default class Activity extends React.Component {
             this.toggleExpanded(a.id);
         };
         return <React.Fragment key={a.id}>
-            <tr onClick={handleRowClick} className={[stripeClass, isExpanded ? "expanded" : ""].filter(Boolean).join(" ")}>
+            <tr onClick={handleRowClick}
+                className={getClassNameValue(
+                    stripeClass,
+                    conditionalClassName("expanded", isExpanded),
+                    conditionalClassName("terminated-row", a.terminated))}
+            >
                 <td>
-                    {isEmpty(a.terminated) && <Link to={`/metadata/${a.type}/${a.id}/revisions`} target="_blank">
-                        {a.name}
-                    </Link>}
-                    {!isEmpty(a.terminated) && <span>{a.name}</span>}
+                    {isEmpty(a.terminated)
+                        ? <Link to={`/metadata/${a.type}/${a.id}/revisions`} target="_blank">{a.name}</Link>
+                        : <span>{a.name}</span>
+                    }
                 </td>
                 <td>
                     {a.organization}
