@@ -417,6 +417,16 @@ public class MetaDataController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/client/revisions/{type}/{parentId}/number/{number}")
+    public MetaData revisionByNumber(@PathVariable("type") String type,
+                                     @PathVariable("parentId") String parentId,
+                                     @PathVariable("number") int number) {
+        return metaDataRepository.revisionByNumber(type.concat(REVISION_POSTFIX), parentId, number)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        String.format("No revision %d found for type %s with parentId %s", number, type, parentId)));
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/client/autocomplete/{type}")
     public Map<String, List<Map>> autoCompleteEntities(@PathVariable("type") String type,
                                                        @RequestParam("query") String query) {

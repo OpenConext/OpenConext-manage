@@ -96,6 +96,15 @@ public class MetaDataRepository {
         return Optional.ofNullable(mongoTemplate.findOne(query, MetaData.class, type));
     }
 
+    public Optional<MetaData> revisionByNumber(String type, String parentId, int number) {
+        Query query = new Query(
+                new Criteria().andOperator(
+                        Criteria.where("revision.parentId").is(parentId),
+                        Criteria.where("revision.number").is(number)
+                ));
+        return Optional.ofNullable(mongoTemplate.findOne(query, MetaData.class, type));
+    }
+
     public List<MetaDataChangeRequest> changeRequests(String metaDataId, String collectionName) {
         Query query = new Query(Criteria.where("metaDataId").is(metaDataId));
         return mongoTemplate.find(query, MetaDataChangeRequest.class, collectionName);
