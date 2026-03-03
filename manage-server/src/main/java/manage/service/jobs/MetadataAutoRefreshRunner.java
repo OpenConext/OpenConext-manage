@@ -139,16 +139,18 @@ public class MetadataAutoRefreshRunner implements Runnable {
             return false;
         }
 
+        LOG.info("Running auto refresh for {}: {}", metaData.getType(), entityId);
+
         if (!metaData.getData().containsKey(METADATA_URL_KEY) || null == metaData.getData().get(METADATA_URL_KEY)) {
-            LOG.info("No metadata URL found - skipping for {}: {}", metaData.getType(), entityId);
+            LOG.info("No metadata URL found");
             return false;
         }
 
-        LOG.info("Running auto refresh for {}: {}", metaData.getType(), entityId);
         // Retrieve updated fields and removed fields, then update metadata
         List<String> allowedFields = getAllowedFields(metaData, entityId);
         if (null == allowedFields) {
             // Exit here as the previous method will log in case of unexpected behavior
+            LOG.info("ERROR: allowedFields nor found for {}", entityId);
             return false;
         }
 
@@ -165,15 +167,17 @@ public class MetadataAutoRefreshRunner implements Runnable {
         Map<String, Object> fieldsToUpdate = getUpdatedFields(importXMLUrlMetaData, allowedFields);
         List<String> fieldsToRemove = getRemovedFields(importXMLUrlMetaData, allowedFields);
         if ((null == fieldsToUpdate || fieldsToUpdate.isEmpty()) && (null == fieldsToRemove || fieldsToRemove.isEmpty())) {
-            LOG.info("No fields in the retrieved metadata that contain enabled auto refresh fields - skipping");
+            LOG.info("No fields in the retrieved metadata that contain enabled auto refresh fields, skipping");
             return false;
         }
 
         metaData.getData().put(Revision.REVISION_KEY, AUTO_REFRESH_REVISION_NOTE);
         if (null != fieldsToUpdate && !fieldsToUpdate.isEmpty()) {
+            LOG.info("Updating fields: {}", String.join(", ", fieldsToUpdate.keySet()));
             fieldsToUpdate.forEach((key, value) -> metaData.metaDataFields().put(key, value));
         }
         if (null != fieldsToRemove && !fieldsToRemove.isEmpty()) {
+            LOG.info("Removing fields: {}", String.join(", ", fieldsToRemove.keySet()));
             fieldsToRemove.forEach(key -> metaData.metaDataFields().remove(key));
         }
 
