@@ -765,7 +765,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
 
         Map<String, Object> body = new HashMap<>();
         body.put("types", Arrays.asList(EntityType.RP.getType(), EntityType.IDP.getType(), EntityType.SP.getType(), EntityType.RS.getType()));
-        body.put("limit", 6);
+        body.put("limit", 8);
         List<Map<String, Object>> results = given()
             .when()
             .header("Content-type", "application/json")
@@ -773,30 +773,53 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
             .post("manage/api/client/recent-activity")
             .as(mapListTypeRef);
 
-        assertEquals(6, results.size());
+        assertEquals(8, results.size());
 
         Map<String, Object> sp1 = results.get(0);
         assertEquals("1", sp1.get("id"));
+        assertEquals("saml20_sp", sp1.get("type"));
         assertEquals("Third revision SP", ((Map) sp1.get("data")).get("revisionnote"));
         assertNull(((Map) sp1.get("revision")).get("terminated"));
+        assertEquals(3, ((Map) sp1.get("revision")).get("number"));
 
-        Map<String, Object> idp6 = results.get(1);
+        Map<String, Object> sp1Rev2 = results.get(1);
+        assertEquals("saml20_sp_revision", sp1Rev2.get("type"));
+        assertEquals("Second revision SP", ((Map) sp1Rev2.get("data")).get("revisionnote"));
+        assertEquals(2, ((Map) sp1Rev2.get("revision")).get("number"));
+
+        Map<String, Object> idp6 = results.get(2);
         assertEquals("6", idp6.get("id"));
+        assertEquals("saml20_idp", idp6.get("type"));
         assertEquals("First revision IDP", ((Map) idp6.get("data")).get("revisionnote"));
         assertNull(((Map) idp6.get("revision")).get("terminated"));
+        assertEquals(1, ((Map) idp6.get("revision")).get("number"));
 
-        Map<String, Object> rp9 = results.get(2);
+        Map<String, Object> rp9 = results.get(3);
         assertEquals("9", rp9.get("id"));
+        assertEquals("oidc10_rp", rp9.get("type"));
         assertEquals("First revision RP", ((Map) rp9.get("data")).get("revisionnote"));
         assertNull(((Map) rp9.get("revision")).get("terminated"));
         assertEquals(2, rp9.get("version"));
         assertEquals(2, ((Map) rp9.get("revision")).get("number"));
 
-        Map<String, Object> rs10 = results.get(3);
+        Map<String, Object> sp1Rev1 = results.get(4);
+        assertEquals("saml20_sp_revision", sp1Rev1.get("type"));
+        assertEquals("First revision SP", ((Map) sp1Rev1.get("data")).get("revisionnote"));
+        assertEquals(1, ((Map) sp1Rev1.get("revision")).get("number"));
+
+        Map<String, Object> rs10 = results.get(5);
+        assertEquals("oauth20_rs_revision", rs10.get("type"));
         assertEquals("Delete revision RS 10", ((Map) rs10.get("data")).get("revisionnote"));
         assertNotNull(((Map) rs10.get("revision")).get("terminated"));
 
-        Map<String, Object> sp2 = results.get(4);
+        Map<String, Object> rp9Rev1 = results.get(6);
+        assertEquals("oidc10_rp_revision", rp9Rev1.get("type"));
+        assertEquals("Updated after deletion of entityId https@//oidc.rp.resourceServer",
+            ((Map) rp9Rev1.get("data")).get("revisionnote"));
+        assertEquals(1, ((Map) rp9Rev1.get("revision")).get("number"));
+
+        Map<String, Object> sp2 = results.get(7);
+        assertEquals("saml20_sp_revision", sp2.get("type"));
         assertEquals("Delete revision SP 2", ((Map) sp2.get("data")).get("revisionnote"));
         assertNotNull(((Map) sp2.get("revision")).get("terminated"));
     }
