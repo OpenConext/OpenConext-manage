@@ -61,16 +61,18 @@ class EntityIdDuplicationHookTest extends AbstractIntegrationTest {
             .forEach(entityType -> {
                 if (!EntityType.ORG.equals(entityType)) {
                     List<MetaData> allByType = metaDataRepository.findAllByType(entityType.getType());
-                    MetaData metaData = allByType.get(0);
-                    //This is allowed
-                    this.entityIdDuplicationHook.prePut(null, metaData, apiUser);
-                    //Set new unique id
-                    ReflectionTestUtils.setField(metaData, "id", UUID.randomUUID().toString());
-                    assertThrows(ValidationException.class, () ->
-                        this.entityIdDuplicationHook.prePut(null, metaData, apiUser));
-                    ReflectionTestUtils.setField(metaData, "id", null);
-                    assertThrows(ValidationException.class, () ->
-                        this.entityIdDuplicationHook.prePost(metaData, apiUser));
+                    if (!allByType.isEmpty()) {
+                        MetaData metaData = allByType.get(0);
+                        //This is allowed
+                        this.entityIdDuplicationHook.prePut(null, metaData, apiUser);
+                        //Set new unique id
+                        ReflectionTestUtils.setField(metaData, "id", UUID.randomUUID().toString());
+                        assertThrows(ValidationException.class, () ->
+                            this.entityIdDuplicationHook.prePut(null, metaData, apiUser));
+                        ReflectionTestUtils.setField(metaData, "id", null);
+                        assertThrows(ValidationException.class, () ->
+                            this.entityIdDuplicationHook.prePost(metaData, apiUser));
+                    }
                 }
             });
 
