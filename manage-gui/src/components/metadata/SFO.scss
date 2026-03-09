@@ -1,0 +1,75 @@
+@use "../../stylesheets/vars.scss";
+@use "../../stylesheets/media_queries.scss";
+
+.metadata-sfo {
+    background-color: white;
+    padding: 10px 20px 20px 20px;
+
+    section.sfo {
+        margin-top: 15px;
+
+        .error {
+            color: vars.$red;
+            margin-top: 5px;
+        }
+
+        label > span {
+            margin-bottom: 5px;
+        }
+
+        .input-field {
+            margin-bottom: 25px;
+            display: flex;
+            flex-direction: column;
+
+            &.row {
+                flex-direction: row;
+            }
+
+            label {
+                margin-bottom: 5px;
+                display: inline-block;
+            }
+
+
+        }
+
+        input, textarea {
+            width: 50%;
+            padding: 5px;
+            border-radius: 3px;
+            border: 1px solid #d9d9d8;
+            line-height: 22px;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+            &.max {
+                width: 100%;
+            }
+
+            @include media_queries.desktop {
+                width: 100%;
+            }
+
+        }
+
+        .sfo-select {
+            width: 50%;
+
+            &.max {
+                width: 100%;
+            }
+
+            @include media_queries.desktop {
+                width: 100%;
+            }
+
+        }
+
+        .fa-info-circle {
+            color: vars.$blue;
+            margin-left: 5px;
+        }
+
+    }
+
+}

@@ -61,6 +61,7 @@ import PolicyXML from "../components/metadata/PolicyXML";
 import PolicyJSON from "../components/metadata/PolicyJSON";
 import ErrorDialog from "../components/ErrorDialog";
 import PolicyMaintenance from "../components/metadata/PolicyMaintenance";
+import SFO from "../components/metadata/SFO";
 
 export const DIALOG_TYPES = {
     CONFIRM: "confirm",
@@ -187,6 +188,8 @@ class Detail extends React.PureComponent {
             tab = "policy_form";
         } else if (tab === "connection" && type === "organisation") {
             tab = "organisation";
+        } else if (tab === "connection" && type === "sfo") {
+            tab = "sfo";
         }
         const id = isEmpty(props.newMetaData) ? this.props.params.id : "new";
         this.state = {
@@ -865,6 +868,7 @@ class Detail extends React.PureComponent {
             case "metadata":
             case "import":
             case "export":
+            case "sfo":
                 break;
             case "connected_idps": {
                 const connectedEntities = getConnectedEntities(whiteListing, allowedAll, allowedEntities, metaData.data.entityid, metaData.data.state);
@@ -1196,6 +1200,16 @@ class Detail extends React.PureComponent {
             case "policy_json":
                 return (
                     <PolicyJSON data={metaData.data}/>
+                );
+            case "sfo":
+                return (
+                    <SFO data={metaData.data}
+                         isNew={isNew}
+                         configuration={configuration}
+                         onChange={this.onChange("sfo")}
+                         errors={errors.sfo}
+                         onError={this.onError("sfo")}/>
+
                 );
             default:
                 throw new Error(`Unknown tab ${tab}`);

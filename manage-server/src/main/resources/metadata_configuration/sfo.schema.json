@@ -81,7 +81,10 @@
     }
   },
   "required": [
-    "entityid"
+    "entityid",
+    "public_key",
+    "acs",
+    "loa"
   ],
   "additionalProperties": false,
   "indexes": []

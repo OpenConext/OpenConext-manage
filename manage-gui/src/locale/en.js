@@ -84,6 +84,7 @@ const en = {
             organisation: "Organisation",
             organisation_entity: "Connected entities",
             sp_organisation: "Organisation",
+            sfo: "SFO"
         },
         notFound: "No Metadata found. You might want to search for this deleted entity in the 'FIND MY METADATA' section in the 'System' tab.",
         existingChangeRequests: "There are orphaned change requests for this deleted entity. You probably want to remove them.",
@@ -721,7 +722,7 @@ const en = {
         reload: "Reload",
         providers: "Services",
     },
-    policyPlayGround :{
+    policyPlayGround: {
         institutionProvider: "Identity provider",
         serviceProvider: "Service provider",
         institutionProviderPlaceholder: 'Select the Identity Provider - required',
@@ -730,6 +731,18 @@ const en = {
         clear: 'Clear',
         policy: "Policy",
         policyPlaceholder: "Select a policy to initiate the PDP request data"
+    },
+    sfo: {
+        entityId: "entityID",
+        publicKey: "Public Key",
+        acs: "ACS",
+        loa: "Loa",
+        assertionEncryptionEnabled: "Assertion encryption enabled",
+        secondFactorOnly: "Second factor only",
+        secondFactorOnlyNameidPatterns: "Second factor only nameID patterns",
+        blacklistedEncryptionAlgorithm: "Blacklisted encryption Algorithms"
+
+
     }
 };
 export default en;
