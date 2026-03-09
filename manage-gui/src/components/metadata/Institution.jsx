@@ -1,20 +1,29 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import Creatable from 'react-select/creatable';
-import "./SFO.scss";
+import "./Institution.scss";
 import I18n from "../../locale/I18n";
 import {isEmpty} from "../../utils/Utils";
-import {validation} from "../../api";
+import {search, validation} from "../../api";
 import reactSelectStyles from "./../reactSelectStyles.js";
 import Select from "../Select";
 import {CheckBox} from "../index";
 
-export default function SFO({
+export default function Institution({
                                 configuration,
                                 data,
                                 errors,
                                 onChange,
                                 onError
                             }) {
+
+    const [institutions, setInstitutions] = useState([]);
+
+
+    useEffect(() => {
+        search({}, "institution")
+            .then(res => setInstitutions(res));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const internalOnChange = (value, attribute) => {
         onChange(`data.${attribute}`, value);
@@ -52,7 +61,7 @@ export default function SFO({
         );
     }
 
-    const renderEntityID = () => {
+    const renderIdentifier = () => {
         return (
             <div className="input-field">
                 <label htmlFor="entityID">

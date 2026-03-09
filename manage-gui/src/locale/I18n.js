@@ -9,7 +9,7 @@ const I18n = new I18nRemote({
 }, {locale: "en"});
 
 I18n.missingTranslation.register("report-error", (i18n, scope) => {
-    return null;
+    return `Missing translation <${scope}>`;
 });
 I18n.missingBehavior = "report-error";
 

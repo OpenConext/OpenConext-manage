@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "sfo",
-  "order": 10,
+  "title": "institution",
+  "order": 11,
   "type": "object",
   "properties": {
     "eid": {
@@ -11,46 +11,68 @@
       "type": "string",
       "minLength": 1
     },
-    "public_key": {
+    "identifier": {
       "type": "string",
-      "format": "certificate",
-      "info": "The supplied public certificate of the institution. This must be a PEM encoded certificate. DER, CRT or CER are not supported."
+      "info": "The unique identifier of the institution."
     },
-    "acs": {
-      "type": "array",
-      "items": {
-        "type": "string",
-        "format": "url"
-      },
-      "info": "The ACS locations of this institution."
+    "use_ra_locations": {
+      "type": "boolean"
     },
-    "loa": {
+    "show_raa_contact_information": {
+      "type": "boolean"
+    },
+    "verify_email": {
+      "type": "boolean"
+    },
+    "allowed_second_factors": {
       "type": "string",
       "enum": [
-        "http://test.surfconext.nl/assurance/loa1.5",
-        "http://test.surfconext.nl/assurance/loa2",
-        "http://test.surfconext.nl/assurance/loa3"
+        "yubikey",
+        "tiqr",
+        "webauthn",
+        "sms"
       ],
-      "default": "http://test.surfconext.nl/assurance/loa2"
+      "default": "tiqr"
     },
-    "assertion_encryption_enabled": {
-      "type": "boolean"
+    "number_of_tokens_per_identity": {
+      "type": "number"
     },
-    "second_factor_only": {
-      "type": "boolean"
-    },
-    "second_factor_only_nameid_patterns": {
+    "use_ra": {
       "type": "array",
       "items": {
         "type": "string"
       }
     },
-    "blacklisted_encryption_algorithms": {
+    "use_raa": {
       "type": "array",
       "items": {
         "type": "string"
       }
     },
+    "select_raa": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "self_vet": {
+      "type": "boolean"
+    },
+    "allow_self_asserted_tokens": {
+      "type": "boolean"
+    },
+    "sso_on_2fa": {
+      "type": "boolean"
+    },
+    "stepup-client": {
+      "type": "string",
+      "enum": [
+        "freerider",
+        "full"
+      ],
+      "default": "freerider"
+    },
+
     "revisionid": {
       "type": "number"
     },
@@ -79,8 +101,8 @@
   },
   "required": [
     "entityid",
-    "public_key",
-    "acs",
+    "identifier",
+    "allowed_second_factors",
     "loa"
   ],
   "additionalProperties": false,

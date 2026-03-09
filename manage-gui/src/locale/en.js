@@ -736,11 +736,11 @@ const en = {
         entityId: "entityID",
         publicKey: "Public Key",
         acs: "ACS",
-        loa: "Loa",
+        loa: "LOA",
         assertionEncryptionEnabled: "Assertion encryption enabled",
         secondFactorOnly: "Second factor only",
         secondFactorOnlyNameidPatterns: "Second factor only nameID patterns",
-        blacklistedEncryptionAlgorithm: "Blacklisted encryption Algorithms"
+        blacklistedEncryptionAlgorithm: "Blacklisted encryption algorithms"
 
 
     }

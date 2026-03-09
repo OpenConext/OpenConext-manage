@@ -62,6 +62,7 @@ import PolicyJSON from "../components/metadata/PolicyJSON";
 import ErrorDialog from "../components/ErrorDialog";
 import PolicyMaintenance from "../components/metadata/PolicyMaintenance";
 import SFO from "../components/metadata/SFO";
+import Institution from "../components/metadata/Institution";
 
 export const DIALOG_TYPES = {
     CONFIRM: "confirm",
@@ -94,7 +95,8 @@ const tabsSfo = [
 ]
 
 const tabsInstitutions = [
-    "institutions",
+    "institution",
+    "overview",
     "revisions"
 ]
 
@@ -190,6 +192,8 @@ class Detail extends React.PureComponent {
             tab = "organisation";
         } else if (tab === "connection" && type === "sfo") {
             tab = "sfo";
+        } else if (tab === "connection" && type === "institution") {
+            tab = "institution";
         }
         const id = isEmpty(props.newMetaData) ? this.props.params.id : "new";
         this.state = {
@@ -491,6 +495,8 @@ class Detail extends React.PureComponent {
         const connectionErrors = currentErrors.connection || {};
         const organisationErrors = currentErrors.organisation || {};
         const policyFormErrors = currentErrors.policy_form || {};
+        const sfoErrors = currentErrors.sfo || {};
+        const institutionErrors = currentErrors.institution || {};
         const required = configuration.required;
         if ("policy" === type) {
             required.forEach(req => {
@@ -500,7 +506,15 @@ class Detail extends React.PureComponent {
             required.forEach(req => {
                 organisationErrors[req.startsWith("data.") ? req : `data.${req}`] = isEmpty(metaData.data[req]);
             });
-        } else {
+        } else if ("sfo" === type) {
+            required.forEach(req => {
+                sfoErrors[req] = isEmpty(metaData.data[req]);
+            });
+        }else if ("institution" === type) {
+            required.forEach(req => {
+                institutionErrors[req] = isEmpty(metaData.data[req]);
+            });
+        }  else {
             Object.keys(metaData.data).forEach(key => {
                 connectionErrors[key] = isEmpty(metaData.data[key]) && required.indexOf(key) > -1;
             });
@@ -513,7 +527,9 @@ class Detail extends React.PureComponent {
             connection: connectionErrors,
             metadata: metaDataErrors,
             organisation: organisationErrors,
-            policy_form: policyFormErrors
+            policy_form: policyFormErrors,
+            sfo: sfoErrors,
+            institution: institutionErrors
         };
         //Filter out false entries
         deleteFalseErrorKeys(newErrors);
@@ -846,6 +862,7 @@ class Detail extends React.PureComponent {
                     >
                         {I18n.t("metadata.submit")}
                     </a>
+                    {/*<code>{JSON.stringify(errors)}</code>*/}
                 </section>
             </section>
         );
@@ -869,6 +886,7 @@ class Detail extends React.PureComponent {
             case "import":
             case "export":
             case "sfo":
+            case "institution":
                 break;
             case "connected_idps": {
                 const connectedEntities = getConnectedEntities(whiteListing, allowedAll, allowedEntities, metaData.data.entityid, metaData.data.state);
@@ -1204,12 +1222,19 @@ class Detail extends React.PureComponent {
             case "sfo":
                 return (
                     <SFO data={metaData.data}
-                         isNew={isNew}
                          configuration={configuration}
                          onChange={this.onChange("sfo")}
                          errors={errors.sfo}
                          onError={this.onError("sfo")}/>
-
+                );
+            case "institution":
+                return (
+                    <Institution data={metaData.data}
+                         configuration={configuration}
+                         onChange={this.onChange("institution")}
+                         errors={errors.sfo}
+                                 isNew={isNew}
+                         onError={this.onError("institution")}/>
                 );
             default:
                 throw new Error(`Unknown tab ${tab}`);
@@ -1412,7 +1437,7 @@ class Detail extends React.PureComponent {
                     return tabsOrganisation;
                 case "sfo":
                     return tabsSfo;
-                case "institutions":
+                case "institution":
                     return tabsInstitutions;
                 case "provisioning":
                     return tabsPr;
