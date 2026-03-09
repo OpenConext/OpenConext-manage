@@ -2,7 +2,7 @@ import React from "react";
 
 import "./Organisation.scss";
 import PropTypes from "prop-types";
-import I18n from "i18n-js";
+import I18n from "../../locale/I18n";
 import String from "../form/String";
 import {isEmpty} from "../../utils/Utils";
 import {validateUniqueField} from "../../api";

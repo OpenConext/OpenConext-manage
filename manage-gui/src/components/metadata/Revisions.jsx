@@ -1,12 +1,12 @@
 import React from "react";
-import I18n from "i18n-js";
+import I18n from "../../locale/I18n";
 
 import PropTypes from "prop-types";
 import CheckBox from "../../components/CheckBox";
 import ConfirmationDialog from "../ConfirmationDialog";
 import {stop} from "../../utils/Utils";
 
-import "jsondiffpatch/dist/formatters-styles/html.css";
+import "jsondiffpatch/formatters/styles/html.css";
 import "./Revisions.scss";
 import {restoreRevision} from "../../api";
 import {setFlash} from "../../utils/Flash";

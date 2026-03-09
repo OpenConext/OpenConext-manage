@@ -5,7 +5,7 @@ import {parsePolicyJSON} from "../../api";
 import "highlight.js/styles/default.css";
 import JSONPretty from "react-json-pretty";
 import "react-json-pretty/themes/monikai.css";
-import I18n from "i18n-js";
+import I18n from "../../locale/I18n";
 
 export default function PolicyJSON({data}) {
 

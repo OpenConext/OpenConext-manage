@@ -1,7 +1,7 @@
 import React, {Fragment} from "react";
 
 import "./PolicyAttributes.scss";
-import I18n from "i18n-js";
+import I18n from "../../locale/I18n";
 import {Select} from "../index";
 import {groupPolicyAttributes, isEmpty, stop} from "../../utils/Utils";
 import CheckBox from "../CheckBox";

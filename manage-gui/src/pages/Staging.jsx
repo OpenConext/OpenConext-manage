@@ -1,5 +1,5 @@
 import React from "react";
-import I18n from "i18n-js";
+import I18n from "../locale/I18n";
 import {stop} from "../utils/Utils";
 import "./System.scss";
 import "react-json-pretty/themes/monikai.css";

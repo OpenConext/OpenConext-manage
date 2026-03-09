@@ -1,5 +1,5 @@
 import {EventEmitter} from "events";
-import I18n from "i18n-js";
+import I18n from "../locale/I18n";
 
 export const emitter = new EventEmitter();
 

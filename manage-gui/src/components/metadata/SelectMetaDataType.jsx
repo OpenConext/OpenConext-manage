@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import {Select} from "./../../components";
 
-import I18n from "i18n-js";
+import I18n from "../../locale/I18n";
 import "./SelectMetaDataType.scss";
 
 export default class SelectMetaDataType extends React.PureComponent {

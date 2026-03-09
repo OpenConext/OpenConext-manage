@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import PropTypes from "prop-types";
-import I18n from "i18n-js";
+import I18n from "../../locale/I18n";
 import {detail, revisionByNumber} from "../../api";
 import {Diff} from "./Diff";
 import "./RevisionDiff.scss";
