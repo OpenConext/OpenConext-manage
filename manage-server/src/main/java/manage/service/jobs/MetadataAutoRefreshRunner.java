@@ -117,13 +117,17 @@ public class MetadataAutoRefreshRunner implements Runnable {
 
         // Service Provider updates
         LOG.info("Updating Service Providers");
-        boolean anyServiceProviderChanged = metaDataService.findAllByType(EntityType.SP.getType()).stream()
-            .anyMatch(this::doUpdate);
+        List<Boolean> changedServiceProviders = metaDataService.findAllByType(EntityType.SP.getType()).stream()
+            .map(this::doUpdate)
+            .toList();
 
+        boolean anyServiceProviderChanged = changedServiceProviders.stream().anyMatch(b -> b);
         // Identity Provider updates
         LOG.info("Updating Identity Providers");
-        boolean anyIdentityProviderChanged = metaDataService.findAllByType(EntityType.IDP.getType()).stream()
-            .anyMatch(this::doUpdate);
+        List<Boolean> changedIdentityProviders = metaDataService.findAllByType(EntityType.IDP.getType()).stream()
+            .map(this::doUpdate)
+            .toList();
+        boolean anyIdentityProviderChanged = changedIdentityProviders.stream().anyMatch(b -> b);
 
         if (anyServiceProviderChanged || anyIdentityProviderChanged) {
             LOG.info("Pushing changes to IdP after auto-refresh");
