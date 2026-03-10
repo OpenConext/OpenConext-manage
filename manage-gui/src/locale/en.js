@@ -84,7 +84,9 @@ const en = {
             organisation: "Organisation",
             organisation_entity: "Connected entities",
             sp_organisation: "Organisation",
-            sfo: "SFO"
+            sfo: "SFO",
+            institution: "Institution",
+            overview: "Overview"
         },
         notFound: "No Metadata found. You might want to search for this deleted entity in the 'FIND MY METADATA' section in the 'System' tab.",
         existingChangeRequests: "There are orphaned change requests for this deleted entity. You probably want to remove them.",
@@ -174,9 +176,12 @@ const en = {
         orphans: "Referential integrity",
         extended_search: "Extended Search",
         push: "Push",
-        push_preview_eb: "Push Preview EB",
-        push_preview_oidc: "Push Preview OIDC",
-        push_preview_pdp: "Push Preview PDP",
+        push_preview_eb: "Preview EB",
+        push_preview_oidc: "Preview OIDC",
+        push_preview_pdp: "Preview PDP",
+        push_preview_sfo: "Preview SFO",
+        push_preview_insititution: "Preview Institution",
+        push_preview_stepup: "Preview Stepup",
         find_my_data: "Find my MetaData",
         stats: "Stats",
         findMyDataInfo: "Find your 'lost' MetaData. Enter part of the entityId, specify the type of MetaData and search in the revisions where all deleted MetaData still exists.",
@@ -741,8 +746,22 @@ const en = {
         secondFactorOnly: "Second factor only",
         secondFactorOnlyNameidPatterns: "Second factor only nameID patterns",
         blacklistedEncryptionAlgorithm: "Blacklisted encryption algorithms"
-
-
+    },
+    institution: {
+        identifier: "Identifier",
+        duplicateIdentifier: "This identifier is alreay taken. Duplicates are not allowed",
+        useRaLocations: "Use RA locations",
+        showRaaContactInformation: "Show RAA contact information",
+        verifyEmail: "Verify email",
+        allowedSecondFactors: "Allowed second factors",
+        numberOfTokensPerIdentity: "Number of tokens per identity",
+        useRa: "Use RA",
+        useRaa: "Use RAA",
+        selectRaa: "Select RAA",
+        selfVet: "Self vet",
+        allowSelfAssertedTokens: "Allow self asserted tokens",
+        ssoOn2fa: "SSO on 2FA",
+        stepupClient: "Type of stepup-client"
     }
 };
 export default en;

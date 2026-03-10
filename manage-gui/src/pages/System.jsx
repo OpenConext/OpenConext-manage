@@ -8,7 +8,11 @@ import {
     orphans,
     ping,
     pushPreview,
-    pushPreviewOIDC, pushPreviewPdP,
+    pushPreviewOIDC,
+    pushPreviewPdP,
+    pushPreviewSFO,
+    pushPreviewInstitution,
+    pushPreviewStepup,
     restoreDeletedRevision,
     search,
     stats,
@@ -29,7 +33,10 @@ export default class System extends React.PureComponent {
 
     constructor(props) {
         super(props);
-        const tabs = ["push_preview_eb", "push_preview_oidc", "push_preview_pdp", "validation", "orphans", "find_my_data", "stats"];
+        const tabs = [
+            "push_preview_eb", "push_preview_oidc", "push_preview_pdp",
+            "push_preview_sfo", "push_preview_insititution", "push_preview_stepup",
+            "validation", "orphans", "find_my_data", "stats"];
         this.state = {
             tabs: tabs,
             selectedTab: tabs[0],

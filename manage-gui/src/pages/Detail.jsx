@@ -1290,6 +1290,7 @@ class Detail extends React.PureComponent {
         const isRs = type === "oauth20_rs";
         const isProvisioning = type === "provisioning";
         const isSingleTenantTemplate = type === "single_tenant_template";
+        const isStepUp = type === "sfo" || type === "institution";
         const isOrganisation = type === "organisation";
         const isPolicy = type === "policy";
         const nonExistentAllowedEntities = this.renderWarningNonExistentAllowedEntities();
@@ -1310,9 +1311,9 @@ class Detail extends React.PureComponent {
                     <thead>
                     <tr>
                         <th>{I18n.t("topBannerDetails.name")}</th>
-                        {!isPolicy && !isOrganisation && <th>{I18n.t("topBannerDetails.organization")}</th>}
+                        {!isPolicy && !isOrganisation && !isStepUp && <th>{I18n.t("topBannerDetails.organization")}</th>}
                         <th>{I18n.t("topBannerDetails.type")}</th>
-                        {!isPolicy && !isOrganisation && <th>{I18n.t("topBannerDetails.workflow")}</th>}
+                        {!isPolicy && !isOrganisation && !isStepUp && <th>{I18n.t("topBannerDetails.workflow")}</th>}
                         {isPolicy && <th>{I18n.t("topBannerDetails.policyType")}</th>}
                         {(isSp || isRp) && <th>
                             {I18n.t("topBannerDetails.reviewState")}
@@ -1351,9 +1352,9 @@ class Detail extends React.PureComponent {
                         <td>{name}</td>
                         {!isPolicy && !isOrganisation && <td>{organization}</td>}
                         <td>{typeMetaData}</td>
-                        {!isPolicy && !isOrganisation &&
+                        {!isPolicy && !isOrganisation && !isStepUp &&
                             <td className={state === "prodaccepted" ? "green" : "orange"}>{state}</td>}
-                        {isPolicy && !isOrganisation && <td>{I18n.t(`topBannerDetails.${metaData.data.type}`)}</td>}
+                        {isPolicy && !isOrganisation && !isStepUp && <td>{I18n.t(`topBannerDetails.${metaData.data.type}`)}</td>}
                         {(isSp || isRp) && <td className={excludedFromPush ? "orange" : "green"}>
                             {excludedFromPush ? I18n.t("topBannerDetails.staging") : I18n.t("topBannerDetails.production")}
                         </td>}
@@ -1376,7 +1377,7 @@ class Detail extends React.PureComponent {
                         })}</span>
                     </section>}
                 {(isEmpty(connectedEntities) && !isSingleTenantTemplate && !isNew && !isRs
-                        && whiteListingLoaded && !isProvisioning) && !isPolicy && !isOrganisation &&
+                        && whiteListingLoaded && !isProvisioning) && !isPolicy && !isOrganisation && !isStepUp &&
                     <section className="warning">
                         <i className="fas fa-exclamation-circle"></i>
                         <span>{I18n.t("topBannerDetails.noEntitiesConnected", {type: typeMetaData})}</span>

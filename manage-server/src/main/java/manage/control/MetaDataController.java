@@ -474,6 +474,13 @@ public class MetaDataController {
         return metaDataService.uniqueEntityId(type, entityId);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PostMapping({"/client/uniqueInstitutionIdentifier"})
+    public List<Map> uniqueInstitutionIdentifier(@RequestBody Map<String, Object> properties) {
+        String identifier = (String) properties.get("identifier");
+        return metaDataRepository.findInstitutionByIdentifier(identifier);
+    }
+
     @PreAuthorize("hasAnyRole('ADMIN', 'READ')")
     @PostMapping({"/client/uniquePolicyName/policy", "/internal/uniquePolicyName/policy"})
     public List<MetaData> uniquePolicyName(@RequestBody Map<String, Object> properties) {

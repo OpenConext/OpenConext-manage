@@ -26,22 +26,37 @@ import static org.mockito.Mockito.when;
 public class DatabaseControllerUnitTest {
 
     private DatabaseController subject;
-    private MetaDataRepository metaDataRepository = Mockito.mock(MetaDataRepository.class);
-    private org.springframework.data.mongodb.core.MongoTemplate mongoTemplate = Mockito.mock(org.springframework.data.mongodb.core.MongoTemplate.class);
-    private Environment environment = Mockito.mock(Environment.class);
-    private RestTemplate pdpRestTemplate = Mockito.mock(RestTemplate.class);
-    private RestTemplate ebRestTemplate = Mockito.mock(RestTemplate.class);
-    private RestTemplate oidcRestTemplate = Mockito.mock(RestTemplate.class);
+    private final MetaDataRepository metaDataRepository = Mockito.mock(MetaDataRepository.class);
+    private final org.springframework.data.mongodb.core.MongoTemplate mongoTemplate = Mockito.mock(org.springframework.data.mongodb.core.MongoTemplate.class);
+    private final Environment environment = Mockito.mock(Environment.class);
+    private final RestTemplate pdpRestTemplate = Mockito.mock(RestTemplate.class);
+    private final RestTemplate ebRestTemplate = Mockito.mock(RestTemplate.class);
+    private final RestTemplate oidcRestTemplate = Mockito.mock(RestTemplate.class);
 
     @BeforeEach
     public void before() {
         when(metaDataRepository.getMongoTemplate()).thenReturn(mongoTemplate);
         subject = new DatabaseController(
-                metaDataRepository,
-                "http://eb-push", "user", "pass", false, false, false,
-                "http://oidc-push", "user", "pass",
-                "http://pdp-push", "user", "pass",
-                true, true, environment);
+            metaDataRepository,
+            "http://eb-push",
+            "user",
+            "pass",
+            false,
+            false,
+            false,
+            "http://oidc-push",
+            "user",
+            "pass",
+            true,
+             "user",
+            "pass",
+            "http://pdp-push",
+            true,
+            true,
+            "http://stepup-push",
+            "user",
+            "pass",
+            environment);
 
         ReflectionTestUtils.setField(subject, "pdpRestTemplate", pdpRestTemplate);
         ReflectionTestUtils.setField(subject, "restTemplate", ebRestTemplate);
@@ -53,11 +68,11 @@ public class DatabaseControllerUnitTest {
     @Test
     public void doPushPdpError() {
         HttpServerErrorException exception = HttpServerErrorException.create(
-                HttpStatus.INTERNAL_SERVER_ERROR,
-                "Internal Server Error",
-                null,
-                "{\"error\":\"pdp error\"}".getBytes(StandardCharsets.UTF_8),
-                StandardCharsets.UTF_8);
+            HttpStatus.INTERNAL_SERVER_ERROR,
+            "Internal Server Error",
+            null,
+            "{\"error\":\"pdp error\"}".getBytes(StandardCharsets.UTF_8),
+            StandardCharsets.UTF_8);
 
         doThrow(exception).when(pdpRestTemplate).put(eq("http://pdp-push"), anyList());
 
@@ -71,11 +86,11 @@ public class DatabaseControllerUnitTest {
     @Test
     public void doPushPdpServiceUnavailable() {
         HttpServerErrorException exception = HttpServerErrorException.create(
-                HttpStatus.SERVICE_UNAVAILABLE,
-                "Service Unavailable",
-                null,
-                "".getBytes(StandardCharsets.UTF_8),
-                StandardCharsets.UTF_8);
+            HttpStatus.SERVICE_UNAVAILABLE,
+            "Service Unavailable",
+            null,
+            "".getBytes(StandardCharsets.UTF_8),
+            StandardCharsets.UTF_8);
 
         doThrow(exception).when(pdpRestTemplate).put(eq("http://pdp-push"), anyList());
 
@@ -112,11 +127,11 @@ public class DatabaseControllerUnitTest {
     @Test
     public void doPushEbError() {
         HttpServerErrorException exception = HttpServerErrorException.create(
-                HttpStatus.BAD_GATEWAY,
-                "Bad Gateway",
-                null,
-                "{\"error\":\"eb error\"}".getBytes(StandardCharsets.UTF_8),
-                StandardCharsets.UTF_8);
+            HttpStatus.BAD_GATEWAY,
+            "Bad Gateway",
+            null,
+            "{\"error\":\"eb error\"}".getBytes(StandardCharsets.UTF_8),
+            StandardCharsets.UTF_8);
 
         when(mongoTemplate.stream(any(), any(), anyString())).thenAnswer(invocation -> java.util.stream.Stream.empty());
         when(ebRestTemplate.postForEntity(eq("http://eb-push"), anyMap(), eq(String.class))).thenThrow(exception);
@@ -131,11 +146,11 @@ public class DatabaseControllerUnitTest {
     @Test
     public void doPushEbServiceUnavailable() {
         HttpServerErrorException exception = HttpServerErrorException.create(
-                HttpStatus.SERVICE_UNAVAILABLE,
-                "Service Unavailable",
-                null,
-                "".getBytes(StandardCharsets.UTF_8),
-                StandardCharsets.UTF_8);
+            HttpStatus.SERVICE_UNAVAILABLE,
+            "Service Unavailable",
+            null,
+            "".getBytes(StandardCharsets.UTF_8),
+            StandardCharsets.UTF_8);
 
         when(mongoTemplate.stream(any(), any(), anyString())).thenAnswer(invocation -> java.util.stream.Stream.empty());
         when(ebRestTemplate.postForEntity(eq("http://eb-push"), anyMap(), eq(String.class))).thenThrow(exception);
@@ -150,11 +165,11 @@ public class DatabaseControllerUnitTest {
     @Test
     public void doPushPdpForbidden() {
         HttpClientErrorException exception = HttpClientErrorException.create(
-                HttpStatus.FORBIDDEN,
-                "Forbidden",
-                null,
-                "".getBytes(StandardCharsets.UTF_8),
-                StandardCharsets.UTF_8);
+            HttpStatus.FORBIDDEN,
+            "Forbidden",
+            null,
+            "".getBytes(StandardCharsets.UTF_8),
+            StandardCharsets.UTF_8);
 
         doThrow(exception).when(pdpRestTemplate).put(eq("http://pdp-push"), anyList());
 
@@ -168,11 +183,11 @@ public class DatabaseControllerUnitTest {
     @Test
     public void doPushOidcError() {
         HttpServerErrorException exception = HttpServerErrorException.create(
-                HttpStatus.SERVICE_UNAVAILABLE,
-                "Service Unavailable",
-                null,
-                "{\"error\":\"oidc error\"}".getBytes(StandardCharsets.UTF_8),
-                StandardCharsets.UTF_8);
+            HttpStatus.SERVICE_UNAVAILABLE,
+            "Service Unavailable",
+            null,
+            "{\"error\":\"oidc error\"}".getBytes(StandardCharsets.UTF_8),
+            StandardCharsets.UTF_8);
 
         when(mongoTemplate.findAll(any(), anyString())).thenReturn(java.util.Collections.emptyList());
         when(oidcRestTemplate.postForEntity(eq("http://oidc-push"), anyList(), eq(Void.class))).thenThrow(exception);

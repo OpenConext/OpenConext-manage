@@ -14,7 +14,6 @@ export default class SelectMulti extends React.PureComponent {
         if (fetchValue) {
             fetchEnumValues(fetchValue).then(res => this.setState({fetchValues: res}));
         }
-
     }
 
     valuesToOptions(values) {

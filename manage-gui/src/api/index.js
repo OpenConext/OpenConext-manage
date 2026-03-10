@@ -241,6 +241,11 @@ export function uniqueEntityId(entityid, type) {
     return postPutJson(`uniqueEntityId/${type}`, {entityid}, "post");
 }
 
+export function uniqueInstitutionIdentifier(identifier) {
+    return postPutJson("uniqueInstitutionIdentifier", {identifier}, "post");
+}
+
+
 export function uniquePolicyName(name) {
     return postPutJson(`uniquePolicyName/policy`, {name}, "post");
 }
@@ -275,6 +280,18 @@ export function pushPreviewOIDC() {
 
 export function pushPreviewPdP() {
     return fetchJson("playground/pushPreviewPdP");
+}
+
+export function pushPreviewSFO() {
+    return fetchJson("playground/pushPreviewSFO");
+}
+
+export function pushPreviewInstitution() {
+    return fetchJson("playground/pushPreviewInstitution");
+}
+
+export function pushPreviewStepup() {
+    return fetchJson("playground/pushPreviewStepup");
 }
 
 export function validate() {

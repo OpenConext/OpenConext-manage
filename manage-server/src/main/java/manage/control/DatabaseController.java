@@ -48,6 +48,10 @@ public class DatabaseController {
     private final String oidcPushUri;
     private final boolean oidcEnabled;
 
+    private final RestTemplate stepUpRestTemplate;
+    private final String stepUpPushUri;
+    private final boolean stepUpEnabled;
+
     private final boolean excludeEduGainImported;
     private final boolean excludeOidcRP;
     private final boolean excludeSRAM;
@@ -70,11 +74,15 @@ public class DatabaseController {
                        @Value("${push.oidc.url}") String oidcPushUri,
                        @Value("${push.oidc.user}") String oidcUser,
                        @Value("${push.oidc.password}") String oidcPassword,
-                       @Value("${push.pdp.url}") String pdpPushUri,
+                       @Value("${push.oidc.enabled}") boolean oidcEnabled,
                        @Value("${push.pdp.user}") String pdpUser,
                        @Value("${push.pdp.password}") String pdpPassword,
+                       @Value("${push.pdp.url}") String pdpPushUri,
                        @Value("${push.pdp.enabled}") boolean pdpEnabled,
-                       @Value("${push.oidc.enabled}") boolean oidcEnabled,
+                       @Value("${push.stepup.enabled}") boolean stepUpEnabled,
+                       @Value("${push.stepup.url}") String stepUpPushUri,
+                       @Value("${push.stepup.user}") String stepUpUser,
+                       @Value("${push.stepup.password}") String stepUpPassword,
                        Environment environment) {
         this.metaDataRepository = metaDataRepository;
         this.pushUri = pushUri;
@@ -91,6 +99,10 @@ public class DatabaseController {
         this.pdpRestTemplate = RestTemplateIdiom.buildRestTemplate(pdpPushUri, pdpUser, pdpPassword);
         this.pdpPushUri = pdpPushUri;
         this.pdpEnabled = pdpEnabled;
+
+        this.stepUpRestTemplate = RestTemplateIdiom.buildRestTemplate(stepUpPushUri, stepUpUser, stepUpPassword);
+        this.stepUpPushUri = stepUpPushUri;
+        this.stepUpEnabled = stepUpEnabled;
 
         this.environment = environment;
     }
@@ -351,6 +363,24 @@ public class DatabaseController {
     @GetMapping("/client/playground/pushPreviewPdP")
     public List<PdpPolicyDefinition> pushPreviewPdPEndpoint() {
         return this.pushPreviewPdP();
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/client/playground/pushPreviewSFO")
+    public List<MetaData> pushPreviewSFOEndpoint() {
+        return this.pushPreviewSFO();
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/client/playground/pushPreviewInstitution")
+    public List<MetaData> pushPreviewInstitutionEndpoint() {
+        return this.pushPreviewInstitution();
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/client/playground/pushPreviewStepup")
+    public List<MetaData> pushPreviewStepupEndpoint() {
+        return this.pushPreviewStepup();
     }
 
     private boolean excludeFromPush(Map metaDataFields) {

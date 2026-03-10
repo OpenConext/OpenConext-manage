@@ -299,6 +299,13 @@ public class MetaDataRepository {
         return mongoTemplate.find(query, Map.class, type);
     }
 
+    public List<Map> findInstitutionByIdentifier(String identifier) {
+        Document document = new Document("data.identifier", identifier);
+        Query query = new BasicQuery(document).collation(Collation.of("en").strength(2));
+        query.fields().include("_id");
+        return mongoTemplate.find(query, Map.class, EntityType.STEPUP.getType());
+    }
+
     public List<MetaData> recentActivity(List<EntityType> types, int max) {
         max = Math.min(max, 100);
         Query query = new Query()

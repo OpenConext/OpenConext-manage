@@ -1,27 +1,32 @@
 import React, {useEffect, useState} from "react";
-import Creatable from 'react-select/creatable';
 import "./Institution.scss";
 import I18n from "../../locale/I18n";
 import {isEmpty} from "../../utils/Utils";
-import {search, validation} from "../../api";
-import reactSelectStyles from "./../reactSelectStyles.js";
+import {search, uniqueEntityId, uniqueInstitutionIdentifier, validation} from "../../api";
 import Select from "../Select";
 import {CheckBox} from "../index";
+import SelectMulti from "../form/SelectMulti";
 
 export default function Institution({
-                                configuration,
-                                data,
-                                errors,
-                                onChange,
-                                onError
-                            }) {
+                                        configuration,
+                                        data,
+                                        errors,
+                                        isNew,
+                                        onChange,
+                                        onError
+                                    }) {
 
     const [institutions, setInstitutions] = useState([]);
+    const [originalIdentifier, setOriginalIdentifier] = useState([]);
+    const [duplicateIdentifier, setDuplicateIdentifier] = useState(false);
 
 
     useEffect(() => {
         search({}, "institution")
             .then(res => setInstitutions(res));
+        if (!isNew) {
+            setOriginalIdentifier(data.identifier);
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -61,135 +66,138 @@ export default function Institution({
         );
     }
 
+    const renderDuplicateIdentifier = () => {
+        return (
+            <div className="error">
+                <span>{I18n.t("institution.duplicateIdentifier")}</span>
+            </div>
+        );
+    }
+
+    const onBlurIdentifier = e => {
+        const identifier = e.target.value;
+        internalOnChange(e.target.value, "entityid");
+        if (isEmpty(identifier) || (!isNew && originalIdentifier === identifier)) {
+            setDuplicateIdentifier(false);
+            return true;
+        }
+        uniqueInstitutionIdentifier(identifier).then(res => {
+            setDuplicateIdentifier(res.length > 0);
+        })
+    }
+
     const renderIdentifier = () => {
         return (
             <div className="input-field">
-                <label htmlFor="entityID">
-                    <span>{I18n.t("sfo.entityId")}</span>
+                <label htmlFor="identifier">
+                    <span>{I18n.t("institution.identifier")}</span>
                 </label>
-                <input id="entityID"
+                <input id="identifier"
                        type="text"
-                       value={data.entityid || ""}
-                       onChange={e => internalOnChange(e.target.value, "entityid")}/>
-                {isEmpty(data.entityid) && renderError("EntityID")}
+                       value={data.identifier || ""}
+                       onChange={e => internalOnChange(e.target.value, "identifier")}
+                       onBlur={onBlurIdentifier}/>
+                {isEmpty(data.identifier) && renderError("Identifier")}
+                {duplicateIdentifier && renderDuplicateIdentifier()}
             </div>
         );
     }
 
-    const renderPublicKey = () => {
+    const renderNumberOfTokensPerIdentity = () => {
         return (
             <div className="input-field">
-                <label htmlFor="public_key">
-                    <span>{I18n.t("sfo.publicKey")}</span>
+                <label htmlFor="number_of_tokens_per_identity">
+                    <span>{I18n.t("institution.numberOfTokensPerIdentity")}</span>
                 </label>
-                <input id="public_key"
-                       type="text"
-                       value={data.public_key || ""}
-                       onBlur={e => validateFormat("public_key", e.target.value, "certificate")}
-                       onChange={e => {
-                           internalOnChange(e.target.value, "public_key");
-                       }}/>
-                {isEmpty(data.public_key) && renderError("Public key")}
-                {(!isEmpty(data.public_key) && errors.public_key) &&
-                    renderError("Public key", true)}
+                <input id="number_of_tokens_per_identity"
+                       type="number"
+                       value={data.number_of_tokens_per_identity}
+                       onChange={e => internalOnChange(parseInt(e.target.value, 10), "number_of_tokens_per_identity")}/>
             </div>
         );
     }
 
-    const renderAcs = () => {
+    const renderUseRaLocations = () => {
         return (
             <div className="input-field">
-                <label htmlFor="acs">
-                    <span>{I18n.t("sfo.acs")}</span>
-                </label>
-                <Creatable
-                    styles={reactSelectStyles}
-                    inputId={"react-select-acs"}
-                    isMulti={true}
-                    onChange={options => internalOnChange(options.map(o => o.value), "acs")}
-                    onBlur={() => validateFormat("acs", data.acs, "url")}
-                    placeholder="Enter acs..."
-                    value={(data.acs || []).map(acs => ({value: acs, label: acs}))}
-                />
-                {(!isEmpty(data.acs) && errors.acs) &&
-                    renderError("ACS", true)}
-                {isEmpty(data.acs)  &&
-                    renderError("ACS", )}
+                <CheckBox name="use_ra_locations"
+                          value={data.use_ra_locations}
+                          info={I18n.t("institution.useRaLocations")}
+                          onChange={e => internalOnChange(e.target.checked, "use_ra_locations")}/>
             </div>
         );
     }
 
-    const renderLoa = () => {
+    const renderShowRaaContactInformation = () => {
         return (
             <div className="input-field">
-                <label htmlFor="loa">
-                    <span>{I18n.t("sfo.loa")}</span>
+                <CheckBox name="show_raa_contact_information"
+                          value={data.show_raa_contact_information}
+                          info={I18n.t("institution.showRaaContactInformation")}
+                          onChange={e => internalOnChange(e.target.checked, "show_raa_contact_information")}/>
+            </div>
+        );
+    }
+
+    const renderVerifyEmail = () => {
+        return (
+            <div className="input-field">
+                <CheckBox name="verify_email"
+                          value={data.verify_email}
+                          info={I18n.t("institution.verifyEmail")}
+                          onChange={e => internalOnChange(e.target.checked, "verify_email")}/>
+            </div>
+        );
+    }
+
+    const renderStepupClient = () => {
+        return (
+            <div className="input-field">
+                <label htmlFor="stepupClient">
+                    <span>{I18n.t("institution.stepupClient")}</span>
                 </label>
                 <Select
-                    className="policy-select"
-                    onChange={option => internalOnChange(option.value, "loa")}
-                    options={configuration.properties.loa.enum
-                        .map(loa => ({label: loa, value: loa}))}
-                    value={data.loa || configuration.properties.loa.default}
+                    onChange={option => internalOnChange(option.value, "stepup-client")}
+                    options={configuration.properties["stepup-client"].enum
+                        .map(client => ({label: client, value: client}))}
+                    value={data["stepup-client"]}
+                    isClearable={false}
                     isSearchable={false}
                 />
             </div>
         );
     }
 
-    const renderAssertionEncryptionEnabled = () => {
-        return (
-            <div className="input-field">
-                <CheckBox name="assertion_encryption_enabled"
-                          value={data.assertion_encryption_enabled}
-                          info={I18n.t("sfo.assertionEncryptionEnabled")}
-                          onChange={e => internalOnChange(e.target.checked, "assertion_encryption_enabled")}/>
-            </div>
-        );
-    }
 
-    const renderSecondFactorOnly = () => {
+    const renderAllowedSecondFactors = () => {
         return (
             <div className="input-field">
-                <CheckBox name="second_factor_only"
-                          value={data.second_factor_only}
-                          info={I18n.t("sfo.secondFactorOnly")}
-                          onChange={e => internalOnChange(e.target.checked, "second_factor_only")}/>
-            </div>
-        );
-    }
-
-    const renderSecondFactorOnlyNameidPatterns = () => {
-        return (
-            <div className="input-field">
-                <label htmlFor="second_factor_only_nameid_patterns">
-                    <span>{I18n.t("sfo.secondFactorOnlyNameidPatterns")}</span>
+                <label htmlFor="allowed_second_factors">
+                    <span>{I18n.t("institution.allowedSecondFactors")}</span>
                 </label>
-                <Creatable
-                    styles={reactSelectStyles}
-                    inputId={"react-select-patterns"}
-                    isMulti={true}
-                    onChange={options => internalOnChange(options.map(o => o.value), "second_factor_only_nameid_patterns")}
-                    placeholder="Enter nameID patterns..."
-                    value={(data.second_factor_only_nameid_patterns || []).map(pattern => ({value: pattern, label: pattern}))}
+                <SelectMulti
+                    enumValues={configuration.properties.allowed_second_factors.items.enum}
+                    isClearable={false}
+                    onChange={options => internalOnChange(options, "allowed_second_factors")}
+                    value={data.allowed_second_factors}
+                    isSearchable={false}
                 />
+                {isEmpty(data.allowed_second_factors) && renderError("Allowed second factors")}
             </div>
         );
     }
 
-    const renderBlacklistedEncryptionAlgorithm = () => {
+    const renderUseRa = () => {
         return (
             <div className="input-field">
-                <label htmlFor="blacklisted_encryption_algorithms">
-                    <span>{I18n.t("sfo.blacklistedEncryptionAlgorithm")}</span>
+                <label htmlFor="use_ra">
+                    <span>{I18n.t("institution.useRa")}</span>
                 </label>
-                <Creatable
-                    styles={reactSelectStyles}
-                    inputId={"react-select-patterns"}
-                    isMulti={true}
-                    onChange={options => internalOnChange(options.map(o => o.value), "blacklisted_encryption_algorithms")}
-                    placeholder="Enter blacklisted algorithms..."
-                    value={(data.blacklisted_encryption_algorithms || []).map(algorithm => ({value: algorithm, label: algorithm}))}
+                <SelectMulti
+                    enumValues={institutions.map(instition => instition.data.entityid)}
+                    onChange={options => internalOnChange(options, "use_ra")}
+                    value={data.use_ra}
+                    isSearchable={false}
                 />
             </div>
         );
@@ -199,14 +207,14 @@ export default function Institution({
         <section className="metadata-sfo">
             {/*{JSON.stringify(errors)}*/}
             <section className="sfo">
-                {renderEntityID()}
-                {renderPublicKey()}
-                {renderAcs()}
-                {renderLoa()}
-                {renderAssertionEncryptionEnabled()}
-                {renderSecondFactorOnly()}
-                {renderSecondFactorOnlyNameidPatterns()}
-                {renderBlacklistedEncryptionAlgorithm()}
+                {renderIdentifier()}
+                {renderUseRaLocations()}
+                {renderShowRaaContactInformation()}
+                {renderVerifyEmail()}
+                {renderAllowedSecondFactors()}
+                {renderNumberOfTokensPerIdentity()}
+                {renderUseRa()}
+                {renderStepupClient()}
             </section>
         </section>
     );
