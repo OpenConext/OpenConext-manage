@@ -165,6 +165,28 @@ export default function SFO({
         );
     }
 
+    const renderAllowSsoOn2fa = () => {
+        return (
+            <div className="input-field">
+                <CheckBox name="allow_sso_on_2fa"
+                          value={data.allow_sso_on_2fa}
+                          info={I18n.t("sfo.allowSsoOn2fa")}
+                          onChange={e => internalOnChange(e.target.checked, "allow_sso_on_2fa")}/>
+            </div>
+        );
+    }
+
+    const renderSetSsoCookieOn2fa = () => {
+        return (
+            <div className="input-field">
+                <CheckBox name="set_sso_cookie_on_2fa"
+                          value={data.set_sso_cookie_on_2fa}
+                          info={I18n.t("sfo.setSsoCookieOn2fa")}
+                          onChange={e => internalOnChange(e.target.checked, "set_sso_cookie_on_2fa")}/>
+            </div>
+        );
+    }
+
     const renderSecondFactorOnlyNameidPatterns = () => {
         return (
             <div className="input-field">
@@ -214,6 +236,8 @@ export default function SFO({
                 {renderSecondFactorOnly()}
                 {renderSecondFactorOnlyNameidPatterns()}
                 {renderBlacklistedEncryptionAlgorithm()}
+                {renderAllowSsoOn2fa()}
+                {renderSetSsoCookieOn2fa()}
             </section>
         </section>
     );

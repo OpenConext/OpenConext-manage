@@ -96,7 +96,6 @@ const tabsSfo = [
 
 const tabsInstitutions = [
     "institution",
-    "overview",
     "revisions"
 ]
 

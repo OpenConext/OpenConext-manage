@@ -747,7 +747,9 @@ const en = {
         assertionEncryptionEnabled: "Assertion encryption enabled",
         secondFactorOnly: "Second factor only",
         secondFactorOnlyNameidPatterns: "Second factor only nameID patterns",
-        blacklistedEncryptionAlgorithm: "Blacklisted encryption algorithms"
+        blacklistedEncryptionAlgorithm: "Blacklisted encryption algorithms",
+        setSsoCookieOn2fa: "Set SSO Cookie on 2fa",
+        allowSsoOn2fa:"Allow SSO on 2fa"
     },
     institution: {
         identifier: "Identifier",
