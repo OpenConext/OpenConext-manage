@@ -96,7 +96,7 @@ export default class System extends React.PureComponent {
         if (tab === "push_preview_pdp") {
             this.setState({pushPreviewResultsPDP: undefined});
         }
-        if (tab === "push_preview_insititution") {
+        if (tab === "push_preview_institution") {
             this.setState({pushPreviewResultsInstitution: undefined});
         }
         if (tab === "push_preview_sfo") {
