@@ -10,13 +10,12 @@ export const RevisionDiff = ({id, type, revisionNumber, parentId}) => {
     const [previousRevision, setPreviousRevision] = useState(null);
     const [loaded, setLoaded] = useState(false);
     const [error, setError] = useState(false);
-    const [noRevisions, setNoRevisions] = useState(false);
+    const [noRevisions, setNoRevisions] = useState(revisionNumber - 1 < 0);
 
     useEffect(() => {
         const prevNumber = revisionNumber - 1
 
         if (prevNumber < 0) {
-            setNoRevisions(true);
             return;
         }
         const revisionParentId = parentId || id;

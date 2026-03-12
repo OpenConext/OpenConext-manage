@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import "./Institution.scss";
 import I18n from "../../locale/I18n";
 import {isEmpty} from "../../utils/Utils";
-import {search, uniqueEntityId, uniqueInstitutionIdentifier, validation} from "../../api";
+import {search, uniqueInstitutionIdentifier} from "../../api";
 import Select from "../Select";
 import {CheckBox} from "../index";
 import SelectMulti from "../form/SelectMulti";
@@ -10,7 +10,6 @@ import SelectMulti from "../form/SelectMulti";
 export default function Institution({
                                         configuration,
                                         data,
-                                        errors,
                                         isNew,
                                         onChange,
                                         onError
@@ -34,24 +33,6 @@ export default function Institution({
         onChange(`data.${attribute}`, value);
         if (configuration.required.includes(attribute)) {
             onError(attribute, isEmpty(value));
-        }
-    }
-
-    const validateFormat = async (attribute, value, format) => {
-        if (isEmpty(value)) {
-            return true;
-        }
-        if (typeof value === "string") {
-            const valid = await validation(format, value);
-            onError(attribute, !valid);
-        }
-
-        if (Array.isArray(value)) {
-            const validationValues = await Promise.all(
-                value.map(val => validation(format, val))
-            );
-            const valid = isEmpty(validationValues.filter(val => !val));
-            onError(attribute, !valid);
         }
     }
 
@@ -250,7 +231,7 @@ export default function Institution({
         );
     }
 
-    const renderSelfVet= () => {
+    const renderSelfVet = () => {
         return (
             <div className="input-field">
                 <CheckBox name="self_vet"
@@ -261,7 +242,7 @@ export default function Institution({
         );
     }
 
-    const renderAllowSelfAssertedTokens= () => {
+    const renderAllowSelfAssertedTokens = () => {
         return (
             <div className="input-field">
                 <CheckBox name="allow_self_asserted_tokens"
@@ -272,7 +253,7 @@ export default function Institution({
         );
     }
 
-    const renderSsoOn2fa= () => {
+    const renderSsoOn2fa = () => {
         return (
             <div className="input-field">
                 <CheckBox name="sso_on_2fa"
