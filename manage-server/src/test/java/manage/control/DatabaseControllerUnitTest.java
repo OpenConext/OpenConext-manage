@@ -1,5 +1,6 @@
 package manage.control;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import manage.model.PushOptions;
 import manage.repository.MetaDataRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -7,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -14,6 +16,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
@@ -34,7 +37,7 @@ public class DatabaseControllerUnitTest {
     private final RestTemplate oidcRestTemplate = Mockito.mock(RestTemplate.class);
 
     @BeforeEach
-    public void before() {
+    public void before() throws IOException {
         when(metaDataRepository.getMongoTemplate()).thenReturn(mongoTemplate);
         subject = new DatabaseController(
             metaDataRepository,
@@ -56,6 +59,8 @@ public class DatabaseControllerUnitTest {
             "http://stepup-push",
             "user",
             "pass",
+            new ClassPathResource("stepup_config.json"),
+            new ObjectMapper(),
             environment);
 
         ReflectionTestUtils.setField(subject, "pdpRestTemplate", pdpRestTemplate);

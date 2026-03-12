@@ -1,6 +1,8 @@
 package manage.control;
 
+import io.restassured.common.mapper.TypeRef;
 import manage.AbstractIntegrationTest;
+import manage.policies.PdpPolicyDefinition;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -10,36 +12,35 @@ import java.util.stream.Collectors;
 import static io.restassured.RestAssured.given;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@SuppressWarnings("unchecked")
 public class DatabaseControllerTest extends AbstractIntegrationTest {
 
     @Test
-    @SuppressWarnings("unchecked")
     public void pushPreview() throws Exception {
         Map connections = given()
-                .when()
-                .get("manage/api/client/playground/pushPreview")
-                .then()
-                .statusCode(SC_OK)
-                .extract().as(Map.class);
+            .when()
+            .get("manage/api/client/playground/pushPreview")
+            .then()
+            .statusCode(SC_OK)
+            .extract().as(Map.class);
         //System.out.println(objectMapper.writeValueAsString(connections));
         Map expected = objectMapper.readValue(readFile("push/push.expected_connections.json"), Map.class);
 
         assertEquals(expected, connections);
         //ensure the Sp with "coin:imported_from_edugain": true is included
         Object importFromEdugain = ((Map) ((Map) ((Map) ((Map) connections.get("connections"))
-                .get("11"))
-                .get("metadata"))
-                .get("coin"))
-                .get("imported_from_edugain");
+            .get("11"))
+            .get("metadata"))
+            .get("coin"))
+            .get("imported_from_edugain");
         assertEquals("0", importFromEdugain);
 
         //ensure the correct ARP is exported
         List<Map<String, Object>> arpGivenNames = (List<Map<String, Object>>) ((Map) ((Map) ((Map) connections.get("connections"))
-                .get("11"))
-                .get("arp_attributes"))
-                .get("urn:mace:dir:attribute-def:givenName");
+            .get("11"))
+            .get("arp_attributes"))
+            .get("urn:mace:dir:attribute-def:givenName");
         Map<String, Object> arpGivenName = arpGivenNames.get(0);
         List<String> keys = arpGivenName.keySet().stream().sorted().collect(Collectors.toList());
         assertEquals(List.of("motivation", "release_as", "use_as_nameid", "value"), keys);
@@ -47,17 +48,75 @@ public class DatabaseControllerTest extends AbstractIntegrationTest {
         assertEquals(true, arpGivenName.get("use_as_nameid"));
 
         Map sramService = (Map) ((Map) connections.get("connections"))
-                .get("15");
+            .get("15");
         String nameSramRP = (String) sramService
-                .get("name");
+            .get("name");
         assertEquals("https://sram.service.api.oidc_rp", nameSramRP);
         Map<String, Object> coinAttributes = (Map<String, Object>) ((Map) sramService.get("metadata")).get("coin");
         assertEquals("1", coinAttributes.get("collab_enabled"));
 
         String nameSramSP = (String) ((Map) ((Map) connections.get("connections"))
-                .get("16"))
-                .get("name");
+            .get("16"))
+            .get("name");
         assertEquals("https://sram.service.api.saml_sp", nameSramSP);
     }
 
+    @Test
+    public void pushPreviewPdP() {
+        List<PdpPolicyDefinition> pdpPolicyDefinitions = given()
+            .when()
+            .get("manage/api/client/playground/pushPreviewPdP")
+            .then()
+            .statusCode(SC_OK)
+            .extract()
+            .as(new TypeRef<>() {
+            });
+        assertEquals(2, pdpPolicyDefinitions.size());
+    }
+
+    @Test
+    public void pushPreviewSFO() {
+        Map<String, Object> sfoEntities = given()
+            .when()
+            .get("manage/api/client/playground/pushPreviewSFO")
+            .then()
+            .statusCode(SC_OK)
+            .extract()
+            .as(new TypeRef<>() {
+            });
+        assertEquals(3, sfoEntities.size());
+        assertEquals(6, ((List)sfoEntities.get("sraa")).size());
+        assertEquals(9, ((Map)sfoEntities.get("email_templates")).size());
+        Map gateway = (Map) sfoEntities.get("gateway");
+        assertEquals(1, gateway.size());
+        assertEquals(1, ((List)gateway.get("service_providers")).size());
+    }
+
+    @Test
+    public void pushPreviewStepup() {
+        Map<String, List<String>>  uniqueInstitutions = given()
+            .when()
+            .get("manage/api/client/playground/pushPreviewStepup")
+            .then()
+            .statusCode(SC_OK)
+            .extract()
+            .as(new TypeRef<>() {
+            });
+        assertEquals(1, uniqueInstitutions.size());
+        assertEquals(List.of("inst1"), uniqueInstitutions.get("institutions"));
+    }
+
+    @Test
+    public void pushPreviewInstitution() {
+        Map<String, Map<String, Object>>  institutions = given()
+            .when()
+            .get("manage/api/client/playground/pushPreviewInstitution")
+            .then()
+            .statusCode(SC_OK)
+            .extract()
+            .as(new TypeRef<>() {
+            });
+        assertEquals(1, institutions.size());
+        assertEquals(12, institutions.get("inst1").size());
+    }
 }

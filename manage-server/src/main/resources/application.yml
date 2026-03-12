@@ -46,6 +46,12 @@ push:
     name: OpenConext PDP
     password: secret
     enabled: true
+  stepup:
+    url: http://localhost:8082/stepup/api
+    user: manage
+    configuration_file: classpath:/stepup_config.json
+    password: secret
+    enabled: true
 
 product:
   name: Manage

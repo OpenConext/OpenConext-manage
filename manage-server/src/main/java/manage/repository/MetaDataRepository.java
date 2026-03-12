@@ -479,6 +479,10 @@ public class MetaDataRepository {
                 "data.name",
                 "data.kvkNumber",
                 "data.notes");
+        } else if (entityType.equals(EntityType.STEPUP) || entityType.equals(EntityType.SFO)) {
+            fields.include(
+                "data.name",
+                "data.identifier");
         } else {
             this.supportedLanguages.forEach(lang -> {
                 fields.include("data.metaDataFields.name:" + lang);

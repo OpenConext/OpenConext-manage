@@ -1,5 +1,7 @@
 package manage.control;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import manage.format.EngineBlockFormatter;
 import manage.model.EntityType;
 import manage.model.MetaData;
@@ -13,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
+import org.springframework.core.io.Resource;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +28,13 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.*;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -51,6 +60,7 @@ public class DatabaseController {
     private final RestTemplate stepUpRestTemplate;
     private final String stepUpPushUri;
     private final boolean stepUpEnabled;
+    private final Map<String, Object> stepUpConfiguration;
 
     private final boolean excludeEduGainImported;
     private final boolean excludeOidcRP;
@@ -83,7 +93,9 @@ public class DatabaseController {
                        @Value("${push.stepup.url}") String stepUpPushUri,
                        @Value("${push.stepup.user}") String stepUpUser,
                        @Value("${push.stepup.password}") String stepUpPassword,
-                       Environment environment) {
+                       @Value("${push.stepup.configuration_file}") Resource stepupConfigurationResource,
+                       ObjectMapper objectMapper,
+                       Environment environment) throws IOException {
         this.metaDataRepository = metaDataRepository;
         this.pushUri = pushUri;
 
@@ -103,6 +115,8 @@ public class DatabaseController {
         this.stepUpRestTemplate = RestTemplateIdiom.buildRestTemplate(stepUpPushUri, stepUpUser, stepUpPassword);
         this.stepUpPushUri = stepUpPushUri;
         this.stepUpEnabled = stepUpEnabled;
+        this.stepUpConfiguration = objectMapper.readValue(stepupConfigurationResource.getInputStream(), new TypeReference<>() {
+        });
 
         this.environment = environment;
     }
@@ -123,12 +137,12 @@ public class DatabaseController {
                 result.put("pdp", Map.of("status", "OK"));
             } catch (HttpStatusCodeException e) {
                 String message = String.format("Error in push to PDP (%s) status %s and response %s",
-                        pdpPushUri, e.getStatusCode(), e.getResponseBodyAsString());
+                    pdpPushUri, e.getStatusCode(), e.getResponseBodyAsString());
                 LOG.error(message);
                 return new ResponseEntity<>(Map.of("message", message), HttpStatus.INTERNAL_SERVER_ERROR);
             } catch (Exception e) {
                 String message = String.format("Error in push to PDP (%s) error %s",
-                        pdpPushUri, e.getMessage());
+                    pdpPushUri, e.getMessage());
                 LOG.error(message);
                 return new ResponseEntity<>(Map.of("message", message), HttpStatus.INTERNAL_SERVER_ERROR);
             }
@@ -143,16 +157,16 @@ public class DatabaseController {
 
                 String body = response.getBody();
                 result.put("eb", Map.of(
-                        "status", response.getStatusCode().is2xxSuccessful() ? "OK" : "ERROR",
-                        "response", StringUtils.hasText(body) ? body : ""));
+                    "status", response.getStatusCode().is2xxSuccessful() ? "OK" : "ERROR",
+                    "response", StringUtils.hasText(body) ? body : ""));
             } catch (HttpStatusCodeException e) {
                 String message = String.format("Error in push to EngineBlock (%s) status %s and response %s",
-                        pushUri, e.getStatusCode(), e.getResponseBodyAsString());
+                    pushUri, e.getStatusCode(), e.getResponseBodyAsString());
                 LOG.error(message);
                 return new ResponseEntity<>(Map.of("message", message), HttpStatus.INTERNAL_SERVER_ERROR);
             } catch (Exception e) {
                 String message = String.format("Error in push to EngineBlock (%s) error %s",
-                        pushUri, e.getMessage());
+                    pushUri, e.getMessage());
                 LOG.error(message);
                 return new ResponseEntity<>(Map.of("message", message), HttpStatus.INTERNAL_SERVER_ERROR);
             }
@@ -166,15 +180,15 @@ public class DatabaseController {
             try {
                 ResponseEntity<Void> response = this.oidcRestTemplate.postForEntity(oidcPushUri, filteredEntities, Void.class);
                 result.put("oidc", Map.of(
-                        "status", response.getStatusCode().is2xxSuccessful() ? "OK" : "ERROR"));
+                    "status", response.getStatusCode().is2xxSuccessful() ? "OK" : "ERROR"));
             } catch (HttpStatusCodeException e) {
                 String message = String.format("Error in push to OIDC (%s) status %s and response %s",
-                        oidcPushUri, e.getStatusCode(), e.getResponseBodyAsString());
+                    oidcPushUri, e.getStatusCode(), e.getResponseBodyAsString());
                 LOG.error(message);
                 return new ResponseEntity<>(Map.of("message", message), HttpStatus.INTERNAL_SERVER_ERROR);
             } catch (Exception e) {
                 String message = String.format("Error in push to OIDC (%s) error %s",
-                        oidcPushUri, e.getMessage());
+                    oidcPushUri, e.getMessage());
                 LOG.error(message);
                 return new ResponseEntity<>(Map.of("message", message), HttpStatus.INTERNAL_SERVER_ERROR);
             }
@@ -191,6 +205,68 @@ public class DatabaseController {
             .filter(PdpPolicyDefinition::isActive)
             .collect(toList());
         return policies;
+    }
+
+    private Map<String, Object> pushPreviewSFO() {
+        List<MetaData> sfoEntities = metaDataRepository.getMongoTemplate().findAll(MetaData.class, EntityType.SFO.getType());
+        Map<String, Object> results = new HashMap<>();
+        results.put("sraa", stepUpConfiguration.get("sraa"));
+        results.put("email_templates", stepUpConfiguration.get("email_templates"));
+        List<Map<String, Object>> serviceProviders = sfoEntities.stream()
+            .map(MetaData::getData)
+            .map(data -> Map.of(
+                "entity_id", data.get("entityid"),
+                "public_key", data.get("public_key"),
+                "acs", data.getOrDefault("acs", List.of()),
+                "loa", Map.of("__default__", data.get("loa")),
+                "assertion_encryption_enabled", data.getOrDefault("assertion_encryption_enabled", false),
+                "second_factor_only", data.getOrDefault("second_factor_only", false),
+                "second_factor_only_nameid_patterns", data.getOrDefault("second_factor_only_nameid_patterns", List.of()),
+                "blacklisted_encryption_algorithms", data.getOrDefault("blacklisted_encryption_algorithms", List.of())
+            ))
+            .toList();
+        results.put("gateway", Map.of("service_providers", serviceProviders));
+        return results;
+    }
+
+    private Map<String, List<String>> pushPreviewStepup() {
+        List<MetaData> institutions = metaDataRepository.getMongoTemplate().findAll(MetaData.class, EntityType.STEPUP.getType());
+        return Map.of(
+            "institutions",
+            institutions.stream()
+                .map(MetaData::getData)
+                .map(data -> (String) data.get("identifier"))
+                .toList()
+        );
+    }
+
+    private Map<String, Map<String, Object>> pushPreviewInstitution() {
+        List<MetaData> institutions = metaDataRepository.getMongoTemplate().findAll(MetaData.class, EntityType.STEPUP.getType());
+        List<String> properties = new ArrayList<>();
+        properties.add("use_ra_locations");
+        properties.add("show_raa_contact_information");
+        properties.add("verify_email");
+        properties.add("allowed_second_factors");
+        properties.add("number_of_tokens_per_identity");
+        properties.add("use_ra");
+        properties.add("use_raa");
+        properties.add("select_raa");
+        properties.add("self_vet");
+        properties.add("allow_self_asserted_tokens");
+        properties.add("sso_on_2fa");
+        properties.add("use_ra_locations");
+        properties.add("stepup-client");
+
+        return institutions.stream().map(MetaData::getData)
+            .collect(toMap(
+                data -> (String) data.get("identifier"),
+                data -> data.keySet().stream()
+                    .filter(key -> properties.contains(key))
+                    .collect(toMap(
+                        key -> key,
+                        key -> data.get(key)
+                    ))
+            ));
     }
 
     private List<MetaData> pushPreviewOIDC() {
@@ -367,19 +443,19 @@ public class DatabaseController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/client/playground/pushPreviewSFO")
-    public List<MetaData> pushPreviewSFOEndpoint() {
+    public Map<String, Object> pushPreviewSFOEndpoint() {
         return this.pushPreviewSFO();
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/client/playground/pushPreviewInstitution")
-    public List<MetaData> pushPreviewInstitutionEndpoint() {
+    public Map<String, Map<String, Object>> pushPreviewInstitutionEndpoint() {
         return this.pushPreviewInstitution();
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/client/playground/pushPreviewStepup")
-    public List<MetaData> pushPreviewStepupEndpoint() {
+    public Map<String, List<String>> pushPreviewStepupEndpoint() {
         return this.pushPreviewStepup();
     }
 

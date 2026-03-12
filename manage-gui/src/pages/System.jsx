@@ -35,7 +35,7 @@ export default class System extends React.PureComponent {
         super(props);
         const tabs = [
             "push_preview_eb", "push_preview_oidc", "push_preview_pdp",
-            "push_preview_sfo", "push_preview_insititution", "push_preview_stepup",
+            "push_preview_sfo", "push_preview_institution", "push_preview_stepup",
             "validation", "orphans", "find_my_data", "stats"];
         this.state = {
             tabs: tabs,
@@ -96,6 +96,15 @@ export default class System extends React.PureComponent {
         if (tab === "push_preview_pdp") {
             this.setState({pushPreviewResultsPDP: undefined});
         }
+        if (tab === "push_preview_insititution") {
+            this.setState({pushPreviewResultsInstitution: undefined});
+        }
+        if (tab === "push_preview_sfo") {
+            this.setState({pushPreviewResultsSFO: undefined});
+        }
+        if (tab === "push_preview_stepup") {
+            this.setState({pushPreviewResultsStepup: undefined});
+        }
         if (tab === "stats") {
             stats().then(json => this.setState({statistics: json}));
         }
@@ -132,6 +141,34 @@ export default class System extends React.PureComponent {
         this.setState({loading: true});
         pushPreviewPdP().then(json => this.setState({pushPreviewResultsPDP: json, loading: false}));
     };
+
+    runPushPreviewSFO = e => {
+        stop(e);
+        if (this.state.loading) {
+            return;
+        }
+        this.setState({loading: true});
+        pushPreviewSFO().then(json => this.setState({pushPreviewResultsSFO: json, loading: false}));
+    };
+
+    runPushPreviewStepup = e => {
+        stop(e);
+        if (this.state.loading) {
+            return;
+        }
+        this.setState({loading: true});
+        pushPreviewStepup().then(json => this.setState({pushPreviewResultsStepup: json, loading: false}));
+    };
+
+    runPushPreviewInstitution = e => {
+        stop(e);
+        if (this.state.loading) {
+            return;
+        }
+        this.setState({loading: true});
+        pushPreviewInstitution().then(json => this.setState({pushPreviewResultsInstitution: json, loading: false}));
+    };
+
     findMyData = e => {
         stop(e);
 
@@ -386,6 +423,117 @@ export default class System extends React.PureComponent {
         );
     };
 
+    renderPushPreviewInstitution = () => {
+        const {pushPreviewResultsInstitution, loading, copiedToClipboardClassName} = this.state;
+        const json = pushPreviewResultsInstitution ? JSON.stringify(pushPreviewResultsInstitution) : "";
+        const showCopy = (pushPreviewResultsInstitution && json.length > 0 && json.length < 150 * 1000);
+        const showSelectText = !showCopy && json.length > 0;
+        return (
+            <section className="push">
+                <p>{I18n.t("playground.pushPreviewInfo", {name: "middleware-institution"})}</p>
+                <a className={`button ${loading ? "grey disabled" : "green"}`}
+                   onClick={this.runPushPreviewInstitution}>{I18n.t("playground.runPushPreview")}
+                    <i className="fas fa-refresh"></i></a>
+                {showCopy &&
+                    <CopyToClipboard text={json} onCopy={this.copiedToClipboard}>
+                    <span className={`button green ${copiedToClipboardClassName}`}>
+                       Copy JSON to clipboard <i className="fas fa-clone"></i>
+                    </span>
+                    </CopyToClipboard>
+                }
+                {showSelectText &&
+                    <span className="button green" onClick={() => {
+                        const range = document.createRange();
+                        const sel = window.getSelection();
+                        range.selectNodeContents(this.pushPreviewResultsInstitution);
+                        sel.removeAllRanges();
+                        sel.addRange(range);
+                    }}>
+                       Select all JSON <i className="fas fa-clone"></i>
+                    </span>
+                }
+                {pushPreviewResultsInstitution &&
+                    <section className="results pushPreviewResults" ref={ref => this.pushPreviewResultsInstitution = ref}>
+                        {json}
+                    </section>}
+            </section>
+        );
+    };
+
+    renderPushPreviewSFO = () => {
+        const {pushPreviewResultsSFO, loading, copiedToClipboardClassName} = this.state;
+        const json = pushPreviewResultsSFO ? JSON.stringify(pushPreviewResultsSFO) : "";
+        const showCopy = (pushPreviewResultsSFO && json.length > 0 && json.length < 150 * 1000);
+        const showSelectText = !showCopy && json.length > 0;
+        return (
+            <section className="push">
+                <p>{I18n.t("playground.pushPreviewInfo", {name: "middleware-config"})}</p>
+                <a className={`button ${loading ? "grey disabled" : "green"}`}
+                   onClick={this.runPushPreviewSFO}>{I18n.t("playground.runPushPreview")}
+                    <i className="fas fa-refresh"></i></a>
+                {showCopy &&
+                    <CopyToClipboard text={json} onCopy={this.copiedToClipboard}>
+                    <span className={`button green ${copiedToClipboardClassName}`}>
+                       Copy JSON to clipboard <i className="fas fa-clone"></i>
+                    </span>
+                    </CopyToClipboard>
+                }
+                {showSelectText &&
+                    <span className="button green" onClick={() => {
+                        const range = document.createRange();
+                        const sel = window.getSelection();
+                        range.selectNodeContents(this.pushPreviewResultsSFO);
+                        sel.removeAllRanges();
+                        sel.addRange(range);
+                    }}>
+                       Select all JSON <i className="fas fa-clone"></i>
+                    </span>
+                }
+                {pushPreviewResultsSFO &&
+                    <section className="results pushPreviewResults" ref={ref => this.pushPreviewResultsSFO = ref}>
+                        {json}
+                    </section>}
+            </section>
+        );
+    };
+
+    renderPushPreviewStepup = () => {
+        const {pushPreviewResultsStepup, loading, copiedToClipboardClassName} = this.state;
+        const json = pushPreviewResultsStepup ? JSON.stringify(pushPreviewResultsStepup) : "";
+        const showCopy = (pushPreviewResultsStepup && json.length > 0 && json.length < 150 * 1000);
+        const showSelectText = !showCopy && json.length > 0;
+        return (
+            <section className="push">
+                <p>{I18n.t("playground.pushPreviewInfo", {name: "middleware-whitelist"})}</p>
+                <a className={`button ${loading ? "grey disabled" : "green"}`}
+                   onClick={this.runPushPreviewStepup}>{I18n.t("playground.runPushPreview")}
+                    <i className="fas fa-refresh"></i></a>
+                {showCopy &&
+                    <CopyToClipboard text={json} onCopy={this.copiedToClipboard}>
+                    <span className={`button green ${copiedToClipboardClassName}`}>
+                       Copy JSON to clipboard <i className="fas fa-clone"></i>
+                    </span>
+                    </CopyToClipboard>
+                }
+                {showSelectText &&
+                    <span className="button green" onClick={() => {
+                        const range = document.createRange();
+                        const sel = window.getSelection();
+                        range.selectNodeContents(this.pushPreviewResultsStepup);
+                        sel.removeAllRanges();
+                        sel.addRange(range);
+                    }}>
+                       Select all JSON <i className="fas fa-clone"></i>
+                    </span>
+                }
+                {pushPreviewResultsStepup &&
+                    <section className="results pushPreviewResults" ref={ref => this.pushPreviewResultsStepup = ref}>
+                        {json}
+                    </section>}
+            </section>
+        );
+    };
+
     renderValidate = () => {
         const {validationResults, loading} = this.state;
         return (
@@ -489,6 +637,12 @@ export default class System extends React.PureComponent {
                 return this.renderPushPreviewOIDC();
             case "push_preview_pdp":
                 return this.renderPushPreviewPdP();
+            case "push_preview_sfo":
+                return this.renderPushPreviewSFO();
+            case "push_preview_institution":
+                return this.renderPushPreviewInstitution();
+            case "push_preview_stepup":
+                return this.renderPushPreviewStepup();
             case "find_my_data":
                 return this.renderFindMyData();
             case "stats":

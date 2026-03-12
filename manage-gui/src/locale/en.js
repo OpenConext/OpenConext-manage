@@ -180,8 +180,8 @@ const en = {
         push_preview_oidc: "Preview OIDC",
         push_preview_pdp: "Preview PDP",
         push_preview_sfo: "Preview SFO",
-        push_preview_insititution: "Preview Institution",
-        push_preview_stepup: "Preview Stepup",
+        push_preview_institution: "Preview Stepup Institutions",
+        push_preview_stepup: "Preview Stepup Whitelist",
         find_my_data: "Find my MetaData",
         stats: "Stats",
         findMyDataInfo: "Find your 'lost' MetaData. Enter part of the entityId, specify the type of MetaData and search in the revisions where all deleted MetaData still exists.",
@@ -522,6 +522,7 @@ const en = {
         entity_id: "Entity ID",
         name: "Name",
         organization: "Organization",
+        institution: "Institution",
         description: "Description",
         policy: "Policy",
         state: "Production",
@@ -738,6 +739,7 @@ const en = {
         policyPlaceholder: "Select a policy to initiate the PDP request data"
     },
     sfo: {
+        name: "Name",
         entityId: "entityID",
         publicKey: "Public Key",
         acs: "ACS",

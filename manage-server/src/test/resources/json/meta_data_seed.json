@@ -826,8 +826,6 @@
   },
   {
     "id": 18,
-    "_id": "750357b2-8cf1-462d-94fe-48342305fc3e",
-    "_class": "manage.model.MetaData",
     "data": {
       "metaDataFields": {},
       "revisionnote": "Restore of revision: 4",
@@ -845,7 +843,7 @@
     "version": 6
   },
   {
-    "id": "cdeb5f7d-370c-46ed-b462-d44fedfd923f",
+    "id": "19",
     "version": 1,
     "type": "institution",
     "revision": {
@@ -854,6 +852,7 @@
       "updatedBy": "saml2_user.com"
     },
     "data": {
+      "name": "Test Institution",
       "entityid": "inst1",
       "metaDataFields": {},
       "identifier": "inst1",
@@ -875,11 +874,10 @@
       "stepup-client": "full",
       "revisionnote": "test",
       "eid": 13629
-    },
-    "_class": "manage.model.MetaData"
+    }
   },
   {
-    "_id": "8291dd9c-9746-4ef2-9795-e2317641637e",
+    "id": "20",
     "version": 1,
     "type": "sfo",
     "revision": {
@@ -888,6 +886,7 @@
       "updatedBy": "saml2_user.com"
     },
     "data": {
+      "name": "Test SFO",
       "entityid": "http://entity.id.changed",
       "metaDataFields": {},
       "public_key": "MIIDEzCCAfugAwIBAgIJAKoK/heBjcOYMA0GCSqGSIb3DQEBBQUAMCAxHjAcBgNVBAoMFU9yZ2FuaXphdGlvbiwgQ049T0lEQzAeFw0xNTExMTExMDEyMTVaFw0yNTExMTAxMDEyMTVaMCAxHjAcBgNVBAoMFU9yZ2FuaXphdGlvbiwgQ049T0lEQzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANBGwJ/qpTQNiSgUglSE2UzEkUow+wS8r67etxoEhlzJZfgK/k5TfG1wICDqapHAxEVgUM10aBHRctNocA5wmlHtxdidhzRZroqHwpKy2BmsKX5Z2oK25RLpsyusB1KroemgA/CjUnI6rIL1xxFn3KyOFh1ZBLUQtKNQeMS7HFGgSDAp+sXuTFujz12LFDugX0T0KB5a1+0l8y0PEa0yGa1oi6seONx849ZHxM0PRvUunWkuTM+foZ0jZpFapXe02yWMqhc/2iYMieE/3GvOguJchJt6R+cut8VBb6ubKUIGK7pmoq/TB6DVXpvsHqsDJXechxcicu4pdKVDHSec850CAwEAAaNQME4wHQYDVR0OBBYEFK7RqjoodSYVXGTVEdLf3kJflP/sMB8GA1UdIwQYMBaAFK7RqjoodSYVXGTVEdLf3kJflP/sMAwGA1UdEwQFMAMBAf8wDQYJKoZIhvcNAQEFBQADggEBADNZkxlFXh4F45muCbnQd+WmaXlGvb9tkUyAIxVL8AIu8J18F420vpnGpoUAE+Hy3evBmp2nkrFAgmr055fAjpHeZFgDZBAPCwYd3TNMDeSyMta3Ka+oS7GRFDePkMEm+kH4/rITNKUF1sOvWBTSowk9TudEDyFqgGntcdu/l/zRxvx33y3LMG5USD0x4X4IKjRrRN1BbcKgi8dq10C3jdqNancTuPoqT3WWzRvVtB/q34B7F74/6JzgEoOCEHufBMp4ZFu54P0yEGtWfTwTzuoZobrChVVBt4w/XZagrRtUCDNwRpHNbpjxYudbqLqpi1MQpV9oht/BpTHVJG2i0ro=",
@@ -906,7 +905,6 @@
       ],
       "revisionnote": "test",
       "eid": 13628
-    },
-    "_class": "manage.model.MetaData"
+    }
   }
 ]

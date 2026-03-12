@@ -103,6 +103,21 @@ export default function Institution({
         );
     }
 
+    const renderName = () => {
+        return (
+            <div className="input-field">
+                <label htmlFor="name">
+                    <span>{I18n.t("sfo.name")}</span>
+                </label>
+                <input id="name"
+                       type="text"
+                       value={data.name || ""}
+                       onChange={e => internalOnChange(e.target.value, "name")}/>
+                {isEmpty(data.name) && renderError("Name")}
+            </div>
+        );
+    }
+
     const renderNumberOfTokensPerIdentity = () => {
         return (
             <div className="input-field">
@@ -203,10 +218,76 @@ export default function Institution({
         );
     }
 
+    const renderUseRaa = () => {
+        return (
+            <div className="input-field">
+                <label htmlFor="use_raa">
+                    <span>{I18n.t("institution.useRaa")}</span>
+                </label>
+                <SelectMulti
+                    enumValues={institutions.map(instition => instition.data.entityid)}
+                    onChange={options => internalOnChange(options, "use_raa")}
+                    value={data.use_raa}
+                    isSearchable={false}
+                />
+            </div>
+        );
+    }
+
+    const renderSelectRaa = () => {
+        return (
+            <div className="input-field">
+                <label htmlFor="select_raa">
+                    <span>{I18n.t("institution.selectRaa")}</span>
+                </label>
+                <SelectMulti
+                    enumValues={institutions.map(instition => instition.data.entityid)}
+                    onChange={options => internalOnChange(options, "select_raa")}
+                    value={data.select_raa}
+                    isSearchable={false}
+                />
+            </div>
+        );
+    }
+
+    const renderSelfVet= () => {
+        return (
+            <div className="input-field">
+                <CheckBox name="self_vet"
+                          value={data.self_vet}
+                          info={I18n.t("institution.selfVet")}
+                          onChange={e => internalOnChange(e.target.checked, "self_vet")}/>
+            </div>
+        );
+    }
+
+    const renderAllowSelfAssertedTokens= () => {
+        return (
+            <div className="input-field">
+                <CheckBox name="allow_self_asserted_tokens"
+                          value={data.allow_self_asserted_tokens}
+                          info={I18n.t("institution.allowSelfAssertedTokens")}
+                          onChange={e => internalOnChange(e.target.checked, "allow_self_asserted_tokens")}/>
+            </div>
+        );
+    }
+
+    const renderSsoOn2fa= () => {
+        return (
+            <div className="input-field">
+                <CheckBox name="sso_on_2fa"
+                          value={data.sso_on_2fa}
+                          info={I18n.t("institution.ssoOn2fa")}
+                          onChange={e => internalOnChange(e.target.checked, "sso_on_2fa")}/>
+            </div>
+        );
+    }
+
     return (
         <section className="metadata-sfo">
             {/*{JSON.stringify(errors)}*/}
             <section className="sfo">
+                {renderName()}
                 {renderIdentifier()}
                 {renderUseRaLocations()}
                 {renderShowRaaContactInformation()}
@@ -214,6 +295,11 @@ export default function Institution({
                 {renderAllowedSecondFactors()}
                 {renderNumberOfTokensPerIdentity()}
                 {renderUseRa()}
+                {renderUseRaa()}
+                {renderSelectRaa()}
+                {renderSelfVet()}
+                {renderAllowSelfAssertedTokens()}
+                {renderSsoOn2fa()}
                 {renderStepupClient()}
             </section>
         </section>
