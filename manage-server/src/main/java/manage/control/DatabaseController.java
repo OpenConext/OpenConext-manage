@@ -210,8 +210,12 @@ public class DatabaseController {
     private Map<String, Object> pushPreviewSFO() {
         List<MetaData> sfoEntities = metaDataRepository.getMongoTemplate().findAll(MetaData.class, EntityType.SFO.getType());
         Map<String, Object> results = new HashMap<>();
-        results.put("sraa", stepUpConfiguration.get("sraa"));
-        results.put("email_templates", stepUpConfiguration.get("email_templates"));
+        if (stepUpConfiguration.containsKey("sraa")) {
+            results.put("sraa", stepUpConfiguration.get("sraa"));
+        }
+        if (stepUpConfiguration.containsKey("email_templates")) {
+            results.put("email_templates", stepUpConfiguration.get("email_templates"));
+        }
         List<Map<String, Object>> serviceProviders = sfoEntities.stream()
             .map(MetaData::getData)
             .map(data -> Map.of(
