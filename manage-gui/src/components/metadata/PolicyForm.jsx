@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 
 import "./PolicyForm.scss";
-import I18n from "i18n-js";
+import I18n from "../../locale/I18n";
 import ReactTooltip from "react-tooltip";
 import {Select} from "../index";
 import {isEmpty, stop} from "../../utils/Utils";

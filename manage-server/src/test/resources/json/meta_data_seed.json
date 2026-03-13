@@ -824,9 +824,8 @@
       }
     }
   },
-  { "id": 18,
-    "_id": "750357b2-8cf1-462d-94fe-48342305fc3e",
-    "_class": "manage.model.MetaData",
+  {
+    "id": 18,
     "data": {
       "metaDataFields": {},
       "revisionnote": "Restore of revision: 4",
@@ -842,5 +841,70 @@
     },
     "type": "organisation",
     "version": 6
+  },
+  {
+    "id": "19",
+    "version": 1,
+    "type": "institution",
+    "revision": {
+      "number": 1,
+      "created": "2026-03-10T10:52:03.450Z",
+      "updatedBy": "saml2_user.com"
+    },
+    "data": {
+      "name": "Test Institution",
+      "entityid": "inst1",
+      "metaDataFields": {},
+      "identifier": "inst1",
+      "use_ra_locations": true,
+      "show_raa_contact_information": true,
+      "verify_email": true,
+      "allowed_second_factors": [
+        "tiqr"
+      ],
+      "number_of_tokens_per_identity": 3,
+      "use_ra": [
+        "inst1"
+      ],
+      "use_raa": [],
+      "select_raa": [],
+      "self_vet": true,
+      "allow_self_asserted_tokens": false,
+      "sso_on_2fa": false,
+      "stepup-client": "full",
+      "revisionnote": "test",
+      "eid": 13629
+    }
+  },
+  {
+    "id": "20",
+    "version": 1,
+    "type": "sfo",
+    "revision": {
+      "number": 1,
+      "created": "2026-03-09T14:51:01.436Z",
+      "updatedBy": "saml2_user.com"
+    },
+    "data": {
+      "name": "Test SFO",
+      "entityid": "http://entity.id.changed",
+      "metaDataFields": {},
+      "public_key": "MIIDEzCCAfugAwIBAgIJAKoK/heBjcOYMA0GCSqGSIb3DQEBBQUAMCAxHjAcBgNVBAoMFU9yZ2FuaXphdGlvbiwgQ049T0lEQzAeFw0xNTExMTExMDEyMTVaFw0yNTExMTAxMDEyMTVaMCAxHjAcBgNVBAoMFU9yZ2FuaXphdGlvbiwgQ049T0lEQzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANBGwJ/qpTQNiSgUglSE2UzEkUow+wS8r67etxoEhlzJZfgK/k5TfG1wICDqapHAxEVgUM10aBHRctNocA5wmlHtxdidhzRZroqHwpKy2BmsKX5Z2oK25RLpsyusB1KroemgA/CjUnI6rIL1xxFn3KyOFh1ZBLUQtKNQeMS7HFGgSDAp+sXuTFujz12LFDugX0T0KB5a1+0l8y0PEa0yGa1oi6seONx849ZHxM0PRvUunWkuTM+foZ0jZpFapXe02yWMqhc/2iYMieE/3GvOguJchJt6R+cut8VBb6ubKUIGK7pmoq/TB6DVXpvsHqsDJXechxcicu4pdKVDHSec850CAwEAAaNQME4wHQYDVR0OBBYEFK7RqjoodSYVXGTVEdLf3kJflP/sMB8GA1UdIwQYMBaAFK7RqjoodSYVXGTVEdLf3kJflP/sMAwGA1UdEwQFMAMBAf8wDQYJKoZIhvcNAQEFBQADggEBADNZkxlFXh4F45muCbnQd+WmaXlGvb9tkUyAIxVL8AIu8J18F420vpnGpoUAE+Hy3evBmp2nkrFAgmr055fAjpHeZFgDZBAPCwYd3TNMDeSyMta3Ka+oS7GRFDePkMEm+kH4/rITNKUF1sOvWBTSowk9TudEDyFqgGntcdu/l/zRxvx33y3LMG5USD0x4X4IKjRrRN1BbcKgi8dq10C3jdqNancTuPoqT3WWzRvVtB/q34B7F74/6JzgEoOCEHufBMp4ZFu54P0yEGtWfTwTzuoZobrChVVBt4w/XZagrRtUCDNwRpHNbpjxYudbqLqpi1MQpV9oht/BpTHVJG2i0ro=",
+      "acs": [
+        "https://acs.com",
+        "https://acs2.org"
+      ],
+      "loa": "http://test2.surfconext.nl/assurance/loa2",
+      "assertion_encryption_enabled": false,
+      "second_factor_only": true,
+      "second_factor_only_nameid_patterns": [
+        "pattern:8"
+      ],
+      "blacklisted_encryption_algorithms": [
+        "algo"
+      ],
+      "revisionnote": "test",
+      "eid": 13628
+    }
   }
 ]

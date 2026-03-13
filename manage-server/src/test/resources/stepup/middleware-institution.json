@@ -1,0 +1,235 @@
+{
+  "open.nl": {
+    "use_ra_locations": true,
+    "show_raa_contact_information": true,
+    "verify_email": true,
+    "allowed_second_factors": [],
+    "number_of_tokens_per_identity": 9,
+    "self_vet": true,
+    "allow_self_asserted_tokens": true
+  },
+  "institution-a.nl": {
+    "use_ra_locations": true,
+    "show_raa_contact_information": true,
+    "verify_email": true,
+    "allowed_second_factors": [],
+    "number_of_tokens_per_identity": 2,
+    "self_vet": true,
+    "allow_self_asserted_tokens": true,
+    "sso_on_2fa": true
+  },
+  "institution-b.nl": {
+    "use_ra_locations": false,
+    "show_raa_contact_information": true,
+    "verify_email": false,
+    "allowed_second_factors": [],
+    "number_of_tokens_per_identity": 3,
+    "self_vet": false,
+    "allow_self_asserted_tokens": true,
+    "sso_on_2fa": true
+  },
+  "institution-d.nl": {
+    "use_ra_locations": true,
+    "show_raa_contact_information": false,
+    "verify_email": true,
+    "allowed_second_factors": [
+      "yubikey",
+      "tiqr"
+    ],
+    "number_of_tokens_per_identity": 1,
+    "self_vet": false,
+    "allow_self_asserted_tokens": false
+  },
+  "pop.aai.open.nl": {
+    "use_ra_locations": true,
+    "show_raa_contact_information": true,
+    "verify_email": true,
+    "allowed_second_factors": [
+      "yubikey",
+      "tiqr"
+    ],
+    "number_of_tokens_per_identity": 1,
+    "self_vet": true,
+    "allow_self_asserted_tokens": false
+  },
+  "example.com": {
+    "use_ra_locations": false,
+    "show_raa_contact_information": true,
+    "verify_email": false,
+    "allowed_second_factors": [
+      "sms",
+      "yubikey",
+      "tiqr",
+      "webauthn"
+    ],
+    "number_of_tokens_per_identity": 3,
+    "self_vet": true,
+    "allow_self_asserted_tokens": false,
+    "sso_on_2fa": true
+  },
+  "institution-f.nl": {
+    "use_ra_locations": true,
+    "show_raa_contact_information": false,
+    "verify_email": false,
+    "allowed_second_factors": [],
+    "number_of_tokens_per_identity": 2,
+    "use_ra": [
+      "institution-f.nl",
+      "institution-a.nl",
+      "institution-b.nl"
+    ],
+    "use_raa": [
+      "institution-f.nl",
+      "institution-a.nl"
+    ],
+    "select_raa": [
+      "institution-f.nl"
+    ],
+    "self_vet": false,
+    "allow_self_asserted_tokens": false
+  },
+  "institution-g.nl": {
+    "use_ra_locations": true,
+    "show_raa_contact_information": true,
+    "verify_email": false,
+    "allowed_second_factors": [],
+    "number_of_tokens_per_identity": 2,
+    "use_ra": [
+      "institution-g.nl"
+    ],
+    "use_raa": [
+      "institution-g.nl"
+    ],
+    "select_raa": [
+      "institution-g.nl",
+      "institution-h.nl"
+    ],
+    "self_vet": false,
+    "allow_self_asserted_tokens": false
+  },
+  "institution-h.nl": {
+    "use_ra_locations": true,
+    "show_raa_contact_information": true,
+    "verify_email": false,
+    "allowed_second_factors": [],
+    "number_of_tokens_per_identity": 2,
+    "use_ra": [
+      "institution-h.nl"
+    ],
+    "use_raa": [
+      "institution-h.nl"
+    ],
+    "select_raa": [
+      "institution-h.nl",
+      "institution-g.nl"
+    ],
+    "self_vet": true,
+    "allow_self_asserted_tokens": true
+  },
+  "institution-v.nl": {
+    "use_ra_locations": true,
+    "show_raa_contact_information": true,
+    "verify_email": false,
+    "allowed_second_factors": [],
+    "number_of_tokens_per_identity": 2,
+    "use_ra": [],
+    "use_raa": [],
+    "select_raa": [
+      "institution-a.nl",
+      "institution-b.nl"
+    ],
+    "self_vet": false,
+    "allow_self_asserted_tokens": false
+  },
+  "institution-i.nl": {
+    "use_ra_locations": true,
+    "show_raa_contact_information": true,
+    "verify_email": false,
+    "allowed_second_factors": [],
+    "number_of_tokens_per_identity": 2,
+    "use_ra": [
+      "institution-v.nl"
+    ],
+    "use_raa": [
+      "institution-v.nl"
+    ],
+    "select_raa": [],
+    "self_vet": false,
+    "allow_self_asserted_tokens": false
+  },
+  "hardewijk.nl": {
+    "use_ra_locations": true,
+    "show_raa_contact_information": true,
+    "verify_email": false,
+    "allowed_second_factors": [],
+    "number_of_tokens_per_identity": 9,
+    "use_ra": [
+      "hardewijk.nl"
+    ],
+    "use_raa": [
+      "hardewijk.nl"
+    ],
+    "select_raa": [
+      "hardewijk.nl"
+    ],
+    "self_vet": true,
+    "allow_self_asserted_tokens": false
+  },
+  "eduid.nl": {
+    "use_ra_locations": true,
+    "show_raa_contact_information": true,
+    "verify_email": false,
+    "allowed_second_factors": [],
+    "number_of_tokens_per_identity": 9,
+    "use_ra": [
+      "eduid.nl",
+      "open.nl"
+    ],
+    "use_raa": [
+      "eduid.nl",
+      "open.nl"
+    ],
+    "select_raa": [
+      "eduid.nl"
+    ],
+    "self_vet": true,
+    "allow_self_asserted_tokens": false
+  },
+  "0pr0h.onmicrosoft.com": {
+    "use_ra_locations": true,
+    "show_raa_contact_information": true,
+    "verify_email": false,
+    "allowed_second_factors": [],
+    "number_of_tokens_per_identity": 9,
+    "use_ra": [
+      "0pr0h.onmicrosoft.com"
+    ],
+    "use_raa": [
+      "0pr0h.onmicrosoft.com"
+    ],
+    "select_raa": [
+      "0pr0h.onmicrosoft.com"
+    ],
+    "self_vet": true,
+    "allow_self_asserted_tokens": true
+  },
+  "test.onmicrosoft.com": {
+    "use_ra_locations": true,
+    "show_raa_contact_information": true,
+    "verify_email": false,
+    "allowed_second_factors": [],
+    "number_of_tokens_per_identity": 9,
+    "use_ra": [
+      "test.onmicrosoft.com"
+    ],
+    "use_raa": [
+      "test.onmicrosoft.com"
+    ],
+    "select_raa": [
+      "test.onmicrosoft.com"
+    ],
+    "self_vet": true,
+    "allow_self_asserted_tokens": true,
+    "sso_registration_bypass": true
+  }
+}

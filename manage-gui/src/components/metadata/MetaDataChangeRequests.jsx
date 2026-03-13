@@ -1,7 +1,10 @@
 import React from "react";
-import I18n from "i18n-js";
+import I18n from "../../locale/I18n";
 import ReactJson from "react-json-view";
-import {DiffPatcher, formatters} from 'jsondiffpatch';
+
+import {create} from "jsondiffpatch";
+import * as htmlFormatter      from "jsondiffpatch/formatters/html";
+
 import merge from "lodash.merge";
 import PropTypes from "prop-types";
 import cloneDeep from "lodash.clonedeep";
@@ -9,7 +12,7 @@ import CheckBox from "../../components/CheckBox";
 import ConfirmationDialog from "../ConfirmationDialog";
 import {collapseDotKeys, createDiffObject, isEmpty, sortDict, stop} from "../../utils/Utils";
 
-import "jsondiffpatch/dist/formatters-styles/html.css";
+import "jsondiffpatch/formatters/styles/html.css";
 import "./MetaDataChangeRequests.scss";
 import {acceptChangeRequest, rejectChangeRequest} from "../../api";
 import {emitter, setFlash} from "../../utils/Flash";
@@ -37,7 +40,7 @@ class MetaDataChangeRequests extends React.Component {
             revisionNotes: "",
             accept: false
         };
-        this.differ = new DiffPatcher({
+        this.differ = create({
             // https://github.com/benjamine/jsondiffpatch/blob/HEAD/docs/arrays.md
             objectHash: (obj, index) => obj.name || obj.level || obj.type || obj.source || obj.value || '$$index:' + index
         });
@@ -178,7 +181,7 @@ class MetaDataChangeRequests extends React.Component {
             const originalDict = createDiffObject(data, newData);
             diffs = this.differ.diff(originalDict, newData);
         }
-        const html = formatters.html.format(diffs);
+        const html = htmlFormatter.format(diffs);
         return diffs ? <p dangerouslySetInnerHTML={{__html: html}}/> : <p>{I18n.t("changeRequests.identical")}</p>
     };
 

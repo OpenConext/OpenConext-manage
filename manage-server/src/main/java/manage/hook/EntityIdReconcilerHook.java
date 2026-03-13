@@ -5,10 +5,13 @@ import manage.model.EntityType;
 import manage.model.MetaData;
 import manage.repository.MetaDataRepository;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 import static manage.model.EntityType.*;
@@ -26,6 +29,8 @@ public class EntityIdReconcilerHook extends MetaDataHookAdapter {
     public boolean appliesForMetaData(MetaData metaData) {
         return !metaData.getType().equals(EntityType.STT.getType()) &&
             !metaData.getType().equals(EntityType.PROV.getType()) &&
+            !metaData.getType().equals(STEPUP.getType()) &&
+            !metaData.getType().equals(SFO.getType()) &&
             !metaData.getType().equals(EntityType.ORG.getType());
     }
 
@@ -40,21 +45,21 @@ public class EntityIdReconcilerHook extends MetaDataHookAdapter {
         String metaDataType = newMetaData.getType();
         List<String> types = metaDataTypesForeignKeyRelations(metaDataType);
         getCollectionReferenceNames(metaDataType).forEach(name ->
-                types.forEach(type -> {
-                    List<MetaData> references = metaDataRepository.findRaw(type,
-                            String.format("{\"data.%s.name\" : \"%s\"}", name, oldEntityId));
+            types.forEach(type -> {
+                List<MetaData> references = metaDataRepository.findRaw(type,
+                    String.format("{\"data.%s.name\" : \"%s\"}", name, oldEntityId));
 
-                    String revisionNote = String.format("Updated after entityId rename of %s to %s", oldEntityId, newEntityId);
+                String revisionNote = String.format("Updated after entityId rename of %s to %s", oldEntityId, newEntityId);
 
-                    references.forEach(metaData -> {
-                        List<Map<String, String>> entities = (List<Map<String, String>>) metaData.getData().getOrDefault(name, new ArrayList<>());
-                        entities.stream()
-                                .filter(entry -> oldEntityId.equals(entry.get("name")))
-                                .findAny()
-                                .ifPresent(entry -> entry.put("name", newEntityId));
-                        this.revision(metaData, revisionNote);
-                    });
-                }));
+                references.forEach(metaData -> {
+                    List<Map<String, String>> entities = (List<Map<String, String>>) metaData.getData().getOrDefault(name, new ArrayList<>());
+                    entities.stream()
+                        .filter(entry -> oldEntityId.equals(entry.get("name")))
+                        .findAny()
+                        .ifPresent(entry -> entry.put("name", newEntityId));
+                    this.revision(metaData, revisionNote);
+                });
+            }));
         return newMetaData;
     }
 
@@ -67,7 +72,7 @@ public class EntityIdReconcilerHook extends MetaDataHookAdapter {
         getCollectionReferenceNames(metaDataType).forEach(name -> {
             types.forEach(type -> {
                 List<MetaData> references = metaDataRepository.findRaw(type,
-                        String.format("{\"data.%s.name\" : \"%s\"}", name, entityId));
+                    String.format("{\"data.%s.name\" : \"%s\"}", name, entityId));
 
                 String revisionNote = String.format("Updated after deletion of entityId %s", entityId);
 

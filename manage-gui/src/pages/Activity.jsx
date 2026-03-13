@@ -1,5 +1,5 @@
 import React from "react";
-import I18n from "i18n-js";
+import I18n from "../locale/I18n";
 import {recentActivity} from "../api";
 import "./Activity.scss";
 import SelectMulti from "../components/form/SelectMulti";
@@ -23,7 +23,8 @@ export default class Activity extends React.Component {
             filteredActivity: [],
             types: ["saml20_idp", "saml20_sp", "oidc10_rp"],
             reverse: false,
-            allTypes: ["saml20_idp", "saml20_sp", "oidc10_rp", "oauth20_rs", "provisioning", "policy", "sram", "single_tenant_template"],
+            allTypes: ["saml20_idp", "saml20_sp", "oidc10_rp", "oauth20_rs", "provisioning", "policy", "sram",
+                "sfo", "institution"],
             limit: "25",
             query: "",
             loaded: false,

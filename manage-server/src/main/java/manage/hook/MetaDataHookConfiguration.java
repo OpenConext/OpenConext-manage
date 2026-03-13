@@ -51,7 +51,10 @@ public class MetaDataHookConfiguration {
                 new ProvisioningApplicationDeletionHook(metaDataRepository),
                 new IdentityProviderBrinCodeHook(metaDataAutoConfiguration),
                 new CertificateDataDuplicationHook(metaDataAutoConfiguration),
-                new OrganisationDeletionHook(metaDataRepository, metaDataAutoConfiguration)));
+                new OrganisationDeletionHook(metaDataRepository, metaDataAutoConfiguration),
+                new StepupIdentifierReconcilerHook(metaDataRepository)
+            )
+        );
     }
 
 

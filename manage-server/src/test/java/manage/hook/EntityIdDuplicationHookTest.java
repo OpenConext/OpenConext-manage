@@ -59,7 +59,7 @@ class EntityIdDuplicationHookTest extends AbstractIntegrationTest {
     void prePutInValid() {
         Arrays.stream(EntityType.values())
             .forEach(entityType -> {
-                if (!EntityType.ORG.equals(entityType)) {
+                if (!EntityType.ORG.equals(entityType) ) {
                     List<MetaData> allByType = metaDataRepository.findAllByType(entityType.getType());
                     if (!allByType.isEmpty()) {
                         MetaData metaData = allByType.get(0);

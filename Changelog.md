@@ -3,29 +3,38 @@
 Starting from version 9.0.0, we note changes and new features per release in this file.
 
 ## 9.7.0
+
 - Allow for CRUD Policies in regular internal MetaData API
   ([#613](https://github.com/OpenConext/OpenConext-manage/issues/613))
 - Updated dependencies
-- Adjusts CSV feature to only include the visible (requested) columns([#615](https://github.com/OpenConext/OpenConext-manage/pull/615))
+- Adjusts CSV feature to only include the visible (requested)
+  columns([#615](https://github.com/OpenConext/OpenConext-manage/pull/615))
 - Delete for entities needs more friction ([#520](https://github.com/OpenConext/OpenConext-manage/issues/520))
 - API tab doesn't work for Policies ([#584](https://github.com/OpenConext/OpenConext-manage/issues/584))
 - CSV from API tab "Copy as CSV" is not properly quoted ([#494](https://github.com/OpenConext/OpenConext-manage/issues/494))
-- Add warning to UI if multiple certData fields have the same content ([#590](https://github.com/OpenConext/OpenConext-manage/issues/590))
+- Add warning to UI if multiple certData fields have the same
+  content ([#590](https://github.com/OpenConext/OpenConext-manage/issues/590))
 - Switch to structured json logging ([#593](https://github.com/OpenConext/OpenConext-manage/issues/593))
 - CSV contain all fields ([#609](https://github.com/OpenConext/OpenConext-manage/pull/609))
 - Add column sorting in API output table ([#439](https://github.com/OpenConext/OpenConext-manage/issues/439))
 - Increase size of manipulation window ([#592](https://github.com/OpenConext/OpenConext-manage/issues/592))
 - Searching in API for integer-in-string doesn't work ([#102](https://github.com/OpenConext/OpenConext-manage/issues/102))
-- Full text searching in API leads to unexpected error if " is present in search string ([#487](https://github.com/OpenConext/OpenConext-manage/issues/487))
+- Full text searching in API leads to unexpected error if " is present in search
+  string ([#487](https://github.com/OpenConext/OpenConext-manage/issues/487))
 - Migrate from react-scripts to vite ([#604](https://github.com/OpenConext/OpenConext-manage/issues/604))
-- Corporate proxy configuration is not respected when retrieving pdp xacml ([#598](https://github.com/OpenConext/OpenConext-manage/issues/598))
+- Corporate proxy configuration is not respected when retrieving pdp
+  xacml ([#598](https://github.com/OpenConext/OpenConext-manage/issues/598))
 - Replace exceptions by regular logging ([#596](https://github.com/OpenConext/OpenConext-manage/issues/596))
 - Resolve deprecations ([#546](https://github.com/OpenConext/OpenConext-manage/issues/546))
-- Corporate proxy configuration is not respected when retrieving pdp xacml ([#598](https://github.com/OpenConext/OpenConext-manage/issues/598))
+- Corporate proxy configuration is not respected when retrieving pdp
+  xacml ([#598](https://github.com/OpenConext/OpenConext-manage/issues/598))
 - Migrate from react-scripts to vite ([#604](https://github.com/OpenConext/OpenConext-manage/issues/604))
 - Linkify JIRA CXT any mention ([#432](https://github.com/OpenConext/OpenConext-manage/issues/432))
+- Added Step-up / middleware configuration to the metadata
+  collections ([#627](https://github.com/OpenConext/OpenConext-manage/issues/627))
 
 ## 9.6.0
+
 - [#562](https://github.com/OpenConext/OpenConext-manage/issues/562)
 - Added `typeRequest` field to change requests
 - Added configuration for disabling unused schemas
@@ -33,39 +42,43 @@ Starting from version 9.0.0, we note changes and new features per release in thi
 - Removed non-current endpoints when importing new SAML metadata
   ([#577](https://github.com/OpenConext/OpenConext-manage/issues/577))
 - Added a copy-to-clipboard button for PDP requests and responses
-- Removed the manual `coin:policy_enforcement_decision` toggle. It is now set automatically in the pushed metadata 
-  (no longer visible in the UI) 
+- Removed the manual `coin:policy_enforcement_decision` toggle. It is now set automatically in the pushed metadata
+  (no longer visible in the UI)
   ([#477](https://github.com/OpenConext/OpenConext-manage/issues/477))
 - Added `docker-compose.yml` and other plumbing for easier local development
   ([#570](https://github.com/OpenConext/OpenConext-manage/issues/570))
 - Updated dependencies
 
 ### Upgrade note
+
 The following configuration options have been changed:
-  - `disabled_metadata_schemas`: (**new**) a list of schemas that should be disabled.  
-    Set to `[]` to keep the default behaviour to show all schemas. 
-  - `cron.node-cron-job-responsible`: it is now possible to set this to `true` for more than one node, 
-    but this is not required.
-    Keep it set to `true` on a single host to keep the current behaviour.
+
+- `disabled_metadata_schemas`: (**new**) a list of schemas that should be disabled.  
+  Set to `[]` to keep the default behaviour to show all schemas.
+- `cron.node-cron-job-responsible`: it is now possible to set this to `true` for more than one node,
+  but this is not required.
+  Keep it set to `true` on a single host to keep the current behaviour.
 
 The metadata field `coin:policy_enforcement_decision_required` is obsolete.  
-It will now be set automatically based on the defined policies but will not be visible in the UI; 
+It will now be set automatically based on the defined policies but will not be visible in the UI;
 manually set values (which _are_ still visible) will be ignored.
 A migration to remove this field from existing entities will follow in a future release.
 
 ## 9.5.1
-- Fixed bug that caused policy input fields to be extremely slow 
+
+- Fixed bug that caused policy input fields to be extremely slow
   ([#568](https://github.com/OpenConext/OpenConext-manage/issues/568))
 
 ## 9.5.0
+
 - Introduce a database lock to prevent multiple cron jobs running at the same time
-- Fix bug that caused backend calls to be too persistent and stick to disabled load balancer backends 
+- Fix bug that caused backend calls to be too persistent and stick to disabled load balancer backends
   ([#565](https://github.com/OpenConext/OpenConext-manage/issues/565))
 - Add a connection timeout of 15 seconds for the XML import (used in the metadata refresh)
 - Improve display of ARP in change requests
   ([#559](https://github.com/OpenConext/OpenConext-manage/issues/559))
 - New metadata field `coin:application_name`
-- Do not show error in policy form 
+- Do not show error in policy form
 - Make sure policy names are unique, because otherwise the push to the PDP will break
   ([#558](https://github.com/OpenConext/OpenConext-manage/issues/558))
 - Updated dependencies

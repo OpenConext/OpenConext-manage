@@ -61,7 +61,7 @@ public class SystemController {
     @GetMapping("/internal/push")
     public ResponseEntity<Map> pushInternal(APIUser apiUser) {
         LOG.info("Push initiated by {}", apiUser.getName());
-        return databaseController.doPush(new PushOptions(true, true, false));
+        return databaseController.doPush(new PushOptions(true, true, false, false));
     }
 
     @PreAuthorize("hasRole('ADMIN')")

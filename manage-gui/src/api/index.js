@@ -241,6 +241,11 @@ export function uniqueEntityId(entityid, type) {
     return postPutJson(`uniqueEntityId/${type}`, {entityid}, "post");
 }
 
+export function uniqueInstitutionIdentifier(identifier) {
+    return postPutJson("uniqueInstitutionIdentifier", {identifier}, "post");
+}
+
+
 export function uniquePolicyName(name) {
     return postPutJson(`uniquePolicyName/policy`, {name}, "post");
 }
@@ -261,8 +266,13 @@ export function logOut() {
     return fetchDelete("users/logout");
 }
 
-export function push(includeEB, includeOIDC, includePdP) {
-    return postPutJson("playground/push", {includeEB:includeEB, includeOIDC:includeOIDC, includePdP:includePdP}, "PUT");
+export function push(includeEB, includeOIDC, includePdP, includeStepUp) {
+    return postPutJson("playground/push", {
+        includeEB: includeEB,
+        includeOIDC: includeOIDC,
+        includePdP: includePdP,
+        includeStepUp: includeStepUp
+    }, "PUT");
 }
 
 export function pushPreview() {
@@ -275,6 +285,18 @@ export function pushPreviewOIDC() {
 
 export function pushPreviewPdP() {
     return fetchJson("playground/pushPreviewPdP");
+}
+
+export function pushPreviewSFO() {
+    return fetchJson("playground/pushPreviewSFO");
+}
+
+export function pushPreviewInstitution() {
+    return fetchJson("playground/pushPreviewInstitution");
+}
+
+export function pushPreviewStepup() {
+    return fetchJson("playground/pushPreviewStepup");
 }
 
 export function validate() {
@@ -348,6 +370,7 @@ export function getPlaygroundRelyingParties() {
 export function getPlaygroundIdentityProviders() {
     return search({}, "saml20_idp")
 }
+
 //Policies
 export function idpPolicies(idpEntityID) {
     return fetchJson(`idpPolicies?entityId=${encodeURIComponent(idpEntityID)}`);

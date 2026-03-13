@@ -150,6 +150,10 @@
                 &.diff-row td {
                     padding-bottom: 20px;
                 }
+
+                &:hover:not(.diff-row) {
+                    background-color: vars.$light-blue;
+                }
             }
 
             td {

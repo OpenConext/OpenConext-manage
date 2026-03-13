@@ -1,5 +1,5 @@
 import React from "react";
-import I18n from "i18n-js";
+import I18n from "../locale/I18n";
 import PropTypes from "prop-types";
 import scrollIntoView from "scroll-into-view";
 import {isEmpty} from "../utils/Utils";
@@ -59,12 +59,12 @@ export default class Autocomplete extends React.PureComponent {
             <section className="metadata-autocomplete">
                 {!showSuggestions && this.renderAlternatives(alternatives, selected, itemSelected, query, moreAlternativesToShow)}
                 {showSuggestions &&
-                <div>
-                    {moreToShow && <div className="results-info">
-                        <p>{I18n.t("metadata_autocomplete.results_limited")}</p>
+                    <div>
+                        {moreToShow && <div className="results-info">
+                            <p>{I18n.t("metadata_autocomplete.results_limited")}</p>
+                        </div>}
+                        {this.getTable(suggestions, selected, itemSelected, query, type)}
                     </div>}
-                    {this.getTable(suggestions, selected, itemSelected, query, type)}
-                </div>}
             </section>
         );
     }
@@ -72,13 +72,17 @@ export default class Autocomplete extends React.PureComponent {
     getTable(suggestions, selected, itemSelected, query, type) {
         const isOrganisation = type === "organisation";
         const isPolicy = type === "policy";
+        const isInstitution = type === "institution";
+        const isSfo = type === "sfo";
         return <table className="result">
             <thead>
             <tr>
                 {!isOrganisation && <th className="count"></th>}
                 <th className="name">{I18n.t("metadata_autocomplete.name")}</th>
-                {!isPolicy && !isOrganisation && <th className="organization">{I18n.t("metadata_autocomplete.organization")}</th>}
+                {!isPolicy && !isOrganisation && !isInstitution &&
+                    <th className="organization">{I18n.t("metadata_autocomplete.organization")}</th>}
                 {isPolicy && <th className="organization">{I18n.t("metadata_autocomplete.policy")}</th>}
+                {isInstitution && <th className="institution">{I18n.t("metadata_autocomplete.institution")}</th>}
                 {!isOrganisation && <th className="type">{I18n.t("metadata_autocomplete.type")}</th>}
                 {!isOrganisation && <th className="state">{I18n.t("metadata_autocomplete.state")}</th>}
                 {!isOrganisation && <th className="entity_id">{I18n.t("metadata_autocomplete.entity_id")}</th>}
@@ -93,7 +97,7 @@ export default class Autocomplete extends React.PureComponent {
                             case "organisation":
                                 return this.renderOrganisation(item, index, selected, itemSelected);
                             default:
-                                return this.renderMetadata(item, index, selected, itemSelected, isPolicy, query);
+                                return this.renderMetadata(item, index, selected, itemSelected, isPolicy, isInstitution, isSfo, query);
                         }
                     }
                 )}
@@ -124,7 +128,7 @@ export default class Autocomplete extends React.PureComponent {
         );
     };
 
-    renderMetadata(item, index, selected, itemSelected, isPolicy, query) {
+    renderMetadata(item, index, selected, itemSelected, isPolicy, isInstitution,isSfo, query) {
         return (
             <tr key={index}
                 className={selected === index ? "active" : ""}
@@ -136,11 +140,12 @@ export default class Autocomplete extends React.PureComponent {
                 }}>
                 <td className="count">{index + 1}</td>
                 <td>
-                    {!isPolicy && this.item(getNameForLanguage(item.data.metaDataFields), query)}
-                    {isPolicy && this.item(item.data.name, query)}
+                    {!isPolicy && !isInstitution && !isSfo && this.item(getNameForLanguage(item.data.metaDataFields), query)}
+                    {(isPolicy || isInstitution || isSfo) && this.item(item.data.name, query)}
                 </td>
                 <td>
-                    {!isPolicy && this.item(getOrganisationForLanguage(item.data.metaDataFields), query)}
+                    {!isPolicy && isInstitution && this.item(getOrganisationForLanguage(item.data.metaDataFields), query)}
+                    {isInstitution && this.item(item.data.identifier, query)}
                     {isPolicy && I18n.t(`topBannerDetails.${item.data.type}`)}
                 </td>
                 <td>{item.type}</td>

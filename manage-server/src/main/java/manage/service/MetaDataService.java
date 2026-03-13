@@ -492,7 +492,7 @@ public class MetaDataService {
         addAllowedEntity(sp, idpEntityId, connectionData, apiUser, false);
         addAllowedEntity(idp, spEntityId, connectionData, apiUser, true);
 
-        databaseController.doPush(new PushOptions(true, true, false));
+        databaseController.doPush(new PushOptions(true, true, false, false));
     }
 
     private void addAllowedEntity(MetaData metaData,

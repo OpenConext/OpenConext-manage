@@ -1,11 +1,4 @@
-// Interpolation works as follows:
-//
-// Make a key with the translation and enclose the variable with {{}}
-// ie "Hello {{name}}" Do not add any spaces around the variable name.
-// Provide the values as: I18n.t("key", {name: "John Doe"})
-import I18n from "i18n-js";
-
-I18n.translations.en = {
+const en = {
     code: "EN",
     name: "English",
     select_locale: "Select English",
@@ -87,10 +80,13 @@ I18n.translations.en = {
             policy_json: "JSON",
             policy_xml: "XACML",
             policies: "Policies ({{nbr}})",
-            policy_maintenance: "Maintenance",
+            entity_maintenance: "Maintenance",
             organisation: "Organisation",
             organisation_entity: "Connected entities",
             sp_organisation: "Organisation",
+            sfo: "SFO",
+            institution: "Institution",
+            overview: "Overview"
         },
         notFound: "No Metadata found. You might want to search for this deleted entity in the 'FIND MY METADATA' section in the 'System' tab.",
         existingChangeRequests: "There are orphaned change requests for this deleted entity. You probably want to remove them.",
@@ -180,9 +176,12 @@ I18n.translations.en = {
         orphans: "Referential integrity",
         extended_search: "Extended Search",
         push: "Push",
-        push_preview_eb: "Push Preview EB",
-        push_preview_oidc: "Push Preview OIDC",
-        push_preview_pdp: "Push Preview PDP",
+        push_preview_eb: "Preview EB",
+        push_preview_oidc: "Preview OIDC",
+        push_preview_pdp: "Preview PDP",
+        push_preview_sfo: "Preview SFO",
+        push_preview_institution: "Preview Stepup Institutions",
+        push_preview_stepup: "Preview Stepup Whitelist",
         find_my_data: "Find my MetaData",
         stats: "Stats",
         findMyDataInfo: "Find your 'lost' MetaData. Enter part of the entityId, specify the type of MetaData and search in the revisions where all deleted MetaData still exists.",
@@ -523,6 +522,7 @@ I18n.translations.en = {
         entity_id: "Entity ID",
         name: "Name",
         organization: "Organization",
+        institution: "Institution",
         description: "Description",
         policy: "Policy",
         state: "Production",
@@ -728,7 +728,7 @@ I18n.translations.en = {
         reload: "Reload",
         providers: "Services",
     },
-    policyPlayGround :{
+    policyPlayGround: {
         institutionProvider: "Identity provider",
         serviceProvider: "Service provider",
         institutionProviderPlaceholder: 'Select the Identity Provider - required',
@@ -737,7 +737,35 @@ I18n.translations.en = {
         clear: 'Clear',
         policy: "Policy",
         policyPlaceholder: "Select a policy to initiate the PDP request data"
+    },
+    sfo: {
+        name: "Name",
+        entityId: "entityID",
+        publicKey: "Public Key",
+        acs: "ACS",
+        loa: "LOA",
+        assertionEncryptionEnabled: "Assertion encryption enabled",
+        secondFactorOnly: "Second factor only",
+        secondFactorOnlyNameidPatterns: "Second factor only nameID patterns",
+        blacklistedEncryptionAlgorithm: "Blacklisted encryption algorithms",
+        setSsoCookieOn2fa: "Set SSO Cookie on 2fa",
+        allowSsoOn2fa:"Allow SSO on 2fa"
+    },
+    institution: {
+        identifier: "Identifier",
+        duplicateIdentifier: "This identifier is alreay taken. Duplicates are not allowed",
+        useRaLocations: "Use RA locations",
+        showRaaContactInformation: "Show RAA contact information",
+        verifyEmail: "Verify email",
+        allowedSecondFactors: "Allowed second factors",
+        numberOfTokensPerIdentity: "Number of tokens per identity",
+        useRa: "Use RA",
+        useRaa: "Use RAA",
+        selectRaa: "Select RAA",
+        selfVet: "Self vet",
+        allowSelfAssertedTokens: "Allow self asserted tokens",
+        ssoOn2fa: "SSO on 2FA",
+        stepupClient: "Type of stepup-client"
     }
 };
-
-export default I18n.translations.en;
+export default en;

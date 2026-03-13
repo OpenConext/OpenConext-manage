@@ -47,20 +47,22 @@ public class EntityIdDuplicationHook extends MetaDataHookAdapter {
         List<EntityType> entityTypes = new ArrayList<>();
         EntityType entityType = fromType(newMetaData.getType());
         switch (entityType) {
-            case EntityType.IDP:
-            case EntityType.PDP:
-            case EntityType.PROV:
-            case EntityType.STT:
-            case EntityType.ORG:
+            case IDP:
+            case PDP:
+            case PROV:
+            case STT:
+            case STEPUP:
+            case SFO:
+            case ORG:
                 entityTypes.add(entityType);
                 break;
             case EntityType.RS:
                 entityTypes.add(entityType);
                 entityTypes.add(EntityType.RP);
                 break;
-            case EntityType.SP:
-            case EntityType.SRAM:
-            case EntityType.RP:
+            case SP:
+            case SRAM:
+            case RP:
                 entityTypes.addAll(List.of(EntityType.SP, EntityType.SRAM, EntityType.RP));
                 break;
 

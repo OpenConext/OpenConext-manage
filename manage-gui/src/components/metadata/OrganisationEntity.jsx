@@ -2,7 +2,7 @@ import React from "react";
 import "./OrganisationEntity.scss";
 import {getAllEntities, update} from "../../api";
 import PropTypes from "prop-types";
-import I18n from "i18n-js";
+import I18n from "../../locale/I18n";
 import {Link} from "react-router-dom";
 import {isEmpty, stop} from "../../utils/Utils";
 import NotesTooltip from "../NotesTooltip";

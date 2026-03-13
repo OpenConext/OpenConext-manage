@@ -1,5 +1,5 @@
 import React from "react";
-import I18n from "i18n-js";
+import I18n from "../locale/I18n";
 import PropTypes from "prop-types";
 
 import {
@@ -60,7 +60,9 @@ import {isReadOnly} from "../utils/EntityTypes";
 import PolicyXML from "../components/metadata/PolicyXML";
 import PolicyJSON from "../components/metadata/PolicyJSON";
 import ErrorDialog from "../components/ErrorDialog";
-import PolicyMaintenance from "../components/metadata/PolicyMaintenance";
+import EntityMaintenance from "../components/metadata/EntityMaintenance";
+import SFO from "../components/metadata/SFO";
+import Institution from "../components/metadata/Institution";
 
 export const DIALOG_TYPES = {
     CONFIRM: "confirm",
@@ -89,11 +91,13 @@ const tabsOrganisation = [
 
 const tabsSfo = [
     "sfo",
+    "entity_maintenance",
     "revisions"
 ]
 
 const tabsInstitutions = [
-    "institutions",
+    "institution",
+    "entity_maintenance",
     "revisions"
 ]
 
@@ -145,7 +149,7 @@ const tabsPr = [
 
 const tabsPolicy = [
     "policy_form",
-    "policy_maintenance",
+    "entity_maintenance",
     "policy_xml",
     "policy_json",
     "revisions"
@@ -187,6 +191,10 @@ class Detail extends React.PureComponent {
             tab = "policy_form";
         } else if (tab === "connection" && type === "organisation") {
             tab = "organisation";
+        } else if (tab === "connection" && type === "sfo") {
+            tab = "sfo";
+        } else if (tab === "connection" && type === "institution") {
+            tab = "institution";
         }
         const id = isEmpty(props.newMetaData) ? this.props.params.id : "new";
         this.state = {
@@ -245,8 +253,11 @@ class Detail extends React.PureComponent {
                 const isResourceServer = type === "oauth20_rs";
                 const isProvisioning = type === "provisioning";
                 const isPolicy = type === "policy";
+                const isSfo = type === "sfo";
+                const isInstitution = type === "institution";
                 const whiteListingType = isSp ? "saml20_idp" : "saml20_sp";
-                const errorKeys = isSp ? tabsSp : isProvisioning ? tabsPr : isPolicy ? tabsPolicy : tabsIdP;
+                const errorKeys = isSp ? tabsSp : isProvisioning ? tabsPr : isPolicy ? tabsPolicy : isSfo ? tabsSfo :
+                    isInstitution ? tabsInstitutions : tabsIdP  ;
                 const autoRefreshFeature = "AUTO_REFRESH";
                 if (this.props.clone) {
                     //Clean all
@@ -488,6 +499,8 @@ class Detail extends React.PureComponent {
         const connectionErrors = currentErrors.connection || {};
         const organisationErrors = currentErrors.organisation || {};
         const policyFormErrors = currentErrors.policy_form || {};
+        const sfoErrors = currentErrors.sfo || {};
+        const institutionErrors = currentErrors.institution || {};
         const required = configuration.required;
         if ("policy" === type) {
             required.forEach(req => {
@@ -496,6 +509,14 @@ class Detail extends React.PureComponent {
         } else if ("organisation" === type) {
             required.forEach(req => {
                 organisationErrors[req.startsWith("data.") ? req : `data.${req}`] = isEmpty(metaData.data[req]);
+            });
+        } else if ("sfo" === type) {
+            required.forEach(req => {
+                sfoErrors[req] = isEmpty(metaData.data[req]);
+            });
+        } else if ("institution" === type) {
+            required.forEach(req => {
+                institutionErrors[req] = isEmpty(metaData.data[req]);
             });
         } else {
             Object.keys(metaData.data).forEach(key => {
@@ -510,7 +531,9 @@ class Detail extends React.PureComponent {
             connection: connectionErrors,
             metadata: metaDataErrors,
             organisation: organisationErrors,
-            policy_form: policyFormErrors
+            policy_form: policyFormErrors,
+            sfo: sfoErrors,
+            institution: institutionErrors
         };
         //Filter out false entries
         deleteFalseErrorKeys(newErrors);
@@ -843,6 +866,7 @@ class Detail extends React.PureComponent {
                     >
                         {I18n.t("metadata.submit")}
                     </a>
+                    {/*<code>{JSON.stringify(errors)}</code>*/}
                 </section>
             </section>
         );
@@ -865,6 +889,8 @@ class Detail extends React.PureComponent {
             case "metadata":
             case "import":
             case "export":
+            case "sfo":
+            case "institution":
                 break;
             case "connected_idps": {
                 const connectedEntities = getConnectedEntities(whiteListing, allowedAll, allowedEntities, metaData.data.entityid, metaData.data.state);
@@ -984,9 +1010,9 @@ class Detail extends React.PureComponent {
                         onRemove={this.handleRemove}
                     />
                 );
-            case "policy_maintenance":
+            case "entity_maintenance":
                 return (
-                    <PolicyMaintenance configuration={configuration}
+                    <EntityMaintenance configuration={configuration}
                                        metaData={metaData}
                                        revisionNote={revisionNoteClone}
                                        onClone={this.handleClone}
@@ -1197,6 +1223,23 @@ class Detail extends React.PureComponent {
                 return (
                     <PolicyJSON data={metaData.data}/>
                 );
+            case "sfo":
+                return (
+                    <SFO data={metaData.data}
+                         configuration={configuration}
+                         onChange={this.onChange("sfo")}
+                         errors={errors.sfo}
+                         onError={this.onError("sfo")}/>
+                );
+            case "institution":
+                return (
+                    <Institution data={metaData.data}
+                                 configuration={configuration}
+                                 onChange={this.onChange("institution")}
+                                 errors={errors.institution}
+                                 isNew={isNew}
+                                 onError={this.onError("institution")}/>
+                );
             default:
                 throw new Error(`Unknown tab ${tab}`);
         }
@@ -1251,12 +1294,13 @@ class Detail extends React.PureComponent {
         const isRs = type === "oauth20_rs";
         const isProvisioning = type === "provisioning";
         const isSingleTenantTemplate = type === "single_tenant_template";
+        const isStepUp = type === "sfo" || type === "institution";
         const isOrganisation = type === "organisation";
         const isPolicy = type === "policy";
         const nonExistentAllowedEntities = this.renderWarningNonExistentAllowedEntities();
-        const importedFromEdugain = metaData.data.metaDataFields["coin:imported_from_edugain"];
-        const excludedFromPush = metaData.data.metaDataFields["coin:exclude_from_push"];
-        const pushEnabled = metaData.data.metaDataFields["coin:push_enabled"];
+        const importedFromEdugain = metaData.data?.metaDataFields?.["coin:imported_from_edugain"];
+        const excludedFromPush = metaData.data?.metaDataFields?.["coin:exclude_from_push"];
+        const pushEnabled = metaData.data?.metaDataFields?.["coin:push_enabled"];
         const isActive = metaData.data.active;
         const connectedEntities = whiteListing
             .filter(idp => idp.data.allowedall || (idp.data.allowedEntities || []).some(entity => entity.name === entityid))
@@ -1271,9 +1315,9 @@ class Detail extends React.PureComponent {
                     <thead>
                     <tr>
                         <th>{I18n.t("topBannerDetails.name")}</th>
-                        {!isPolicy && !isOrganisation && <th>{I18n.t("topBannerDetails.organization")}</th>}
+                        {!isPolicy && !isOrganisation && !isStepUp && <th>{I18n.t("topBannerDetails.organization")}</th>}
                         <th>{I18n.t("topBannerDetails.type")}</th>
-                        {!isPolicy && !isOrganisation && <th>{I18n.t("topBannerDetails.workflow")}</th>}
+                        {!isPolicy && !isOrganisation && !isStepUp && <th>{I18n.t("topBannerDetails.workflow")}</th>}
                         {isPolicy && <th>{I18n.t("topBannerDetails.policyType")}</th>}
                         {(isSp || isRp) && <th>
                             {I18n.t("topBannerDetails.reviewState")}
@@ -1312,9 +1356,10 @@ class Detail extends React.PureComponent {
                         <td>{name}</td>
                         {!isPolicy && !isOrganisation && <td>{organization}</td>}
                         <td>{typeMetaData}</td>
-                        {!isPolicy && !isOrganisation &&
+                        {!isPolicy && !isOrganisation && !isStepUp &&
                             <td className={state === "prodaccepted" ? "green" : "orange"}>{state}</td>}
-                        {isPolicy && !isOrganisation && <td>{I18n.t(`topBannerDetails.${metaData.data.type}`)}</td>}
+                        {isPolicy && !isOrganisation && !isStepUp &&
+                            <td>{I18n.t(`topBannerDetails.${metaData.data.type}`)}</td>}
                         {(isSp || isRp) && <td className={excludedFromPush ? "orange" : "green"}>
                             {excludedFromPush ? I18n.t("topBannerDetails.staging") : I18n.t("topBannerDetails.production")}
                         </td>}
@@ -1337,7 +1382,7 @@ class Detail extends React.PureComponent {
                         })}</span>
                     </section>}
                 {(isEmpty(connectedEntities) && !isSingleTenantTemplate && !isNew && !isRs
-                        && whiteListingLoaded && !isProvisioning) && !isPolicy && !isOrganisation &&
+                        && whiteListingLoaded && !isProvisioning) && !isPolicy && !isOrganisation && !isStepUp &&
                     <section className="warning">
                         <i className="fas fa-exclamation-circle"></i>
                         <span>{I18n.t("topBannerDetails.noEntitiesConnected", {type: typeMetaData})}</span>
@@ -1398,7 +1443,7 @@ class Detail extends React.PureComponent {
                     return tabsOrganisation;
                 case "sfo":
                     return tabsSfo;
-                case "institutions":
+                case "institution":
                     return tabsInstitutions;
                 case "provisioning":
                     return tabsPr;

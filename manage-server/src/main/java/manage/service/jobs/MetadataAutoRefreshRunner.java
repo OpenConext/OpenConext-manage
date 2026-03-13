@@ -131,7 +131,7 @@ public class MetadataAutoRefreshRunner implements Runnable {
 
         if (anyServiceProviderChanged || anyIdentityProviderChanged) {
             LOG.info("Pushing changes to IdP after auto-refresh");
-            databaseController.doPush(new PushOptions(true, true, false));
+            databaseController.doPush(new PushOptions(true, true, false, false));
         }
         LOG.info(LOG_UPDATE_FINISHED);
     }

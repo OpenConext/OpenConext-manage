@@ -3,7 +3,7 @@ import React from "react";
 import "./AutoRefresh.scss";
 import PropTypes from "prop-types";
 import CheckBox from "../CheckBox";
-import I18n from "i18n-js";
+import I18n from "../../locale/I18n";
 import {copyToClip, isEmpty} from "../../utils/Utils";
 
 export default class AutoRefresh extends React.PureComponent {

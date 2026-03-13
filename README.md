@@ -133,3 +133,23 @@ Or the other supported flavour: an incremental change
 curl -u sp-portal:secret -X POST -H 'Content-Type: application/json' -d '@incremental_change_request.json' 'https://manage.test2.surfconext.nl/manage/api/internal/change-requests'
 curl -u sp-portal:secret -X POST -H 'Content-Type: application/json' -d '@incremental_change_request.json' 'http://localhost:8080/manage/api/internal/change-requests'
 ```
+
+### Stepup import
+
+```bash
+cd manage-server/src/test/resources/stepup
+curl -XPOST  -u sysadmin:secret \
+    -H "Accept: application/json" \
+    -H "Content-type: application/json" \
+    -d @middleware-config.json \
+    "http://localhost:8081/manage/api/internal/stepup/import/sfo" \
+    | jq . | grep "entityid"
+
+curl -XPOST  -u sysadmin:secret \
+    -H "Accept: application/json" \
+    -H "Content-type: application/json" \
+    -d @middleware-institution.json \
+    "http://localhost:8081/manage/api/internal/stepup/import/institution" \
+    | jq . | grep "entityid"
+
+```

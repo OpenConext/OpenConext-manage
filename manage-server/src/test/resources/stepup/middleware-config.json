@@ -1,0 +1,364 @@
+{
+  "sraa": [],
+  "email_templates": {},
+  "gateway": {
+    "service_providers": [
+      {
+        "entity_id": "https://ra.test2.example.org/authentication/metadata",
+        "public_key": "MIICpjCCAY4CCQDjB5uDeAL2/DANBgkqhkiG9w0BAQsFADAVMRMwEQYDVQQDDApyYV9zYW1sX3NwMB4XDTE1MDYxMzE2MjUzMFoXDTIwMDYxMTE2MjUzMFowFTETMBEGA1UEAwwKcmFfc2FtbF9zcDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPaMwRnarftEGzxDPMTFS1fnWdEix1dY3teWwMFdwsIzal2qIOiV4+TY2uxm6j85MfEQ6tQ8rnBz4/3eZhtCKUtpESHIOK77MdZNB0Rd11jWnp/kaEqTkWqSeJaAYc3fTp2d3VWxvyoc/pbpZG4/9GHdclT5R6tWaMB3WS5hduC5t20mvk9/+SQIT2m/EKqKuExQfPrpvbvFOfFi6GsrhXEdBLQryHn8gvgpM2uXjvNJ0fR7s8PSItDJyv7OcpPyxrP39gyxU2yy9FMFdRE2X4wKZS1xEvOunw5q6HYjY3ZpWluyQ+LKmvkQHCYOv1EcYDA3f8k2J3103ogKKMLlAOsCAwEAATANBgkqhkiG9w0BAQsFAAOCAQEAemd8o8/NZDrix1xGSBiHDKgdGYlZpqaF/Uk+xmOU4dlr5C2RBiuBlXnEJPpRuhEExwwgyH5o07RXacws01S0xPM5ThoBPVSVvnRzvlJ3DXVjIGgR9Vb/8aKm9ryt7YWNTgq5SJB9LQYTVMXz26G4vB83Tkxcbz8AUnWVgnaVWdj6A/LGKc+X74+uhEKTUrH+gDVUHvxYrgCwqibiXwz0tlZ0Ftc3qbLKO/XEsBa9eXZH14ITiLBzOmDSixSKVYjocLkDVghAvA274dUyOeTE2GGX5thTj0gDD5D0khi3aPlOFin45vIps+HoyH/BZyjIG85hRKWEpl3qwEbWowQ/XQ==",
+        "acs": [
+          "https://ra.test2.example.org/authentication/consume-assertion"
+        ],
+        "loa": {
+          "__default__": "http://test2.surfconext.nl/assurance/loa1"
+        },
+        "assertion_encryption_enabled": false,
+        "second_factor_only": false,
+        "second_factor_only_nameid_patterns": [],
+        "blacklisted_encryption_algorithms": []
+      },
+      {
+        "entity_id": "https://sa.test2.example.org/authentication/metadata",
+        "public_key": "MIICuDCCAaACCQDgGO42j1IVpzANBgkqhkiG9w0BAQsFADAeMRwwGgYDVQQDDBNzZWxmc2VydmljZV9zYW1sX3NwMB4XDTE1MDYxMzE2MjUyOVoXDTIwMDYxMTE2MjUyOVowHjEcMBoGA1UEAwwTc2VsZnNlcnZpY2Vfc2FtbF9zcDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKeM6k17u1OeVNKZEVgQm7Qy8Asy15VvGLdgGJYiDnRxNjkhezbMkN1Rn2ct77PvNNY/Ih4vFym+28QQxoCTVm6PPDpmpyOqad4Xq6niS5AXM+XgIzXvc+/B/c/aGa9du/khmdwh+wk4R9Exjou0CG/iwJ276x6UdbTx8eJoSJp1oQ1vIi2im5QgstsMLDRu3+q2bNdQE2GBAIIpcRFPCN7guRGV2L9b0feIVwRNSEu8PSqdsR9FqAlqiWJE4XYb+0+sk4GEDKHH5nxEVu4GarZwPUHjEEGQAXA4KGQQuUQS+FwWcuuW+PGdq5mv0biOQcLSg1qLDsUG8YNMRQjSrvECAwEAATANBgkqhkiG9w0BAQsFAAOCAQEAaDtNJ7npxVfs7bRWsxe3ZdnlopwcZXKOVEH4MxpQzjW08pzbuViuOjJ9QTGm/R3xWrHMxHTJSVw4DL4X+MPAHUPzsPViPHFUnOjBHzBAQN0rQfoUOZjFWBcel5YAksIj5XSaPRzr9CwgFwLePG7E8V+KXotwBU1Xfkh1VrLlYxAkypUjiIsn5SUO27GqUOh4xk0gI3j+HAuMWOXxhULM5p2H8UkmBuhouKuzfA90nmWLezPTq2Gx64ZWMvUId2BrjgxTjeE3a8r/JfAp2HcCQxOQ4MebNum/p3lykaEdg0Ig2WXXEbZwog0T1BCAfGyXxsqyAcoAtVArolPyO74mJg==",
+        "acs": [
+          "https://sa.test2.example.org/authentication/consume-assertion"
+        ],
+        "loa": {
+          "__default__": "http://test2.surfconext.nl/assurance/loa1"
+        },
+        "assertion_encryption_enabled": false,
+        "second_factor_only": false,
+        "second_factor_only_nameid_patterns": [],
+        "blacklisted_encryption_algorithms": []
+      },
+      {
+        "entity_id": "https://sa.test2.example.org/registration/gssf/tiqr/metadata",
+        "public_key": "MIICuDCCAaACCQCuCRJtlf/cnjANBgkqhkiG9w0BAQsFADAeMRwwGgYDVQQDDBNzZWxmc2VydmljZV90aXFyX3NwMB4XDTE1MDYxMzE2MjUyOVoXDTIwMDYxMTE2MjUyOVowHjEcMBoGA1UEAwwTc2VsZnNlcnZpY2VfdGlxcl9zcDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKB1y2ErshXD+enEmtjp1qVMOjBGy1Z4SeptUbLxvMfq/vflNfdcNJ1rnuMkxPk4MS+Ojw7eanM5v7cdcKUOEvwsTMB8zEq9Xp/HXs+TiYu/hUCrTkhKs9FA+Uh5xsBoLWWh5ylfUvzrHUVf3ZoGnGGOvYE+YHXXRJLT474EK65V81SxA7TFJG6vW7y2Hjzu/9orFifRmbPVL+03OlvfSCQ62yR0Q07MBGnLqGSN9KnOxWNG1AsXlRf2QsxG3s7d5prohpQpGyB/G49CFz8gnpPEgXGBHGMr2SdOsoJM87CXcgypHS4RYmPdd7SCabywWGyOlyR+t9Ce0i2+40WJ4tkCAwEAATANBgkqhkiG9w0BAQsFAAOCAQEATDMAeSOi/HD8FIoqil4jaVXcZCnMFnJwIM782PUvHE61JlENXYa4WhwmOZodc3jOyQ7PcqN/bgXPI2gBfltPk7/B9nAjKNRSb3o/NfFFbvn8T174LBZ2vr7J1CqUGSKXYtx7M6Zk7IE+Zt99IzCdTB/kXLR3Uof7k9ntDJd4yK9sksdVgpMwtsjEmedDSJcX09R4OUehWB9YXzOli6mK6tnctUtIcLTRwdIOeVEQbPMeggvjU1+IWAMjIGAxcT6cIPjHGNStCRUkeS7DiYwSc01fL99k2hZyi+FXX694d1hwWHsM2EY0kBebtUmQ6yjzCDVne2/yFJ6/SiM6+UlZMw==",
+        "acs": [
+          "https://sa.test2.example.org/registration/gssf/tiqr/consume-assertion"
+        ],
+        "loa": {
+          "__default__": "http://test2.surfconext.nl/assurance/loa1"
+        },
+        "assertion_encryption_enabled": false,
+        "second_factor_only": false,
+        "second_factor_only_nameid_patterns": [],
+        "blacklisted_encryption_algorithms": []
+      },
+      {
+        "entity_id": "https://ra.test2.example.org/vetting-procedure/gssf/tiqr/metadata",
+        "public_key": "MIICpjCCAY4CCQDrq/B5KtbGnzANBgkqhkiG9w0BAQsFADAVMRMwEQYDVQQDDApyYV90aXFyX3NwMB4XDTE1MDYxMzE2MjUzMFoXDTIwMDYxMTE2MjUzMFowFTETMBEGA1UEAwwKcmFfdGlxcl9zcDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKV2zNUyiivL8b6HmB+xguhRjvpVnXUqny7IZ9fMTXcqYPEXXKanXeqgJFXhHQJpz+CbvAviF1xuppobMVDka/3sAKgpSRQ0v3obqHd7n7uVJSnJEcrWsJo4gnMayygxosF2KCDeiyVPqXyIHTfOj96tQX4vrQLChK4oDiUKUNZ5m1kB6d7pQx8z+19s8nlq1wZaeZ7qbvXGJItQIg9+sQ6GS4R6ZCimRSNi125lGzPVEKO/eZ8ZK0RgnvlCA9fHmpTfV26+vS3/GyKxum8tTYqdw77X/C/wqpKrERFWU1TlrPCEK6JSmw6aPY6RnjEYVl5hvoPXsP87ZSTPBzuC0FUCAwEAATANBgkqhkiG9w0BAQsFAAOCAQEAm9I0s4yIECMNHmsVTcpaiYB79Y/79YlSdFzo8DDDo3y7cHr63esmYmgwp5ILUqk+083tAUyxeIVkLSPgXg+/mwJ7hdNM7IZvqyezB+PgJ7J6+SLKKVo6bRK7/3iSiajdwhqVhgBfdSuyilJqorP9L6B17s9mJ4h76Z1TSJp329OfuDl+9NOTMPlOvNgwYnN1ALzm/lWbUB5BDcu4aASQwk0tCyzQGmvtmNw4KQKV7Z4vDlqc2H+SKPr1NdDLWwAaCQrgycaamGQB0gLQ0IIOZXlvac5633fB0N/ptxtVv3F5KB/satmRRFp9Vz4Ol3GJGPLOPIo7CanW8Laj9HqOwQ==",
+        "acs": [
+          "https://ra.test2.example.org/vetting-procedure/gssf/tiqr/verify"
+        ],
+        "loa": {
+          "__default__": "http://test2.surfconext.nl/assurance/loa1"
+        },
+        "assertion_encryption_enabled": false,
+        "second_factor_only": false,
+        "second_factor_only_nameid_patterns": [],
+        "blacklisted_encryption_algorithms": []
+      },
+      {
+        "entity_id": "https://sa.test2.example.org/registration/gssf/azuremfa/metadata",
+        "public_key": "MIICuDCCAaACCQCuCRJtlf/cnjANBgkqhkiG9w0BAQsFADAeMRwwGgYDVQQDDBNzZWxmc2VydmljZV90aXFyX3NwMB4XDTE1MDYxMzE2MjUyOVoXDTIwMDYxMTE2MjUyOVowHjEcMBoGA1UEAwwTc2VsZnNlcnZpY2VfdGlxcl9zcDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKB1y2ErshXD+enEmtjp1qVMOjBGy1Z4SeptUbLxvMfq/vflNfdcNJ1rnuMkxPk4MS+Ojw7eanM5v7cdcKUOEvwsTMB8zEq9Xp/HXs+TiYu/hUCrTkhKs9FA+Uh5xsBoLWWh5ylfUvzrHUVf3ZoGnGGOvYE+YHXXRJLT474EK65V81SxA7TFJG6vW7y2Hjzu/9orFifRmbPVL+03OlvfSCQ62yR0Q07MBGnLqGSN9KnOxWNG1AsXlRf2QsxG3s7d5prohpQpGyB/G49CFz8gnpPEgXGBHGMr2SdOsoJM87CXcgypHS4RYmPdd7SCabywWGyOlyR+t9Ce0i2+40WJ4tkCAwEAATANBgkqhkiG9w0BAQsFAAOCAQEATDMAeSOi/HD8FIoqil4jaVXcZCnMFnJwIM782PUvHE61JlENXYa4WhwmOZodc3jOyQ7PcqN/bgXPI2gBfltPk7/B9nAjKNRSb3o/NfFFbvn8T174LBZ2vr7J1CqUGSKXYtx7M6Zk7IE+Zt99IzCdTB/kXLR3Uof7k9ntDJd4yK9sksdVgpMwtsjEmedDSJcX09R4OUehWB9YXzOli6mK6tnctUtIcLTRwdIOeVEQbPMeggvjU1+IWAMjIGAxcT6cIPjHGNStCRUkeS7DiYwSc01fL99k2hZyi+FXX694d1hwWHsM2EY0kBebtUmQ6yjzCDVne2/yFJ6/SiM6+UlZMw==",
+        "acs": [
+          "https://sa.test2.example.org/registration/gssf/azuremfa/consume-assertion"
+        ],
+        "loa": {
+          "__default__": "http://test2.surfconext.nl/assurance/loa1"
+        },
+        "assertion_encryption_enabled": false,
+        "second_factor_only": false,
+        "second_factor_only_nameid_patterns": [],
+        "blacklisted_encryption_algorithms": []
+      },
+      {
+        "entity_id": "https://ra.test2.example.org/vetting-procedure/gssf/azuremfa/metadata",
+        "public_key": "MIICpjCCAY4CCQDrq/B5KtbGnzANBgkqhkiG9w0BAQsFADAVMRMwEQYDVQQDDApyYV90aXFyX3NwMB4XDTE1MDYxMzE2MjUzMFoXDTIwMDYxMTE2MjUzMFowFTETMBEGA1UEAwwKcmFfdGlxcl9zcDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKV2zNUyiivL8b6HmB+xguhRjvpVnXUqny7IZ9fMTXcqYPEXXKanXeqgJFXhHQJpz+CbvAviF1xuppobMVDka/3sAKgpSRQ0v3obqHd7n7uVJSnJEcrWsJo4gnMayygxosF2KCDeiyVPqXyIHTfOj96tQX4vrQLChK4oDiUKUNZ5m1kB6d7pQx8z+19s8nlq1wZaeZ7qbvXGJItQIg9+sQ6GS4R6ZCimRSNi125lGzPVEKO/eZ8ZK0RgnvlCA9fHmpTfV26+vS3/GyKxum8tTYqdw77X/C/wqpKrERFWU1TlrPCEK6JSmw6aPY6RnjEYVl5hvoPXsP87ZSTPBzuC0FUCAwEAATANBgkqhkiG9w0BAQsFAAOCAQEAm9I0s4yIECMNHmsVTcpaiYB79Y/79YlSdFzo8DDDo3y7cHr63esmYmgwp5ILUqk+083tAUyxeIVkLSPgXg+/mwJ7hdNM7IZvqyezB+PgJ7J6+SLKKVo6bRK7/3iSiajdwhqVhgBfdSuyilJqorP9L6B17s9mJ4h76Z1TSJp329OfuDl+9NOTMPlOvNgwYnN1ALzm/lWbUB5BDcu4aASQwk0tCyzQGmvtmNw4KQKV7Z4vDlqc2H+SKPr1NdDLWwAaCQrgycaamGQB0gLQ0IIOZXlvac5633fB0N/ptxtVv3F5KB/satmRRFp9Vz4Ol3GJGPLOPIo7CanW8Laj9HqOwQ==",
+        "acs": [
+          "https://ra.test2.example.org/vetting-procedure/gssf/azuremfa/verify"
+        ],
+        "loa": {
+          "__default__": "http://test2.surfconext.nl/assurance/loa1"
+        },
+        "assertion_encryption_enabled": false,
+        "second_factor_only": false,
+        "second_factor_only_nameid_patterns": [],
+        "blacklisted_encryption_algorithms": []
+      },
+      {
+        "entity_id": "https://sa.test2.example.org/registration/gssf/webauthn/metadata",
+        "public_key": "MIICuDCCAaACCQCuCRJtlf/cnjANBgkqhkiG9w0BAQsFADAeMRwwGgYDVQQDDBNzZWxmc2VydmljZV90aXFyX3NwMB4XDTE1MDYxMzE2MjUyOVoXDTIwMDYxMTE2MjUyOVowHjEcMBoGA1UEAwwTc2VsZnNlcnZpY2VfdGlxcl9zcDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKB1y2ErshXD+enEmtjp1qVMOjBGy1Z4SeptUbLxvMfq/vflNfdcNJ1rnuMkxPk4MS+Ojw7eanM5v7cdcKUOEvwsTMB8zEq9Xp/HXs+TiYu/hUCrTkhKs9FA+Uh5xsBoLWWh5ylfUvzrHUVf3ZoGnGGOvYE+YHXXRJLT474EK65V81SxA7TFJG6vW7y2Hjzu/9orFifRmbPVL+03OlvfSCQ62yR0Q07MBGnLqGSN9KnOxWNG1AsXlRf2QsxG3s7d5prohpQpGyB/G49CFz8gnpPEgXGBHGMr2SdOsoJM87CXcgypHS4RYmPdd7SCabywWGyOlyR+t9Ce0i2+40WJ4tkCAwEAATANBgkqhkiG9w0BAQsFAAOCAQEATDMAeSOi/HD8FIoqil4jaVXcZCnMFnJwIM782PUvHE61JlENXYa4WhwmOZodc3jOyQ7PcqN/bgXPI2gBfltPk7/B9nAjKNRSb3o/NfFFbvn8T174LBZ2vr7J1CqUGSKXYtx7M6Zk7IE+Zt99IzCdTB/kXLR3Uof7k9ntDJd4yK9sksdVgpMwtsjEmedDSJcX09R4OUehWB9YXzOli6mK6tnctUtIcLTRwdIOeVEQbPMeggvjU1+IWAMjIGAxcT6cIPjHGNStCRUkeS7DiYwSc01fL99k2hZyi+FXX694d1hwWHsM2EY0kBebtUmQ6yjzCDVne2/yFJ6/SiM6+UlZMw==",
+        "acs": [
+          "https://sa.test2.example.org/registration/gssf/webauthn/consume-assertion"
+        ],
+        "loa": {
+          "__default__": "http://test2.surfconext.nl/assurance/loa1"
+        },
+        "assertion_encryption_enabled": false,
+        "second_factor_only": false,
+        "second_factor_only_nameid_patterns": [],
+        "blacklisted_encryption_algorithms": []
+      },
+      {
+        "entity_id": "https://ra.test2.example.org/vetting-procedure/gssf/webauthn/metadata",
+        "public_key": "MIICpjCCAY4CCQDrq/B5KtbGnzANBgkqhkiG9w0BAQsFADAVMRMwEQYDVQQDDApyYV90aXFyX3NwMB4XDTE1MDYxMzE2MjUzMFoXDTIwMDYxMTE2MjUzMFowFTETMBEGA1UEAwwKcmFfdGlxcl9zcDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKV2zNUyiivL8b6HmB+xguhRjvpVnXUqny7IZ9fMTXcqYPEXXKanXeqgJFXhHQJpz+CbvAviF1xuppobMVDka/3sAKgpSRQ0v3obqHd7n7uVJSnJEcrWsJo4gnMayygxosF2KCDeiyVPqXyIHTfOj96tQX4vrQLChK4oDiUKUNZ5m1kB6d7pQx8z+19s8nlq1wZaeZ7qbvXGJItQIg9+sQ6GS4R6ZCimRSNi125lGzPVEKO/eZ8ZK0RgnvlCA9fHmpTfV26+vS3/GyKxum8tTYqdw77X/C/wqpKrERFWU1TlrPCEK6JSmw6aPY6RnjEYVl5hvoPXsP87ZSTPBzuC0FUCAwEAATANBgkqhkiG9w0BAQsFAAOCAQEAm9I0s4yIECMNHmsVTcpaiYB79Y/79YlSdFzo8DDDo3y7cHr63esmYmgwp5ILUqk+083tAUyxeIVkLSPgXg+/mwJ7hdNM7IZvqyezB+PgJ7J6+SLKKVo6bRK7/3iSiajdwhqVhgBfdSuyilJqorP9L6B17s9mJ4h76Z1TSJp329OfuDl+9NOTMPlOvNgwYnN1ALzm/lWbUB5BDcu4aASQwk0tCyzQGmvtmNw4KQKV7Z4vDlqc2H+SKPr1NdDLWwAaCQrgycaamGQB0gLQ0IIOZXlvac5633fB0N/ptxtVv3F5KB/satmRRFp9Vz4Ol3GJGPLOPIo7CanW8Laj9HqOwQ==",
+        "acs": [
+          "https://ra.test2.example.org/vetting-procedure/gssf/webauthn/verify"
+        ],
+        "loa": {
+          "__default__": "http://test2.surfconext.nl/assurance/loa1"
+        },
+        "assertion_encryption_enabled": false,
+        "second_factor_only": false,
+        "second_factor_only_nameid_patterns": [],
+        "blacklisted_encryption_algorithms": []
+      },
+      {
+        "entity_id": "https://pieter.aai.surfnet.nl/simplesamlphp/module.php/saml/sp/metadata.php/default-sp",
+        "public_key": "MIIDlDCCAnwCCQCEcEA84Q/IrDANBgkqhkiG9w0BAQUFADCBizELMAkGA1UEBhMCTkwxEDAOBgNVBAgMB1V0cmVjaHQxEDAOBgNVBAcMB1V0cmVjaHQxEzARBgNVBAoMClNVUkZuZXQgYnYxITAfBgNVBAMMGHBpZXRlci5hYWkuc3VyZm5ldC5ubCBTUDEgMB4GCSqGSIb3DQEJARYRcGlldGVyQHN1cmZuZXQubmwwHhcNMTQwMjE4MjEyODM0WhcNMjQwMjE2MjEyODM0WjCBizELMAkGA1UEBhMCTkwxEDAOBgNVBAgMB1V0cmVjaHQxEDAOBgNVBAcMB1V0cmVjaHQxEzARBgNVBAoMClNVUkZuZXQgYnYxITAfBgNVBAMMGHBpZXRlci5hYWkuc3VyZm5ldC5ubCBTUDEgMB4GCSqGSIb3DQEJARYRcGlldGVyQHN1cmZuZXQubmwwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDMtxMLiNG70MDGjdOuU2taiB4Wb+3qr1HLBxlgitahe2e5Hq/xduk7S85e4kBxRphPF2wXGqjXp86e+lF9IUN5EwTxT1M6CoXEnFEjJltc+IhdfGw7rV85tg+pLQ+U/VZT8JowDKIRZ+4FaNb84K3bsLAK2xvkUtsT7J7VEYGyaz/hHhQKlLDpdgLCDDWF0dwD0MQz4hD4wG928DcV2MAHeCMOHnTcFA0K/Rn1mo97IpmObtgxk57cupElwsf8jh5ORUdXkc61Oq4tpfl2Uiyg9SyMuA1JroqC1bigepuCrWY5hv0xhP6knDVQaXVF79RuFGRJUcfv8g0ee2V5AZlDAgMBAAEwDQYJKoZIhvcNAQEFBQADggEBAB1QkdCjfmAlfLJm9q/2A+DtcABstqmnppIoPJv5hXlsKuBXZ/xtZwv1YyX4TND2JfZ222AGYX50p51F5kiW0jRdjIbCevp3zxrwGuGkpMQjnNTFJont5umNHYD/+GGG0FZwgeCGUG9XqvyArhm8kVE2N9GfpxE5pXhTbaphSuql86d7HddudrV4vMAwPftLpwxjFrUNIfnXV7Qf2dH0XxIVxUwY8IVjd+CoLLDAiz6FgoDJTx5ri7qIR/zgXBc2xC+3F7tXdJyqTzXt28P/uKH/KXGBl2qoM8TOKElumMEyB9b03B2x/6pJJAy8ZdEShk0f7QEj8SPUCkcoz3IZkkw=",
+        "acs": [
+          "https://pieter.aai.surfnet.nl/simplesamlphp/module.php/saml/sp/saml2-acs.php/default-sp"
+        ],
+        "loa": {
+          "__default__": "http://test2.surfconext.nl/assurance/loa1"
+        },
+        "assertion_encryption_enabled": false,
+        "second_factor_only": false,
+        "second_factor_only_nameid_patterns": [],
+        "blacklisted_encryption_algorithms": [],
+        "allow_sso_on_2fa": true,
+        "set_sso_cookie_on_2fa": true
+      },
+      {
+        "entity_id": "https://pieter.aai.surfnet.nl/simplesamlphp/module.php/saml/sp/metadata.php/second-sp",
+        "public_key": "MIIDlDCCAnwCCQCEcEA84Q/IrDANBgkqhkiG9w0BAQUFADCBizELMAkGA1UEBhMCTkwxEDAOBgNVBAgMB1V0cmVjaHQxEDAOBgNVBAcMB1V0cmVjaHQxEzARBgNVBAoMClNVUkZuZXQgYnYxITAfBgNVBAMMGHBpZXRlci5hYWkuc3VyZm5ldC5ubCBTUDEgMB4GCSqGSIb3DQEJARYRcGlldGVyQHN1cmZuZXQubmwwHhcNMTQwMjE4MjEyODM0WhcNMjQwMjE2MjEyODM0WjCBizELMAkGA1UEBhMCTkwxEDAOBgNVBAgMB1V0cmVjaHQxEDAOBgNVBAcMB1V0cmVjaHQxEzARBgNVBAoMClNVUkZuZXQgYnYxITAfBgNVBAMMGHBpZXRlci5hYWkuc3VyZm5ldC5ubCBTUDEgMB4GCSqGSIb3DQEJARYRcGlldGVyQHN1cmZuZXQubmwwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDMtxMLiNG70MDGjdOuU2taiB4Wb+3qr1HLBxlgitahe2e5Hq/xduk7S85e4kBxRphPF2wXGqjXp86e+lF9IUN5EwTxT1M6CoXEnFEjJltc+IhdfGw7rV85tg+pLQ+U/VZT8JowDKIRZ+4FaNb84K3bsLAK2xvkUtsT7J7VEYGyaz/hHhQKlLDpdgLCDDWF0dwD0MQz4hD4wG928DcV2MAHeCMOHnTcFA0K/Rn1mo97IpmObtgxk57cupElwsf8jh5ORUdXkc61Oq4tpfl2Uiyg9SyMuA1JroqC1bigepuCrWY5hv0xhP6knDVQaXVF79RuFGRJUcfv8g0ee2V5AZlDAgMBAAEwDQYJKoZIhvcNAQEFBQADggEBAB1QkdCjfmAlfLJm9q/2A+DtcABstqmnppIoPJv5hXlsKuBXZ/xtZwv1YyX4TND2JfZ222AGYX50p51F5kiW0jRdjIbCevp3zxrwGuGkpMQjnNTFJont5umNHYD/+GGG0FZwgeCGUG9XqvyArhm8kVE2N9GfpxE5pXhTbaphSuql86d7HddudrV4vMAwPftLpwxjFrUNIfnXV7Qf2dH0XxIVxUwY8IVjd+CoLLDAiz6FgoDJTx5ri7qIR/zgXBc2xC+3F7tXdJyqTzXt28P/uKH/KXGBl2qoM8TOKElumMEyB9b03B2x/6pJJAy8ZdEShk0f7QEj8SPUCkcoz3IZkkw=",
+        "acs": [
+          "https://pieter.aai.surfnet.nl/simplesamlphp/module.php/DebugSP/sp/saml2-acs.php/second-sp",
+          "https://pieter.aai.surfnet.nl/simplesamlphp/module.php/saml/sp/saml2-acs.php/second-sp"
+        ],
+        "loa": {
+          "__default__": "http://test2.surfconext.nl/assurance/loa2"
+        },
+        "assertion_encryption_enabled": false,
+        "second_factor_only": true,
+        "second_factor_only_nameid_patterns": [
+          "urn:collab:person:institution-a.nl:*",
+          "urn:collab:person:institution-b.nl:*",
+          "urn:collab:person:Institution-D.NL:*",
+          "urn:collab:person:institution-f.nl:*"
+        ],
+        "blacklisted_encryption_algorithms": [],
+        "allow_sso_on_2fa": true,
+        "set_sso_cookie_on_2fa": true
+      },
+      {
+        "entity_id": "https://pieter.aai.surfnet.nl/simplesamlphp/module.php/saml/sp/metadata.php/third-sp",
+        "public_key": "MIIDlDCCAnwCCQCEcEA84Q/IrDANBgkqhkiG9w0BAQUFADCBizELMAkGA1UEBhMCTkwxEDAOBgNVBAgMB1V0cmVjaHQxEDAOBgNVBAcMB1V0cmVjaHQxEzARBgNVBAoMClNVUkZuZXQgYnYxITAfBgNVBAMMGHBpZXRlci5hYWkuc3VyZm5ldC5ubCBTUDEgMB4GCSqGSIb3DQEJARYRcGlldGVyQHN1cmZuZXQubmwwHhcNMTQwMjE4MjEyODM0WhcNMjQwMjE2MjEyODM0WjCBizELMAkGA1UEBhMCTkwxEDAOBgNVBAgMB1V0cmVjaHQxEDAOBgNVBAcMB1V0cmVjaHQxEzARBgNVBAoMClNVUkZuZXQgYnYxITAfBgNVBAMMGHBpZXRlci5hYWkuc3VyZm5ldC5ubCBTUDEgMB4GCSqGSIb3DQEJARYRcGlldGVyQHN1cmZuZXQubmwwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDMtxMLiNG70MDGjdOuU2taiB4Wb+3qr1HLBxlgitahe2e5Hq/xduk7S85e4kBxRphPF2wXGqjXp86e+lF9IUN5EwTxT1M6CoXEnFEjJltc+IhdfGw7rV85tg+pLQ+U/VZT8JowDKIRZ+4FaNb84K3bsLAK2xvkUtsT7J7VEYGyaz/hHhQKlLDpdgLCDDWF0dwD0MQz4hD4wG928DcV2MAHeCMOHnTcFA0K/Rn1mo97IpmObtgxk57cupElwsf8jh5ORUdXkc61Oq4tpfl2Uiyg9SyMuA1JroqC1bigepuCrWY5hv0xhP6knDVQaXVF79RuFGRJUcfv8g0ee2V5AZlDAgMBAAEwDQYJKoZIhvcNAQEFBQADggEBAB1QkdCjfmAlfLJm9q/2A+DtcABstqmnppIoPJv5hXlsKuBXZ/xtZwv1YyX4TND2JfZ222AGYX50p51F5kiW0jRdjIbCevp3zxrwGuGkpMQjnNTFJont5umNHYD/+GGG0FZwgeCGUG9XqvyArhm8kVE2N9GfpxE5pXhTbaphSuql86d7HddudrV4vMAwPftLpwxjFrUNIfnXV7Qf2dH0XxIVxUwY8IVjd+CoLLDAiz6FgoDJTx5ri7qIR/zgXBc2xC+3F7tXdJyqTzXt28P/uKH/KXGBl2qoM8TOKElumMEyB9b03B2x/6pJJAy8ZdEShk0f7QEj8SPUCkcoz3IZkkw=",
+        "acs": [
+          "https://pieter.aai.surfnet.nl/simplesamlphp/module.php/saml/sp/saml2-acs.php/third-sp"
+        ],
+        "loa": {
+          "__default__": "http://test2.surfconext.nl/assurance/loa2"
+        },
+        "assertion_encryption_enabled": false,
+        "second_factor_only": false,
+        "second_factor_only_nameid_patterns": [],
+        "blacklisted_encryption_algorithms": [],
+        "allow_sso_on_2fa": false,
+        "set_sso_cookie_on_2fa": true
+      },
+      {
+        "entity_id": "https://pieter.aai.surfnet.nl/simplesamlphp/module.php/saml/sp/metadata.php/fourth-sp",
+        "public_key": "MIIDlDCCAnwCCQCEcEA84Q/IrDANBgkqhkiG9w0BAQUFADCBizELMAkGA1UEBhMCTkwxEDAOBgNVBAgMB1V0cmVjaHQxEDAOBgNVBAcMB1V0cmVjaHQxEzARBgNVBAoMClNVUkZuZXQgYnYxITAfBgNVBAMMGHBpZXRlci5hYWkuc3VyZm5ldC5ubCBTUDEgMB4GCSqGSIb3DQEJARYRcGlldGVyQHN1cmZuZXQubmwwHhcNMTQwMjE4MjEyODM0WhcNMjQwMjE2MjEyODM0WjCBizELMAkGA1UEBhMCTkwxEDAOBgNVBAgMB1V0cmVjaHQxEDAOBgNVBAcMB1V0cmVjaHQxEzARBgNVBAoMClNVUkZuZXQgYnYxITAfBgNVBAMMGHBpZXRlci5hYWkuc3VyZm5ldC5ubCBTUDEgMB4GCSqGSIb3DQEJARYRcGlldGVyQHN1cmZuZXQubmwwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDMtxMLiNG70MDGjdOuU2taiB4Wb+3qr1HLBxlgitahe2e5Hq/xduk7S85e4kBxRphPF2wXGqjXp86e+lF9IUN5EwTxT1M6CoXEnFEjJltc+IhdfGw7rV85tg+pLQ+U/VZT8JowDKIRZ+4FaNb84K3bsLAK2xvkUtsT7J7VEYGyaz/hHhQKlLDpdgLCDDWF0dwD0MQz4hD4wG928DcV2MAHeCMOHnTcFA0K/Rn1mo97IpmObtgxk57cupElwsf8jh5ORUdXkc61Oq4tpfl2Uiyg9SyMuA1JroqC1bigepuCrWY5hv0xhP6knDVQaXVF79RuFGRJUcfv8g0ee2V5AZlDAgMBAAEwDQYJKoZIhvcNAQEFBQADggEBAB1QkdCjfmAlfLJm9q/2A+DtcABstqmnppIoPJv5hXlsKuBXZ/xtZwv1YyX4TND2JfZ222AGYX50p51F5kiW0jRdjIbCevp3zxrwGuGkpMQjnNTFJont5umNHYD/+GGG0FZwgeCGUG9XqvyArhm8kVE2N9GfpxE5pXhTbaphSuql86d7HddudrV4vMAwPftLpwxjFrUNIfnXV7Qf2dH0XxIVxUwY8IVjd+CoLLDAiz6FgoDJTx5ri7qIR/zgXBc2xC+3F7tXdJyqTzXt28P/uKH/KXGBl2qoM8TOKElumMEyB9b03B2x/6pJJAy8ZdEShk0f7QEj8SPUCkcoz3IZkkw=",
+        "acs": [
+          "https://pieter.aai.surfnet.nl/simplesamlphp/module.php/saml/sp/saml2-acs.php/fourth-sp"
+        ],
+        "loa": {
+          "__default__": "http://test2.surfconext.nl/assurance/loa1",
+          "institution-a.nl": "http://test2.surfconext.nl/assurance/loa2",
+          "institution-d.nl": "http://test2.surfconext.nl/assurance/loa2"
+        },
+        "assertion_encryption_enabled": false,
+        "second_factor_only": false,
+        "second_factor_only_nameid_patterns": [],
+        "blacklisted_encryption_algorithms": []
+      },
+      {
+        "entity_id": "https://saproxy.moonshot.utr.surfcloud.nl/simplesamlphp/module.php/saml/sp/metadata.php/test-sp",
+        "public_key": "MIIC9zCCAd+gAwIBAgIJAOILkrmFVk2kMA0GCSqGSIb3DQEBCwUAMBIxEDAOBgNVBAMMB1NBTUwgU1AwHhcNMTcwMTEyMTI0MDUxWhcNMjcwMTEyMTI0MDUxWjASMRAwDgYDVQQDDAdTQU1MIFNQMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtAbCyKFpOnB9eCdC1pLkFOdhAS5omxWbRapGE3QSFEe05R1nOBzskE+PuBzc5mTSyaAIAtoMiFk00YIHq/VjVe1jhqhy2DrMjODIUH1bSu5CgA97NwWCsBZLp2A5ziMKnmSKTTHg/Mn/3derCXo4WQyUGILGtVtgqkgluq9/EjrJkeun9oUNptpfTr9bdyUdBqPBuMq1uhkpSocH+X8X2uOBd580rurvarOEVv2LdjSbdvyRz9xVOmi/vWyydIug+azlQp7iWk9lpNJcHACzCPxgvPNjvpZTaLrPP7jhJX0e48tOIjFENBj495ni41HcWfzMwW0s/ThfOCs1q+kZqQIDAQABo1AwTjAdBgNVHQ4EFgQUYvbzODZr4zHR4MbbT0DuMgPOJHUwHwYDVR0jBBgwFoAUYvbzODZr4zHR4MbbT0DuMgPOJHUwDAYDVR0TBAUwAwEB/zANBgkqhkiG9w0BAQsFAAOCAQEAqrjqm+nCcGRz2Ncu/nJH3GjPt5DdK8bvI/Hks6t2nBI6AhcuvX8eyEYQyGvgK0fmOMtALa+h+Qa3itYo7VjgjMLm7+R4EYyr9DBANpU499h0YOc9vowzNEmw8ku4+5iCUPKhanrLTr8AcRLsNh6H2lGxy3ncNbcXLBPsor+vwZQwmf48yqA6uWAYLUYloDcnLshJIIvYLM60Vxi/QqdF7GMOeHE8FBUYJ1eYXvWyv35ZMPSP5feoEbUz5byE37p7vaXy4aX6vH9OTZcenkyQ42SU/TjW7kyD9mNPYNGnTOymNOYytX9WAAfFis1GLgcdse47cDEdK0UJ7zF7xtp+BA==",
+        "acs": [
+          "https://saproxy.moonshot.utr.surfcloud.nl/simplesamlphp/module.php/saml/sp/saml2-acs.php/test-sp"
+        ],
+        "loa": {
+          "__default__": "http://test2.surfconext.nl/assurance/loa2"
+        },
+        "assertion_encryption_enabled": false,
+        "second_factor_only": false,
+        "second_factor_only_nameid_patterns": [],
+        "blacklisted_encryption_algorithms": []
+      },
+      {
+        "entity_id": "http://localhost:8080/simplesaml/module.php/saml/sp/metadata.php/sfo-sp",
+        "public_key": "MIIDmTCCAoGgAwIBAgIJAKyUXzwGwcqhMA0GCSqGSIb3DQEBCwUAMGMxCzAJBgNVBAYTAk5MMRAwDgYDVQQKDAdFeGFtcGxlMR4wHAYDVQQDDBVTRk8gRGVtbyBTQU1MIHNpZ25pbmcxIjAgBgkqhkiG9w0BCQEWE3N1cHBvcnRAZXhhbXBsZS5vcmcwHhcNMTYxMTA2MDgxOTIzWhcNMjYxMTA0MDgxOTIzWjBjMQswCQYDVQQGEwJOTDEQMA4GA1UECgwHRXhhbXBsZTEeMBwGA1UEAwwVU0ZPIERlbW8gU0FNTCBzaWduaW5nMSIwIAYJKoZIhvcNAQkBFhNzdXBwb3J0QGV4YW1wbGUub3JnMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA03h5x2cV6+JKLYHO2BxHhiYoRQi/vMQHW7EHRTyfAptf+1AwuDT83LF4OA82oXw1PTO9ffkb9beFHMxBkHQ7fI7Qq4jjhw9ljtB7BPdN9S+uOhNPAhFHb0hHAIngCGg82PEi9hD18lPfS8OJIK+cSOgrCp2H5N2vel1yRXm4laCc8/nssoIoAkV6wnATBE3oSyDMKpK+evUz/oltryf7iLvfnB8XdP3dDMERaOFqstKrj50SCpMpA6AsKZ674aIHuvO/dUD0v5+UVnDjGl2Pbfz0vp+KhV8sWSQ6oBE44yxpYQBiHJi+1Wq0Vi4Vf+hZjiH4fI+qp2BmV0HAOD0mbwIDAQABo1AwTjAdBgNVHQ4EFgQU2em7W0TJzKoNNV3LNoVHeJaJpG0wHwYDVR0jBBgwFoAU2em7W0TJzKoNNV3LNoVHeJaJpG0wDAYDVR0TBAUwAwEB/zANBgkqhkiG9w0BAQsFAAOCAQEALBmM0fMx8fnNabWIIHsElk6qVGpJ6+4583pYoNT/nXrf/Lx2jwYhyyHTdFONMoHbobY0e28t4sao8GqprGFynHs5ssjhOWpADAYHV2l0lcAt0YISmRbSJk7SfHGNYr4JHI+wgt4Cfwlw6BUsVdiBM0gxFPPQrLMoPmY4ZgQoV3YyJKvq6AhhxGvyl5b54wfaEDmGuANfDSz4c3xAX8KxIOTNevUToyMY3Z2uwwEqHSyp0ayjsMoPsZymKUoNzwHQrWyGd2glqukHEPZuP0ZeHLL6dc6/zVhHt+Pwbrvq2Q1aOfiWfLljYZZZ5PNxMEXsh2ZHTkvw2IA/pYVd59Gabg==",
+        "acs": [
+          "http://localhost:8080/simplesaml/module.php/saml/sp/saml2-acs.php/sfo-sp"
+        ],
+        "loa": {
+          "__default__": "http://test2.surfconext.nl/assurance/loa2"
+        },
+        "assertion_encryption_enabled": false,
+        "second_factor_only": true,
+        "second_factor_only_nameid_patterns": [
+          "urn:collab:person:surfnet.nl:*"
+        ],
+        "blacklisted_encryption_algorithms": []
+      },
+      {
+        "entity_id": "https://manage.test2.example.org/shibboleth",
+        "public_key": "MIIDoDCCAoigAwIBAgIJAPPRU9G+n7LNMA0GCSqGSIb3DQEBCwUAMHIxCzAJBgNVBAYTAk5MMRwwGgYDVQQKDBN0ZXN0Mi5zdXJmY29uZXh0Lm5sMRwwGgYDVQQDDBN0ZXN0Mi5zdXJmY29uZXh0Lm5sMScwJQYJKoZIhvcNAQkBFhhpbmZvQHRlc3QyLnN1cmZjb25leHQubmwwHhcNMTgwOTE5MTQxNTU2WhcNMjgwOTE4MTQxNTU2WjByMQswCQYDVQQGEwJOTDEcMBoGA1UECgwTdGVzdDIuc3VyZmNvbmV4dC5ubDEcMBoGA1UEAwwTdGVzdDIuc3VyZmNvbmV4dC5ubDEnMCUGCSqGSIb3DQEJARYYaW5mb0B0ZXN0Mi5zdXJmY29uZXh0Lm5sMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1NzIeW3d0uQjXTJBMjU8YlXJry5mcAVoyPbIZtOny2d3ITvaJx4UAGFr2aE/idHWajONWfsLxse6pp3WeRw8qRNhR4szDNtTb0YU0Fxm7doLguddlN8guWwowf/Y82jfS9rpM7FC+JzJGQkHlvmrb9WUOTr8SUa5b9m8mxydZjSqAbYqwsqkDbBLtpC2rxeoOe6Aq3SMJ1o0GoHmMuFcczzfzcj1mscy0OqnYokJoHqKVMJ+X5mkHCkKP/LQkWDN2x+6gmAzVOm+ShKKdgl4QJ2AZpU0WpzS924dNkkTmYZfenAfLu7NyfQrPVQArkZl9YPK/GPxdmGHy5knoqU9swIDAQABozkwNzA1BgNVHREELjAsghN0ZXN0Mi5zdXJmY29uZXh0Lm5sghUqLnRlc3QyLnN1cmZjb25leHQubmwwDQYJKoZIhvcNAQELBQADggEBANCSM493uMWz361QOpqF+Ogyl+BcaehZJlWMY+oAQnsICFdaNV2d9gm7X2eMDPzR+86NiEUv1IKFiAaNWGecnHQ7DhecmNlhKWJkvRvXvdItv/Bhqyg9o47+TEfNgV1UEwNZRSkPYjsSszxyp4OkoAjcUb04PPsOEHIJ+pqx/T48p0IDjZdYDgnwdVXSKRNn4pmssR1PxmaY0AefoNMA0+FnMTZ5RAbqp1SABg5KDCg0cJMX3CkDd7d6kpHpbhg79FmwnBDK5FICixsrFRiO3h33xfuNz4i6UYcMSyLI1mmmAnc+NnMHHgMKFpx5XY5kRf0GVbgHo1imE6qBVeLUQww=",
+        "acs": [
+          "https://manage.test2.example.org/Shibboleth.sso/SAML2/POST"
+        ],
+        "loa": {
+          "__default__": "http://test2.surfconext.nl/assurance/loa2"
+        },
+        "assertion_encryption_enabled": false,
+        "second_factor_only": false,
+        "second_factor_only_nameid_patterns": [],
+        "blacklisted_encryption_algorithms": []
+      },
+      {
+        "entity_id": "http://adfs-2016.test2.example.org/adfs-sfo-extension",
+        "public_key": "MIIDEzCCAfugAwIBAgIQHqdytiDCqrxGGeY5rz3icTANBgkqhkiG9w0BAQsFADAsMSowKAYDVQQDDCFzaWduaW5nLmQyMDE2LnRlc3QyLnN1cmZjb25leHQubmwwHhcNMTgxMDI5MTM0MjQ4WhcNMjMxMDMwMTM0MjQ4WjAsMSowKAYDVQQDDCFzaWduaW5nLmQyMDE2LnRlc3QyLnN1cmZjb25leHQubmwwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCiOJFNgb4TlDyDx/U0mhW2GQqgfsN7WVjLlM6fIwqR2Ae2S56dOHjNJhS/Bm4X8K7h46bcdQz79g2+hwaYvojnEVGHYAvuoCzfqhBJXk4WCqC7WCb5jvWA10s66UCD7PG0iNee+7rGeEXFfmRD/UkZRpYq9gdC1C+ki+R7nRHv25adF4yWmeGgQer0dYT6Ico5xiy1I4U6FsVWRI26m9IkYKbwalq//AJFVCX9xfgQWTuWBk4xOQlgNsDXrcMKvTs1ZoEMaRGbr4xtphGXPUn+BRQQ1M7RsphXH3Ahj915uB9sZQns96f4iPgtYW4dT/M9CUd110JvpA+ia5J0+WQPAgMBAAGjMTAvMA4GA1UdDwEB/wQEAwIHgDAdBgNVHQ4EFgQU4labhn+sj1cKw2rb9maZvHQ0PZowDQYJKoZIhvcNAQELBQADggEBAHDU0Y9GW/NWkDrxCriZUmeyIn+FnpV6v4b/WFJdcaP5hzc7udG2qlPVl0my5Hdn943jwpNSK6p/E6JiFG/gTjzGFGuLFT71MrMBRBs40/r8OTDkYpxShjJNFyrFJK6d/0RL3i7qTrpZCy5w78IkWJnyeu2Quy1iqhLI0s9E0BDPCqI/vo4dm/wz27GVWFGa8uuLyKM7GsRgCj4LB77rAbyYFm2MLthuTeOEWCof8zc66bQLUMnG1P1wy6lgpu5nglzwF83L0ib06eqVxdHxBDYoVwbyoly12q6GWaKye31g2vLwegP3wfBPPN4g5RoJg1xNPYd7mOwMkOo3fSHOmFI=",
+        "acs": [
+          "https://adfs-2016.test2.example.org:443/adfs/ls/"
+        ],
+        "loa": {
+          "__default__": "http://test2.surfconext.nl/assurance/loa2"
+        },
+        "assertion_encryption_enabled": false,
+        "second_factor_only": true,
+        "second_factor_only_nameid_patterns": [
+          "urn:collab:person:institution-a.nl:*"
+        ],
+        "blacklisted_encryption_algorithms": []
+      },
+      {
+        "entity_id": "http://adfs-2012.test2.example.org",
+        "public_key": "MIIDEzCCAfugAwIBAgIQSN8zW6CYlIJOAFzdStTT+jANBgkqhkiG9w0BAQsFADAsMSowKAYDVQQDDCFzaWduaW5nLmQyMDEyLnRlc3QyLnN1cmZjb25leHQubmwwHhcNMTcwOTI0MTYzNDE3WhcNMjIwOTI1MTYzNDE3WjAsMSowKAYDVQQDDCFzaWduaW5nLmQyMDEyLnRlc3QyLnN1cmZjb25leHQubmwwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCd/TW1JocNOWl5iFl7RkY40kP5SciBYB6tIEywflF4tkEDwKRqsQ2EsZ93uiggB/pXUa6TGvS7vzQjRqdhFgCpohmhepS9Pwu//I+p68VZCtslt1UJGt62AFOZwaTSQPn4eGdhDr4sX9Mr+uUOSZeeiDtuEhiMIjkd2IabOySd9LS+NMsoicShXGy0DYGNr7h2hyu/lT+uLJvlPRtWoZ47iKY0UGiqSI7MwZSPB0hOjyeopl+/XLD4hD+3VUAC2KmH6ZO0Aaa+sRQe+MTYU4vo7oXN+dhFh8oUpQk63x20ma157tRSYjBUpMDdrS/vN/5d7smTFt5tUxvUGLcFGA8JAgMBAAGjMTAvMA4GA1UdDwEB/wQEAwIHgDAdBgNVHQ4EFgQUFvg4wwprL0eZ/Y/OsH92T3++tlUwDQYJKoZIhvcNAQELBQADggEBAEq/Cjy7btLqfZzxvVpPBXfufbNQHrAxV5Bp6kD2cCXS9VCK0uGJvFlzdU03CLOn0N1a2AQNIJfOeX6uySCQuYq4h4VyLUIU2XMPKUw8avqhn3JqllxYBn8OWtCbE/AY7KSiLXy9WPXptatZry5xOLuK61d+lK2ku9UslUq69opHdxMgujWA/9EuJDH4EDnRtsICOZ2flblIeBx8UNsza1Z2w6R1RkVASwaVC/rW9ZIixdN7rC51AMjSf3RpTsG/OV6nSEprMkhUYdhHWRoOWfO+Pbfda5Jo9Hs2xvD4N7/hOJ43t/0WJ5nx76Cq13GpiEbiHmvHAMcKtxhuAKc84I4=",
+        "acs": [
+          "https://adfs-2012.test2.example.org:443/adfs/ls"
+        ],
+        "loa": {
+          "__default__": "http://test2.surfconext.nl/assurance/loa2"
+        },
+        "assertion_encryption_enabled": false,
+        "second_factor_only": true,
+        "second_factor_only_nameid_patterns": [
+          "urn:collab:person:institution-a.nl:*",
+          "urn:collab:person:institution-b.nl:*"
+        ],
+        "blacklisted_encryption_algorithms": []
+      },
+      {
+        "entity_id": "http://adfs2-2012.test2.example.org",
+        "public_key": "MIIDEzCCAfugAwIBAgIQSN8zW6CYlIJOAFzdStTT+jANBgkqhkiG9w0BAQsFADAsMSowKAYDVQQDDCFzaWduaW5nLmQyMDEyLnRlc3QyLnN1cmZjb25leHQubmwwHhcNMTcwOTI0MTYzNDE3WhcNMjIwOTI1MTYzNDE3WjAsMSowKAYDVQQDDCFzaWduaW5nLmQyMDEyLnRlc3QyLnN1cmZjb25leHQubmwwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCd/TW1JocNOWl5iFl7RkY40kP5SciBYB6tIEywflF4tkEDwKRqsQ2EsZ93uiggB/pXUa6TGvS7vzQjRqdhFgCpohmhepS9Pwu//I+p68VZCtslt1UJGt62AFOZwaTSQPn4eGdhDr4sX9Mr+uUOSZeeiDtuEhiMIjkd2IabOySd9LS+NMsoicShXGy0DYGNr7h2hyu/lT+uLJvlPRtWoZ47iKY0UGiqSI7MwZSPB0hOjyeopl+/XLD4hD+3VUAC2KmH6ZO0Aaa+sRQe+MTYU4vo7oXN+dhFh8oUpQk63x20ma157tRSYjBUpMDdrS/vN/5d7smTFt5tUxvUGLcFGA8JAgMBAAGjMTAvMA4GA1UdDwEB/wQEAwIHgDAdBgNVHQ4EFgQUFvg4wwprL0eZ/Y/OsH92T3++tlUwDQYJKoZIhvcNAQELBQADggEBAEq/Cjy7btLqfZzxvVpPBXfufbNQHrAxV5Bp6kD2cCXS9VCK0uGJvFlzdU03CLOn0N1a2AQNIJfOeX6uySCQuYq4h4VyLUIU2XMPKUw8avqhn3JqllxYBn8OWtCbE/AY7KSiLXy9WPXptatZry5xOLuK61d+lK2ku9UslUq69opHdxMgujWA/9EuJDH4EDnRtsICOZ2flblIeBx8UNsza1Z2w6R1RkVASwaVC/rW9ZIixdN7rC51AMjSf3RpTsG/OV6nSEprMkhUYdhHWRoOWfO+Pbfda5Jo9Hs2xvD4N7/hOJ43t/0WJ5nx76Cq13GpiEbiHmvHAMcKtxhuAKc84I4=",
+        "acs": [
+          "https://adfs2-2012.test2.example.org/adfs/ls/"
+        ],
+        "loa": {
+          "__default__": "http://test2.surfconext.nl/assurance/loa2"
+        },
+        "assertion_encryption_enabled": false,
+        "second_factor_only": true,
+        "second_factor_only_nameid_patterns": [
+          "urn:collab:person:institution-a.nl:*",
+          "urn:collab:person:institution-b.nl:*"
+        ],
+        "blacklisted_encryption_algorithms": []
+      },
+      {
+        "entity_id": "https://authz-admin.test2.example.org/shibboleth",
+        "public_key": "MIIDoDCCAoigAwIBAgIJAPPRU9G+n7LNMA0GCSqGSIb3DQEBCwUAMHIxCzAJBgNVBAYTAk5MMRwwGgYDVQQKDBN0ZXN0Mi5zdXJmY29uZXh0Lm5sMRwwGgYDVQQDDBN0ZXN0Mi5zdXJmY29uZXh0Lm5sMScwJQYJKoZIhvcNAQkBFhhpbmZvQHRlc3QyLnN1cmZjb25leHQubmwwHhcNMTgwOTE5MTQxNTU2WhcNMjgwOTE4MTQxNTU2WjByMQswCQYDVQQGEwJOTDEcMBoGA1UECgwTdGVzdDIuc3VyZmNvbmV4dC5ubDEcMBoGA1UEAwwTdGVzdDIuc3VyZmNvbmV4dC5ubDEnMCUGCSqGSIb3DQEJARYYaW5mb0B0ZXN0Mi5zdXJmY29uZXh0Lm5sMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1NzIeW3d0uQjXTJBMjU8YlXJry5mcAVoyPbIZtOny2d3ITvaJx4UAGFr2aE/idHWajONWfsLxse6pp3WeRw8qRNhR4szDNtTb0YU0Fxm7doLguddlN8guWwowf/Y82jfS9rpM7FC+JzJGQkHlvmrb9WUOTr8SUa5b9m8mxydZjSqAbYqwsqkDbBLtpC2rxeoOe6Aq3SMJ1o0GoHmMuFcczzfzcj1mscy0OqnYokJoHqKVMJ+X5mkHCkKP/LQkWDN2x+6gmAzVOm+ShKKdgl4QJ2AZpU0WpzS924dNkkTmYZfenAfLu7NyfQrPVQArkZl9YPK/GPxdmGHy5knoqU9swIDAQABozkwNzA1BgNVHREELjAsghN0ZXN0Mi5zdXJmY29uZXh0Lm5sghUqLnRlc3QyLnN1cmZjb25leHQubmwwDQYJKoZIhvcNAQELBQADggEBANCSM493uMWz361QOpqF+Ogyl+BcaehZJlWMY+oAQnsICFdaNV2d9gm7X2eMDPzR+86NiEUv1IKFiAaNWGecnHQ7DhecmNlhKWJkvRvXvdItv/Bhqyg9o47+TEfNgV1UEwNZRSkPYjsSszxyp4OkoAjcUb04PPsOEHIJ+pqx/T48p0IDjZdYDgnwdVXSKRNn4pmssR1PxmaY0AefoNMA0+FnMTZ5RAbqp1SABg5KDCg0cJMX3CkDd7d6kpHpbhg79FmwnBDK5FICixsrFRiO3h33xfuNz4i6UYcMSyLI1mmmAnc+NnMHHgMKFpx5XY5kRf0GVbgHo1imE6qBVeLUQww=",
+        "acs": [
+          "https://authz-admin.test2.example.org/Shibboleth.sso/SAML2/POST"
+        ],
+        "loa": {
+          "__default__": "http://test2.surfconext.nl/assurance/loa2"
+        },
+        "assertion_encryption_enabled": false,
+        "second_factor_only": false,
+        "second_factor_only_nameid_patterns": [],
+        "blacklisted_encryption_algorithms": []
+      },
+      {
+        "entity_id": "https://pdp.test2.example.org/shibboleth",
+        "public_key": "MIIDoDCCAoigAwIBAgIJAPPRU9G+n7LNMA0GCSqGSIb3DQEBCwUAMHIxCzAJBgNVBAYTAk5MMRwwGgYDVQQKDBN0ZXN0Mi5zdXJmY29uZXh0Lm5sMRwwGgYDVQQDDBN0ZXN0Mi5zdXJmY29uZXh0Lm5sMScwJQYJKoZIhvcNAQkBFhhpbmZvQHRlc3QyLnN1cmZjb25leHQubmwwHhcNMTgwOTE5MTQxNTU2WhcNMjgwOTE4MTQxNTU2WjByMQswCQYDVQQGEwJOTDEcMBoGA1UECgwTdGVzdDIuc3VyZmNvbmV4dC5ubDEcMBoGA1UEAwwTdGVzdDIuc3VyZmNvbmV4dC5ubDEnMCUGCSqGSIb3DQEJARYYaW5mb0B0ZXN0Mi5zdXJmY29uZXh0Lm5sMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1NzIeW3d0uQjXTJBMjU8YlXJry5mcAVoyPbIZtOny2d3ITvaJx4UAGFr2aE/idHWajONWfsLxse6pp3WeRw8qRNhR4szDNtTb0YU0Fxm7doLguddlN8guWwowf/Y82jfS9rpM7FC+JzJGQkHlvmrb9WUOTr8SUa5b9m8mxydZjSqAbYqwsqkDbBLtpC2rxeoOe6Aq3SMJ1o0GoHmMuFcczzfzcj1mscy0OqnYokJoHqKVMJ+X5mkHCkKP/LQkWDN2x+6gmAzVOm+ShKKdgl4QJ2AZpU0WpzS924dNkkTmYZfenAfLu7NyfQrPVQArkZl9YPK/GPxdmGHy5knoqU9swIDAQABozkwNzA1BgNVHREELjAsghN0ZXN0Mi5zdXJmY29uZXh0Lm5sghUqLnRlc3QyLnN1cmZjb25leHQubmwwDQYJKoZIhvcNAQELBQADggEBANCSM493uMWz361QOpqF+Ogyl+BcaehZJlWMY+oAQnsICFdaNV2d9gm7X2eMDPzR+86NiEUv1IKFiAaNWGecnHQ7DhecmNlhKWJkvRvXvdItv/Bhqyg9o47+TEfNgV1UEwNZRSkPYjsSszxyp4OkoAjcUb04PPsOEHIJ+pqx/T48p0IDjZdYDgnwdVXSKRNn4pmssR1PxmaY0AefoNMA0+FnMTZ5RAbqp1SABg5KDCg0cJMX3CkDd7d6kpHpbhg79FmwnBDK5FICixsrFRiO3h33xfuNz4i6UYcMSyLI1mmmAnc+NnMHHgMKFpx5XY5kRf0GVbgHo1imE6qBVeLUQww=",
+        "acs": [
+          "https://pdp.test2.example.org/Shibboleth.sso/SAML2/POST"
+        ],
+        "loa": {
+          "__default__": "http://test2.surfconext.nl/assurance/loa2"
+        },
+        "assertion_encryption_enabled": false,
+        "second_factor_only": false,
+        "second_factor_only_nameid_patterns": [],
+        "blacklisted_encryption_algorithms": []
+      },
+      {
+        "entity_id": "https://aa.test2.example.org/shibboleth",
+        "public_key": "MIIDoDCCAoigAwIBAgIJAPPRU9G+n7LNMA0GCSqGSIb3DQEBCwUAMHIxCzAJBgNVBAYTAk5MMRwwGgYDVQQKDBN0ZXN0Mi5zdXJmY29uZXh0Lm5sMRwwGgYDVQQDDBN0ZXN0Mi5zdXJmY29uZXh0Lm5sMScwJQYJKoZIhvcNAQkBFhhpbmZvQHRlc3QyLnN1cmZjb25leHQubmwwHhcNMTgwOTE5MTQxNTU2WhcNMjgwOTE4MTQxNTU2WjByMQswCQYDVQQGEwJOTDEcMBoGA1UECgwTdGVzdDIuc3VyZmNvbmV4dC5ubDEcMBoGA1UEAwwTdGVzdDIuc3VyZmNvbmV4dC5ubDEnMCUGCSqGSIb3DQEJARYYaW5mb0B0ZXN0Mi5zdXJmY29uZXh0Lm5sMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1NzIeW3d0uQjXTJBMjU8YlXJry5mcAVoyPbIZtOny2d3ITvaJx4UAGFr2aE/idHWajONWfsLxse6pp3WeRw8qRNhR4szDNtTb0YU0Fxm7doLguddlN8guWwowf/Y82jfS9rpM7FC+JzJGQkHlvmrb9WUOTr8SUa5b9m8mxydZjSqAbYqwsqkDbBLtpC2rxeoOe6Aq3SMJ1o0GoHmMuFcczzfzcj1mscy0OqnYokJoHqKVMJ+X5mkHCkKP/LQkWDN2x+6gmAzVOm+ShKKdgl4QJ2AZpU0WpzS924dNkkTmYZfenAfLu7NyfQrPVQArkZl9YPK/GPxdmGHy5knoqU9swIDAQABozkwNzA1BgNVHREELjAsghN0ZXN0Mi5zdXJmY29uZXh0Lm5sghUqLnRlc3QyLnN1cmZjb25leHQubmwwDQYJKoZIhvcNAQELBQADggEBANCSM493uMWz361QOpqF+Ogyl+BcaehZJlWMY+oAQnsICFdaNV2d9gm7X2eMDPzR+86NiEUv1IKFiAaNWGecnHQ7DhecmNlhKWJkvRvXvdItv/Bhqyg9o47+TEfNgV1UEwNZRSkPYjsSszxyp4OkoAjcUb04PPsOEHIJ+pqx/T48p0IDjZdYDgnwdVXSKRNn4pmssR1PxmaY0AefoNMA0+FnMTZ5RAbqp1SABg5KDCg0cJMX3CkDd7d6kpHpbhg79FmwnBDK5FICixsrFRiO3h33xfuNz4i6UYcMSyLI1mmmAnc+NnMHHgMKFpx5XY5kRf0GVbgHo1imE6qBVeLUQww=",
+        "acs": [
+          "https://aa.test2.example.org/Shibboleth.sso/SAML2/POST"
+        ],
+        "loa": {
+          "__default__": "http://test2.surfconext.nl/assurance/loa2"
+        },
+        "assertion_encryption_enabled": false,
+        "second_factor_only": false,
+        "second_factor_only_nameid_patterns": [],
+        "blacklisted_encryption_algorithms": []
+      },
+      {
+        "entity_id": "https://engine.test2.example.org/authentication/stepup/metadata",
+        "public_key": "MIIDYDCCAkigAwIBAgIJANN/l9DYjIVPMA0GCSqGSIb3DQEBCwUAMEUxCzAJBgNVBAYTAkFVMRMwEQYDVQQIDApTb21lLVN0YXRlMSEwHwYDVQQKDBhJbnRlcm5ldCBXaWRnaXRzIFB0eSBMdGQwHhcNMTgxMTI3MTQzMDU0WhcNMTkwMzA3MTQzMDU0WjBFMQswCQYDVQQGEwJBVTETMBEGA1UECAwKU29tZS1TdGF0ZTEhMB8GA1UECgwYSW50ZXJuZXQgV2lkZ2l0cyBQdHkgTHRkMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA+bVH25y9v+a+XK8FHKPLto2PnWbNTC/a5BlHLCoFL/JvycPuoDwgkYKaI4DLc50iMkrA7Grw10JVESdxeDANxlDUr9YS5HIRfGx6KCBGcKkvr+FK5Y3dxaEq27ADKNKxSl7e6wRg4pMwOvbw8JxUyWQcQZICNSwImSeQ2NOju+B5kE8CjS0uvBqpsXovuGeJUHvycdETYXnFpAdRKoOa3KxrnHjTP9o72QZGULBvPLu1X9KzwUli6YxRK2q8MawqMdLqONm+J022M/fa75tTicNTVoYfeRg7mITmrBw/0NT2uRtW3vClmmXh3JB3/BO/9z4v7gwhBX3tgBeBBDyZowIDAQABo1MwUTAdBgNVHQ4EFgQU9DLhS+n5J4Uw05wHlyAYk+YLSPowHwYDVR0jBBgwFoAU9DLhS+n5J4Uw05wHlyAYk+YLSPowDwYDVR0TAQH/BAUwAwEB/zANBgkqhkiG9w0BAQsFAAOCAQEAJt8KYOoJqgXTk01qGl6fc8nSNvreMNlIcc+sq71mYJ1GUlxx+vZ0Uf0NCnb3A4EQKMGh0A0eSTKjlLHHvHYVJOzrRziSu/RtAdA+2C809AG4YL7wtKg/JI2rBUI0ysZozFSNba6AnLq1K97LefC0pcniuBqV89SmMW2+So3v8yvrPzfKNXDAtR73nCkVLNuK5d8RZpOmgN4BHJ2VL34HYfMMwA/AE1JakWs8o5iu2+wlBrX0CQ/FFYxlcsLnFcv4K2+t/24IqGfNjymf3YizQ2Zs4h4dsg9Hn+HjxGR3bLOZGf3THFwP/A3VWH8tllxx9y9DKRm0eLJqg7MATah5Ag==",
+        "acs": [
+          "https://engine.test2.example.org/authentication/stepup/consume-assertion"
+        ],
+        "loa": {
+          "__default__": "http://test2.surfconext.nl/assurance/loa1.5"
+        },
+        "assertion_encryption_enabled": false,
+        "second_factor_only": true,
+        "second_factor_only_nameid_patterns": [
+          "urn:collab:person:*"
+        ],
+        "blacklisted_encryption_algorithms": [],
+        "allow_sso_on_2fa": true,
+        "set_sso_cookie_on_2fa": true
+      },
+      {
+        "entity_id": "https://engine.test2.example.org/authentication/stepup/metadata/20230403",
+        "public_key": "MIIEjjCCAvYCCQCUtPzYh2xy0zANBgkqhkiG9w0BAQsFADCBiDELMAkGA1UEBhMCTkwxEDAOBgNVBAgMB1V0cmVjaHQxEDAOBgNVBAcMB1V0cmVjaHQxEjAQBgNVBAoMCVNVUkYgQi5WLjETMBEGA1UECwwKU1VSRmNvbmV4dDEsMCoGA1UEAwwjZW5naW5lLnRlc3QyLnN1cmZjb25leHQubmwgMjAyMzA0MDMwHhcNMjMwNDAzMDcwMjU4WhcNMjgwNDAyMDcwMjU4WjCBiDELMAkGA1UEBhMCTkwxEDAOBgNVBAgMB1V0cmVjaHQxEDAOBgNVBAcMB1V0cmVjaHQxEjAQBgNVBAoMCVNVUkYgQi5WLjETMBEGA1UECwwKU1VSRmNvbmV4dDEsMCoGA1UEAwwjZW5naW5lLnRlc3QyLnN1cmZjb25leHQubmwgMjAyMzA0MDMwggGiMA0GCSqGSIb3DQEBAQUAA4IBjwAwggGKAoIBgQDX6Fg5KzN/ay1tDf/lXXY9ifYW7Om4E7Ok19+9SE8M7GCYKXMC3oQQUg9vEvBsCgOfxpvWqQjMcrmjDWes0IvHom3lsDPRYpMku5rznntE49ijzupGrucSOupW/6WaKivAM13WgDmJLUwwgMWLvv4n24jS+gJ5UwgWyv7VXcMBftDTmXnnk9eU4o4U00haFPCKGD/7jITlyb540iR7OpVLx3fBYdNHd1aL8cbg82VDnBecaCHXwHoPctek70Q7n3JvkIc+zHSu33/qMby7ORZYVadqtuePyTr7aQtDl0EY9xLyKTa0RDl3GaT8JbO08KIAS3IhO+diZCpNZlxcYsQCYSmn89Kj1KRsJLe85zgfvYI3AUvsCmKxrmRoFHyUhnrA12h90Qcr1vnYOPXiCmjpdNf362J0XK/OtM7acxnnbTa+iVI7T3xYiaS5KXP2+42XOxCbZVbk/MPoK+BdzIEU2F5qLC62OxF2uWVVn/3HWnVf3phmE3qU/K/xy3PUaeECAwEAATANBgkqhkiG9w0BAQsFAAOCAYEAE2+G3VJIN1ZKSAHB4eHh+0mzjy82GqOqD42b8cQHR1odvGRKp08UYIICd6ihM173w+G3/p7CV67J2a35crQCwb2XHsGUFrNtWxyYvxlXQ6LlVi2Obv3EcOc5gpee4Z46FONWfJERBIduDIScFjzYBYkWqGhSqDqfrk1F85v3oey6D7FA+i2zEHeLTdepGFavJVZVcvkX/3kYSdoLoXukimQpvQ7X8a3FwnVEYzkL1A9Fdu+tI3Ho24CxRiOVzNmbEORT1n9fQVJHffZipqZ5hkyGL7b7cKp2FXxBSlSA0koIImy1HgiXm+QDe8sWzHKiV8vYl5Kxdw8HKa/V83bpHxtTy8GJURFN4AMnSA+lWOcnURCtNdMQO4vgiRVddYR0glBMBotma0GXSFDv9pa+463aaKdvdRUPPxLReX+VkJmofLojgpuoaIBb4yohLyIlwff6Gf6ikDT+mVG1Mz8mOmNcGmWFPzShCoPy9ecpnWriSZLojrrJ2ZCVWsDqD678",
+        "acs": [
+          "https://engine.test2.example.org/authentication/stepup/consume-assertion"
+        ],
+        "loa": {
+          "__default__": "http://test2.surfconext.nl/assurance/loa1.5"
+        },
+        "assertion_encryption_enabled": false,
+        "second_factor_only": true,
+        "second_factor_only_nameid_patterns": [
+          "urn:collab:person:*"
+        ],
+        "blacklisted_encryption_algorithms": [],
+        "allow_sso_on_2fa": true,
+        "set_sso_cookie_on_2fa": true
+      }
+    ],
+    "identity_providers": [
+    ]
+  }
+}
