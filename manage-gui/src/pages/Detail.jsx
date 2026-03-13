@@ -253,8 +253,11 @@ class Detail extends React.PureComponent {
                 const isResourceServer = type === "oauth20_rs";
                 const isProvisioning = type === "provisioning";
                 const isPolicy = type === "policy";
+                const isSfo = type === "sfo";
+                const isInstitution = type === "institution";
                 const whiteListingType = isSp ? "saml20_idp" : "saml20_sp";
-                const errorKeys = isSp ? tabsSp : isProvisioning ? tabsPr : isPolicy ? tabsPolicy : tabsIdP;
+                const errorKeys = isSp ? tabsSp : isProvisioning ? tabsPr : isPolicy ? tabsPolicy : isSfo ? tabsSfo :
+                    isInstitution ? tabsInstitutions : tabsIdP  ;
                 const autoRefreshFeature = "AUTO_REFRESH";
                 if (this.props.clone) {
                     //Clean all
@@ -1233,7 +1236,7 @@ class Detail extends React.PureComponent {
                     <Institution data={metaData.data}
                                  configuration={configuration}
                                  onChange={this.onChange("institution")}
-                                 errors={errors.sfo}
+                                 errors={errors.institution}
                                  isNew={isNew}
                                  onError={this.onError("institution")}/>
                 );
@@ -1295,9 +1298,9 @@ class Detail extends React.PureComponent {
         const isOrganisation = type === "organisation";
         const isPolicy = type === "policy";
         const nonExistentAllowedEntities = this.renderWarningNonExistentAllowedEntities();
-        const importedFromEdugain = metaData.data.metaDataFields["coin:imported_from_edugain"];
-        const excludedFromPush = metaData.data.metaDataFields["coin:exclude_from_push"];
-        const pushEnabled = metaData.data.metaDataFields["coin:push_enabled"];
+        const importedFromEdugain = metaData.data?.metaDataFields?.["coin:imported_from_edugain"];
+        const excludedFromPush = metaData.data?.metaDataFields?.["coin:exclude_from_push"];
+        const pushEnabled = metaData.data?.metaDataFields?.["coin:push_enabled"];
         const isActive = metaData.data.active;
         const connectedEntities = whiteListing
             .filter(idp => idp.data.allowedall || (idp.data.allowedEntities || []).some(entity => entity.name === entityid))
