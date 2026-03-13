@@ -894,7 +894,7 @@
         "https://acs.com",
         "https://acs2.org"
       ],
-      "loa": "http://test.surfconext.nl/assurance/loa2",
+      "loa": "http://test2.surfconext.nl/assurance/loa2",
       "assertion_encryption_enabled": false,
       "second_factor_only": true,
       "second_factor_only_nameid_patterns": [
