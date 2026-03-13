@@ -2,9 +2,9 @@ import React from "react";
 import PropTypes from "prop-types";
 import I18n from "../../locale/I18n";
 
-import "./PolicyMaintenance.scss";
+import "./EntityMaintenance.scss";
 
-export default class PolicyMaintenance extends React.PureComponent {
+export default class EntityMaintenance extends React.PureComponent {
 
     constructor(props) {
         super(props);
@@ -26,7 +26,7 @@ export default class PolicyMaintenance extends React.PureComponent {
         } = this.props;
 
         return (
-            <div className="metadata-policy-maintenance">
+            <div className="metadata-entity-maintenance">
                 <table className="data">
                     <tbody>
                     <tr>
@@ -72,7 +72,7 @@ export default class PolicyMaintenance extends React.PureComponent {
     }
 }
 
-PolicyMaintenance.propTypes = {
+EntityMaintenance.propTypes = {
     metaData: PropTypes.object.isRequired,
     configuration: PropTypes.object.isRequired,
     revisionNote: PropTypes.string,

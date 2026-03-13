@@ -60,7 +60,7 @@ import {isReadOnly} from "../utils/EntityTypes";
 import PolicyXML from "../components/metadata/PolicyXML";
 import PolicyJSON from "../components/metadata/PolicyJSON";
 import ErrorDialog from "../components/ErrorDialog";
-import PolicyMaintenance from "../components/metadata/PolicyMaintenance";
+import EntityMaintenance from "../components/metadata/EntityMaintenance";
 import SFO from "../components/metadata/SFO";
 import Institution from "../components/metadata/Institution";
 
@@ -91,11 +91,13 @@ const tabsOrganisation = [
 
 const tabsSfo = [
     "sfo",
+    "entity_maintenance",
     "revisions"
 ]
 
 const tabsInstitutions = [
     "institution",
+    "entity_maintenance",
     "revisions"
 ]
 
@@ -147,7 +149,7 @@ const tabsPr = [
 
 const tabsPolicy = [
     "policy_form",
-    "policy_maintenance",
+    "entity_maintenance",
     "policy_xml",
     "policy_json",
     "revisions"
@@ -509,11 +511,11 @@ class Detail extends React.PureComponent {
             required.forEach(req => {
                 sfoErrors[req] = isEmpty(metaData.data[req]);
             });
-        }else if ("institution" === type) {
+        } else if ("institution" === type) {
             required.forEach(req => {
                 institutionErrors[req] = isEmpty(metaData.data[req]);
             });
-        }  else {
+        } else {
             Object.keys(metaData.data).forEach(key => {
                 connectionErrors[key] = isEmpty(metaData.data[key]) && required.indexOf(key) > -1;
             });
@@ -1005,9 +1007,9 @@ class Detail extends React.PureComponent {
                         onRemove={this.handleRemove}
                     />
                 );
-            case "policy_maintenance":
+            case "entity_maintenance":
                 return (
-                    <PolicyMaintenance configuration={configuration}
+                    <EntityMaintenance configuration={configuration}
                                        metaData={metaData}
                                        revisionNote={revisionNoteClone}
                                        onClone={this.handleClone}
@@ -1229,11 +1231,11 @@ class Detail extends React.PureComponent {
             case "institution":
                 return (
                     <Institution data={metaData.data}
-                         configuration={configuration}
-                         onChange={this.onChange("institution")}
-                         errors={errors.sfo}
+                                 configuration={configuration}
+                                 onChange={this.onChange("institution")}
+                                 errors={errors.sfo}
                                  isNew={isNew}
-                         onError={this.onError("institution")}/>
+                                 onError={this.onError("institution")}/>
                 );
             default:
                 throw new Error(`Unknown tab ${tab}`);
@@ -1353,7 +1355,8 @@ class Detail extends React.PureComponent {
                         <td>{typeMetaData}</td>
                         {!isPolicy && !isOrganisation && !isStepUp &&
                             <td className={state === "prodaccepted" ? "green" : "orange"}>{state}</td>}
-                        {isPolicy && !isOrganisation && !isStepUp && <td>{I18n.t(`topBannerDetails.${metaData.data.type}`)}</td>}
+                        {isPolicy && !isOrganisation && !isStepUp &&
+                            <td>{I18n.t(`topBannerDetails.${metaData.data.type}`)}</td>}
                         {(isSp || isRp) && <td className={excludedFromPush ? "orange" : "green"}>
                             {excludedFromPush ? I18n.t("topBannerDetails.staging") : I18n.t("topBannerDetails.production")}
                         </td>}
