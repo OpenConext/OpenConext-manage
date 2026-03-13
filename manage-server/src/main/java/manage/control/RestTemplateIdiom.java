@@ -10,6 +10,7 @@ import org.apache.hc.core5.http.HttpHost;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRequest;
+import org.springframework.http.MediaType;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
@@ -36,6 +37,9 @@ public class RestTemplateIdiom {
             .disableCookieManagement();
 
         if (StringUtils.hasText(uri)) {
+            if (uri.endsWith("/")) {
+                uri = uri.substring(0, uri.length() - 1);
+            }
             Optional<HttpHost> optionalHttpHost = HttpHostProvider.resolveHttpHost(URI.create(uri).toURL());
             optionalHttpHost.ifPresent(httpHost -> httpClientBuilder.setRoutePlanner(new DefaultProxyRoutePlanner(httpHost)));
         }
@@ -50,8 +54,24 @@ public class RestTemplateIdiom {
             .requestFactory(() -> requestFactory)
             .additionalInterceptors(List.of(
                 new BasicAuthenticationInterceptor(userName, password),
+                new JSONHeaderInterceptor(),
                 new CookieRemoveInterceptor()))
             .build();
+    }
+
+    private static class JSONHeaderInterceptor implements ClientHttpRequestInterceptor {
+
+        @Override
+        public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
+            HttpHeaders headers = request.getHeaders();
+            if (!headers.containsKey(HttpHeaders.ACCEPT)) {
+                headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+            }
+            if (!headers.containsKey(HttpHeaders.CONTENT_TYPE)) {
+                headers.setContentType(MediaType.APPLICATION_JSON);
+            }
+            return execution.execute(request, body);
+        }
     }
 
     private static class CookieRemoveInterceptor implements ClientHttpRequestInterceptor {

@@ -31,9 +31,10 @@
     "loa": {
       "type": "string",
       "enum": [
-        "http://test.surfconext.nl/assurance/loa1.5",
-        "http://test.surfconext.nl/assurance/loa2",
-        "http://test.surfconext.nl/assurance/loa3"
+        "http://test2.surfconext.nl/assurance/loa1",
+        "http://test2.surfconext.nl/assurance/loa1.5",
+        "http://test2.surfconext.nl/assurance/loa2",
+        "http://test2.surfconext.nl/assurance/loa3"
       ],
       "default": "http://test.surfconext.nl/assurance/loa2"
     },

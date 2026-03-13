@@ -14,4 +14,5 @@ public class PushOptions {
     private boolean includeEB;
     private boolean includeOIDC;
     private boolean includePdP;
+    private boolean includeStepUp   ;
 }

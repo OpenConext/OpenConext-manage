@@ -97,7 +97,7 @@ public class PolicyController {
         MetaData metaData = new MetaData(EntityType.PDP.getType(), data);
         MetaData metaDataSaved = this.metaDataService.doPost(metaData, apiUser, false);
         policyDefinition.setId(metaDataSaved.getId());
-        databaseController.doPush(new PushOptions(false, false, true));
+        databaseController.doPush(new PushOptions(false, false, true,false));
         return policyDefinition;
     }
 
@@ -117,7 +117,7 @@ public class PolicyController {
         existingMetaData.setData(data);
         MetaData metaData = this.metaDataService.doPut(existingMetaData, apiUser, false);
         policyDefinition.setRevisionNbr(metaData.getRevision().getNumber());
-        databaseController.doPush(new PushOptions(false, false, true));
+        databaseController.doPush(new PushOptions(false, false, true, false));
         return policyDefinition;
     }
 
@@ -129,7 +129,7 @@ public class PolicyController {
 
         policyIdpAccessEnforcer.actionAllowed(policyDefinition, PolicyAccess.WRITE, apiUser, true);
         this.metaDataService.doRemove(EntityType.PDP.getType(), id, apiUser, "Deleted by dashboard API");
-        databaseController.doPush(new PushOptions(false, false, true));
+        databaseController.doPush(new PushOptions(false, false, true, false));
 
     }
 

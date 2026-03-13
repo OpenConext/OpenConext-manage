@@ -124,7 +124,7 @@ public class MetaDataController {
         ScopeEnforcer.enforceWriteScope(apiUser, entityType);
         MetaData savedMetaData = metaDataService.doPost(metaData, apiUser, !apiUser.getScopes().contains(TEST));
         if (entityType.equals(EntityType.PDP)) {
-            databaseController.doPush(new PushOptions(false, false, true));
+            databaseController.doPush(new PushOptions(false, false, true, false));
         }
         return savedMetaData;
     }
@@ -229,7 +229,7 @@ public class MetaDataController {
         ScopeEnforcer.enforceDeleteScope(apiUser, entityType);
         boolean removed = metaDataService.doRemove(type, id, apiUser, "Deleted by APIUser " + apiUser.getName());
         if (removed && entityType.equals(EntityType.PDP)) {
-            databaseController.doPush(new PushOptions(false, false, true));
+            databaseController.doPush(new PushOptions(false, false, true, false));
         }
         return removed;
     }
@@ -252,7 +252,7 @@ public class MetaDataController {
         ScopeEnforcer.enforceWriteScope(apiUser, entityType);
         MetaData updatedMetaData = metaDataService.doPut(metaData, apiUser, !apiUser.getScopes().contains(TEST));
         if (entityType.equals(EntityType.PDP)) {
-            databaseController.doPush(new PushOptions(false, false, true));
+            databaseController.doPush(new PushOptions(false, false, true, false));
         }
         return updatedMetaData;
     }

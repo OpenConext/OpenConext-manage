@@ -266,8 +266,13 @@ export function logOut() {
     return fetchDelete("users/logout");
 }
 
-export function push(includeEB, includeOIDC, includePdP) {
-    return postPutJson("playground/push", {includeEB:includeEB, includeOIDC:includeOIDC, includePdP:includePdP}, "PUT");
+export function push(includeEB, includeOIDC, includePdP, includeStepUp) {
+    return postPutJson("playground/push", {
+        includeEB: includeEB,
+        includeOIDC: includeOIDC,
+        includePdP: includePdP,
+        includeStepUp: includeStepUp
+    }, "PUT");
 }
 
 export function pushPreview() {
@@ -365,6 +370,7 @@ export function getPlaygroundRelyingParties() {
 export function getPlaygroundIdentityProviders() {
     return search({}, "saml20_idp")
 }
+
 //Policies
 export function idpPolicies(idpEntityID) {
     return fetchJson(`idpPolicies?entityId=${encodeURIComponent(idpEntityID)}`);

@@ -62,10 +62,11 @@ export default class Navigation extends React.PureComponent {
         }
         this.setState({loading: true});
 
-        push(true, true, true)
+        push(true, true, true, true)
             .then(json => {
                 this.setState({loading: false});
-                const success = json.eb?.status === "OK" && json.pdp?.status === "OK" && json.oidc?.status === "OK";
+                const success = json.eb?.status === "OK" && json.pdp?.status === "OK"
+                    && json.oidc?.status === "OK" && json.stepup?.status === "OK";
                 setFlash(pushFlash(success), success ? "info" : "error");
             });
     };

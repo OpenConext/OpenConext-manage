@@ -9,15 +9,19 @@ import manage.model.PushOptions;
 import manage.model.Scope;
 import manage.policies.PdpPolicyDefinition;
 import manage.repository.MetaDataRepository;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.graphql.GraphQlProperties;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
 import org.springframework.core.io.Resource;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
@@ -126,7 +130,8 @@ public class DatabaseController {
             return new ResponseEntity<>(Map.of(
                 "eb", Map.of("status", "OK"),
                 "pdp", Map.of("status", "OK"),
-                "oidc", Map.of("status", "OK")
+                "oidc", Map.of("status", "OK"),
+                "stepup", Map.of("status", "OK")
             ), HttpStatus.OK);
         }
         Map<String, Object> result = new HashMap<>();
@@ -175,7 +180,7 @@ public class DatabaseController {
         }
 
         // Now push all oidc_rp metadata to OIDC proxy
-        if (!environment.acceptsProfiles(Profiles.of("dev")) && oidcEnabled && pushOptions.isIncludeOIDC()) {
+        if (oidcEnabled && pushOptions.isIncludeOIDC()) {
             List<MetaData> filteredEntities = pushPreviewOIDC();
             try {
                 ResponseEntity<Void> response = this.oidcRestTemplate.postForEntity(oidcPushUri, filteredEntities, Void.class);
@@ -194,6 +199,39 @@ public class DatabaseController {
             }
         } else {
             result.put("oidc", Map.of("status", "OK"));
+        }
+
+        if (stepUpEnabled && pushOptions.isIncludeStepUp()) {
+            Map<String, Map<String, Object>> institutions = pushPreviewInstitution();
+            Map<String, Object> stepUpConfiguration = pushPreviewSFO();
+            Map<String, List<String>> stepUpWhiteList = pushPreviewStepup();
+            Map<String, Object> stepUpEndPoint = Map.of(
+                "/management/institution-configuration", institutions,
+                "/management/configuration", stepUpConfiguration,
+                "/management/whitelist/replace", stepUpWhiteList
+            );
+            try {
+                stepUpEndPoint.forEach((key, value) -> {
+                    ResponseEntity<Map> response = this.stepUpRestTemplate.postForEntity(
+                        stepUpPushUri + key,
+                        value,
+                        Map.class);
+                    boolean successFul = response.getStatusCode().is2xxSuccessful();
+                    result.put("stepup", Map.of("status", successFul ? "OK" : "ERROR"));
+                });
+            } catch (HttpStatusCodeException e) {
+                String message = String.format("Error in push to Stepup (%s) status %s and response %s",
+                    stepUpPushUri, e.getStatusCode(), e.getResponseBodyAsString());
+                LOG.error(message);
+                return new ResponseEntity<>(Map.of("message", message), HttpStatus.INTERNAL_SERVER_ERROR);
+            } catch (Exception e) {
+                String message = String.format("Error in push to Stepup (%s) error %s",
+                    stepUpPushUri, e.getMessage());
+                LOG.error(message);
+                return new ResponseEntity<>(Map.of("message", message), HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        } else {
+            result.put("step", Map.of("status", "OK"));
         }
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
@@ -226,7 +264,9 @@ public class DatabaseController {
                 "assertion_encryption_enabled", data.getOrDefault("assertion_encryption_enabled", false),
                 "second_factor_only", data.getOrDefault("second_factor_only", false),
                 "second_factor_only_nameid_patterns", data.getOrDefault("second_factor_only_nameid_patterns", List.of()),
-                "blacklisted_encryption_algorithms", data.getOrDefault("blacklisted_encryption_algorithms", List.of())
+                "blacklisted_encryption_algorithms", data.getOrDefault("blacklisted_encryption_algorithms", List.of()),
+                "allow_sso_on_2fa", data.getOrDefault("allow_sso_on_2fa", false),
+                "set_sso_cookie_on_2fa", data.getOrDefault("set_sso_cookie_on_2fa", false)
             ))
             .toList();
         results.put("gateway", Map.of("service_providers", serviceProviders));
@@ -246,6 +286,21 @@ public class DatabaseController {
 
     private Map<String, Map<String, Object>> pushPreviewInstitution() {
         List<MetaData> institutions = metaDataRepository.getMongoTemplate().findAll(MetaData.class, EntityType.STEPUP.getType());
+        List<String> sfoAttributes = getSfoAttributes();
+
+        return institutions.stream().map(MetaData::getData)
+            .collect(toMap(
+                data -> (String) data.get("identifier"),
+                data -> data.keySet().stream()
+                    .filter(key -> sfoAttributes.contains(key))
+                    .collect(toMap(
+                        key -> key,
+                        key -> data.get(key)
+                    ))
+            ));
+    }
+
+    private List<String> getSfoAttributes() {
         List<String> properties = new ArrayList<>();
         properties.add("use_ra_locations");
         properties.add("show_raa_contact_information");
@@ -260,17 +315,7 @@ public class DatabaseController {
         properties.add("sso_on_2fa");
         properties.add("use_ra_locations");
         properties.add("stepup-client");
-
-        return institutions.stream().map(MetaData::getData)
-            .collect(toMap(
-                data -> (String) data.get("identifier"),
-                data -> data.keySet().stream()
-                    .filter(key -> properties.contains(key))
-                    .collect(toMap(
-                        key -> key,
-                        key -> data.get(key)
-                    ))
-            ));
+        return properties;
     }
 
     private List<MetaData> pushPreviewOIDC() {
