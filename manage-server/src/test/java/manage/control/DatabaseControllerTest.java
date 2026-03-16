@@ -88,8 +88,9 @@ public class DatabaseControllerTest extends AbstractIntegrationTest {
         assertEquals(6, ((List)sfoEntities.get("sraa")).size());
         assertEquals(9, ((Map)sfoEntities.get("email_templates")).size());
         Map gateway = (Map) sfoEntities.get("gateway");
-        assertEquals(1, gateway.size());
+        assertEquals(2, gateway.size());
         assertEquals(1, ((List)gateway.get("service_providers")).size());
+        assertEquals(0, ((List)gateway.get("identity_providers")).size());
     }
 
     @Test
@@ -117,6 +118,6 @@ public class DatabaseControllerTest extends AbstractIntegrationTest {
             .as(new TypeRef<>() {
             });
         assertEquals(1, institutions.size());
-        assertEquals(12, institutions.get("inst1").size());
+        assertEquals(11, institutions.get("inst1").size());
     }
 }

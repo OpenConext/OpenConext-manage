@@ -984,7 +984,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
             .post("manage/api/internal/validate/metadata")
             .then()
             .statusCode(SC_BAD_REQUEST)
-            .body("validations", containsString("Validation failed for entity Duis ad do 2 (unknown type)"))
+            .body("validations", containsString("Validation failed for entity Duis ad do 2 (saml20_sp)"))
             .body("validations", containsString("#/metaDataFields/AssertionConsumerService:0:Binding: bogus is not a valid enum value"))
             .body("validations", containsString("in schema #/definitions/AssertionConsumerService_Binding"));
     }
@@ -2144,7 +2144,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
             .as(new TypeRef<>() {
             });
         String validations = (String) results.get("validations");
-        assertTrue(validations.contains("Validation failed for entity https://unique_entity_id (unknown type)"));
+        assertTrue(validations.contains("Validation failed for entity https://unique_entity_id (saml20_idp)"));
         assertTrue(validations.contains("#/metaDataFields/NameIDFormat: urn:oasis:names:tc:SAML:2.0:nameid-format:bogus is not a valid enum value"));
         assertTrue(validations.contains("in schema #/definitions/NameIDFormat"));
     }
