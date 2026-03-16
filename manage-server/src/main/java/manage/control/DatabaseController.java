@@ -207,13 +207,20 @@ public class DatabaseController {
                 "/management/whitelist/replace", stepUpWhiteList
             );
             try {
-                stepUpEndPoint.forEach((key, value) -> {
+                //The ordering matters
+                List<String> ordering = List.of(
+                    "/management/whitelist/replace",
+                    "/management/institution-configuration",
+                    "/management/configuration"
+                    );
+                ordering.forEach(key -> {
                     ResponseEntity<Map> response = this.stepUpRestTemplate.postForEntity(
                         stepUpPushUri + key,
-                        value,
+                        stepUpEndPoint.get(key),
                         Map.class);
                     boolean successFul = response.getStatusCode().is2xxSuccessful();
                     result.put("stepup", Map.of("status", successFul ? "OK" : "ERROR"));
+
                 });
             } catch (HttpStatusCodeException e) {
                 String message = String.format("Error in push to Stepup (%s) status %s and response %s",
@@ -265,7 +272,7 @@ public class DatabaseController {
                 "set_sso_cookie_on_2fa", data.getOrDefault("set_sso_cookie_on_2fa", false)
             ))
             .toList();
-        results.put("gateway", Map.of("service_providers", serviceProviders));
+        results.put("gateway", Map.of("service_providers", serviceProviders, "identity_providers", List.of()));
         return results;
     }
 
@@ -275,6 +282,7 @@ public class DatabaseController {
             "institutions",
             institutions.stream()
                 .map(MetaData::getData)
+                .filter(data -> "full".equals(data.get("stepup-client")))
                 .map(data -> (String) data.get("identifier"))
                 .toList()
         );
@@ -310,7 +318,6 @@ public class DatabaseController {
         properties.add("allow_self_asserted_tokens");
         properties.add("sso_on_2fa");
         properties.add("use_ra_locations");
-        properties.add("stepup-client");
         return properties;
     }
 

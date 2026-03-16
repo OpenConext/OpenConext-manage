@@ -49,8 +49,10 @@ public class StepUpImportController {
 
         List<MetaData> metaDataList = serviceProviders.stream()
             .map(serviceProvider ->
-                metaDataService.doPost(new MetaData(EntityType.SFO.getType(), convertServiceProviderToMetaData(serviceProvider))
-                    , apiUser, false))
+            {
+                MetaData metaData = new MetaData(EntityType.SFO.getType(), convertServiceProviderToMetaData(serviceProvider));
+                return metaDataService.doPost(metaData, apiUser, false);
+            })
             .toList();
         return ResponseEntity.ok(metaDataList);
     }
@@ -92,6 +94,8 @@ public class StepUpImportController {
         data.put("allow_self_asserted_tokens", institution.getOrDefault("allow_self_asserted_tokens", false));
         data.put("sso_on_2fa", institution.getOrDefault("sso_on_2fa", false));
         data.put("stepup-client", institution.getOrDefault("stepup-client", "full"));
+        //We don't use metaDataFields, but the GUI does expect it
+        data.put("metaDataFields", Map.of());
 
         return data;
     }
@@ -115,6 +119,8 @@ public class StepUpImportController {
         sfo.put("blacklisted_encryption_algorithms", serviceProvider.getOrDefault("blacklisted_encryption_algorithms", List.of()));
         sfo.put("allow_sso_on_2fa", serviceProvider.getOrDefault("allow_sso_on_2fa", false));
         sfo.put("set_sso_cookie_on_2fa", serviceProvider.getOrDefault("set_sso_cookie_on_2fa", false));
+        //We don't use metaDataFields, but the GUI does expect it
+        sfo.put("metaDataFields", Map.of());
 
         return sfo;
     }
