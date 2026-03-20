@@ -1519,7 +1519,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
             .as(new TypeRef<>() {
             });
         String validations = (String) result.get("validations");
-        assertTrue(validations.contains("Validation failed for entity " + entityId + " (unknown type)"));
+        assertTrue(validations.contains("Validation failed for entity " + entityId + " (saml20_sp)"));
         assertTrue(validations.contains("required key [name:en] not found"));
         assertTrue(validations.contains("required key [AssertionConsumerService:0:Binding] not found"));
         assertTrue(validations.contains("required key [AssertionConsumerService:0:Location] not found"));
