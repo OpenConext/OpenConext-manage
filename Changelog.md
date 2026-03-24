@@ -2,6 +2,9 @@
 
 Starting from version 9.0.0, we note changes and new features per release in this file.
 
+## 9.6.4
+- Baseimage update
+
 ## 9.6.3 
 - Add changelog
 
