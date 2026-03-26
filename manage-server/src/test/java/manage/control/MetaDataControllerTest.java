@@ -1700,6 +1700,47 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void changeRequestRedirectUrls() {
+        Map<String, Object> pathUpdates = new HashMap<>();
+        List<String> redirectUrls = List.of(
+            "https://redirect1.com",
+            "https://redirect2.com",
+            "https://redirect2.com"
+        );
+        pathUpdates.put("metaDataFields.redirectUrls", redirectUrls);
+
+        Map<String, Object> auditData = new HashMap<>();
+        auditData.put("user", "jdoe");
+
+        MetaDataChangeRequest changeRequest = new MetaDataChangeRequest(
+            "9", EntityType.RP.getType(), "Because....", pathUpdates, auditData
+        );
+        changeRequest.setIncrementalChange(true);
+        changeRequest.setPathUpdateType(PathUpdateType.ADDITION);
+
+        Map results = given().auth().preemptive().basic("openconextaccess", "secret")
+            .when()
+            .body(changeRequest)
+            .header("Content-type", "application/json")
+            .post("manage/api/internal/change-requests")
+            .as(Map.class);
+
+        given()
+            .when()
+            .contentType(ContentType.JSON)
+            .body(new ChangeRequest((String) results.get("id"), EntityType.RP.getType(), "9", "Rev notes"))
+            .put("/manage/api/client/change-requests/accept")
+            .then()
+            .statusCode(200);
+
+        MetaData metaData = metaDataRepository.findById("9", EntityType.RP.getType());
+        Map<String, Object> metaDataFields = metaData.metaDataFields();
+        List<String> updatedRedirectUrls = (List<String>) metaDataFields.get("redirectUrls");
+        assertTrue(updatedRedirectUrls.containsAll(redirectUrls));
+        assertEquals(5, updatedRedirectUrls.size());
+    }
+
+    @Test
     public void changeRequestRemoveMetadataField() {
         Map<String, Object> pathUpdates = new HashMap<>();
         pathUpdates.put("metaDataFields.contacts:3:contactType", null);

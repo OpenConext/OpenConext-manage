@@ -111,17 +111,17 @@ public class MetaData implements Serializable {
                         ((Map) reference).put(property, value);
                     }
                 } else if (rawReferenceValue instanceof List || rawReferenceValue == null) {
-                    List<Map<String, Object>> referenceValue = (List<Map<String, Object>>) rawReferenceValue;
+                    List<?> referenceValue = (List<?>) rawReferenceValue;
                     final List valueList = value instanceof Map ? List.of(value) : (List) value;
                     if (PathUpdateType.ADDITION.equals(pathUpdates.getPathUpdateType())) {
                         //we need to copy in case the referenceValue is immutable List
                         referenceValue = referenceValue == null ? new ArrayList<>() : new ArrayList<>(referenceValue);
                         ((Map) reference).put(property, referenceValue);
                         //In case for example a Loa, the level could be updated. So first remove any existing one's
-                        referenceValue.removeIf(ref -> valueList.stream().anyMatch(m -> ref.get("name").equals(((Map) m).get("name"))));
+                        referenceValue.removeIf(ref -> removeExistingValue(ref, valueList));
                         referenceValue.addAll(valueList);
                     } else if (referenceValue != null) {
-                        referenceValue.removeIf(m -> valueList.stream().anyMatch(ms -> ((Map) ms).get("name").equals(m.get("name"))));
+                        referenceValue.removeIf(ref -> removeExistingValue(ref, valueList));
                     }
                 } else if (rawReferenceValue instanceof Map) {
                     Map<String, Object> referenceValue = (Map<String, Object>) rawReferenceValue;
@@ -149,6 +149,18 @@ public class MetaData implements Serializable {
                 } else {
                     ((Map) reference).put(property, value);
                 }
+            }
+        });
+    }
+
+    private boolean removeExistingValue(Object existingValue, List<?> newValues) {
+        return newValues.stream().anyMatch(ref -> {
+            if (ref instanceof Map) {
+                return ((Map)ref).get("name").equals(((Map) existingValue).get("name"));
+            } else if (ref instanceof String) {
+                return newValues.contains(existingValue);
+            } else {
+                return false;
             }
         });
     }
