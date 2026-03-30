@@ -327,6 +327,25 @@ public class MetaDataService {
         return metaDataRepository.save(metaDataChangeRequest);
     }
 
+    public MetaDataChangeRequest updateChangeRequest(MetaDataChangeRequest metaDataChangeRequest) throws JsonProcessingException {
+        MetaDataChangeRequest byId = metaDataRepository.getMongoTemplate().findById(metaDataChangeRequest.getId(), MetaDataChangeRequest.class,
+            metaDataChangeRequest.getType().concat(CHANGE_REQUEST_POSTFIX));
+        if (byId == null) {
+            throw new ResourceNotFoundException(String.format("MetaDataChangeRequest type %s with id %s does not exist",
+                metaDataChangeRequest.getType(),metaDataChangeRequest.getId()));
+        }
+
+        String id = metaDataChangeRequest.getMetaDataId();
+        MetaData metaData = metaDataRepository.findById(id, metaDataChangeRequest.getType());
+        checkNull(metaDataChangeRequest.getType(), id, metaData);
+
+        metaData.merge(metaDataChangeRequest);
+        //fail fast if there are validation errors
+        validate(metaData);
+
+        return metaDataRepository.update(metaDataChangeRequest);
+    }
+
 
     public MetaData doRejectChangeRequest(ChangeRequest changeRequest, AbstractUser user) {
         LOG.info("Rejecting change request {} by {}", changeRequest.getType(), user.getName());

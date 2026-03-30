@@ -359,6 +359,14 @@ public class MetaDataController {
         return metaDataService.doChangeRequest(metaDataChangeRequest, apiUser);
     }
 
+    @PreAuthorize("hasAnyRole('CHANGE_REQUEST_SP', 'CHANGE_REQUEST_IDP')")
+    @PutMapping("internal/change-requests")
+    @Transactional
+    public MetaDataChangeRequest updateChangeRequestInternal(@Validated @RequestBody MetaDataChangeRequest metaDataChangeRequest, APIUser apiUser) throws JsonProcessingException {
+        ScopeEnforcer.enforceChangeRequestScope(apiUser, EntityType.fromType(metaDataChangeRequest.getType()));
+        return metaDataService.updateChangeRequest(metaDataChangeRequest);
+    }
+
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("client/change-requests")
     @Transactional

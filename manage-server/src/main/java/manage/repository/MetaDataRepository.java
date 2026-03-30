@@ -80,6 +80,10 @@ public class MetaDataRepository {
         return mongoTemplate.insert(metaDataChangeRequest, metaDataChangeRequest.getType().concat(CHANGE_REQUEST_POSTFIX));
     }
 
+    public MetaDataChangeRequest update(MetaDataChangeRequest metaDataChangeRequest) {
+        return mongoTemplate.save(metaDataChangeRequest, metaDataChangeRequest.getType().concat(CHANGE_REQUEST_POSTFIX));
+    }
+
     public void remove(MetaData metaData) {
         mongoTemplate.remove(metaData, metaData.getType());
     }

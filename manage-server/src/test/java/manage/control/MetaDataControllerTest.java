@@ -1563,6 +1563,39 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void updateChangeRequest() {
+        doCreateChangeRequest();
+
+        List<MetaDataChangeRequest> requests = given()
+            .when()
+            .get("manage/api/client/change-requests/saml20_sp/1")
+            .as(new TypeRef<>() {
+            });
+        assertEquals(1, requests.size());
+
+        MetaDataChangeRequest metaDataChangeRequest = requests.get(0);
+        metaDataChangeRequest.getPathUpdates().put("metaDataFields.description:nl", "New description NL");
+        MetaDataChangeRequest updated = given().auth().preemptive().basic("dashboard", "secret")
+            .when()
+            .body(metaDataChangeRequest)
+            .header("Content-type", "application/json")
+            .put("manage/api/internal/change-requests")
+            .as(MetaDataChangeRequest.class);
+        assertEquals(metaDataChangeRequest.getId(), updated.getId());
+
+        List<MetaDataChangeRequest> metaDataChangeRequests = given()
+            .when()
+            .get("manage/api/client/change-requests/saml20_sp/1")
+            .as(new TypeRef<>() {
+            });
+        assertEquals(1, metaDataChangeRequests.size());
+
+        MetaDataChangeRequest updatedMetaDataChangeRequest = metaDataChangeRequests.get(0);
+        String descriptionNl = (String) updatedMetaDataChangeRequest.getPathUpdates().get("metaDataFields.description:nl");
+        assertEquals("New description NL", descriptionNl);
+    }
+
+    @Test
     public void deleteChangeRequestAfterMetaDataDelete() {
         doCreateChangeRequest();
         List<MetaDataChangeRequest> requests = given()
