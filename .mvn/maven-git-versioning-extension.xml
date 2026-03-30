@@ -1,0 +1,18 @@
+<configuration xmlns="https://github.com/qoomon/maven-git-versioning-extension">
+    <refs>
+        <!-- Tagged commit: use the tag as-is as the version -->
+        <ref type="tag">
+            <pattern><![CDATA[(?<version>.+)]]></pattern>
+            <version>${ref.version}</version>
+        </ref>
+        <!-- Branch build: <latest-tag>-SNAPSHOT-<branch>-<short sha>-<compact iso datetime> -->
+        <ref type="branch">
+            <pattern>.+</pattern>
+            <version>${describe.tag}-SNAPSHOT-${ref.slug}-${commit.short}-${commit.timestamp.year}${commit.timestamp.month}${commit.timestamp.day}T${commit.timestamp.hour}${commit.timestamp.minute}${commit.timestamp.second}Z</version>
+        </ref>
+    </refs>
+    <!-- Detached HEAD (e.g. CI checkout): <latest-tag>-SNAPSHOT-<short sha>-<compact iso datetime> -->
+    <rev>
+        <version>${describe.tag}-SNAPSHOT-${commit.short}-${commit.timestamp.year}${commit.timestamp.month}${commit.timestamp.day}T${commit.timestamp.hour}${commit.timestamp.minute}${commit.timestamp.second}Z</version>
+    </rev>
+</configuration>
