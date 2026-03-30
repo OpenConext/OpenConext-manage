@@ -25,7 +25,22 @@ Starting from version 9.0.0, we note changes and new features per release in thi
 - Migrate from react-scripts to vite ([#604](https://github.com/OpenConext/OpenConext-manage/issues/604))
 - Linkify JIRA CXT any mention ([#432](https://github.com/OpenConext/OpenConext-manage/issues/432))
 
+## 9.6.4
+- Baseimage update
+
+## 9.6.3 
+- Add changelog
+
+## 9.6.2
+- Remove the migration that removed the `coin:policy_enforcement_decision_required` metadata fields
+
+## 9.6.1
+- Disable cookies for outgoing http requests 
+  (continuation of [#565](https://github.com/OpenConext/OpenConext-manage/issues/565))
+
 ## 9.6.0
+**This release contains a migration that will prevent rolling back.  Use release 9.6.2 or later instead!**
+
 - [#562](https://github.com/OpenConext/OpenConext-manage/issues/562)
 - Added `typeRequest` field to change requests
 - Added configuration for disabling unused schemas
@@ -50,8 +65,7 @@ The following configuration options have been changed:
 
 The metadata field `coin:policy_enforcement_decision_required` is obsolete.  
 It will now be set automatically based on the defined policies but will not be visible in the UI; 
-manually set values (which _are_ still visible) will be ignored.
-A migration to remove this field from existing entities will follow in a future release.
+manually set values are removed in a database migration when starting the new Manage.
 
 ## 9.5.1
 - Fixed bug that caused policy input fields to be extremely slow 
