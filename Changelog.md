@@ -33,7 +33,21 @@ Starting from version 9.0.0, we note changes and new features per release in thi
 - Added Step-up / middleware configuration to the metadata
   collections ([#627](https://github.com/OpenConext/OpenConext-manage/issues/627))
 
+## 9.6.4
+- Baseimage update
+
+## 9.6.3 
+- Add changelog
+
+## 9.6.2
+- Remove the migration that removed the `coin:policy_enforcement_decision_required` metadata fields
+
+## 9.6.1
+- Disable cookies for outgoing http requests 
+  (continuation of [#565](https://github.com/OpenConext/OpenConext-manage/issues/565))
+
 ## 9.6.0
+**This release contains a migration that will prevent rolling back.  Use release 9.6.2 or later instead!**
 
 - [#562](https://github.com/OpenConext/OpenConext-manage/issues/562)
 - Added `typeRequest` field to change requests
