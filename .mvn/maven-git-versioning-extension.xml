@@ -8,7 +8,8 @@
         <!-- Branch build: <latest-tag>-SNAPSHOT-<branch>-<short sha>-<compact iso datetime> -->
         <ref type="branch">
             <pattern>.+</pattern>
-            <version>${describe.tag}-SNAPSHOT-${ref.slug}-${commit.short}-${commit.timestamp.year}${commit.timestamp.month}${commit.timestamp.day}T${commit.timestamp.hour}${commit.timestamp.minute}${commit.timestamp.second}Z</version>
+<!--            <version>${describe.tag}-SNAPSHOT-${ref.slug}-${commit.short}-${commit.timestamp.year}${commit.timestamp.month}${commit.timestamp.day}T${commit.timestamp.hour}${commit.timestamp.minute}${commit.timestamp.second}Z</version>-->
+            <version>9.7.1-SNAPSHOT</version>
         </ref>
     </refs>
     <!-- Detached HEAD (e.g. CI checkout): <latest-tag>-SNAPSHOT-<short sha>-<compact iso datetime> -->
