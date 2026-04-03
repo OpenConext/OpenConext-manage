@@ -342,7 +342,7 @@ public class MetaDataService {
         metaData.merge(metaDataChangeRequest);
         //fail fast if there are validation errors
         validate(metaData);
-
+        metaDataChangeRequest.setMetaDataSummary(metaData.summary());
         return metaDataRepository.update(metaDataChangeRequest);
     }
 
