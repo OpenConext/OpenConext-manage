@@ -1,4 +1,3 @@
-.git-versioned-pom.xml
 node_modules
 build
 dist
@@ -28,3 +27,4 @@ yarn.list
 spiel-data
 manage-server/src/test/resources/change_requests
 manage-server/src/test/resources/stepup/test2
+.git-versioned-pom.xml
