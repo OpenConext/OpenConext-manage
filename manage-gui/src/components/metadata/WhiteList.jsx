@@ -48,7 +48,7 @@ export default class WhiteList extends React.Component {
     }
 
     whiteListEntityType = type => {
-        return (type === "saml20_sp" || type === "oidc10_rp") ? "saml20_idp" : "saml20_sp";
+        return (type === "saml20_sp" || type === "oidc10_rp" || type === "sram") ? "saml20_idp" : "saml20_sp";
     };
 
     initialiseAllowedEntities(whiteListing) {

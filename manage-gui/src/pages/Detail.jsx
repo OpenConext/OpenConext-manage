@@ -247,7 +247,7 @@ class Detail extends React.PureComponent {
         const promise = isNew ? template(type) : detail(type, id);
         promise
             .then(metaData => {
-                const isSp = type === "saml20_sp" || type === "oidc10_rp";
+                const isSp = type === "saml20_sp" || type === "oidc10_rp" ;
                 const isIdp = type === "saml20_idp";
                 const isOidcRP = type === "oidc10_rp";
                 const isResourceServer = type === "oauth20_rs";
@@ -255,7 +255,7 @@ class Detail extends React.PureComponent {
                 const isPolicy = type === "policy";
                 const isSfo = type === "sfo";
                 const isInstitution = type === "institution";
-                const whiteListingType = isSp ? "saml20_idp" : "saml20_sp";
+                const whiteListingType = (isSp || type === "sram")? "saml20_idp" : "saml20_sp";
                 const errorKeys = isSp ? tabsSp : isProvisioning ? tabsPr : isPolicy ? tabsPolicy : isSfo ? tabsSfo :
                     isInstitution ? tabsInstitutions : tabsIdP  ;
                 const autoRefreshFeature = "AUTO_REFRESH";
