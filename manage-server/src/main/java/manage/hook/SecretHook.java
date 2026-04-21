@@ -8,6 +8,7 @@ import org.everit.json.schema.Schema;
 import org.everit.json.schema.ValidationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -43,8 +44,8 @@ public class SecretHook extends MetaDataHookAdapter {
         Map<String, Object> data = newMetaData.metaDataFields();
         if (!CollectionUtils.isEmpty(data) && data.containsKey("secret")) {
             String secret = (String) data.get("secret");
-            if (!isBCryptEncoded(secret)) {
-                if (secret == null || secret.trim().length() < 12) {
+            if (StringUtils.hasText(secret) && !isBCryptEncoded(secret)) {
+                if (secret.trim().length() < 12) {
                     Schema schema = metaDataAutoConfiguration.schema(newMetaData.getType());
                     throw new ValidationException(schema, "Secret has minimal length of 12 characters", "metaDataFields.secret", null);
                 } else {
