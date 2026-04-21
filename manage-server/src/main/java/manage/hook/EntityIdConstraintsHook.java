@@ -13,10 +13,7 @@ import java.util.Map;
 
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
-import static manage.model.EntityType.IDP;
-import static manage.model.EntityType.RP;
-import static manage.model.EntityType.RS;
-import static manage.model.EntityType.SP;
+import static manage.model.EntityType.*;
 
 @SuppressWarnings("unchecked")
 public class EntityIdConstraintsHook extends MetaDataHookAdapter {
@@ -47,7 +44,7 @@ public class EntityIdConstraintsHook extends MetaDataHookAdapter {
         String metaDataType = newMetaData.getType();
         Map<String, List<EntityType>> relationsToCheck = new HashMap<>();
 
-        List<EntityType> reversedEntityType = metaDataType.equals(IDP.getType()) ? Arrays.asList(SP, RP) : singletonList(IDP);
+        List<EntityType> reversedEntityType = metaDataType.equals(IDP.getType()) ? Arrays.asList(SP, RP, SRAM) : singletonList(IDP);
         relationsToCheck.put("allowedEntities", reversedEntityType);
         relationsToCheck.put("disableConsent", reversedEntityType);
         relationsToCheck.put("stepupEntities", Arrays.asList(SP, RP));
