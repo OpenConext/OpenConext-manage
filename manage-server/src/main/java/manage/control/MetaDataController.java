@@ -147,6 +147,8 @@ public class MetaDataController {
         MetaData savedMetaData = metaDataService.doPost(metaData, apiUser, !apiUser.getScopes().contains(TEST));
         if (entityType.equals(EntityType.PDP)) {
             databaseController.doPush(new PushOptions(false, false, true, false));
+        } else if (apiUser.getName().equalsIgnoreCase("sram")) {
+            databaseController.doPush(new PushOptions(true, true, false, false));
         }
         return savedMetaData;
     }
@@ -275,6 +277,8 @@ public class MetaDataController {
         MetaData updatedMetaData = metaDataService.doPut(metaData, apiUser, !apiUser.getScopes().contains(TEST));
         if (entityType.equals(EntityType.PDP)) {
             databaseController.doPush(new PushOptions(false, false, true, false));
+        } else if (apiUser.getName().equalsIgnoreCase("sram")) {
+            databaseController.doPush(new PushOptions(true, true, false, false));
         }
         return updatedMetaData;
     }

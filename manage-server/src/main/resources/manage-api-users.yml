@@ -18,7 +18,7 @@ apiUsers:
   - {
     name: "sram",
     password: "secret",
-    scopes: ["READ", "WRITE_SP", "DELETE_SP"]
+    scopes: ["READ", "WRITE_SP", "DELETE_SP", "PUSH"]
   }
   - {
     name: "sp-portal",
