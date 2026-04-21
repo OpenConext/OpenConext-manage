@@ -39,7 +39,7 @@ export default class Connection extends React.PureComponent {
 
     setOrganisation = (organisation) => {
         this.props.metaData.data.organisationid = organisation?.value;
-        this.setState({organisationid: organisation?.value });
+        this.setState({organisationid: organisation?.value});
     }
 
     render() {
@@ -68,7 +68,7 @@ export default class Connection extends React.PureComponent {
         const {errors} = this.props;
 
         const orgOptions = [
-            { label: '- Not linked -', value: '' },
+            {label: '- Not linked -', value: ''},
             ...(organisations || []).map(o => {
                 let label = o.data?.name || `Unnamed (${o._id})`;
                 if (o.data?.kvkNumber) {
@@ -81,7 +81,7 @@ export default class Connection extends React.PureComponent {
             })
         ];
 
-        const isAllowedAdminActions = !isNew && !isReadOnly(type);
+        const isAllowedAdminActions = !isNew;
 
         return (
             <div className="metadata-connection">
@@ -95,14 +95,14 @@ export default class Connection extends React.PureComponent {
                             <td className="logo-name">{fullName}</td>
                         </tr>
                     )}
-                    { (isSP || isRelyingParty) && (
+                    {(isSP || isRelyingParty) && (
                         <tr>
                             <td className="key">
-                                <span>{ I18n.t("metadata.organisation_single") }</span>
+                                <span>{I18n.t("metadata.organisation_single")}</span>
                                 {this.state.organisationid
                                     && (
                                         <Link to={`/metadata/organisation/${this.state.organisationid}`} target="_blank">
-                                            <span><i className="fas fa-external-link" aria-hidden="true" /></span>
+                                            <span><i className="fas fa-external-link" aria-hidden="true"/></span>
                                         </Link>
                                     )
                                 }
@@ -182,26 +182,27 @@ export default class Connection extends React.PureComponent {
                             <button className="button red delete-metadata" onClick={() => onRemove()}>
                                 {I18n.t("metadata.remove")}
                             </button>
-                            <button className="button green clone-metadata" onClick={() => onClone()}>
-                                {I18n.t("metadata.clone")}
-                            </button>
+                            {!isReadOnly(type) &&
+                                <button className="button green clone-metadata" onClick={() => onClone()}>
+                                    {I18n.t("metadata.clone")}
+                                </button>}
                         </td>
                     </tr>}
 
                     {((isSP || isRelyingParty) && id) &&
-                    <tr>
-                        <td className="key">{I18n.t("metadata.provisioning")}</td>
-                        <td className="value provisioning">
-                            {isEmpty(provisioningGroups) ? I18n.t("metadata.noProvisioning") :
-                                provisioningGroups.map((prov, index) =>
-                                    <Link key={index} to={`/metadata/${prov.type}/${prov._id}`} target="_blank">
+                        <tr>
+                            <td className="key">{I18n.t("metadata.provisioning")}</td>
+                            <td className="value provisioning">
+                                {isEmpty(provisioningGroups) ? I18n.t("metadata.noProvisioning") :
+                                    provisioningGroups.map((prov, index) =>
+                                        <Link key={index} to={`/metadata/${prov.type}/${prov._id}`} target="_blank">
                                         <span className="provisioning">
                                             {getNameForLanguage(prov.data.metaDataFields)} - {I18n.t(`metadata.provisioningTypes.${prov.data.metaDataFields.provisioning_type}`)}
                                         </span>
-                                    </Link>
-                                )}
-                        </td>
-                    </tr>}
+                                        </Link>
+                                    )}
+                            </td>
+                        </tr>}
                     {id && revision && (
                         <tr>
                             <td className="key">{I18n.t("metadata.revision")}</td>

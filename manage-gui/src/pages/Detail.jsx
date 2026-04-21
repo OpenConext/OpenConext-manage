@@ -427,7 +427,7 @@ class Detail extends React.PureComponent {
     };
 
     handleRemove = () => {
-        if (this.state.revisionNote === "") {
+        if (this.state.revisionNote === "" && this.state.type !== "sram") {
             this.setState({
                 dialogConfig: {
                     isOpen: true,
