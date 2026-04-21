@@ -403,7 +403,7 @@ class Detail extends React.PureComponent {
 
     refreshWhiteListing = () => {
         const {type, metaData} = this.state;
-        const isSp = type === "saml20_sp" || type === "oidc10_rp";
+        const isSp = type === "saml20_sp" || type === "oidc10_rp" || type === "sram";
         const isOidcRP = type === "oidc10_rp";
         const whiteListingType = isSp ? "saml20_idp" : "saml20_sp";
         whiteListing(whiteListingType, metaData.data.state).then(whiteListing => {
