@@ -72,6 +72,7 @@ public class DatabaseController {
     private final String pdpPushUri;
     private final RestTemplate pdpRestTemplate;
     private final boolean pdpEnabled;
+    private final String sramEntityID;
 
     @Autowired
     DatabaseController(MetaDataRepository metaDataRepository,
@@ -94,6 +95,7 @@ public class DatabaseController {
                        @Value("${push.stepup.user}") String stepUpUser,
                        @Value("${push.stepup.password}") String stepUpPassword,
                        @Value("${push.stepup.configuration_file}") Resource stepupConfigurationResource,
+                       @Value("${sram.sram_rp_entity_id}") String sramEntityID,
                        ObjectMapper objectMapper,
                        Environment environment) throws IOException {
         this.metaDataRepository = metaDataRepository;
@@ -117,7 +119,7 @@ public class DatabaseController {
         this.stepUpEnabled = stepUpEnabled;
         this.stepUpConfiguration = objectMapper.readValue(stepupConfigurationResource.getInputStream(), new TypeReference<>() {
         });
-
+        this.sramEntityID = sramEntityID;
         this.environment = environment;
     }
 
@@ -151,7 +153,7 @@ public class DatabaseController {
             result.put("pdp", Map.of("status", "OK"));
         }
         if (pushOptions.isIncludeEB()) {
-            Map<String, Map<String, Map<String, Object>>> json = this.doPushPreview(policies);
+            Map<String, Map<String, Map<String, Object>>> json = this.doEBPushPreview(policies);
 
             try {
                 ResponseEntity<String> response = this.restTemplate.postForEntity(pushUri, json, String.class);
@@ -212,7 +214,7 @@ public class DatabaseController {
                     "/management/whitelist/replace",
                     "/management/institution-configuration",
                     "/management/configuration"
-                    );
+                );
                 ordering.forEach(key -> {
                     ResponseEntity<Map> response = this.stepUpRestTemplate.postForEntity(
                         stepUpPushUri + key,
@@ -363,10 +365,10 @@ public class DatabaseController {
     @GetMapping("/client/playground/pushPreview")
     public Map<String, Map<String, Map<String, Object>>> pushPreview() {
         List<PdpPolicyDefinition> policies = pushPreviewPdP();
-        return doPushPreview(policies);
+        return doEBPushPreview(policies);
     }
 
-    private Map<String, Map<String, Map<String, Object>>> doPushPreview(List<PdpPolicyDefinition> policies) {
+    private Map<String, Map<String, Map<String, Object>>> doEBPushPreview(List<PdpPolicyDefinition> policies) {
 
         EngineBlockFormatter formatter = new EngineBlockFormatter();
 
@@ -392,6 +394,25 @@ public class DatabaseController {
                     MetaData::getId,
                     formatter::parseServiceProvider
                 ));
+        List<MetaData> sramServices = new ArrayList<>();
+        if (!excludeSRAM) {
+            sramServices = metaDataRepository.getMongoTemplate().stream(
+                new Query().cursorBatchSize(BATCH_SIZE),
+                MetaData.class,
+                EntityType.SRAM.getType()
+            ).toList();
+
+            sramServices.forEach(sram -> sram.metaDataFields().put("coin:collab_enabled", true));
+
+            Map<String, Map<String, Object>> sramToPush =
+                sramServices.parallelStream()
+                    .collect(Collectors.toConcurrentMap(
+                        MetaData::getId,
+                        formatter::parseServiceProvider
+                    ));
+
+            serviceProvidersToPush.putAll(sramToPush);
+        }
 
         List<MetaData> identityProviders = metaDataRepository.getMongoTemplate().stream(
             new Query().cursorBatchSize(BATCH_SIZE),
@@ -400,6 +421,24 @@ public class DatabaseController {
         ).toList();
 
         filterOutNullDisableConsentExplanations(identityProviders);
+
+        if (!excludeSRAM) {
+            List<Map<String, String>> sramAllowedEntities = sramServices.stream()
+                .map(metaData -> Map.of("name", (String) metaData.getData().get("entityid"))).toList();
+            identityProviders.forEach(identityProvider -> {
+                Map<String, Object> identityProviderData = identityProvider.getData();
+                boolean allowedall = (boolean) identityProviderData.getOrDefault("allowedall", false);
+                if (!allowedall) {
+                    List<Map<String, String>> allowedEntities = (List<Map<String, String>>) identityProviderData
+                        .computeIfAbsent("allowedEntities", key -> new ArrayList<Map<String, String>>());
+                    if (allowedEntities.stream()
+                        .anyMatch(allowedEntity -> this.sramEntityID.equalsIgnoreCase(allowedEntity.get("name")))) {
+                        //now all sram services to the allowed list
+                        allowedEntities.addAll(sramAllowedEntities);
+                    }
+                }
+            });
+        }
 
         Map<String, Map<String, Object>> identityProvidersToPush =
             identityProviders.parallelStream()
@@ -425,25 +464,6 @@ public class DatabaseController {
                     ));
 
             serviceProvidersToPush.putAll(oidcClientsToPush);
-        }
-
-        if (!excludeSRAM) {
-            List<MetaData> sramServices = metaDataRepository.getMongoTemplate().stream(
-                new Query().cursorBatchSize(BATCH_SIZE),
-                MetaData.class,
-                EntityType.SRAM.getType()
-            ).toList();
-
-            sramServices.forEach(sram -> sram.metaDataFields().put("coin:collab_enabled", true));
-
-            Map<String, Map<String, Object>> sramToPush =
-                sramServices.parallelStream()
-                    .collect(Collectors.toConcurrentMap(
-                        MetaData::getId,
-                        formatter::parseServiceProvider
-                    ));
-
-            serviceProvidersToPush.putAll(sramToPush);
         }
 
         // Add IdPs to the same map, as EB looks at the type: saml20-sp or saml20-idp

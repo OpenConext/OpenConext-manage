@@ -154,8 +154,8 @@
           "entity_categories": {
             "1": "http://refeds.org/category/research-and-scholarship"
           },
-          "institution_id": "123",
           "eula": "https://eula",
+          "institution_id": "123",
           "no_consent_required": "1",
           "publish_in_edugain": "1",
           "publish_in_edugain_date": "2018-06-15T08:20:34.575Z",
@@ -490,6 +490,15 @@
         },
         {
           "name": "https://oidc.test.client"
+        },
+        {
+          "name": "https@//oidc.rp"
+        },
+        {
+          "name": "https://sram.service.api.oidc_rp"
+        },
+        {
+          "name": "https://sram.service.api.saml_sp"
         }
       ],
       "disable_consent_connections": [

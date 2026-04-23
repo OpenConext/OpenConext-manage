@@ -52,7 +52,7 @@ public class DatabaseControllerUnitTest {
             "user",
             "pass",
             true,
-             "user",
+            "user",
             "pass",
             "http://pdp-push",
             true,
@@ -61,6 +61,7 @@ public class DatabaseControllerUnitTest {
             "user",
             "pass",
             new ClassPathResource("stepup_config.json"),
+            "sbs.test.sram.surf.nl",
             new ObjectMapper(),
             environment);
 

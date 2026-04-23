@@ -13,5 +13,6 @@ public class Product implements Serializable {
     public final String jiraBaseUrl;
     public final String jiraTicketPrefixes;
     public final boolean showOidcRp;
+    public final String sramRpEntityId;
 
 }

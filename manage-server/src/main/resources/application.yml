@@ -99,6 +99,9 @@ policies:
   allowed_attributes: classpath:/policies/allowed_attributes.json
   extra_saml_attributes: classpath:/policies/extra_saml_attributes.json
 
+sram:
+  sram_rp_entity_id: "https@//oidc.rp"
+
 spring:
   mail:
     host: localhost

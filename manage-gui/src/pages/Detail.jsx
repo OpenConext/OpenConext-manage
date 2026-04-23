@@ -247,7 +247,7 @@ class Detail extends React.PureComponent {
         const promise = isNew ? template(type) : detail(type, id);
         promise
             .then(metaData => {
-                const isSp = type === "saml20_sp" || type === "oidc10_rp" ;
+                const isSp = type === "saml20_sp" || type === "oidc10_rp";
                 const isIdp = type === "saml20_idp";
                 const isOidcRP = type === "oidc10_rp";
                 const isResourceServer = type === "oauth20_rs";
@@ -255,9 +255,9 @@ class Detail extends React.PureComponent {
                 const isPolicy = type === "policy";
                 const isSfo = type === "sfo";
                 const isInstitution = type === "institution";
-                const whiteListingType = (isSp || type === "sram")? "saml20_idp" : "saml20_sp";
+                const whiteListingType = (isSp || type === "sram") ? "saml20_idp" : "saml20_sp";
                 const errorKeys = isSp ? tabsSp : isProvisioning ? tabsPr : isPolicy ? tabsPolicy : isSfo ? tabsSfo :
-                    isInstitution ? tabsInstitutions : tabsIdP  ;
+                    isInstitution ? tabsInstitutions : tabsIdP;
                 const autoRefreshFeature = "AUTO_REFRESH";
                 if (this.props.clone) {
                     //Clean all
@@ -879,7 +879,7 @@ class Detail extends React.PureComponent {
         return errorKeys !== undefined;
     };
 
-    renderTabTitle = (tab, metaData, resourceServers, whiteListing, revisions, requests, relyingParties, policies) => {
+    renderTabTitle = (tab, metaData, resourceServers, whiteListing, revisions, requests, relyingParties, policies, currentUser) => {
         const allowedAll = metaData.data.allowedall;
         const allowedEntities = metaData.data.allowedEntities;
         const applications = metaData.data.applications;
@@ -893,7 +893,8 @@ class Detail extends React.PureComponent {
             case "institution":
                 break;
             case "connected_idps": {
-                const connectedEntities = getConnectedEntities(whiteListing, allowedAll, allowedEntities, metaData.data.entityid, metaData.data.state);
+                const connectedEntities = getConnectedEntities(whiteListing, allowedAll, allowedEntities, metaData.data.entityid, metaData.data.state,
+                    metaData.type === "sram" ? currentUser.product.sramRpEntityId : null);
                 args = {nbr: connectedEntities.length};
                 break;
             }
@@ -936,7 +937,7 @@ class Detail extends React.PureComponent {
         return I18n.t(`metadata.tabs.${tab}`, args);
     };
 
-    renderTab = (tab, metaData, resourceServers, whiteListing, revisions, requests, relyingParties, policies) => {
+    renderTab = (tab, metaData, resourceServers, whiteListing, revisions, requests, relyingParties, policies, currentUser) => {
         const tabErrors = this.state.errors[tab] || {};
         const tabChanges = this.state.changes[tab] || false;
         const hasChanges = tabChanges ? "changes" : "";
@@ -950,7 +951,7 @@ class Detail extends React.PureComponent {
                 key={tab}
                 className={`${className} ${hasErrors} ${hasChanges}`}
                 onClick={this.switchTab(tab)}>
-        {this.renderTabTitle(tab, metaData, resourceServers, whiteListing, revisions, requests, relyingParties, policies)}
+        {this.renderTabTitle(tab, metaData, resourceServers, whiteListing, revisions, requests, relyingParties, policies, currentUser)}
                 {hasErrors && <i className="fas fa-warning"/>}
                 {!hasErrors && tabChanges && <i className="fas fa-asterisk"/>}
       </span>
@@ -1078,6 +1079,8 @@ class Detail extends React.PureComponent {
                         name={name}
                         entityId={metaData.data.entityid}
                         state={metaData.data.state}
+                        currentUser={currentUser}
+                        type={metaData.type}
                     />
                 );
             case "manipulation":
@@ -1424,7 +1427,7 @@ class Detail extends React.PureComponent {
             policyProvidersLoaded,
             whiteListingLoaded
         } = this.state;
-
+        const { currentUser } = this.props;
         const type = metaData.type;
 
         const tabs = (() => {
@@ -1509,7 +1512,7 @@ class Detail extends React.PureComponent {
                 {renderNotFound && this.renderMetaDataNotFound(changeRequestsLoaded, requests)}
                 {!notFound && (
                     <section className="tabs">
-                        {tabs.map(tab => this.renderTab(tab, metaData, resourceServers, whiteListing, revisions, requests, relyingParties, policies))}
+                        {tabs.map(tab => this.renderTab(tab, metaData, resourceServers, whiteListing, revisions, requests, relyingParties, policies, currentUser))}
                     </section>
                 )}
                 {renderContent &&

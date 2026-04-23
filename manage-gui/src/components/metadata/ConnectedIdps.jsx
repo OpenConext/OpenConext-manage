@@ -30,8 +30,11 @@ export default class ConnectedIdps extends React.Component {
 
     initialiseConnectedIdps(whiteListing) {
         window.scrollTo(0, 0);
-        const {allowedAll, allowedEntities = [], entityId, state} = this.props;
-        const entities = getConnectedEntities(whiteListing, allowedAll, allowedEntities, entityId, state)
+        const {allowedAll, allowedEntities = [], entityId, state, type, currentUser} = this.props;
+        const isSram = type === "sram";
+        const sramRpEntityId = currentUser.product.sramRpEntityId;
+        const entities = getConnectedEntities(whiteListing, allowedAll, allowedEntities, entityId, state,
+            isSram ? sramRpEntityId : null)
             .map(idp => ({
                 id: idp._id,
                 name: getNameForLanguage(idp.data.metaDataFields) || idp.data.entityid,
@@ -171,6 +174,8 @@ ConnectedIdps.propTypes = {
     allowedAll: PropTypes.bool.isRequired,
     entityId: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
-    state: PropTypes.string.isRequired
+    state: PropTypes.string.isRequired,
+    type: PropTypes.string.isRequired,
+    currentUser: PropTypes.object.isRequired
 };
 

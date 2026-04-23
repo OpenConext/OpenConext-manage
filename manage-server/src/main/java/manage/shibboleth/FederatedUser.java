@@ -29,12 +29,19 @@ public class FederatedUser extends User implements Serializable, AbstractUser {
     private List<Scope> scopes;
 
     public FederatedUser(List<Scope> scopes) {
-        this("uid", "displayName", "schacHomeOrganization", Collections.emptyList(), Collections.emptyList(), null, null, "environment");
+        this("uid",
+            "displayName",
+            "schacHomeOrganization",
+            Collections.emptyList(),
+            Collections.emptyList(),
+            null,
+            null,
+            "environment");
         this.scopes = scopes;
     }
 
     public FederatedUser(String uid, String displayName, String schacHomeOrganization, List<GrantedAuthority>
-            authorities, List<Features> featureToggles, Product product, Push push, String environment) {
+        authorities, List<Features> featureToggles, Product product, Push push, String environment) {
         super(uid, "N/A", authorities);
         this.uid = uid;
         this.displayName = displayName;
@@ -44,8 +51,8 @@ public class FederatedUser extends User implements Serializable, AbstractUser {
         this.push = push;
         this.environment = environment;
         this.scopes = authorities.stream()
-                .map(authority -> Scope.valueOf(authority.getAuthority().replaceAll("ROLE_", "")))
-                .collect(Collectors.toList());
+            .map(authority -> Scope.valueOf(authority.getAuthority().replaceAll("ROLE_", "")))
+            .collect(Collectors.toList());
     }
 
     public boolean featureAllowed(Features feature) {

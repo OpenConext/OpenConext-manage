@@ -95,6 +95,9 @@ public class WebSecurityConfigurer {
         @Value("${product.show_oidc_rp}")
         private boolean showOidcRp;
 
+        @Value("${sram.sram_rp_entity_id}")
+        private String sramRpEntityId;
+
         @Value("${security.backdoor_user_name}")
         private String user;
 
@@ -145,7 +148,8 @@ public class WebSecurityConfigurer {
                     .map(feature -> Features.valueOf(feature.trim().toUpperCase()))
                     .collect(toList());
 
-            Product product = new Product(productOrganization, productName, serviceProviderFeedUrl, jiraBaseUrl, jiraTicketPrefixes, showOidcRp);
+            Product product = new Product(productOrganization,
+                productName, serviceProviderFeedUrl, jiraBaseUrl, jiraTicketPrefixes, showOidcRp, sramRpEntityId);
             Push push = new Push(pushUrl, pushName, pushOidcUrl, pushOidcName, pdpPushUri,pdpName, excludeOidcRP, pdpEnabled);
 
             BasicAuthenticationEntryPoint authenticationEntryPoint = new BasicAuthenticationEntryPoint();

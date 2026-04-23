@@ -340,6 +340,9 @@
         },
         {
           "name": "https://oidc.test.client"
+        },
+        {
+          "name": "https@//oidc.rp"
         }
       ],
       "disableConsent": [
