@@ -92,7 +92,7 @@ jobs:
 
       - name: Extract metadata (tags, labels) for GUI Docker
         id: meta_gui
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@v6
         with:
           images: ghcr.io/openconext/openconext-manage/manage-gui
           flavor: |
@@ -106,7 +106,7 @@ jobs:
 
       - name: Extract metadata (tags, labels) for Server Docker
         id: meta_server
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@v6
         with:
           images: ghcr.io/openconext/openconext-manage/manage-server
           flavor: |
