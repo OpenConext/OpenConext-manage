@@ -33,6 +33,11 @@ Starting from version 9.0.0, we note changes and new features per release in thi
 - Added Step-up / middleware configuration to the metadata
   collections ([#627](https://github.com/OpenConext/OpenConext-manage/issues/627))
 
+### Upgrading:
+  - add the following keys to `application.yml`:
+    - ```product.jira_ticket_prefixes ```: any word (in entity notes or revision notes)  of the form "<prefix>-[0-9]+" will be linkified to a URL based on the `jira_base_url` below;  this allow for easily referral of (e.g.) JIRA tickets.
+    - ```product.jira_base_url```: base url for linkification.
+
 ## 9.6.4
 - Baseimage update
 
