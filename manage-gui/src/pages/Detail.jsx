@@ -1034,6 +1034,7 @@ class Detail extends React.PureComponent {
                         removedWhiteListedEntities={removedWhiteListedEntities}
                         addedWhiteListedEntities={addedWhiteListedEntities}
                         onChangeWhiteListedEntity={this.onChangeWhiteListedEntity}
+                        currentUser={currentUser}
                     />
                 );
             case "metadata":

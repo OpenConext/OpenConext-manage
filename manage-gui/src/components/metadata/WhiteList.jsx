@@ -10,6 +10,7 @@ import {copyToClip, isEmpty, stop} from "../../utils/Utils";
 import "./WhiteList.scss";
 import NotesTooltip from "../NotesTooltip";
 import {getNameForLanguage, getOrganisationForLanguage} from "../../utils/Language";
+import {getSRAMServices} from "../../api";
 
 export default class WhiteList extends React.Component {
 
@@ -24,7 +25,8 @@ export default class WhiteList extends React.Component {
             enrichedAllowedEntries: [],
             enrichedAllowedEntriesFiltered: [],
             copiedToClipboardClassName: "",
-            query: ""
+            query: "",
+            sramServices: []
         };
     }
 
@@ -51,14 +53,22 @@ export default class WhiteList extends React.Component {
         return (type === "saml20_sp" || type === "oidc10_rp" || type === "sram") ? "saml20_idp" : "saml20_sp";
     };
 
+    isEnabledIdpForSRAM = (currentUser, type, allowedEntities) => {
+        const sramRpEntityId = currentUser.product.sramRpEntityId;
+        return type === "saml20_idp" && allowedEntities.some(entity => entity.name === sramRpEntityId);
+    }
+
     initialiseAllowedEntities(whiteListing) {
         window.scrollTo(0, 0);
-        const {allowedEntities, entityId} = this.props;
+        const {allowedEntities, entityId, currentUser, type} = this.props;
 
         const enrichedAllowedEntries = allowedEntities
             .map(entity => this.enrichAllowedEntry(entity, entityId, whiteListing))
             .filter(enriched => enriched !== null);
         this.setAllowedEntryState(enrichedAllowedEntries);
+        if (this.isEnabledIdpForSRAM(currentUser, type, allowedEntities)) {
+            getSRAMServices().then(sramServices => this.setState({sramServices: sramServices}));
+        }
     }
 
     enrichAllowedEntry = (allowedEntry, entityId, whiteListing) => {
@@ -299,6 +309,29 @@ export default class WhiteList extends React.Component {
         );
     };
 
+    renderSramService = sramService => {
+        const data = sramService.data;
+        return (
+            <tr key={data.entityid}>
+                <td>{data.state}</td>
+                <td>
+                    <Link to={`/metadata/${sramService.type}/${sramService["_id"]}`} target="_blank">
+                        {getNameForLanguage(data.metaDataFields)}
+                    </Link>
+                </td>
+                <td>{getOrganisationForLanguage(data.metaDataFields)}</td>
+                <td>{data.entityid}</td>
+                <td className="info">
+                    {isEmpty(data.notes) ? (
+                        <span/>
+                    ) : (
+                        <NotesTooltip identifier={data.entityid} notes={data.notes}/>
+                    )}
+                </td>
+            </tr>
+        );
+    };
+
     renderRemovedEntities = (removedWhiteListedEntities) => {
         return (
             <section className="removed-entities">
@@ -411,7 +444,8 @@ export default class WhiteList extends React.Component {
             type,
             guest,
             addedWhiteListedEntities,
-            removedWhiteListedEntities
+            removedWhiteListedEntities,
+            currentUser,
         } = this.props;
         const providerType = this.whiteListEntityType(type) === "saml20_sp" ? "Service Providers" : "Identity Providers";
         const {
@@ -419,7 +453,8 @@ export default class WhiteList extends React.Component {
             confirmationDialogQuestion,
             enrichedAllowedEntriesFiltered,
             copiedToClipboardClassName,
-            query
+            query,
+            sramServices
         } = this.state;
         const allowAllCheckBoxInfo = I18n.t("whitelisting.allowAllProviders", {
             type: providerType,
@@ -465,7 +500,7 @@ export default class WhiteList extends React.Component {
                     )}
                 </div>
                 {removedWhiteListedEntities.length > 0 &&
-                this.renderRemovedEntities(removedWhiteListedEntities)}
+                    this.renderRemovedEntities(removedWhiteListedEntities)}
 
                 {!guest && (
                     <SelectEntities
@@ -486,15 +521,33 @@ export default class WhiteList extends React.Component {
                     <i className="fas fa-search"/>
                 </div>
                 {enrichedAllowedEntriesFiltered.length > 0 &&
-                this.renderAllowedEntitiesTable(
-                    enrichedAllowedEntriesFiltered,
-                    type,
-                    guest,
-                    addedWhiteListedEntities
-                )}
+                    this.renderAllowedEntitiesTable(
+                        enrichedAllowedEntriesFiltered,
+                        type,
+                        guest,
+                        addedWhiteListedEntities
+                    )}
                 {this.renderAllowedEntitiesTablePrintable(
                     enrichedAllowedEntriesFiltered
                 )}
+                {this.isEnabledIdpForSRAM(currentUser, type, allowedEntities) &&
+                    <div className="sram-services">
+                        <h2>{I18n.t("whitelisting.sramEnabled")}</h2>
+                        <p>{I18n.t("whitelisting.sramEnabledInfo")}</p>
+                        <table className="sram-services">
+                            <thead>
+                            <tr>
+                                {["Status", "Name", "Organisation", "Entity ID", "Notes"]
+                                    .map(th => <th key={th} className={th.toLowerCase().replaceAll(" ", "")}>
+                                        {th}
+                                    </th>)}
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {sramServices.map(sramService => this.renderSramService(sramService))}
+                            </tbody>
+                        </table>
+                    </div>}
             </div>
         );
     }
@@ -515,5 +568,6 @@ WhiteList.propTypes = {
     guest: PropTypes.bool.isRequired,
     addedWhiteListedEntities: PropTypes.array.isRequired,
     removedWhiteListedEntities: PropTypes.array.isRequired,
-    onChangeWhiteListedEntity: PropTypes.func.isRequired
+    onChangeWhiteListedEntity: PropTypes.func.isRequired,
+    currentUser: PropTypes.object.isRequired
 };

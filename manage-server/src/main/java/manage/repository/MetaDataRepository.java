@@ -387,9 +387,7 @@ public class MetaDataRepository {
         List<Map> metaData = mongoTemplate.find(query, Map.class, type);
         if (type.equals(EntityType.SP.getType())) {
             List<Map> oidcMetaData = mongoTemplate.find(query, Map.class, EntityType.RP.getType());
-            List<Map> sramMetaData = mongoTemplate.find(query, Map.class, EntityType.SRAM.getType());
             metaData.addAll(oidcMetaData);
-            metaData.addAll(sramMetaData);
         }
         return metaData;
     }

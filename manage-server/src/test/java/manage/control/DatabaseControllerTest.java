@@ -18,18 +18,18 @@ public class DatabaseControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void pushPreview() throws Exception {
-        Map connections = given()
+        Map results = given()
             .when()
             .get("manage/api/client/playground/pushPreview")
             .then()
             .statusCode(SC_OK)
             .extract().as(Map.class);
-        System.out.println(objectMapper.writeValueAsString(connections));
         Map expected = objectMapper.readValue(readFile("push/push.expected_connections.json"), Map.class);
 
-        assertEquals(expected, connections);
+        assertEquals(expected, results);
         //ensure the Sp with "coin:imported_from_edugain": true is included
-        Object importFromEdugain = ((Map) ((Map) ((Map) ((Map) connections.get("connections"))
+        Map connections = (Map) results.get("connections");
+        Object importFromEdugain = ((Map) ((Map) ((Map) connections
             .get("11"))
             .get("metadata"))
             .get("coin"))
@@ -37,7 +37,7 @@ public class DatabaseControllerTest extends AbstractIntegrationTest {
         assertEquals("0", importFromEdugain);
 
         //ensure the correct ARP is exported
-        List<Map<String, Object>> arpGivenNames = (List<Map<String, Object>>) ((Map) ((Map) ((Map) connections.get("connections"))
+        List<Map<String, Object>> arpGivenNames = (List<Map<String, Object>>) ((Map) ((Map) connections
             .get("11"))
             .get("arp_attributes"))
             .get("urn:mace:dir:attribute-def:givenName");
@@ -47,7 +47,7 @@ public class DatabaseControllerTest extends AbstractIntegrationTest {
         assertEquals("aliasGivenName", arpGivenName.get("release_as"));
         assertEquals(true, arpGivenName.get("use_as_nameid"));
 
-        Map sramService = (Map) ((Map) connections.get("connections"))
+        Map sramService = (Map) connections
             .get("15");
         String nameSramRP = (String) sramService
             .get("name");
@@ -55,10 +55,17 @@ public class DatabaseControllerTest extends AbstractIntegrationTest {
         Map<String, Object> coinAttributes = (Map<String, Object>) ((Map) sramService.get("metadata")).get("coin");
         assertEquals("1", coinAttributes.get("collab_enabled"));
 
-        String nameSramSP = (String) ((Map) ((Map) connections.get("connections"))
+        String nameSramSP = (String) ((Map) connections
             .get("16"))
             .get("name");
         assertEquals("https://sram.service.api.saml_sp", nameSramSP);
+
+        List<Map<String, String>> allowedEntities = (List<Map<String, String>>) ((Map) connections.get("6")).get("allowed_connections");
+        //Verify that that all SRAM services are in the allowedEntities of the IdP, because SRAM RP is in allowed entries
+        List<Map<String, String>> sramServices = allowedEntities.stream()
+            .filter(entity -> entity.get("name").startsWith("https://sram.service.api."))
+            .toList();
+        assertEquals(2, sramServices.size());
     }
 
     @Test
@@ -85,17 +92,17 @@ public class DatabaseControllerTest extends AbstractIntegrationTest {
             .as(new TypeRef<>() {
             });
         assertEquals(3, sfoEntities.size());
-        assertEquals(6, ((List)sfoEntities.get("sraa")).size());
-        assertEquals(9, ((Map)sfoEntities.get("email_templates")).size());
+        assertEquals(6, ((List) sfoEntities.get("sraa")).size());
+        assertEquals(9, ((Map) sfoEntities.get("email_templates")).size());
         Map gateway = (Map) sfoEntities.get("gateway");
         assertEquals(2, gateway.size());
-        assertEquals(1, ((List)gateway.get("service_providers")).size());
-        assertEquals(0, ((List)gateway.get("identity_providers")).size());
+        assertEquals(1, ((List) gateway.get("service_providers")).size());
+        assertEquals(0, ((List) gateway.get("identity_providers")).size());
     }
 
     @Test
     public void pushPreviewStepup() {
-        Map<String, List<String>>  uniqueInstitutions = given()
+        Map<String, List<String>> uniqueInstitutions = given()
             .when()
             .get("manage/api/client/playground/pushPreviewStepup")
             .then()
@@ -109,7 +116,7 @@ public class DatabaseControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void pushPreviewInstitution() {
-        Map<String, Map<String, Object>>  institutions = given()
+        Map<String, Map<String, Object>> institutions = given()
             .when()
             .get("manage/api/client/playground/pushPreviewInstitution")
             .then()

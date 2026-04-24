@@ -245,7 +245,6 @@ export function uniqueInstitutionIdentifier(identifier) {
     return postPutJson("uniqueInstitutionIdentifier", {identifier}, "post");
 }
 
-
 export function uniquePolicyName(name) {
     return postPutJson(`uniquePolicyName/policy`, {name}, "post");
 }
@@ -357,6 +356,10 @@ export function getAllowedLoas() {
 
 export function getPlaygroundPolicies() {
     return search({ALL_ATTRIBUTES: true}, "policy")
+}
+
+export function getSRAMServices() {
+    return search({}, "sram")
 }
 
 export function getPlaygroundServiceProviders() {

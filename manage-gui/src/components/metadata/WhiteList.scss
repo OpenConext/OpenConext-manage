@@ -165,4 +165,35 @@
         }
     }
 
+    .sram-services {
+        margin-top: 25px;
+
+        table.sram-services {
+            width: 100%;
+
+            th {
+                text-align: left;
+                &.status {
+                    width: 10%;
+                }
+
+                &.name {
+                    width: 25%;
+                }
+
+                &.organisation {
+                    width: 20%;
+                    padding: 0;
+                }
+
+                &.entityid {
+                    width: 30%;
+                }
+
+                &.notes {
+                    width: 15%;
+                }
+            }
+        }
+    }
 }

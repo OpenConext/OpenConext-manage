@@ -272,6 +272,8 @@ const en = {
         searchPlaceHolder_oidc10_rp: "Search for whitelisted Identity Providers...",
         searchPlaceHolder_sram: "Search for whitelisted Identity Providers...",
         removedWhiteListedEntities: "Removed entities from the whitelist",
+        sramEnabled: "SRAM services allowed",
+        sramEnabledInfo: "This Identity Provider is allowed for the main SRAM RP. Therefor all SRAM services are allowed by default",
         allowedEntries: {
             blocked: "Blocked",
             status: "Status",
