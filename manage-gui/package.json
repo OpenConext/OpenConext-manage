@@ -14,7 +14,7 @@
     "lodash.merge": "^4.6.2",
     "papaparse": "^5.5.3",
     "react": "^19.2.5",
-    "react-dom": "^19.2.4",
+    "react-dom": "^19.2.5",
     "react-json-view": "^1.21.3",
     "semver": "^7.5.4",
     "source-map-explorer": "^2.5.3",
@@ -48,8 +48,8 @@
     "scroll-into-view": "^1.16.0",
     "spin.js": "^2.3.2",
     "urijs": "^1.19.11",
-    "vite": "^7.3.1",
-    "vitest": "^4.0.18"
+    "vite": "^8.0.10",
+    "vitest": "^4.1.5"
   },
   "resolutions": {
     "semver": "^7.5.4",
