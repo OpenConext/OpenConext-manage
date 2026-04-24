@@ -33,6 +33,24 @@ Starting from version 9.0.0, we note changes and new features per release in thi
 - Added Step-up / middleware configuration to the metadata
   collections ([#627](https://github.com/OpenConext/OpenConext-manage/issues/627))
 
+### Upgrading:
+  - add the following keys to `application.yml`:
+    - ```product.jira_ticket_prefixes ```: any word (in entity notes or revision notes)  of the form "<prefix>-[0-9]+" will be linkified to a URL based on the `jira_base_url` below;  this allow for easily referral of (e.g.) JIRA tickets.
+    - ```product.jira_base_url```: base url for linkification.
+
+## 9.6.4
+- Baseimage update
+
+## 9.6.3 
+- Add changelog
+
+## 9.6.2
+- Remove the migration that removed the `coin:policy_enforcement_decision_required` metadata fields
+
+## 9.6.1
+- Disable cookies for outgoing http requests 
+  (continuation of [#565](https://github.com/OpenConext/OpenConext-manage/issues/565))
+
 ## 9.6.0
 
 - [#562](https://github.com/OpenConext/OpenConext-manage/issues/562)
