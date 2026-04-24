@@ -895,7 +895,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
             .get("manage/api/client/whiteListing/saml20_sp")
             .then()
             .statusCode(SC_OK)
-            .body("size()", is(6))
+            .body("size()", is(7))
             .body("data.allowedall", hasItems(true, false));
     }
 
@@ -1108,7 +1108,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     @Test
     public void deleteReconcileEntityIdSP() {
         MetaData idp = metaDataRepository.findById("6", "saml20_idp");
-        assertEquals(3, List.class.cast(idp.getData().get("allowedEntities")).size());
+        assertEquals(4, List.class.cast(idp.getData().get("allowedEntities")).size());
         assertEquals(2, List.class.cast(idp.getData().get("disableConsent")).size());
 
         given()
@@ -1119,7 +1119,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
             .statusCode(SC_OK);
 
         idp = metaDataRepository.findById("6", "saml20_idp");
-        assertEquals(2, List.class.cast(idp.getData().get("allowedEntities")).size());
+        assertEquals(3, List.class.cast(idp.getData().get("allowedEntities")).size());
         assertEquals(1, List.class.cast(idp.getData().get("disableConsent")).size());
 
     }
@@ -1354,7 +1354,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     public void connectSpWithSameInstitutionGUIDAsIdp() {
         String idpEntityId = "https://idp.test2.surfconext.nl";
         String idUId = "6";
-        String rpId = "https@//oidc.rp";
+        String rpId = "https@//push_disabled.rp";
         String rpType = "oidc10_rp";
         Map<String, String> connectionData = new HashMap<>();
         connectionData.put("idpId", idpEntityId);
@@ -1375,7 +1375,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
 
         MetaData idp = metaDataRepository.findById(idUId, EntityType.IDP.getType());
         Map<String, Object> data = idp.getData();
-        assertEquals("Connected https@//oidc.rp on request of John Doe - urn:collab:person:example.com:jdoe via Dashboard.", data.get("revisionnote"));
+        assertEquals("Connected https@//push_disabled.rp on request of John Doe - urn:collab:person:example.com:jdoe via Dashboard.", data.get("revisionnote"));
 
         List<Map> allowedEntities = (List<Map>) data.get("allowedEntities");
 
@@ -1903,7 +1903,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     public void changeRequestRemovalMultiple() {
         MetaData currentMetaData = metaDataRepository.findById("6", EntityType.IDP.getType());
         List<Map<String, String>> currentAllowedEntities = (List<Map<String, String>>) currentMetaData.getData().get("allowedEntities");
-        assertEquals(3, currentAllowedEntities.size());
+        assertEquals(4, currentAllowedEntities.size());
 
         Map<String, Object> pathUpdates = Map.of("allowedEntities",
             List.of(Map.of("name", "https://oidc.test.client"), Map.of("name", "http://mock-sp")));
@@ -1932,7 +1932,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
 
         MetaData metaData = metaDataRepository.findById("6", EntityType.IDP.getType());
         List<Map<String, String>> allowedEntities = (List<Map<String, String>>) metaData.getData().get("allowedEntities");
-        assertEquals(0, allowedEntities.size());
+        assertEquals(1, allowedEntities.size());
     }
 
     @Test
@@ -2306,7 +2306,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
             .as(new TypeRef<>() {
             });
         assertEquals(7L, stats.get(EntityType.SP.getType()));
-        assertEquals(1L, stats.get(EntityType.RP.getType()));
+        assertEquals(2L, stats.get(EntityType.RP.getType()));
         assertEquals(2L, stats.get(EntityType.IDP.getType()));
     }
 

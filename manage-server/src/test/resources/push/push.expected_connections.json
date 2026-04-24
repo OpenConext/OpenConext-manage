@@ -737,6 +737,33 @@
       "name": "https@//oidc.rp",
       "state": "prodaccepted",
       "type": "saml20-sp"
+    },
+    "21": {
+      "allow_all_entities": true,
+      "allowed_connections": [],
+      "arp_attributes": {},
+      "metadata": {
+        "AssertionConsumerService": [
+          {
+            "Binding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
+            "Index": "1",
+            "Location": "https://trusted.proxy.acs.location.rules"
+          }
+        ],
+        "OrganizationName": {
+          "en": "Organization name en"
+        },
+        "coin": {
+          "institution_guid": "219092BE-B234-4C17-B910-B090C19CE3DB",
+          "push_enabled": "0"
+        },
+        "name": {
+          "en": "Temp RP"
+        }
+      },
+      "name": "https@//push_disabled.rp",
+      "state": "prodaccepted",
+      "type": "saml20-sp"
     }
   }
 }

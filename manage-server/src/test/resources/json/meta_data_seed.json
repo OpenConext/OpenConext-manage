@@ -909,5 +909,37 @@
       "revisionnote": "test",
       "eid": 13628
     }
+  },
+  {
+    "id": "21",
+    "type": "oidc10_rp",
+    "revision": {
+      "number": 0,
+      "created": "2018-06-15T08:20:34.575Z",
+      "updatedBy": "oidc_user.com"
+    },
+    "data": {
+      "entityid": "https@//push_disabled.rp",
+      "eid": 21,
+      "state": "prodaccepted",
+      "discoveryurl": "https://well_known_configuration",
+      "allowedall": true,
+      "allowedResourceServers": [
+      ],
+      "metaDataFields": {
+        "name:en": "Temp RP",
+        "secret": "secret1234567890",
+        "redirectUrls": [
+          "http://localhost:8080/redirect1"
+        ],
+        "grants": [
+          "authorization_code"
+        ],
+        "accessTokenValidity": 3600,
+        "coin:push_enabled": false,
+        "coin:institution_guid": "219092BE-B234-4C17-B910-B090C19CE3DB",
+        "OrganizationName:en": "Organization name en"
+      }
+    }
   }
 ]
