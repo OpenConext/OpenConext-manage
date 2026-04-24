@@ -24,7 +24,9 @@ public class DatabaseControllerTest extends AbstractIntegrationTest {
             .then()
             .statusCode(SC_OK)
             .extract().as(Map.class);
+        System.out.println(objectMapper.writeValueAsString(results));
         Map expected = objectMapper.readValue(readFile("push/push.expected_connections.json"), Map.class);
+
 
         assertEquals(expected, results);
         //ensure the Sp with "coin:imported_from_edugain": true is included
