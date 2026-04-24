@@ -32,6 +32,14 @@ Starting from version 9.0.0, we note changes and new features per release in thi
 - Linkify JIRA CXT any mention ([#432](https://github.com/OpenConext/OpenConext-manage/issues/432))
 - Added Step-up / middleware configuration to the metadata
   collections ([#627](https://github.com/OpenConext/OpenConext-manage/issues/627))
+- Activity tab now shows all changes ([#131](https://github.com/OpenConext/OpenConext-manage/issues/131))
+- The "Copy as CSV" function in the APi tab now copies all data 
+  ([#459](https://github.com/OpenConext/OpenConext-manage/issues/459))
+- Add `coin:interfed_source` to the columns on "connnected IdPs" view
+  ([#434](https://github.com/OpenConext/OpenConext-manage/issues/434))
+- Improved logging for metadata refresh 
+  ([#634](https://github.com/OpenConext/OpenConext-manage/issues/634))
+- 
 
 ### Upgrading:
   - add the following keys to `application.yml`:
