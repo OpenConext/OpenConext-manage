@@ -901,7 +901,7 @@
   resolved "https://registry.yarnpkg.com/@uiw/copy-to-clipboard/-/copy-to-clipboard-1.0.20.tgz#380c62c1edabaa8acebadee2149865379fcb826d"
   integrity sha512-IFQhS62CLNon1YgYJTEzXR2N3WVXg7V1FaBRDLMlzU6JY5X6Hr3OPAcw4WNoKcz2XcFD6XCgwEjlsmj+JA0mWA==
 
-"@uiw/react-codemirror@^4.25.4":
+"@uiw/react-codemirror@^4.25.9":
   version "4.25.9"
   resolved "https://registry.yarnpkg.com/@uiw/react-codemirror/-/react-codemirror-4.25.9.tgz#f0c1f7c9b28c696dcb339e074fe8aa02912214c8"
   integrity sha512-HftqCBUYShAOH0pGi1CHP8vfm5L8fQ3+0j0VI6lQD6QpK+UBu3J7nxfEN5O/BXMilMNf9ZyFJRvRcuMMOLHMng==
@@ -1559,10 +1559,10 @@ domhandler@^5.0.2:
   dependencies:
     domelementtype "^2.3.0"
 
-dompurify@^3.4.0:
-  version "3.4.0"
-  resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-3.4.0.tgz#b1fc33ebdadb373241621e0a30e4ad81573dfd0b"
-  integrity sha512-nolgK9JcaUXMSmW+j1yaSvaEaoXYHwWyGJlkoCTghc97KgGDDSnpoU/PlEnw63Ah+TGKFOyY+X5LnxaWbCSfXg==
+dompurify@^3.4.1:
+  version "3.4.1"
+  resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-3.4.1.tgz#521d04483ac12631b2aedf434a5f5390933b8789"
+  integrity sha512-JahakDAIg1gyOm7dlgWSDjV4n7Ip2PKR55NIT6jrMfIgLFgWo81vdr1/QGqWtFNRqXP9UV71oVePtjqS2ebnPw==
   optionalDependencies:
     "@types/trusted-types" "^2.0.7"
 
