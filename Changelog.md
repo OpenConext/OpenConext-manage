@@ -2,6 +2,9 @@
 
 Starting from version 9.0.0, we note changes and new features per release in this file.
 
+## 9.7.1
+- Expose autocomplete API to internal clients with read access.
+
 ## 9.7.0
 
 - Allow for CRUD Policies in regular internal MetaData API
@@ -19,7 +22,7 @@ Starting from version 9.0.0, we note changes and new features per release in thi
 - Add column sorting in API output table ([#439](https://github.com/OpenConext/OpenConext-manage/issues/439))
 - Increase size of manipulation window ([#592](https://github.com/OpenConext/OpenConext-manage/issues/592))
 - Searching in API for integer-in-string doesn't work ([#102](https://github.com/OpenConext/OpenConext-manage/issues/102))
-- Full text searching in API leads to unexpected error if " is present in search
+- Full text searching in API leads to unexpected error if '"' is present in search
   string ([#487](https://github.com/OpenConext/OpenConext-manage/issues/487))
 - Migrate from react-scripts to vite ([#604](https://github.com/OpenConext/OpenConext-manage/issues/604))
 - Corporate proxy configuration is not respected when retrieving pdp
@@ -30,8 +33,8 @@ Starting from version 9.0.0, we note changes and new features per release in thi
   xacml ([#598](https://github.com/OpenConext/OpenConext-manage/issues/598))
 - Migrate from react-scripts to vite ([#604](https://github.com/OpenConext/OpenConext-manage/issues/604))
 - Linkify JIRA CXT any mention ([#432](https://github.com/OpenConext/OpenConext-manage/issues/432))
-- Added Step-up / middleware configuration to the metadata
-  collections ([#627](https://github.com/OpenConext/OpenConext-manage/issues/627))
+- Allow managing of OpenConext-Stepup configuration in Manage
+  ([#627](https://github.com/OpenConext/OpenConext-manage/issues/627))
 - Activity tab now shows all changes ([#131](https://github.com/OpenConext/OpenConext-manage/issues/131))
 - The "Copy as CSV" function in the APi tab now copies all data 
   ([#459](https://github.com/OpenConext/OpenConext-manage/issues/459))
@@ -39,12 +42,24 @@ Starting from version 9.0.0, we note changes and new features per release in thi
   ([#434](https://github.com/OpenConext/OpenConext-manage/issues/434))
 - Improved logging for metadata refresh 
   ([#634](https://github.com/OpenConext/OpenConext-manage/issues/634))
-- 
 
 ### Upgrading:
   - add the following keys to `application.yml`:
     - ```product.jira_ticket_prefixes ```: any word (in entity notes or revision notes)  of the form "<prefix>-[0-9]+" will be linkified to a URL based on the `jira_base_url` below;  this allow for easily referral of (e.g.) JIRA tickets.
     - ```product.jira_base_url```: base url for linkification.
+  - add the following section to `parameters.yml`:
+    ```
+    push:
+      stepup:
+        url: https://middleware.dev.openconext.nl         # url of the stepup middleware
+        configuration_file: "file:///stepup_config.json"  # config file location (see below)
+        user: push_user                                   # user to push the configuration to the stepup middleware
+        password: s3cr1t                                  # password for the user above
+        enabled: false                                    # set to true to enable pushing setup config
+    ```
+  - new templates and configs for the stepup schemas have been introduced.  You don't need to change these unless you need to customize the Steup metadata config:
+    - `institution.template.json` and `insitution.schema.json`
+    - `sfo.template.json` and `sfo.schema.json`
 
 ## 9.6.4
 - Baseimage update
