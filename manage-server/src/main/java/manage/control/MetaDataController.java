@@ -5,7 +5,17 @@ import com.mongodb.client.result.DeleteResult;
 import manage.api.APIUser;
 import manage.conf.MetaDataAutoConfiguration;
 import manage.exception.ResourceNotFoundException;
-import manage.model.*;
+import manage.model.ChangeRequest;
+import manage.model.EntityType;
+import manage.model.Import;
+import manage.model.MetaData;
+import manage.model.MetaDataChangeRequest;
+import manage.model.MetaDataKeyDelete;
+import manage.model.MetaDataUpdate;
+import manage.model.PushOptions;
+import manage.model.RevisionRestore;
+import manage.model.StatsEntry;
+import manage.model.XML;
 import manage.repository.MetaDataRepository;
 import manage.service.ExporterService;
 import manage.service.ImporterService;
@@ -24,12 +34,24 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -413,12 +435,12 @@ public class MetaDataController {
                                      @PathVariable("parentId") String parentId,
                                      @PathVariable("number") int number) {
         return metaDataRepository.revisionByNumber(type, parentId, number)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        String.format("No revision %d found for type %s with parentId %s", number, type, parentId)));
+            .orElseThrow(() -> new ResourceNotFoundException(
+                String.format("No revision %d found for type %s with parentId %s", number, type, parentId)));
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/client/autocomplete/{type}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'READ')")
+    @GetMapping({"/client/autocomplete/{type}", "/internal/autocomplete/{type}"})
     public Map<String, List<Map>> autoCompleteEntities(@PathVariable("type") String type,
                                                        @RequestParam("query") String query) {
         return metaDataService.autoCompleteEntities(type, query);
@@ -551,7 +573,7 @@ public class MetaDataController {
     public List<MetaData> deleteConsequences(@RequestBody List<Map<String, String>> identifiers) {
         String joinedIdentifiers = identifiers.stream()
             .map(m -> this.metaDataRepository.findById(m.get("id"), m.get("type")))
-            .map(service -> String.format("\"%s\"",service.getData().get("entityid")))
+            .map(service -> String.format("\"%s\"", service.getData().get("entityid")))
             .collect(Collectors.joining(","));
         String query = "{\"data.allowedEntities.name\" : {$in: [" + joinedIdentifiers + "]}}";
         return this.metaDataRepository.findRaw(EntityType.IDP.getType(), query);

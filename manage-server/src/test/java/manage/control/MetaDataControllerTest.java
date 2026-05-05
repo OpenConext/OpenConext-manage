@@ -449,6 +449,24 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void autoCompleteInternalApi() {
+        given()
+            .when()
+            .auth()
+            .preemptive()
+            .basic("sp-portal", "secret")
+            .queryParam("query", "mock")
+            .get("manage/api/internal/autocomplete/saml20_sp")
+            .then()
+            .statusCode(SC_OK)
+            .body("suggestions.size()", is(2))
+            .body("suggestions.'_id'", hasItems("3", "5"))
+            .body("suggestions.data.entityid", hasItems(
+                "http://mock-sp",
+                "https://serviceregistry.test2.surfconext.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp-2"));
+    }
+
+    @Test
     public void autoCompleteEscaping() {
         given()
             .when()
