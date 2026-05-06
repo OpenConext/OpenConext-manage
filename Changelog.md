@@ -2,6 +2,9 @@
 
 Starting from version 9.0.0, we note changes and new features per release in this file.
 
+## 9.7.2
+- Fix erroneous push error in GUI when stepup push is disabled.
+    
 ## 9.7.1
 - Expose autocomplete API to internal clients with read access.
 
