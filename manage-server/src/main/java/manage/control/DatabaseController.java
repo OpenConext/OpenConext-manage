@@ -234,7 +234,7 @@ public class DatabaseController {
                 return new ResponseEntity<>(Map.of("message", message), HttpStatus.INTERNAL_SERVER_ERROR);
             }
         } else {
-            result.put("step", Map.of("status", "OK"));
+            result.put("stepup", Map.of("status", "OK"));
         }
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
