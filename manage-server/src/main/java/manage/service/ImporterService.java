@@ -21,15 +21,20 @@ import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.charset.Charset;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
 import static java.util.Collections.singletonList;
 import static java.util.Collections.singletonMap;
 import static java.util.stream.Collectors.toList;
+import static manage.conf.Constants.IMPORT_ERROR_KEY;
 
 @SuppressWarnings("unchecked")
 @Service
@@ -59,34 +64,34 @@ public class ImporterService {
         this.metaDataHook = new TypeSafetyHook(metaDataAutoConfiguration);
         this.metaDataFeedParser = new MetaDataFeedParser(Stream.of(
                 supportedLanguages.split(","))
-                .map(String::trim)
-                .collect(toList()));
+            .map(String::trim)
+            .collect(toList()));
         this.autoRefreshUserAgent = autoRefreshUserAgent;
     }
 
     public Map<String, Object> importXMLUrl(EntityType type, Import importRequest) {
         try {
             Resource resource = new SaveURLResource(new URI(importRequest.getUrl()).toURL(),
-                    environment.acceptsProfiles(Profiles.of("dev")), autoRefreshUserAgent);
+                environment.acceptsProfiles(Profiles.of("dev")), autoRefreshUserAgent);
             Map<String, Object> result = importXML(resource, type, Optional
-                    .ofNullable(importRequest.getEntityId()));
+                .ofNullable(importRequest.getEntityId()));
             if (result.isEmpty()) {
-                return singletonMap("errors", singletonList("URL did not contain valid SAML metadata"));
+                return singletonMap(IMPORT_ERROR_KEY, singletonList("URL did not contain valid SAML metadata"));
             }
             result.put("metadataurl", importRequest.getUrl());
             return result;
-        } catch (IOException | XMLStreamException | URISyntaxException e) {
-            return singletonMap("errors", singletonList(e.getClass().getName()));
+        } catch (RuntimeException | URISyntaxException | XMLStreamException | IOException e) {
+            return singletonMap(IMPORT_ERROR_KEY, singletonList(e.getClass().getName()));
         }
     }
 
     public Map<String, Object> importXML(Resource resource, EntityType entityType, Optional<String> entityId)
-            throws IOException, XMLStreamException {
+        throws IOException, XMLStreamException {
         return metaDataFeedParser.importXML(resource, entityType, entityId, metaDataAutoConfiguration);
     }
 
     public List<Map<String, Object>> importFeed(Resource resource) throws IOException,
-            XMLStreamException {
+        XMLStreamException {
         return metaDataFeedParser.importFeed(resource, metaDataAutoConfiguration);
     }
 
@@ -96,7 +101,7 @@ public class ImporterService {
             return importJSON(entityType, json);
         } catch (ValidationException e) {
             Map<String, Object> result = new HashMap<>();
-            result.put("errors", e.getAllMessages());
+            result.put(IMPORT_ERROR_KEY, e.getAllMessages());
             result.put("type", entityType.getType());
             return result;
         }
@@ -105,17 +110,17 @@ public class ImporterService {
     public Map<String, Object> importJsonUrl(String type, Import importRequest) {
         try {
             Resource resource = new SaveURLResource(new URI(importRequest.getUrl()).toURL(),
-                    environment.acceptsProfiles(Profiles.of("dev")), autoRefreshUserAgent);
+                environment.acceptsProfiles(Profiles.of("dev")), autoRefreshUserAgent);
             String json = IOUtils.toString(resource.getInputStream(), Charset.defaultCharset());
             Map<String, Object> map = objectMapper.readValue(json, Map.class);
             return importJson(type, map);
         } catch (IOException | URISyntaxException e) {
-            return singletonMap("errors", singletonList(e.getClass().getName()));
+            return singletonMap(IMPORT_ERROR_KEY, singletonList(e.getClass().getName()));
         }
     }
 
     public Map<String, Object> importJSON(EntityType entityType, Map<String, Object> data)
-            throws JsonProcessingException {
+        throws JsonProcessingException {
         data.entrySet().removeIf(entry -> entry.getValue() == null);
 
         Map<String, Object> json = new ConcurrentHashMap<>(data);
@@ -144,23 +149,23 @@ public class ImporterService {
             if (json.containsKey("allowedEntities")) {
                 List<String> allowedEntities = (List<String>) json.get("allowedEntities");
                 json.put("allowedEntities", allowedEntities.stream()
-                        .map(name -> Collections.singletonMap("name", name)).collect(toList()));
+                    .map(name -> Collections.singletonMap("name", name)).collect(toList()));
             }
             if (json.containsKey("disableConsent")) {
                 List<String> disableConsent = (List<String>) json.get("disableConsent");
                 json.put("disableConsent", disableConsent.stream()
-                        .map(name -> Collections.singletonMap("name", name)).collect(toList()));
+                    .map(name -> Collections.singletonMap("name", name)).collect(toList()));
             }
 
             if (json.containsKey("stepupEntities")) {
                 List<String> stepupEntities = (List<String>) json.get("stepupEntities");
                 json.put("stepupEntities", stepupEntities.stream()
-                        .map(name -> Collections.singletonMap("name", name)).collect(toList()));
+                    .map(name -> Collections.singletonMap("name", name)).collect(toList()));
             }
             if (json.containsKey("mfaEntities")) {
                 List<String> mfaEntities = (List<String>) json.get("mfaEntities");
                 json.put("mfaEntities", mfaEntities.stream()
-                        .map(name -> Collections.singletonMap("name", name)).collect(toList()));
+                    .map(name -> Collections.singletonMap("name", name)).collect(toList()));
             }
             //if the structure is nested then we need to flatten it
             Map<String, Object> flattened = new ConcurrentHashMap<>();
@@ -199,12 +204,12 @@ public class ImporterService {
 
     private EntityType getType(String type, Map<String, Object> json) {
         EntityType entityType = EntityType.IDP.getType().equals(type) ?
-                EntityType.IDP : EntityType.SP.getType().equals(type) ? EntityType.SP : null;
+            EntityType.IDP : EntityType.SP.getType().equals(type) ? EntityType.SP : null;
         if (entityType == null) {
             Object jsonType = json.get("type");
             if (jsonType == null) {
                 throw new IllegalArgumentException("Expected a 'type' attribute in the JSON with value 'saml20-idp' " +
-                        "or 'saml20-sp'");
+                    "or 'saml20-sp'");
             }
             return EntityType.fromType((String) jsonType);
         }

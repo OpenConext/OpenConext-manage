@@ -6,7 +6,11 @@ import manage.api.Scope;
 import manage.conf.Features;
 import manage.conf.MetaDataAutoConfiguration;
 import manage.control.DatabaseController;
-import manage.model.*;
+import manage.model.EntityType;
+import manage.model.Import;
+import manage.model.MetaData;
+import manage.model.PushOptions;
+import manage.model.Revision;
 import manage.service.FeatureService;
 import manage.service.ImporterService;
 import manage.service.MetaDataService;
@@ -22,6 +26,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static manage.conf.Constants.IMPORT_ERROR_KEY;
 
 @Component
 @SuppressWarnings("unchecked")
@@ -42,8 +48,6 @@ public class MetadataAutoRefreshRunner implements Runnable {
     public static final String METADATA_FIELDS_KEY = "metaDataFields";
 
     public static final String AUTO_REFRESH_KEY = "autoRefresh";
-
-    private static final String IMPORT_ERROR_KEY = "errors";
 
     public static final String PROPERTIES_KEY = "properties";
 
