@@ -38,7 +38,7 @@ jobs:
           languages: ${{ matrix.language }}
           build-mode: manual
 
-      - name: Build with Maven
+      - name: Build using Maven
         run: mvn -B -ntp clean compile -DskipTests
 
       - name: Perform CodeQL Analysis
