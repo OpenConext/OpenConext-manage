@@ -214,7 +214,8 @@ export default class Import extends React.Component {
                 }
             } else if (key !== "connection") {
                 const current = currentMetaData[key];
-                if (current === results[key]) {
+                const equals = JSON.stringify(current) === JSON.stringify(results[key])
+                if (equals) {
                     delete results[key];
                 } else {
                     results.connection[key] = {
@@ -353,6 +354,16 @@ export default class Import extends React.Component {
         }
     };
 
+    renderCurrentPropValue = (value, key) => {
+        if (isEmpty(value)) {
+            return "";
+        }
+        if (key === "autoRefresh") {
+            return JSON.stringify(value);
+        }
+        return value.toString();
+    }
+
     renderKeyValueTable = (keyValues, headers, name, newEntity) => {
         const applyChangesFor = this.state.applyChangesFor[name];
         const prefix = newEntity ? "new_" : "";
@@ -392,8 +403,8 @@ export default class Import extends React.Component {
                                 }
                             </td>
                             <td>{key}</td>
-                            <td>{isEmpty(prop.current) ? "" : prop.current.toString()}</td>
-                            <td>{isEmpty(prop.value) ? "" : prop.value.toString()}</td>
+                            <td>{this.renderCurrentPropValue(prop.current, key)}</td>
+                            <td>{this.renderCurrentPropValue(prop.value, key)}</td>
                         </tr>
                     );
                 })}
