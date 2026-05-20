@@ -363,6 +363,76 @@ public class MongoChangelog {
         });
     }
 
+    @ChangeSet(order = "018", id = "migrateAllowedEntitiesToIdpSide", author = "okke.harsta@surf.nl")
+    public void migrateAllowedEntitiesToIdpSide(MongoTemplate mongoTemplate) {
+        String spCollection = EntityType.SP.getType();
+        String idpCollection = EntityType.IDP.getType();
+
+        // Find all SPs with allowedall = false
+        List<MetaData> restrictedSps = mongoTemplate.find(
+            Query.query(Criteria.where("data.allowedall").is(false)),
+            MetaData.class,
+            spCollection
+        );
+        LOG.info("Found {} SPs with allowedall=false to migrate", restrictedSps.size());
+
+        for (MetaData sp : restrictedSps) {
+            String spEntityId = (String) sp.getData().get("entityid");
+
+            // Collect the set of IdP entity IDs that this SP explicitly allows
+            List<Map<String, Object>> spAllowedEntities = (List<Map<String, Object>>) sp.getData().getOrDefault("allowedEntities", Collections.emptyList());
+            Set<String> spAllowedIdpEntityIds = spAllowedEntities.stream()
+                .map(e -> (String) e.get("name"))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+
+            // Find all IdPs that have this SP in their allowedEntities list
+            List<MetaData> idpsWithSp = mongoTemplate.find(
+                Query.query(Criteria.where("data.allowedEntities.name").is(spEntityId)),
+                MetaData.class,
+                idpCollection
+            );
+
+            for (MetaData idp : idpsWithSp) {
+                String idpEntityId = (String) idp.getData().get("entityid");
+
+                // If this IdP is NOT in the SP's allowed list, the SP would have blocked it anyway,
+                // so remove the SP from the IdP's allowedEntities
+                if (!spAllowedIdpEntityIds.contains(idpEntityId)) {
+                    List<Map<String, Object>> idpAllowedEntities = (List<Map<String, Object>>) idp.getData().get("allowedEntities");
+                    idpAllowedEntities.removeIf(e -> spEntityId.equals(e.get("name")));
+
+                    // Save previous IdP state as a revision
+                    MetaData idpPrevious = mongoTemplate.findById(idp.getId(), MetaData.class, idpCollection);
+                    idpPrevious.revision(UUID.randomUUID().toString());
+                    mongoTemplate.insert(idpPrevious, idpCollection + REVISION_POSTFIX);
+
+                    // Promote live IdP record
+                    String idpRevisionNote = String.format(
+                        "Removed SP %s from allowedEntities: SP no longer manages its own allowed IdP list", spEntityId);
+                    idp.promoteToLatest("System", idpRevisionNote);
+                    mongoTemplate.save(idp, idpCollection);
+                    LOG.info("Removed SP {} from IdP {} allowedEntities", spEntityId, idpEntityId);
+                }
+            }
+
+            // Save previous SP state as a revision
+            MetaData spPrevious = mongoTemplate.findById(sp.getId(), MetaData.class, spCollection);
+            spPrevious.revision(UUID.randomUUID().toString());
+            mongoTemplate.insert(spPrevious, spCollection + REVISION_POSTFIX);
+
+            // Set SP to allowedall=true and clear allowedEntities
+            sp.getData().put("allowedall", true);
+            sp.getData().put("allowedEntities", new ArrayList<>());
+            String spRevisionNote = "Migrated to IdP-side connection control: allowedall set to true, allowedEntities cleared";
+            sp.promoteToLatest("System", spRevisionNote);
+            mongoTemplate.save(sp, spCollection);
+            LOG.info("SP {} migrated to allowedall=true with empty allowedEntities", spEntityId);
+        }
+
+        LOG.info("Migration migrateAllowedEntitiesToIdpSide completed: {} SPs processed", restrictedSps.size());
+    }
+
     private void migrateRelayingPartyToResourceServer(Map<String, Map<String, Object>> properties, List<Pattern> patterns, Map<String, Object> simpleProperties, MetaData rs) {
         rs.setType(EntityType.RS.getType());
         rs.getData().entrySet().removeIf(entry -> !properties.containsKey(entry.getKey()));
