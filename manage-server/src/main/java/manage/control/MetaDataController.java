@@ -147,10 +147,15 @@ public class MetaDataController {
         MetaData savedMetaData = metaDataService.doPost(metaData, apiUser, !apiUser.getScopes().contains(TEST));
         if (entityType.equals(EntityType.PDP)) {
             databaseController.doPush(new PushOptions(false, false, true, false));
-        } else if (apiUser.getName().equalsIgnoreCase("sram")) {
+        } else if (needsToPush(apiUser)) {
             databaseController.doPush(new PushOptions(true, true, false, false));
         }
         return savedMetaData;
+    }
+
+    private boolean needsToPush(APIUser apiUser) {
+        String name = apiUser.getName();
+        return name.equalsIgnoreCase("sram") || name.equalsIgnoreCase("openconextaccess") ;
     }
 
     @PreAuthorize("hasRole('WRITE_SP')")
@@ -277,7 +282,7 @@ public class MetaDataController {
         MetaData updatedMetaData = metaDataService.doPut(metaData, apiUser, !apiUser.getScopes().contains(TEST));
         if (entityType.equals(EntityType.PDP)) {
             databaseController.doPush(new PushOptions(false, false, true, false));
-        } else if (apiUser.getName().equalsIgnoreCase("sram")) {
+        } else if (needsToPush(apiUser)) {
             databaseController.doPush(new PushOptions(true, true, false, false));
         }
         return updatedMetaData;
