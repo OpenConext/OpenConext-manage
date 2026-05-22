@@ -20,7 +20,7 @@
     "source-map-explorer": "^2.5.3",
     "typeface-roboto": "^1.1.13",
     "xml-formatter": "^3.7.0",
-    "yaml": "^2.8.4"
+    "yaml": "^2.9.0"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^5.1.2",
