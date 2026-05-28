@@ -14,6 +14,7 @@
   "select_raa": [],
   "self_vet": true,
   "allow_self_asserted_tokens": false,
+  "sso_registration_bypass": false,
   "sso_on_2fa": false,
   "stepup-client": "full"
 }

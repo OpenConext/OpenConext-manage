@@ -64,7 +64,7 @@ import EntityMaintenance from "../components/metadata/EntityMaintenance";
 import SFO from "../components/metadata/SFO";
 import Institution from "../components/metadata/Institution";
 
-export const DIALOG_TYPES = {
+const DIALOG_TYPES = {
     CONFIRM: "confirm",
     ERROR: "error"
 };
