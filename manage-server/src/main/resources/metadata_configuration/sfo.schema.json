@@ -7,10 +7,6 @@
     "eid": {
       "type": "number"
     },
-    "name": {
-      "type": "string",
-      "minLength": 1
-    },
     "entityid": {
       "type": "string",
       "minLength": 1

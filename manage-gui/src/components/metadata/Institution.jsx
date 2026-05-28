@@ -30,6 +30,13 @@ export default function Institution({
     }, []);
 
     const internalOnChange = (value, attribute) => {
+        if (attribute === "stepup-client" && value === "freerider") {
+            const allowedSecondFactors = data.allowed_second_factors || []
+            const filteredAllowedSecondFactors = allowedSecondFactors.filter(option => option !== "azuremfa" && option !== "sms");
+            if (allowedSecondFactors.length !== filteredAllowedSecondFactors.length) {
+                onChange("data.allowed_second_factors", filteredAllowedSecondFactors);
+            }
+        }
         onChange(`data.${attribute}`, value);
         if (configuration.required.includes(attribute)) {
             onError(attribute, isEmpty(value));
@@ -84,21 +91,6 @@ export default function Institution({
         );
     }
 
-    const renderName = () => {
-        return (
-            <div className="input-field">
-                <label htmlFor="name">
-                    <span>{I18n.t("sfo.name")}</span>
-                </label>
-                <input id="name"
-                       type="text"
-                       value={data.name || ""}
-                       onChange={e => internalOnChange(e.target.value, "name")}/>
-                {isEmpty(data.name) && renderError("Name")}
-            </div>
-        );
-    }
-
     const renderNumberOfTokensPerIdentity = () => {
         return (
             <div className="input-field">
@@ -135,6 +127,17 @@ export default function Institution({
         );
     }
 
+    const renderSsoRegistrationBypass = () => {
+        return (
+            <div className="input-field">
+                <CheckBox name="sso_registration_bypass"
+                          value={data.sso_registration_bypass}
+                          info={I18n.t("institution.ssoRegistrationBypass")}
+                          onChange={e => internalOnChange(e.target.checked, "sso_registration_bypass")}/>
+            </div>
+        );
+    }
+
     const renderVerifyEmail = () => {
         return (
             <div className="input-field">
@@ -166,19 +169,22 @@ export default function Institution({
 
 
     const renderAllowedSecondFactors = () => {
+        const enumOptions = configuration.properties.allowed_second_factors.items.enum;
+        const stepUpClient = data["stepup-client"];
+        const filteredEnumOptions = stepUpClient === "freerider" ?
+            enumOptions.filter(option => option !== "azuremfa" && option !== "sms") : enumOptions;
         return (
             <div className="input-field">
                 <label htmlFor="allowed_second_factors">
                     <span>{I18n.t("institution.allowedSecondFactors")}</span>
                 </label>
                 <SelectMulti
-                    enumValues={configuration.properties.allowed_second_factors.items.enum}
+                    enumValues={filteredEnumOptions}
                     isClearable={false}
                     onChange={options => internalOnChange(options, "allowed_second_factors")}
                     value={data.allowed_second_factors}
                     isSearchable={false}
                 />
-                {isEmpty(data.allowed_second_factors) && renderError("Allowed second factors")}
             </div>
         );
     }
@@ -268,10 +274,10 @@ export default function Institution({
         <section className="metadata-sfo">
             {/*{JSON.stringify(errors)}*/}
             <section className="sfo">
-                {renderName()}
                 {renderIdentifier()}
                 {renderUseRaLocations()}
                 {renderShowRaaContactInformation()}
+                {renderSsoRegistrationBypass()}
                 {renderVerifyEmail()}
                 {renderAllowedSecondFactors()}
                 {renderNumberOfTokensPerIdentity()}

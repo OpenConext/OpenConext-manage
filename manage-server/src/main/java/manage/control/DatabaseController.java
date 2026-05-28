@@ -270,10 +270,10 @@ public class DatabaseController {
                 "public_key", data.get("public_key"),
                 "acs", data.getOrDefault("acs", List.of()),
                 "loa", Map.of("__default__", data.get("loa")),
-                "assertion_encryption_enabled", data.getOrDefault("assertion_encryption_enabled", false),
-                "second_factor_only", data.getOrDefault("second_factor_only", false),
+                "assertion_encryption_enabled", false,
+                "second_factor_only", true,
                 "second_factor_only_nameid_patterns", data.getOrDefault("second_factor_only_nameid_patterns", List.of()),
-                "blacklisted_encryption_algorithms", data.getOrDefault("blacklisted_encryption_algorithms", List.of()),
+                "blacklisted_encryption_algorithms", List.of(),
                 "allow_sso_on_2fa", data.getOrDefault("allow_sso_on_2fa", false),
                 "set_sso_cookie_on_2fa", data.getOrDefault("set_sso_cookie_on_2fa", false)
             ))

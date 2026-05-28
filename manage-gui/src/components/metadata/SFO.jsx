@@ -52,21 +52,6 @@ export default function SFO({
         );
     }
 
-    const renderName = () => {
-        return (
-            <div className="input-field">
-                <label htmlFor="name">
-                    <span>{I18n.t("sfo.name")}</span>
-                </label>
-                <input id="name"
-                       type="text"
-                       value={data.name || ""}
-                       onChange={e => internalOnChange(e.target.value, "name")}/>
-                {isEmpty(data.name) && renderError("Name")}
-            </div>
-        );
-    }
-
     const renderEntityID = () => {
         return (
             <div className="input-field">
@@ -131,6 +116,7 @@ export default function SFO({
                 <label htmlFor="loa">
                     <span>{I18n.t("sfo.loa")}</span>
                 </label>
+                <em>{I18n.t("sfo.loaHint")}</em>
                 <Select
                     className="policy-select"
                     onChange={option => internalOnChange(option.value, "loa")}
@@ -193,6 +179,7 @@ export default function SFO({
                 <label htmlFor="second_factor_only_nameid_patterns">
                     <span>{I18n.t("sfo.secondFactorOnlyNameidPatterns")}</span>
                 </label>
+                <em>{I18n.t("sfo.secondFactorOnlyNameidPatternsExample")}</em>
                 <Creatable
                     styles={reactSelectStyles}
                     inputId={"react-select-patterns"}
@@ -227,7 +214,6 @@ export default function SFO({
         <section className="metadata-sfo">
             {/*{JSON.stringify(errors)}*/}
             <section className="sfo">
-                {renderName()}
                 {renderEntityID()}
                 {renderPublicKey()}
                 {renderAcs()}
