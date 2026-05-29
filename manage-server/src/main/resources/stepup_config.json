@@ -44,5 +44,35 @@
       "en_GB": "<p>Dear {{ commonName }},</p> <p> {% if isRevokedByRa %} Your SURFsecureID recovery method was removed by an administrator. {% else %} Your SURFsecureID recovery method has been removed. Please contact your institution's helpdesk immediately if you did not do this yourself, as this could mean that your account has been compromised. {% endif %} </p> <p>You can no longer use this recovery method to activate a SURFsecureID token.</p> <p>Always make sure you have at least one recovery method available.</p> <p>Best regards,</p> <p>SURF</p>",
       "nl_NL": "<p>Beste {{ commonName }},</p> <p> {% if isRevokedByRa %} Je SURFsecureID herstelmethode is verwijderd door een beheerder. {% else %} Je SURFsecureID herstelmethode is verwijderd. Neem direct contact op met de helpdesk van je instelling als je dit niet zelf gedaan hebt, omdat dit kan betekenen dat je account gecompromitteerd is. {% endif %} </p> <p>Je kunt deze herstelmethode niet meer gebruiken om een SURFsecureID token te activeren.</p> <p>Zorg er altijd voor dat je tenminste één herstelmethode beschikbaar hebt.</p> <p>Met vriendelijke groet,</p> <p>SURF</p>"
     }
-  }
+  },
+  "service_providers": [
+    {
+      "entity_id": "https://ra-test/authentication/metadata",
+      "public_key": "MIIEAzCCAmsCFDltBS8n6pxyX9xVzHfEN7d0yRE0MA0GCSqGSIb3DQEBCwUAMD4xEzARBgNVBAMMClJBIFNBTUwgU1AxJzAlBgNVBAoMHkRldmVsb3BtZW50IERvY2tlciBlbnZpcm9ubWVudDAeFw0yMzA1MjUwOTMzMTRaFw0yODA1MjMwOTMzMTRaMD4xEzARBgNVBAMMClJBIFNBTUwgU1AxJzAlBgNVBAoMHkRldmVsb3BtZW50IERvY2tlciBlbnZpcm9ubWVudDCCAaIwDQYJKoZIhvcNAQEBBQADggGPADCCAYoCggGBAMjj4GqkeIi+bIPEL+zIWtQJoo6EYGWjOaIemSApGXhbGZJfiuq3jxdtNxl7muqbr3U9//btMXSsEO/W6L+Ykl4tfSkwclKrJLSvMnMnIFOw2JfAYCf9fE+ipeGPT7pjxwCN1uIoKAyovhQkhyd0uTYPddat97EMbvpWCmcAQAJYvFLidqZKtKpkIKiDQ6dhBCC79OUexu+YUarwukyR1q7+wNHgEIX7GJIRkW2/2mD6cKyiDBeYWnKPvjJRISsHfpYCD5Uv47hHWpt6L8yxMgXBEJgLmmkpy8rNbQSQAYF8iZ8lSZSgCSMYCWZEt1qisUyE9+Rntf5ysg04IO/5s3tqtYnxMeXCixyYlBcrZuK6iJRurSoEjFfU8oMxLzQzQBeQ8eTK/3LrBuqbhnIxVYiBl2W2FxoPVY+Qr0IiMb7agEA0eSITrHV1ePdd/rKhs7WhlHZ1KOc7Mx4tbHgPYyoiqHnLvsj39MtDbxRRA+M64IDSUjLM//mAb7qMYc/mTwIDAQABMA0GCSqGSIb3DQEBCwUAA4IBgQAivjFDy7P6X6X7wTAv9nMsYxTMj8ynO+ojEnOD5Cpcn6jYNp30K2KU+KXJLUdow4W2b0YDKkbEc4xxim1+vjSqpdDk0e68Rw07ncs3yiaUAQa09VE7MNQPcwRJckmg7UvGrCLnO4LFSj/VonxZ7HdJwl2A6Cz5Otmjs9XffMOh6SI58xC37HVkSomZ9bXpZfUUuF2Nf02fpKgVoRfiqF1H7IWT3HbN2qr5zld9PzBJVD1CeOVGEpEj/6tUizqVrOmduGmNsRTgA10sKgyoteON4r+GRpGhA5tLtLCqEq7NThLTiUsJYjGVTHj9/Y+kWKMApCjwiC8/nI5VG3MevBwABcXnS312Paxa2C0TTpsNEVE32PaxGweuPv6zRDAEvTn+6H70eq1JKuQ9Sq/Z7VPWdhnp0JROOVZDZizfk9G/4R6Zkw4n1i3LcmFF2IYm7rrVQ/QjAYdcMwWBf3ox5gLrVWqMsSTUmgqLDExJsyjvdHGcm0v806QJFpIjMfwe8Vg=",
+      "acs": [
+        "https://ra-test/authentication/consume-assertion"
+      ],
+      "loa": {
+        "__default__": "http://test2.surfconext.nl/assurance/loa1.5"
+      },
+      "assertion_encryption_enabled": false,
+      "second_factor_only": false,
+      "second_factor_only_nameid_patterns": [],
+      "blacklisted_encryption_algorithms": []
+    },
+    {
+      "entity_id": "https://ss-test/authentication/metadata",
+      "public_key": "MIIEAzCCAmsCFDltBS8n6pxyX9xVzHfEN7d0yRE0MA0GCSqGSIb3DQEBCwUAMD4xEzARBgNVBAMMClJBIFNBTUwgU1AxJzAlBgNVBAoMHkRldmVsb3BtZW50IERvY2tlciBlbnZpcm9ubWVudDAeFw0yMzA1MjUwOTMzMTRaFw0yODA1MjMwOTMzMTRaMD4xEzARBgNVBAMMClJBIFNBTUwgU1AxJzAlBgNVBAoMHkRldmVsb3BtZW50IERvY2tlciBlbnZpcm9ubWVudDCCAaIwDQYJKoZIhvcNAQEBBQADggGPADCCAYoCggGBAMjj4GqkeIi+bIPEL+zIWtQJoo6EYGWjOaIemSApGXhbGZJfiuq3jxdtNxl7muqbr3U9//btMXSsEO/W6L+Ykl4tfSkwclKrJLSvMnMnIFOw2JfAYCf9fE+ipeGPT7pjxwCN1uIoKAyovhQkhyd0uTYPddat97EMbvpWCmcAQAJYvFLidqZKtKpkIKiDQ6dhBCC79OUexu+YUarwukyR1q7+wNHgEIX7GJIRkW2/2mD6cKyiDBeYWnKPvjJRISsHfpYCD5Uv47hHWpt6L8yxMgXBEJgLmmkpy8rNbQSQAYF8iZ8lSZSgCSMYCWZEt1qisUyE9+Rntf5ysg04IO/5s3tqtYnxMeXCixyYlBcrZuK6iJRurSoEjFfU8oMxLzQzQBeQ8eTK/3LrBuqbhnIxVYiBl2W2FxoPVY+Qr0IiMb7agEA0eSITrHV1ePdd/rKhs7WhlHZ1KOc7Mx4tbHgPYyoiqHnLvsj39MtDbxRRA+M64IDSUjLM//mAb7qMYc/mTwIDAQABMA0GCSqGSIb3DQEBCwUAA4IBgQAivjFDy7P6X6X7wTAv9nMsYxTMj8ynO+ojEnOD5Cpcn6jYNp30K2KU+KXJLUdow4W2b0YDKkbEc4xxim1+vjSqpdDk0e68Rw07ncs3yiaUAQa09VE7MNQPcwRJckmg7UvGrCLnO4LFSj/VonxZ7HdJwl2A6Cz5Otmjs9XffMOh6SI58xC37HVkSomZ9bXpZfUUuF2Nf02fpKgVoRfiqF1H7IWT3HbN2qr5zld9PzBJVD1CeOVGEpEj/6tUizqVrOmduGmNsRTgA10sKgyoteON4r+GRpGhA5tLtLCqEq7NThLTiUsJYjGVTHj9/Y+kWKMApCjwiC8/nI5VG3MevBwABcXnS312Paxa2C0TTpsNEVE32PaxGweuPv6zRDAEvTn+6H70eq1JKuQ9Sq/Z7VPWdhnp0JROOVZDZizfk9G/4R6Zkw4n1i3LcmFF2IYm7rrVQ/QjAYdcMwWBf3ox5gLrVWqMsSTUmgqLDExJsyjvdHGcm0v806QJFpIjMfwe8Vg=",
+      "acs": [
+        "https://ss-test/authentication/consume-assertion"
+      ],
+      "loa": {
+        "__default__": "http://test2.surfconext.nl/assurance/loa1.5"
+      },
+      "assertion_encryption_enabled": false,
+      "second_factor_only": false,
+      "second_factor_only_nameid_patterns": [],
+      "blacklisted_encryption_algorithms": []
+    }
+  ]
 }
