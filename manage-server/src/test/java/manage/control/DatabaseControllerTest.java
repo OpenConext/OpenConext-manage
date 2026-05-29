@@ -187,7 +187,7 @@ public class DatabaseControllerTest extends AbstractIntegrationTest {
         assertEquals(9, ((Map) sfoEntities.get("email_templates")).size());
         Map gateway = (Map) sfoEntities.get("gateway");
         assertEquals(2, gateway.size());
-        assertEquals(1, ((List) gateway.get("service_providers")).size());
+        assertEquals(1+2, ((List) gateway.get("service_providers")).size());
         assertEquals(0, ((List) gateway.get("identity_providers")).size());
     }
 

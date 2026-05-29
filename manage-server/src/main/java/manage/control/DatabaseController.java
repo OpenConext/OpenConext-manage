@@ -277,7 +277,13 @@ public class DatabaseController {
                 "allow_sso_on_2fa", data.getOrDefault("allow_sso_on_2fa", false),
                 "set_sso_cookie_on_2fa", data.getOrDefault("set_sso_cookie_on_2fa", false)
             ))
-            .toList();
+            //needs to be modifiable, don't use stream.toList()
+            .collect(Collectors.toCollection(ArrayList::new));
+
+        if (stepUpConfiguration.containsKey("service_providers")) {
+            List<Map<String, Object>> staticServiceProviders = (List<Map<String, Object>>) stepUpConfiguration.get("service_providers");
+            serviceProviders.addAll(staticServiceProviders);
+        }
         results.put("gateway", Map.of("service_providers", serviceProviders, "identity_providers", List.of()));
         return results;
     }
