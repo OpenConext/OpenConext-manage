@@ -2,6 +2,9 @@
 
 Starting from version 9.0.0, we note changes and new features per release in this file.
 
+## 9.7.3
+- Bugfixes for Stepup Administration ([#690](https://github.com/OpenConext/OpenConext-manage/issues/690))
+
 ## 9.7.2
 - Fix erroneous push error in GUI when stepup push is disabled.
     
