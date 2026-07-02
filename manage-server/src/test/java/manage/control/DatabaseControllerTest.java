@@ -9,12 +9,102 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.put;
+import static com.github.tomakehurst.wiremock.client.WireMock.putRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static io.restassured.RestAssured.given;
+import static io.restassured.http.ContentType.JSON;
+import static org.apache.http.HttpStatus.SC_INTERNAL_SERVER_ERROR;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SuppressWarnings("unchecked")
 public class DatabaseControllerTest extends AbstractIntegrationTest {
+
+    @Test
+    public void pushToEbOidcAndPdp() {
+        Map results = given()
+            .contentType(JSON)
+            .body(Map.of(
+                "includeEB", true,
+                "includeOIDC", true,
+                "includePdP", true,
+                "includeStepUp", false
+            ))
+            .when()
+            .put("manage/api/client/playground/push")
+            .then()
+            .statusCode(SC_OK)
+            .extract().as(Map.class);
+
+        assertEquals("OK", ((Map) results.get("eb")).get("status"));
+        assertEquals("OK", ((Map) results.get("oidc")).get("status"));
+        assertEquals("OK", ((Map) results.get("pdp")).get("status"));
+
+        pushWireMockServer.verify(1, postRequestedFor(urlEqualTo("/api/connections")));
+        pushWireMockServer.verify(1, postRequestedFor(urlEqualTo("/manage/connections")));
+        pdpWireMockServer.verify(1, putRequestedFor(urlEqualTo("/pdp/api/manage/push")));
+    }
+
+    @Test
+    public void pushReturnsErrorWhenEbFails() {
+        pushWireMockServer.stubFor(post(urlEqualTo("/api/connections"))
+            .atPriority(1)
+            .willReturn(aResponse()
+                .withStatus(503)
+                .withBody("{\"error\":\"eb unavailable\"}")));
+
+        Map results = push(Map.of("includeEB", true, "includeOIDC", false, "includePdP", false, "includeStepUp", false));
+
+        String message = (String) results.get("message");
+        assertTrue(message.contains("Error in push to EngineBlock (http://localhost:9898/api/connections) status 503 SERVICE_UNAVAILABLE"));
+        assertTrue(message.contains("{\"error\":\"eb unavailable\"}"));
+    }
+
+    @Test
+    public void pushReturnsErrorWhenOidcFails() {
+        pushWireMockServer.stubFor(post(urlEqualTo("/manage/connections"))
+            .atPriority(1)
+            .willReturn(aResponse()
+                .withStatus(503)
+                .withBody("{\"error\":\"oidc unavailable\"}")));
+
+        Map results = push(Map.of("includeEB", false, "includeOIDC", true, "includePdP", false, "includeStepUp", false));
+
+        String message = (String) results.get("message");
+        assertTrue(message.contains("Error in push to OIDC (http://localhost:9898/manage/connections) status 503 SERVICE_UNAVAILABLE"));
+        assertTrue(message.contains("{\"error\":\"oidc unavailable\"}"));
+    }
+
+    @Test
+    public void pushReturnsErrorWhenPdpFails() {
+        pdpWireMockServer.stubFor(put(urlEqualTo("/pdp/api/manage/push"))
+            .atPriority(1)
+            .willReturn(aResponse()
+                .withStatus(503)
+                .withBody("{\"error\":\"pdp unavailable\"}")));
+
+        Map results = push(Map.of("includeEB", false, "includeOIDC", false, "includePdP", true, "includeStepUp", false));
+
+        String message = (String) results.get("message");
+        assertTrue(message.contains("Error in push to PDP (http://localhost:8082/pdp/api/manage/push) status 503 SERVICE_UNAVAILABLE"));
+        assertTrue(message.contains("{\"error\":\"pdp unavailable\"}"));
+    }
+
+    private Map push(Map<String, Boolean> pushOptions) {
+        return given()
+            .contentType(JSON)
+            .body(pushOptions)
+            .when()
+            .put("manage/api/client/playground/push")
+            .then()
+            .statusCode(SC_INTERNAL_SERVER_ERROR)
+            .extract().as(Map.class);
+    }
 
     @Test
     public void pushPreview() throws Exception {
@@ -24,7 +114,6 @@ public class DatabaseControllerTest extends AbstractIntegrationTest {
             .then()
             .statusCode(SC_OK)
             .extract().as(Map.class);
-        System.out.println(objectMapper.writeValueAsString(results));
         Map expected = objectMapper.readValue(readFile("push/push.expected_connections.json"), Map.class);
 
 
