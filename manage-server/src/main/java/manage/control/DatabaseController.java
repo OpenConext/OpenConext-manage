@@ -124,11 +124,11 @@ public class DatabaseController {
     }
 
     public ResponseEntity<Map> doPush(PushOptions pushOptions) {
-        if (environment.acceptsProfiles(Profiles.of("dev")) &&
-            !environment.acceptsProfiles(Profiles.of("integration-test"))) {
-        LOG.debug("Pushing with options {}", pushOptions);
 
-        if (environment.acceptsProfiles(Profiles.of("dev"))) {
+        LOG.debug("Pushing with options {} and environment {}", pushOptions, environment.getActiveProfiles());
+
+        if (environment.acceptsProfiles(Profiles.of("dev"))
+            && !environment.acceptsProfiles(Profiles.of("integration-test"))) {
             return new ResponseEntity<>(Map.of(
                 "eb", Map.of("status", "OK"),
                 "pdp", Map.of("status", "OK"),
