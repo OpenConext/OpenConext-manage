@@ -4,6 +4,9 @@ Starting from version 9.0.0, we note changes and new features per release in thi
 
 ## 9.8.0
 
+## 9.7.4
+- Add `coin:azure_domain_hint` metadata property for IdPs. Engineblock version 7.2 is required to use this feature. 
+
 ## 9.7.3
 - Bugfixes for Stepup Administration ([#690](https://github.com/OpenConext/OpenConext-manage/issues/690))
 
