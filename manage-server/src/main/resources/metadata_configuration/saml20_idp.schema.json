@@ -376,8 +376,13 @@
         "coin:is_test_idp": {
           "type": "boolean",
           "default": false,
-          "info": "if set for this Identity Provider, then this Identity Provider is listed as test IdP in Access."
+          "info": "If set for this Identity Provider, then this Identity Provider is listed as test IdP in Access."
         },
+        "coin:azure_domain_hint": {
+          "type": "string",
+          "default": "",
+          "info": "The domain set here is sent to the IdP; Microsoft EntraID uses it to skip the account picker."
+        }
       },
       "patternProperties": {
         "^name:(en|nl)$": {
