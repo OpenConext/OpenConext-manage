@@ -124,6 +124,8 @@ public class DatabaseController {
     }
 
     public ResponseEntity<Map> doPush(PushOptions pushOptions) {
+        LOG.debug("Pushing with options {}", pushOptions);
+        
         if (environment.acceptsProfiles(Profiles.of("dev"))) {
             return new ResponseEntity<>(Map.of(
                 "eb", Map.of("status", "OK"),
