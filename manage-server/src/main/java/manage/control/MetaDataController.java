@@ -145,6 +145,9 @@ public class MetaDataController {
         EntityType entityType = EntityType.fromType(metaData.getType());
         ScopeEnforcer.enforceWriteScope(apiUser, entityType);
         MetaData savedMetaData = metaDataService.doPost(metaData, apiUser, !apiUser.getScopes().contains(TEST));
+
+        LOG.info("Updating metadata {} {} by user '{}'", metaData.getId(), metaData.getType(), apiUser.getName());
+
         if (entityType.equals(EntityType.PDP)) {
             databaseController.doPush(new PushOptions(false, false, true, false));
         } else if (needsToPush(apiUser)) {
@@ -155,7 +158,11 @@ public class MetaDataController {
 
     private boolean needsToPush(APIUser apiUser) {
         String name = apiUser.getName();
-        return name.equalsIgnoreCase("sram") || name.equalsIgnoreCase("openconextaccess") ;
+        boolean b = name.equalsIgnoreCase("sram") || name.equalsIgnoreCase("openconextaccess");
+
+        LOG.debug("APIUser {} forced push {}", apiUser.getName(), b);
+
+        return b;
     }
 
     @PreAuthorize("hasRole('WRITE_SP')")
