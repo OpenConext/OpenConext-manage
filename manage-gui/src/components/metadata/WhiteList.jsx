@@ -478,7 +478,7 @@ export default class WhiteList extends React.Component {
                         name="allow-all"
                         value={allowedAll}
                         onChange={this.allowAllChanged}
-                        readOnly={guest}
+                        readOnly={guest || type === "sram"}
                     />
                     <span
                         className={`button green ${copiedToClipboardClassName}`}
