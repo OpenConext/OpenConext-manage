@@ -173,16 +173,19 @@ class MetaDataChangeRequests extends React.Component {
         sortDict(data);
         sortDict(newData);
         let diffs;
+        let left;
         if (request.incrementalChange) {
             //we can not simply show the pathUpdate (e.g. newData) as this is not against the actual data
             const appliedData = this.applyPathUpdates(newData, data, request.pathUpdateType);
+            left = data;
             diffs = this.differ.diff(data, appliedData);
         } else {
             const originalDict = createDiffObject(data, newData);
+            left = originalDict;
             diffs = this.differ.diff(originalDict, newData);
         }
-        const html = htmlFormatter.format(diffs);
-        return diffs ? <p dangerouslySetInnerHTML={{__html: html}}/> : <p>{I18n.t("changeRequests.identical")}</p>
+        const html = htmlFormatter.format(diffs, left);
+        return diffs ? <p className="jsondiffpatch-unchanged-hidden" dangerouslySetInnerHTML={{__html: html}}/> : <p>{I18n.t("changeRequests.identical")}</p>
     };
 
     requestToJson = request => {

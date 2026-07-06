@@ -26,9 +26,9 @@ export const Diff = ({revision, previousRevision}) => {
     sortDict(prev);
 
     const diffs = differ.diff(prev, rev);
-    const html = DOMPurify.sanitize(htmlFormatter.format(diffs));
+    const html = DOMPurify.sanitize(htmlFormatter.format(diffs, prev));
 
     return diffs
-        ? <div dangerouslySetInnerHTML={{__html: html}}/>
+        ? <div className="jsondiffpatch-unchanged-hidden" dangerouslySetInnerHTML={{__html: html}}/>
         : <p className="diff-identical">{I18n.t("revisions.identical")}</p>;
 };

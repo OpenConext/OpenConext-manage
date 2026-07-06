@@ -3,6 +3,8 @@
 Starting from version 9.0.0, we note changes and new features per release in this file.
 
 ## 9.8.0
+- Update of JS dependencies
+- Diffs in connected SPs are shown correctly again ([#750](https://github.com/OpenConext/OpenConext-manage/issues/705))
 
 ## 9.7.4
 - Add `coin:azure_domain_hint` metadata property for IdPs. Engineblock version 7.2 is required to use this feature. 
