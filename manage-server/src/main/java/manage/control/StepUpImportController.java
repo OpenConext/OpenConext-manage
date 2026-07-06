@@ -102,8 +102,6 @@ public class StepUpImportController {
 
     private Map<String, Object> convertServiceProviderToMetaData(Map<String, Object> serviceProvider) {
         Map<String, Object> sfo = new HashMap<>();
-        //We need a name, which is not provided by the middleware import
-        sfo.put("name", serviceProvider.get("entity_id"));
         sfo.put("revisionnote", String.format("Imported on %s by System API", new Date()));
 
         sfo.put("entityid", serviceProvider.get("entity_id"));
