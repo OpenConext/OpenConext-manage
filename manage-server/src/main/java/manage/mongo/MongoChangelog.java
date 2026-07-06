@@ -2,7 +2,6 @@ package manage.mongo;
 
 import com.github.cloudyrock.mongock.ChangeLog;
 import com.github.cloudyrock.mongock.ChangeSet;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import com.mongodb.bulk.BulkWriteResult;
 import com.mongodb.client.DistinctIterable;
 import lombok.SneakyThrows;
@@ -16,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.BulkOperations;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.index.IndexInfo;
 import org.springframework.data.mongodb.core.index.IndexOperations;
@@ -27,7 +27,15 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.nio.charset.Charset;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -431,6 +439,18 @@ public class MongoChangelog {
         }
 
         LOG.info("Migration migrateAllowedEntitiesToIdpSide completed: {} SPs processed", restrictedSps.size());
+    }
+
+    @ChangeSet(order = "019", id = "migrateStepUpEntities", author = "okke.harsta@surf.nl")
+    public void migrateStepUpEntities(MongoTemplate mongoTemplate) {
+        Stream.of(EntityType.SFO.getType(), EntityType.STEPUP.getType())
+            .forEach(type -> {
+                List<MetaData> entities = mongoTemplate.findAll(MetaData.class, type);
+                entities.forEach(metaData -> {
+                    metaData.getData().remove("name");
+                    mongoTemplate.save(metaData, type);
+                });
+            });
     }
 
     private void migrateRelayingPartyToResourceServer(Map<String, Map<String, Object>> properties, List<Pattern> patterns, Map<String, Object> simpleProperties, MetaData rs) {
