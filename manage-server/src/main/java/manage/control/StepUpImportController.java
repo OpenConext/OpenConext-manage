@@ -76,8 +76,6 @@ public class StepUpImportController {
 
     private Map<String, Object> convertInstitutionToMetaData(String entityId, Map<String, Object> institution) {
         Map<String, Object> data = new HashMap<>();
-        //We need a name, which is not provided by the middleware import
-        data.put("name", entityId);
         data.put("entityid", entityId);
         data.put("identifier", entityId);
         data.put("revisionnote", String.format("Imported on %s by System API", new Date()));
