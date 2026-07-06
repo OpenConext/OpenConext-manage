@@ -10,7 +10,7 @@
     "@uiw/react-md-editor": "^4.1.1",
     "dompurify": "^3.4.11",
     "http-proxy-middleware": "^4.1.1",
-    "js-cookie": "^3.0.7",
+    "js-cookie": "^3.0.8",
     "lodash.merge": "^4.6.2",
     "papaparse": "^5.5.3",
     "react": "^19.2.7",
