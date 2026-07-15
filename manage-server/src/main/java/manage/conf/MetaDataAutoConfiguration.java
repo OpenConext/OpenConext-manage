@@ -2,6 +2,7 @@ package manage.conf;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Getter;
 import manage.exception.CustomValidationException;
 import manage.model.EntityType;
 import manage.validations.BooleanFormatValidator;
@@ -56,7 +57,9 @@ public class MetaDataAutoConfiguration {
     private final Map<String, File> templates;
     private final List<Map<String, Object>> schemaRepresentations = new ArrayList<>();
     private final Map<String, List<IndexConfiguration>> indexConfigurations = new HashMap<>();
+    @Getter
     private final ObjectMapper objectMapper;
+    private final List<String> disabledMetadataSchemas;
 
     @Autowired
     public MetaDataAutoConfiguration(ObjectMapper objectMapper,
@@ -64,6 +67,7 @@ public class MetaDataAutoConfiguration {
                                      @Value("${metadata_templates_path}") Resource metadataTemplatesPath,
                                      @Value("${disabled_metadata_schemas}") String disabledMetadataSchemas) throws
             IOException {
+        this.disabledMetadataSchemas = disabledMetadataSchemas.trim().isEmpty() ? new ArrayList<>() : Arrays.asList(disabledMetadataSchemas.split(","));
         this.schemas = parseConfiguration(metadataConfigurationPath, Arrays.asList(
                 new CertificateFormatValidator(),
                 new NumberFormatValidator(),
@@ -75,7 +79,7 @@ public class MetaDataAutoConfiguration {
                 new PatternFormatValidator(),
                 new XMLFormatValidator(),
                 new UUIDFormatValidator()
-        ), disabledMetadataSchemas.trim().isEmpty() ? new ArrayList<>() : Arrays.asList(disabledMetadataSchemas.split(",")));
+        ), this.disabledMetadataSchemas);
         this.objectMapper = objectMapper;
         this.templates = parseTemplates(metadataTemplatesPath);
         LOG.info("Finished loading {} metadata configurations", schemas.size());
@@ -83,6 +87,9 @@ public class MetaDataAutoConfiguration {
 
 
     public void validate(Map<String, Object> data, String type) throws JsonProcessingException {
+        if (this.disabledMetadataSchemas.contains(String.format("%s.schema.json", type))) {
+            return;
+        }
         Schema schema = schemas.computeIfAbsent(type, key -> {
             throw new IllegalArgumentException(String.format("No schema defined for %s", key));
         });
@@ -138,16 +145,13 @@ public class MetaDataAutoConfiguration {
                 this.schemas.values().stream().findAny().orElseThrow(IllegalAccessError::new));
     }
 
-    public ObjectMapper getObjectMapper() {
-        return objectMapper;
-    }
-
     private Map<String, Schema> parseConfiguration(Resource metadataConfigurationPath, List<FormatValidator>
             validators, List<String> disabledMetadataSchemas) throws IOException {
         File[] files = metadataConfigurationPath.getFile().listFiles();
 
         List<File> schemaFiles =
-                Stream.of(files).filter(file -> !disabledMetadataSchemas.contains(file.getName()) && file.getName().endsWith("schema.json")).collect(Collectors.toList());
+                Stream.of(files).filter(file -> !disabledMetadataSchemas.contains(file.getName()) && file.getName().endsWith("schema.json"))
+                    .collect(Collectors.toList());
         Assert.notEmpty(schemaFiles, String.format("No schema.json files defined in %s", metadataConfigurationPath
                 .getFilename()));
         return schemaFiles.stream().map(file -> this.parse(file, validators,
