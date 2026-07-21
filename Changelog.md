@@ -2,6 +2,9 @@
 
 Starting from version 9.0.0, we note changes and new features per release in this file.
 
+## next
+- Add `coin:wayf_remember_choice` metadata property for SPs and RPs. Engineblock version 7.3 with `wayf.remember_choice_per_idp` enabled is required to use this feature. ([#714](https://github.com/OpenConext/OpenConext-manage/issues/714))
+
 ## 9.8.0
 - Update of JS dependencies
 - Diffs in connected SPs are shown correctly again ([#750](https://github.com/OpenConext/OpenConext-manage/issues/705))

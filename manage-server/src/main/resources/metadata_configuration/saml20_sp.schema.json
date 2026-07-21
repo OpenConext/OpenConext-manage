@@ -653,6 +653,11 @@
           "type": "boolean",
           "info": "Set for SRAM services."
         },
+        "coin:wayf_remember_choice": {
+          "type": "boolean",
+          "default": false,
+          "info": "Enable the 'remember my choice' option in the WAYF for this SP"
+        },
         "application_tags": {
           "type": "array",
           "max": 3,

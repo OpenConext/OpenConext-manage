@@ -565,6 +565,11 @@
           "default": 3600,
           "info": "The number of seconds that a new refresh token is valid for this Relying Party."
         },
+        "coin:wayf_remember_choice": {
+          "type": "boolean",
+          "default": false,
+          "info": "Enable the 'remember my choice' option in the WAYF for this RP"
+        },
         "application_tags": {
           "type": "array",
           "max": 3,
