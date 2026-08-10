@@ -19,6 +19,7 @@ import manage.shibboleth.FederatedUser;
 import org.everit.json.schema.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
 import org.springframework.core.io.Resource;
@@ -79,13 +80,17 @@ public class MetaDataService {
 
     private final ExporterService exporterService;
 
+    @Value("${environment}")
+    private final String environmentType;
+
     public MetaDataService(MetaDataRepository metaDataRepository,
                            MetaDataAutoConfiguration metaDataAutoConfiguration,
                            MetaDataHook metaDataHook,
                            DatabaseController databaseController,
                            ImporterService importerService,
                            ExporterService exporterService,
-                           Environment environment) {
+                           Environment environment,
+                           @Value("${environment}") String environmentType) {
 
         this.metaDataRepository = metaDataRepository;
         this.metaDataAutoConfiguration = metaDataAutoConfiguration;
@@ -94,6 +99,7 @@ public class MetaDataService {
         this.exporterService = exporterService;
         this.environment = environment;
         this.importerService = importerService;
+        this.environmentType = environmentType.toLowerCase();
     }
 
     public MetaData getMetaDataAndValidate(String type, String id) {
@@ -501,7 +507,8 @@ public class MetaDataService {
         Object spInstitutionId = sp.metaDataFields().get("coin:institution_guid");
         boolean shareInstitutionId = idpInstitutionId != null && idpInstitutionId.equals(spInstitutionId) &&
             !"connect_with_interaction".equals(dashboardConnectType);
-        if (!connectWithoutInteraction && !shareInstitutionId && !apiUser.getName().equalsIgnoreCase("access_dashboard")) {
+        if (!connectWithoutInteraction && !shareInstitutionId && !apiUser.getName().equalsIgnoreCase("access_dashboard") &&
+            !List.of("test2", "test").contains(this.environmentType)) {
             throw new EndpointNotAllowed(
                 String.format("%s %s does not allow an automatic connection with IdP %s. " +
                         "SP dashboardConnectType: %s, idpInstitutionId: %s, spInstitutionId %s",
