@@ -501,7 +501,7 @@ public class MetaDataService {
         Object spInstitutionId = sp.metaDataFields().get("coin:institution_guid");
         boolean shareInstitutionId = idpInstitutionId != null && idpInstitutionId.equals(spInstitutionId) &&
             !"connect_with_interaction".equals(dashboardConnectType);
-        if (!connectWithoutInteraction && !shareInstitutionId) {
+        if (!connectWithoutInteraction && !shareInstitutionId && !apiUser.getName().equalsIgnoreCase("access_dashboard")) {
             throw new EndpointNotAllowed(
                 String.format("%s %s does not allow an automatic connection with IdP %s. " +
                         "SP dashboardConnectType: %s, idpInstitutionId: %s, spInstitutionId %s",
