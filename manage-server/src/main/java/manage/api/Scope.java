@@ -12,6 +12,6 @@ public enum Scope {
     TEST, //Only used internally
     WRITE_SP, //Allowed to CRU SP / RP / RS / SRAM
     DELETE_SP, //Allowed to Delete SP / RP / RS
-    WRITE_IDP //Allowed to CRUD IdP
-
+    WRITE_IDP, //Allowed to CRUD IdP
+    SCOPES //Allowed to CRUD RS Scopes
 }

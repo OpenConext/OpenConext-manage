@@ -72,9 +72,9 @@ public class ScopeController {
         return scopeRepository.findAll();
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping({"/client/scopes/{id}"})
-    public boolean delete(@PathVariable("id") String id) throws JsonProcessingException {
+    @PreAuthorize("hasAnyRole('ADMIN', 'SCOPES')")
+    @DeleteMapping({"/client/scopes/{id}", "/internal/scopes/{id}"})
+    public boolean delete(@PathVariable String id) throws JsonProcessingException {
         Scope scope = scopeById(id);
         checkScopeInUse(scope);
         LOG.info("Deleting scope {}", id);
@@ -83,32 +83,31 @@ public class ScopeController {
     }
 
     private Scope scopeById(String id) {
-        Scope scope = scopeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(String.format("Scope with %s not found", id)));
-        return scope;
+        return scopeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(String.format("Scope with %s not found", id)));
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping(value = "/client/fetch/scopes", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAnyRole('ADMIN', 'READ')")
+    @GetMapping(value = {"/client/fetch/scopes", "/internal/fetch/scopes"}, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<String> fetchValues() {
         return scopeRepository.findAll().stream().map(Scope::getName).collect(Collectors.toList());
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping({"/client/scopes/{id}"})
-    public Scope get(@PathVariable("id") String id) {
+    public Scope get(@PathVariable String id) {
         return scopeById(id);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/client/inuse/scopes")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SCOPES')")
+    @GetMapping({"/client/inuse/scopes","/internal/inuse/scopes"})
     public List<MetaData> scopesInUse(@RequestParam(value = "scopes") String scopes) {
         String scopesIn = Stream.of(scopes.split(",")).map(s -> String.format("\"%s\"", s.trim())).collect(Collectors.joining(","));
         String query = String.format("{\"data.metaDataFields.scopes\":{$in:[%s]}}", scopesIn);
         return mongoTemplate.find(new BasicQuery(query), MetaData.class, RS.getType());
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping({"/client/scopes"})
+    @PreAuthorize("hasAnyRole('ADMIN', 'SCOPES')")
+    @PutMapping({"/client/scopes", "/internal/scopes"})
     public Scope update(@RequestBody Scope scope) throws JsonProcessingException {
         Scope previous = scopeById(scope.getId());
         if (!previous.getName().equals(scope.getName())) {
@@ -127,8 +126,8 @@ public class ScopeController {
         }
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping({"/client/scopes"})
+    @PreAuthorize("hasAnyRole('ADMIN', 'SCOPES')")
+    @PostMapping({"/client/scopes", "/internal/scopes"})
     public Scope save(@RequestBody Scope scope) {
         LOG.info("Saving scope {}", scope);
         return saveScope(scope);
