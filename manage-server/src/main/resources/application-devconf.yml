@@ -40,9 +40,8 @@ spring:
   mail:
     host: mailcatcher
     port: 25
-  data:
-    mongodb:
-      uri: mongodb://managerw:secret@mongo:27017/manage?ssl=false
+  mongodb:
+    uri: mongodb://managerw:secret@mongo:27017/manage?ssl=false
   main:
     banner-mode: "off"
 

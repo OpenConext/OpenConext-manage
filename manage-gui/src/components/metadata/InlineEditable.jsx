@@ -1,7 +1,6 @@
 import React from "react";
 import I18n from "../../locale/I18n";
 import PropTypes from "prop-types";
-import ReactTooltip from "react-tooltip";
 
 import {isEmpty} from "../../utils/Utils";
 
@@ -65,11 +64,9 @@ export default class InlineEditable extends React.PureComponent {
     };
 
     renderNonEditable(name, value, mayEdit, error) {
-        const toolTipId = `edit-${name}`;
         const span = mayEdit ?
             <span className="attribute edit-editable" onClick={this.toggleEditable}>{value}
-                <i className="fas fa-pencil" data-for={toolTipId} data-tip></i>
-                <ReactTooltip id={toolTipId} place="top">{I18n.t("metadata.edit")}</ReactTooltip>
+                <i className="fas fa-pencil tooltip-trigger" data-tooltip-content={I18n.t("metadata.edit")}></i>
             </span> :
             <span className="read-only-editable">{value}</span>;
 

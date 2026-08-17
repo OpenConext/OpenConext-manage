@@ -16,17 +16,13 @@ export default function Institution({
                                     }) {
 
     const [institutions, setInstitutions] = useState([]);
-    const [originalIdentifier, setOriginalIdentifier] = useState([]);
+    const [originalIdentifier] = useState(() => (isNew ? [] : data.identifier));
     const [duplicateIdentifier, setDuplicateIdentifier] = useState(false);
 
 
     useEffect(() => {
         search({}, "institution")
             .then(res => setInstitutions(res));
-        if (!isNew) {
-            setOriginalIdentifier(data.identifier);
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const internalOnChange = (value, attribute) => {

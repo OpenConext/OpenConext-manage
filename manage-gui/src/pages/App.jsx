@@ -3,6 +3,7 @@ import {BrowserRouter as Router, Navigate, Route, Routes} from "react-router-dom
 import "./App.scss";
 import ErrorDialog from "../components/ErrorDialog";
 import Flash from "../components/Flash";
+import Tooltip from "../components/Tooltip";
 import NotFound from "../pages/NotFound";
 import Search from "../pages/Search";
 import Detail from "../pages/Detail";
@@ -101,6 +102,7 @@ class App extends React.PureComponent {
                 <div>
                     <div>
                         <Flash/>
+                        <Tooltip/>
                         <Header currentUser={currentUser}/>
                         <Navigation currentUser={currentUser} {...this.props}/>
                         <ErrorDialog isOpen={errorDialogOpen}

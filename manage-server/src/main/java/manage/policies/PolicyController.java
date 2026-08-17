@@ -1,8 +1,5 @@
 package manage.policies;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import manage.api.APIUser;
 import manage.api.ImpersonatedUser;
@@ -17,6 +14,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.util.*;
@@ -103,7 +102,7 @@ public class PolicyController {
 
     @PreAuthorize("hasRole('POLICIES')")
     @PutMapping("/internal/protected/policies")
-    public PdpPolicyDefinition update(APIUser apiUser, @RequestBody PdpPolicyDefinition policyDefinition) throws JsonProcessingException {
+    public PdpPolicyDefinition update(APIUser apiUser, @RequestBody PdpPolicyDefinition policyDefinition) {
         this.initialPolicyValues(apiUser, policyDefinition, false);
         MetaData existingMetaData = this.metaDataService.getMetaDataAndValidate(EntityType.PDP.getType(), policyDefinition.getId());
         String authenticatingAuthorityName = (String) existingMetaData.getData().get("authenticatingAuthorityName");

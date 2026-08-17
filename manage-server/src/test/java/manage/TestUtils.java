@@ -1,12 +1,13 @@
 package manage;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.common.mapper.TypeRef;
 import manage.api.APIUser;
 import manage.api.Scope;
 import org.apache.commons.io.IOUtils;
 import org.springframework.core.io.ClassPathResource;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -36,10 +37,8 @@ public interface TestUtils {
     ObjectMapper objectMapper = ObjectMapperWrapper.init();
 
     class ObjectMapperWrapper {
-        private static com.fasterxml.jackson.databind.ObjectMapper init() {
-            ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.findAndRegisterModules();
-            return objectMapper;
+        private static ObjectMapper init() {
+            return new JsonMapper();
         }
     }
 

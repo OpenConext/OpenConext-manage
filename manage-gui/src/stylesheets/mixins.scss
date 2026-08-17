@@ -15,19 +15,6 @@
     padding: 0 15px;
 }
 
-@mixin tool-tip {
-    box-shadow: 1px 2px 6px 1px vars.$lighter-grey;
-    padding: 10px !important;
-    font-size: 14px !important;
-    pointer-events: auto !important;
-    color: vars.$dark-grey !important;
-    background-color: white !important;
-    &.show {
-        opacity: 1 !important;
-    }
-    max-width: 390px;
-}
-
 @mixin info-icon {
     color: vars.$blue;
     margin-left: 5px;

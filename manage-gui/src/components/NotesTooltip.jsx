@@ -1,15 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
-import ReactTooltip from "react-tooltip";
-import "./NotesTooltip.scss";
 
-export default function NotesTooltip({identifier, notes}) {
+export default function NotesTooltip({notes}) {
     return (
-        <span className={"notes-tooltip"} data-for={identifier} data-tip>
-            <i className="fas fa-info-circle"></i>
-            <ReactTooltip id={identifier} type="info" class="tool-tip" effect="solid">
-                <span>{notes}</span>
-            </ReactTooltip>
+        <span className={"notes-tooltip"}>
+            <i className="fas fa-info-circle tooltip-trigger" data-tooltip-content={notes}></i>
         </span>
     );
 

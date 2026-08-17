@@ -1,6 +1,5 @@
 package manage.model;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import manage.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -227,7 +226,7 @@ public class MetaDataTest implements TestUtils {
     }
 
     @Test
-    public void trimSpaces() throws JsonProcessingException {
+    public void trimSpaces() {
         MetaData metaData = objectMapper.readValue(readFile("json/meta_data_with_spacesl.json"), MetaData.class);
 
         assertEquals(" SURFnet BV ", metaData.metaDataFields().get("OrganizationName:nl"));

@@ -85,10 +85,10 @@
             font-size: larger;
         }
 
-        div.ReactCodeMirror {
+        .cm-theme {
             border: 2px solid #f7f7f7;
 
-            div.CodeMirror {
+            .cm-editor {
                 height: 1000px;
             }
         }

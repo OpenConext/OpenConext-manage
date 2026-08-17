@@ -1,22 +1,23 @@
 package manage.validations;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.everit.json.schema.FormatValidator;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
-import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
 
 public class JSONFormatValidator implements FormatValidator {
 
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private ObjectMapper objectMapper = new JsonMapper();
 
     @Override
     public Optional<String> validate(String subject) {
         try {
             objectMapper.readValue(subject, Map.class);
             return Optional.empty();
-        } catch (IOException e) {
+        } catch (JacksonException e) {
             return Optional.of(e.getMessage());
         }
     }

@@ -2,9 +2,8 @@ import React from "react";
 import I18n from "../../locale/I18n";
 import MDEditor from '@uiw/react-md-editor';
 import PropTypes from "prop-types";
-import CodeMirror from "react-codemirror";
-import "codemirror/mode/javascript/javascript";
-import "codemirror/lib/codemirror.css";
+import CodeMirror from "@uiw/react-codemirror";
+import {javascript} from "@codemirror/lang-javascript";
 import "@uiw/react-md-editor/markdown-editor.css";
 import "./Manipulation.scss";
 import {isEmpty, stop} from "../../utils/Utils";
@@ -82,8 +81,6 @@ export default class Manipulation extends React.PureComponent {
         const {collapseInfo} = this.state;
         const {content, currentUser} = this.props;
         const allowed = isSystemUser(currentUser);
-        const optionsForInfo = {lineNumbers: false, mode: "javascript", readOnly: true};
-        const optionsForContent = {lineNumbers: true, mode: "javascript", readOnly: !allowed};
         const info = `
 /**
  * PHP code for advanced Response Manipulation.
@@ -114,14 +111,18 @@ export default class Manipulation extends React.PureComponent {
                 {!collapseInfo && (
                     <CodeMirror className="comments"
                                 value={info}
-                                options={optionsForInfo}/>
+                                extensions={[javascript()]}
+                                basicSetup={{lineNumbers: false}}
+                                readOnly={true}/>
                 )}
 
                 {!allowed && <div className="remarks">{I18n.t("manipulation.allowedDisclaimer")}</div>}
                 <CodeMirror className={`manipulation ${allowed ? "" : "read-only"}`}
                             value={content}
                             onChange={this.onChange("data.manipulation")}
-                            options={optionsForContent}/>
+                            extensions={[javascript()]}
+                            basicSetup={{lineNumbers: true}}
+                            readOnly={!allowed}/>
             </div>
         );
     }

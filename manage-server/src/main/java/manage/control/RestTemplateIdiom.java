@@ -7,7 +7,7 @@ import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
 import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
 import org.apache.hc.client5.http.impl.routing.DefaultProxyRoutePlanner;
 import org.apache.hc.core5.http.HttpHost;
-import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.boot.restclient.RestTemplateBuilder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.MediaType;
@@ -64,10 +64,10 @@ public class RestTemplateIdiom {
         @Override
         public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
             HttpHeaders headers = request.getHeaders();
-            if (!headers.containsKey(HttpHeaders.ACCEPT)) {
+            if (!headers.containsHeader(HttpHeaders.ACCEPT)) {
                 headers.setAccept(List.of(MediaType.APPLICATION_JSON));
             }
-            if (!headers.containsKey(HttpHeaders.CONTENT_TYPE)) {
+            if (!headers.containsHeader(HttpHeaders.CONTENT_TYPE)) {
                 headers.setContentType(MediaType.APPLICATION_JSON);
             }
             return execution.execute(request, body);

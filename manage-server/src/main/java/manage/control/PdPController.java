@@ -1,7 +1,5 @@
 package manage.control;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import manage.model.MetaData;
 import manage.policies.PdpPolicyDefinition;
 import manage.repository.MetaDataRepository;
@@ -17,6 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.Collection;
 import java.util.List;

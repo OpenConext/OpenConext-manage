@@ -1,7 +1,7 @@
 package manage.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mongodb.client.result.DeleteResult;
+import tools.jackson.core.JacksonException;
 import lombok.SneakyThrows;
 import manage.api.APIUser;
 import manage.api.AbstractUser;
@@ -151,7 +151,7 @@ public class MetaDataService {
                                 List noChanges = results.computeIfAbsent("no_changes", s -> new ArrayList());
                                 noChanges.add(existingServiceProvider);
                             }
-                        } catch (JsonProcessingException | ValidationException e) {
+                        } catch (JacksonException | ValidationException e) {
                             addNoValid(results, entityId, e);
                         }
                     } else {
@@ -235,7 +235,7 @@ public class MetaDataService {
     }
 
     public MetaData doPut(@Validated MetaData metaData, AbstractUser user, boolean excludeFromPushRequired)
-        throws JsonProcessingException {
+        {
         sanitizeExcludeFromPush(metaData, excludeFromPushRequired);
         String id = metaData.getId();
         MetaData previous = metaDataRepository.findById(id, metaData.getType());
@@ -257,7 +257,7 @@ public class MetaDataService {
     }
 
     public List<String> deleteMetaDataKey(MetaDataKeyDelete metaDataKeyDelete, APIUser apiUser)
-        throws JsonProcessingException {
+        {
         String keyToDelete = metaDataKeyDelete.getMetaDataKey();
         Query query = Query.query(Criteria.where("data.metaDataFields." + keyToDelete).exists(true));
         List<MetaData> metaDataList = metaDataRepository.getMongoTemplate()
@@ -283,7 +283,7 @@ public class MetaDataService {
     public Optional<MetaData> doMergeUpdate(PathUpdates metaDataUpdate,
                                             AbstractUser user,
                                             String revisionNote,
-                                            boolean forceNewRevision) throws JsonProcessingException {
+                                            boolean forceNewRevision) {
         String id = metaDataUpdate.getMetaDataId();
         MetaData previous = metaDataRepository.findById(id, metaDataUpdate.getType());
         checkNull(metaDataUpdate.getType(), id, previous);
@@ -316,7 +316,7 @@ public class MetaDataService {
         }
     }
 
-    public MetaDataChangeRequest doChangeRequest(MetaDataChangeRequest metaDataChangeRequest, AbstractUser user) throws JsonProcessingException {
+    public MetaDataChangeRequest doChangeRequest(MetaDataChangeRequest metaDataChangeRequest, AbstractUser user) {
         String id = metaDataChangeRequest.getMetaDataId();
         MetaData metaData = metaDataRepository.findById(id, metaDataChangeRequest.getType());
         checkNull(metaDataChangeRequest.getType(), id, metaData);
@@ -333,7 +333,7 @@ public class MetaDataService {
         return metaDataRepository.save(metaDataChangeRequest);
     }
 
-    public MetaDataChangeRequest updateChangeRequest(MetaDataChangeRequest metaDataChangeRequest) throws JsonProcessingException {
+    public MetaDataChangeRequest updateChangeRequest(MetaDataChangeRequest metaDataChangeRequest) {
         MetaDataChangeRequest byId = metaDataRepository.getMongoTemplate().findById(metaDataChangeRequest.getId(), MetaDataChangeRequest.class,
             metaDataChangeRequest.getType().concat(CHANGE_REQUEST_POSTFIX));
         if (byId == null) {
@@ -374,7 +374,7 @@ public class MetaDataService {
     }
 
     public MetaData restoreDeleted(RevisionRestore revisionRestore, FederatedUser federatedUser)
-        throws JsonProcessingException {
+        {
         MetaData revision = metaDataRepository.findById(revisionRestore.getId(), revisionRestore.getType());
 
         MetaData parent = metaDataRepository.findById(revision.getRevision().getParentId(),
@@ -402,7 +402,7 @@ public class MetaDataService {
     }
 
     public MetaData restoreRevision(RevisionRestore revisionRestore, FederatedUser federatedUser)
-        throws JsonProcessingException {
+        {
         MetaData revision = metaDataRepository.findById(revisionRestore.getId(), revisionRestore.getType());
 
         MetaData parent = metaDataRepository.findById(revision.getRevision().getParentId(),
@@ -490,7 +490,7 @@ public class MetaDataService {
     }
 
     public void createConnectWithoutInteraction(Map<String, String> connectionData, APIUser apiUser)
-        throws JsonProcessingException {
+        {
         String idpEntityId = connectionData.get("idpId");
         MetaData idp = findByEntityId(idpEntityId, EntityType.IDP.getType());
 
@@ -525,7 +525,7 @@ public class MetaDataService {
                                   String entityId,
                                   Map<String, String> connectionData,
                                   APIUser apiUser,
-                                  boolean isIdp) throws JsonProcessingException {
+                                  boolean isIdp) {
 
         Map<String, Object> data = metaData.getData();
         List<Map<String, String>> allowedEntities = (List<Map<String, String>>)
@@ -569,7 +569,7 @@ public class MetaDataService {
         return metaDataRepository.findById((String) searchResults.get(0).get("_id"), type);
     }
 
-    public MetaData validate(MetaData metaData) throws JsonProcessingException {
+    public MetaData validate(MetaData metaData) {
         metaData = metaDataHook.preValidate(metaData);
         metaDataAutoConfiguration.validate(metaData.getData(), metaData.getType());
         return metaData;

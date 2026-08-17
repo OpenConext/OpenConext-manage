@@ -5,7 +5,6 @@ import {Link} from "react-router-dom";
 import SelectEntities from "./../SelectEntities";
 import {Select} from "./../../components";
 import {isEmpty, stop} from "../../utils/Utils";
-import ReactTooltip from "react-tooltip";
 
 import "./Stepup.scss";
 import {getNameForLanguage, getOrganisationForLanguage} from "../../utils/Language";
@@ -404,11 +403,8 @@ export default class Stepup extends React.Component {
                 <h2>{I18n.t("stepup.title")}</h2>
                 {!guest && (
                     <p>{I18n.t("stepup.description", {name: name})}
-                        <i className="fas fa-info-circle"
-                           data-for="step-up-tooltip" data-tip></i>
-                        <ReactTooltip id="step-up-tooltip" type="info" class="tool-tip" effect="solid">
-                            <span dangerouslySetInnerHTML={{__html: I18n.t("stepup.stepupTooltip")}}/>
-                        </ReactTooltip>
+                        <i className="fas fa-info-circle tooltip-trigger"
+                           data-tooltip-html={I18n.t("stepup.stepupTooltip")}></i>
                     </p>
                 )}
             </div>
@@ -434,11 +430,8 @@ export default class Stepup extends React.Component {
                 <h2>{I18n.t("stepup.mfaTitle")}</h2>
                 {!guest && (
                     <p>{I18n.t("stepup.mfaDescription", {name: name})}
-                        <i className="fas fa-info-circle"
-                           data-for="mfa-tooltip" data-tip></i>
-                        <ReactTooltip id="mfa-tooltip" type="info" class="tool-tip" effect="solid">
-                            <span dangerouslySetInnerHTML={{__html: I18n.t("stepup.mfaTooltip")}}/>
-                        </ReactTooltip>
+                        <i className="fas fa-info-circle tooltip-trigger"
+                           data-tooltip-html={I18n.t("stepup.mfaTooltip")}></i>
                     </p>
                 )}
             </div>

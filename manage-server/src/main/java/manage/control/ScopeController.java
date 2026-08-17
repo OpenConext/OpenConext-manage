@@ -1,7 +1,5 @@
 package manage.control;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.DuplicateKeyException;
 import manage.exception.ResourceNotFoundException;
 import manage.exception.ScopeDuplicateNameException;
@@ -28,6 +26,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -74,7 +73,7 @@ public class ScopeController {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'SCOPES')")
     @DeleteMapping({"/client/scopes/{id}", "/internal/scopes/{id}"})
-    public boolean delete(@PathVariable String id) throws JsonProcessingException {
+    public boolean delete(@PathVariable String id) {
         Scope scope = scopeById(id);
         checkScopeInUse(scope);
         LOG.info("Deleting scope {}", id);
@@ -108,7 +107,7 @@ public class ScopeController {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'SCOPES')")
     @PutMapping({"/client/scopes", "/internal/scopes"})
-    public Scope update(@RequestBody Scope scope) throws JsonProcessingException {
+    public Scope update(@RequestBody Scope scope) {
         Scope previous = scopeById(scope.getId());
         if (!previous.getName().equals(scope.getName())) {
             checkScopeInUse(previous);
@@ -133,7 +132,7 @@ public class ScopeController {
         return saveScope(scope);
     }
 
-    private void checkScopeInUse(Scope scope) throws JsonProcessingException {
+    private void checkScopeInUse(Scope scope) {
         Query query = Query.query(Criteria.where("data.metaDataFields.scopes").is(scope.getName()));
         List<MetaData> resourcesServers = mongoTemplate.find(query, MetaData.class, EntityType.RS.getType());
         if (!resourcesServers.isEmpty()) {

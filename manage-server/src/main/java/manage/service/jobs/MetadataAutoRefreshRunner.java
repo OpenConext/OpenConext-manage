@@ -1,6 +1,5 @@
 package manage.service.jobs;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import manage.api.APIUser;
 import manage.api.Scope;
 import manage.conf.Features;
@@ -22,6 +21,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import tools.jackson.core.JacksonException;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -192,7 +193,7 @@ public class MetadataAutoRefreshRunner implements Runnable {
         try {
             metaDataService.doPut(metaData, this.apiUser, metaData.isExcludedFromPush());
             return true;
-        } catch (JsonProcessingException exception) {
+        } catch (JacksonException exception) {
             LOG.warn("Failed to save changes for {} {}: {}", metaData.getType(), entityId, exception.getMessage());
             return false;
         } catch (ValidationException exception) {

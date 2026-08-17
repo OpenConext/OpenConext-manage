@@ -8,8 +8,8 @@ import org.everit.json.schema.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
-import org.springframework.boot.web.servlet.error.DefaultErrorAttributes;
-import org.springframework.boot.web.servlet.error.ErrorAttributes;
+import org.springframework.boot.webmvc.error.DefaultErrorAttributes;
+import org.springframework.boot.webmvc.error.ErrorAttributes;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpHeaders;
@@ -27,7 +27,7 @@ import java.util.Map;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 @RestController
-public class ErrorController implements org.springframework.boot.web.servlet.error.ErrorController {
+public class ErrorController implements org.springframework.boot.webmvc.error.ErrorController {
 
     private static final Logger LOG = LoggerFactory.getLogger(ErrorController.class);
 

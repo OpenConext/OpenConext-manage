@@ -1,7 +1,5 @@
 package manage.control;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import manage.shibboleth.FederatedUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import tools.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -37,7 +36,7 @@ public class UserController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/client/users/me")
-    public FederatedUser me(FederatedUser federatedUser) throws JsonProcessingException {
+    public FederatedUser me(FederatedUser federatedUser) {
         return federatedUser;
     }
 
@@ -57,7 +56,7 @@ public class UserController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/client/users/error")
     public void error(@RequestBody Map<String, Object> payload, FederatedUser federatedUser) throws
-            JsonProcessingException, UnknownHostException {
+            UnknownHostException {
         payload.put("dateTime", new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date()));
         payload.put("machine", InetAddress.getLocalHost().getHostName());
         payload.put("user", federatedUser);

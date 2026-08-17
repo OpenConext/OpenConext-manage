@@ -1,6 +1,5 @@
 package manage.validations;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import manage.conf.MetaDataAutoConfiguration;
 import manage.exception.CustomValidationException;
 import manage.hook.TypeSafetyHook;
@@ -12,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import tools.jackson.core.JacksonException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -67,7 +67,7 @@ public class MetaDataValidator {
                         data.get("id"), data.get("eid"), data.get("entityid"), type, resultsMap);
                 results.put(String.class.cast(data.get("entityid")), resultsMap);
             }
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             throw new RuntimeException(e);
         }
     }

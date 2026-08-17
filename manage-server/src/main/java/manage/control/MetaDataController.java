@@ -1,6 +1,5 @@
 package manage.control;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mongodb.client.result.DeleteResult;
 import manage.api.APIUser;
 import manage.conf.MetaDataAutoConfiguration;
@@ -114,7 +113,7 @@ public class MetaDataController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/client/metadata")
     public MetaData post(@Validated @RequestBody MetaData metaData, FederatedUser federatedUser)
-        throws JsonProcessingException {
+        {
 
         return metaDataService.doPost(metaData, federatedUser, false);
     }
@@ -123,7 +122,7 @@ public class MetaDataController {
     @PutMapping("/client/includeInPush/{type}/{id}")
     public MetaData includeInPush(@PathVariable("type") String type,
                                   @PathVariable("id") String id,
-                                  FederatedUser federatedUser) throws JsonProcessingException {
+                                  FederatedUser federatedUser) {
 
         MetaData metaData = this.get(type, id);
         Map metaDataFields = metaData.metaDataFields();
@@ -238,7 +237,7 @@ public class MetaDataController {
     @PreAuthorize("hasRole('READ')")
     @PostMapping("/internal/validate/metadata")
     public ResponseEntity<Object> validateMetaData(@Validated @RequestBody MetaData metaData)
-        throws JsonProcessingException {
+        {
 
         metaDataService.validate(metaData);
         return ResponseEntity.ok().build();
@@ -275,7 +274,7 @@ public class MetaDataController {
     @PutMapping("/client/metadata")
     @Transactional
     public MetaData put(@Validated @RequestBody MetaData metaData, FederatedUser user)
-        throws JsonProcessingException {
+        {
         return metaDataService.doPut(metaData, user, false);
     }
 
@@ -283,7 +282,7 @@ public class MetaDataController {
     @PutMapping("/internal/metadata")
     @Transactional
     public MetaData putInternal(@Validated @RequestBody MetaData metaData, APIUser apiUser)
-        throws JsonProcessingException {
+        {
         EntityType entityType = EntityType.fromType(metaData.getType());
         ScopeEnforcer.enforceWriteScope(apiUser, entityType);
         MetaData updatedMetaData = metaDataService.doPut(metaData, apiUser, !apiUser.getScopes().contains(TEST));
@@ -331,7 +330,7 @@ public class MetaDataController {
     @PutMapping("internal/merge")
     @Transactional
     public MetaData update(@Validated @RequestBody MetaDataUpdate metaDataUpdate, APIUser apiUser)
-        throws JsonProcessingException {
+        {
         ScopeEnforcer.enforceWriteScope(apiUser, EntityType.fromType(metaDataUpdate.getType()));
         return metaDataService
             .doMergeUpdate(metaDataUpdate, apiUser, "Internal API merge", true)
@@ -370,7 +369,7 @@ public class MetaDataController {
     @PreAuthorize("hasAnyRole('CHANGE_REQUEST_SP', 'CHANGE_REQUEST_IDP')")
     @PostMapping("internal/change-requests")
     @Transactional
-    public MetaDataChangeRequest changeRequestInternal(@Validated @RequestBody MetaDataChangeRequest metaDataChangeRequest, APIUser apiUser) throws JsonProcessingException {
+    public MetaDataChangeRequest changeRequestInternal(@Validated @RequestBody MetaDataChangeRequest metaDataChangeRequest, APIUser apiUser) {
         ScopeEnforcer.enforceChangeRequestScope(apiUser, EntityType.fromType(metaDataChangeRequest.getType()));
         return metaDataService.doChangeRequest(metaDataChangeRequest, apiUser);
     }
@@ -378,7 +377,7 @@ public class MetaDataController {
     @PreAuthorize("hasAnyRole('CHANGE_REQUEST_SP', 'CHANGE_REQUEST_IDP')")
     @PutMapping("internal/change-requests")
     @Transactional
-    public MetaDataChangeRequest updateChangeRequestInternal(@Validated @RequestBody MetaDataChangeRequest metaDataChangeRequest, APIUser apiUser) throws JsonProcessingException {
+    public MetaDataChangeRequest updateChangeRequestInternal(@Validated @RequestBody MetaDataChangeRequest metaDataChangeRequest, APIUser apiUser) {
         ScopeEnforcer.enforceChangeRequestScope(apiUser, EntityType.fromType(metaDataChangeRequest.getType()));
         return metaDataService.updateChangeRequest(metaDataChangeRequest);
     }
@@ -386,14 +385,14 @@ public class MetaDataController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("client/change-requests")
     @Transactional
-    public MetaDataChangeRequest changeRequestClient(@Validated @RequestBody MetaDataChangeRequest metaDataChangeRequest, FederatedUser federatedUser) throws JsonProcessingException {
+    public MetaDataChangeRequest changeRequestClient(@Validated @RequestBody MetaDataChangeRequest metaDataChangeRequest, FederatedUser federatedUser) {
         return metaDataService.doChangeRequest(metaDataChangeRequest, federatedUser);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/client/change-requests/accept")
     @Transactional
-    public MetaData acceptChangeRequest(@RequestBody @Validated ChangeRequest changeRequest, FederatedUser user) throws JsonProcessingException {
+    public MetaData acceptChangeRequest(@RequestBody @Validated ChangeRequest changeRequest, FederatedUser user) {
         String collectionName = changeRequest.getType().concat(CHANGE_REQUEST_POSTFIX);
         MetaDataChangeRequest metaDataChangeRequest = metaDataRepository.getMongoTemplate()
             .findById(changeRequest.getId(), MetaDataChangeRequest.class, collectionName);
@@ -432,7 +431,7 @@ public class MetaDataController {
     @PutMapping("/client/restoreDeleted")
     @Transactional
     public MetaData restoreDeleted(@Validated @RequestBody RevisionRestore revisionRestore,
-                                   FederatedUser federatedUser) throws JsonProcessingException {
+                                   FederatedUser federatedUser) {
 
         return metaDataService.restoreDeleted(revisionRestore, federatedUser);
     }
@@ -441,7 +440,7 @@ public class MetaDataController {
     @PutMapping("/client/restoreRevision")
     @Transactional
     public MetaData restoreRevision(@Validated @RequestBody RevisionRestore revisionRestore,
-                                    FederatedUser federatedUser) throws JsonProcessingException {
+                                    FederatedUser federatedUser) {
 
         return metaDataService.restoreRevision(revisionRestore, federatedUser);
     }
@@ -577,7 +576,7 @@ public class MetaDataController {
     @PreAuthorize("hasRole('CHANGE_REQUEST_IDP')")
     @PutMapping(value = "/internal/connectWithoutInteraction")
     public HttpEntity<HttpStatus> connectWithoutInteraction(@RequestBody Map<String, String> connectionData,
-                                                            APIUser apiUser) throws JsonProcessingException {
+                                                            APIUser apiUser) {
         LOG.debug("connectWithoutInteraction, connectionData: " + connectionData);
         metaDataService.createConnectWithoutInteraction(connectionData, apiUser);
         return new HttpEntity<>(HttpStatus.OK);

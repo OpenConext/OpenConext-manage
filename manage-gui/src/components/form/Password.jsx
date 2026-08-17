@@ -4,7 +4,6 @@ import I18n from "../../locale/I18n";
 import "./Password.scss";
 import {secret} from "../../api";
 import CopyToClipboard from "react-copy-to-clipboard";
-import ReactTooltip from "react-tooltip";
 
 export default class Password extends React.PureComponent {
 
@@ -32,16 +31,9 @@ export default class Password extends React.PureComponent {
 
     }
 
-    renderIcon = (id, className, tooltipKey) =>
+    renderIcon = (className, tooltipKey) =>
         <span>
-          <i className={className} data-for={`${this.props.name}-${id}`} data-tip/>
-          <ReactTooltip
-              id={`${this.props.name}-${id}`}
-              type="info"
-              class="tool-tip"
-              effect="solid">
-            <span>{I18n.t(`password.${tooltipKey}`)}</span>
-          </ReactTooltip>
+          <i className={`${className} tooltip-trigger`} data-tooltip-content={I18n.t(`password.${tooltipKey}`)}/>
       </span>;
 
     renderDisabledIcon(copied) {
@@ -51,14 +43,14 @@ export default class Password extends React.PureComponent {
             <div className="password-icon-container">
                 <div className="password-icon">
                     <CopyToClipboard text={this.state.value} onCopy={this.handleCopy}>
-                        {this.renderIcon("copy-icon", `fa fa-copy ${classNameCopy}`, tooltipKey)}
+                        {this.renderIcon(`fa fa-copy ${classNameCopy}`, tooltipKey)}
                     </CopyToClipboard>
                 </div>
 
                 <span className="separator"/>
 
                 <div className="password-icon" onClick={() => this.handleGenerate()}>
-                    {this.renderIcon("key-icon", "fas fa-key key", "key")}
+                    {this.renderIcon("fas fa-key key", "key")}
                 </div>
 
             </div>

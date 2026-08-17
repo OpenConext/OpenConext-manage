@@ -1,7 +1,5 @@
 package manage.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import manage.conf.MetaDataAutoConfiguration;
 import manage.format.MetaDataFeedParser;
 import manage.format.SaveURLResource;
@@ -16,6 +14,9 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
@@ -43,7 +44,7 @@ public class ImporterService {
     public static final String META_DATA_FIELDS = "metaDataFields";
     public static final String ARP = "arp";
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new JsonMapper();
 
     private MetaDataAutoConfiguration metaDataAutoConfiguration;
 
@@ -95,7 +96,7 @@ public class ImporterService {
         return metaDataFeedParser.importFeed(resource, metaDataAutoConfiguration);
     }
 
-    public Map<String, Object> importJson(String type, Map<String, Object> json) throws JsonProcessingException {
+    public Map<String, Object> importJson(String type, Map<String, Object> json) {
         EntityType entityType = getType(type, json);
         try {
             return importJSON(entityType, json);
@@ -114,13 +115,12 @@ public class ImporterService {
             String json = IOUtils.toString(resource.getInputStream(), Charset.defaultCharset());
             Map<String, Object> map = objectMapper.readValue(json, Map.class);
             return importJson(type, map);
-        } catch (IOException | URISyntaxException e) {
+        } catch (IOException | URISyntaxException | JacksonException e) {
             return singletonMap(IMPORT_ERROR_KEY, singletonList(e.getClass().getName()));
         }
     }
 
-    public Map<String, Object> importJSON(EntityType entityType, Map<String, Object> data)
-        throws JsonProcessingException {
+    public Map<String, Object> importJSON(EntityType entityType, Map<String, Object> data) {
         data.entrySet().removeIf(entry -> entry.getValue() == null);
 
         Map<String, Object> json = new ConcurrentHashMap<>(data);

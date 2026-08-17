@@ -1,5 +1,6 @@
 package manage.policies;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
@@ -14,7 +15,7 @@ import java.util.*;
 import static java.util.stream.Collectors.groupingBy;
 
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(onConstructor_ = @JsonCreator)
 @Getter
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)

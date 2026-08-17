@@ -109,7 +109,8 @@ spring:
   data:
     mongodb:
       auto-index-creation: false
-      uri: mongodb://localhost:27017/metadata_test
+  mongodb:
+    uri: mongodb://localhost:27017/metadata_test
   main:
     banner-mode: "off"
 
@@ -123,7 +124,7 @@ management:
   health:
     mail:
       enabled: false
-    mongo:
+    mongodb:
       enabled: true
     db:
       enabled: false

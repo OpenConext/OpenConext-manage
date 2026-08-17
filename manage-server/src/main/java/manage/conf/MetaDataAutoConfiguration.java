@@ -1,7 +1,5 @@
 package manage.conf;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import manage.exception.CustomValidationException;
 import manage.model.EntityType;
@@ -28,6 +26,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -86,7 +86,7 @@ public class MetaDataAutoConfiguration {
     }
 
 
-    public void validate(Map<String, Object> data, String type) throws JsonProcessingException {
+    public void validate(Map<String, Object> data, String type) {
         if (this.disabledMetadataSchemas.contains(String.format("%s.schema.json", type))) {
             return;
         }
@@ -213,7 +213,7 @@ public class MetaDataAutoConfiguration {
     private Map<String, Object> parseTemplate(File file) {
         try {
             return objectMapper.readValue(file, Map.class);
-        } catch (IOException e) {
+        } catch (JacksonException e) {
             throw new IllegalArgumentException(e);
         }
     }

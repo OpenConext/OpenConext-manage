@@ -43,7 +43,6 @@ import {setFlash} from "../utils/Flash";
 import "./Detail.scss";
 import ResourceServers from "../components/metadata/ResourceServers";
 import Stepup from "../components/metadata/Stepup";
-import ReactTooltip from "react-tooltip";
 import {getConnectedEntities} from "../utils/TabNumbers";
 import Organisation from "../components/metadata/Organisation";
 import OrganisationEntity from "../components/metadata/OrganisationEntity";
@@ -1327,31 +1326,23 @@ class Detail extends React.PureComponent {
                             {I18n.t("topBannerDetails.reviewState")}
                             {excludedFromPush &&
                                 <span className="info">
-                                    <i className="fas fa-info-circle" data-for="push-excluded-tooltip" data-tip/>
-                                    <ReactTooltip id="push-excluded-tooltip" type="info" class="tool-tip" effect="solid">
-                                        <span
-                                            dangerouslySetInnerHTML={{__html: I18n.t("topBannerDetails.pushExcludedTooltip")}}/>
-                                    </ReactTooltip>
+                                    <i className="fas fa-info-circle tooltip-trigger"
+                                       data-tooltip-html={I18n.t("topBannerDetails.pushExcludedTooltip")}/>
                                 </span>}
                         </th>}
                         {isPolicy && <th>
                             {I18n.t("topBannerDetails.reviewState")}
                             {!isActive &&
                                 <span className="info">
-                                    <i className="fas fa-info-circle" data-for="not-active-tooltip" data-tip/>
-                                    <ReactTooltip id="not-active-tooltip" type="info" class="tool-tip" effect="solid">
-                                        <span dangerouslySetInnerHTML={{__html: I18n.t("topBannerDetails.notActiveTooltip")}}/>
-                                    </ReactTooltip>
+                                    <i className="fas fa-info-circle tooltip-trigger"
+                                       data-tooltip-html={I18n.t("topBannerDetails.notActiveTooltip")}/>
                             </span>}
                         </th>}
                         {importedFromEdugain && <th>{I18n.t("topBannerDetails.edugainImported")}</th>}
                         {importedFromEdugain && <th>
                             {I18n.t("topBannerDetails.pushEnabled")}
-                            <i className="fas fa-info-circle" data-for="push-enabled-tooltip" data-tip/>
-                            <ReactTooltip id="push-enabled-tooltip" type="info" class="tool-tip" effect="solid">
-                                <span
-                                    dangerouslySetInnerHTML={{__html: I18n.t("topBannerDetails.pushEnabledTooltip")}}/>
-                            </ReactTooltip>
+                            <i className="fas fa-info-circle tooltip-trigger"
+                               data-tooltip-html={I18n.t("topBannerDetails.pushEnabledTooltip")}/>
                         </th>}
                     </tr>
                     </thead>

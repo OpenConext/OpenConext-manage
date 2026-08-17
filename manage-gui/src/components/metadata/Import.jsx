@@ -1,9 +1,10 @@
 import React from "react";
 import I18n from "../../locale/I18n";
 import PropTypes from "prop-types";
-import CodeMirror from "react-codemirror";
-import "codemirror/mode/javascript/javascript";
-import "codemirror/mode/xml/xml";
+import CodeMirror from "@uiw/react-codemirror";
+import {json} from "@codemirror/lang-json";
+import {xml} from "@codemirror/lang-xml";
+import {EditorView} from "@codemirror/view";
 import {isEmpty, stop} from "../../utils/Utils";
 import {
   importMetaDataJSON,
@@ -14,7 +15,6 @@ import {
 } from "../../api";
 import {CheckBox, Select} from "./../../components";
 
-import "codemirror/lib/codemirror.css";
 import "./Import.scss";
 
 export default class Import extends React.Component {
@@ -823,12 +823,6 @@ export default class Import extends React.Component {
     );
 
     renderImportJson = () => {
-        const jsonOptions = {
-            mode: {name: "javascript", json: true},
-            lineWrapping: true,
-            lineNumbers: true,
-            scrollbarStyle: null
-        };
         return (
             <section className="import-json">
                 {this.renderImportHeader(
@@ -843,10 +837,10 @@ export default class Import extends React.Component {
                 )}
                 <CodeMirror
                     key="json"
-                    name="json"
                     value={this.state.json}
                     onChange={newJson => this.setState({json: newJson})}
-                    options={jsonOptions}
+                    extensions={[json(), EditorView.lineWrapping]}
+                    basicSetup={{lineNumbers: true}}
                     autoFocus={true}
                 />
                 {this.renderImportFooter(this.importJson)}
@@ -855,12 +849,6 @@ export default class Import extends React.Component {
     };
 
     renderImportXml = () => {
-        const xmlOptions = {
-            mode: {name: "xml"},
-            lineWrapping: true,
-            lineNumbers: true,
-            scrollbarStyle: null
-        };
         return (
             <section className="import-xml">
                 {this.renderImportHeader(
@@ -873,10 +861,10 @@ export default class Import extends React.Component {
                 )}
                 <CodeMirror
                     key="xml"
-                    name="xml"
                     value={this.state.xml}
                     onChange={newXml => this.setState({xml: newXml})}
-                    options={xmlOptions}
+                    extensions={[xml(), EditorView.lineWrapping]}
+                    basicSetup={{lineNumbers: true}}
                     autoFocus={true}
                 />
                 {this.renderImportFooter(this.importXml)}

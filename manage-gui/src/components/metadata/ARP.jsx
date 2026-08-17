@@ -1,7 +1,6 @@
 import React from "react";
 import I18n from "../../locale/I18n";
 import PropTypes from "prop-types";
-import ReactTooltip from "react-tooltip";
 
 import CheckBox from "./../../components/CheckBox";
 import SelectSource from "./SelectSource";
@@ -244,18 +243,14 @@ export default class ARP extends React.Component {
         const renderAction = arpAttribute.multiplicity && !guest;
         const {addInput, keyForNewInput} = this.state;
         const doAddInput = (addInput && keyForNewInput === attributeKey);
-        //id's need to be unique for our checkboxes to work
-        const reactTooltipId = `${attributeKey}_tooltip`;
 
         return (
             <tbody key={attributeKey}>
             <tr>
                 <td className={`name ${deprecated ? "deprecated" : ""}`}>
                     <span className="display-name">{displayKey}</span>
-                    <i className="fas fa-info-circle" data-for={reactTooltipId} data-tip></i>
-                    <ReactTooltip id={reactTooltipId} type="info" class="tool-tip" effect="solid" place="right">
-                        <span>{attributeKey}</span>
-                    </ReactTooltip>
+                    <i className="fas fa-info-circle tooltip-trigger" data-tooltip-content={attributeKey}
+                       data-tooltip-place="right"></i>
                 </td>
                 <td className="source">{this.renderSourceCell(sources, attributeKey, attributeValues, guest)}</td>
                 <td className="enabled">{this.renderEnabledCell(sources, attributeKey, attributeValues, guest)}</td>

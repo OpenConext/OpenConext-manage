@@ -1,6 +1,5 @@
 package manage.control;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import manage.model.PushOptions;
 import manage.repository.MetaDataRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,6 +14,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -62,7 +62,7 @@ public class DatabaseControllerUnitTest {
             "pass",
             new ClassPathResource("stepup_config.json"),
             "sbs.test.sram.surf.nl",
-            new ObjectMapper(),
+            new JsonMapper(),
             environment);
 
         ReflectionTestUtils.setField(subject, "pdpRestTemplate", pdpRestTemplate);

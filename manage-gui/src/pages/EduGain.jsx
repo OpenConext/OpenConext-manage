@@ -7,7 +7,6 @@ import "./EduGain.scss";
 import {isEmpty, stop} from "../utils/Utils";
 import {setFlash} from "../utils/Flash";
 import "react-json-pretty/themes/monikai.css";
-import ReactTooltip from "react-tooltip";
 
 export default class EduGain extends React.PureComponent {
 
@@ -123,10 +122,9 @@ export default class EduGain extends React.PureComponent {
                         onClick={this.toggleResultsCollapsed(k)}>
                         <td>{I18n.t(`edugain.results.${k}`)}
                             <span>
-                            <i className="fas fa-info-circle" data-for={k} data-tip></i>
-                                <ReactTooltip id={k} type="info" class="tool-tip" effect="solid" place="right">
-                                    <span>{I18n.t(`edugain.results.${k}_info`)}</span>
-                                </ReactTooltip>
+                            <i className="fas fa-info-circle tooltip-trigger"
+                               data-tooltip-content={I18n.t(`edugain.results.${k}_info`)}
+                               data-tooltip-place="right"></i>
                         </span>
                         </td>
                         <td>{results[k] ? results[k].length : 0}</td>

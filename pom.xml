@@ -14,7 +14,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.7</version>
+        <version>4.1.0</version>
     </parent>
 
     <modules>
@@ -44,12 +44,11 @@
         <frontend-maven-plugin.version>1.11.3</frontend-maven-plugin.version>
         <javax.mail.version>1.6.2</javax.mail.version>
         <javax-validation-api.version>2.0.1.Final</javax-validation-api.version>
-        <junit-jupiter-engine.version>5.12.2</junit-jupiter-engine.version>
         <json.version>20231013</json.version>
         <mongock-bom.version>5.5.1</mongock-bom.version>
         <passay.version>1.6.1</passay.version>
-        <rest-assured.version>5.3.0</rest-assured.version>
-        <spring-session-data-mongodb.version>3.4.4</spring-session-data-mongodb.version>
+        <rest-assured.version>6.0.1</rest-assured.version>
+        <spring-session-data-mongodb.version>3.5.7</spring-session-data-mongodb.version>
         <wagon-webdav-jackrabbit.version>3.5.1</wagon-webdav-jackrabbit.version>
         <wiremock-standalone.version>3.12.0</wiremock-standalone.version>
         <logback.version>1.5.18</logback.version>

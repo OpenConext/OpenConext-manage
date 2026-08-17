@@ -2,7 +2,6 @@ import React, {useEffect, useState} from "react";
 
 import "./PolicyForm.scss";
 import I18n from "../../locale/I18n";
-import ReactTooltip from "react-tooltip";
 import {Select} from "../index";
 import {isEmpty, stop} from "../../utils/Utils";
 import CheckBox from "../CheckBox";
@@ -29,7 +28,7 @@ export default function PolicyForm({
                                        onChange,
                                        onError
                                    }) {
-    const [originalName, setOriginalName] = useState(null);
+    const [originalName] = useState(() => (isNew ? null : data.name));
 
     useEffect(() => {
         if (isNew) {
@@ -51,8 +50,6 @@ export default function PolicyForm({
                 const idp = urlSearchParams.get("idp");
                 onChange("data.identityProviderIds", [{name: idp}]);
             }
-        } else {
-            setOriginalName(data.name);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -169,16 +166,9 @@ export default function PolicyForm({
                 <label htmlFor="policyType">
                     <span>{I18n.t("policies.policyType")}</span>
                     {!isNew && <>
-                        <i className="fas fa-info-circle"
-                           data-for="type-tooltip"
-                           data-tip/>
-                        <ReactTooltip id="type-tooltip"
-                                      type="info"
-                                      place="right"
-                                      class="tool-tip"
-                                      effect="solid">
-                            <span>{I18n.t("policies.typeTooltip")}</span>
-                        </ReactTooltip>
+                        <i className="fas fa-info-circle tooltip-trigger"
+                           data-tooltip-content={I18n.t("policies.typeTooltip")}
+                           data-tooltip-place="right"/>
                     </>}
                 </label>
                 <Select
@@ -198,16 +188,9 @@ export default function PolicyForm({
             <div className="input-field">
                 <label htmlFor="name">
                     <span>{I18n.t("policies.name")}</span>
-                    <i className="fas fa-info-circle"
-                       data-for="name-tooltip"
-                       data-tip/>
-                    <ReactTooltip id="name-tooltip"
-                                  type="info"
-                                  place="right"
-                                  class="tool-tip"
-                                  effect="solid">
-                        <span>{I18n.t("policies.nameTooltip")}</span>
-                    </ReactTooltip>
+                    <i className="fas fa-info-circle tooltip-trigger"
+                       data-tooltip-content={I18n.t("policies.nameTooltip")}
+                       data-tooltip-place="right"/>
                 </label>
                 <input id="name"
                        type="text"
@@ -230,16 +213,9 @@ export default function PolicyForm({
             <div className="input-field">
                 <label htmlFor="institutionProviders">
                     <span>{I18n.t("policies.institutionProviders")}</span>
-                    <i className="fas fa-info-circle"
-                       data-for="institutionProviders-tooltip"
-                       data-tip/>
-                    <ReactTooltip id="institutionProviders-tooltip"
-                                  type="info"
-                                  place="right"
-                                  class="tool-tip"
-                                  effect="solid">
-                        <span>{I18n.t("policies.institutionProvidersTooltipStepUp")}</span>
-                    </ReactTooltip>
+                    <i className="fas fa-info-circle tooltip-trigger"
+                       data-tooltip-content={I18n.t("policies.institutionProvidersTooltipStepUp")}
+                       data-tooltip-place="right"/>
                 </label>
                 <Select
                     isMulti={true}
@@ -263,16 +239,9 @@ export default function PolicyForm({
             <div className="input-field">
                 <label htmlFor="serviceProviders">
                     <span>{I18n.t("policies.serviceProviders")}</span>
-                    <i className="fas fa-info-circle"
-                       data-for="serviceProviders-tooltip"
-                       data-tip/>
-                    <ReactTooltip id="serviceProviders-tooltip"
-                                  type="info"
-                                  place="right"
-                                  class="tool-tip"
-                                  effect="solid">
-                        <span>{I18n.t("policies.serviceProvidersTooltipStepUp")}</span>
-                    </ReactTooltip>
+                    <i className="fas fa-info-circle tooltip-trigger"
+                       data-tooltip-content={I18n.t("policies.serviceProvidersTooltipStepUp")}
+                       data-tooltip-place="right"/>
                 </label>
                 <div className="select-container">
                     <CheckBox name="serviceProvidersNegated"
@@ -301,16 +270,9 @@ export default function PolicyForm({
                     <div className="checkbox-container">
                         <label htmlFor="permit">
                             <span>{I18n.t("policies.permit")}</span>
-                            <i className="fas fa-info-circle"
-                               data-for="permit-tooltip"
-                               data-tip/>
-                            <ReactTooltip id="permit-tooltip"
-                                          type="info"
-                                          place="right"
-                                          class="tool-tip"
-                                          effect="solid">
-                                <span>{I18n.t("policies.permitTooltip")}</span>
-                            </ReactTooltip>
+                            <i className="fas fa-info-circle tooltip-trigger"
+                               data-tooltip-content={I18n.t("policies.permitTooltip")}
+                               data-tooltip-place="right"/>
                         </label>
                         <CheckBox
                             name="permit"
@@ -321,16 +283,9 @@ export default function PolicyForm({
                     <div className="checkbox-container">
                         <label htmlFor="deny">
                             <span>{I18n.t("policies.deny")}</span>
-                            <i className="fas fa-info-circle"
-                               data-for="deny-tooltip"
-                               data-tip/>
-                            <ReactTooltip id="deny-tooltip"
-                                          type="info"
-                                          place="right"
-                                          class="tool-tip"
-                                          effect="solid">
-                                <span>{I18n.t("policies.denyTooltip")}</span>
-                            </ReactTooltip>
+                            <i className="fas fa-info-circle tooltip-trigger"
+                               data-tooltip-content={I18n.t("policies.denyTooltip")}
+                               data-tooltip-place="right"/>
                         </label>
                         <CheckBox
                             name="deny"
@@ -529,16 +484,9 @@ export default function PolicyForm({
             <div className="input-field">
                 <label htmlFor="description">
                     <span>{I18n.t("policies.description")}</span>
-                    <i className="fas fa-info-circle"
-                       data-for="description-tooltip"
-                       data-tip/>
-                    <ReactTooltip id="description-tooltip"
-                                  type="info"
-                                  place="right"
-                                  class="tool-tip"
-                                  effect="solid">
-                        <span>{I18n.t("policies.descriptionTooltip")}</span>
-                    </ReactTooltip>
+                    <i className="fas fa-info-circle tooltip-trigger"
+                       data-tooltip-content={I18n.t("policies.descriptionTooltip")}
+                       data-tooltip-place="right"/>
                 </label>
                 <textarea id="description"
                           rows={5}
@@ -555,16 +503,9 @@ export default function PolicyForm({
             <div className="input-field">
                 <label htmlFor="denyAdvice">
                     <span>{I18n.t("policies.denyAdvice")}</span>
-                    <i className="fas fa-info-circle"
-                       data-for="denyAdvice-tooltip"
-                       data-tip/>
-                    <ReactTooltip id="denyAdvice-tooltip"
-                                  type="info"
-                                  place="right"
-                                  class="tool-tip"
-                                  effect="solid">
-                        <span>{I18n.t("policies.denyAdviceTooltip")}</span>
-                    </ReactTooltip>
+                    <i className="fas fa-info-circle tooltip-trigger"
+                       data-tooltip-content={I18n.t("policies.denyAdviceTooltip")}
+                       data-tooltip-place="right"/>
                 </label>
                 <input id="denyAdvice"
                        type="text"
@@ -605,16 +546,9 @@ export default function PolicyForm({
                           value={data.active}
                           onChange={e => onChange("data.active", e.target.checked)}
                           info={I18n.t("policies.active")}/>
-                <i className="fas fa-info-circle"
-                   data-for="active-tooltip"
-                   data-tip/>
-                <ReactTooltip id="active-tooltip"
-                              type="info"
-                              place="right"
-                              class="tool-tip"
-                              effect="solid">
-                    <span>{I18n.t("policies.activeTooltip")}</span>
-                </ReactTooltip>
+                <i className="fas fa-info-circle tooltip-trigger"
+                   data-tooltip-content={I18n.t("policies.activeTooltip")}
+                   data-tooltip-place="right"/>
             </div>
         );
     }

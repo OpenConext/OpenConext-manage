@@ -1,7 +1,6 @@
 import React from "react";
 import I18n from "../../locale/I18n";
 import PropTypes from "prop-types";
-import ReactTooltip from "react-tooltip";
 import scrollIntoView from "scroll-into-view";
 
 import {validation} from "../../api";
@@ -193,24 +192,15 @@ export default class MetaData extends React.Component {
         const extraneous = keyConfiguration === "unknown_key_conf";
         const toolTip = keyConfiguration.info;
         const value = metaDataFields[key];
-        //id's need to be unique for our checkboxes to work
-        const reactTooltipId = `${key}_tooltip`;
         return (
             <tr key={key}>
                 <td className={`key ${extraneous ? "extraneous" : ""}`}>
                     {key}
                     {toolTip && (
                         <span>
-              <i className="fas fa-info-circle"
-                 data-for={reactTooltipId}
-                 data-tip/>
-              <ReactTooltip id={reactTooltipId}
-                            type="info"
-                            place="right"
-                            class="tool-tip"
-                            effect="solid">
-                <span>{toolTip}</span>
-              </ReactTooltip>
+              <i className="fas fa-info-circle tooltip-trigger"
+                 data-tooltip-content={toolTip}
+                 data-tooltip-place="right"/>
             </span>
                     )}
                 </td>

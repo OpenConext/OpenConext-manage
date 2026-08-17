@@ -1,6 +1,5 @@
 package manage.control;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import io.restassured.common.mapper.TypeRef;
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
@@ -1546,7 +1545,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void createChangeRequest() throws JsonProcessingException {
+    public void createChangeRequest() {
         doCreateChangeRequest();
 
         List<MetaDataChangeRequest> requests = given()
@@ -1966,7 +1965,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void searchWithEntityCategoriesMultipleKeys() throws JsonProcessingException {
+    public void searchWithEntityCategoriesMultipleKeys() {
         Map<String, Object> searchOptions = readValueFromFile("/api/search_multiple_equal_keys.json");
 
         List<Map<String, Object>> results = given()
@@ -1980,7 +1979,7 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void searchWithEntityCategoriesList() throws JsonProcessingException {
+    public void searchWithEntityCategoriesList() {
         Map<String, Object> searchOptions = readValueFromFile("/api/search_multiple_list_values.json");
 
         List<Map<String, Object>> results = given()

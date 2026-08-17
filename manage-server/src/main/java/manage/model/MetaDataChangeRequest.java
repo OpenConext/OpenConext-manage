@@ -1,5 +1,6 @@
 package manage.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 
@@ -10,7 +11,7 @@ import java.util.Collections;
 import java.util.Map;
 
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(onConstructor_ = @JsonCreator)
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
 public class MetaDataChangeRequest implements PathUpdates {

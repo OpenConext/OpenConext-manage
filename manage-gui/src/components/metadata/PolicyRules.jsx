@@ -1,7 +1,6 @@
 import React from "react";
 
 import I18n from "../../locale/I18n";
-import ReactTooltip from "react-tooltip";
 import CheckBox from "../CheckBox";
 
 export default function PolicyRules({
@@ -18,16 +17,9 @@ export default function PolicyRules({
                 <div className="checkbox-container">
                     <label htmlFor={andName}>
                         <span>{I18n.t("policies.and")}</span>
-                        <i className="fas fa-info-circle"
-                           data-for={`${andName}-tooltip`}
-                           data-tip/>
-                        <ReactTooltip id={`${andName}-tooltip`}
-                                      type="info"
-                                      place="right"
-                                      class="tool-tip"
-                                      effect="solid">
-                            <span>{I18n.t("policies.andTooltip")}</span>
-                        </ReactTooltip>
+                        <i className="fas fa-info-circle tooltip-trigger"
+                           data-tooltip-content={I18n.t("policies.andTooltip")}
+                           data-tooltip-place="right"/>
                     </label>
                     <CheckBox
                         name={andName}
@@ -38,16 +30,9 @@ export default function PolicyRules({
                 <div className="checkbox-container adjustment">
                     <label htmlFor={orName}>
                         <span>{I18n.t("policies.or")}</span>
-                        <i className="fas fa-info-circle"
-                           data-for={`${orName}-tooltip`}
-                           data-tip/>
-                        <ReactTooltip id={`${orName}-tooltip`}
-                                      type="info"
-                                      place="right"
-                                      class="tool-tip"
-                                      effect="solid">
-                            <span>{I18n.t("policies.orTooltip")}</span>
-                        </ReactTooltip>
+                        <i className="fas fa-info-circle tooltip-trigger"
+                           data-tooltip-content={I18n.t("policies.orTooltip")}
+                           data-tooltip-place="right"/>
                     </label>
                     <CheckBox
                         name={orName}
