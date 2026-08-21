@@ -5,12 +5,13 @@ import I18n from "../locale/I18n";
 import {stop} from "../utils/Utils";
 
 import "./ConfirmationDialog.scss";
-
+import DOMPurify from "dompurify";
 export default function ErrorDialog({
                                         isOpen = false,
                                         close,
                                         title,
-                                        body
+                                        body,
+                                        children
                                     }) {
     const dialogTitle = title || I18n.t("error_dialog.title");
     const dialogBody = body || I18n.t("error_dialog.body");
@@ -29,8 +30,9 @@ export default function ErrorDialog({
                 {dialogTitle}
             </section>
             <section className="dialog-content">
-                <h2>{dialogBody}</h2>
+                <h2 dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(dialogBody)}}/>
             </section>
+            {children && children}
             <section className="dialog-buttons">
                 <a className="button blue error" onClick={e => {
                     stop(e);

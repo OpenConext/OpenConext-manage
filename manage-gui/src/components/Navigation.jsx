@@ -11,6 +11,8 @@ import "./Navigation.scss";
 import {stop} from "../utils/Utils";
 import {emitter, pushFlash, setFlash} from "../utils/Flash";
 import {hasOpenChangeRequests, push} from "../api";
+import ConfirmationDialog from "./ConfirmationDialog";
+import ErrorDialog from "./ErrorDialog";
 
 export default class Navigation extends React.PureComponent {
 
@@ -19,6 +21,9 @@ export default class Navigation extends React.PureComponent {
         this.state = {
             loading: false,
             openChangeRequestsCount: 0,
+            confirmationDialogOpen: false,
+            confirmationQuestion: "",
+            confirmationDialogAction: () => this.setState({confirmationDialogOpen: false})
         };
     }
 
@@ -68,6 +73,16 @@ export default class Navigation extends React.PureComponent {
                 const success = json.eb?.status === "OK" && json.pdp?.status === "OK"
                     && json.oidc?.status === "OK" && json.stepup?.status === "OK";
                 setFlash(pushFlash(success), success ? "info" : "error");
+            })
+            .catch(res => {
+                if (res.response) {
+                    res.response.json().then(json => {
+                        this.setState({
+                            confirmationDialogOpen: true,
+                            confirmationQuestion: `Error from Server during PUSH<br/></br><code> ${JSON.stringify(json, null, 3)}</code>`,
+                        })
+                    });
+                }
             });
     };
 
@@ -107,10 +122,18 @@ export default class Navigation extends React.PureComponent {
     }
 
     render() {
-        const {openChangeRequestsCount} = this.state;
+        const {
+            openChangeRequestsCount,
+            confirmationDialogOpen,
+            confirmationDialogAction,
+            confirmationQuestion
+        } = this.state;
         const {currentUser} = this.props;
         return (
             <div className="navigation-container">
+                <ErrorDialog isOpen={confirmationDialogOpen}
+                             close={confirmationDialogAction}
+                             body={confirmationQuestion}/>
                 <div className="navigation">
                     {this.renderItem("/search", "search")}
                     {this.renderItem("/system", "system")}

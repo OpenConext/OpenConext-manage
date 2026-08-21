@@ -19,7 +19,6 @@ function validateResponse(showErrorDialog) {
             }
             const error = new Error(res.statusText);
             error.response = res;
-
             if (showErrorDialog) {
                 setTimeout(() => {
                     throw error;
@@ -66,7 +65,7 @@ function fetchJson(path, options = {}, headers = {}, showErrorDialog = true) {
 }
 
 function postPutJson(path, body, method, showErrorDialog = true) {
-    return fetchJson(path, {method: method, body: JSON.stringify(body)}, showErrorDialog);
+    return fetchJson(path, {method: method, body: JSON.stringify(body)}, {}, showErrorDialog);
 }
 
 function fetchDelete(path) {
@@ -271,7 +270,7 @@ export function push(includeEB, includeOIDC, includePdP, includeStepUp) {
         includeOIDC: includeOIDC,
         includePdP: includePdP,
         includeStepUp: includeStepUp
-    }, "PUT");
+    }, "PUT", false);
 }
 
 export function pushPreview() {
