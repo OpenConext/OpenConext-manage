@@ -41,6 +41,7 @@ public class MetaDataHookConfiguration {
                 new ExtraneousKeysPoliciesHook(metaDataAutoConfiguration),
                 new OidcValidationHook(metaDataAutoConfiguration, allowSecretPublicRP),
                 new TypeSafetyHook(metaDataAutoConfiguration),
+                new DuplicateEntityReferenceHook(metaDataAutoConfiguration),
                 new EntityIdConstraintsHook(metaDataRepository),
                 new EntityIdReconcilerHook(metaDataRepository),
                 new SSIDValidationHook(metaDataRepository, metaDataAutoConfiguration),
