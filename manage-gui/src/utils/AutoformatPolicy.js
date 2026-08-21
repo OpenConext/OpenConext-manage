@@ -21,9 +21,9 @@ export const AutoFormat = {
             let result;
             let postFix = attributeValues.length > 1 ? "s " : " "
             if (attributeName === "urn:collab:group:surfteams.nl") {
-                result = "he/she is a member of the team" + postFix + values + logical;
+                result = "the user is a member of the team" + postFix + values + logical;
             } else {
-                result = "he/she has the value" + postFix + values + " for attribute '" + attributeName + "'" + logical;
+                result = "the user has the value" + postFix + values + " for attribute '" + attributeName + "'" + logical;
 
             }
             return result;
