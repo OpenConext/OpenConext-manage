@@ -11,7 +11,6 @@ import "./Navigation.scss";
 import {stop} from "../utils/Utils";
 import {emitter, pushFlash, setFlash} from "../utils/Flash";
 import {hasOpenChangeRequests, push} from "../api";
-import ConfirmationDialog from "./ConfirmationDialog";
 import ErrorDialog from "./ErrorDialog";
 
 export default class Navigation extends React.PureComponent {
