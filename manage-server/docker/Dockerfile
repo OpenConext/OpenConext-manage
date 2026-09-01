@@ -1,4 +1,4 @@
-FROM eclipse-temurin:21-jre-alpine
+FROM ghcr.io/openconext/openconext-basecontainers/java21:latest
 COPY target/*.jar app.jar
 
 HEALTHCHECK --interval=10s --timeout=10s --start-period=10s --retries=3 \
