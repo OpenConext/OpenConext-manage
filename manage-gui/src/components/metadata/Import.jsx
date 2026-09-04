@@ -7,15 +7,16 @@ import {xml} from "@codemirror/lang-xml";
 import {EditorView} from "@codemirror/view";
 import {isEmpty, stop} from "../../utils/Utils";
 import {
-  importMetaDataJSON,
-  importMetaDataJsonUrl,
-  importMetaDataXML,
-  importMetaDataXmlUrl,
-  validation
+    importMetaDataJSON,
+    importMetaDataJsonUrl,
+    importMetaDataXML,
+    importMetaDataXmlUrl,
+    validation
 } from "../../api";
 import {CheckBox, Select} from "./../../components";
 
 import "./Import.scss";
+import {setFlash} from "../../utils/Flash";
 
 export default class Import extends React.Component {
     constructor(props) {
@@ -252,8 +253,8 @@ export default class Import extends React.Component {
 
         promise.then(json => {
             window.scrollTo(0, 0);
-            if (json.errors) {
-                newState[errorsName] = json.errors;
+            if (json.error) {
+                newState[errorsName] = [json.validations];
                 newState.entityType = this.props.entityType;
                 newState.results = undefined;
                 this.setState({...newState});
@@ -292,6 +293,9 @@ export default class Import extends React.Component {
                     importMetaDataXmlUrl(url, entityType, entityId),
                     "errorsUrl"
                 );
+            } else {
+                setFlash("Invalid URL", "error");
+                window.scrollTo(0, 0);
             }
         });
     };
@@ -308,6 +312,9 @@ export default class Import extends React.Component {
                     importMetaDataJsonUrl(jsonUrl, entityType, entityId),
                     "errorsJsonUrl"
                 );
+            } else {
+                setFlash("Invalid JSON URL" , "error");
+                window.scrollTo(0, 0);
             }
         });
     };
@@ -324,6 +331,9 @@ export default class Import extends React.Component {
                     importMetaDataJSON(this.props.metaData.type || entityType, json),
                     "errorsJson"
                 );
+            } else {
+                setFlash("Invalid JSON", "error");
+                window.scrollTo(0, 0);
             }
         });
     };
@@ -337,6 +347,9 @@ export default class Import extends React.Component {
             });
             if (result) {
                 this.doImport(importMetaDataXML(xml, entityType), "errorsJson");
+            } else {
+                setFlash("Invalid XML", "error");
+                window.scrollTo(0, 0);
             }
         });
     };
@@ -620,59 +633,59 @@ export default class Import extends React.Component {
                     <p>{I18n.t(`import.${prefix}resultsSubInfo`)}</p>
                 </div>
                 {results.metaDataFields &&
-                this.renderKeyValueTable(
-                    results.metaDataFields,
-                    headers,
-                    "metaDataFields",
-                    newEntity
-                )}
+                    this.renderKeyValueTable(
+                        results.metaDataFields,
+                        headers,
+                        "metaDataFields",
+                        newEntity
+                    )}
                 {results.connection &&
-                this.renderKeyValueTable(
-                    results.connection,
-                    headers,
-                    "connection",
-                    newEntity
-                )}
+                    this.renderKeyValueTable(
+                        results.connection,
+                        headers,
+                        "connection",
+                        newEntity
+                    )}
                 {results.allowedEntities &&
-                this.renderAllowedEntitiesDisableContentTable(
-                    results.allowedEntities,
-                    metaData.allowedEntities,
-                    "allowedEntities",
-                    "whitelist",
-                    newEntity
-                )}
+                    this.renderAllowedEntitiesDisableContentTable(
+                        results.allowedEntities,
+                        metaData.allowedEntities,
+                        "allowedEntities",
+                        "whitelist",
+                        newEntity
+                    )}
                 {results.allowedResourceServers &&
-                this.renderAllowedEntitiesDisableContentTable(
-                    results.allowedResourceServers,
-                    metaData.allowedResourceServers,
-                    "allowedResourceServers",
-                    "resource servers",
-                    newEntity
-                )}
+                    this.renderAllowedEntitiesDisableContentTable(
+                        results.allowedResourceServers,
+                        metaData.allowedResourceServers,
+                        "allowedResourceServers",
+                        "resource servers",
+                        newEntity
+                    )}
                 {results.disableConsent &&
-                this.renderAllowedEntitiesDisableContentTable(
-                    results.disableConsent,
-                    metaData.disableConsent,
-                    "disableConsent",
-                    "disabled consent",
-                    newEntity
-                )}
+                    this.renderAllowedEntitiesDisableContentTable(
+                        results.disableConsent,
+                        metaData.disableConsent,
+                        "disableConsent",
+                        "disabled consent",
+                        newEntity
+                    )}
                 {results.stepupEntities &&
-                this.renderAllowedEntitiesDisableContentTable(
-                    results.stepupEntities,
-                    metaData.stepupEntities,
-                    "stepupEntities",
-                    "stepup entities",
-                    newEntity
-                )}
+                    this.renderAllowedEntitiesDisableContentTable(
+                        results.stepupEntities,
+                        metaData.stepupEntities,
+                        "stepupEntities",
+                        "stepup entities",
+                        newEntity
+                    )}
                 {results.mfaEntities &&
-                this.renderAllowedEntitiesDisableContentTable(
-                    results.mfaEntities,
-                    metaData.mfaEntities,
-                    "mfaEntities",
-                    "mfa entities",
-                    newEntity
-                )}
+                    this.renderAllowedEntitiesDisableContentTable(
+                        results.mfaEntities,
+                        metaData.mfaEntities,
+                        "mfaEntities",
+                        "mfa entities",
+                        newEntity
+                    )}
                 {results.arp && this.renderArpTable(results.arp, metaData.arp)}
                 <div className="result-actions">
                     <span>{I18n.t(`import.${prefix}applyImportChangesInfo`)}</span>
@@ -807,7 +820,7 @@ export default class Import extends React.Component {
                         <h2>{I18n.t("import.jsonUrl")}</h2>
                     </section>
                     {this.state.errorsJsonUrl &&
-                    this.renderErrors(this.state.errorsJsonUrl)}
+                        this.renderErrors(this.state.errorsJsonUrl)}
                 </section>
                 {this.state.invalidJsonUrl && (
                     <p className="invalid">{I18n.t("import.invalid", {type: "URL"})}</p>
