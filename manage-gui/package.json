@@ -14,7 +14,7 @@
     "http-proxy-middleware": "^4.2.0",
     "js-cookie": "^3.0.8",
     "lodash.merge": "^4.6.2",
-    "papaparse": "^5.6.0",
+    "papaparse": "^5.7.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-json-view": "^1.21.3",
