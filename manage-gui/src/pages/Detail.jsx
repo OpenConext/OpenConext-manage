@@ -1109,6 +1109,7 @@ class Detail extends React.PureComponent {
                     <Stepup
                         stepupEntities={metaData.data.stepupEntities || []}
                         mfaEntities={metaData.data.mfaEntities || []}
+                        supportedAuthnContext={metaData.data.supported_authncontext || []}
                         allowedEntities={metaData.data.allowedEntities}
                         allowedAll={metaData.data.allowedall}
                         name={name}
@@ -1117,7 +1118,7 @@ class Detail extends React.PureComponent {
                         onChange={this.onChange("stepup_entities")}
                         onChangeMfa={this.onChange("mfa_entities")}
                         loaLevels={configuration.properties.stepupEntities.items.properties.level.enum}
-                        mfaLevels={configuration.properties.mfaEntities.items.properties.level.enum}
+                        mfaLevels={configuration.definitions.AuthnContextClassRef.enum}
                     />
                 );
             case "revisions":

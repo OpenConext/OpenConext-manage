@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import {Link} from "react-router-dom";
 import SelectEntities from "./../SelectEntities";
 import {Select} from "./../../components";
+import SelectMulti from "../form/SelectMulti";
 import {isEmpty, stop} from "../../utils/Utils";
 
 import "./Stepup.scss";
@@ -152,6 +153,10 @@ export default class Stepup extends React.Component {
             level: level
         };
         this.props.onChange("data.stepupEntities", newState);
+    };
+
+    onChangeSupportedAuthnContext = value => {
+        this.props.onChange("data.supported_authncontext", value);
     };
 
     onChangeSelectMfaLevel = (entry, level) => {
@@ -424,6 +429,29 @@ export default class Stepup extends React.Component {
         </div>
     };
 
+    renderSupportedAuthnContext = (guest, supportedAuthnContext, supportedAuthnContextOptions) => {
+        return <div>
+            <div className="authn-context-info">
+                <h2>{I18n.t("stepup.authnContextTitle")}</h2>
+                <p>{I18n.t("stepup.authnContextDescription")}
+                    <i className="fas fa-info-circle tooltip-trigger"
+                       data-tooltip-html={I18n.t("stepup.authnContextTooltip")}></i>
+                </p>
+            </div>
+            <div className="input-field">
+                <SelectMulti
+                    enumValues={supportedAuthnContextOptions}
+                    isClearable={true}
+                    isSearchable={false}
+                    disabled={guest}
+                    placeholder={I18n.t("stepup.authnContextPlaceholder")}
+                    onChange={this.onChangeSupportedAuthnContext}
+                    value={supportedAuthnContext || []}
+                />
+            </div>
+        </div>;
+    };
+
     renderMfaEntities = (guest, name, allowedAll, allowedEntities, whiteListing, mfaEntities, placeholder, enrichedMfa) => {
         return <div>
             <div className="mfa-info">
@@ -452,13 +480,14 @@ export default class Stepup extends React.Component {
     };
 
     render() {
-        const {stepupEntities, name, guest, allowedAll, allowedEntities, whiteListing, mfaEntities} = this.props;
+        const {stepupEntities, name, guest, allowedAll, allowedEntities, whiteListing, mfaEntities, supportedAuthnContext, mfaLevels} = this.props;
         const placeholder = I18n.t("stepup.placeholder");
         const mfaPlaceholder = I18n.t("stepup.mfaPlaceholder");
         const {enrichedStepup, enrichedMfa} = this.state;
         return (
             <div className="metadata-stepup">
                 {this.renderStepupEntities(guest, name, allowedAll, allowedEntities, whiteListing, stepupEntities, placeholder, enrichedStepup)}
+                {this.renderSupportedAuthnContext(guest, supportedAuthnContext, mfaLevels)}
                 {this.renderMfaEntities(guest, name, allowedAll, allowedEntities, whiteListing, mfaEntities, mfaPlaceholder, enrichedMfa)}
             </div>
         );
@@ -469,6 +498,7 @@ export default class Stepup extends React.Component {
 Stepup.propTypes = {
     stepupEntities: PropTypes.array.isRequired,
     mfaEntities: PropTypes.array.isRequired,
+    supportedAuthnContext: PropTypes.array.isRequired,
     allowedEntities: PropTypes.array.isRequired,
     allowedAll: PropTypes.bool.isRequired,
     name: PropTypes.string.isRequired,

@@ -1105,6 +1105,27 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void putSupportedAuthnContextIdP() {
+        MetaData metaData = metaDataRepository.findById("6", EntityType.IDP.getType());
+        List<String> supportedAuthnContext = Arrays.asList(
+            "https://refeds.org/profile/mfa",
+            "transparent_authn_context");
+        Map.class.cast(metaData.getData()).put("supported_authncontext", supportedAuthnContext);
+        given()
+            .when()
+            .body(metaData)
+            .header("Content-type", "application/json")
+            .put("/manage/api/client/metadata")
+            .then()
+            .statusCode(SC_OK)
+            .body("data.supported_authncontext", hasSize(2))
+            .body("data.supported_authncontext", hasItems("https://refeds.org/profile/mfa", "transparent_authn_context"));
+
+        MetaData idp = metaDataRepository.findById("6", EntityType.IDP.getType());
+        assertEquals(supportedAuthnContext, idp.getData().get("supported_authncontext"));
+    }
+
+    @Test
     public void deleteReconcileEntityIdSP() {
         MetaData idp = metaDataRepository.findById("6", "saml20_idp");
         assertEquals(4, List.class.cast(idp.getData().get("allowedEntities")).size());

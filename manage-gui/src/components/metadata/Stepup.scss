@@ -5,7 +5,7 @@
     background-color: white;
     padding: 20px;
 
-    .stepup-info, .mfa-info {
+    .stepup-info, .mfa-info, .authn-context-info {
         margin: 15px 0;
 
         h2 {
@@ -20,8 +20,13 @@
 
     }
 
-    .mfa-info {
+    .mfa-info, .authn-context-info {
         margin: 40px 0 15px 0;
+    }
+
+    .input-field {
+        width: 50%;
+        margin-bottom: 15px;
     }
 
     section.stepup, section.mfa {

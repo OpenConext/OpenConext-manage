@@ -40,6 +40,19 @@
       ],
       "default": "urn:oasis:names:tc:SAML:2.0:nameid-format:transient",
       "info": "This indicates whether the nameID is set to something random or the same every time the user logs in. Transient can be used if the user does not need to be identified in a new session."
+    },
+    "AuthnContextClassRef": {
+      "type": "string",
+      "enum": [
+        "http://schemas.microsoft.com/claims/multipleauthn",
+        "https://refeds.org/profile/mfa",
+        "urn:oasis:names:tc:SAML:2.0:ac:classes:MobileOneFactorContract",
+        "https://eduid.nl/trust/linked-institution",
+        "https://eduid.nl/trust/validate-names",
+        "https://eduid.nl/trust/validate-names-external",
+        "https://eduid.nl/trust/affiliation-student",
+        "transparent_authn_context"
+      ]
     }
   },
   "type": "object",
@@ -168,6 +181,13 @@
       ],
       "additionalProperties": false
     },
+    "supported_authncontext": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/AuthnContextClassRef"
+      },
+      "info": "The AuthnContext Class References (ACR) that this IdP supports in the RequestedAuthnContext of an AuthnRequest."
+    },
     "mfaEntities": {
       "type": "array",
       "items": {
@@ -177,19 +197,7 @@
             "type": "string"
           },
           "level": {
-            "type": [
-              "string"
-            ],
-            "enum": [
-              "http://schemas.microsoft.com/claims/multipleauthn",
-              "https://refeds.org/profile/mfa",
-              "urn:oasis:names:tc:SAML:2.0:ac:classes:MobileOneFactorContract",
-              "https://eduid.nl/trust/linked-institution",
-              "https://eduid.nl/trust/validate-names",
-              "https://eduid.nl/trust/validate-names-external",
-              "https://eduid.nl/trust/affiliation-student",
-              "transparent_authn_context"
-            ],
+            "$ref": "#/definitions/AuthnContextClassRef",
             "default": "http://schemas.microsoft.com/claims/multipleauthn"
           }
         }
