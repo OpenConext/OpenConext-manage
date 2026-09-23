@@ -442,7 +442,7 @@ export default class Stepup extends React.Component {
                 <SelectMulti
                     enumValues={supportedAuthnContextOptions}
                     isClearable={true}
-                    isSearchable={false}
+                    isSearchable={true}
                     disabled={guest}
                     placeholder={I18n.t("stepup.authnContextPlaceholder")}
                     onChange={this.onChangeSupportedAuthnContext}
