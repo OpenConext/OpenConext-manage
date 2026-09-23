@@ -27,7 +27,9 @@ export default defineConfig([
 
         settings: {
             react: {
-                version: "detect",
+                // Pinned instead of "detect": eslint-plugin-react@7.37.5's version
+                // detection calls the removed context.getFilename() API under eslint 10
+                version: "19.3",
             },
         },
 
