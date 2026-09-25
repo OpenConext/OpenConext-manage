@@ -2336,13 +2336,13 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
             .auth()
             .preemptive()
             .basic("openconextaccess", "secret")
-            .body("http://mock-sp")
+            .body("6")
             .when()
             .header("Content-type", "application/json")
             .post("manage/api/internal/connected-apps")
             .as(new TypeRef<>() {
             });
-        assertEquals(1L, connected.get(EntityType.IDP.getType()));
+        assertEquals(4L, connected.get(EntityType.IDP.getType()));
     }
 
     @Test

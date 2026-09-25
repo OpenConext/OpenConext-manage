@@ -600,11 +600,10 @@ public class MetaDataController {
 
     @PreAuthorize("hasRole('READ')")
     @PostMapping("/internal/connected-apps")
-    public Map<String, Long> connectedApps(@RequestBody String entityId) {
-        MongoTemplate mongoTemplate = metaDataRepository.getMongoTemplate();
-        Query query = new Query(Criteria.where("data.allowedEntities.name").is(entityId));
-        long count = mongoTemplate.count(query, EntityType.IDP.getType());
-        return Map.of(EntityType.IDP.getType(), count);
+    public Map<String, Integer> connectedApps(@RequestBody String manageIdentifier) {
+        MetaData idp = metaDataRepository.findById(manageIdentifier, EntityType.IDP.getType());
+        List<Map<String, String>> allowedEntities = (List<Map<String, String>>) idp.getData().getOrDefault("allowedEntities", List.of());
+        return Map.of(EntityType.IDP.getType(), allowedEntities.size());
     }
 
 }
