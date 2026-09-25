@@ -2331,6 +2331,21 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void internalConnected() throws IOException {
+        Map<String, Long> connected = given()
+            .auth()
+            .preemptive()
+            .basic("openconextaccess", "secret")
+            .body("http://mock-sp")
+            .when()
+            .header("Content-type", "application/json")
+            .post("manage/api/internal/connected-apps")
+            .as(new TypeRef<>() {
+            });
+        assertEquals(1L, connected.get(EntityType.IDP.getType()));
+    }
+
+    @Test
     public void deleteConsequences() {
         List<MetaData> identityProviders = given()
             .auth()

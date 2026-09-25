@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
@@ -112,8 +113,7 @@ public class MetaDataController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/client/metadata")
-    public MetaData post(@Validated @RequestBody MetaData metaData, FederatedUser federatedUser)
-        {
+    public MetaData post(@Validated @RequestBody MetaData metaData, FederatedUser federatedUser) {
 
         return metaDataService.doPost(metaData, federatedUser, false);
     }
@@ -236,8 +236,7 @@ public class MetaDataController {
 
     @PreAuthorize("hasRole('READ')")
     @PostMapping("/internal/validate/metadata")
-    public ResponseEntity<Object> validateMetaData(@Validated @RequestBody MetaData metaData)
-        {
+    public ResponseEntity<Object> validateMetaData(@Validated @RequestBody MetaData metaData) {
 
         metaDataService.validate(metaData);
         return ResponseEntity.ok().build();
@@ -273,16 +272,14 @@ public class MetaDataController {
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/client/metadata")
     @Transactional
-    public MetaData put(@Validated @RequestBody MetaData metaData, FederatedUser user)
-        {
+    public MetaData put(@Validated @RequestBody MetaData metaData, FederatedUser user) {
         return metaDataService.doPut(metaData, user, false);
     }
 
     @PreAuthorize("hasAnyRole('WRITE_SP', 'WRITE_IDP', 'SYSTEM', 'POLICIES')")
     @PutMapping("/internal/metadata")
     @Transactional
-    public MetaData putInternal(@Validated @RequestBody MetaData metaData, APIUser apiUser)
-        {
+    public MetaData putInternal(@Validated @RequestBody MetaData metaData, APIUser apiUser) {
         EntityType entityType = EntityType.fromType(metaData.getType());
         ScopeEnforcer.enforceWriteScope(apiUser, entityType);
         MetaData updatedMetaData = metaDataService.doPut(metaData, apiUser, !apiUser.getScopes().contains(TEST));
@@ -329,8 +326,7 @@ public class MetaDataController {
     @PreAuthorize("hasAnyRole('WRITE_SP', 'WRITE_IDP', 'SYSTEM')")
     @PutMapping("internal/merge")
     @Transactional
-    public MetaData update(@Validated @RequestBody MetaDataUpdate metaDataUpdate, APIUser apiUser)
-        {
+    public MetaData update(@Validated @RequestBody MetaDataUpdate metaDataUpdate, APIUser apiUser) {
         ScopeEnforcer.enforceWriteScope(apiUser, EntityType.fromType(metaDataUpdate.getType()));
         return metaDataService
             .doMergeUpdate(metaDataUpdate, apiUser, "Internal API merge", true)
@@ -602,5 +598,13 @@ public class MetaDataController {
         return this.metaDataRepository.findRaw(EntityType.IDP.getType(), query);
     }
 
+    @PreAuthorize("hasRole('READ')")
+    @PostMapping("/internal/connected-apps")
+    public Map<String, Long> connectedApps(@RequestBody String entityId) {
+        MongoTemplate mongoTemplate = metaDataRepository.getMongoTemplate();
+        Query query = new Query(Criteria.where("data.allowedEntities.name").is(entityId));
+        long count = mongoTemplate.count(query, EntityType.IDP.getType());
+        return Map.of(EntityType.IDP.getType(), count);
+    }
 
 }
