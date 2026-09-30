@@ -2,10 +2,20 @@
 
 Starting from version 9.0.0, we note changes and new features per release in this file.
 
-## next
+## 9.9.0
 - Add `coin:wayf_remember_choice` metadata property for SPs and RPs. Engineblock version 7.3 with `wayf.remember_choice_per_idp` enabled is required to use this feature. ([#714](https://github.com/OpenConext/OpenConext-manage/issues/714))
 - Add healthcheck to Dockerfiles
-- Migrated to Spring Boot 4.1.0 
+- Migrated to Spring Boot 4.1.0 ([#712](https://github.com/OpenConext/OpenConext-manage/issues/712))
+- Disallow duplicate entity references in metadata ([#693](https://github.com/OpenConext/OpenConext-manage/issues/693))
+- Use gender-neutral wording in policy descriptions ([#645](https://github.com/OpenConext/OpenConext-manage/issues/645))
+- Show error dialog on push failure instead of displaying an unexpected error screen ([#711](https://github.com/OpenConext/OpenConext-manage/issues/711))
+- Improved error handling and validation feedback when importing metadata ([#728](https://github.com/OpenConext/OpenConext-manage/issues/728))
+- Add support for configuring supported AuthnContext Class References (`supported_authncontext`) on IdPs ([#742](https://github.com/OpenConext/OpenConext-manage/issues/742))
+- Strip incoming Shibboleth headers to prevent header spoofing on unauthenticated endpoints ([#744](https://github.com/OpenConext/OpenConext-manage/issues/744))
+- Switch to OpenConext-Basecontainers for Docker base images ([#733](https://github.com/OpenConext/OpenConext-manage/pull/733))
+- Add internal endpoint to retrieve connected application counts for an IdP
+- Add `SCOPES` API scope to manage scopes via internal API
+- Skip validation for disabled metadata schemas
 
 ## 9.8.0
 - Update of JS dependencies
