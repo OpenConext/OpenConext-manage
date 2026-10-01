@@ -2,10 +2,10 @@ package manage.hook;
 
 import manage.api.AbstractUser;
 import manage.conf.MetaDataAutoConfiguration;
+import manage.exception.EmptyRevisionException;
 import manage.model.EntityType;
 import manage.model.MetaData;
 import org.everit.json.schema.Schema;
-import org.everit.json.schema.ValidationException;
 
 import java.util.Arrays;
 import java.util.List;
@@ -29,7 +29,7 @@ public class EmptyRevisionHook extends MetaDataHookAdapter {
         if (eq) {
             //we need a schema, does not matter for which entityType
             Schema schema = metaDataAutoConfiguration.anySchema();
-            throw new ValidationException(schema, "No data is changed. An update would result in an empty revision", "empty-revision", null);
+            throw new EmptyRevisionException(schema, "No data is changed. An update would result in an empty revision", "empty-revision");
         }
         return super.prePut(previous, newMetaData, user);
     }

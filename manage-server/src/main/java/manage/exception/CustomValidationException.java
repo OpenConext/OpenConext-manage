@@ -16,10 +16,6 @@ public class CustomValidationException extends RuntimeException {
         this.data = data;
     }
 
-    public CustomValidationException(ValidationException validationException) {
-        this(validationException, null);
-    }
-
     @Override
     public String getMessage() {
         String message = String.join(", ", this.validationException.getAllMessages());
