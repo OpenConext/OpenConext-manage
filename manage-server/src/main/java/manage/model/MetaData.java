@@ -5,6 +5,7 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.annotation.Version;
+import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.util.Assert;
 
 import jakarta.validation.constraints.NotNull;
@@ -36,6 +37,12 @@ public class MetaData implements Serializable {
 
     private Revision revision;
 
+    @Field("created_on")
+    private Instant createdOn;
+
+    @Field("published_on")
+    private Instant publishedOn;
+
     @Setter
     @NotNull
     private Map<String, Object> data;
@@ -48,7 +55,22 @@ public class MetaData implements Serializable {
     public void initial(String id, String createdBy, Long eid) {
         this.id = id;
         this.revision = new Revision(0, Instant.now(), null, createdBy);
+        this.createdOn = this.revision.getCreated();
+        //Entities created straight as prodaccepted are published on creation
+        this.publishedOn = "prodaccepted".equals(this.data.get("state")) ? this.createdOn : null;
         this.data.put("eid", eid);
+    }
+
+    /**
+     * Carry over the created_on and published_on from the previous (live) version and set the
+     * published_on if the state is changed from testaccepted to prodaccepted.
+     */
+    public void inheritDates(MetaData previous) {
+        this.createdOn = previous.createdOn;
+        this.publishedOn = previous.publishedOn;
+        if ("testaccepted".equals(previous.getData().get("state")) && "prodaccepted".equals(this.data.get("state"))) {
+            this.publishedOn = Instant.now();
+        }
     }
 
     public void revision(String newId) {

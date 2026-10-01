@@ -249,6 +249,7 @@ public class MetaDataService {
         metaDataRepository.save(previous);
 
         metaData.promoteToLatest(user.getName(), (String) metaData.getData().get("revisionnote"));
+        metaData.inheritDates(previous);
         metaDataRepository.update(metaData);
 
         LOG.info("Updated metaData {} by {}", metaData.getId(), user.getName());
@@ -293,6 +294,7 @@ public class MetaDataService {
         MetaData metaData = metaDataRepository.findById(id, metaDataUpdate.getType());
         metaData.promoteToLatest(user.getName(), revisionNote);
         metaData.merge(metaDataUpdate);
+        metaData.inheritDates(previous);
 
         if (!CollectionUtils.isEmpty(metaDataUpdate.getExternalReferenceData())) {
             metaData.getData().putAll(metaDataUpdate.getExternalReferenceData());
@@ -410,6 +412,7 @@ public class MetaDataService {
 
         revision.restoreToLatest(parent.getId(), parent.getVersion(), federatedUser.getUid(),
             parent.getRevision().getNumber(), revisionRestore.getParentType());
+        revision.inheritDates(parent);
         //It might be that the revision is no longer valid as metaData configuration has changed
         revision = validate(revision);
         metaDataRepository.update(revision);
