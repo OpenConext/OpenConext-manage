@@ -3,6 +3,7 @@ import I18n from "../locale/I18n";
 import PropTypes from "prop-types";
 
 import {Spinner} from "spin.js";
+import "spin.js/spin.css";
 import spinner from "../lib/Spin";
 
 import {NavLink} from "react-router-dom";
