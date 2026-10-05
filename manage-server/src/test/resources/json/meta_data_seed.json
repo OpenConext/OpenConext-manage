@@ -7,6 +7,8 @@
       "created": "2018-06-15T08:20:34.575Z",
       "updatedBy": "some.user"
     },
+    "createdOn": "2018-06-15T08:20:34.575Z",
+    "publishedOn": "2018-06-15T08:20:34.575Z",
     "data": {
       "entityid": "Duis ad do",
       "eid": 1,
@@ -106,6 +108,8 @@
       "created": "2018-06-15T08:20:34.575Z",
       "updatedBy": "saml2_user.com"
     },
+    "createdOn": "2018-06-15T08:20:34.575Z",
+    "publishedOn": "2018-06-15T08:20:34.575Z",
     "data": {
       "entityid": "https://profile.test2.surfconext.nl/authentication/metadata",
       "eid": 2,
@@ -169,6 +173,8 @@
       "created": "2018-06-15T08:20:34.575Z",
       "updatedBy": "saml2_user.com"
     },
+    "createdOn": "2018-06-15T08:20:34.575Z",
+    "publishedOn": "2018-06-15T08:20:34.575Z",
     "data": {
       "entityid": "http://mock-sp",
       "eid": 3,
@@ -229,6 +235,8 @@
       "created": "2018-06-15T08:20:34.575Z",
       "updatedBy": "saml2_user.com"
     },
+    "createdOn": "2018-06-15T08:20:34.575Z",
+    "publishedOn": "2018-06-15T08:20:34.575Z",
     "data": {
       "entityid": "https://serviceregistry.test2.surfconext.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp",
       "eid": 4,
@@ -279,6 +287,8 @@
       "created": "2018-06-15T08:20:34.575Z",
       "updatedBy": "saml2_user.com"
     },
+    "createdOn": "2018-06-15T08:20:34.575Z",
+    "publishedOn": "2018-06-15T08:20:34.575Z",
     "data": {
       "entityid": "https://serviceregistry.test2.surfconext.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp-2",
       "eid": 5,
@@ -326,6 +336,8 @@
       "created": "2018-06-15T08:20:34.575Z",
       "updatedBy": "saml2_user.com"
     },
+    "createdOn": "2018-06-15T08:20:34.575Z",
+    "publishedOn": "2018-06-15T08:20:34.575Z",
     "data": {
       "entityid": "https://idp.test2.surfconext.nl",
       "eid": 6,
@@ -445,6 +457,8 @@
       "created": "2018-06-15T08:20:34.575Z",
       "updatedBy": "saml2_user.com"
     },
+    "createdOn": "2018-06-15T08:20:34.575Z",
+    "publishedOn": "2018-06-15T08:20:34.575Z",
     "data": {
       "entityid": "http://mock-idp",
       "eid": 7,
@@ -469,6 +483,8 @@
       "created": "2018-06-15T08:20:34.575Z",
       "updatedBy": "saml2_user.com"
     },
+    "createdOn": "2018-06-15T08:20:34.575Z",
+    "publishedOn": "2018-06-15T08:20:34.575Z",
     "data": {
       "entityid": "https://oidc.test.client",
       "eid": 8,
@@ -491,6 +507,8 @@
       "created": "2018-06-15T08:20:34.575Z",
       "updatedBy": "oidc_user.com"
     },
+    "createdOn": "2018-06-15T08:20:34.575Z",
+    "publishedOn": "2018-06-15T08:20:34.575Z",
     "data": {
       "entityid": "https@//oidc.rp",
       "eid": 9,
@@ -536,6 +554,8 @@
       "created": "2018-06-15T08:20:34.575Z",
       "updatedBy": "oidc_user.com"
     },
+    "createdOn": "2018-06-15T08:20:34.575Z",
+    "publishedOn": "2018-06-15T08:20:34.575Z",
     "data": {
       "entityid": "https@//oidc.rp.resourceServer",
       "eid": 10,
@@ -560,6 +580,8 @@
       "created": "2018-06-15T08:20:34.575Z",
       "updatedBy": "sp-dashboard"
     },
+    "createdOn": "2018-06-15T08:20:34.575Z",
+    "publishedOn": "2018-06-15T08:20:34.575Z",
     "data": {
       "arp": {
         "attributes": {
@@ -622,6 +644,8 @@
       "created": "2018-06-15T08:20:34.575Z",
       "updatedBy": "sp-dashboard"
     },
+    "createdOn": "2018-06-15T08:20:34.575Z",
+    "publishedOn": "2018-06-15T08:20:34.575Z",
     "data": {
       "entityid": "https://test",
       "state": "testaccepted",
@@ -651,6 +675,8 @@
       "created": "2018-06-15T08:20:34.575Z",
       "updatedBy": "sp-dashboard"
     },
+    "createdOn": "2018-06-15T08:20:34.575Z",
+    "publishedOn": "2018-06-15T08:20:34.575Z",
     "data": {
       "metaDataFields": {},
       "name": "Regular policy",
@@ -692,6 +718,8 @@
       "created": "2018-06-15T08:20:34.575Z",
       "updatedBy": "sp-dashboard"
     },
+    "createdOn": "2018-06-15T08:20:34.575Z",
+    "publishedOn": "2018-06-15T08:20:34.575Z",
     "data": {
       "metaDataFields": {},
       "name": "StepUp",
@@ -747,6 +775,8 @@
       "created": "2018-06-15T08:20:34.575Z",
       "updatedBy": "sram-api"
     },
+    "createdOn": "2018-06-15T08:20:34.575Z",
+    "publishedOn": "2018-06-15T08:20:34.575Z",
     "data": {
       "entityid": "https://sram.service.api.oidc_rp",
       "state": "prodaccepted",
@@ -783,6 +813,8 @@
       "created": "2018-06-15T08:20:34.575Z",
       "updatedBy": "sram-api"
     },
+    "createdOn": "2018-06-15T08:20:34.575Z",
+    "publishedOn": "2018-06-15T08:20:34.575Z",
     "data": {
       "entityid": "https://sram.service.api.saml_sp",
       "state": "prodaccepted",
@@ -812,6 +844,8 @@
       "created": "2018-06-15T08:20:34.575Z",
       "updatedBy": "sram-api"
     },
+    "createdOn": "2018-06-15T08:20:34.575Z",
+    "publishedOn": "2018-06-15T08:20:34.575Z",
     "data": {
       "entityid": "https://stt.org",
       "state": "prodaccepted",
@@ -829,6 +863,8 @@
   },
   {
     "id": 18,
+    "createdOn": "2018-06-15T08:20:34.575Z",
+    "publishedOn": "2018-06-15T08:20:34.575Z",
     "data": {
       "metaDataFields": {},
       "revisionnote": "Restore of revision: 4",
@@ -854,6 +890,8 @@
       "created": "2026-03-10T10:52:03.450Z",
       "updatedBy": "saml2_user.com"
     },
+    "createdOn": "2018-06-15T08:20:34.575Z",
+    "publishedOn": "2018-06-15T08:20:34.575Z",
     "data": {
       "entityid": "inst1",
       "metaDataFields": {},
@@ -887,6 +925,8 @@
       "created": "2026-03-09T14:51:01.436Z",
       "updatedBy": "saml2_user.com"
     },
+    "createdOn": "2018-06-15T08:20:34.575Z",
+    "publishedOn": "2018-06-15T08:20:34.575Z",
     "data": {
       "entityid": "http://entity.id.changed",
       "metaDataFields": {},
@@ -916,6 +956,8 @@
       "created": "2018-06-15T08:20:34.575Z",
       "updatedBy": "oidc_user.com"
     },
+    "createdOn": "2018-06-15T08:20:34.575Z",
+    "publishedOn": "2018-06-15T08:20:34.575Z",
     "data": {
       "entityid": "https@//push_disabled.rp",
       "eid": 21,

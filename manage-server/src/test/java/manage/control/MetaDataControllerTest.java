@@ -721,6 +721,29 @@ public class MetaDataControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void internalSearch() {
+        Map<String, Object> searchOptions = new HashMap<>();
+        searchOptions.put(ALL_ATTRIBUTES, false);
+        List<Map<String, Object>> res = given()
+            .auth()
+            .preemptive()
+            .basic("sp-portal", "secret")
+            .when()
+            .body(searchOptions)
+            .header("Content-type", "application/json")
+            .post("manage/api/internal/search/saml20_sp")
+            .as(new TypeRef<>() {
+            });
+        Map<String, Object> mockSp = res.stream()
+            .filter(m -> "http://mock-sp".equals(((Map<String, Object>) m.get("data")).get("entityid")))
+            .findFirst()
+            .orElseThrow();
+        assertEquals("saml20_sp", mockSp.get("type"));
+        assertNotNull(mockSp.get("created_on"));
+        assertNotNull(mockSp.get("published_on"));
+    }
+
+    @Test
     public void rawSearchEncoded() throws UnsupportedEncodingException {
         String query = URLEncoder.encode("{$and: [{$or:[{\"data.allowedEntities.name\": {$in: " +
             "[\"http://mock-idp\"]}}, {\"data" +
