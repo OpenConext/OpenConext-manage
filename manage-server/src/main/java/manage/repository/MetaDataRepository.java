@@ -243,6 +243,8 @@ public class MetaDataRepository {
                 query.fields().include("data.".concat(key));
                 query.fields().include("revision.created");
             });
+            query.fields().include("createdOn");
+            query.fields().include("publishedOn");
             if (type.contains("revision")) {
                 query.fields().include("revision").include("data.revisionnote");
             }
