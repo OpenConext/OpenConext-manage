@@ -1,3 +1,3 @@
 export function isReadOnly(entityType) {
-    return entityType === "sram";
+    return entityType === "none";//"sram";
 }
