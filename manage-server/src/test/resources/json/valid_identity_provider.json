@@ -79,7 +79,6 @@
     "coin:additional_logging": true,
     "coin:institution_id": "mock.sp",
     "coin:institution_guid": "7F33AD5E-E999-42FE-A062-BFBB0027918A",
-    "coin:guest_qualifier": "All",
     "coin:schachomeorganization": "example.org",
     "NameIDFormat": "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
     "coin:disable_scoping": true,

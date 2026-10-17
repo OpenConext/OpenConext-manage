@@ -545,7 +545,6 @@
         "coin": {
           "additional_logging": "1",
           "disable_scoping": "1",
-          "guest_qualifier": "All",
           "hidden": "1",
           "institution_guid": "219092BE-B234-4C17-B910-B090C19CE3DB",
           "publish_in_edugain": "1",
