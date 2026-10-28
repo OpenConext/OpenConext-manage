@@ -27,14 +27,15 @@ public class MongoConfiguration {
                                                                             MetaDataAutoConfiguration metaDataAutoConfiguration,
                                                                             MongoTemplate mongoTemplate) {
         SpringDataMongoV4Driver driver = SpringDataMongoV4Driver.withDefaultLock(mongoTemplate);
-        driver.disableTransaction();
+        driver.enableTransaction();
 
-        return MongockSpringboot.builder()
+        var builder =MongockSpringboot.builder()
                 .setDriver(driver)
                 .addMigrationScanPackage("manage.mongo")
                 .addDependency(metaDataAutoConfiguration)
-                .setSpringContext(springContext)
-                .buildApplicationRunner();
+                .setSpringContext(springContext);
+        builder.getConfig().setTransactional(true);
+        return builder.buildApplicationRunner();
     }
 
     @Bean
