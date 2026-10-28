@@ -2,9 +2,14 @@ package manage.control;
 
 import io.restassured.common.mapper.TypeRef;
 import manage.AbstractIntegrationTest;
+import manage.model.EntityType;
+import manage.model.MetaData;
 import manage.policies.PdpPolicyDefinition;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -20,6 +25,7 @@ import static io.restassured.http.ContentType.JSON;
 import static org.apache.http.HttpStatus.SC_INTERNAL_SERVER_ERROR;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SuppressWarnings("unchecked")
@@ -157,6 +163,130 @@ public class DatabaseControllerTest extends AbstractIntegrationTest {
             .filter(entity -> entity.get("name").startsWith("https://sram.service.api."))
             .toList();
         assertEquals(2, sramServices.size());
+    }
+
+    private static final String SRAM_RP = "https@//oidc.rp";
+    private static final String SRAM_OIDC_RP = "https://sram.service.api.oidc_rp";
+    private static final String SRAM_SAML_SP = "https://sram.service.api.saml_sp";
+    private static final String LOA2 = "http://test.surfconext.nl/assurance/loa2";
+    private static final String LOA3 = "http://test.surfconext.nl/assurance/loa3";
+    private static final String MFA = "https://refeds.org/profile/mfa";
+
+    @Test
+    public void pushPreviewSramTemplateLoaCopied() {
+        updateIdentityProvider("https://idp.test2.surfconext.nl", data -> {
+            //The template entry is matched case-insensitively and an explicit entry for a SRAM service must be replaced
+            data.put("stepupEntities", new ArrayList<>(List.of(
+                Map.of("name", "http://other-sp", "level", LOA2),
+                Map.of("name", SRAM_RP.toUpperCase(), "level", LOA3),
+                Map.of("name", SRAM_SAML_SP, "level", LOA2))));
+            data.put("mfaEntities", new ArrayList<>(List.of(
+                Map.of("name", SRAM_RP, "level", MFA),
+                Map.of("name", SRAM_OIDC_RP, "level", "http://schemas.microsoft.com/claims/multipleauthn"))));
+        });
+
+        Map idp = pushPreviewConnection("6");
+
+        List<Map<String, String>> stepup = (List<Map<String, String>>) idp.get("stepup_connections");
+        assertEquals(4, stepup.size());
+        assertEquals(LOA2, levelOf(stepup, "http://other-sp"));
+        assertEquals(LOA3, levelOf(stepup, SRAM_RP.toUpperCase()));
+        assertEquals(LOA3, levelOf(stepup, SRAM_OIDC_RP));
+        assertEquals(LOA3, levelOf(stepup, SRAM_SAML_SP));
+        assertEquals(1, countOf(stepup, SRAM_SAML_SP));
+
+        List<Map<String, String>> mfa = (List<Map<String, String>>) idp.get("mfa_entities");
+        assertEquals(3, mfa.size());
+        assertEquals(MFA, levelOf(mfa, SRAM_RP));
+        assertEquals(MFA, levelOf(mfa, SRAM_OIDC_RP));
+        assertEquals(MFA, levelOf(mfa, SRAM_SAML_SP));
+        assertEquals(1, countOf(mfa, SRAM_OIDC_RP));
+    }
+
+    @Test
+    public void pushPreviewSramWithoutTemplateEntryLeavesLoaUntouched() {
+        //The seed IdP has stepup and mfa entries, but none for the SRAM RP
+        Map idp = pushPreviewConnection("6");
+
+        assertEquals(2, ((List<?>) idp.get("allowed_connections")).stream()
+            .filter(entity -> ((Map) entity).get("name").toString().startsWith("https://sram.service.api.")).count());
+        List<Map<String, String>> stepup = (List<Map<String, String>>) idp.get("stepup_connections");
+        assertEquals(3, stepup.size());
+        assertEquals(0, countOf(stepup, SRAM_OIDC_RP) + countOf(stepup, SRAM_SAML_SP));
+        List<Map<String, String>> mfa = (List<Map<String, String>>) idp.get("mfa_entities");
+        assertEquals(1, mfa.size());
+        assertEquals(0, countOf(mfa, SRAM_OIDC_RP) + countOf(mfa, SRAM_SAML_SP));
+    }
+
+    @Test
+    public void pushPreviewSramWithoutLoaConfiguration() {
+        updateIdentityProvider("https://idp.test2.surfconext.nl", data -> {
+            data.remove("stepupEntities");
+            data.remove("mfaEntities");
+        });
+
+        Map idp = pushPreviewConnection("6");
+
+        assertEquals(6, ((List<?>) idp.get("allowed_connections")).size());
+        assertEquals(List.of(), idp.get("stepup_connections"));
+        assertEquals(List.of(), idp.get("mfa_entities"));
+    }
+
+    @Test
+    public void pushPreviewSramNotAllowedByIdentityProvider() {
+        updateIdentityProvider("https://idp.test2.surfconext.nl", data -> {
+            ((List<Map<String, String>>) data.get("allowedEntities")).removeIf(entity -> SRAM_RP.equals(entity.get("name")));
+            data.put("stepupEntities", new ArrayList<>(List.of(Map.of("name", SRAM_RP, "level", LOA3))));
+            data.put("mfaEntities", new ArrayList<>(List.of(Map.of("name", SRAM_RP, "level", MFA))));
+        });
+
+        Map idp = pushPreviewConnection("6");
+
+        List<Map<String, String>> allowed = (List<Map<String, String>>) idp.get("allowed_connections");
+        assertEquals(3, allowed.size());
+        assertFalse(allowed.stream().anyMatch(entity -> entity.get("name").startsWith("https://sram.service.api.")));
+        assertEquals(1, ((List<?>) idp.get("stepup_connections")).size());
+        assertEquals(1, ((List<?>) idp.get("mfa_entities")).size());
+    }
+
+    @Test
+    public void pushPreviewSramAllowedAllIdentityProvider() {
+        updateIdentityProvider("http://mock-idp", data -> {
+            data.put("stepupEntities", new ArrayList<>(List.of(Map.of("name", SRAM_RP, "level", LOA3))));
+            data.put("mfaEntities", new ArrayList<>(List.of(Map.of("name", SRAM_RP, "level", MFA))));
+        });
+
+        Map idp = pushPreviewConnection("7");
+
+        assertEquals(true, idp.get("allow_all_entities"));
+        assertEquals(List.of(), idp.get("allowed_connections"));
+        assertEquals(1, ((List<?>) idp.get("stepup_connections")).size());
+        assertEquals(1, ((List<?>) idp.get("mfa_entities")).size());
+    }
+
+    private Map pushPreviewConnection(String id) {
+        Map results = given()
+            .when()
+            .get("manage/api/client/playground/pushPreview")
+            .then()
+            .statusCode(SC_OK)
+            .extract().as(Map.class);
+        return (Map) ((Map) results.get("connections")).get(id);
+    }
+
+    private void updateIdentityProvider(String entityId, java.util.function.Consumer<Map<String, Object>> updater) {
+        String type = EntityType.IDP.getType();
+        MetaData metaData = mongoTemplate().findOne(Query.query(Criteria.where("data.entityid").is(entityId)), MetaData.class, type);
+        updater.accept(metaData.getData());
+        mongoTemplate().save(metaData, type);
+    }
+
+    private String levelOf(List<Map<String, String>> entries, String name) {
+        return entries.stream().filter(entry -> name.equals(entry.get("name"))).findFirst().orElseThrow().get("level");
+    }
+
+    private long countOf(List<Map<String, String>> entries, String name) {
+        return entries.stream().filter(entry -> name.equalsIgnoreCase(entry.get("name"))).count();
     }
 
     @Test

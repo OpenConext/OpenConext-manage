@@ -445,6 +445,9 @@ public class DatabaseController {
                         .anyMatch(allowedEntity -> this.sramEntityID.equalsIgnoreCase(allowedEntity.get("name")))) {
                         //now all sram services to the allowed list
                         allowedEntities.addAll(sramAllowedEntities);
+                        //the SRAM services get the same LoA as this IdP has for the SRAM RP template entity
+                        copySramTemplateLoa(identityProviderData, "stepupEntities", sramAllowedEntities);
+                        copySramTemplateLoa(identityProviderData, "mfaEntities", sramAllowedEntities);
                     }
                 }
             });
@@ -547,6 +550,28 @@ public class DatabaseController {
             return "1".equals(excludeFromPush);
         }
         return (boolean) excludeFromPush;
+    }
+
+    private void copySramTemplateLoa(Map<String, Object> identityProviderData,
+                                     String key,
+                                     List<Map<String, String>> sramAllowedEntities) {
+        List<Map<String, String>> entries = (List<Map<String, String>>) identityProviderData.getOrDefault(key, new ArrayList<>());
+        entries.stream()
+            .filter(entry -> this.sramEntityID.equalsIgnoreCase(entry.get("name")))
+            .findFirst()
+            .ifPresent(template -> {
+                // The template always wins: replace entries explicitly configured for an SRAM service
+                entries.removeIf(entry -> sramAllowedEntities.stream()
+                    .anyMatch(sram -> sram.get("name").equalsIgnoreCase(entry.get("name"))));
+                List<Map<String, String>> copies = sramAllowedEntities.stream()
+                    .map(sram -> {
+                        Map<String, String> copy = new HashMap<>(template);
+                        copy.put("name", sram.get("name"));
+                        return copy;
+                    })
+                    .toList();
+                entries.addAll(copies);
+            });
     }
 
     @SuppressWarnings("unchecked")
