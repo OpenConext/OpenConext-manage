@@ -425,7 +425,7 @@ public class MongoChangelog {
 
                     // Promote live IdP record
                     String idpRevisionNote = String.format(
-                        "Removed %s %s from allowedEntities: SP no longer manages its own allowed IdP list", spCollection, spEntityId);
+                        "Removed %s %s from allowedEntities: it no longer manages its own allowed IdP list", spCollection, spEntityId);
                     idp.promoteToLatest("System", idpRevisionNote);
                     mongoTemplate.save(idp, idpCollection);
                     LOG.info("Removed {} {} from IdP {} allowedEntities", spCollection, spEntityId, idpEntityId);
