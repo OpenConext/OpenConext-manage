@@ -378,6 +378,10 @@ public class MongoChangelog {
     @ChangeSet(order = "018", id = "migrateAllowedEntitiesToIdpSide", author = "okke.harsta@surf.nl")
     public void migrateAllowedEntitiesToIdpSide(MongoTemplate mongoTemplate) {
         String spCollection = EntityType.SP.getType();
+        doMigrateAllowedEntitiesToIdpSide(mongoTemplate, spCollection);
+    }
+
+    private void doMigrateAllowedEntitiesToIdpSide(MongoTemplate mongoTemplate, String spCollection) {
         String idpCollection = EntityType.IDP.getType();
 
         // Find all SPs with allowedall = false
@@ -386,7 +390,7 @@ public class MongoChangelog {
             MetaData.class,
             spCollection
         );
-        LOG.info("Found {} SPs with allowedall=false to migrate", restrictedSps.size());
+        LOG.info("Found {} {} with allowedall=false to migrate", restrictedSps.size(), spCollection);
 
         for (MetaData sp : restrictedSps) {
             String spEntityId = (String) sp.getData().get("entityid");
@@ -421,10 +425,10 @@ public class MongoChangelog {
 
                     // Promote live IdP record
                     String idpRevisionNote = String.format(
-                        "Removed SP %s from allowedEntities: SP no longer manages its own allowed IdP list", spEntityId);
+                        "Removed %s %s from allowedEntities: SP no longer manages its own allowed IdP list", spCollection, spEntityId);
                     idp.promoteToLatest("System", idpRevisionNote);
                     mongoTemplate.save(idp, idpCollection);
-                    LOG.info("Removed SP {} from IdP {} allowedEntities", spEntityId, idpEntityId);
+                    LOG.info("Removed {} {} from IdP {} allowedEntities", spCollection, spEntityId, idpEntityId);
                 }
             }
 
@@ -439,10 +443,10 @@ public class MongoChangelog {
             String spRevisionNote = "Migrated to IdP-side connection control: allowedall set to true, allowedEntities cleared";
             sp.promoteToLatest("System", spRevisionNote);
             mongoTemplate.save(sp, spCollection);
-            LOG.info("SP {} migrated to allowedall=true with empty allowedEntities", spEntityId);
+            LOG.info("{} {} migrated to allowedall=true with empty allowedEntities", spCollection, spEntityId);
         }
 
-        LOG.info("Migration migrateAllowedEntitiesToIdpSide completed: {} SPs processed", restrictedSps.size());
+        LOG.info("Migration migrateAllowedEntitiesToIdpSide completed: {} {} processed", restrictedSps.size(), spCollection);
     }
 
     @ChangeSet(order = "019", id = "migrateStepUpEntities", author = "okke.harsta@surf.nl")
@@ -503,6 +507,13 @@ public class MongoChangelog {
             LOG.info("Added created_on and published_on to {} documents in {}", count.get(), type);
         });
     }
+
+    @ChangeSet(order = "021", id = "migrateAllowedEntitiesToIdpSideForRP", author = "okke.harsta@surf.nl")
+    public void migrateAllowedEntitiesToIdpSideForRP(MongoTemplate mongoTemplate) {
+        String rpCollection = EntityType.RP.getType();
+        doMigrateAllowedEntitiesToIdpSide(mongoTemplate, rpCollection);
+    }
+
 
     private Date revisionCreated(Document document) {
         Document revision = document.get("revision", Document.class);
