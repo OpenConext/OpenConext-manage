@@ -5,7 +5,8 @@ import {Link} from "react-router-dom";
 import SelectEntities from "./../SelectEntities";
 import {Select} from "./../../components";
 import SelectMulti from "../form/SelectMulti";
-import {isEmpty, stop} from "../../utils/Utils";
+import {isEmpty, removeDuplicates, removeFirst, stop} from "../../utils/Utils";
+import RemoveDuplicates from "../RemoveDuplicates";
 
 import "./Stepup.scss";
 import {getNameForLanguage, getOrganisationForLanguage} from "../../utils/Language";
@@ -120,27 +121,29 @@ export default class Stepup extends React.Component {
 
     removeStepup = entry => {
         const {stepupEntities} = this.props;
-        const newState = [...stepupEntities].filter(
-            entity => entity.name !== entry.entityid
-        );
+        const newState = removeFirst(stepupEntities, entry.entityid);
         this.props.onChange("data.stepupEntities", newState);
 
-        const newStepup = [...this.state.enrichedStepup].filter(
-            entity => entity.entityid !== entry.entityid
-        );
+        const newStepup = removeFirst(this.state.enrichedStepup, entry.entityid, "entityid");
         this.setStepupState(newStepup);
+    };
+
+    removeDuplicateStepup = () => {
+        this.props.onChange("data.stepupEntities", removeDuplicates(this.props.stepupEntities));
+        this.setStepupState(removeDuplicates(this.state.enrichedStepup, "entityid"));
+    };
+
+    removeDuplicateMfa = () => {
+        this.props.onChangeMfa("data.mfaEntities", removeDuplicates(this.props.mfaEntities));
+        this.setMfaState(removeDuplicates(this.state.enrichedMfa, "entityid"));
     };
 
     removeMfa = entry => {
         const {mfaEntities} = this.props;
-        const newState = [...mfaEntities].filter(
-            entity => entity.name !== entry.entityid
-        );
+        const newState = removeFirst(mfaEntities, entry.entityid);
         this.props.onChangeMfa("data.mfaEntities", newState);
 
-        const newMfa = [...this.state.enrichedMfa].filter(
-            entity => entity.entityid !== entry.entityid
-        );
+        const newMfa = removeFirst(this.state.enrichedMfa, entry.entityid, "entityid");
         this.setMfaState(newMfa);
     };
 
@@ -202,9 +205,9 @@ export default class Stepup extends React.Component {
         });
     };
 
-    renderStepup = (entity, guest) => {
+    renderStepup = (entity, guest, index) => {
         return (
-            <tr key={entity.entityid}>
+            <tr key={index}>
                 <td className="remove">
                     {!guest && (
                         <span>
@@ -245,9 +248,9 @@ export default class Stepup extends React.Component {
         );
     };
 
-    renderMfa = (entity, guest) => {
+    renderMfa = (entity, guest, index) => {
         return (
-            <tr key={entity.entityid}>
+            <tr key={index}>
                 <td className="remove">
                     {!guest && (
                         <span>
@@ -328,8 +331,8 @@ export default class Stepup extends React.Component {
                     </tr>
                     </thead>
                     <tbody>
-                    {enrichedStepup.map(entity =>
-                        this.renderStepup(entity, guest)
+                    {enrichedStepup.map((entity, index) =>
+                        this.renderStepup(entity, guest, index)
                     )}
                     </tbody>
                 </table>
@@ -377,8 +380,8 @@ export default class Stepup extends React.Component {
                     </tr>
                     </thead>
                     <tbody>
-                    {enrichedMfa.map(entity =>
-                        this.renderMfa(entity, guest)
+                    {enrichedMfa.map((entity, index) =>
+                        this.renderMfa(entity, guest, index)
                     )}
                     </tbody>
                 </table>
@@ -413,6 +416,7 @@ export default class Stepup extends React.Component {
                     </p>
                 )}
             </div>
+            <RemoveDuplicates entries={stepupEntities} onRemove={this.removeDuplicateStepup} guest={guest}/>
             {!guest && (
                 <SelectEntities
                     whiteListing={this.filterEntityOptions(allowedAll, allowedEntities, whiteListing, true)}
@@ -463,6 +467,7 @@ export default class Stepup extends React.Component {
                     </p>
                 )}
             </div>
+            <RemoveDuplicates entries={mfaEntities} onRemove={this.removeDuplicateMfa} guest={guest}/>
             {!guest && (
                 <SelectEntities
                     whiteListing={this.filterEntityOptions(allowedAll, allowedEntities, whiteListing, false)}

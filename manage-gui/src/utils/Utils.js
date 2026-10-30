@@ -5,6 +5,27 @@ export function stop(e) {
     }
 }
 
+export function hasDuplicates(entries, key = "name") {
+    return new Set((entries || []).map(entry => entry[key])).size < (entries || []).length;
+}
+
+export function removeDuplicates(entries, key = "name") {
+    const seen = new Set();
+    return (entries || []).filter(entry => {
+        if (seen.has(entry[key])) {
+            return false;
+        }
+        seen.add(entry[key]);
+        return true;
+    });
+}
+
+// Removes only the first entry with the given value, so a duplicate is not removed together with its twin
+export function removeFirst(entries, value, key = "name") {
+    const index = (entries || []).findIndex(entry => entry[key] === value);
+    return index === -1 ? [...entries] : entries.filter((entry, i) => i !== index);
+}
+
 export function isEmpty(obj) {
     if (obj === undefined || obj === null) {
         return true;

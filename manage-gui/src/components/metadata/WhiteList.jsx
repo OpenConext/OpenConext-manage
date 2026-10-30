@@ -5,7 +5,8 @@ import {Link} from "react-router-dom";
 import ConfirmationDialog from "../ConfirmationDialog";
 import CheckBox from "./../CheckBox";
 import SelectEntities from "./../SelectEntities";
-import {copyToClip, isEmpty, stop} from "../../utils/Utils";
+import {copyToClip, isEmpty, removeDuplicates, removeFirst, stop} from "../../utils/Utils";
+import RemoveDuplicates from "../RemoveDuplicates";
 
 import "./WhiteList.scss";
 import NotesTooltip from "../NotesTooltip";
@@ -193,16 +194,20 @@ export default class WhiteList extends React.Component {
 
     removeAllowedEntry = allowedEntry => {
         const {allowedEntities, onChangeWhiteListedEntity} = this.props;
-        const newState = [...allowedEntities].filter(
-            entity => entity.name !== allowedEntry.entityid
-        );
+        const newState = removeFirst(allowedEntities, allowedEntry.entityid);
         this.props.onChange("data.allowedEntities", newState);
 
-        const newAllowedEntries = [...this.state.enrichedAllowedEntries].filter(
-            entity => entity.entityid !== allowedEntry.entityid
-        );
+        const newAllowedEntries = removeFirst(this.state.enrichedAllowedEntries, allowedEntry.entityid, "entityid");
         this.setAllowedEntryState(newAllowedEntries);
-        onChangeWhiteListedEntity(false, allowedEntry);
+        // Only a removed whitelisted entity if no duplicate remains
+        if (!newState.some(entity => entity.name === allowedEntry.entityid)) {
+            onChangeWhiteListedEntity(false, allowedEntry);
+        }
+    };
+
+    removeDuplicateEntries = () => {
+        this.props.onChange("data.allowedEntities", removeDuplicates(this.props.allowedEntities));
+        this.setAllowedEntryState(removeDuplicates(this.state.enrichedAllowedEntries, "entityid"));
     };
 
     onChange = name => value => {
@@ -264,14 +269,14 @@ export default class WhiteList extends React.Component {
         });
     };
 
-    renderAllowedEntity = (entity, guest, addedWhiteListedEntities) => {
+    renderAllowedEntity = (entity, guest, addedWhiteListedEntities, index) => {
         const className = addedWhiteListedEntities.some(
             e => e.entityid === entity.entityid
         )
             ? "added"
             : "";
         return (
-            <tr key={entity.entityid} className={className}>
+            <tr key={index} className={className}>
                 <td className="remove">
                     {!guest && (
                         <span>
@@ -409,11 +414,12 @@ export default class WhiteList extends React.Component {
                     </tr>
                     </thead>
                     <tbody>
-                    {enrichedAllowedEntries.map(entity =>
+                    {enrichedAllowedEntries.map((entity, index) =>
                         this.renderAllowedEntity(
                             entity,
                             guest,
-                            addedWhiteListedEntities
+                            addedWhiteListedEntities,
+                            index
                         )
                     )}
                     </tbody>
@@ -502,6 +508,7 @@ export default class WhiteList extends React.Component {
                 {removedWhiteListedEntities.length > 0 &&
                     this.renderRemovedEntities(removedWhiteListedEntities)}
 
+                <RemoveDuplicates entries={allowedEntities} onRemove={this.removeDuplicateEntries} guest={guest}/>
                 {!guest && (
                     <SelectEntities
                         whiteListing={whiteListing}

@@ -4,7 +4,8 @@ import PropTypes from "prop-types";
 import {Link} from "react-router-dom";
 import SelectEntities from "./../SelectEntities";
 import {Select} from "./../../components";
-import {stop} from "../../utils/Utils";
+import {removeDuplicates, removeFirst, stop} from "../../utils/Utils";
+import RemoveDuplicates from "../RemoveDuplicates";
 
 import "./ConsentDisabling.scss";
 import {getNameForLanguage, getOrganisationForLanguage} from "../../utils/Language";
@@ -91,15 +92,16 @@ export default class ConsentDisabling extends React.Component {
 
     removeDisableConsent = entry => {
         const {disableConsent} = this.props;
-        const newState = [...disableConsent].filter(
-            entity => entity.name !== entry.entityid
-        );
+        const newState = removeFirst(disableConsent, entry.entityid);
         this.props.onChange("data.disableConsent", newState);
 
-        const newDisableConsent = [...this.state.enrichedDisableConsent].filter(
-            entity => entity.entityid !== entry.entityid
-        );
+        const newDisableConsent = removeFirst(this.state.enrichedDisableConsent, entry.entityid, "entityid");
         this.setDisableConsentState(newDisableConsent);
+    };
+
+    removeDuplicateEntries = () => {
+        this.props.onChange("data.disableConsent", removeDuplicates(this.props.disableConsent));
+        this.setDisableConsentState(removeDuplicates(this.state.enrichedDisableConsent, "entityid"));
     };
 
     onChangeSelectConsentValue = (entry, type) => {
@@ -152,9 +154,9 @@ export default class ConsentDisabling extends React.Component {
         });
     };
 
-    renderDisableConsent = (entity, guest) => {
+    renderDisableConsent = (entity, guest, index) => {
         return (
-            <tr key={entity.entityid}>
+            <tr key={index}>
                 <td className="remove">
                     {!guest && (
                         <span>
@@ -266,8 +268,8 @@ export default class ConsentDisabling extends React.Component {
                     </tr>
                     </thead>
                     <tbody>
-                    {enrichedDisableConsent.map(entity =>
-                        this.renderDisableConsent(entity, guest)
+                    {enrichedDisableConsent.map((entity, index) =>
+                        this.renderDisableConsent(entity, guest, index)
                     )}
                     </tbody>
                 </table>
@@ -299,6 +301,7 @@ export default class ConsentDisabling extends React.Component {
                         <p>{I18n.t("consentDisabling.description", {name: name})}</p>
                     )}
                 </div>
+                <RemoveDuplicates entries={disableConsent} onRemove={this.removeDuplicateEntries} guest={guest}/>
                 {!guest && (
                     <SelectEntities
                         whiteListing={this.filterEntityOptions(allowedAll, allowedEntities, whiteListing)}
