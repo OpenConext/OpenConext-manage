@@ -2,6 +2,16 @@
 
 Starting from version 9.0.0, we note changes and new features per release in this file.
 
+## 9.10.0
+- Add integration tests for OIDC RPs authentication by signed JWT ([OpenConext-oidcng#371](https://github.com/OpenConext/OpenConext-oidcng/issues/371))
+- Remove `coin:guest_qualifier` metadata property for IdPs (removed in Engineblock 7.3)
+- Restrict `coin:institution_types` for IdPs to a fixed set of values, and migrate existing invalid values ([#745](https://github.com/OpenConext/OpenConext-manage/issues/745))
+- SRAM services now get the same LoA (stepup and MFA) as the IdP has configured for the SRAM RP template entity ([#760](https://github.com/OpenConext/OpenConext-manage/issues/760))
+- Deduplicate IdP collections on startup and migrate RPs ([#671](https://github.com/OpenConext/OpenConext-manage/issues/671))
+- Migrated from deprecated `MongoChangelog` to `ChangeUnit`
+- SRAM entities are no longer read-only in the GUI
+- Update of JS and Java dependencies
+
 ## 9.9.0
 - Add `coin:wayf_remember_choice` metadata property for SPs and RPs. Engineblock version 7.3 with `wayf.remember_choice_per_idp` enabled is required to use this feature. ([#714](https://github.com/OpenConext/OpenConext-manage/issues/714))
 - Add healthcheck to Dockerfiles
