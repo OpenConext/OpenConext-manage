@@ -901,10 +901,10 @@
     remark-github-blockquote-alert "^1.0.0"
     unist-util-visit "^5.0.0"
 
-"@uiw/react-md-editor@^4.1.1":
-  version "4.1.6"
-  resolved "https://registry.yarnpkg.com/@uiw/react-md-editor/-/react-md-editor-4.1.6.tgz#a5986ecc9326d5f8bbb50859900b8605a40c46f5"
-  integrity sha512-KW8TYs6BTh1o8STzUPqQd2TOdraEx9ynGSyLNT58yV28+Nn8I/Bi2rxiHZz2RoJugSe1vdKbNlhnaov+uAEkKQ==
+"@uiw/react-md-editor@^4.2.3":
+  version "4.2.3"
+  resolved "https://registry.yarnpkg.com/@uiw/react-md-editor/-/react-md-editor-4.2.3.tgz#5099352bff288efbb7c90fbfa41f7614bcbd335a"
+  integrity sha512-m9yDudonDFbhLgDx1OJq1XBM3XBzRkQ99GABV0tB5I6hLjClPEy2nnxYB1qtFnSPqVEf+N2yOieC2DTWUJa6eA==
   dependencies:
     "@babel/runtime" "^7.14.6"
     "@uiw/react-markdown-preview" "^5.2.0"
