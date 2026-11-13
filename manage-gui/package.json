@@ -19,7 +19,7 @@
     "react": "^19.3.1",
     "react-dom": "^19.3.0",
     "react-json-view": "^1.21.3",
-    "semver": "^7.8.5",
+    "semver": "^7.8.6",
     "source-map-explorer": "^2.5.3",
     "typeface-roboto": "^1.1.13",
     "xml-formatter": "^3.7.0",
@@ -55,7 +55,7 @@
     "vitest": "^5.0.1"
   },
   "resolutions": {
-    "semver": "^7.8.5",
+    "semver": "^7.8.6",
     "yaml": "^2.9.1",
     "dom-serializer": "^3.1.1",
     "minimatch": "^11.0.3",
