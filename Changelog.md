@@ -2,6 +2,9 @@
 
 Starting from version 9.0.0, we note changes and new features per release in this file.
 
+## Unreleased
+- Renamed the `coin:institution_type` values for IdPs (e.g. `HBO` is now `Hogeschool`), removed `Overig hoger onderwijs`, `Grote technologische instituten` and `OSP`, and migrate existing IdPs (with a revision per changed IdP)
+
 ## 9.10.0
 - Add integration tests for OIDC RPs authentication by signed JWT ([OpenConext-oidcng#371](https://github.com/OpenConext/OpenConext-oidcng/issues/371))
 - Remove `coin:guest_qualifier` metadata property for IdPs (removed in Engineblock 7.3)
